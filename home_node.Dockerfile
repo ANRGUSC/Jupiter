@@ -1,0 +1,60 @@
+# Instructions copied from - https://hub.docker.com/_/python/
+FROM ubuntu:16.04
+
+RUN apt-get -yqq update
+RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
+RUN apt-get install -y openssh-server mongodb
+ADD requirements.txt /requirements.txt
+RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev
+RUN pip3 install --upgrade pip
+RUN apt-get install -y sshpass nano 
+
+# Taken from quynh's network profiler
+RUN pip install cryptography
+
+
+RUN pip3 install -r requirements.txt
+RUN echo 'root:PASSWORD' | chpasswd
+RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+# SSH login fix. Otherwise user is kicked off after login
+RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+
+ENV NOTVISIBLE "in users profile"
+RUN echo "export VISIBLE=now" >> /etc/profile
+
+# Create the mongodb directories
+RUN mkdir -p /mongodb/data
+RUN mkdir -p /mongodb/log
+
+# Create the input, output, and runtime profiler directories
+RUN mkdir -p /input
+RUN mkdir -p /output
+RUN mkdir -p /runtime
+
+# Add input files
+ADD task_specific_files/network_monitoring_app/1botnet.ipsum /1botnet.ipsum
+ADD task_specific_files/network_monitoring_app/2botnet.ipsum /2botnet.ipsum
+
+# Add the mongodb scripts
+ADD runtime_profiler_mongodb /central_mongod
+ADD rt_profiler_update_mongo.py /run_update.py
+
+ADD readconfig.py /readconfig.py
+ADD scheduler.py /scheduler.py
+ADD jupiter_config.py /jupiter_config.py
+
+ADD task_specific_files/network_monitoring_app/configuration.txt /configuration.txt
+ADD nodes.txt /nodes.txt
+
+ADD start_home.sh /start.sh
+RUN chmod +x /start.sh
+RUN chmod +x /central_mongod
+
+WORKDIR /
+
+# tell the port number the container should expose
+EXPOSE 22 8888
+
+# run the command
+CMD ["./start.sh"]
