@@ -8,20 +8,24 @@
  *     Read license file in main directory for more details  
 """
 
+import sys
+sys.path.append("../")
+import jupiter_config
+sys.path.append(jupiter_config.CIRCE_PATH)
+
 from readconfig import *
 import yaml
 from kubernetes import client, config
 from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
-import jupiter_config
 
-def delete_all_waves():
+def delete_all_profilers():
 
     """
         This loads the node lists in use
     """
-    path1 = 'nodes.txt'
+    path1 = jupiter_config.HERE + 'nodes.txt'
     nodes = read_node_list(path1)
 
     """
@@ -44,7 +48,7 @@ def delete_all_waves():
     for key in nodes:
 
         # We have defined the namespace for deployments in jupiter_config
-        namespace = jupiter_config.WAVE_NAMESPACE
+        namespace = jupiter_config.PROFILER_NAMESPACE
 
         # Get proper handles or pointers to the k8-python tool to call different functions.
         api = client.ExtensionsV1beta1Api()
@@ -64,9 +68,9 @@ def delete_all_waves():
             print("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
-        # Check if there is a replicaset running by using the label "app=wave_" + key e.g, "app=wave_node1"
+        # Check if there is a replicaset running by using the label "app={key} + profiler" e.g, "app=node1profiler"
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=wave_" + key
+        label = "app=" + key + "profiler"
         resp = api.list_replica_set_for_all_namespaces(label_selector = label)
         # if a replicaset exist, delete it
         # pprint(resp)

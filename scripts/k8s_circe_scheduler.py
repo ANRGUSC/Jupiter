@@ -8,6 +8,11 @@
  *     Read license file in main directory for more details  
 """
 
+import sys
+sys.path.append("../")
+import jupiter_config
+sys.path.append(jupiter_config.CIRCE_PATH)
+
 import time
 import os
 from os import path
@@ -18,7 +23,6 @@ from write_home_specs import *
 import yaml
 from kubernetes import client, config
 from pprint import *
-import jupiter_config
 
 # if __name__ == '__main__':
 def k8s_circe_scheduler(dag_info , temp_info):

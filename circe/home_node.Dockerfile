@@ -4,7 +4,7 @@ FROM ubuntu:16.04
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
-ADD requirements.txt /requirements.txt
+ADD circe/requirements.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano 
@@ -33,21 +33,20 @@ RUN mkdir -p /output
 RUN mkdir -p /runtime
 
 # Add input files
-ADD task_specific_files/network_monitoring_app/1botnet.ipsum /1botnet.ipsum
-ADD task_specific_files/network_monitoring_app/2botnet.ipsum /2botnet.ipsum
+COPY  task_specific_files/network_monitoring_app/sample_input /sample_input
 
 # Add the mongodb scripts
-ADD runtime_profiler_mongodb /central_mongod
-ADD rt_profiler_update_mongo.py /run_update.py
+ADD circe/runtime_profiler_mongodb /central_mongod
+ADD circe/rt_profiler_update_mongo.py /run_update.py
 
-ADD readconfig.py /readconfig.py
-ADD scheduler.py /scheduler.py
+ADD circe/readconfig.py /readconfig.py
+ADD circe/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
 
 ADD task_specific_files/network_monitoring_app/configuration.txt /configuration.txt
 ADD nodes.txt /nodes.txt
 
-ADD start_home.sh /start.sh
+ADD circe/start_home.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
 

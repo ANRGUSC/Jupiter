@@ -7,6 +7,10 @@
  *      Bhaskar Krishnamachari
  *     Read license file in main directory for more details  
 """
+import sys
+sys.path.append("../")
+import jupiter_config
+sys.path.append(jupiter_config.CIRCE_PATH)
 
 import time
 import os
@@ -29,7 +33,7 @@ def k8s_wave_scheduler(profiler_ips):
     """
     nexthost_ips = ''
     nexthost_names = ''
-    path2 = 'nodes.txt'
+    path2 = jupiter_config.HERE + 'nodes.txt'
     nodes = read_node_list(path2)
     pprint(nodes)
 
@@ -130,8 +134,8 @@ def k8s_wave_scheduler(profiler_ips):
             
 
 
-    # have to somehow make sure that the worker nodes are on and working by this time
-    time.sleep(30)
+    # TODO: have to make sure that the worker nodes are on and working by this time
+    time.sleep(60)
     home_dep = write_wave_specs(name = 'home', label = "wave_home",
                                 image = jupiter_config.WAVE_HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, all_node = nexthost_names,

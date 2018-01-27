@@ -14,5 +14,5 @@ from delete_all_waves import *
 
 
 delete_all_circe_deployments()
-# delete_all_waves()
-# delete_all_profilers()
+delete_all_waves()
+delete_all_profilers()

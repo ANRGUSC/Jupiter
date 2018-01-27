@@ -7,6 +7,10 @@
  *      Bhaskar Krishnamachari
  *     Read license file in main directory for more details  
 """
+import sys
+sys.path.append("../")
+import jupiter_config
+sys.path.append(jupiter_config.CIRCE_PATH)
 
 import time
 import os
@@ -29,7 +33,7 @@ def k8s_profiler_scheduler():
     """
     nexthost_ips = ''
     nexthost_names = ''
-    path2 = 'nodes.txt'
+    path2 = jupiter_config.HERE + 'nodes.txt'
     nodes = read_node_list(path2)
 
 

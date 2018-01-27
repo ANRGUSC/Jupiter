@@ -7,6 +7,10 @@
  *      Bhaskar Krishnamachari
  *     Read license file in main directory for more details  
 """
+import sys
+sys.path.append("../")
+import jupiter_config
+sys.path.append(jupiter_config.CIRCE_PATH)
 
 from readconfig import k8s_read_config
 import yaml
@@ -14,7 +18,6 @@ from kubernetes import client, config
 from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
-import jupiter_config
 
 
 

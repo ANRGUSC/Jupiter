@@ -7,6 +7,11 @@
  *      Bhaskar Krishnamachari
  *     Read license file in main directory for more details  
 """
+import sys
+sys.path.append("../")
+import jupiter_config
+sys.path.append(jupiter_config.CIRCE_PATH)
+
 
 import time
 import os
@@ -21,6 +26,9 @@ import jupiter_config
 import requests
 import json
 from pprint import *
+
+
+static_mapping = False
 
 """
   read the dag from the file input
@@ -79,14 +87,13 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
 
 
 if __name__ == '__main__':
-  static_mapping = True
 
   if not static_mapping:
     """
         This loads the task graph and node list
     """
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
-    path2 = 'nodes.txt'
+    path2 = jupiter_config.HERE + 'nodes.txt'
     
 
     # start the profilers
@@ -137,9 +144,9 @@ if __name__ == '__main__':
     # Use this mapping if you want to bypass the profiler and wave. This will give a static mapping for circe
     # You can then test the coded detectors.
   else:
-    import test_case3
-    dag = test_case3.dag
-    schedule = test_case3.schedule
+    import static_assignment
+    dag = static_assignment.dag
+    schedule = static_assignment.schedule
 
   # Start CIRCE
   k8s_circe_scheduler(dag,schedule)

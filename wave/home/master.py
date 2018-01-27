@@ -219,6 +219,7 @@ def init_task_topology():
     print("init_tasks",init_tasks)
 
     application = read_file("DAG/DAG_application.txt")
+    MAX_TASK_NUMBER = int(application[0])
     del application[0]
     for line in application:
         line = line.strip()
@@ -226,8 +227,15 @@ def init_task_topology():
         items = line.split()
 
         parent = items[0]
-        children[parent] = items[1:]
-        for child in items[1:]:
+        if parent == items[3] or items[3] == "home":
+            continue
+
+        children[parent] = items[3:]
+
+        print(parent)
+        print(items[3:])
+            
+        for child in items[3:]:
             if child in parents.keys():
                 parents[child].append(parent)
             else:

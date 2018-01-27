@@ -7,6 +7,8 @@
  *      Bhaskar Krishnamachari
  *     Read license file in main directory for more details  
 """
+import sys
+sys.path.append("../")
 
 import jupiter_config
 import os

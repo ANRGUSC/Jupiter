@@ -10,7 +10,7 @@ RUN apt-get install sudo -y
 RUN apt-get install iproute2 -y
 RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
 RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
-ADD requirements.txt /requirements.txt
+ADD circe/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
@@ -27,17 +27,17 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN mkdir -p /centralized_scheduler/input
 RUN mkdir -p /centralized_scheduler/output
 RUN mkdir -p /centralized_scheduler/runtime
-ADD monitor.py /centralized_scheduler/monitor.py
+ADD circe/monitor.py /centralized_scheduler/monitor.py
 RUN mkdir -p /home/darpa/apps/data
 
-ADD rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
+ADD circe/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
 ADD task_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
 
 
 
-ADD start_worker.sh /start.sh
+ADD circe/start_worker.sh /start.sh
 RUN chmod +x /start.sh
 
 WORKDIR /
