@@ -37,6 +37,8 @@ Network Anomaly Detection related files, run
 
 ```
     git clone --recurse-submodules git@github.com:ANRGUSC/Jupiter.git
+    cd Jupiter
+    git submodule update --remote
 ```
 
 ## Requirements:
