@@ -43,7 +43,9 @@ ADD circe/readconfig.py /readconfig.py
 ADD circe/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
 
+# Add the task speficific configuration files
 ADD task_specific_files/network_monitoring_app/configuration.txt /configuration.txt
+
 ADD nodes.txt /nodes.txt
 
 ADD circe/start_home.sh /start.sh

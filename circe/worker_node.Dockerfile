@@ -8,8 +8,11 @@ RUN apt-get install -y vim
 RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
 RUN apt-get install sudo -y
 RUN apt-get install iproute2 -y
+
+## Install TASK specific needs. The hadoop is a requirement for the network profiler application
 RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
 RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
+
 ADD circe/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt

@@ -161,10 +161,31 @@ the Jupiter Orchestrator.
         
 ```
 ### Step 5 (Setup the Dockers)
-Now you need to update the `worker_node.Dockerfile` to add your app specific
-packages as well as change the following line to refer to your app: `ADD
-task_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/`.
 The dockerfiles can be found under the `circe/` folder.
+
+Change the follwing lines in the `home_node.Dockerfile` to refer to your own app
+```
+# Add input files
+COPY  task_specific_files/network_monitoring_app/sample_input /sample_input
+```
+```
+# Add the task speficific configuration files
+ADD task_specific_files/network_monitoring_app/configuration.txt /configuration.txt
+```
+
+Now you need to update the `worker_node.Dockerfile` to add your app specific
+packages by changing the follwing lines:
+```
+## Install TASK specific needs. The hadoop is a requirement for the network profiler application
+RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
+RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
+
+```
+Also change the following line to refer to your app: 
+```
+ADD task_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
+```
+
 
 ### Step 6 (Push the Dockers)
 
