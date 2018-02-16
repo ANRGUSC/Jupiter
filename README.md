@@ -10,7 +10,7 @@ resources as well as network links between compute nodes in a dispersed
 computing system to a central node. DRUPE consists of a network profiler and a
 resource profiler.
 
-[WAVE](https://github.com/ANRGUSC/WAVE) is a distributed scheduler for DAG type
+WAVE is a distributed scheduler for DAG type
 task graph that outputs a mapping of tasks to real compute nodes.
 
 [CIRCE](https://github.com/ANRGUSC/CIRCE) is a dispatcher tool for dispersed computing,
