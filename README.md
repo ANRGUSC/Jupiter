@@ -1,7 +1,7 @@
 # Jupiter  
 
-Jupiter is a Central orchestrator for Dispersed Computing Platform
-that uses Docker containers and Kubernetes (K8s).  The Jupiter system has three
+Jupiter is a Central orchestrator for Dispersed Computing that 
+uses Docker containers and Kubernetes (K8s).  The Jupiter system has three
 main components: DRUPE (Network and Resource Profiler), WAVE Scheduler, and
 CIRCE Dispatcher.  
 
@@ -10,7 +10,7 @@ resources as well as network links between compute nodes in a dispersed
 computing system to a central node. DRUPE consists of a network profiler and a
 resource profiler.
 
-WAVE is a distributed scheduler for DAG type
+[WAVE](https://github.com/ANRGUSC/WAVE) is a distributed scheduler for DAG type
 task graph that outputs a mapping of tasks to real compute nodes.
 
 [CIRCE](https://github.com/ANRGUSC/CIRCE) is a dispatcher tool for dispersed computing,
