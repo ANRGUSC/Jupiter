@@ -101,4 +101,7 @@ def delete_all_profilers():
             del_resp_2 = api_2.delete_namespaced_service(key, namespace)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
-        # At this point you should not have any of the profiler related service, pod, or deployment running     
+        # At this point you should not have any of the profiler related service, pod, or deployment running    
+        
+if __name__ == '__main__':
+    delete_all_profilers()

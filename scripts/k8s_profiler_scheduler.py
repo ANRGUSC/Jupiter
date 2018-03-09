@@ -24,9 +24,56 @@ from pprint import *
 import os
 import jupiter_config
 
+def check_status_profilers():
+    
+
+    path1 = jupiter_config.HERE + 'nodes.txt'
+    nodes = read_node_list(path1)
+
+    """
+        This loads the kubernetes instance configuration.
+        In our case this is stored in admin.conf.
+        You should set the config file path in the jupiter_config.py file.
+    """
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    namespace = jupiter_config.PROFILER_NAMESPACE
 
 
-# if __name__ == '__main__':
+    # We have defined the namespace for deployments in jupiter_config
+
+    # Get proper handles or pointers to the k8-python tool to call different functions.
+    extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
+    v1_delete_options = client.V1DeleteOptions()
+    core_v1_api = client.CoreV1Api()
+
+    result = True
+    for key in nodes:
+
+        # First check if there is a deployment existing with
+        # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
+        # The label of kubernets are used to identify replicaset associate to each task
+        label = "app=" + key + "profiler"
+
+        resp = None
+
+        resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
+        # if a pod is running just delete it
+        if resp.items:
+            a=resp.items[0]
+            if a.status.phase != "Running":
+                print("Pod Not Running", key)
+                result = False
+
+            # print("Pod Deleted. status='%s'" % str(del_resp_2.status))
+
+    if result:
+        print("All systems GOOOOO!!")
+    else:
+        print("Wait before trying again!!!!")
+
+    return result
+
+
 def k8s_profiler_scheduler(): 
     """
         This loads the task graph and node list
@@ -145,7 +192,11 @@ def k8s_profiler_scheduler():
 
 
     # have to somehow make sure that the worker nodes are on and working by this time
-    time.sleep(30)
+    while 1:
+        if check_status_profilers():
+            break
+        time.sleep(30)
+
     home_dep = write_profiler_specs(name = 'home', label = "homeprofiler",
                                 image = jupiter_config.PROFILER_HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
@@ -158,3 +209,5 @@ def k8s_profiler_scheduler():
     pprint(service_ips)
     return(service_ips)
 
+if __name__ == '__main__':
+    k8s_profiler_scheduler()

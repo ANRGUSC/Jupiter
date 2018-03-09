@@ -150,3 +150,6 @@ def delete_all_circe_deployments():
     if resp:
         del_resp_2 = core_v1_api.delete_namespaced_service('home', namespace)
         print("Service Deleted. status='%s'" % str(del_resp_2.status))    
+
+if __name__ == '__main__':
+    delete_all_circe_deployments()

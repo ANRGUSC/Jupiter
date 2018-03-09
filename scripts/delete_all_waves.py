@@ -102,3 +102,6 @@ def delete_all_waves():
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running     
+
+if __name__ == '__main__':
+    delete_all_waves()
