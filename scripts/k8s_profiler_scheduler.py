@@ -73,7 +73,6 @@ def check_status_profilers():
 
     return result
 
-
 def k8s_profiler_scheduler(): 
     """
         This loads the task graph and node list
@@ -189,14 +188,12 @@ def k8s_profiler_scheduler():
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
             print("Deployment created. status ='%s'" % str(resp.status))
             
-
-
-    # have to somehow make sure that the worker nodes are on and working by this time
     while 1:
         if check_status_profilers():
             break
         time.sleep(30)
 
+    # have to somehow make sure that the worker nodes are on and working by this time
     home_dep = write_profiler_specs(name = 'home', label = "homeprofiler",
                                 image = jupiter_config.PROFILER_HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
@@ -208,6 +205,7 @@ def k8s_profiler_scheduler():
 
     pprint(service_ips)
     return(service_ips)
+
 
 if __name__ == '__main__':
     k8s_profiler_scheduler()

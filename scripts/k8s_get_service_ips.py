@@ -2,6 +2,8 @@
  * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
  *     contributors: 
  *      Pradipta Ghosh
+ *      Pranav Sakulkar
+ *      Jason A Tran
  *      Bhaskar Krishnamachari
  *     Read license file in main directory for more details  
 """
@@ -18,10 +20,6 @@ from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 
-"""
-    This function prints out all the profilers that are not running.
-    If all the profilers are running: return True; else return False.
-"""
 def get_all_profilers():
 
     """
