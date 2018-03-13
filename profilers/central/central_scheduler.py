@@ -12,7 +12,7 @@ import os
 from pymongo import MongoClient
 import pandas as pd
 import json
-from apscheduler.schedulers.background import BackgroundScheduler
+import apscheduler
 import time
 import subprocess
 import paramiko
@@ -21,15 +21,7 @@ import sys
 from os import path
 from socket import gethostbyname, gaierror
 
-username     = 'root'   # TODO: Have hardcoded for now. But will change later
-password     = 'PASSWORD'
-ssh_port     = 5100
-num_retries  = 20
-retry        = 1
 
-dir_remote   = '/network_profiling/scheduling/'
-dir_remote_profiler  =  '/network_profiling/'
-source_central_file  = '/network_profiling/central.txt'
 
 """
     This function updates the estimated quadratic parameters
@@ -60,6 +52,16 @@ def do_update_quadratic():
 
 
 if __name__ == '__main__':
+
+    username     = 'root'   # TODO: Have hardcoded for now. But will change later
+    password     = 'PASSWORD'
+    ssh_port     = 5100
+    num_retries  = 20
+    retry        = 1
+
+    dir_remote   = '/network_profiling/scheduling/'
+    dir_remote_profiler  =  '/network_profiling/'
+    source_central_file  = '/network_profiling/central.txt'
 
     nodes_info = 'central_input/nodes.txt'
     df_nodes   = pd.read_csv(nodes_info, header = 0, delimiter = ',',index_col = 0)
@@ -147,7 +149,7 @@ if __name__ == '__main__':
         os.makedirs(parameters_folder)
 
     # create a background job to update the mongodb with the received parameters
-    sched = BackgroundScheduler()
+    sched =  apscheduler.schedulers.background.BackgroundScheduler()
     sched.add_job(do_update_quadratic,'interval', id = 'update',
                                minutes = 10,replace_existing = True)
     sched.start()

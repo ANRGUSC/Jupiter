@@ -10,8 +10,8 @@ import json
 import time
 import datetime
 import os
-node_ip = os.environ['SELF_IP']
-RP_PORT = 6100
+
+
 
 def open_file():
     list=[]
@@ -34,3 +34,6 @@ def open_file():
         # print list
         return list
 
+if __name__ == '__main__':
+    node_ip = os.environ['SELF_IP']
+    RP_PORT = 6100

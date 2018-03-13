@@ -16,7 +16,6 @@ import re
 import threading
 import os
 import urllib
-from urllib import parse
 import json
 import sys
 
@@ -32,41 +31,42 @@ app = Flask(__name__)
 '''
 '''
 
-# Get ALL node info
-node_count = 0
-nodes = {}
-for node_name, node_ip in zip(os.environ['ALL_NODES'].split(':'), os.environ['ALL_NODES_IPS'].split(':')):
-    if node_name == "":
-        continue
-    nodes[node_name] = node_ip + ":48080"
-    node_count +=  1
-master_host = os.environ['HOME_IP'] + ":48080"
-print("Nodes", nodes)
+def prepare_global():
+    # Get ALL node info
+    node_count = 0
+    nodes = {}
+    for node_name, node_ip in zip(os.environ['ALL_NODES'].split(':'), os.environ['ALL_NODES_IPS'].split(':')):
+        if node_name == "":
+            continue
+        nodes[node_name] = node_ip + ":48080"
+        node_count +=  1
+    master_host = os.environ['HOME_IP'] + ":48080"
+    print("Nodes", nodes)
 
-#
-node_id = -1
-node_name = ""
-debug = True
+    #
+    node_id = -1
+    node_name = ""
+    debug = True
 
-# control relations between tasks
-control_relation = {}
-# task's children tasks
-children = {}
-# task's parent tasks
-parents = {}
-# running tasks in node in at the beginning
-init_tasks = {}
+    # control relations between tasks
+    control_relation = {}
+    # task's children tasks
+    children = {}
+    # task's parent tasks
+    parents = {}
+    # running tasks in node in at the beginning
+    init_tasks = {}
 
-local_children = "local/local_children.txt"
-local_mapping = "local/local_mapping.txt"
-local_responsibility = "local/task_responsibility"
+    local_children = "local/local_children.txt"
+    local_mapping = "local/local_mapping.txt"
+    local_responsibility = "local/task_responsibility"
 
-# lock for sync file operation
-lock = threading.Lock()
+    # lock for sync file operation
+    lock = threading.Lock()
 
-assigned_tasks = {}
-MAX_TASK_NUMBER = 41 # Total number of tasks in the DAG ## TODO : Automate
-assignments = {}
+    assigned_tasks = {}
+    MAX_TASK_NUMBER = 41 # Total number of tasks in the DAG ## TODO : Automate
+    assignments = {}
 
 @app.route('/recv_mapping')
 def recv_mapping():
@@ -103,7 +103,7 @@ def assign_task_to_remote(assigned_node, task_name):
     try:
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -116,7 +116,7 @@ def call_recv_control(assigned_node, control):
     try:
         url = "http://" + nodes[assigned_node] + "/recv_control"
         params = {'control': control}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -295,6 +295,8 @@ def output(msg):
 #     return 'Hello World!'
 
 if __name__ == '__main__':
+    prepare_global()
+    
     node_port = sys.argv[1]
     print("starting the main thread on port", node_port)
 

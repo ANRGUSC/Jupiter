@@ -28,46 +28,47 @@ from os import path
 from socket import gethostbyname, gaierror
 import time
 
+if __name__ == '__main__':
 
-scheduler_IP        = os.environ['HOME_NODE'] 
-username            = 'root'   # TODO: Have hardcoded for now. But will change later
-password            = 'PASSWORD'
-ssh_port            = 5000
-num_retries         = 20
-retry               = 1
+    scheduler_IP        = os.environ['HOME_NODE'] 
+    username            = 'root'   # TODO: Have hardcoded for now. But will change later
+    password            = 'PASSWORD'
+    ssh_port            = 5000
+    num_retries         = 20
+    retry               = 1
 
-dir_remote          = '/runtime'
-node_name           = os.environ['NODE_NAME']
-local_input_path    = '/centralized_scheduler/runtime/droplet_runtime_input_' + node_name
-local_output_path   = '/centralized_scheduler/runtime/droplet_runtime_output_' + node_name
+    dir_remote          = '/runtime'
+    node_name           = os.environ['NODE_NAME']
+    local_input_path    = '/centralized_scheduler/runtime/droplet_runtime_input_' + node_name
+    local_output_path   = '/centralized_scheduler/runtime/droplet_runtime_output_' + node_name
 
-"""
-    Check if the files exists. 
-"""
-while True:
-    if path.isfile(local_input_path) and path.isfile(local_output_path):
-        client = paramiko.SSHClient()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        remote_path = dir_remote
-        while retry < num_retries:
-            try:
-                client.connect(scheduler_IP, username=username, password=password, port=ssh_port)
-                scp = SCPClient(client.get_transport())
-                scp.put(local_input_path, remote_path)
-                scp.put(local_output_path, remote_path)
-                scp.close() 
-                os.remove(local_input_path)
-                os.remove(local_output_path)
-                print('Runtime data transfer complete\n')
-                break
-            except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
-                print('SSH Connection refused, will retry in 2 seconds')
-                time.sleep(2)
-                retry += 1
-    else:
-        print('No Runtime data file exists...')
+    """
+        Check if the files exists. 
+    """
+    while True:
+        if path.isfile(local_input_path) and path.isfile(local_output_path):
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            remote_path = dir_remote
+            while retry < num_retries:
+                try:
+                    client.connect(scheduler_IP, username=username, password=password, port=ssh_port)
+                    scp = SCPClient(client.get_transport())
+                    scp.put(local_input_path, remote_path)
+                    scp.put(local_output_path, remote_path)
+                    scp.close() 
+                    os.remove(local_input_path)
+                    os.remove(local_output_path)
+                    print('Runtime data transfer complete\n')
+                    break
+                except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
+                    print('SSH Connection refused, will retry in 2 seconds')
+                    time.sleep(2)
+                    retry += 1
+        else:
+            print('No Runtime data file exists...')
 
-    time.sleep(300)
+        time.sleep(300)
 
 
 

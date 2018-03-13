@@ -7,7 +7,7 @@
 import random
 import subprocess
 import pyinotify
-from apscheduler.schedulers.background import BackgroundScheduler
+import apscheduler
 import os
 import csv
 import paramiko
@@ -21,15 +21,7 @@ import sys
 from os import listdir
 from os.path import isfile, join
 
-username    = "root"   # TODO: Have hardcoded for now. But will change later
-password    = "PASSWORD"
-ssh_port    = 5100
-num_retries = 20
-retry       = 1
-dir_local   = "generated_test"
-dir_remote  = "networkprofiling/received_test"
-dir_remote_central = "/network_profiling/parameters"
-dir_scheduler      = "scheduling/scheduling.txt"
+
 
 def does_file_exist_in_dir(path):
     return any(isfile(join(path, i)) for i in listdir(path))
@@ -266,7 +258,7 @@ class MyEventHandler(pyinotify.ProcessEvent):
         if self.Mjob == None:
             print('Step 1: Prepare the database')
             self.prepare_database(event.pathname)
-            sched = BackgroundScheduler()
+            sched = apscheduler.schedulers.background.BackgroundScheduler()
 
             print('Step 2: Scheduling measurement job')
             sched.add_job(self.measurement_job,'interval',id='measurement', minutes=1, replace_existing=True)
@@ -294,6 +286,15 @@ class MyEventHandler(pyinotify.ProcessEvent):
     #         self.cur_file = None
 
 def main():
+    username    = "root"   # TODO: Have hardcoded for now. But will change later
+    password    = "PASSWORD"
+    ssh_port    = 5100
+    num_retries = 20
+    retry       = 1
+    dir_local   = "generated_test"
+    dir_remote  = "networkprofiling/received_test"
+    dir_remote_central = "/network_profiling/parameters"
+    dir_scheduler      = "scheduling/scheduling.txt"
     # watch manager
     wm = pyinotify.WatchManager()
     wm.add_watch('scheduling', pyinotify.ALL_EVENTS, rec=True)

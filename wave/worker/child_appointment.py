@@ -19,7 +19,7 @@ import time
 import os
 import sys
 import urllib
-from urllib import parse
+
 import shutil
 
 import _thread
@@ -34,33 +34,35 @@ app = Flask(__name__)
 
 '''
 
-# Get ALL node info
-node_count = 0
-nodes = {}
-for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
-    if node_name == "":
-        continue
-    nodes[node_name] = node_ip + ":48080"
-    node_count +=  1
-master_host = os.environ['HOME_IP'] + ":48080"
-print("Nodes", nodes)
+def prepare_global():
 
-#
-node_id = -1
-node_name = ""
-debug = True
+    # Get ALL node info
+    node_count = 0
+    nodes = {}
+    for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
+        if node_name == "":
+            continue
+        nodes[node_name] = node_ip + ":48080"
+        node_count +=  1
+    master_host = os.environ['HOME_IP'] + ":48080"
+    print("Nodes", nodes)
 
-# control relations between tasks
-control_relation = {}
+    #
+    node_id = -1
+    node_name = ""
+    debug = True
 
-local_children = "local/local_children.txt"
-local_mapping = "local/local_mapping.txt"
-local_responsibility = "local/task_responsibility"
+    # control relations between tasks
+    control_relation = {}
 
-# lock for sync file operation
-lock = threading.Lock()
+    local_children = "local/local_children.txt"
+    local_mapping = "local/local_mapping.txt"
+    local_responsibility = "local/task_responsibility"
 
-kill_flag = False
+    # lock for sync file operation
+    lock = threading.Lock()
+
+    kill_flag = False
 
 
 @app.route('/assign_task')
@@ -127,7 +129,7 @@ def assign_task_to_remote(assigned_node, task_name):
     try:
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -141,7 +143,7 @@ def call_send_mapping(mapping, node):
     try:
         url = "http://" + master_host + "/recv_mapping"
         params = {'mapping': mapping, "node": node}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -312,6 +314,9 @@ def get_network_profile_data():
     print(db[os.environ['PROFILER']])
 
 if __name__ == '__main__':
+
+    prepare_global()
+    
     node_name = os.environ['SELF_NAME']
     node_id = int(node_name.split("e")[-1])
 

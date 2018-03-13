@@ -26,32 +26,17 @@ from socket import gethostbyname, gaierror, error
 import multiprocessing
 import time
 import urllib.request
-from urllib import parse
+import urllib
+#from urllib import parse
 
-configs = json.load(open('/centralized_scheduler/config.json'))
-taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
-print(taskmap)
-taskname = taskmap[0]
-print(taskname)
-if taskmap[1] == True:
-    taskmodule = __import__(taskname)
 
-#target port for SSHing into a container
-ssh_port = 5000
-filenames=[]
-files_out=[]
-node_name = os.environ['NODE_NAME']
-home_node_host_port = os.environ['HOME_NODE'] + ":48888"
-
-all_nodes = os.environ["ALL_NODES"].split(":")
-all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
 
 def send_monitor_data(msg):
     try:
         print("Sending message", msg)
         url = "http://" + home_node_host_port + "/recv_monitor_data"
         params = {'msg': msg, "work_node": taskname}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -318,6 +303,24 @@ class Handler(FileSystemEventHandler):
                     # end msg
 
 if __name__ == '__main__':
+
+    configs = json.load(open('/centralized_scheduler/config.json'))
+    taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
+    print(taskmap)
+    taskname = taskmap[0]
+    print(taskname)
+    if taskmap[1] == True:
+        taskmodule = __import__(taskname)
+
+    #target port for SSHing into a container
+    ssh_port = 5000
+    filenames=[]
+    files_out=[]
+    node_name = os.environ['NODE_NAME']
+    home_node_host_port = os.environ['HOME_NODE'] + ":48888"
+
+    all_nodes = os.environ["ALL_NODES"].split(":")
+    all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
 
     if taskmap[1] == True:
         q=multiprocessing.Queue()

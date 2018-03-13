@@ -11,4 +11,5 @@ def re_exe(cmd, inc = 60):
         os.system(cmd)
         time.sleep(inc)
 
-re_exe("python3 /resource_profiling/insert_to_container.py /resource_profiling/ip_path", 60)
+if __name__ == '__main__':
+	re_exe("python3 /resource_profiling/insert_to_container.py /resource_profiling/ip_path", 60)

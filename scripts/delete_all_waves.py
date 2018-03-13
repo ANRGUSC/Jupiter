@@ -17,8 +17,8 @@ from readconfig import *
 import yaml
 from kubernetes import client, config
 from pprint import *
-from kubernetes.client.apis import core_v1_api
-from kubernetes.client.rest import ApiException
+# from kubernetes.client.apis import core_v1_api
+# from kubernetes.client.rest import ApiException
 
 def delete_all_waves():
 
@@ -59,7 +59,7 @@ def delete_all_waves():
         resp = None
         try:
             resp = api.read_namespaced_deployment(key, namespace)
-        except ApiException as e:
+        except kubernetes.client.rest.ApiException as e:
             print("Exception Occurred")
 
         # if a deployment with the name = key exists in the namespace, delete it
@@ -94,7 +94,7 @@ def delete_all_waves():
         api_2 = client.CoreV1Api()
         try:
             resp = api_2.read_namespaced_service(key, namespace)
-        except ApiException as e:
+        except kubernetes.client.rest.ApiException as e:
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:

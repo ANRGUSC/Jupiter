@@ -16,8 +16,8 @@ from readconfig import k8s_read_config
 import yaml
 from kubernetes import client, config
 from pprint import *
-from kubernetes.client.apis import core_v1_api
-from kubernetes.client.rest import ApiException
+#from kubernetes.client.apis import core_v1_api
+#from kubernetes.client.rest import ApiException
 
 
 
@@ -63,7 +63,7 @@ def delete_all_circe_deployments():
         resp = None
         try:
             resp = extensions_v1_beta1_api.read_namespaced_deployment(key, namespace)
-        except ApiException as e:
+        except kubernetes.client.rest.ApiException as e:
             print("No Such Deplyment Exists")
 
         # if a deployment with the name = key exists in the namespace, delete it
@@ -97,7 +97,7 @@ def delete_all_circe_deployments():
         resp = None
         try:
             resp = core_v1_api.read_namespaced_service(key, namespace)
-        except ApiException as e:
+        except kubernetes.client.rest.ApiException as e:
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
@@ -112,7 +112,7 @@ def delete_all_circe_deployments():
     resp = None
     try:
         resp = extensions_v1_beta1_api.read_namespaced_deployment('home', namespace)
-    except ApiException as e:
+    except kubernetes.client.rest.ApiException as e:
         print("No Such Deplyment Exists")
 
     # if home exists, delete it 
@@ -144,7 +144,7 @@ def delete_all_circe_deployments():
     resp = None
     try:
         resp = core_v1_api.read_namespaced_service('home', namespace)
-    except ApiException as e:
+    except kubernetes.client.rest.ApiException as e:
         print("Exception Occurred")
     # if a service is running, kill it
     if resp:

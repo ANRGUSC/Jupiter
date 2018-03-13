@@ -13,6 +13,7 @@ from delete_all_profilers import *
 from delete_all_waves import *
 
 
-delete_all_circe_deployments()
-delete_all_waves()
-delete_all_profilers()
+if __name__ == '__main__':
+	delete_all_circe_deployments()
+	delete_all_waves()
+	delete_all_profilers()

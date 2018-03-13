@@ -16,18 +16,6 @@ import requests
 
 app = Flask(__name__)
 
-all_resources = {} #Storage for observations for all_resources
-# Key is the IP address and value is the dictionary of resouces for that IP
-
-local_resources = {'memory': 0.0, 'cpu': 0.0, 'count': 1}
-
-lock = threading.Lock()
-all_lock = threading.Lock()
-
-RP_PORT = 6100
-IPs = os.environ['ALL_NODES_IPS'].split(":")
-node_names = os.environ['ALL_NODES'].split(":")
-
 def monitor_neighbours():
     while True:
         time.sleep(60) # Profile all_resources every minute
@@ -96,6 +84,21 @@ def all_performance():
     return js
 
 if __name__ == '__main__':
+
+    
+
+    all_resources = {} #Storage for observations for all_resources
+    # Key is the IP address and value is the dictionary of resouces for that IP
+
+    local_resources = {'memory': 0.0, 'cpu': 0.0, 'count': 1}
+
+    lock = threading.Lock()
+    all_lock = threading.Lock()
+
+    RP_PORT = 6100
+    IPs = os.environ['ALL_NODES_IPS'].split(":")
+    node_names = os.environ['ALL_NODES'].split(":")
+
     print("Starting the Flask Server")
     # Start the thread for storing the local stats for all neibhors
     _thread.start_new_thread(monitor_neighbours, ())
