@@ -259,12 +259,14 @@ while 1:
     list_files = os.listdir(profiling_folder) # dir is your directory path
 
     for file_path in list_files:
-        print('--- Add execution info from file: '+ file_path)
-        src_path = profiling_folder + '/' + file_path
-        update_mongo(src_path)
-        shutil.move(profiling_folder_processed + file_path, src_path)
-        os.remove(src_path)
-        recv_file_count += 1
+        try:
+            print('--- Add execution info from file: '+ file_path)
+            src_path = profiling_folder + '/' + file_path
+            update_mongo(src_path)
+            shutil.move(src_path, profiling_folder_processed + file_path)
+            recv_file_count += 1
+        except:
+            print("Some Exception")
 
     print("Number of execution profiling files : " + str(recv_file_count))
     time.sleep(60)
