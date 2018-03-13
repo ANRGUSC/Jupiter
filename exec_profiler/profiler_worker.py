@@ -18,34 +18,46 @@ from scp import SCPClient
 from socket import gethostbyname, gaierror
 import json
 import datetime
+import configparser
 
-configs = json.load(open('/centralized_scheduler/config.json'))
+##
+## Load all the confuguration
+##
+configs  = json.load(open('/centralized_scheduler/config.json'))
 dag_flag = configs['exec_profiler']
 task_map = configs['taskname_map']
+nodename = os.environ['NODE_NAME']
 
-nodename           = os.environ['NODE_NAME']
+HERE     = path.abspath(path.dirname(__file__)) + "/"
+INI_PATH = HERE + 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
 
+
+##
+## @brief      Convert bytes to Kbit as required by HEFT
+## @param      num   The number pof bytes
+## @return     { file size in Kbits }
+##
 def convert_bytes(num):
-    """ Convert bytes to Kbit as required by HEFT"""
-
-    # for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
-    #     if num < 1024.0:
-    #         return "%3.1f %s" % (num, x)
-    #     num /= 1024.0
     return num*0.008
 
+##
+## @brief      Return the file size in bytes
+## @param      file_path  The file path
+## @return     { file size in bytes }
+##
 def file_size(file_path):
-    """ Return the file size in bytes """
-
     if os.path.isfile(file_path):
         file_info = os.stat(file_path)
         return convert_bytes(file_info.st_size)
 
-#create the task list in the order of execution
+
+## create the task list in the order of execution
 task_order = []
 tasks_info = open(os.path.join(os.path.dirname(__file__), 'DAG.txt'), "r")
 
-#create DAG dictionary
+## create DAG dictionary
 tasks = {}
 count = 0
 for line in tasks_info:
@@ -67,7 +79,7 @@ for line in tasks_info:
 
 print("tasks: ", tasks)
 
-#import task modules, put then in a list and create task-module dictinary
+## import task modules, put then in a list and create task-module dictinary
 task_module = {}
 modules=[]
 for task in tasks.keys():
@@ -77,8 +89,9 @@ for task in tasks.keys():
     modules.append(taskmodule)
     task_module[task]=(taskmodule)
 
+
 print('{0:<16s} {1:<15s} {2:<5s} \n'.format('task', 'time (sec)', 'output_data (Kbit)'))
-#write results in a text file
+## write results in a text file
 myfile = open(os.path.join(os.path.dirname(__file__), 'profiler_'+nodename+'.txt'), "w")
 myfile.write('task,time(sec),output_data (Kbit)\n')
 
@@ -115,15 +128,17 @@ myfile.close()
 print('Finish printing out the execution information')
 print('Starting to send the output file back to the master node')
 
-#send output file back to the scheduler machine
-master_IP        = os.environ['HOME_NODE']
-username            = 'root'   # TODO: Have hardcoded for now. But will change later
-password            = 'PASSWORD'
-ssh_port            = 5000
-num_retries         = 20
-retry               = 0
 
-local_profiler_path    = os.path.join(os.path.dirname(__file__), 'profiler_'+nodename+'.txt')
+
+#send output file back to the scheduler machine
+master_IP   = os.environ['HOME_NODE']
+username    = config['AUTH']['USERNAME']
+password    = config['AUTH']['PASSWORD']
+ssh_port    = int(config['PORT']['SSH'])
+num_retries = 20
+retry       = 0
+
+local_profiler_path    = os.path.join(os.path.dirname(__file__), 'profiler_' + nodename + '.txt')
 remote_path = "/centralized_scheduler/profiler_files/"
 
 # cmd = "sshpass -p " + password + " scp -P " + str(ssh_port) + " -o StrictHostKeyChecking=no %s %s:%s" % (local_profiler_path,master_IP, remote_path)

@@ -13,12 +13,20 @@ sys.path.append("../")
 import jupiter_config
 import os
 
+sys.path.append(jupiter_config.EXEC_PATH)
+import exec_docker_files_generator as dc
+
 def build_push_exec():
 
     os.chdir(jupiter_config.EXEC_PATH )
-    os.system("cp " + jupiter_config.APP_PATH + "configuration.txt " 
-                    + jupiter_config.EXEC_PATH + "DAG.txt")
 
+    dc.write_exec_home_docker(PASSWORD = 'PASSWORD',
+                     app_file=jupiter_config.APP_NAME,
+                     ports = '22 27017 57021 8888')
+
+    dc.write_exec_worker_docker(PASSWORD = 'PASSWORD',
+                     app_file=jupiter_config.APP_NAME,
+                     ports = '22 27017 57021 8888')
 
     os.system("sudo docker build -f home.Dockerfile .. -t "
                                  + jupiter_config.EXEC_HOME_IMAGE)
@@ -28,7 +36,7 @@ def build_push_exec():
                                  + jupiter_config.EXEC_WORKER_IMAGE)
     os.system("sudo docker push " + jupiter_config.EXEC_WORKER_IMAGE)
 
-    os.system("rm DAG.txt")
+    os.system("rm *.Dockerfile")
 
 if __name__ == '__main__':
     build_push_exec()

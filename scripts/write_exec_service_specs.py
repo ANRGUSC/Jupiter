@@ -20,7 +20,7 @@ metadata:
 spec:
   ports:
   - name: ssh
-    port: 5100
+    port: 5000
     targetPort: 22
   - name: internet
     port: 80

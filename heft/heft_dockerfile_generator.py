@@ -1,7 +1,17 @@
-# ** Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
-# **     contributor: Pradipta Ghosh, Quynh Nguyen, Bhaskar Krishnamachari
-# **     Read license file in main directory for more details
+"""
+ * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
+ *     contributors:
+ *      Pradipta Ghosh
+ *      Bhaskar Krishnamachari
+ *     Read license file in main directory for more details
+"""
 
+from pprint import pprint
+from dockerfile_parse import DockerfileParser
+
+############################################ WORKER DOCKER #########################################################
+
+template_heft ="""\
 # Instructions copied from - https://hub.docker.com/_/python/
 FROM ubuntu:16.04
 
@@ -20,7 +30,7 @@ RUN pip2 install -r requirements.txt
 
 
 # Authentication
-RUN echo 'root:PASSWORD' | chpasswd
+RUN echo 'root:{PASSWORD}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
@@ -38,6 +48,7 @@ ADD read_input_heft.py /heft/read_input_heft.py
 ADD write_input_heft.py /heft/write_input_heft.py
 
 #ADD input_0.tgff /heft/input_0.tgff
+
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh
 ADD dag.txt  /heft/dag.txt
@@ -47,8 +58,18 @@ WORKDIR /heft/
 
 
 # tell the port number the container should expose
-EXPOSE 22 5000
+EXPOSE {ports}
 
 CMD ["./start.sh"]
+"""
 
+############################################ DOCKER GENERATORS #########################################################
 
+def write_heft_docker(**kwargs):
+    dfp = DockerfileParser(path='Dockerfile')
+    dfp.content =template_heft.format(**kwargs)
+    # print(dfp.content)
+
+if __name__ == '__main__':
+    write_heft_docker(PASSWORD = 'PASSWORD',
+                      ports = '22 5000')
