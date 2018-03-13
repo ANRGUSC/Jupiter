@@ -53,7 +53,7 @@ ADD {app_file}/configuration.txt /centralized_scheduler/DAG.txt
 ADD exec_profiler/profiler_worker.py /centralized_scheduler/profiler.py
 
 ADD exec_profiler/start_worker.sh /centralized_scheduler/start.sh
-ADD exec_profiler/keep_alive.py /centralized_scheduler/keepalive.py
+ADD exec_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD exec_profiler/get_files.py /centralized_scheduler/get_files.py
 ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
 
@@ -126,7 +126,7 @@ RUN mkdir -p /home/darpa/apps/data
 ADD {app_file}/configuration.txt /centralized_scheduler/DAG.txt
 
 ADD exec_profiler/start_home.sh /centralized_scheduler/start.sh
-ADD exec_profiler/keep_alive.py /centralized_scheduler/keepalive.py
+ADD exec_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD exec_profiler/profiler_home.py /centralized_scheduler/profiler_home.py
 ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
 

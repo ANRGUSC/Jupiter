@@ -24,7 +24,7 @@ RUN apt-get install -y openssh-server sshpass nano virtualenv supervisor
 RUN apt-get install -y vim
 
 # Install required python libraries
-ADD requirements.txt /requirements.txt
+ADD heft/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 RUN pip2 install -r requirements.txt
 
@@ -39,20 +39,21 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 # Prepare heft files
 RUN mkdir -p heft
-ADD start.sh /heft/start.sh
-ADD keep_alive.py /heft/keep_alive.py
-ADD master.py  /heft/master.py
-ADD heft_dup.py /heft/heft_dup.py
-ADD create_input.py /heft/create_input.py
-ADD read_input_heft.py /heft/read_input_heft.py
-ADD write_input_heft.py /heft/write_input_heft.py
+ADD heft/start.sh /heft/start.sh
+ADD heft/keep_alive.py /heft/keep_alive.py
+ADD heft/master.py  /heft/master.py
+ADD heft/heft_dup.py /heft/heft_dup.py
+ADD heft/create_input.py /heft/create_input.py
+ADD heft/read_input_heft.py /heft/read_input_heft.py
+ADD heft/write_input_heft.py /heft/write_input_heft.py
+ADD jupiter_config.ini /heft/jupiter_config.ini
 
 #ADD input_0.tgff /heft/input_0.tgff
 
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh
-ADD dag.txt  /heft/dag.txt
-ADD config.json /heft/config.json
+ADD {app_file}/configuration.txt  /heft/dag.txt
+ADD {app_file}/scripts/config.json /heft/config.json
 
 WORKDIR /heft/
 
@@ -72,4 +73,5 @@ def write_heft_docker(**kwargs):
 
 if __name__ == '__main__':
     write_heft_docker(PASSWORD = 'PASSWORD',
-                      ports = '22 5000')
+                      app_file = 'task_specific_files/network_monitoring',
+                      ports = '22 5000 8888')

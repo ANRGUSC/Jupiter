@@ -20,24 +20,16 @@ import heft_dockerfile_generator as dc
 def build_push_heft():
 
 
-    os.system("cp " + jupiter_config.APP_PATH + "configuration.txt "
-                    + jupiter_config.HEFT_PATH + "dag.txt")
-
-    os.system("cp " + jupiter_config.APP_PATH + "scripts/config.json "
-                    + jupiter_config.HEFT_PATH + "config.json")
-
     os.chdir(jupiter_config.HEFT_PATH)
 
+    dc.write_heft_docker(PASSWORD = 'PASSWORD',
+                         app_file=jupiter_config.APP_NAME,
+                         ports = '22 5000 8888')
 
-    dc.write_heft_docker(PASSWORD = 'PASSWORD', ports = '22 5000')
-
-    os.system("sudo docker build -f Dockerfile . -t "
+    os.system("sudo docker build -f Dockerfile .. -t "
                                  + jupiter_config.HEFT_IMAGE)
     os.system("sudo docker push " + jupiter_config.HEFT_IMAGE)
 
-
-    os.system("rm dag.txt")
-    os.system("rm config.json")
     os.system("rm Dockerfile")
 
 
