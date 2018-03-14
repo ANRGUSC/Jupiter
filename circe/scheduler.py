@@ -9,15 +9,16 @@
 """
 
 import paramiko
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+import watchdog
+# from watchdog.observers import Observer
+# from watchdog.events import FileSystemEventHandler
 import time
 import os
 from multiprocessing import Process
 from readconfig import read_config
 from socket import gethostbyname, gaierror, error
 
-from watchdog.events import PatternMatchingEventHandler
+#from watchdog.events import PatternMatchingEventHandler
 import multiprocessing
 from flask import Flask, request
 from collections import defaultdict
@@ -75,7 +76,7 @@ class MonitorRecv(multiprocessing.Process):
         app.run(host='0.0.0.0', port=8888)
 
 
-class MyHandler(PatternMatchingEventHandler):
+class MyHandler(watchdog.events.PatternMatchingEventHandler):
 
 
     def process(self, event):
@@ -121,7 +122,7 @@ class Watcher:
         self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
         self.observer.start()
 
-class Handler(FileSystemEventHandler):
+class Handler(watchdog.events.FileSystemEventHandler):
 
     @staticmethod
     def on_any_event(event):

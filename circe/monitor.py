@@ -10,8 +10,9 @@
 
 
 import multiprocessing
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+import watchdog
+#from watchdog.observers import Observer
+#from watchdog.events import FileSystemEventHandler
 import os
 import sys
 import time
@@ -55,7 +56,7 @@ class Watcher1():
 
     def __init__(self):
         multiprocessing.Process.__init__(self)
-        self.observer = Observer()
+        self.observer = watchdog.observers.Observer()
 
     def run(self):
         event_handler = Handler1()
@@ -70,7 +71,7 @@ class Watcher1():
 
         self.observer.join()
 
-class Handler1(FileSystemEventHandler):
+class Handler1(watchdog.events.FileSystemEventHandler):
 
 
     @staticmethod
@@ -211,7 +212,7 @@ class Watcher(multiprocessing.Process):
     
     def __init__(self):
         multiprocessing.Process.__init__(self)
-        self.observer = Observer()
+        self.observer = watchdog.observers.Observer()
 
     def run(self):
         event_handler = Handler()
@@ -226,7 +227,7 @@ class Watcher(multiprocessing.Process):
 
         self.observer.join()
 
-class Handler(FileSystemEventHandler):
+class Handler(watchdog.events.FileSystemEventHandler):
 
     @staticmethod
     def on_any_event(event):

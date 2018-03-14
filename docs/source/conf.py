@@ -16,6 +16,7 @@ import os
 import sys
 import mock
 
+
 sys.path.insert(0, os.path.abspath('../../circe'))
 
 sys.path.insert(0, os.path.abspath('../../profilers/central'))
@@ -24,14 +25,12 @@ sys.path.insert(0, os.path.abspath('../../profilers/droplet'))
 
 sys.path.insert(0, os.path.abspath('../../scripts'))
 
-sys.path.insert(0, os.path.abspath('../../task_specific_files/network_monitoring_app/scripts'))
-
 sys.path.insert(0, os.path.abspath('../../wave/home'))
 sys.path.insert(0, os.path.abspath('../../wave/worker'))
 
 MOCK_MODULES = ['numpy', 'paramiko','pymongo','netifaces','pandas','scp','flask','urllib.request',
                 'apscheduler', 'pyinotify','psutil','_thread','kubernetes','kubernetes.client.apis',
-                'xmlrpc']
+                'xmlrpc','watchdog']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
