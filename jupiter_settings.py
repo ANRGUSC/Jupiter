@@ -17,11 +17,11 @@ PASSWORD                = config['AUTH']['PASSWORD']
 
 RP_PORT                 = config['PORT']['RESOURCE']
 NW_PORT                 = config['PORT']['NETWORK']
-EXC_MPORT               = config['PORT']['EXECUTION_MONGO']
-EXC_FPORT               = config['PORT']['EXECUTION_FLASK']
-SSH_PORT                = config['PORT']['SSH']
+EXC_MPORT               = config['PORT']['MONGO_SVC']
+EXC_FPORT               = config['PORT']['FLASK_SVC']
+SSH_PORT                = config['PORT']['SSH_SVC']
 WAVE_PORT               = config['PORT']['WAVE_EXPOSE']
 HEFT_PORT               = config['PORT']['HEFT_EXPOSE']
-CIRCE_PORT              = config['PORT']['CIRCE_EXPOSE']
+CIRCE_PORT              = config['PORT']['FLASK_DOCKER']
 
 MAX_LOG                 = int(config['OTHER']['MAX_LOG'])

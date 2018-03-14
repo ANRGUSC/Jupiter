@@ -134,7 +134,7 @@ print('Starting to send the output file back to the master node')
 master_IP   = os.environ['HOME_NODE']
 username    = config['AUTH']['USERNAME']
 password    = config['AUTH']['PASSWORD']
-ssh_port    = int(config['PORT']['SSH'])
+ssh_port    = int(config['PORT']['SSH_SVC'])
 num_retries = 20
 retry       = 0
 

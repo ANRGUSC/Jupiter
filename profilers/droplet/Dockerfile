@@ -35,6 +35,8 @@ ADD droplet_mongod /network_profiling/droplet_mongod
 ADD droplet_generate_random_files /network_profiling/droplet_generate_random_files
 ADD droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
 ADD automate_droplet.py /network_profiling/automate_droplet.py
+ADD keep_alive.py /network_profiling/keep_alive.py
+
 RUN mkdir -p /network_profiling/generated_test
 RUN mkdir -p /network_profiling/received_test
 RUN mkdir -p /network_profiling/scheduling
@@ -53,7 +55,7 @@ RUN chmod +x /network_profiling/start.sh
 WORKDIR /network_profiling
 # tell the port number the container should expose
 EXPOSE 22
-EXPOSE 5000
+EXPOSE 8888
 EXPOSE 27017
 
 CMD ["./start.sh"]

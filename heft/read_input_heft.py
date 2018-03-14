@@ -16,6 +16,22 @@ from create_input import init
 import sys
 from flask import Flask, request
 import csv
+import configparser
+from os import path
+
+##
+## Load all the confuguration
+##
+HERE     = path.abspath(path.dirname(__file__)) + "/"
+INI_PATH = HERE + 'jupiter_config.ini'
+
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+EXC_FPORT = int(config['PORT']['FLASK_SVC'])
+MONGO_SVC_PORT = config['PORT']['MONGO_SVC']
+
+
 # from node_info import *
 print("starting the main thread on port")
 
@@ -33,7 +49,6 @@ def output(msg):
         print(msg)
 
 def get_global_info():
-    MONGO_PORT = '6200'
     profiler_ip = os.environ['PROFILERS'].split(' ')
     profiler_ip = [info.split(":") for info in profiler_ip]
     exec_home_ip = os.environ['EXECUTION_HOME_IP']
@@ -42,16 +57,16 @@ def get_global_info():
     node_list = [info[0] for info in profiler_ip]
     node_IP = [info[1] for info in profiler_ip]
     network_map = dict(zip(node_IP, node_list))
-    return profiler_ip,exec_home_ip,num_nodes,MONGO_PORT,network_map,node_list
+    return profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list
 
-def get_exec_profile_data(exec_home_ip, MONGO_PORT, num_nodes):
+def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
 
     # Collect the execution profile from the home execution profiler's MongoDB
     num_profilers = 0
     conn = False
     while not conn:
         try:
-            client_mongo = MongoClient('mongodb://'+exec_home_ip+':'+MONGO_PORT+'/')
+            client_mongo = MongoClient('mongodb://'+exec_home_ip+':'+MONGO_SVC_PORT+'/')
             db = client_mongo.execution_profiler
             conn = True
         except:
@@ -83,12 +98,12 @@ def get_exec_profile_data(exec_home_ip, MONGO_PORT, num_nodes):
         writer.writerows(execution_info)
     return
 
-def get_network_profile_data(profiler_ip, MONGO_PORT, network_map):
+def get_network_profile_data(profiler_ip, MONGO_SVC_PORT, network_map):
     # Collect the network profile from local MongoDB peer
     output(profiler_ip)
     for ip in profiler_ip:
         print('Check Network Profiler IP: '+ip[0]+ '-' +ip[1])
-        client_mongo = MongoClient('mongodb://'+ip[1]+':'+MONGO_PORT+'/')
+        client_mongo = MongoClient('mongodb://'+ip[1]+':'+MONGO_SVC_PORT+'/')
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
@@ -123,7 +138,7 @@ if __name__ == '__main__':
     print('\n Step 1: Read task list from DAG file and global information \n')
 
     configuration_path='/heft/dag.txt'
-    profiler_ip,exec_home_ip,num_nodes,MONGO_PORT,network_map,node_list = get_global_info()
+    profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list = get_global_info()
     output(profiler_ip)
     output(exec_home_ip)
     output("Num nodes :" + str(num_nodes))
@@ -132,11 +147,11 @@ if __name__ == '__main__':
 
     print('------------------------------------------------------------')
     print("\n Step 2: Read network profiler information : \n")
-    _thread.start_new_thread(get_network_profile_data, (profiler_ip, MONGO_PORT,network_map))
+    _thread.start_new_thread(get_network_profile_data, (profiler_ip, MONGO_SVC_PORT,network_map))
 
     print('------------------------------------------------------------')
     print("\n Step 3: Read execution Profiler Information : \n")
-    _thread.start_new_thread(get_exec_profile_data, (exec_home_ip, MONGO_PORT,num_nodes))
+    _thread.start_new_thread(get_exec_profile_data, (exec_home_ip, MONGO_SVC_PORT,num_nodes))
 
     while True:
         time.sleep(120)

@@ -72,3 +72,15 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
   hosts['home'].extend(nodes.get('home'))
   dag_info.append(hosts)
   return dag_info
+
+
+def k8s_get_nodes_string(node_info_file):
+
+  nodes = ""
+  node_file = open(node_info_file, "r")
+  for line in node_file:
+      node_line = line.strip().split(" ")
+      if node_line[0] == "home":
+        continue
+      nodes = nodes + ":" + str(node_line[0])
+  return nodes

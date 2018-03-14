@@ -33,6 +33,8 @@ spec:
         env:
         - name: PROFILERS
           value: {profiler_ips}
+        - name: NODE_NAMES
+          value: {node_names}
         - name: EXECUTION_HOME_IP
           value: {execution_home_ip}
         - name: HOME_IP

@@ -34,7 +34,7 @@ spec:
         - name: sshport
           containerPort: 22
         - name: flaskport
-          containerPort: 5000
+          containerPort: 8888
         - name: mongoport
           containerPort: 27017
         env:

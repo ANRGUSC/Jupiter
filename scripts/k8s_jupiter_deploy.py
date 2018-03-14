@@ -52,15 +52,19 @@ if __name__ == '__main__':
 
     print('*************************')
     print('Network Profiling Information:')
-    pprint(profiler_ips)
+    print(profiler_ips)
     print('Execution Profiling Information:')
-    pprint(execution_ips)
+    print(execution_ips)
     print('*************************')
 
+
+    node_names = k8s_get_nodes_string(path2)
+    print(node_names)
+    print('*************************')
     if not distributed:
 
       #Start the heft
-      k8s_heft_scheduler(profiler_ips,execution_ips)
+      k8s_heft_scheduler(profiler_ips,execution_ips,node_names)
 
       """
           Make sure you run kubectl proxy --port=8080 on a terminal.
@@ -149,4 +153,4 @@ if __name__ == '__main__':
     # schedule = static_assignment.schedule
 
   # Start CIRCE
-  k8s_circe_scheduler(dag,schedule)
+  # k8s_circe_scheduler(dag,schedule)

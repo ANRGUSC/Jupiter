@@ -34,7 +34,7 @@ INI_PATH = HERE + 'jupiter_config.ini'
 config = configparser.ConfigParser()
 config.read(INI_PATH)
 
-EXC_FPORT = int(config['PORT']['EXECUTION_FLASK'])
+EXC_FPORT = int(config['PORT']['FLASK_SVC'])
 MONGO_PORT = int(config['PORT']['MONGO_DOCKER'])
 
 
@@ -199,7 +199,7 @@ print('Starting to send the output file back to the master node')
 ## send intermediate files to the worker execution profilers
 username    = config['AUTH']['USERNAME']
 password    = config['AUTH']['PASSWORD']
-ssh_port    = int(config['PORT']['SSH'])
+ssh_port    = int(config['PORT']['SSH_SVC'])
 num_retries = 20
 retry       = 0
 

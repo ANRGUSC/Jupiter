@@ -21,9 +21,10 @@ import sys
 from os import path
 from socket import gethostbyname, gaierror
 
-username     = 'root'   # TODO: Have hardcoded for now. But will change later
+
+username     = 'root'   # TODO? Have hardcoded for now. But will change later
 password     = 'PASSWORD'
-ssh_port     = 5100
+ssh_port     = 5000
 num_retries  = 20
 retry        = 1
 
@@ -38,7 +39,7 @@ source_central_file  = '/network_profiling/central.txt'
     If any a file exists, it updates the mongodb.
 """
 def do_update_quadratic():
-    client_mongo = MongoClient('mongodb://localhost:27017/')
+    client_mongo = MongoClient('mongodb://localhost:27017/') # TODO?
     db = client_mongo.central_network_profiler
     parameters_folder = os.path.join(os.getcwd(),'parameters')
     logging = db['quadratic_parameters']
@@ -82,7 +83,7 @@ if __name__ == '__main__':
         f.write(line)
     
     print('Step 1: Create the central database ')
-    client_mongo = MongoClient('mongodb://localhost:27017/')
+    client_mongo = MongoClient('mongodb://localhost:27017/') # TODO?
     db = client_mongo['central_network_profiler']
     buffer_size = len(df_links.index) * 100
     db.create_collection('quadratic_parameters', capped = True,
