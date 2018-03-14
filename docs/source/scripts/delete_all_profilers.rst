@@ -1,5 +1,5 @@
-delete\_all\_profilers module
-=============================
+delete_all_profilers module
+===========================
 
 .. automodule:: delete_all_profilers
     :members:

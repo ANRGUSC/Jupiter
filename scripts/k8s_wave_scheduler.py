@@ -10,7 +10,6 @@
 import sys
 sys.path.append("../")
 import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 import time
 import os
@@ -28,6 +27,9 @@ import jupiter_config
 
 # if __name__ == '__main__':
 def k8s_wave_scheduler(profiler_ips):
+
+    sys.path.append(jupiter_config.CIRCE_PATH)
+
     """
         This loads the node list
     """
@@ -148,3 +150,4 @@ def k8s_wave_scheduler(profiler_ips):
     print("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
+    

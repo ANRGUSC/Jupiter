@@ -1,5 +1,5 @@
-delete\_all\_circe\_deployments module
-======================================
+delete_all_circe_deployments module
+===================================
 
 .. automodule:: delete_all_circe_deployments
     :members:

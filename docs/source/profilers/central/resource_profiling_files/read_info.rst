@@ -1,5 +1,5 @@
-read\_info module
-=================
+read_info module
+================
 
 .. automodule:: read_info
     :members:

@@ -1,5 +1,5 @@
-write\_home\_specs module
-=========================
+write_home_specs module
+=======================
 
 .. automodule:: write_home_specs
     :members:

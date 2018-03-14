@@ -1,5 +1,5 @@
-insert\_to\_container module
-============================
+insert_to_container module
+==========================
 
 .. automodule:: insert_to_container
     :members:

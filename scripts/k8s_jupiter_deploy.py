@@ -10,7 +10,6 @@
 import sys
 sys.path.append("../")
 import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 
 import time
@@ -88,6 +87,8 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
 
 if __name__ == '__main__':
 
+  sys.path.append(jupiter_config.CIRCE_PATH)
+
   if not static_mapping:
     """
         This loads the task graph and node list
@@ -150,3 +151,6 @@ if __name__ == '__main__':
 
   # Start CIRCE
   k8s_circe_scheduler(dag,schedule)
+
+
+   

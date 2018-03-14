@@ -1,5 +1,5 @@
-write\_deployment\_specs module
-===============================
+write_deployment_specs module
+=============================
 
 .. automodule:: write_deployment_specs
     :members:

@@ -1,5 +1,5 @@
-k8s\_jupiter\_deploy module
-===========================
+k8s_jupiter_deploy module
+=========================
 
 .. automodule:: k8s_jupiter_deploy
     :members:

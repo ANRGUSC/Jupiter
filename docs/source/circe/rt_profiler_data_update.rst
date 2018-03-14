@@ -1,5 +1,5 @@
-rt\_profiler\_data\_update module
-=================================
+rt_profiler_data_update module
+==============================
 
 .. automodule:: rt_profiler_data_update
     :members:

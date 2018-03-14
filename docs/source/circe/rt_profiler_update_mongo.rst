@@ -1,5 +1,5 @@
-rt\_profiler\_update\_mongo module
-==================================
+rt_profiler_update_mongo module
+===============================
 
 .. automodule:: rt_profiler_update_mongo
     :members:

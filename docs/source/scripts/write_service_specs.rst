@@ -1,5 +1,5 @@
-write\_service\_specs module
-============================
+write_service_specs module
+==========================
 
 .. automodule:: write_service_specs
     :members:

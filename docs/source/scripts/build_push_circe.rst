@@ -1,5 +1,5 @@
-build\_push\_circe module
-=========================
+build_push_circe module
+=======================
 
 .. automodule:: build_push_circe
     :members:

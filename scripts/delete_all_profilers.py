@@ -11,7 +11,6 @@
 import sys
 sys.path.append("../")
 import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 from readconfig import *
 import yaml
@@ -21,6 +20,7 @@ from pprint import *
 # from kubernetes.client.rest import ApiException
 
 def delete_all_profilers():
+    sys.path.append(jupiter_config.CIRCE_PATH) 
 
     """
         This loads the node lists in use
@@ -102,3 +102,4 @@ def delete_all_profilers():
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running     
+

@@ -1,5 +1,5 @@
-central\_query\_statistics module
-=================================
+central_query_statistics module
+===============================
 
 .. automodule:: central_query_statistics
     :members:

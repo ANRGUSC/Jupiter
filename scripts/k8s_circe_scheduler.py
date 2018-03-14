@@ -11,7 +11,6 @@
 import sys
 sys.path.append("../")
 import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 import time
 import os
@@ -26,7 +25,7 @@ from pprint import *
 
 # if __name__ == '__main__':
 def k8s_circe_scheduler(dag_info , temp_info):
-
+    sys.path.append(jupiter_config.CIRCE_PATH)
     """
         This loads the kubernetes instance configuration.
         In our case this is stored in admin.conf.
@@ -189,3 +188,4 @@ def k8s_circe_scheduler(dag_info , temp_info):
 
     pprint(service_ips)
     
+

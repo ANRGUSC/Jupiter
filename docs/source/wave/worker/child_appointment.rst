@@ -1,5 +1,5 @@
-child\_appointment module
-=========================
+child_appointment module
+========================
 
 .. automodule:: child_appointment
     :members:

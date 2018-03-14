@@ -11,7 +11,6 @@
 import sys
 sys.path.append("../")
 import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 from readconfig import *
 import yaml
@@ -21,6 +20,8 @@ from pprint import *
 # from kubernetes.client.rest import ApiException
 
 def delete_all_waves():
+
+    sys.path.append(jupiter_config.CIRCE_PATH)
 
     """
         This loads the node lists in use

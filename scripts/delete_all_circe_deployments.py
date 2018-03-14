@@ -8,10 +8,8 @@
  *     Read license file in main directory for more details  
 """
 import sys
-sys.path.append("../")
+sys.path.append("../")   
 import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
-
 from readconfig import k8s_read_config
 import yaml
 from kubernetes import client, config
@@ -22,6 +20,8 @@ from pprint import *
 
 
 def delete_all_circe_deployments():
+
+    sys.path.append(jupiter_config.CIRCE_PATH)
 
     """
         This loads the task graph
@@ -150,3 +150,5 @@ def delete_all_circe_deployments():
     if resp:
         del_resp_2 = core_v1_api.delete_namespaced_service('home', namespace)
         print("Service Deleted. status='%s'" % str(del_resp_2.status))    
+
+    

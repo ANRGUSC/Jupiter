@@ -10,7 +10,7 @@
 import sys
 sys.path.append("../")
 import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
+
 
 import time
 import os
@@ -28,6 +28,8 @@ import jupiter_config
 
 # if __name__ == '__main__':
 def k8s_profiler_scheduler(): 
+    sys.path.append(jupiter_config.CIRCE_PATH)
+    
     """
         This loads the task graph and node list
     """

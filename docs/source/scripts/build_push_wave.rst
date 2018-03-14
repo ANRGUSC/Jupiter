@@ -1,5 +1,5 @@
-build\_push\_wave module
-========================
+build_push_wave module
+======================
 
 .. automodule:: build_push_wave
     :members:
