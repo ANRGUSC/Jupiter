@@ -30,7 +30,7 @@ sys.path.insert(0, os.path.abspath('../../wave/worker'))
 
 MOCK_MODULES = ['numpy', 'paramiko','pymongo','netifaces','pandas','scp','flask','urllib.request',
                 'apscheduler', 'pyinotify','psutil','_thread','kubernetes','kubernetes.client.apis',
-                'xmlrpc','watchdog']
+                'xmlrpc','watchdog','yaml']
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = mock.Mock()
 
