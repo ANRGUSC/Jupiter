@@ -29,7 +29,7 @@ INI_PATH = HERE + 'jupiter_config.ini'
 config = configparser.ConfigParser()
 config.read(INI_PATH)
 
-EXC_FPORT = config['PORT']['CIRCE_EXPOSE']
+EXC_FPORT = config['PORT']['FLASK_DOCKER']
 
 
 

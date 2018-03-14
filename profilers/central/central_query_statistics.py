@@ -18,7 +18,7 @@ class central_query_statistics():
         self.client_mongo = None
         self.db = None
     def do_query_quaratic(self,source,destination,file_size):
-        self.client_mongo = MongoClient('mongodb://localhost:27017/')
+        self.client_mongo = MongoClient('mongodb://localhost:27017/') # TODO?
         self.db = self.client_mongo.central_network_profiler
         predicted = None
         relation_info = 'central_input/nodes.txt'

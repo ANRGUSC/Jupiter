@@ -22,7 +22,9 @@ echo '-------------------------------------------------------------------'
 
 echo 'Step 4 -  Prepare MongoDB database, Automatically run measurement and regression script'
 
-python3 -u /network_profiling/automate_droplet.py $SELF_IP
+python3 -u /network_profiling/automate_droplet.py $SELF_IP &
+
+python3 -u /network_profiling/keep_alive.py
 
 
 

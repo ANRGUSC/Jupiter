@@ -27,7 +27,7 @@ from static_assignment import *
 
 
 
-def k8s_heft_scheduler(profiler_ips,ex_profiler_ips):
+def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names):
     """
         This loads the node list
     """
@@ -85,7 +85,9 @@ def k8s_heft_scheduler(profiler_ips,ex_profiler_ips):
 
     home_dep = write_heft_specs(name = 'home', label = "heft_home",
                                 image = jupiter_config.HEFT_IMAGE,
-                                host = jupiter_config.HOME_NODE, home_ip = home_ip,
+                                host = jupiter_config.HOME_NODE,
+                                node_names = node_names, 
+                                home_ip = home_ip,
                                 profiler_ips = profiler_ips_str,
                                 execution_home_ip = ex_profiler_ips['home'])
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)

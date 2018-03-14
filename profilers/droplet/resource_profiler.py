@@ -103,4 +103,4 @@ if __name__ == '__main__':
     # Start a thread to monitor local resouces and store their stats
     _thread.start_new_thread(monitor_local_resources, ())
 
-    app.run(host='0.0.0.0') #run this web application on 0.0.0.0 and default port is 5000
+    app.run(host='0.0.0.0', port=8888) #run this web application on 0.0.0.0 and default port is 5000

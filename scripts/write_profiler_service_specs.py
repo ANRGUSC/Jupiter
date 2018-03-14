@@ -20,14 +20,14 @@ metadata:
 spec:
   ports:
   - name: ssh
-    port: 5100
+    port: 5000
     targetPort: 22
   - name: internet
     port: 80
     targetPort: 80
   - name: flask
     port: 6100
-    targetPort: 5000
+    targetPort: 8888
   - name: mongo
     port: 6200
     targetPort: 27017

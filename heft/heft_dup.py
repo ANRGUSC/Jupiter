@@ -4,6 +4,15 @@ from create_input import init
 from copy import deepcopy
 import numpy as np
 
+import os
+
+NODE_NAMES = os.environ["NODE_NAMES"]
+
+node_info = NODE_NAMES.split(":")
+
+# print(node_info)
+
+
 """
 This module is the HEFT algorithm.
 """
@@ -238,7 +247,7 @@ class HEFT:
                 self.processors[dup_task.processor_num].time_line.append(
                                 Duration(-1, dup_task.ast, dup_task.aft))
                 self.processors[processor_num].time_line.sort(cmp=lambda x, y: cmp(x.start, y.start))
-                print('task %d dup on processor %d' % (pre_task.number, processor_num))
+                print('task %d dup on %s' % (pre_task.number, node_info[processor_num]))
 
     def reschedule(self):
         """
@@ -296,14 +305,14 @@ class HEFT:
                 makespan = t.aft
 
         for p in self.processors:
-            print('processor %d:' % (p.number + 1))
+            print('%s:' % (node_info[p.number + 1]))
             for duration in p.time_line:
                 if duration.task_num != -1:
                     print('task %d : ast = %d, aft = %d' % (duration.task_num + 1,
                                                             duration.start, duration.end))
 
         for dup in self.dup_tasks:
-            print('redundant task %s on processor %d' % (dup.number + 1, dup.processor_num + 1))
+            print('redundant task %s on %s' % (dup.number + 1, node_info[dup.processor_num + 1]))
 
         print('makespan = %d' % makespan)
 
@@ -313,7 +322,7 @@ class HEFT:
         for p in self.processors:
             for duration in p.time_line:
                 if duration.task_num != -1:
-                    output.write(self.task_names[duration.task_num] + " node"+ str(p.number+1))
+                    output.write(self.task_names[duration.task_num] + " " + node_info[p.number+1])
                     output.write('\n')
 
         output.close()
@@ -323,7 +332,7 @@ class HEFT:
         for p in self.processors:
             for duration in p.time_line:
                 if duration.task_num != -1:
-                    assignments[self.task_names[duration.task_num]] = "node"+ str(p.number+1)
+                    assignments[self.task_names[duration.task_num]] = node_info[p.number+1]
         return assignments
 
 
