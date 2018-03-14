@@ -135,7 +135,7 @@ master_IP   = os.environ['HOME_NODE']
 username    = config['AUTH']['USERNAME']
 password    = config['AUTH']['PASSWORD']
 ssh_port    = int(config['PORT']['SSH_SVC'])
-num_retries = 20
+num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 retry       = 0
 
 local_profiler_path    = os.path.join(os.path.dirname(__file__), 'profiler_' + nodename + '.txt')

@@ -15,14 +15,13 @@ import os
 
 def build_push_profiler():
 
-    os.chdir(jupiter_config.PROFILER_PATH + "central/")
+    os.chdir(jupiter_config.PROFILER_PATH)
 
-    os.system("sudo docker build -f Dockerfile . -t "
+    os.system("sudo docker build -f profiler_home.Dockerfile .. -t "
                                  + jupiter_config.PROFILER_HOME_IMAGE)
     os.system("sudo docker push " + jupiter_config.PROFILER_HOME_IMAGE)
-    os.chdir("../droplet/")
 
-    os.system("sudo docker build -f Dockerfile . -t "
+    os.system("sudo docker build -f profiler_worker.Dockerfile .. -t "
                                  + jupiter_config.PROFILER_WORKER_IMAGE)
     os.system("sudo docker push " + jupiter_config.PROFILER_WORKER_IMAGE)
 

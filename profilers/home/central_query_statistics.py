@@ -11,6 +11,19 @@ import pandas as pd
 import json
 import sys
 import numpy as np
+import configparser
+from os import path
+
+##
+## Load all the confuguration
+##
+HERE     = path.abspath(path.dirname(__file__)) + "/"
+INI_PATH = HERE + 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
 
 
 class central_query_statistics():
@@ -18,7 +31,7 @@ class central_query_statistics():
         self.client_mongo = None
         self.db = None
     def do_query_quaratic(self,source,destination,file_size):
-        self.client_mongo = MongoClient('mongodb://localhost:27017/') # TODO?
+        self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/') 
         self.db = self.client_mongo.central_network_profiler
         predicted = None
         relation_info = 'central_input/nodes.txt'

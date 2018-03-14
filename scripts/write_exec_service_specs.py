@@ -25,7 +25,7 @@ spec:
   - name: internet
     port: 80
     targetPort: 80
-  - port: 48888
+  - port: 6100
     targetPort: 8888
     name: flask-port
   - name: mongo
@@ -65,7 +65,7 @@ spec:
   - name: mongo
     port: 6200
     targetPort: 27017
-  - port: 48888
+  - port: 6100
     targetPort: 8888
     name: flask-port
   selector:

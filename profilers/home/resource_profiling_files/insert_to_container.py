@@ -7,11 +7,23 @@
 from pymongo import MongoClient
 import sys
 import read_info
+import configparser
+from os import path
+
+##
+## Load all the confuguration
+##
+INI_PATH = '/network_profiling/jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
 
 def insert_data(res):
 
 
-    Client = MongoClient("mongodb://localhost:27017/")
+    Client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
 
     db = Client["central_resource_profiler"]
 

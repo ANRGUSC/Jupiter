@@ -13,7 +13,7 @@ RUN pip3 install --upgrade pip
 RUN apt-get install -y openssh-server mongodb sshpass nano virtualenv supervisor
 
 # Install required python libraries
-ADD requirements.txt /requirements.txt
+ADD profilers/home/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
 
@@ -30,13 +30,13 @@ RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 RUN mkdir -p /network_profiling
 
-ADD central_mongod /network_profiling/central_mongod
+ADD profilers/home/central_mongod /network_profiling/central_mongod
 
 # Prepare network profiling code
-ADD central_input /network_profiling/central_input
-ADD central_query_statistics.py /network_profiling/central_query_statistics.py
-ADD central_scheduler.py /network_profiling/central_scheduler.py
-ADD generate_link_list.py /network_profiling/generate_link_list.py
+ADD profilers/home/central_input /network_profiling/central_input
+ADD profilers/home/central_query_statistics.py /network_profiling/central_query_statistics.py
+ADD profilers/home/central_scheduler.py /network_profiling/central_scheduler.py
+ADD profilers/home/generate_link_list.py /network_profiling/generate_link_list.py
 
 
 RUN mkdir -p /network_profiling/scheduling
@@ -44,12 +44,14 @@ RUN mkdir -p /network_profiling/parameters
 
 # Prepare resource profiling code
 RUN mkdir -p /resource_profiling
-ADD resource_profiling_files/ /resource_profiling/
+ADD profilers/home/resource_profiling_files/ /resource_profiling/
 
 
 # Running docker
-ADD start.sh /network_profiling/start.sh
+ADD profilers/home/start.sh /network_profiling/start.sh
 RUN chmod +x /network_profiling/start.sh
+
+ADD jupiter_config.ini /network_profiling/jupiter_config.ini
 
 WORKDIR /network_profiling
 
