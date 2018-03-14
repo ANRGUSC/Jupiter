@@ -41,7 +41,7 @@ ssh_port = 5000
 filenames=[]
 files_out=[]
 node_name = os.environ['NODE_NAME']
-home_node_host_port = os.environ['HOME_NODE'] + ":48888"
+home_node_host_port = os.environ['HOME_NODE'] + ":6100"
 
 all_nodes = os.environ["ALL_NODES"].split(":")
 all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")

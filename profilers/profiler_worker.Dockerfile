@@ -13,7 +13,7 @@ RUN pip3 install --upgrade pip
 RUN apt-get install -y openssh-server mongodb net-tools sshpass nano virtualenv supervisor
 
 # Install required python libraries
-ADD requirements.txt /requirements.txt
+ADD profilers/worker/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
 
@@ -29,13 +29,13 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 RUN mkdir -p /network_profiling
-ADD droplet_mongod /network_profiling/droplet_mongod
+ADD profilers/worker/droplet_mongod /network_profiling/droplet_mongod
 
 # Prepare network profiling code
-ADD droplet_generate_random_files /network_profiling/droplet_generate_random_files
-ADD droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
-ADD automate_droplet.py /network_profiling/automate_droplet.py
-ADD keep_alive.py /network_profiling/keep_alive.py
+ADD profilers/worker/droplet_generate_random_files /network_profiling/droplet_generate_random_files
+ADD profilers/worker/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
+ADD profilers/worker/automate_droplet.py /network_profiling/automate_droplet.py
+ADD profilers/worker/keep_alive.py /network_profiling/keep_alive.py
 
 RUN mkdir -p /network_profiling/generated_test
 RUN mkdir -p /network_profiling/received_test
@@ -44,12 +44,13 @@ RUN mkdir -p /network_profiling/scheduling
 
 # Prepare resource profiling code
 RUN mkdir -p /resource_profiler
-ADD resource_profiler.py /resource_profiler/resource_profiler.py
+ADD profilers/worker/resource_profiler.py /resource_profiler/resource_profiler.py
 
 #Running docker
-ADD start.sh /network_profiling/start.sh
+ADD profilers/worker/start.sh /network_profiling/start.sh
 RUN chmod +x /network_profiling/start.sh
 
+ADD jupiter_config.ini /network_profiling/jupiter_config.ini
 
 
 WORKDIR /network_profiling

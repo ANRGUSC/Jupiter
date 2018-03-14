@@ -13,8 +13,9 @@
 # the environment variable $SELF_IP
 
 root_folder="$(dirname "$PWD")"
-password="PASSWORD"
-ssh_port="5000"
+source <(grep = jupiter_config.ini | sed 's/ *= */=/g')
+password=$PASSWORD
+ssh_port=$SSH_SVC
 
 echo "$PWD" >> droplet_measurement.log
 echo "$root_folder" >> droplet_measurement.log

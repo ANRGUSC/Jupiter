@@ -44,11 +44,15 @@ if __name__ == '__main__':
     path2 = jupiter_config.HERE + 'nodes.txt'
 
 
+
     # start the profilers
     profiler_ips = get_all_profilers()
+    # profiler_ips = k8s_profiler_scheduler()
+
 
     # start the execution profilers
-    execution_ips = get_all_execs()
+    # execution_ips = get_all_execs()
+    execution_ips = k8s_exec_scheduler()
 
     print('*************************')
     print('Network Profiling Information:')
@@ -153,4 +157,4 @@ if __name__ == '__main__':
     # schedule = static_assignment.schedule
 
   # Start CIRCE
-  # k8s_circe_scheduler(dag,schedule)
+  k8s_circe_scheduler(dag,schedule)

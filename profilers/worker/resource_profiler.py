@@ -13,6 +13,20 @@ import _thread
 import threading
 import datetime
 import requests
+import configparser
+from os import path
+
+##
+## Load all the confuguration
+##
+INI_PATH = '/network_profiling/jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 
 app = Flask(__name__)
 
@@ -24,7 +38,6 @@ local_resources = {'memory': 0.0, 'cpu': 0.0, 'count': 1}
 lock = threading.Lock()
 all_lock = threading.Lock()
 
-RP_PORT = 6100
 IPs = os.environ['ALL_NODES_IPS'].split(":")
 node_names = os.environ['ALL_NODES'].split(":")
 
@@ -46,8 +59,8 @@ def monitor_neighbours():
                     all_resources[node_name] = local
                 continue
 
-            print("Grab local resource data from http://"+node_ip+ ":" + str(RP_PORT))
-            r = requests.get("http://"+node_ip+":" + str(RP_PORT))
+            print("Grab local resource data from http://"+node_ip+ ":" + str(FLASK_SVC))
+            r = requests.get("http://"+node_ip+":" + str(FLASK_SVC))
             result = r.json()
             if not result:
                 print("Request result empty from", node_name)
@@ -103,4 +116,4 @@ if __name__ == '__main__':
     # Start a thread to monitor local resouces and store their stats
     _thread.start_new_thread(monitor_local_resources, ())
 
-    app.run(host='0.0.0.0', port=8888) #run this web application on 0.0.0.0 and default port is 5000
+    app.run(host='0.0.0.0', port=FLASK_DOCKER) #run this web application on 0.0.0.0 and default port is 5000

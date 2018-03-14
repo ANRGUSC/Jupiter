@@ -10,8 +10,21 @@ import json
 import time
 import datetime
 import os
+import configparser
+from os import path
+
+##
+## Load all the confuguration
+##
+INI_PATH = '/network_profiling/jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
+
 node_ip = os.environ['SELF_IP']
-RP_PORT = 6100
 
 def open_file():
     list=[]
@@ -23,8 +36,8 @@ def open_file():
                 continue
 
             line = line.strip('\n')
-            print("get the data from http://"+line+ ":" + str(RP_PORT))
-            r = requests.get("http://"+line+":" + str(RP_PORT))
+            print("get the data from http://"+line+ ":" + str(FLASK_SVC))
+            r = requests.get("http://"+line+":" + str(FLASK_SVC))
             result = r.json()
             result['ip']=line
             result['last_update']=datetime.datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')

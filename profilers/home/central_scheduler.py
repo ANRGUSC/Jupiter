@@ -20,13 +20,28 @@ from scp import SCPClient
 import sys
 from os import path
 from socket import gethostbyname, gaierror
+import configparser
+
+##
+## Load all the confuguration
+##
+HERE     = path.abspath(path.dirname(__file__)) + "/"
+INI_PATH = HERE + 'jupiter_config.ini'
+
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+username    = config['AUTH']['USERNAME']
+password    = config['AUTH']['PASSWORD']
+ssh_port    = int(config['PORT']['SSH_SVC'])
+num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+retry       = 1
 
 
-username     = 'root'   # TODO? Have hardcoded for now. But will change later
-password     = 'PASSWORD'
-ssh_port     = 5000
-num_retries  = 20
-retry        = 1
+MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+
+
 
 dir_remote   = '/network_profiling/scheduling/'
 dir_remote_profiler  =  '/network_profiling/'
@@ -39,7 +54,7 @@ source_central_file  = '/network_profiling/central.txt'
     If any a file exists, it updates the mongodb.
 """
 def do_update_quadratic():
-    client_mongo = MongoClient('mongodb://localhost:27017/') # TODO?
+    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/') 
     db = client_mongo.central_network_profiler
     parameters_folder = os.path.join(os.getcwd(),'parameters')
     logging = db['quadratic_parameters']
@@ -83,7 +98,7 @@ if __name__ == '__main__':
         f.write(line)
     
     print('Step 1: Create the central database ')
-    client_mongo = MongoClient('mongodb://localhost:27017/') # TODO?
+    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
     db = client_mongo['central_network_profiler']
     buffer_size = len(df_links.index) * 100
     db.create_collection('quadratic_parameters', capped = True,

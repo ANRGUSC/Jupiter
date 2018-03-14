@@ -28,7 +28,7 @@ spec:
   - port: 57021
     targetPort: 57021
     name: python-port
-  - port: 48888
+  - port: 6100
     targetPort: 8888
     name: flask-port 
   selector:
