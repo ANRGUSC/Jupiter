@@ -42,15 +42,16 @@ The main documentation for the site is organized into a couple sections:
    :caption: Drupe Documentation
 
    Doverview
-   DUserguide
+   Duserguide
    
-
-
 .. _wave-docs:
 
 .. toctree::
    :maxdepth: 2
    :caption: Wave Documentation
+
+   Woverview
+   Wuserguide
 
 .. _circe-docs:
 
@@ -58,9 +59,14 @@ The main documentation for the site is organized into a couple sections:
    :maxdepth: 2
    :caption: Circe Documentation
 
+   Coverview
+   Cuserguide
+   Cstructure
+   Creferences
 
-Indices and tables
-==================
+
+Indices
+=======
 * :ref:`modindex`
 
 

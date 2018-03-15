@@ -1,7 +1,9 @@
-DRUPE Overview
-====================================
+Overview
+========
 
 **DRUPE**  is a tool to collect information about computational resources as well as network links between compute nodes in a dispersed computing system to a central node. DRUPE consists of a network profiler and a resource profiler.
+
+Note: We can not use DRUPE as an independent tool.
 
 The code is open source, and `available on GitHub`_.
 
