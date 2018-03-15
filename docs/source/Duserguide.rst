@@ -71,7 +71,7 @@ Dockerized version
     - Run the containers:
 
     .. code-block:: bash
-		:linenos:
+		    :linenos:
 
         docker run --rm --name droplet_network_profiler -t -i -e DOCKER_HOST=IP1 -p 5100:22 -P droplet_network_profiler
 
