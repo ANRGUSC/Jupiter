@@ -69,9 +69,18 @@ The main documentation for the site is organized into a couple sections:
 
 .. toctree::
    :maxdepth: 2
-   :caption: API Reference
+   :caption: Jupiter API Reference
 
-   .. Aoverview
+   Acirce
+   Adrupe
+   Awave
+   Ascripts
+
+
+
+Jupiter Indices
+===============
+* :ref:`modindex`
 
    
 
