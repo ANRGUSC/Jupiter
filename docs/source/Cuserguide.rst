@@ -12,25 +12,23 @@ Execution profiler
 - Input: dag.txt, nodes.txt, DAG task files (task1.py, task2.py,. . . ), DAG input file (input.txt)
 
 - Output: profiler_nodeNUM.txt
- 
-- How to run: There are two ways to run the execution profiler.
 
-	- copy the app/ folder to the each of the nodes using scp and inside app/ folder perform the following commands where hostname is the name of the node (node1, node2, etc.,..).
+- How to run
 
-	.. code-block:: bash
+    -  Case 1: the file **scheduler.py** will copy the **app** folder to each of the nodes and execute the docker commands. Inside **circe/docker_execution_profiler** folder perform the following command:
+        
+    .. code-block:: python
 
-		docker build –t profilerimage .
+    	python3 scheduler.py
+
+    -  Case 2: copy the **app** folder to the each of the nodes using scp and inside **app** folder perform the following commands where hostname is the name of the node (node1, node2, etc.).
+
+    .. code-block:: bash
+
+    	docker build –t profilerimage .
 		docker run –h hostname profilerimage
 
-    
-
-    - In this case, the file scheduler.py will copy the app/ folder to each of the nodes and execute the docker commands. Inside circe/docker_execution_profiler/ folder perform the following command:
-        
-        .. code-block:: python
-
-        	python3 scheduler.py
-
-    - In both cases make sure that the command inside file app/start.sh gives the details (IP, username and password) of your scheduler machine.
+    -  In both cases make sure that the command inside file app/start.sh gives the details (IP, username and password) of your scheduler machine.
 
 
 Central network profiler

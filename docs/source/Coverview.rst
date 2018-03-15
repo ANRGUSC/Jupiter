@@ -5,6 +5,9 @@ Overview
 computations described in the form of a directed acyclic graph (DAG) on multiple geographically
 dispersed computers (compute nodes).
 
+.. figure::  images/circe
+   :align:   center
+
 The tool run on a host node (also called scheduler node). It needs the information about 
 compute nodes are available (such as IP address, username and password), the description of the 
 DAG along with code for the corresponding tasks. Based on measurements of computation costs for each task on each node and the communication cost of transferring output data from one node to another, it first uses a
