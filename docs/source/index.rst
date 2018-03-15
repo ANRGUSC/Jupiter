@@ -41,6 +41,11 @@ The main documentation for the site is organized into a couple sections:
    :maxdepth: 2
    :caption: Drupe Documentation
 
+   Doverview
+   DUserguide
+   
+
+
 .. _wave-docs:
 
 .. toctree::
@@ -53,12 +58,10 @@ The main documentation for the site is organized into a couple sections:
    :maxdepth: 2
    :caption: Circe Documentation
 
+
 Indices and tables
 ==================
-
-* :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
 
 
 
