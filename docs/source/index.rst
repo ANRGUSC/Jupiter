@@ -17,6 +17,7 @@ The main documentation for the site is organized into a couple sections:
 * :ref:`drupe-docs`
 * :ref:`wave-docs`
 * :ref:`circe-docs`
+* :ref:`api-docs`
 
 .. _jupiter-docs:
 
@@ -59,15 +60,20 @@ The main documentation for the site is organized into a couple sections:
    :maxdepth: 2
    :caption: Circe Documentation
 
-   .. Coverview
-   .. Cuserguide
-   .. Cstructure
-   .. Creferences
+   Coverview
+   Cuserguide
+   Cstructure
+   Creferences
 
+.. _api-docs:
 
-Indices
-=======
-* :ref:`modindex`
+.. toctree::
+   :maxdepth: 2
+   :caption: API Reference
+
+   .. Aoverview
+
+   
 
 
 
