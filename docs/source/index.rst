@@ -59,10 +59,10 @@ The main documentation for the site is organized into a couple sections:
    :maxdepth: 2
    :caption: Circe Documentation
 
-   Coverview
-   Cuserguide
-   Cstructure
-   Creferences
+   .. Coverview
+   .. Cuserguide
+   .. Cstructure
+   .. Creferences
 
 
 Indices
