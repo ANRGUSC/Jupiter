@@ -27,19 +27,26 @@ import sys
 from os import path
 from socket import gethostbyname, gaierror
 import time
+import configparser
 
+##
+## Load all the confuguration
+##
+INI_PATH = '/jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
 
-scheduler_IP        = os.environ['HOME_NODE'] 
-username            = 'root'   # TODO: Have hardcoded for now. But will change later
-password            = 'PASSWORD'
-ssh_port            = 5000
-num_retries         = 20
-retry               = 1
+scheduler_IP = os.environ['HOME_NODE'] 
+username     = config['AUTH']['USERNAME']
+password     = config['AUTH']['PASSWORD']
+ssh_port     = int(config['PORT']['SSH_SVC'])
+num_retries  = int(config['OTHER']['SSH_RETRY_NUM'])
+retry        = 1
 
-dir_remote          = '/runtime'
-node_name           = os.environ['NODE_NAME']
-local_input_path    = '/centralized_scheduler/runtime/droplet_runtime_input_' + node_name
-local_output_path   = '/centralized_scheduler/runtime/droplet_runtime_output_' + node_name
+dir_remote        = '/runtime'
+node_name         = os.environ['NODE_NAME']
+local_input_path  = '/centralized_scheduler/runtime/droplet_runtime_input_' + node_name
+local_output_path = '/centralized_scheduler/runtime/droplet_runtime_output_' + node_name
 
 """
     Check if the files exists. 
@@ -60,8 +67,8 @@ while True:
                 os.remove(local_output_path)
                 print('Runtime data transfer complete\n')
                 break
-            except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
-                print('SSH Connection refused, will retry in 2 seconds')
+            except:
+                print('SSH Connection refused or Some Connection Error, will retry in 2 seconds')
                 time.sleep(2)
                 retry += 1
     else:

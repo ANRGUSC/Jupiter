@@ -20,16 +20,34 @@ import time
 import sys
 from os import listdir
 from os.path import isfile, join
+from os import path
 
-username    = "root"   # TODO: Have hardcoded for now. But will change later
-password    = "PASSWORD"
-ssh_port    = 5000
-num_retries = 20
+import configparser
+
+##
+## Load all the confuguration
+##
+INI_PATH = '/network_profiling/jupiter_config.ini'
+
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+username    = config['AUTH']['USERNAME']
+password    = config['AUTH']['PASSWORD']
+ssh_port    = int(config['PORT']['SSH_SVC'])
+num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 retry       = 1
 dir_local   = "generated_test"
 dir_remote  = "networkprofiling/received_test"
 dir_remote_central = "/network_profiling/parameters"
 dir_scheduler      = "scheduling/scheduling.txt"
+
+
+MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+
 
 def does_file_exist_in_dir(path):
     return any(isfile(join(path, i)) for i in listdir(path))
@@ -53,7 +71,7 @@ class droplet_measurement():
         self.regions    = []
         self.scheduling_file    = dir_scheduler
         self.measurement_script = os.path.join(os.getcwd(),'droplet_scp_time_transfer')
-        self.client_mongo = MongoClient('mongodb://localhost:27017/')
+        self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
         self.db = self.client_mongo.droplet_network_profiler
         
 
@@ -123,7 +141,7 @@ class droplet_regression():
         self.parameters_file = 'parameters_%s'%(sys.argv[1])
         self.dir_remote      = dir_remote_central
         self.scheduling_file = dir_scheduler
-        self.client_mongo    = MongoClient('mongodb://localhost:27017/')
+        self.client_mongo    = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
         self.db = self.client_mongo.droplet_network_profiler
        
         # Read the info regarding the central profiler
@@ -232,7 +250,7 @@ class MyEventHandler(pyinotify.ProcessEvent):
         self.cur_file = None
 
     def prepare_database(self,filename):
-        client = MongoClient('mongodb://localhost:27017/')
+        client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
         db = client['droplet_network_profiler']
         c = 0
         with open(filename, 'r') as f:
