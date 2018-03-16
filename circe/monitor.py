@@ -27,6 +27,23 @@ import multiprocessing
 import time
 import urllib.request
 from urllib import parse
+import configparser
+
+##
+## Load all the confuguration
+##
+INI_PATH = '/jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
+username    = config['AUTH']['USERNAME']
+password    = config['AUTH']['PASSWORD']
+ssh_port    = int(config['PORT']['SSH_SVC'])
+num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+
+
 
 configs = json.load(open('/centralized_scheduler/config.json'))
 taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
@@ -37,11 +54,10 @@ if taskmap[1] == True:
     taskmodule = __import__(taskname)
 
 #target port for SSHing into a container
-ssh_port = 5000
 filenames=[]
 files_out=[]
 node_name = os.environ['NODE_NAME']
-home_node_host_port = os.environ['HOME_NODE'] + ":6100"
+home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
 
 all_nodes = os.environ["ALL_NODES"].split(":")
 all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
@@ -136,48 +152,48 @@ class Handler1(FileSystemEventHandler):
                 #Keep retrying in case the containers are still building/booting up on
                 #the child nodes.
                 retry = 0
-                num_retries = 30
+                # num_retries = 30
                 while retry < num_retries:
                     try:
                         ssh.connect(IPaddr, username=user, password=password, port=ssh_port)
+                        sftp = ssh.open_sftp()
+                        sftp.put(event.src_path, os.path.join('/output', new_file))
+                        sftp.close()
                         break
-                    except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
-                        print('SSH Connection refused, will retry in 2 seconds')
+                    except:
+                        print('SSH Connection refused or File tranfer failed, will retry in 2 seconds')
                         time.sleep(2)
                         retry += 1
-
-                sftp = ssh.open_sftp()
-                sftp.put(event.src_path, os.path.join('/output', new_file))
-                sftp.close()
+                
                 ssh.close()
 
             elif flag2 == 'true':
 
                 for i in range(3, len(sys.argv)-1,4):
-                    IPaddr=sys.argv[i+1]
-                    user=sys.argv[i+2]
-                    password=sys.argv[i+3]
+                    IPaddr = sys.argv[i+1]
+                    user = sys.argv[i+2]
+                    password = sys.argv[i+3]
                     #port = int(sys.argv[i+4])
 
-                    ssh=paramiko.SSHClient()
+                    ssh = paramiko.SSHClient()
                     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
                     #Keep retrying in case the containers are still building/booting up on
                     #the child nodes.
                     retry = 0
-                    num_retries = 30
+                    # num_retries = 30
                     while retry < num_retries:
                         try:
                             ssh.connect(IPaddr, username=user, password=password, port=ssh_port)
+                            sftp = ssh.open_sftp()
+                            sftp.put(event.src_path, os.path.join('/centralized_scheduler', 'input', new_file))
+                            sftp.close()
                             break
-                        except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
-                            print('SSH Connection refused, will retry in 2 seconds')
+                        except:
+                            print('SSH Connection refused or File transfer failed, will retry in 2 seconds')
                             time.sleep(2)
                             retry += 1
 
-                    sftp = ssh.open_sftp()
-                    sftp.put(event.src_path, os.path.join('/centralized_scheduler', 'input', new_file))
-                    sftp.close()
                     ssh.close()
 
             else:
@@ -190,30 +206,31 @@ class Handler1(FileSystemEventHandler):
                     for i in range(3, len(sys.argv)-1,4):
                         myfile = files_out.pop(0)
                         event_path = os.path.join(''.join(os.path.split(event.src_path)[:-1]), myfile)
-                        IPaddr=sys.argv[i+1]
-                        user=sys.argv[i+2]
-                        password=sys.argv[i+3]
+                        IPaddr = sys.argv[i+1]
+                        user = sys.argv[i+2]
+                        password = sys.argv[i+3]
                         #port = int(sys.argv[i+4])
 
-                        ssh=paramiko.SSHClient()
+                        ssh = paramiko.SSHClient()
                         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
                         #Keep retrying in case the containers are still building/booting up on
                         #the child nodes.
                         retry = 0
-                        num_retries = 30
+                        # num_retries = 30
                         while retry < num_retries:
                             try:
                                 ssh.connect(IPaddr, username=user, password=password, port=ssh_port)
+                                sftp = ssh.open_sftp()
+                                sftp.put(event_path, os.path.join('/centralized_scheduler','input', myfile))
+                                sftp.close()
                                 break
-                            except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
-                                print('SSH Connection refused, will retry in 2 seconds')
+                            except:
+                                print('SSH Connection refused or File transfer failed, will retry in 2 seconds')
                                 time.sleep(2)
                                 retry += 1
                 
-                        sftp = ssh.open_sftp()
-                        sftp.put(event_path, os.path.join('/centralized_scheduler','input', myfile))
-                        sftp.close()
+                        
                         ssh.close()
 
                     files_out=[]

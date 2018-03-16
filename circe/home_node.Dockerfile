@@ -47,6 +47,7 @@ ADD jupiter_config.py /jupiter_config.py
 ADD task_specific_files/network_monitoring_app/configuration.txt /configuration.txt
 
 ADD nodes.txt /nodes.txt
+ADD jupiter_config.ini /jupiter_config.ini
 
 ADD circe/start_home.sh /start.sh
 RUN chmod +x /start.sh

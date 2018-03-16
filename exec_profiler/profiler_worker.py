@@ -157,7 +157,7 @@ if path.isfile(local_profiler_path):
             # os.remove(local_profiler_path)
             print('execution profiling data transfer complete\n')
             break
-        except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
+        except:
             print('SSH Connection refused, will retry in 2 seconds')
             time.sleep(2)
             retry += 1

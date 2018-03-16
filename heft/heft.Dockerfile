@@ -1,17 +1,3 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
-
-from pprint import pprint
-from dockerfile_parse import DockerfileParser
-
-############################################ WORKER DOCKER #########################################################
-
-template_heft ="""\
 # Instructions copied from - https://hub.docker.com/_/python/
 FROM ubuntu:16.04
 
@@ -30,7 +16,7 @@ RUN pip2 install -r requirements.txt
 
 
 # Authentication
-RUN echo '{username}:{password}' | chpasswd
+RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
@@ -52,27 +38,13 @@ ADD jupiter_config.ini /heft/jupiter_config.ini
 
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh
-ADD {app_file}/configuration.txt  /heft/dag.txt
-ADD {app_file}/scripts/config.json /heft/config.json
+ADD task_specific_files/network_monitoring_app/configuration.txt  /heft/dag.txt
+ADD task_specific_files/network_monitoring_app/scripts/config.json /heft/config.json
 
 WORKDIR /heft/
 
 
 # tell the port number the container should expose
-EXPOSE {ports}
+EXPOSE 22 5000 8888
 
 CMD ["./start.sh"]
-"""
-
-############################################ DOCKER GENERATORS #########################################################
-
-def write_heft_docker(**kwargs):
-    dfp = DockerfileParser(path='heft.Dockerfile')
-    dfp.content =template_heft.format(**kwargs)
-    # print(dfp.content)
-
-if __name__ == '__main__':
-    write_heft_docker(username = 'root',
-                      password = 'PASSWORD',
-                      app_file = 'task_specific_files/network_monitoring',
-                      ports = '22 5000 8888')

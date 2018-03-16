@@ -63,7 +63,6 @@ if __name__ == '__main__':
 
 
     node_names = k8s_get_nodes_string(path2)
-    print(node_names)
     print('*************************')
     if not distributed:
 

@@ -22,15 +22,16 @@ def build_push_heft():
 
     os.chdir(jupiter_config.HEFT_PATH)
 
-    dc.write_heft_docker(PASSWORD = 'PASSWORD',
+    dc.write_heft_docker(username = jupiter_config.USERNAME,
+                         password = jupiter_config.PASSWORD,
                          app_file=jupiter_config.APP_NAME,
                          ports = '22 5000 8888')
 
-    os.system("sudo docker build -f Dockerfile .. -t "
+    os.system("sudo docker build -f heft.Dockerfile .. -t "
                                  + jupiter_config.HEFT_IMAGE)
     os.system("sudo docker push " + jupiter_config.HEFT_IMAGE)
 
-    os.system("rm Dockerfile")
+    # os.system("rm Dockerfile")
 
 
 if __name__ == '__main__':

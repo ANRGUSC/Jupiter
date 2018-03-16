@@ -26,7 +26,7 @@ RUN apt-get install sudo -y
 RUN apt-get install iproute2 -y
 
 RUN apt-get install -y openssh-server
-RUN echo 'root:PASSWORD' | chpasswd
+RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -97,7 +97,7 @@ RUN pip3 install -r requirements.txt
 
 
 # Authentication
-RUN echo 'root:{PASSWORD}' | chpasswd
+RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
@@ -162,6 +162,12 @@ def write_exec_home_docker(**kwargs):
     dfp.content =template_home.format(**kwargs)
 
 if __name__ == '__main__':
-    write_exec_docker(PASSWORD = 'PASSWORD',
-                     app_file='task_specific_files/network_monitoring',
-                     ports = '22 27017 57021 8888')
+    write_exec_home_docker(username = 'root',
+                      password = 'PASSWORD',
+                      app_file = 'task_specific_files/network_monitoring',
+                      ports = '22 27017 57021 8888')
+
+    write_exec_worker_docker(username = 'root',
+                      password = 'PASSWORD',
+                      app_file = 'task_specific_files/network_monitoring',
+                      ports = '22 27017 57021 8888')
