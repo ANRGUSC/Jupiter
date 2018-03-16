@@ -1,4 +1,3 @@
-# content of ./test_smtpsimple.py
 import pytest
 
 @pytest.fixture()
