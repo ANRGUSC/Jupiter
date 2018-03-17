@@ -48,7 +48,7 @@ def delete_all_heft():
     key = 'home'
 
     # We have defined the namespace for deployments in jupiter_config
-    namespace = jupiter_config.HEFT_NAMESPACE
+    namespace = jupiter_config.MAPPER_NAMESPACE
 
     # Get proper handles or pointers to the k8-python tool to call different functions.
     api = client.ExtensionsV1beta1Api()

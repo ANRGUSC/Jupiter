@@ -6,4 +6,4 @@
 # 
 
 echo 'Starting home or master node'
-python -u /master.py 8080
+python -u /master.py

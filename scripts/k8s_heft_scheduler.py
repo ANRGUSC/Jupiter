@@ -47,7 +47,7 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names):
     """
         We have defined the namespace for deployments in jupiter_config
     """
-    namespace = jupiter_config.HEFT_NAMESPACE
+    namespace = jupiter_config.MAPPER_NAMESPACE
 
     """
         Get proper handles or pointers to the k8-python tool to call different functions.
