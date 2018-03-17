@@ -2,9 +2,8 @@
  * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
  *     contributors: 
  *      Pranav Sakulkar
- *      Pradipta Ghosh
  *      Jiatong Wang
- *      Aleksandra Knezevic
+ *      Pradipta Ghosh
  *      Bhaskar Krishnamachari
  *     Read license file in main directory for more details  
 """
@@ -27,6 +26,21 @@ from flask import Flask, request
 import requests
 import datetime
 from pymongo import MongoClient
+import configparser
+from os import path
+
+##
+## Load all the confuguration
+##
+INI_PATH = '/jupiter_config.ini'
+
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
+MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
+
 
 app = Flask(__name__)
 
@@ -40,9 +54,9 @@ nodes = {}
 for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
     if node_name == "":
         continue
-    nodes[node_name] = node_ip + ":48080"
+    nodes[node_name] = node_ip + ":" + str(FLASK_SVC)
     node_count +=  1
-master_host = os.environ['HOME_IP'] + ":48080"
+master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
 print("Nodes", nodes)
 
 #
@@ -286,13 +300,12 @@ def hello_world():
 def get_resource_data():
     print("Startig resource profile collection thread")
     # Requsting resource profiler data using flask for its corresponding profiler node
-    RP_PORT = 6100
     result = None
     while True:
         time.sleep(60)
-        # print("Get resource profiler data from http://"+os.environ['PROFILER']+ ":" + str(RP_PORT))
+        # print("Get resource profiler data from http://"+os.environ['PROFILER']+ ":" + str(FLASK_SVC))
         try:
-            r = requests.get("http://"+os.environ['PROFILER']+":" + str(RP_PORT)+"/all")
+            r = requests.get("http://"+os.environ['PROFILER']+":" + str(FLASK_SVC)+"/all")
             result = r.json()
             if len(result) != 0:
                 break
@@ -300,14 +313,13 @@ def get_resource_data():
             print("Resource request failed. Will try again")
 
     data=json.dumps(result)
-    print("Got profiler data from http://"+os.environ['PROFILER']+ ":" + str(RP_PORT))
+    print("Got profiler data from http://"+os.environ['PROFILER']+ ":" + str(FLASK_SVC))
     print("Resource profiles:", data)
 
 def get_network_profile_data():
     # Collect the network profile from local MongoDB peer
     print('Collecting Netowrk Monitoring Data from MongoDB')
-    NP_PORT = 6200
-    client_mongo = MongoClient('mongodb://'+os.environ['PROFILER']+':'+str(NP_PORT)+'/')
+    client_mongo = MongoClient('mongodb://'+os.environ['PROFILER']+':'+str(MONGO_SVC)+'/')
     db = client_mongo.droplet_network_profiler
     print(db[os.environ['PROFILER']])
 
@@ -315,9 +327,8 @@ if __name__ == '__main__':
     node_name = os.environ['SELF_NAME']
     node_id = int(node_name.split("e")[-1])
 
-    node_port = sys.argv[1]
     print("Node name:", node_name, "and id", node_id)
-    print("Starting the main thread on port", node_port)
+    print("Starting the main thread on port", FLASK_PORT)
 
     while init_folder() != "ok": # Initialize the local folders
         pass
@@ -330,5 +341,5 @@ if __name__ == '__main__':
 
     _thread.start_new_thread(watcher, ())
     _thread.start_new_thread(distribute, ())
-    app.run(host='0.0.0.0', port=int(node_port))
+    app.run(host='0.0.0.0', port=int(FLASK_PORT))
 

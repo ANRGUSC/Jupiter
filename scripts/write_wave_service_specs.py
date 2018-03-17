@@ -19,8 +19,8 @@ metadata:
     purpose: wave-demo
 spec:
   ports:
-  - port: 48080
-    targetPort: 8080
+  - port: 6100
+    targetPort: 8888
   selector:
     app: {label}
 """

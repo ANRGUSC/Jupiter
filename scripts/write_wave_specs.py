@@ -28,7 +28,7 @@ spec:
         imagePullPolicy: Always
         image: {image}
         ports:
-        - containerPort: 8080
+        - containerPort: 8888
         env:
         - name: ALL_NODES
           value: {all_node}

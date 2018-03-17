@@ -30,9 +30,31 @@ import json
 from pprint import *
 from utilities import *
 from k8s_get_service_ips import *
+from functools import wraps
 
-static_mapping = False
-distributed = False
+static_mapping = jupiter_config.STATIC_MAPPING
+
+def task_mapping_decorator(f):
+    @wraps(f)
+    def task_mapping(*args, **kwargs):
+      if jupiter_config.SCHEDULER == 0:
+        return f(*args, **kwargs)
+      else:
+        return f(args[0])
+    return task_mapping
+
+def empty_function():
+    return []
+
+if jupiter_config.SCHEDULER == 0: # HEFT
+  task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
+  exec_profiler_function = k8s_exec_scheduler
+else:
+  task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
+  exec_profiler_function = empty_function
+
+
+
 
 if __name__ == '__main__':
 
@@ -46,13 +68,13 @@ if __name__ == '__main__':
 
 
     # start the profilers
-    profiler_ips = get_all_profilers()
-    # profiler_ips = k8s_profiler_scheduler()
+    # profiler_ips = get_all_profilers()
+    profiler_ips = k8s_profiler_scheduler()
 
 
     # start the execution profilers
     # execution_ips = get_all_execs()
-    execution_ips = k8s_exec_scheduler()
+    execution_ips = exec_profiler_function()
 
     print('*************************')
     print('Network Profiling Information:')
@@ -64,92 +86,43 @@ if __name__ == '__main__':
 
     node_names = k8s_get_nodes_string(path2)
     print('*************************')
-    if not distributed:
 
-      #Start the heft
-      k8s_heft_scheduler(profiler_ips,execution_ips,node_names)
-
-      """
-          Make sure you run kubectl proxy --port=8080 on a terminal.
-          Then this is link to get the task to node mapping
-      """
-
-      line = "http://localhost:8080/api/v1/namespaces/"
-      line = line + jupiter_config.HEFT_NAMESPACE + "/services/home:48080/proxy"
-      time.sleep(5)
-      while 1:
-          try:
-              # print("get the data from " + line)
-              r = requests.get(line)
-              mapping = r.json()
-              data = json.dumps(mapping)
-              # print(mapping)
-              # print(len(mapping))
-              if len(mapping) != 0:
-                  if "status" not in data:
-                      break
-          except:
-              print("Some Exception")
-      pprint(mapping)
-      schedule = k8s_get_hosts(path1, path2, mapping)
-      dag = k8s_read_dag(path1)
-      dag.append(mapping)
-      print("Printing DAG:")
-      pprint(dag)
-      print("Printing schedule")
-      pprint(schedule)
-      print("End print")
-
-    else:
-
-
-      # Start the waves
-      #k8s_wave_scheduler(profiler_ips)
-
-      """
-          Make sure you run kubectl proxy --port=8080 on a terminal.
-          Then this is link to get the task to node mapping
-      """
-
-      # line = "http://localhost:8080/api/v1/namespaces/"
-      # line = line + jupiter_config.WAVE_NAMESPACE + "/services/home:48080/proxy"
+    #Start the task to node mapper
+    task_mapping_function(profiler_ips,execution_ips,node_names)
 
     """
-      Loop and Sleep until you receive the mapping of the jobs
+        Make sure you run kubectl proxy --port=8080 on a terminal.
+        Then this is link to get the task to node mapping
     """
 
-    # time.sleep(5)
-    # while 1:
-    #     try:
-    #         # print("get the data from " + line)
-    #         r = requests.get(line)
-    #         mapping = r.json()
-    #         data = json.dumps(mapping)
-    #         # print(mapping)
-    #         # print(len(mapping))
-    #         if len(mapping) != 0:
-    #             if "status" not in data:
-    #                 break
-    #     except:
-    #         print("Some Exception")
+    line = "http://localhost:8080/api/v1/namespaces/"
+    line = line + jupiter_config.MAPPER_NAMESPACE + "/services/home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
+    time.sleep(5)
+    print(line)
+    while 1:
+        try:
+            # print("get the data from " + line)
+            r = requests.get(line)
+            mapping = r.json()
+            data = json.dumps(mapping)
+            # print(mapping)
+            # print(len(mapping))
+            if len(mapping) != 0:
+                if "status" not in data:
+                    break
+        except:
+            print("Some Exception")
+    pprint(mapping)
+    schedule = k8s_get_hosts(path1, path2, mapping)
+    dag = k8s_read_dag(path1)
+    dag.append(mapping)
+    print("Printing DAG:")
+    pprint(dag)
+    print("Printing schedule")
+    pprint(schedule)
+    print("End print")
 
-    #     time.sleep(15)
-
-
-    # dag_info.append(mapping)
-
-    # schedule = k8s_get_hosts(path1, path2, mapping)
-    # pprint(mapping)
-    # dag = k8s_read_dag(path1)
-    # dag.append(mapping)
-    # print("Printing DAG:")
-    # pprint(dag)
-    # print("Printing schedule")
-    # pprint(schedule)
-    # print("End print")
-
-    # Use this mapping if you want to bypass the profiler and wave. This will give a static mapping for circe
-    # You can then test the coded detectors.
+    
   else:
     import static_assignment
     # dag = static_assignment.dag

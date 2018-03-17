@@ -25,6 +25,53 @@ import os
 import jupiter_config
 
 
+def check_status_waves():
+    
+
+    """
+        This loads the node lists in use
+    """
+    path1 = jupiter_config.HERE + 'nodes.txt'
+    nodes = read_node_list(path1)
+
+    """
+        This loads the kubernetes instance configuration.
+        In our case this is stored in admin.conf.
+        You should set the config file path in the jupiter_config.py file.
+    """
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    namespace = jupiter_config.MAPPER_NAMESPACE
+
+
+    # We have defined the namespace for deployments in jupiter_config
+
+    # Get proper handles or pointers to the k8-python tool to call different functions.
+    extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
+    v1_delete_options = client.V1DeleteOptions()
+    core_v1_api = client.CoreV1Api()
+
+    result = True
+    for key in nodes:
+
+        label = "app=wave_" + key
+        resp = None
+
+        resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
+        # if a pod is running just delete it
+        if resp.items:
+            a=resp.items[0]
+            if a.status.phase != "Running":
+                print("Pod Not Running", key)
+                result = False
+
+    if result:
+        print("All systems GOOOOO!!")
+    else:
+        print("Wait before trying again!!!!")
+
+    return result
+
+
 
 # if __name__ == '__main__':
 def k8s_wave_scheduler(profiler_ips):
@@ -47,7 +94,7 @@ def k8s_wave_scheduler(profiler_ips):
     """
         We have defined the namespace for deployments in jupiter_config
     """
-    namespace = jupiter_config.WAVE_NAMESPACE
+    namespace = jupiter_config.MAPPER_NAMESPACE
     
     """
         Get proper handles or pointers to the k8-python tool to call different functions.
@@ -135,7 +182,12 @@ def k8s_wave_scheduler(profiler_ips):
 
 
     # have to somehow make sure that the worker nodes are on and working by this time
-    time.sleep(30)
+    
+    while 1:
+        if check_status_waves():
+            break
+        time.sleep(30)
+
     home_dep = write_wave_specs(name = 'home', label = "wave_home",
                                 image = jupiter_config.WAVE_HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, all_node = nexthost_names,

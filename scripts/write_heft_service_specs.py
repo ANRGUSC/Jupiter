@@ -20,7 +20,7 @@ metadata:
     purpose: heft-demo
 spec:
   ports:
-  - port: 48080
+  - port: 6100
     targetPort: 8888
   selector:
     app: {label}

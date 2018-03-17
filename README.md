@@ -239,7 +239,7 @@ You can create these namespaces commands similar to the following:
 ```
     DEPLOYMENT_NAMESPACE    = 'johndoe-circe'
     PROFILER_NAMESPACE      = 'johndoe-profiler'
-    WAVE_NAMESPACE          = 'johndoe-wave'
+    MAPPER_NAMESPACE          = 'johndoe-wave'
 
 ```
 ### Step 9 (Run the Jupiter Orchestrator)

@@ -2,13 +2,11 @@
  * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
  *     contributors: 
  *      Pranav Sakulkar
- *      Pradipta Ghosh
  *      Jiatong Wang
- *      Aleksandra Knezevic
+ *      Pradipta Ghosh
  *      Bhaskar Krishnamachari
  *     Read license file in main directory for more details  
 """
-
 
 # -*- coding: utf-8 -*-
 
@@ -19,11 +17,24 @@ import urllib
 from urllib import parse
 import json
 import sys
-
 import _thread
-
 import time
 from flask import Flask, request
+import configparser
+from os import path
+
+##
+## Load all the confuguration
+##
+INI_PATH = '/jupiter_config.ini'
+
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
+MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
+
 # from node_info import *
 print("starting the main thread on port")
 
@@ -35,12 +46,15 @@ app = Flask(__name__)
 # Get ALL node info
 node_count = 0
 nodes = {}
+docker_ip2node_name = {}
+task_assign_summary = []
+
 for node_name, node_ip in zip(os.environ['ALL_NODES'].split(':'), os.environ['ALL_NODES_IPS'].split(':')):
     if node_name == "":
         continue
-    nodes[node_name] = node_ip + ":48080"
-    node_count +=  1
-master_host = os.environ['HOME_IP'] + ":48080"
+    nodes[node_name] = node_ip + ":" + str(FLASK_SVC)
+    node_count += 1
+master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
 print("Nodes", nodes)
 
 #
@@ -63,10 +77,50 @@ local_responsibility = "local/task_responsibility"
 
 # lock for sync file operation
 lock = threading.Lock()
+# get all lines in a file
+def read_file(file_name):
+    lock.acquire()
+    file_contents = []
+    file = open(file_name)
+    line = file.readline()
+    while line:
+        file_contents.append(line)
+        line = file.readline()
+    file.close()
+    lock.release()
+    return file_contents
+
 
 assigned_tasks = {}
-MAX_TASK_NUMBER = 41 # Total number of tasks in the DAG ## TODO : Automate
+
+application = read_file("DAG/DAG_application.txt")
+MAX_TASK_NUMBER = int(application[0])  # Total number of tasks in the DAG 
+print("Max task number ", MAX_TASK_NUMBER)
+del application[0]
+
 assignments = {}
+
+
+@app.route('/recv_task_assign_info')
+def recv_task_assign_info():
+    assign = request.args.get('assign')
+    task_assign_summary.append(assign)
+    print("Task assign summary: " + json.dumps(task_assign_summary))
+    return 'ok'
+
+
+@app.route('/recv_node_name2docker_ip')
+def recv_node_name2docker_ip():
+    mapping = request.args.get('mapping')
+    items = re.split(r':', mapping)
+    docker_ip2node_name[items[1]] = items[0]
+    return 'ok'
+
+
+@app.route('/send_node_name2docker_ip')
+def send_node_name2docker_ip():
+    return json.dumps(docker_ip2node_name)
+
 
 @app.route('/recv_mapping')
 def recv_mapping():
@@ -90,14 +144,16 @@ def recv_mapping():
         return "not ok"
     return "ok"
 
+
 @app.route('/')
 def return_assignment():
     print("Recieved request for current mapping. Current mappings done:", len(assignments))
     print(assignments)
     if len(assignments) == MAX_TASK_NUMBER:
-        return json.dumps(assignments) 
+        return json.dumps(assignments)
     else:
         return json.dumps(dict())
+
 
 def assign_task_to_remote(assigned_node, task_name):
     try:
@@ -112,9 +168,11 @@ def assign_task_to_remote(assigned_node, task_name):
         return "not ok"
     return res
 
+
 def call_recv_control(assigned_node, control):
     try:
         url = "http://" + nodes[assigned_node] + "/recv_control"
+        print(url)
         params = {'control': control}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -215,12 +273,12 @@ def init_task_topology():
                 init_tasks[node].append(task)
             else:
                 init_tasks[node] = [task]
-    
-    print("init_tasks",init_tasks)
 
-    application = read_file("DAG/DAG_application.txt")
-    MAX_TASK_NUMBER = int(application[0])
-    del application[0]
+    print("init_tasks" ,init_tasks)
+
+    # application = read_file("DAG/DAG_application.txt")
+    # MAX_TASK_NUMBER = int(application[0])
+    # del application[0]
     for line in application:
         line = line.strip()
         # items = re.split(r'\t+', line)
@@ -234,14 +292,14 @@ def init_task_topology():
 
         print(parent)
         print(items[3:])
-            
+
         for child in items[3:]:
             if child in parents.keys():
                 parents[child].append(parent)
             else:
                 parents[child] = [parent]
 
-    print("parents",parents)
+    print("parents" ,parents)
 
     for key in parents:
         parent = parents[key]
@@ -268,38 +326,24 @@ def init_task_topology():
             line = line + '\t' + child
         to_be_write.append(line)
 
-    print("control_relation",control_relation)
+    print("control_relation" ,control_relation)
     write_file("DAG/parent_controller.txt", to_be_write, "a+")
 
 
-# get all lines in a file
-def read_file(file_name):
-    lock.acquire()
-    file_contents = []
-    file = open(file_name)
-    line = file.readline()
-    while line:
-        file_contents.append(line)
-        line = file.readline()
-    file.close()
-    lock.release()
-    return file_contents
+
 
 
 def output(msg):
     if debug:
         print(msg)
 
-# @app.route('/')
-# def hello_world():
-#     return 'Hello World!'
 
 if __name__ == '__main__':
-    node_port = sys.argv[1]
-    print("starting the main thread on port", node_port)
+    # node_port = FLASK_PORT
+    print("starting the main thread on port", FLASK_PORT)
 
     init_task_topology()
     _thread.start_new_thread(init_thread, ())
     _thread.start_new_thread(monitor_task_status, ())
-    app.run(host='0.0.0.0', port=int(node_port))
+    app.run(host='0.0.0.0', port=int(FLASK_PORT))
 
