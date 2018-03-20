@@ -9,6 +9,10 @@
 """
 
 import yaml
+import sys
+sys.path.append("../")
+from jupiter_config import *
+
 
 template = """
 apiVersion: v1
@@ -20,17 +24,17 @@ metadata:
 spec:
   ports:
   - name: ssh
-    port: 5000
-    targetPort: 22
+    port: {ssh_svc}
+    targetPort: {ssh_port}
   - name: internet
     port: 80
     targetPort: 80
   - name: flask
-    port: 6100
-    targetPort: 8888
+    port: {flask_svc}
+    targetPort: {flask_port}
   - name: mongo
-    port: 6200
-    targetPort: 27017
+    port: {mongo_svc}
+    targetPort: {mongo_port}
   selector:
     app: {label}
 """
@@ -40,6 +44,14 @@ spec:
 # In this case, call argument should be, name = {taskname}
 def write_profiler_service_specs(**kwargs):
     # insert your values
-    specific_yaml = template.format(**kwargs)
+
+    specific_yaml = template.format(ssh_svc = SSH_SVC,
+                                    ssh_port = SSH_DOCKER, 
+                                    flask_svc = FLASK_SVC,
+                                    flask_port = FLASK_DOCKER,
+                                    mongo_svc = MONGO_SVC,
+                                    mongo_port = MONGO_DOCKER,
+                                    **kwargs)
+
     dep = yaml.load(specific_yaml)
     return dep

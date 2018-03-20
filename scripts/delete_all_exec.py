@@ -11,7 +11,8 @@
 import sys
 sys.path.append("../")
 import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
+
+from utilities import *
 
 from readconfig import *
 import yaml

@@ -365,11 +365,10 @@ Jupiter/
     ├── k8s_profiler_scheduler.py
     ├── k8s_wave_scheduler.py
     ├── static_assignment.py
-    ├── write_deployment_specs.py
-    ├── write_home_specs.py
+    ├── write_circe_specs.py
     ├── write_profiler_service_specs.py
     ├── write_profiler_specs.py
-    ├── write_service_specs.py
+    ├── write_circe_service_specs.py
     ├── write_wave_service_specs.py
     └── write_wave_specs.py
 

@@ -9,7 +9,7 @@
 from pprint import pprint
 from dockerfile_parse import DockerfileParser
 
-############################################ WORKER DOCKER #########################################################
+############################################ HEFT DOCKER #########################################################
 
 template_heft ="""\
 # Instructions copied from - https://hub.docker.com/_/python/
@@ -75,4 +75,4 @@ if __name__ == '__main__':
     write_heft_docker(username = 'root',
                       password = 'PASSWORD',
                       app_file = 'task_specific_files/network_monitoring',
-                      ports = '22 5000 8888')
+                      ports = '22 8888')

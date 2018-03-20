@@ -9,6 +9,10 @@
 """
 
 import yaml
+import sys
+sys.path.append("../")
+from jupiter_config import *
+
 
 template = """
 apiVersion: v1
@@ -19,8 +23,8 @@ metadata:
     purpose: wave-demo
 spec:
   ports:
-  - port: 6100
-    targetPort: 8888
+  - port: {flask_svc}
+    targetPort: {flask_port}
   selector:
     app: {label}
 """
@@ -30,6 +34,8 @@ spec:
 # In this case, call argument should be, name = {taskname}
 def write_wave_service_specs(**kwargs):
     # insert your values
-    specific_yaml = template.format(**kwargs)
+    specific_yaml = template.format(flask_svc = FLASK_SVC,
+                                    flask_port = FLASK_DOCKER,
+                                    **kwargs)
     dep = yaml.load(specific_yaml)
     return dep

@@ -58,8 +58,7 @@ WORKDIR /network_profiling
 
 
 # tell the port number the container should expose
-EXPOSE 22
+
+EXPOSE 22 27017 8888
 
 CMD ["./start.sh"]
-
-

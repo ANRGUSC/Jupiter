@@ -17,12 +17,61 @@ import time
 import os
 from os import path
 from multiprocessing import Process
-from write_deployment_specs import *
-from write_service_specs import *
-from write_home_specs import *
+from write_circe_service_specs import *
+from write_circe_specs import *
 import yaml
 from kubernetes import client, config
 from pprint import *
+
+"""
+    This function prints out all the tasks that are not running.
+    If all the tasks are running: return True; else return False.
+"""
+def check_status_circe(dag):
+    
+
+    """
+        This loads the kubernetes instance configuration.
+        In our case this is stored in admin.conf.
+        You should set the config file path in the jupiter_config.py file.
+    """
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
+
+
+    # We have defined the namespace for deployments in jupiter_config
+
+    # Get proper handles or pointers to the k8-python tool to call different functions.
+    extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
+    v1_delete_options = client.V1DeleteOptions()
+    core_v1_api = client.CoreV1Api()
+
+    result = True
+    for key, value in dag.items():
+        # First check if there is a deployment existing with
+        # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
+        # The label of kubernets are used to identify replicaset associate to each task
+        label = "app=" + key
+
+        resp = None
+
+        resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
+        # if a pod is running just delete it
+        if resp.items:
+            a=resp.items[0]
+            if a.status.phase != "Running":
+                print("Pod Not Running", key)
+                result = False
+
+            # print("Pod Deleted. status='%s'" % str(del_resp_2.status))
+
+    if result:
+        print("All systems GOOOOO!!")
+    else:
+        print("Wait before trying again!!!!")
+
+    return result
+
 
 # if __name__ == '__main__':
 def k8s_circe_scheduler(dag_info , temp_info):
@@ -61,7 +110,7 @@ def k8s_circe_scheduler(dag_info , temp_info):
         First create the home node's service.
     """
     
-    home_body = write_service_specs(name = 'home')
+    home_body = write_circe_service_specs(name = 'home')
     ser_resp = api.create_namespaced_service(namespace, home_body)
     print("Home service created. status = '%s'" % str(ser_resp.status))
 
@@ -90,7 +139,7 @@ def k8s_circe_scheduler(dag_info , temp_info):
         """
             Generate the yaml description of the required service for each task
         """
-        body = write_service_specs(name = task)
+        body = write_circe_service_specs(name = task)
 
         # Call the Kubernetes API to create the service
         ser_resp = api.create_namespaced_service(namespace, body)
@@ -166,7 +215,7 @@ def k8s_circe_scheduler(dag_info , temp_info):
     
         
         #Generate the yaml description of the required deployment for each task
-        dep = write_deployment_specs(flag = str(flag), inputnum = str(inputnum), name = task, node_name = hosts.get(task)[1],
+        dep = write_circe_deployment_specs(flag = str(flag), inputnum = str(inputnum), name = task, node_name = hosts.get(task)[1],
             image = jupiter_config.WORKER_IMAGE, child = nexthosts, 
             child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
             home_node_ip = service_ips.get("home"),
@@ -180,8 +229,12 @@ def k8s_circe_scheduler(dag_info , temp_info):
         resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
         print("Deployment created. status = '%s'" % str(resp.status))
 
+    while 1:
+        if check_status_circe(dag):
+            break
+        time.sleep(30)
 
-    home_dep = write_home_specs(image = jupiter_config.HOME_IMAGE, 
+    home_dep = write_circe_home_specs(image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
                                 child_ips = service_ips.get(jupiter_config.HOME_CHILD), dir = '{}')
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
