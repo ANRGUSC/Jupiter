@@ -7,15 +7,16 @@
 """
 
 import yaml
+import sys
+sys.path.append("../")
+from jupiter_config import *
 
-template = """
+
+template_nondag = """
     apiVersion: extensions/v1beta1
     kind: Deployment
     metadata:
       name: {name}
-      labels:
-        app: ssh
-        purpose: dag-demo
     spec:
       template:
         metadata:
@@ -27,11 +28,11 @@ template = """
             imagePullPolicy: Always
             image: {image}
             ports:
-            - containerPort: 22
-            - containerPort: 57021
-            - containerPort: 27017
+            - containerPort: {ssh_port}
+            - containerPort: {python_port}
+            - containerPort: {mongo_port}
             - containerPort: 80
-            - containerPort: 8888
+            - containerPort: {flask_port}
             env:
             - name: FLAG
               value: {flag}
@@ -64,20 +65,21 @@ template = """
 def write_exec_specs_non_dag_tasks(**kwargs):
     # insert your values
 
-    specific_yaml = template.format(**kwargs)
+    specific_yaml = template_nondag.format(ssh_port = SSH_DOCKER, 
+                                    flask_port = FLASK_DOCKER,
+                                    mongo_port = MONGO_DOCKER,
+                                    python_port = PYTHON_PORT,
+                                    **kwargs)
 
     dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
 
     return dep
 
-template2 = """
+template_home = """
     apiVersion: extensions/v1beta1
     kind: Deployment
     metadata:
       name: {name}
-      labels:
-        app: ssh
-        purpose: dag-demo
     spec:
       template:
         metadata:
@@ -89,9 +91,9 @@ template2 = """
             imagePullPolicy: Always
             image: {image}
             ports:
-            - containerPort: 22
-            - containerPort: 57021
-            - containerPort: 27017
+            - containerPort: {ssh_port}
+            - containerPort: {python_port}
+            - containerPort: {mongo_port}
             - containerPort: 80
             env:
             - name: FLAG
@@ -131,7 +133,11 @@ template2 = """
 def write_exec_specs_home_control(**kwargs):
     # insert your values
 
-    specific_yaml = template2.format(**kwargs)
+    specific_yaml = template_home.format(ssh_port = SSH_DOCKER, 
+                                    flask_port = FLASK_DOCKER,
+                                    mongo_port = MONGO_DOCKER,
+                                    python_port = PYTHON_PORT,
+                                    **kwargs)
 
     dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
 
@@ -140,7 +146,7 @@ def write_exec_specs_home_control(**kwargs):
 
 
 
-template3 = """
+template_worker = """
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -159,11 +165,11 @@ spec:
         image: {image}
         ports:
         - name: sshport
-          containerPort: 22
+          containerPort: {ssh_port}
         - name: flaskport
-          containerPort: 8888
+          containerPort: {flask_port}
         - name: mongoport
-          containerPort: 27017
+          containerPort: {mongo_port}
         env:
         - name: HOME_NODE
           value: {home_node_ip}
@@ -179,6 +185,10 @@ spec:
 # name = {taskname}, dir = '{}', host = {hostname}
 
 def write_exec_specs(**kwargs):
-    specific_yaml = template3.format(**kwargs)
+    specific_yaml = template_worker.format(ssh_port = SSH_DOCKER, 
+                                    flask_port = FLASK_DOCKER,
+                                    mongo_port = MONGO_DOCKER,
+                                    python_port = PYTHON_PORT,
+                                    **kwargs)
     dep = yaml.load(specific_yaml)
     return dep

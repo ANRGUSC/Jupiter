@@ -9,8 +9,58 @@
 """
 
 import yaml
+import sys
+sys.path.append("../")
+from jupiter_config import *
 
-template = """
+
+template_home = """
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: home
+spec:
+  template:
+    metadata:
+      labels:
+        app: home 
+    spec:
+      containers:
+      - name: home
+        image: {image}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {ssh_port}
+        - containerPort: {flask_port}
+        env:
+        - name: CHILD_NODES
+          value: localpro
+        - name: CHILD_NODES_IPS
+          value: {child_ips}
+        - name: TASK
+          value: home
+      nodeSelector:
+        kubernetes.io/hostname: {host}        
+      restartPolicy: Always
+"""
+
+
+## \brief this function genetares the service description yaml for a task 
+# \param kwargs             list of key value pair. 
+# In this case, call argument should be, 
+# name = {taskname}, dir = '{}', host = {hostname}
+def write_circe_home_specs(**kwargs):
+    specific_yaml = template_home.format(ssh_port = SSH_DOCKER, 
+                                    flask_port = FLASK_DOCKER,
+                                    mongo_port = MONGO_DOCKER,
+                                    python_port = PYTHON_PORT,
+                                    **kwargs)
+
+    dep = yaml.load(specific_yaml)
+    return dep
+
+
+template_worker = """
     apiVersion: extensions/v1beta1
     kind: Deployment    
     metadata:
@@ -29,8 +79,8 @@ template = """
             imagePullPolicy: Always
             image: {image}
             ports:
-            - containerPort: 22
-            - containerPort: 57021
+            - containerPort: {ssh_port}
+            - containerPort: {python_port}
             - containerPort: 80
             env:
             - name: FLAG
@@ -63,10 +113,14 @@ template = """
 # \param kwargs             list of key value pair. 
 # In this case, call argument should be, 
 # name = {taskname}, image = {image name}, child = {child node list}, host = {hostname}
-def write_deployment_specs(**kwargs):
+def write_circe_deployment_specs(**kwargs):
     # insert your values
 
-    specific_yaml = template.format(**kwargs)
+    specific_yaml = template_worker.format(ssh_port = SSH_DOCKER, 
+                                    flask_port = FLASK_DOCKER,
+                                    mongo_port = MONGO_DOCKER,
+                                    python_port = PYTHON_PORT,
+                                    **kwargs)
 
     dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
 

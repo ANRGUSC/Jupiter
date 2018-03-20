@@ -10,6 +10,10 @@
 """
 
 import yaml
+import sys
+sys.path.append("../")
+from jupiter_config import *
+
 
 template = """
 apiVersion: extensions/v1beta1
@@ -29,7 +33,7 @@ spec:
         imagePullPolicy: Always
         image: {image}
         ports:
-        - containerPort: 8888
+        - containerPort: {flask_port}
         env:
         - name: PROFILERS
           value: {profiler_ips}
@@ -47,6 +51,8 @@ spec:
 # name = {taskname}, dir = '{}', host = {hostname}
 
 def write_heft_specs(**kwargs):
-    specific_yaml = template.format(**kwargs)
+    specific_yaml = template.format(flask_port = FLASK_DOCKER,
+                                    **kwargs)
+    
     dep = yaml.load(specific_yaml)
     return dep

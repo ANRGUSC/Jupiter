@@ -9,6 +9,11 @@
 """
 
 import yaml
+import sys
+sys.path.append("../")
+from jupiter_config import *
+
+
 
 template = """
 apiVersion: v1
@@ -19,17 +24,17 @@ metadata:
     purpose: dag-demo
 spec:
   ports:
-  - port: 5000
-    targetPort: 22
+  - port: {ssh_svc}
+    targetPort: {ssh_port}
     name: scp-port
-  - port: 22
-    targetPort: 22
+  - port: {ssh_port}
+    targetPort: {ssh_port}
     name: scp-port1 
-  - port: 57021
-    targetPort: 57021
+  - port: {python_port}
+    targetPort: {python_port}
     name: python-port
-  - port: 6100
-    targetPort: 8888
+  - port: {flask_svc}
+    targetPort: {flask_port}
     name: flask-port 
   selector:
     app: {name}
@@ -38,8 +43,15 @@ spec:
 ## \brief this function genetares the service description yaml for a task 
 # \param kwargs             list of key value pair. 
 # In this case, call argument should be, name = {taskname}
-def write_service_specs(**kwargs):
+def write_circe_service_specs(**kwargs):
     # insert your values
-    specific_yaml = template.format(**kwargs)
+    specific_yaml = template.format(ssh_svc = SSH_SVC,
+                                    ssh_port = SSH_DOCKER, 
+                                    flask_svc = FLASK_SVC,
+                                    flask_port = FLASK_DOCKER,
+                                    mongo_svc = MONGO_SVC,
+                                    mongo_port = MONGO_DOCKER,
+                                    python_port = PYTHON_PORT,
+                                    **kwargs)
     dep = yaml.load(specific_yaml)
     return dep

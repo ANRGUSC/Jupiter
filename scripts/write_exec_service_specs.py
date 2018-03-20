@@ -9,8 +9,11 @@
 """
 
 import yaml
+import sys
+sys.path.append("../")
+from jupiter_config import *
 
-template = """
+template_worker = """
 apiVersion: v1
 kind: Service
 metadata:
@@ -20,17 +23,17 @@ metadata:
 spec:
   ports:
   - name: ssh
-    port: 5000
-    targetPort: 22
+    port: {ssh_svc}
+    targetPort: {ssh_port}
   - name: internet
     port: 80
     targetPort: 80
-  - port: 6100
-    targetPort: 8888
+  - port: {flask_svc}
+    targetPort: {flask_port}
     name: flask-port
   - name: mongo
-    port: 6200
-    targetPort: 27017
+    port: {mongo_svc}
+    targetPort: {mongo_port}
   selector:
     app: {label}
 """
@@ -40,11 +43,17 @@ spec:
 # In this case, call argument should be, name = {taskname}
 def write_exec_service_specs(**kwargs):
     # insert your values
-    specific_yaml = template.format(**kwargs)
+    specific_yaml = template_worker.format(ssh_svc = SSH_SVC,
+                                    ssh_port = SSH_DOCKER, 
+                                    flask_svc = FLASK_SVC,
+                                    flask_port = FLASK_DOCKER,
+                                    mongo_svc = MONGO_SVC,
+                                    mongo_port = MONGO_DOCKER,
+                                    **kwargs)
     dep = yaml.load(specific_yaml)
     return dep
 
-template2 = """
+template_home = """
 apiVersion: v1
 kind: Service
 metadata:
@@ -53,20 +62,20 @@ metadata:
     purpose: dag-demo
 spec:
   ports:
-  - port: 5000
-    targetPort: 22
+  - port: {ssh_svc}
+    targetPort: {ssh_port}
     name: scp-port
-  - port: 22
-    targetPort: 22
+  - port: {ssh_port}
+    targetPort: {ssh_port}
     name: scp-port1
-  - port: 57021
-    targetPort: 57021
+  - port: {python_port}
+    targetPort: {python_port}
     name: python-port
   - name: mongo
-    port: 6200
-    targetPort: 27017
-  - port: 6100
-    targetPort: 8888
+    port: {mongo_svc}
+    targetPort: {mongo_port}
+  - port: {flask_svc}
+    targetPort: {flask_port}
     name: flask-port
   selector:
     app: {name}
@@ -77,6 +86,13 @@ spec:
 # In this case, call argument should be, name = {taskname}
 def write_exec_service_specs_home(**kwargs):
     # insert your values
-    specific_yaml = template2.format(**kwargs)
+    specific_yaml = template_home.format(ssh_svc = SSH_SVC,
+                                    ssh_port = SSH_DOCKER, 
+                                    flask_svc = FLASK_SVC,
+                                    flask_port = FLASK_DOCKER,
+                                    mongo_svc = MONGO_SVC,
+                                    mongo_port = MONGO_DOCKER,
+                                    python_port = PYTHON_PORT,
+                                    **kwargs)
     dep = yaml.load(specific_yaml)
     return dep

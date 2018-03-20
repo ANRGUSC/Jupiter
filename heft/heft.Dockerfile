@@ -45,6 +45,6 @@ WORKDIR /heft/
 
 
 # tell the port number the container should expose
-EXPOSE 22 5000 8888
+EXPOSE 22 8888
 
 CMD ["./start.sh"]

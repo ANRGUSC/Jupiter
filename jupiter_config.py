@@ -39,6 +39,7 @@ SSH_SVC                 = config['PORT']['SSH_SVC']
 SSH_DOCKER              = config['PORT']['SSH_DOCKER']
 FLASK_SVC               = config['PORT']['FLASK_SVC']
 FLASK_DOCKER            = config['PORT']['FLASK_DOCKER']
+PYTHON_PORT             = config['PORT']['PYTHON_PORT']
 
 PROFILER_PATH           = HERE + 'profilers/'
 CIRCE_PATH              = HERE + 'circe/'

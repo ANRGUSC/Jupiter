@@ -10,14 +10,12 @@
 import sys
 sys.path.append("../")
 import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 
 import time
 import os
 from os import path
 from multiprocessing import Process
-# from readconfig import k8s_read_config, read_config
 from k8s_profiler_scheduler import *
 from k8s_wave_scheduler import *
 from k8s_circe_scheduler import *

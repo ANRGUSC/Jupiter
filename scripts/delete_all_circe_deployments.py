@@ -10,9 +10,8 @@
 import sys
 sys.path.append("../")
 import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
-from readconfig import k8s_read_config
+from utilities import *
 import yaml
 from kubernetes import client, config
 from pprint import *

@@ -14,6 +14,16 @@ import os
 
 sys.path.append(jupiter_config.CIRCE_PATH)
 import circe_docker_files_generator as dc 
+port_list_home = []
+port_list_home.append(jupiter_config.SSH_DOCKER)
+port_list_home.append(jupiter_config.FLASK_DOCKER)
+print('The list of ports to be exposed in the circe home are ', " ".join(port_list_home))
+
+
+port_list_worker = []
+port_list_worker.append(jupiter_config.SSH_DOCKER)
+port_list_worker.append(jupiter_config.PYTHON_PORT)
+print('The list of ports to be exposed in the circe workers are ', " ".join(port_list_worker))
 
 
 def build_push_circe():
@@ -22,12 +32,12 @@ def build_push_circe():
     dc.write_circe_home_docker(username = jupiter_config.USERNAME,
                       password = jupiter_config.PASSWORD,
                       app_file = jupiter_config.APP_NAME,
-                      ports = '22 8888')
+                      ports = " ".join(port_list_home))
 
     dc.write_circe_worker_docker(username = jupiter_config.USERNAME,
                       password = jupiter_config.PASSWORD,
                       app_file = jupiter_config.APP_NAME,
-                      ports = '22 57021')
+                      ports = " ".join(port_list_worker))
 
     #--no-cache
     os.system("sudo docker build -f home_node.Dockerfile .. -t "

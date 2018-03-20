@@ -55,8 +55,6 @@ ADD jupiter_config.ini /network_profiling/jupiter_config.ini
 
 WORKDIR /network_profiling
 # tell the port number the container should expose
-EXPOSE 22
-EXPOSE 8888
-EXPOSE 27017
+EXPOSE 22 27017 8888
 
 CMD ["./start.sh"]
