@@ -12,6 +12,24 @@ import yaml
 import sys
 sys.path.append("../")
 from jupiter_config import *
+import configparser
+
+INI_PATH  = APP_PATH + 'app_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+
+def add_app_specific_ports(dep):
+  a = dep['spec']['ports']
+
+  for i in config['DOCKER_PORT']:
+    dic = {}
+    dic['name'] = i
+    dic['port'] = int(config['SVC_PORT'][i])
+    dic['targetPort'] = int(config['DOCKER_PORT'][i])
+    a.append(dic)
+
+  return dep
 
 
 
@@ -30,9 +48,6 @@ spec:
   - port: {ssh_port}
     targetPort: {ssh_port}
     name: scp-port1 
-  - port: {python_port}
-    targetPort: {python_port}
-    name: python-port
   - port: {flask_svc}
     targetPort: {flask_port}
     name: flask-port 
@@ -51,7 +66,7 @@ def write_circe_service_specs(**kwargs):
                                     flask_port = FLASK_DOCKER,
                                     mongo_svc = MONGO_SVC,
                                     mongo_port = MONGO_DOCKER,
-                                    python_port = PYTHON_PORT,
                                     **kwargs)
     dep = yaml.load(specific_yaml)
-    return dep
+
+    return add_app_specific_ports(dep)

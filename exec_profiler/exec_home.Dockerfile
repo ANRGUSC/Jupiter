@@ -67,6 +67,6 @@ RUN chmod +x /centralized_scheduler/start.sh
 
 
 # tell the port number the container should expose
-EXPOSE 22 27017 8888
+EXPOSE 22 27017 8888 57021
 
 CMD ["./start.sh"]

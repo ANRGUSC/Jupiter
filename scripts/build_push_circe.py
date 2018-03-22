@@ -11,6 +11,14 @@ import sys
 sys.path.append("../")
 import jupiter_config
 import os
+import configparser
+
+INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+
+
 
 sys.path.append(jupiter_config.CIRCE_PATH)
 import circe_docker_files_generator as dc 
@@ -22,7 +30,9 @@ print('The list of ports to be exposed in the circe home are ', " ".join(port_li
 
 port_list_worker = []
 port_list_worker.append(jupiter_config.SSH_DOCKER)
-port_list_worker.append(jupiter_config.PYTHON_PORT)
+for key in config["DOCKER_PORT"]:
+  print(config["DOCKER_PORT"][key])
+  port_list_worker.append(config["DOCKER_PORT"][key])
 print('The list of ports to be exposed in the circe workers are ', " ".join(port_list_worker))
 
 
