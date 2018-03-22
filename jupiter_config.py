@@ -15,12 +15,6 @@ from os import path
 import os
 import configparser
 
-def get_home_node(file_name):
-    with open(file_name) as file:
-        line = file.readline().split()
-    return line[1]
-
-
 HERE                    = path.abspath(path.dirname(__file__)) + "/"
 INI_PATH                = HERE + 'jupiter_config.ini'
 
@@ -39,7 +33,6 @@ SSH_SVC                 = config['PORT']['SSH_SVC']
 SSH_DOCKER              = config['PORT']['SSH_DOCKER']
 FLASK_SVC               = config['PORT']['FLASK_SVC']
 FLASK_DOCKER            = config['PORT']['FLASK_DOCKER']
-PYTHON_PORT             = config['PORT']['PYTHON_PORT']
 
 PROFILER_PATH           = HERE + 'profilers/'
 CIRCE_PATH              = HERE + 'circe/'
@@ -55,34 +48,34 @@ KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
 # Namespaces
 
-DEPLOYMENT_NAMESPACE    = 'johndoe-circe'
-PROFILER_NAMESPACE      = 'johndoe-profiler'
-MAPPER_NAMESPACE        = 'johndoe-wave'
-EXEC_NAMESPACE          = 'johndoe-exec'
+DEPLOYMENT_NAMESPACE    = 'pranav-circe'
+PROFILER_NAMESPACE      = 'pranav-profiler'
+MAPPER_NAMESPACE        = 'pranav-wave'
+EXEC_NAMESPACE          = 'pranav-exec'
 
+#home's child node is hardcoded in write_circe_home_specs.py
+HOME_NODE               = 'ubuntu-s-1vcpu-3gb-fra1-09'
 
-HOME_NODE               = get_home_node('nodes.txt')
+HOME_IMAGE              = 'docker.io/anrg/home_node:q1'
 
-HOME_IMAGE              = 'docker.io/johndoe/home_node:v1'
+HOME_CHILD              = 'localpro'
 
-HOME_CHILD              = 'sample_ingress_task1'
+WORKER_IMAGE            = 'docker.io/anrg/worker_node:q1'
 
-WORKER_IMAGE            = 'docker.io/johndoe/worker_node:v1'
+# Profiler Path
+PROFILER_HOME_IMAGE     = 'docker.io/anrg/central_profiler:q1'
+PROFILER_WORKER_IMAGE   = 'docker.io/anrg/worker_profiler:q1'
 
-# Profiler docker image
-PROFILER_HOME_IMAGE     = 'docker.io/johndoe/central_profiler:v1'
-PROFILER_WORKER_IMAGE   = 'docker.io/johndoe/worker_profiler:v1'
+# WAVE scheduler variables
+WAVE_HOME_IMAGE         = 'docker.io/anrg/wave_home:q1'
+WAVE_WORKER_IMAGE       = 'docker.io/anrg/wave_worker:q1'
 
-# WAVE docker image
-WAVE_HOME_IMAGE         = 'docker.io/johndoe/wave_home:v1'
-WAVE_WORKER_IMAGE       = 'docker.io/johndoe/wave_worker:v1'
+# Execution Profiler Path
+EXEC_HOME_IMAGE         = 'docker.io/anrg/exec_home:q1'
+EXEC_WORKER_IMAGE       = 'docker.io/anrg/exec_worker:q1'
 
-# Execution profiler  docker image
-EXEC_HOME_IMAGE         = 'docker.io/johndoe/exec_home:v1'
-EXEC_WORKER_IMAGE       = 'docker.io/johndoe/exec_worker:v1'
-
-# Heft docker image
-HEFT_IMAGE              = 'docker.io/johndoe/heft:v1'
+# Heft Path
+HEFT_IMAGE              = 'docker.io/anrg/heft:p1'
 
 APP_PATH                = HERE  + 'task_specific_files/network_monitoring_app/'
 APP_NAME                = 'task_specific_files/network_monitoring_app'

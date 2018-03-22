@@ -10,7 +10,17 @@ import yaml
 import sys
 sys.path.append("../")
 from jupiter_config import *
+import configparser
 
+INI_PATH  = APP_PATH + 'app_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+def add_app_specific_ports(dep):
+  a = dep['spec']['template']['spec']['containers'][0]['ports']
+  for i in config['DOCKER_PORT']:
+    a.append({'containerPort': config['DOCKER_PORT'][i]})
+  return dep
 
 template_nondag = """
     apiVersion: extensions/v1beta1
@@ -29,7 +39,6 @@ template_nondag = """
             image: {image}
             ports:
             - containerPort: {ssh_port}
-            - containerPort: {python_port}
             - containerPort: {mongo_port}
             - containerPort: 80
             - containerPort: {flask_port}
@@ -68,12 +77,11 @@ def write_exec_specs_non_dag_tasks(**kwargs):
     specific_yaml = template_nondag.format(ssh_port = SSH_DOCKER, 
                                     flask_port = FLASK_DOCKER,
                                     mongo_port = MONGO_DOCKER,
-                                    python_port = PYTHON_PORT,
                                     **kwargs)
 
     dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
 
-    return dep
+    return add_app_specific_ports(dep)
 
 template_home = """
     apiVersion: extensions/v1beta1
@@ -92,7 +100,6 @@ template_home = """
             image: {image}
             ports:
             - containerPort: {ssh_port}
-            - containerPort: {python_port}
             - containerPort: {mongo_port}
             - containerPort: 80
             env:
@@ -136,12 +143,11 @@ def write_exec_specs_home_control(**kwargs):
     specific_yaml = template_home.format(ssh_port = SSH_DOCKER, 
                                     flask_port = FLASK_DOCKER,
                                     mongo_port = MONGO_DOCKER,
-                                    python_port = PYTHON_PORT,
                                     **kwargs)
 
     dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
 
-    return dep
+    return add_app_specific_ports(dep)
 
 
 
@@ -188,7 +194,6 @@ def write_exec_specs(**kwargs):
     specific_yaml = template_worker.format(ssh_port = SSH_DOCKER, 
                                     flask_port = FLASK_DOCKER,
                                     mongo_port = MONGO_DOCKER,
-                                    python_port = PYTHON_PORT,
                                     **kwargs)
     dep = yaml.load(specific_yaml)
     return dep
