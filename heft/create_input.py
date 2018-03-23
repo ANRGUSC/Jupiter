@@ -1,5 +1,9 @@
 import re
+import os
 
+NODE_NAMES = os.environ["NODE_NAMES"]
+node_info = NODE_NAMES.split(":")
+node_ids = {v:k for k,v in enumerate(node_info)}
 
 def init(filename):
     """
@@ -69,13 +73,13 @@ def init(filename):
     line = f.readline()
 
     while line.startswith('  '):
-        info = line.strip().split('\t')
-        i= int(info[0][-1])
-        j= int(info[1][-1])
-        a,b,c = [float(s) for s in info[2].split()]
+        info = line.strip().split()
+        i= node_ids[info[0]]
+        j= node_ids[info[1]]
+        a,b,c = [float(s) for s in info[2:]]
         quaratic_profile[i-1][j-1] = tuple([a,b,c])
         line = f.readline()
 
     print('==================')
-    print(quaratic_profile)
+    # print(quaratic_profile)
     return [num_of_tasks, task_names, num_of_processors, comp_cost, rate, data, quaratic_profile]
