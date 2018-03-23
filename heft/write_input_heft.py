@@ -14,6 +14,12 @@ from create_input import init
 import sys
 from flask import Flask, request
 import csv
+import os
+
+NODE_NAMES = os.environ["NODE_NAMES"]
+node_info = NODE_NAMES.split(":")
+node_ids = {v:k for k,v in enumerate(node_info)}
+
 # from node_info import *
 print("starting the main thread on port")
 
@@ -91,15 +97,16 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
 
     computation_matrix =[]
     for i in range(0, len(task_list)):
-        task_times = []
+        task_times = [0 for i in range(num_nodes)]
         computation_matrix.append(task_times)
 
     task_size = {}
 
     # Read format: Node ID, Task, Execution Time, Output size
     for row in execution_info:
-        computation_matrix[task_ID_dict[row[1]]].append(int(float(row[2])*10)) #100000
-        task_size[row[1]]=row[3]
+        computation_matrix[task_ID_dict[row[1]]][node_ids[row[0]] - 1] = int(float(row[2])*10) 
+        #100000
+        task_size[row[1]] = row[3]
     output(task_size)
     output(computation_matrix)
 
@@ -125,7 +132,7 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
     # OK
     target.write('\n@computation_cost 0 {\n')
 
-    line = '# type version %s\n' %(' '.join(node_list))
+    line = '# type version %s\n' %(' '.join(node_info[1:]))
     target.write(line)
 
     for i in range(0,len(task_list)):
@@ -193,7 +200,7 @@ if __name__ == '__main__':
                     print(row)
                     if row[1] in super_tasks:
                         for node in node_list:
-                            new_execution.append([node,row[1],row[2],row[3]])
+                            new_execution.append([node,row[1],row[2],row[3]]) # to copy the home profiler data for the non dag task for each processor.
             #print(new_execution)
             create_input_heft(tgff_file,num_nodes,network_info,new_execution,node_list,task_order,tasks)
             break

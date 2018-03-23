@@ -278,8 +278,9 @@ class HEFT:
                 aft = 9999
                 for processor in self.processors:
                     est = self.cal_est(task, processor)
-		            #print("est:", est)
-	                #print("task:",task.comp_cost[processor.number])
+                    print("est:", est)
+                    print("task:",task.comp_cost[processor.number])
+                    print(processor.number, task.number)
                     if est + task.comp_cost[processor.number] < aft:
                         aft = est + task.comp_cost[processor.number]
                         p = processor.number
