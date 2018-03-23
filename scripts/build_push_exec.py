@@ -20,7 +20,7 @@ config.read(INI_PATH)
 
 
 
-sys.path.append(jupiter_config.EXEC_PATH)
+sys.path.append(jupiter_config.EXEC_PROFILER_PATH)
 import exec_docker_files_generator as dc
 
 port_list_home = []
@@ -41,7 +41,7 @@ print('The list of ports to be exposed in the exec worker dockers are ', " ".joi
 
 def build_push_exec():
 
-    os.chdir(jupiter_config.EXEC_PATH )
+    os.chdir(jupiter_config.EXEC_PROFILER_PATH )
 
     dc.write_exec_home_docker(username = jupiter_config.USERNAME,
                      password = jupiter_config.PASSWORD,
@@ -53,11 +53,11 @@ def build_push_exec():
                      app_file=jupiter_config.APP_NAME,
                      ports = " ".join(port_list_worker))
 
-    os.system("sudo docker build -f exec_home.Dockerfile .. -t "
+    os.system("sudo docker build -f exec_home.Dockerfile ../.. -t "
                                  + jupiter_config.EXEC_HOME_IMAGE)
     os.system("sudo docker push " + jupiter_config.EXEC_HOME_IMAGE)
 
-    os.system("sudo docker build -f exec_worker.Dockerfile .. -t "
+    os.system("sudo docker build -f exec_worker.Dockerfile ../.. -t "
                                  + jupiter_config.EXEC_WORKER_IMAGE)
     os.system("sudo docker push " + jupiter_config.EXEC_WORKER_IMAGE)
 

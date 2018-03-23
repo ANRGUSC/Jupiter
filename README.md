@@ -79,7 +79,7 @@ to re-run the full set of commands if the `admin.conf` file has changed:
         |   
         └───circe
         |
-        └───task_specific_files
+        └───app_specific_files
         |   |
         |   └───APP_folder
         |       |
@@ -140,7 +140,7 @@ But if there are multiple ingreass tasks, you have to put all of them by separat
 
 ### Step 4 (Setup APP Folder)
 You need to make sure that you have a `APP_folder` with all the task specific files
-inside the `task_specific_files` folder. 
+inside the `app_specific_files` folder. 
 The `APP_folder` needs to have a configuration.txt and a DAG_Scheduler.txt
 The configuration.txt is used by CIRCE while the DAG_Scheduler.txt is used by WAVE.
 **We are currently working on merging these two files.** 
@@ -166,11 +166,11 @@ The dockerfiles can be found under the `circe/` folder.
 Change the follwing lines in the `home_node.Dockerfile` to refer to your own app
 ```
 # Add input files
-COPY  task_specific_files/network_monitoring_app/sample_input /sample_input
+COPY  app_specific_files/network_monitoring_app/sample_input /sample_input
 ```
 ```
 # Add the task speficific configuration files
-ADD task_specific_files/network_monitoring_app/configuration.txt /configuration.txt
+ADD app_specific_files/network_monitoring_app/configuration.txt /configuration.txt
 ```
 
 Now you need to update the `worker_node.Dockerfile` to add your app specific
@@ -183,7 +183,7 @@ RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 ```
 Also change the following line to refer to your app: 
 ```
-ADD task_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
+ADD app_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
 ```
 
 
@@ -280,14 +280,30 @@ these instructions to make changes to your code and redeploy the DAG.
 
 The directory structure of the project MUST conform with the following:
 ```
-Jupiter/
+├── jupiter_config.ini
 ├── jupiter_config.py
 ├── k8_requirements.txt
 ├── LICENSE.txt
 ├── nodes.txt
-├── ...
+├── README.md
+├── sourceit.sh
 |
+├── app_specific_files
+│   └── network_monitoring_app
+│       ├── app_config.ini
+│       ├── configuration.txt
+│       ├── ...
+│       ├── input_node.txt
+│       ├── LICENSE.txt
+│       ├── README.md
+│       ├── sample_input
+│       │   ├── 1botnet.ipsum
+│       │   └── 2botnet.ipsum
+│       └── scripts
+│           ├── ...
+│           └── ...
 ├── circe
+│   ├── circe_docker_files_generator.py
 │   ├── home_node.Dockerfile
 │   ├── monitor.py
 │   ├── readconfig.py
@@ -300,77 +316,122 @@ Jupiter/
 │   ├── start_home.sh
 │   ├── start_worker.sh
 │   └── worker_node.Dockerfile
-|
-└── wave
-|   ├── home
-|   │   ├── Dockerfile
-|   │   ├── input_node.txt
-|   │   ├── master.py
-|   │   └── start.sh
-|   └── worker
-|       ├── child_appointment.py
-|       ├── Dockerfile
-|       ├── requirements.txt
-|       └── start.sh
-|
+├── docs
+│   ├── make.bat
+│   ├── Makefile
+│   └── source
+│       ├── conf.py
+│       └── index.rst
 ├── profilers
-│   ├── central
-│   │   ├── central_input
-│   │   │   ├── link_list.txt
-│   │   │   └── nodes.txt
+│   ├── execution_profiler
 │   │   ├── central_mongod
-│   │   ├── central_query_statistics.py
-│   │   ├── central_scheduler.py
-│   │   ├── Dockerfile
-│   │   ├── generate_link_list.py
+│   │   ├── exec_docker_files_generator.py
+│   │   ├── exec_home.Dockerfile
+│   │   ├── exec_worker.Dockerfile
+│   │   ├── get_files.py
+│   │   ├── keep_alive.py
+│   │   ├── profiler_home.py
+│   │   ├── profiler_worker.py
 │   │   ├── requirements.txt
-│   │   ├── resource_profiling_files
-│   │   │   ├── insert_to_container.py
-│   │   │   ├── ip_path
-│   │   │   ├── job.py
-│   │   │   └── read_info.py
-│   │   └── start.sh
-│   └── droplet
-│       ├── automate_droplet.py
-│       ├── Dockerfile
-│       ├── droplet_generate_random_files
-│       ├── droplet_mongod
-│       ├── droplet_scp_time_transfer
-│       ├── requirements.txt
-│       ├── resource_profiler.py
-│       └── start.sh
-|
-├── task_specific_files
-│   └── APP_Folder
-│       ├── configuration.txt
-│       ├── DAG_Scheduler.txt
-│       ├── sample_input
-│       │   ├── sample1
-│       │   └── sample2
-│       └── scripts
-│           ├── task1.py
-│           └── task2.py
-|
+│   │   ├── start_home.sh
+│   │   └── start_worker.sh
+│   └── network_resource_profiler
+│       ├── home
+│       │   ├── central_input
+│       │   │   ├── link_list.txt
+│       │   │   └── nodes.txt
+│       │   ├── central_mongod
+│       │   ├── central_query_statistics.py
+│       │   ├── central_scheduler.py
+│       │   ├── generate_link_list.py
+│       │   ├── requirements.txt
+│       │   ├── resource_profiling_files
+│       │   │   ├── insert_to_container.py
+│       │   │   ├── ip_path
+│       │   │   ├── job.py
+│       │   │   └── read_info.py
+│       │   └── start.sh
+│       ├── profiler_docker_files_generator.py
+│       ├── profiler_home.Dockerfile
+│       ├── profiler_worker.Dockerfile
+│       └── worker
+│           ├── automate_droplet.py
+│           ├── droplet_generate_random_files
+│           ├── droplet_mongod
+│           ├── droplet_scp_time_transfer
+│           ├── keep_alive.py
+│           ├── requirements.txt
+│           ├── resource_profiler.py
+│           └── start.sh
+├── task_mapper
+|   ├── heft
+|   │   ├── create_input.py
+|   │   ├── heft.Dockerfile
+|   │   ├── heft_dockerfile_generator.py
+|   │   ├── heft_dup.py
+|   │   ├── input_0.tgff
+|   │   ├── keep_alive.py
+|   │   ├── master.py
+|   │   ├── read_input_heft.py
+|   │   ├── requirements.txt
+|   │   ├── start.sh
+|   │   └── write_input_heft.py
+|   └── wave
+|       ├── greedy_wave
+|       │   ├── home
+|       │   │   ├── master.py
+|       │   │   ├── requirements.txt
+|       │   │   └── start.sh
+|       │   ├── home.Dockerfile
+|       │   ├── worker
+|       │   │   ├── child_appointment.py
+|       │   │   ├── requirements.txt
+|       │   │   └── start.sh
+|       │   └── worker.Dockerfile
+|       └── random_wave
+|           ├── home
+|           │   ├── master.py
+|           │   ├── requirements.txt
+|           │   └── start.sh
+|           ├── home.Dockerfile
+|           ├── worker
+|           │   ├── child_appointment.py
+|           │   ├── requirements.txt
+|           │   └── start.sh
+|           └── worker.Dockerfile
 └── scripts
-    ├── build_push_circe.py
-    ├── build_push_jupiter.py
-    ├── build_push_profiler.py
-    ├── build_push_wave.py
-    ├── delete_all_circe_deployments.py
-    ├── delete_all_profilers.py
-    ├── delete_all_waves.py
-    ├── k8s_circe_scheduler.py
-    ├── k8s_jupiter_deploy.py
-    ├── k8s_jupiter_teardown.py
-    ├── k8s_profiler_scheduler.py
-    ├── k8s_wave_scheduler.py
-    ├── static_assignment.py
-    ├── write_circe_specs.py
-    ├── write_profiler_service_specs.py
-    ├── write_profiler_specs.py
-    ├── write_circe_service_specs.py
-    ├── write_wave_service_specs.py
-    └── write_wave_specs.py
+    ├── build_push_circe.py
+    ├── build_push_exec.py
+    ├── build_push_heft.py
+    ├── build_push_jupiter.py
+    ├── build_push_profiler.py
+    ├── build_push_wave.py
+    ├── build_push_wave.pyc
+    ├── delete_all_circe_deployments.py
+    ├── delete_all_exec.py
+    ├── delete_all_heft.py
+    ├── delete_all_profilers.py
+    ├── delete_all_waves.py
+    ├── k8s_circe_scheduler.py
+    ├── k8s_exec_scheduler.py
+    ├── k8s_get_service_ips.py
+    ├── k8s_heft_scheduler.py
+    ├── k8s_jupiter_deploy.py
+    ├── k8s_jupiter_teardown.py
+    ├── k8s_profiler_scheduler.py
+    ├── k8s_wave_scheduler.py
+    ├── static_assignment.py
+    ├── utilities.py
+    ├── write_circe_service_specs.py
+    ├── write_circe_specs.py
+    ├── write_exec_service_specs.py
+    ├── write_exec_specs.py
+    ├── write_heft_service_specs.py
+    ├── write_heft_specs.py
+    ├── write_profiler_service_specs.py
+    ├── write_profiler_specs.py
+    ├── write_wave_service_specs.py
+    └── write_wave_specs.py
 
 ```
 

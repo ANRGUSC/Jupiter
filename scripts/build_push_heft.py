@@ -31,7 +31,7 @@ def build_push_heft():
                          app_file = jupiter_config.APP_NAME,
                          ports = " ".join(port_list))
 
-    os.system("sudo docker build -f heft.Dockerfile .. -t "
+    os.system("sudo docker build -f heft.Dockerfile ../.. -t "
                                  + jupiter_config.HEFT_IMAGE)
     os.system("sudo docker push " + jupiter_config.HEFT_IMAGE)
 
