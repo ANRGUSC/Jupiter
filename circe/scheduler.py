@@ -22,7 +22,22 @@ import multiprocessing
 from flask import Flask, request
 from collections import defaultdict
 
-ssh_port = 5000
+from os import path
+import configparser
+
+##
+## Load all the confuguration
+##
+INI_PATH = '/jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
+username    = config['AUTH']['USERNAME']
+password    = config['AUTH']['PASSWORD']
+ssh_port    = int(config['PORT']['SSH_SVC'])
+num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+
 
 # End-to-end metrics
 start_times = []
@@ -72,7 +87,7 @@ class MonitorRecv(multiprocessing.Process):
 
     def run(self):
         print("Flask server started")
-        app.run(host='0.0.0.0', port=8888)
+        app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
 
 class MyHandler(PatternMatchingEventHandler):
@@ -141,26 +156,24 @@ class Handler(FileSystemEventHandler):
             #of the first task node
             IP = os.environ['CHILD_NODES_IPS']
             #IP= 'localpro'
-            user='root'
-            password='PASSWORD'
 
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             retry = 0
-            num_retries = 30
+            # num_retries = 30
             print("Starting the connection")
             while retry < num_retries:
                 try:
-                    ssh.connect(IP, username=user, password=password, port=ssh_port)
+                    ssh.connect(IP, username=username, password=password, port=ssh_port)
+                    sftp = ssh.open_sftp()
+                    sftp.put(event.src_path, os.path.join('/centralized_scheduler', 'input', new_file_name))
+                    sftp.close()
                     break
-                except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
-                    print('SSH Connection refused, will retry in 2 seconds')
+                except:
+                    print('SSH connection refused or file transfer failed, will retry in 2 seconds')
                     time.sleep(2)
                     retry += 1
-            sftp = ssh.open_sftp()
 
-            sftp.put(event.src_path, os.path.join('/centralized_scheduler', 'input', new_file_name))
-            sftp.close()
             ssh.close()
 
 

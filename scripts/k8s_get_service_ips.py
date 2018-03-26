@@ -2,6 +2,8 @@
  * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
  *     contributors: 
  *      Pradipta Ghosh
+ *      Pranav Sakulkar
+ *      Jason A Tran
  *      Bhaskar Krishnamachari
  *     Read license file in main directory for more details  
 """
@@ -18,10 +20,6 @@ from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 
-"""
-    This function prints out all the profilers that are not running.
-    If all the profilers are running: return True; else return False.
-"""
 def get_all_profilers():
 
     """
@@ -105,7 +103,7 @@ def get_all_waves():
     for key in nodes:
 
         # We have defined the namespace for deployments in jupiter_config
-        namespace = jupiter_config.WAVE_NAMESPACE
+        namespace = jupiter_config.MAPPER_NAMESPACE
 
         # Get proper handles or pointers to the k8-python tool to call different functions.
         api = client.ExtensionsV1beta1Api()

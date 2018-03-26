@@ -36,8 +36,9 @@ RUN mkdir -p /home/darpa/apps/data
 ADD circe/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD task_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
+ADD app_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
 
+ADD jupiter_config.ini /jupiter_config.ini
 
 
 ADD circe/start_worker.sh /start.sh
@@ -50,3 +51,4 @@ EXPOSE 22 57021
 
 # run the command
 CMD ["./start.sh"]
+

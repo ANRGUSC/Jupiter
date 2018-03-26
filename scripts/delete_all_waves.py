@@ -48,7 +48,7 @@ def delete_all_waves():
     for key in nodes:
 
         # We have defined the namespace for deployments in jupiter_config
-        namespace = jupiter_config.WAVE_NAMESPACE
+        namespace = jupiter_config.MAPPER_NAMESPACE
 
         # Get proper handles or pointers to the k8-python tool to call different functions.
         api = client.ExtensionsV1beta1Api()

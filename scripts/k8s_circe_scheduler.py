@@ -17,9 +17,8 @@ import time
 import os
 from os import path
 from multiprocessing import Process
-from write_deployment_specs import *
-from write_service_specs import *
-from write_home_specs import *
+from write_circe_service_specs import *
+from write_circe_specs import *
 import yaml
 from kubernetes import client, config
 from pprint import *
@@ -73,6 +72,7 @@ def check_status_circe(dag):
 
     return result
 
+
 # if __name__ == '__main__':
 def k8s_circe_scheduler(dag_info , temp_info):
 
@@ -110,7 +110,7 @@ def k8s_circe_scheduler(dag_info , temp_info):
         First create the home node's service.
     """
     
-    home_body = write_service_specs(name = 'home')
+    home_body = write_circe_service_specs(name = 'home')
     ser_resp = api.create_namespaced_service(namespace, home_body)
     print("Home service created. status = '%s'" % str(ser_resp.status))
 
@@ -139,7 +139,7 @@ def k8s_circe_scheduler(dag_info , temp_info):
         """
             Generate the yaml description of the required service for each task
         """
-        body = write_service_specs(name = task)
+        body = write_circe_service_specs(name = task)
 
         # Call the Kubernetes API to create the service
         ser_resp = api.create_namespaced_service(namespace, body)
@@ -215,13 +215,13 @@ def k8s_circe_scheduler(dag_info , temp_info):
     
         
         #Generate the yaml description of the required deployment for each task
-        dep = write_deployment_specs(flag = str(flag), inputnum = str(inputnum), name = task, node_name = hosts.get(task)[1],
+        dep = write_circe_deployment_specs(flag = str(flag), inputnum = str(inputnum), name = task, node_name = hosts.get(task)[1],
             image = jupiter_config.WORKER_IMAGE, child = nexthosts, 
             child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
             home_node_ip = service_ips.get("home"),
             own_ip = service_ips[key],
             all_node = all_node,
-            all_node_ips = all_node_ips,)
+            all_node_ips = all_node_ips)
         pprint(dep)
         
 
@@ -234,7 +234,7 @@ def k8s_circe_scheduler(dag_info , temp_info):
             break
         time.sleep(30)
 
-    home_dep = write_home_specs(image = jupiter_config.HOME_IMAGE, 
+    home_dep = write_circe_home_specs(image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
                                 child_ips = service_ips.get(jupiter_config.HOME_CHILD), dir = '{}')
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)

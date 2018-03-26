@@ -1,20 +1,9 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
-
 import sys
 import jupiter_config
 import time
 import os
 from os import path
 from multiprocessing import Process
-# from readconfig import k8s_read_config, read_config
 from k8s_profiler_scheduler import *
 from k8s_wave_scheduler import *
 from k8s_circe_scheduler import *
@@ -26,6 +15,46 @@ import jupiter_config
 import requests
 import json
 from pprint import *
+
+##
+## @brief      Reads the configuration.txt file
+##
+## @param      configuration_file  The configuration file
+##
+## @return     dag_info
+##
+def k8s_read_config(configuration_file):
+
+    dag_info=[]
+    config_file = open(configuration_file,'r')
+    dag_size = int(config_file.readline())
+
+    dag={}
+    for i, line in enumerate(config_file, 1):
+        dag_line = line.strip().split(" ")
+        if i == 1:
+            dag_info.append(dag_line[0])
+        dag.setdefault(dag_line[0], [])
+        for j in range(1,len(dag_line)):
+            dag[dag_line[0]].append(dag_line[j])
+        if i==dag_size:
+            break
+
+    dag_info.append(dag)
+
+    hosts={}
+    for line in config_file:
+        #get task, node IP, username and password
+        myline = line.strip().split(" ")
+        hosts.setdefault(myline[0],[])
+        hosts[myline[0]].append(myline[1])
+
+    hosts.setdefault('home',[])
+    hosts['home'].append('home')
+
+    dag_info.append(hosts)
+    return dag_info
+
 
 """
   read the dag from the file input
@@ -82,3 +111,15 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
   hosts['home'].extend(nodes.get('home'))
   dag_info.append(hosts)
   return dag_info
+
+
+def k8s_get_nodes_string(node_info_file):
+
+  nodes = ""
+  node_file = open(node_info_file, "r")
+  for line in node_file:
+      node_line = line.strip().split(" ")
+      if node_line[0] == "home":
+        continue
+      nodes = nodes + ":" + str(node_line[0])
+  return nodes

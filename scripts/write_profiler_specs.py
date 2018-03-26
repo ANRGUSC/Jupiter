@@ -9,6 +9,10 @@
 """
 
 import yaml
+import sys
+sys.path.append("../")
+from jupiter_config import *
+
 
 template = """
 apiVersion: extensions/v1beta1
@@ -32,11 +36,11 @@ spec:
         image: {image}
         ports:
         - name: sshport
-          containerPort: 22
+          containerPort: {ssh_port}
         - name: flaskport
-          containerPort: 5000
+          containerPort: {flask_port}
         - name: mongoport
-          containerPort: 27017
+          containerPort: {mongo_port}
         env:
         - name: ALL_NODES
           value: {all_node}
@@ -56,6 +60,9 @@ spec:
 # name = {taskname}, dir = '{}', host = {hostname}
 
 def write_profiler_specs(**kwargs):
-    specific_yaml = template.format(**kwargs)
+    specific_yaml = template.format(ssh_port = SSH_DOCKER,
+                                    flask_port = FLASK_DOCKER,
+                                    mongo_port = MONGO_DOCKER,
+                                    **kwargs)
     dep = yaml.load(specific_yaml)
     return dep

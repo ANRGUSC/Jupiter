@@ -1,35 +1,57 @@
 """
  * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
+ *     contributors:
  *      Pradipta Ghosh
  *      Pranav Sakulkar
  *      Jason A Tran
  *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
+ *     Read license file in main directory for more details
 """
 import sys
 sys.path.append("../")
 import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 
 import time
 import os
 from os import path
 from multiprocessing import Process
-# from readconfig import k8s_read_config, read_config
 from k8s_profiler_scheduler import *
 from k8s_wave_scheduler import *
 from k8s_circe_scheduler import *
+from k8s_exec_scheduler import *
+from k8s_heft_scheduler import *
 from pprint import *
 import jupiter_config
 import requests
 import json
 from pprint import *
 from utilities import *
+from k8s_get_service_ips import *
+from functools import wraps
+
+static_mapping = jupiter_config.STATIC_MAPPING
+
+def task_mapping_decorator(f):
+    @wraps(f)
+    def task_mapping(*args, **kwargs):
+      if jupiter_config.SCHEDULER == 0:
+        return f(*args, **kwargs)
+      else:
+        return f(args[0])
+    return task_mapping
+
+def empty_function():
+    return []
+
+if jupiter_config.SCHEDULER == 0: # HEFT
+  task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
+  exec_profiler_function = k8s_exec_scheduler
+else:
+  task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
+  exec_profiler_function = empty_function
 
 
-static_mapping = False
 
 
 if __name__ == '__main__':
@@ -40,27 +62,43 @@ if __name__ == '__main__':
     """
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
     path2 = jupiter_config.HERE + 'nodes.txt'
-    
+
+
 
     # start the profilers
+    # profiler_ips = get_all_profilers()
     profiler_ips = k8s_profiler_scheduler()
 
-    # Start the waves
-    k8s_wave_scheduler(profiler_ips)
+
+    # start the execution profilers
+    # execution_ips = get_all_execs()
+    execution_ips = exec_profiler_function()
+
+    print('*************************')
+    print('Network Profiling Information:')
+    print(profiler_ips)
+    print('Execution Profiling Information:')
+    print(execution_ips)
+    print('*************************')
+
+
+    node_names = k8s_get_nodes_string(path2)
+    print('*************************')
+
+    #Start the task to node mapper
+    task_mapping_function(profiler_ips,execution_ips,node_names)
 
     """
         Make sure you run kubectl proxy --port=8080 on a terminal.
         Then this is link to get the task to node mapping
     """
-    line = "http://localhost:8080/api/v1/namespaces/"
-    line = line + jupiter_config.WAVE_NAMESPACE + "/services/home:48080/proxy"
 
-    """
-      Loop and Sleep until you receive the mapping of the jobs
-    """
+    line = "http://localhost:8080/api/v1/namespaces/"
+    line = line + jupiter_config.MAPPER_NAMESPACE + "/services/home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
     time.sleep(5)
+    print(line)
     while 1:
-        try: 
+        try:
             # print("get the data from " + line)
             r = requests.get(line)
             mapping = r.json()
@@ -71,14 +109,9 @@ if __name__ == '__main__':
                 if "status" not in data:
                     break
         except:
-            print("Some Exception")     
-
-        time.sleep(15)
-
-    # dag_info.append(mapping)
-
-    schedule = k8s_get_hosts(path1, path2, mapping)
+            print("Some Exception")
     pprint(mapping)
+    schedule = k8s_get_hosts(path1, path2, mapping)
     dag = k8s_read_dag(path1)
     dag.append(mapping)
     print("Printing DAG:")
@@ -87,12 +120,11 @@ if __name__ == '__main__':
     pprint(schedule)
     print("End print")
 
-    # Use this mapping if you want to bypass the profiler and wave. This will give a static mapping for circe
-    # You can then test the coded detectors.
+    
   else:
     import static_assignment
-    dag = static_assignment.dag
-    schedule = static_assignment.schedule
+    # dag = static_assignment.dag
+    # schedule = static_assignment.schedule
 
   # Start CIRCE
   k8s_circe_scheduler(dag,schedule)

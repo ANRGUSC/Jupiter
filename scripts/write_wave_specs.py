@@ -9,6 +9,10 @@
 """
 
 import yaml
+import sys
+sys.path.append("../")
+from jupiter_config import *
+
 
 template = """
 apiVersion: extensions/v1beta1
@@ -28,7 +32,7 @@ spec:
         imagePullPolicy: Always
         image: {image}
         ports:
-        - containerPort: 8080
+        - containerPort: {flask_port}
         env:
         - name: ALL_NODES
           value: {all_node}
@@ -52,6 +56,7 @@ spec:
 # name = {taskname}, dir = '{}', host = {hostname}
 
 def write_wave_specs(**kwargs):
-    specific_yaml = template.format(**kwargs)
+    specific_yaml = template.format(flask_port = FLASK_DOCKER,
+                                    **kwargs)
     dep = yaml.load(specific_yaml)
     return dep

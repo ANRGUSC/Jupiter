@@ -13,16 +13,32 @@ sys.path.append("../")
 import jupiter_config
 import os
 
+sys.path.append(jupiter_config.NETR_PROFILER_PATH)
+import profiler_docker_files_generator as dc
+port_list = []
+port_list.append(jupiter_config.SSH_DOCKER)
+port_list.append(jupiter_config.MONGO_DOCKER)
+port_list.append(jupiter_config.FLASK_DOCKER)
+print('The list of ports to be exposed in the profiler dockers are ', " ".join(port_list))
+
 def build_push_profiler():
 
-    os.chdir(jupiter_config.PROFILER_PATH + "central/")
+    os.chdir(jupiter_config.NETR_PROFILER_PATH)
 
-    os.system("sudo docker build -f Dockerfile . -t "
+    dc.write_profiler_home_docker(username = jupiter_config.USERNAME,
+                     password = jupiter_config.PASSWORD,
+                     ports = " ".join(port_list))
+
+    dc.write_profiler_worker_docker(username = jupiter_config.USERNAME,
+                     password = jupiter_config.PASSWORD,
+                     ports = " ".join(port_list))
+
+
+    os.system("sudo docker build -f profiler_home.Dockerfile ../.. -t "
                                  + jupiter_config.PROFILER_HOME_IMAGE)
     os.system("sudo docker push " + jupiter_config.PROFILER_HOME_IMAGE)
-    os.chdir("../droplet/")
 
-    os.system("sudo docker build -f Dockerfile . -t "
+    os.system("sudo docker build -f profiler_worker.Dockerfile ../.. -t "
                                  + jupiter_config.PROFILER_WORKER_IMAGE)
     os.system("sudo docker push " + jupiter_config.PROFILER_WORKER_IMAGE)
 

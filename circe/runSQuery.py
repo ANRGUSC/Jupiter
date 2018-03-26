@@ -17,11 +17,21 @@ import json
 import sys
 import numpy as np
 from datetime import datetime
+from os import path
+import configparser
 
+##
+## Load all the confuguration
+##
+INI_PATH = '/jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
 
 class central_query_runtime():
     def __init__(self):
-        self.client_mongo = MongoClient('mongodb://localhost:27017/')
+        self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_PORT) + '/')
         self.db = self.client_mongo.central_task_runtime_profiler
 
     def query_task(self,task_name,file_name):

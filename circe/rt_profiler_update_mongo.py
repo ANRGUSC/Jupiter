@@ -18,7 +18,17 @@ from pymongo import MongoClient
 import pandas as pd
 import json
 import time
+from os import path
+import configparser
 
+##
+## Load all the confuguration
+##
+INI_PATH = '/jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
 
 
 #Update scheduler runtime folder information in mongodb
@@ -26,7 +36,7 @@ import time
 while True:
     time.sleep(300)
 
-    client_mongo = MongoClient('mongodb://localhost:27017/')
+    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_PORT) + '/')
     db = client_mongo.central_task_runtime_profiler
     logging = db['droplet_runtime']
     runtime_folder = "/runtime"
