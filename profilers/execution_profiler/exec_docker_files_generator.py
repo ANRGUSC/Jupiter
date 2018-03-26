@@ -37,7 +37,7 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-ADD exec_profiler/requirements.txt /requirements.txt
+ADD profilers/execution_profiler/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 
@@ -50,11 +50,11 @@ COPY {app_file}/sample_input /centralized_scheduler/sample_input
 
 ADD {app_file}/configuration.txt /centralized_scheduler/DAG.txt
 
-ADD exec_profiler/profiler_worker.py /centralized_scheduler/profiler.py
+ADD profilers/execution_profiler/profiler_worker.py /centralized_scheduler/profiler.py
 
-ADD exec_profiler/start_worker.sh /centralized_scheduler/start.sh
-ADD exec_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
-ADD exec_profiler/get_files.py /centralized_scheduler/get_files.py
+ADD profilers/execution_profiler/start_worker.sh /centralized_scheduler/start.sh
+ADD profilers/execution_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
+ADD profilers/execution_profiler/get_files.py /centralized_scheduler/get_files.py
 ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
 
 
@@ -91,7 +91,7 @@ RUN apt-get install iproute2 -y
 RUN apt-get install -y openssh-server
 
 # Install required python libraries
-ADD exec_profiler/requirements.txt /requirements.txt
+ADD profilers/execution_profiler/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 
@@ -108,7 +108,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 
-ADD exec_profiler/central_mongod /central_mongod
+ADD profilers/execution_profiler/central_mongod /central_mongod
 
 
 RUN mkdir -p /centralized_scheduler/profiler_files
@@ -125,9 +125,9 @@ RUN mkdir -p /home/darpa/apps/data
 
 ADD {app_file}/configuration.txt /centralized_scheduler/DAG.txt
 
-ADD exec_profiler/start_home.sh /centralized_scheduler/start.sh
-ADD exec_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
-ADD exec_profiler/profiler_home.py /centralized_scheduler/profiler_home.py
+ADD profilers/execution_profiler/start_home.sh /centralized_scheduler/start.sh
+ADD profilers/execution_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
+ADD profilers/execution_profiler/profiler_home.py /centralized_scheduler/profiler_home.py
 ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
 
 
@@ -164,10 +164,10 @@ def write_exec_home_docker(**kwargs):
 if __name__ == '__main__':
     write_exec_home_docker(username = 'root',
                       password = 'PASSWORD',
-                      app_file = 'task_specific_files/network_monitoring',
+                      app_file = 'app_specific_files/network_monitoring',
                       ports = '22 27017 57021 8888')
 
     write_exec_worker_docker(username = 'root',
                       password = 'PASSWORD',
-                      app_file = 'task_specific_files/network_monitoring',
+                      app_file = 'app_specific_files/network_monitoring',
                       ports = '22 27017 57021 8888')

@@ -158,10 +158,10 @@ def write_circe_home_docker(**kwargs):
 if __name__ == '__main__':
     write_circe_home_docker(username = 'root',
                       password = 'PASSWORD',
-                      app_file='task_specific_files/network_monitoring',
+                      app_file='app_specific_files/network_monitoring',
                       ports = '22 8888')
 
     write_circe_worker_docker(username = 'root',
                       password = 'PASSWORD',
-                      app_file='task_specific_files/network_monitoring',
+                      app_file='app_specific_files/network_monitoring',
                       ports = '22 57021')

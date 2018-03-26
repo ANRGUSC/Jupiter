@@ -74,6 +74,7 @@ class HEFT:
     # Modified communication part
     def cal_comm_quadratic(self,file_size,quaratic_profile):
         # quaratic_profile[0]*x^2 + quaratic_profile[1]*x +c; x=file_size[Kbit]
+        # print(file_size,quaratic_profile)
         return (np.square(file_size)*quaratic_profile[0] + file_size*quaratic_profile[1] + quaratic_profile[2])
 
     def cal_avg_comm(self, task1, task2):
@@ -278,8 +279,8 @@ class HEFT:
                 aft = 9999
                 for processor in self.processors:
                     est = self.cal_est(task, processor)
-                    print("est:", est)
-                    print("task:",task.comp_cost[processor.number])
+                    # print("est:", est)
+                    # print("task:",task.comp_cost[processor.number])
                     print(processor.number, task.number)
                     if est + task.comp_cost[processor.number] < aft:
                         aft = est + task.comp_cost[processor.number]

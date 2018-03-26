@@ -40,15 +40,16 @@ SSH_DOCKER              = config['PORT']['SSH_DOCKER']
 FLASK_SVC               = config['PORT']['FLASK_SVC']
 FLASK_DOCKER            = config['PORT']['FLASK_DOCKER']
 
-PROFILER_PATH           = HERE + 'profilers/'
+NETR_PROFILER_PATH      = HERE + 'profilers/network_resource_profiler/'
+EXEC_PROFILER_PATH      = HERE + 'profilers/execution_profiler/'
 CIRCE_PATH              = HERE + 'circe/'
-EXEC_PATH               = HERE + 'exec_profiler/'
-HEFT_PATH               = HERE + 'heft/'
+HEFT_PATH               = HERE + 'task_mapper/heft/'
+WAVE_PATH               = HERE + 'task_mapper/wave/random_wave/'
 
 if SCHEDULER == 1:
-    WAVE_PATH           = HERE + 'wave/random_wave/'
+    WAVE_PATH           = HERE + 'task_mapper/wave/random_wave/'
 elif SCHEDULER == 2:
-    WAVE_PATH           = HERE + 'wave/greedy_wave/'
+    WAVE_PATH           = HERE + 'task_mapper/wave/greedy_wave/'
 
 KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
@@ -64,7 +65,7 @@ HOME_NODE               = get_home_node(HERE + 'nodes.txt')
 
 HOME_IMAGE              = 'docker.io/johndoe/home_node:v1'
 
-HOME_CHILD              = 'sample_ingress_task1'
+HOME_CHILD              = 'sample_ingress_task'
 
 WORKER_IMAGE            = 'docker.io/johndoe/worker_node:v1'
 
@@ -83,5 +84,5 @@ EXEC_WORKER_IMAGE       = 'docker.io/johndoe/exec_worker:v1'
 # Heft docker image
 HEFT_IMAGE              = 'docker.io/johndoe/heft:v1'
 
-APP_PATH                = HERE  + 'task_specific_files/network_monitoring_app/'
-APP_NAME                = 'task_specific_files/network_monitoring_app'
+APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
+APP_NAME                = 'app_specific_files/network_monitoring_app'

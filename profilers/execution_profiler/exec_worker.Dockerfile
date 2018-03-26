@@ -23,7 +23,7 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-ADD exec_profiler/requirements.txt /requirements.txt
+ADD profilers/execution_profiler/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 
@@ -31,16 +31,16 @@ RUN mkdir -p /home/darpa/apps/data
 
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD task_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
-COPY task_specific_files/network_monitoring_app/sample_input /centralized_scheduler/sample_input
+ADD app_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
+COPY app_specific_files/network_monitoring_app/sample_input /centralized_scheduler/sample_input
 
-ADD task_specific_files/network_monitoring_app/configuration.txt /centralized_scheduler/DAG.txt
+ADD app_specific_files/network_monitoring_app/configuration.txt /centralized_scheduler/DAG.txt
 
-ADD exec_profiler/profiler_worker.py /centralized_scheduler/profiler.py
+ADD profilers/execution_profiler/profiler_worker.py /centralized_scheduler/profiler.py
 
-ADD exec_profiler/start_worker.sh /centralized_scheduler/start.sh
-ADD exec_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
-ADD exec_profiler/get_files.py /centralized_scheduler/get_files.py
+ADD profilers/execution_profiler/start_worker.sh /centralized_scheduler/start.sh
+ADD profilers/execution_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
+ADD profilers/execution_profiler/get_files.py /centralized_scheduler/get_files.py
 ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
 
 
