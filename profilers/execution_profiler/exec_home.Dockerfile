@@ -20,7 +20,7 @@ RUN apt-get install iproute2 -y
 RUN apt-get install -y openssh-server
 
 # Install required python libraries
-ADD exec_profiler/requirements.txt /requirements.txt
+ADD profilers/execution_profiler/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 
@@ -37,7 +37,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 
-ADD exec_profiler/central_mongod /central_mongod
+ADD profilers/execution_profiler/central_mongod /central_mongod
 
 
 RUN mkdir -p /centralized_scheduler/profiler_files
@@ -47,16 +47,16 @@ RUN mkdir -p /centralized_scheduler/profiler_files_processed
 
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD task_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
-COPY task_specific_files/network_monitoring_app/sample_input /centralized_scheduler/sample_input
+ADD app_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
+COPY app_specific_files/network_monitoring_app/sample_input /centralized_scheduler/sample_input
 RUN mkdir -p /home/darpa/apps/data
 
 
-ADD task_specific_files/network_monitoring_app/configuration.txt /centralized_scheduler/DAG.txt
+ADD app_specific_files/network_monitoring_app/configuration.txt /centralized_scheduler/DAG.txt
 
-ADD exec_profiler/start_home.sh /centralized_scheduler/start.sh
-ADD exec_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
-ADD exec_profiler/profiler_home.py /centralized_scheduler/profiler_home.py
+ADD profilers/execution_profiler/start_home.sh /centralized_scheduler/start.sh
+ADD profilers/execution_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
+ADD profilers/execution_profiler/profiler_home.py /centralized_scheduler/profiler_home.py
 ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
 
 
