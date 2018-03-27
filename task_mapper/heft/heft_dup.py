@@ -174,11 +174,15 @@ class HEFT:
                     time_slots.append([processor.time_line[i - 1].end, processor.time_line[i].start])
             time_slots.append([processor.time_line[len(processor.time_line) - 1].end, 9999])
 
+
         for slot in time_slots:
             if est < slot[0] and slot[0] + task.comp_cost[processor.number] <= slot[1]:
                 return slot[0]
             if est >= slot[0] and est + task.comp_cost[processor.number] <= slot[1]:
                 return est
+        # TODO: Possible bug here. If the value of est is larger than 9999 it returns an empty array which creates failts.
+        # So added a default return statement to always return something. Not sure whether it is correct
+        return est
 
     # Original
     # def cal_est(self, task, processor):
