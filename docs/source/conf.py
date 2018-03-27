@@ -12,11 +12,25 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+import mock
 
+sys.path.insert(0, os.path.abspath('../../'))
+sys.path.insert(0, os.path.abspath('../../circe'))
 
+sys.path.insert(0, os.path.abspath('../../profilers/central'))
+sys.path.insert(0, os.path.abspath('../../profilers/central/resource_profiling_files'))
+sys.path.insert(0, os.path.abspath('../../profilers/droplet'))
+
+sys.path.insert(0, os.path.abspath('../../scripts'))
+
+sys.path.insert(0, os.path.abspath('../../wave/home'))
+sys.path.insert(0, os.path.abspath('../../wave/worker'))
+
+autodoc_mock_imports = ['numpy', 'paramiko','pymongo','netifaces','pandas','scp','flask','urllib','urllib.request',
+                'apscheduler', 'pyinotify','psutil','_thread','kubernetes','kubernetes.client','kubernetes.client.apis',
+                'xmlrpc','watchdog','yaml','watchdog.events','watchdog.observers','watchdog.utils.BaseThread']
 # -- Project information -----------------------------------------------------
 
 project = 'Jupiter'
@@ -41,8 +55,8 @@ release = ''
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
+    'sphinx.ext.autosummary',
 ]
-
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -76,7 +90,7 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -155,6 +169,15 @@ texinfo_documents = [
      author, 'Jupiter', 'One line description of project.',
      'Miscellaneous'),
 ]
+
+html_context = {
+"display_github": False, # Add 'Edit on Github' link instead of 'View page source'
+"last_updated": True,
+"commit": False,
+}
+
+html_show_sourcelink = False
+
 
 
 # -- Extension configuration -------------------------------------------------
