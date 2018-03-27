@@ -1,12 +1,8 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import sys
 sys.path.append("../")
 import jupiter_config
@@ -37,6 +33,8 @@ print('The list of ports to be exposed in the circe workers are ', " ".join(port
 
 
 def build_push_circe():
+    """Build CIRCE home and worker image from Docker files and push them to the Dockerhub.
+    """
     os.chdir(jupiter_config.CIRCE_PATH)
 
     dc.write_circe_home_docker(username = jupiter_config.USERNAME,

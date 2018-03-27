@@ -1,12 +1,7 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import yaml
 import sys
@@ -19,6 +14,15 @@ config = configparser.ConfigParser()
 config.read(INI_PATH)
 
 def add_app_specific_ports(dep):
+  """Add information of specific ports for the application
+  
+  Args:
+      dep (str): deployment service description
+  
+  Returns:
+      str: deployment service description with added specific port information for the application
+  """
+
   a = dep['spec']['template']['spec']['containers'][0]['ports']
   for i in config['DOCKER_PORT']:
     a.append({'containerPort': config['DOCKER_PORT'][i]})
@@ -55,11 +59,25 @@ spec:
 """
 
 
-## \brief this function genetares the service description yaml for a task 
-# \param kwargs             list of key value pair. 
-# In this case, call argument should be, 
-# name = {taskname}, dir = '{}', host = {hostname}
 def write_circe_home_specs(**kwargs):
+    """
+    This function genetares the description yaml for CIRCE
+     
+    In this case, call argument should be:
+    
+      -   image: {image}
+      -   SSH Port: {ssh_port}
+      -   Flask Port: {flask_port}
+      -   CHILD_NODES_IPS: {child_ips}
+      -   kubernetes.io/hostname: {host}
+    
+    Args:
+        **kwargs: list of key value pair
+    
+    Returns:
+        dict: loaded configuration 
+    """
+
     specific_yaml = template_home.format(ssh_port = SSH_DOCKER, 
                                     flask_port = FLASK_DOCKER,
                                     mongo_port = MONGO_DOCKER,
@@ -117,11 +135,33 @@ template_worker = """
 
 """
 
-## \brief this function genetares the service description yaml for a task 
-# \param kwargs             list of key value pair. 
-# In this case, call argument should be, 
-# name = {taskname}, image = {image name}, child = {child node list}, host = {hostname}
 def write_circe_deployment_specs(**kwargs):
+    """
+    This function genetares the deployment service description yaml for CIRCE
+     
+    In this case, call argument should be:
+    
+      -   app: {name}
+      -   image: {image}
+      -   containerPort: {ssh_port}
+      -   FLAG: {flag}
+      -   INPUTNUM: {inputnum}
+      -   CHILD_NODES: {child}
+      -   CHILD_NODES_IPS: {child_ips}
+      -   NODE_NAME: {node_name}
+      -   HOME_NODE: {home_node_ip}
+      -   OWN_IP: {own_ip}
+      -   ALL_NODES: {all_node}
+      -   ALL_NODES_IPS: {all_node_ips}
+      -   kubernetes.io/hostname: {host}
+    
+    Args:
+        **kwargs: list of key value pair
+    
+    Returns:
+        dict: loaded configuration 
+    """
+
     # insert your values
 
     specific_yaml = template_worker.format(ssh_port = SSH_DOCKER, 

@@ -1,12 +1,7 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import sys
 sys.path.append("../")
@@ -22,6 +17,8 @@ from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 
 def delete_all_exec():
+    """Tear down all execution profiler deployments.
+    """
 
     """
         This loads the task graph

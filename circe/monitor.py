@@ -1,13 +1,13 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
+    .. note:: This script runs on every node of the system.
 """
 
+__author__ = "Aleksandra Knezevic,Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import multiprocessing
 from watchdog.observers import Observer
@@ -29,40 +29,19 @@ import urllib.request
 from urllib import parse
 import configparser
 
-##
-## Load all the confuguration
-##
-INI_PATH = '/jupiter_config.ini'
-config = configparser.ConfigParser()
-config.read(INI_PATH)
-
-FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
-MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
-username    = config['AUTH']['USERNAME']
-password    = config['AUTH']['PASSWORD']
-ssh_port    = int(config['PORT']['SSH_SVC'])
-num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
-
-
-
-configs = json.load(open('/centralized_scheduler/config.json'))
-taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
-print(taskmap)
-taskname = taskmap[0]
-print(taskname)
-if taskmap[1] == True:
-    taskmodule = __import__(taskname)
-
-#target port for SSHing into a container
-filenames=[]
-files_out=[]
-node_name = os.environ['NODE_NAME']
-home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
-
-all_nodes = os.environ["ALL_NODES"].split(":")
-all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
-
 def send_monitor_data(msg):
+    """
+    Sending message to flask server on home
+
+    Args:
+        msg (str): the message to be sent
+
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+
+    Raises:
+        Exception: if sending message to flask server on home is failed
+    """
     try:
         print("Sending message", msg)
         url = "http://" + home_node_host_port + "/recv_monitor_data"
@@ -89,6 +68,9 @@ class Watcher1():
         self.observer = Observer()
 
     def run(self):
+        """
+            Continuously watching the ``OUTPUT`` folder, if there is a new file created for the current task, copy the file to the corresponding ``INPUT`` folder of the next task in the scheduled node
+        """
         event_handler = Handler1()
         self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
         self.observer.start()
@@ -106,6 +88,9 @@ class Handler1(FileSystemEventHandler):
 
     @staticmethod
     def on_any_event(event):
+        """
+            Check for any event in the ``OUTPUT`` folder
+        """
         if event.is_directory:
             return None
 
@@ -246,6 +231,11 @@ class Watcher(multiprocessing.Process):
         self.observer = Observer()
 
     def run(self):
+        """
+            Continuously watching the ``INPUT`` folder.
+            When file in the input folder is received, based on the DAG info imported previously, it either waits for more input files, or  perform the current task on the current node.
+        """
+        
         event_handler = Handler()
         self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
         self.observer.start()
@@ -334,7 +324,47 @@ class Handler(FileSystemEventHandler):
                     send_monitor_data("end")
                     # end msg
 
-if __name__ == '__main__':
+def main():
+    """
+        -   Load all the Jupiter confuguration
+        -   Load DAG information. 
+        -   Prepare all of the tasks based on given DAG information. 
+        -   Prepare the list of children tasks for every parent task
+        -   Generating monitoring process for ``INPUT`` folder.
+        -   Generating monitoring process for ``OUTPUT`` folder.
+        -   If there are enough input files for the first task on the current node, run the first task. 
+
+    """
+
+    INI_PATH = '/jupiter_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+    MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
+    username    = config['AUTH']['USERNAME']
+    password    = config['AUTH']['PASSWORD']
+    ssh_port    = int(config['PORT']['SSH_SVC'])
+    num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+
+
+
+    configs = json.load(open('/centralized_scheduler/config.json'))
+    taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
+    print(taskmap)
+    taskname = taskmap[0]
+    print(taskname)
+    if taskmap[1] == True:
+        taskmodule = __import__(taskname)
+
+    #target port for SSHing into a container
+    filenames=[]
+    files_out=[]
+    node_name = os.environ['NODE_NAME']
+    home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
+
+    all_nodes = os.environ["ALL_NODES"].split(":")
+    all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
 
     if taskmap[1] == True:
         q=multiprocessing.Queue()
@@ -358,3 +388,7 @@ if __name__ == '__main__':
             cmd = "sh " + path_src + ".sh " + args
         print(cmd)
         os.system(cmd)
+
+if __name__ == '__main__':
+    main()
+    

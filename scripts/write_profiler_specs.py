@@ -1,12 +1,7 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import yaml
 import sys
@@ -53,13 +48,32 @@ spec:
 """
 
 
-
-## \brief this function genetares the service description yaml for a task 
-# \param kwargs             list of key value pair. 
-# In this case, call argument should be, 
-# name = {taskname}, dir = '{}', host = {hostname}
-
 def write_profiler_specs(**kwargs):
+    """
+    This function genetares the description yaml for network profiler
+     
+    In this case, call argument should be:
+    
+      -   name: {name}
+      -   app: {label}
+      -   emptyDir: {dir}
+      -   kubernetes.io/hostname: {host}
+      -   image: {image}
+      -   SSH Port: {ssh_port}
+      -   Flask Port: {flask_port}
+      -   Mongo Port: {mongo_port}
+      -   ALL_NODES: {all_node}
+      -   ALL_NODES_IPS: {all_node_ips}
+      -   SELF_NAME: {name}
+      -   SELF_IP: {serv_ip}
+    
+    Args:
+        **kwargs: list of key value pair
+    
+    Returns:
+        dict: loaded configuration 
+    """
+
     specific_yaml = template.format(ssh_port = SSH_DOCKER,
                                     flask_port = FLASK_DOCKER,
                                     mongo_port = MONGO_DOCKER,

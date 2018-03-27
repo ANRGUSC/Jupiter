@@ -1,12 +1,7 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import yaml
 import sys
@@ -20,6 +15,14 @@ config.read(INI_PATH)
 
 
 def add_app_specific_ports(dep):
+  """Add information of specific ports for the application
+  
+  Args:
+      dep (str): deployment service description
+  
+  Returns:
+      str: deployment service description with added specific port information for the application
+  """
   a = dep['spec']['ports']
 
   for i in config['DOCKER_PORT']:
@@ -55,10 +58,27 @@ spec:
     app: {name}
 """
 
-## \brief this function genetares the service description yaml for a task 
-# \param kwargs             list of key value pair. 
-# In this case, call argument should be, name = {taskname}
 def write_circe_service_specs(**kwargs):
+    """
+    This function genetares the service description yaml for CIRCE
+    
+    In this case, call argument should be:
+    
+      -   name: {name}
+      -   SSH port: {ssh_svc}
+      -   target SSH Port: {ssh_port}
+      -   Flask port: {flask_svc}
+      -   target Flask Port: {flask_port}
+      -   app: {name}
+    
+
+    Args:
+        **kwargs: list of key value pair
+    
+    Returns:
+        dict: loaded configuration 
+    """
+
     # insert your values
     specific_yaml = template.format(ssh_svc = SSH_SVC,
                                     ssh_port = SSH_DOCKER, 

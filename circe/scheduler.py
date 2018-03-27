@@ -1,12 +1,14 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
+    .. note:: This script runs on the scheduler node of CIRCE. 
+
 """
+
+__author__ = "Aleksandra Knezevic,Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen,  Jason A Tran and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import paramiko
 from watchdog.observers import Observer
@@ -25,18 +27,6 @@ from collections import defaultdict
 from os import path
 import configparser
 
-##
-## Load all the confuguration
-##
-INI_PATH = '/jupiter_config.ini'
-config = configparser.ConfigParser()
-config.read(INI_PATH)
-
-FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
-username    = config['AUTH']['USERNAME']
-password    = config['AUTH']['PASSWORD']
-ssh_port    = int(config['PORT']['SSH_SVC'])
-num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 
 
 # End-to-end metrics
@@ -52,8 +42,17 @@ start_time = defaultdict(list)
 end_time = defaultdict(list)
 
 
-@app.route('/recv_monitor_data')
+#@app.route('/recv_monitor_data')
 def recv_mapping():
+    """
+    recv_mapping()
+
+    Receiving run-time profiling information from WAVE/HEFT for every task (task name, start time stats, end time stats)
+    
+    Raises:
+        Exception: failed processing in Flask
+    """
+
     global start_time
     global end_time
 
@@ -79,21 +78,33 @@ def recv_mapping():
         print(e)
         return "not ok"
     return "ok"
-
+app.add_url_rule('/recv_monitor_data', 'recv_mapping', recv_mapping)
 
 class MonitorRecv(multiprocessing.Process):
     def __init__(self):
         multiprocessing.Process.__init__(self)
 
     def run(self):
+        """
+        Start Flask server
+        """
         print("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
 
 class MyHandler(PatternMatchingEventHandler):
-
+    """
+    Handling the event when there is a new file generated in ``OUTPUT`` folder
+    """
 
     def process(self, event):
+        """
+        Log the time the file is created and calculate the execution time whenever there is an event.
+        
+        Args:
+            event: event to be watched for the ``OUTPUT`` folder
+        """
+
         global start_times
         global end_times
         global exec_times
@@ -132,14 +143,42 @@ class Watcher:
         self.observer = Observer()
 
     def run(self):
+        """
+        Monitoring ``INPUT`` folder for the incoming files.
+        
+        At the moment you have to manually place input files into the ``INPUT`` folder (which is under ``centralized_scheduler_with_task_profiler\``):
+        
+            .. code-block:: bash
+        
+                mv 1botnet.ipsum input/
+        
+        Once the file is there, it sends the file to the node performing the first task.
+        """
+
         event_handler = Handler()
         self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
         self.observer.start()
 
 class Handler(FileSystemEventHandler):
+    """
+        Handling the event when there is a new file generated in ``INPUT`` folder
+    """
 
     @staticmethod
     def on_any_event(event):
+        """
+        Whenever there is a new input file in ``INPUT`` folder, the function:
+
+        - Log the time the file is created
+
+        - Start the connection to the first scheduled node
+
+        - Copy the newly created file to the ``INPUT`` folder of the first scheduled node
+        
+        Args:
+            event (FileSystemEventHandler): monitored event
+        """
+
         if event.is_directory:
             return None
 
@@ -176,8 +215,27 @@ class Handler(FileSystemEventHandler):
 
             ssh.close()
 
+def main():
+    """
+        -   Read configurations (DAG info, node info) from ``nodes.txt`` and ``configuration.txt``
+        -   Monitor ``INPUT`` folder for the incoming files
+        -   Whenever there is a new file showing up in ``INPUT`` folder, copy the file to the ``INPUT`` folder of the first scheduled node.
+        -   Collect execution profiling information from the system.
+    """
 
-if __name__ == '__main__':
+    ##
+    ## Load all the confuguration
+    ##
+    INI_PATH = '/jupiter_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
+    username    = config['AUTH']['USERNAME']
+    password    = config['AUTH']['PASSWORD']
+    ssh_port    = int(config['PORT']['SSH_SVC'])
+    num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+
 
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
@@ -211,3 +269,7 @@ if __name__ == '__main__':
         observer.stop()
 
     observer.join()
+    
+if __name__ == '__main__':
+
+    main()

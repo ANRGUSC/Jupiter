@@ -1,12 +1,7 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import sys
 sys.path.append("../")
@@ -21,6 +16,9 @@ from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 
 def get_all_profilers():
+    """
+        This function loads all of the service ips of network profilers deployments.
+    """
 
     """
         This loads the node lists in use
@@ -74,7 +72,9 @@ def get_all_profilers():
         # At this point you should not have any of the profiler related service, pod, or deployment running
 
 def get_all_waves():
-
+    """
+        This function loads all of the service ips of WAVE deployments.
+    """
     mapping = {}
 
     """
@@ -127,6 +127,9 @@ def get_all_waves():
         # At this point you should not have any of the profiler related service, pod, or deployment running
 
 def get_all_execs():
+    """
+        This load all of the service ips of execution profiler deployments.
+    """
 
     mapping = {}
 

@@ -6,6 +6,7 @@ Circe Reference
 .. toctree::
    :maxdepth: 4
 
+   circe/circe_docker_files_generator
    circe/monitor
    circe/readconfig
    circe/rt_profiler_data_update

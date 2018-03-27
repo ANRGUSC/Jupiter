@@ -1,12 +1,8 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import sys
 sys.path.append("../")
 import jupiter_config
@@ -42,15 +38,14 @@ path1 = jupiter_config.APP_PATH + 'configuration.txt'
 path2 = jupiter_config.HERE + 'nodes.txt'
 
 def check_status_exec_profiler():
-
-    dag_info = k8s_read_config(path1)
-    dag = dag_info[1]
-
     """
         This loads the kubernetes instance configuration.
         In our case this is stored in admin.conf.
         You should set the config file path in the jupiter_config.py file.
     """
+    dag_info = k8s_read_config(path1)
+    dag = dag_info[1]
+
     config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
 
 
@@ -101,6 +96,9 @@ def check_status_exec_profiler():
 
 # if __name__ == '__main__':
 def k8s_exec_scheduler():
+    """
+        This script deploys execution profiler in the system. 
+    """
 
     dag_info = k8s_read_dag(path1)
 

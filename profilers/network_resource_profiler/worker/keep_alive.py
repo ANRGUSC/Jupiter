@@ -1,11 +1,10 @@
+"""This Function is used to keep the pods alive even after all process ends
 """
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
-## This Function is used to keep the pods alive even after all process ends
+__author__ = "Pradipta Ghosh and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import time
 
 while 1:

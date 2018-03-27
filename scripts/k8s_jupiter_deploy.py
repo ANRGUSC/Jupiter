@@ -1,12 +1,8 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import sys
 sys.path.append("../")
 import jupiter_config
@@ -30,9 +26,17 @@ from utilities import *
 from k8s_get_service_ips import *
 from functools import wraps
 
-static_mapping = jupiter_config.STATIC_MAPPING
+
 
 def task_mapping_decorator(f):
+    """Mapping the chosen scheduling modules
+    
+    Args:
+        f (TYPE): either HEFT or WAVE scheduling modules specified from ``jupiter_config.ini``
+    
+    Returns:
+        TYPE: chosen scheduling modules
+    """
     @wraps(f)
     def task_mapping(*args, **kwargs):
       if jupiter_config.SCHEDULER == 0:
@@ -44,19 +48,23 @@ def task_mapping_decorator(f):
 def empty_function():
     return []
 
-if jupiter_config.SCHEDULER == 0: # HEFT
-  task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
-  exec_profiler_function = k8s_exec_scheduler
-else:
-  task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
-  exec_profiler_function = empty_function
 
 
 
+def main():
+    """
+        Deploy all Jupiter components (WAVE, CIRCE, DRUPE) in the system.
+    """
+    static_mapping = jupiter_config.STATIC_MAPPING
 
-if __name__ == '__main__':
+    if jupiter_config.SCHEDULER == 0: # HEFT
+        task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
+        exec_profiler_function = k8s_exec_scheduler
+    else:# WAVE
+        task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
+        exec_profiler_function = empty_function
 
-  if not static_mapping:
+    if not static_mapping:
     """
         This loads the task graph and node list
     """
@@ -128,3 +136,7 @@ if __name__ == '__main__':
 
   # Start CIRCE
   k8s_circe_scheduler(dag,schedule)
+
+if __name__ == '__main__':
+    main()
+  

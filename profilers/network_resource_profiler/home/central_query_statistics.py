@@ -1,8 +1,11 @@
 """
- ** Copyright (c) 2017, Autonomous Networks Research Group. All rights reserved.
- **     contributor: Quynh Nguyen, Pradipta Ghosh, Bhaskar Krishnamachari
- **     Read license file in main directory for more details
+    This Script allows querrying network profiling information updated from the cenetral mongo database, table ``central_network_profiler``.
 """
+__author__ = "Quynh Nguyen, Pradipta Ghosh, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import os
 import csv
 import pymongo
@@ -14,16 +17,7 @@ import numpy as np
 import configparser
 from os import path
 
-##
-## Load all the confuguration
-##
-HERE     = path.abspath(path.dirname(__file__)) + "/"
-INI_PATH = HERE + 'jupiter_config.ini'
-config = configparser.ConfigParser()
-config.read(INI_PATH)
 
-MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
-MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
 
 
 class central_query_statistics():
@@ -31,6 +25,17 @@ class central_query_statistics():
         self.client_mongo = None
         self.db = None
     def do_query_quaratic(self,source,destination,file_size):
+        """Query network profiling information and use these info to predict transfer time given source node, destination node and file size.
+        
+        Args:
+            source (str): source IP address
+            destination (str): destination IP address
+            file_size (int): file size [Bytes]
+        
+        Returns:
+            TYPE: predicted transfer time [seconds]
+        """
+
         self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/') 
         self.db = self.client_mongo.central_network_profiler
         predicted = None
@@ -51,7 +56,17 @@ class central_query_statistics():
             exit()
         return predicted
 
-if __name__ == '__main__':
+def main():
+    """Load all the confuguration
+    """
+    HERE     = path.abspath(path.dirname(__file__)) + "/"
+    INI_PATH = HERE + 'jupiter_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+    MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+
     if len(sys.argv)<3:
         print('Please run the script as following: python central_query_statistics Source_Tag Destination_Tag FileSize[KB]')
         exit()
@@ -62,5 +77,7 @@ if __name__ == '__main__':
     predicted = d.do_query_quaratic(source,destination,file_size)
     msg = "Expected latency is %f [ms]" %predicted
     print(msg)
-    #d.do_update_iperf_manual() not yet needed
+    
+if __name__ == '__main__':
+    main()
 

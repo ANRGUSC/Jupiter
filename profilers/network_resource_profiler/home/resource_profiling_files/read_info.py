@@ -1,8 +1,7 @@
-'''
- * Copyright (c) 2017, Autonomous Networks Research Group. All rights reserved.
- *     contributor: Pradipta Ghosh, Jiatong Wang, Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-'''
+__author__ = "Jiatong Wang, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import requests
 import sys
@@ -13,20 +12,18 @@ import os
 import configparser
 from os import path
 
-##
-## Load all the confuguration
-##
-INI_PATH = '/network_profiling/jupiter_config.ini'
-config = configparser.ConfigParser()
-config.read(INI_PATH)
 
-MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
-MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
-FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
-
-node_ip = os.environ['SELF_IP']
 
 def open_file():
+    """
+        - Read node IP information from file. 
+        - Request resource profiling info for each node
+        - Append time stamp
+    
+    Returns:
+        list: resource profiling information for all of the nodes in the node list
+    """
+
     list=[]
     ip_path = sys.argv[1]
 
@@ -47,3 +44,15 @@ def open_file():
         # print list
         return list
 
+def main():
+    """Load all the configuration
+    """
+    INI_PATH = '/network_profiling/jupiter_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+    MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+    FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
+
+    node_ip = os.environ['SELF_IP']  

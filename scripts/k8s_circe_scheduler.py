@@ -1,12 +1,7 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import sys
 sys.path.append("../")
@@ -23,12 +18,12 @@ import yaml
 from kubernetes import client, config
 from pprint import *
 
-"""
+
+def check_status_circe(dag):
+    """
     This function prints out all the tasks that are not running.
     If all the tasks are running: return True; else return False.
-"""
-def check_status_circe(dag):
-    
+    """
 
     """
         This loads the kubernetes instance configuration.
@@ -75,6 +70,9 @@ def check_status_circe(dag):
 
 # if __name__ == '__main__':
 def k8s_circe_scheduler(dag_info , temp_info):
+    """
+        This script deploys CIRCE in the system. 
+    """
 
     """
         This loads the kubernetes instance configuration.

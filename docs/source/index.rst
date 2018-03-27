@@ -72,9 +72,6 @@ The main documentation for the site is organized into a couple sections:
    :caption: Jupiter API Reference
 
    Acirce
-   Adrupe
-   Awave
-   Ascripts
 
 
 

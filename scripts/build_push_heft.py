@@ -1,13 +1,8 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Quynh Nguyen
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import sys
 sys.path.append("../")
 
@@ -22,7 +17,8 @@ port_list.append(jupiter_config.FLASK_DOCKER)
 print('The list of ports to be exposed in the heft dockers are ', " ".join(port_list))
 
 def build_push_heft():
-
+    """Build HEFT home and worker image from Docker files and push them to the Dockerhub.
+    """
 
     os.chdir(jupiter_config.HEFT_PATH)
 

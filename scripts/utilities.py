@@ -1,3 +1,11 @@
+"""
+  This script contains all useful functions to be used in the system, for example, reading input files.
+"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import sys
 import jupiter_config
 import time
@@ -16,15 +24,16 @@ import requests
 import json
 from pprint import *
 
-##
-## @brief      Reads the configuration.txt file
-##
-## @param      configuration_file  The configuration file
-##
-## @return     dag_info
-##
-def k8s_read_config(configuration_file):
 
+def k8s_read_config(configuration_file):
+    """read the configuration  from ``configuration.txt`` file
+    
+    Args:
+        configuration_file (str): path of ``configuration.txt``
+    
+    Returns:
+        dict: DAG information 
+    """
     dag_info=[]
     config_file = open(configuration_file,'r')
     dag_size = int(config_file.readline())
@@ -56,11 +65,16 @@ def k8s_read_config(configuration_file):
     return dag_info
 
 
-"""
-  read the dag from the file input
-"""
-def k8s_read_dag(dag_info_file):
 
+def k8s_read_dag(dag_info_file):
+  """read the dag from the file input
+  
+  Args:
+      dag_info_file (str): path of DAG file
+  
+  Returns:
+      dict: DAG information 
+  """
   dag_info=[]
   config_file = open(dag_info_file,'r')
   dag_size = int(config_file.readline())
@@ -81,7 +95,14 @@ def k8s_read_dag(dag_info_file):
 
 
 def k8s_get_nodes(node_info_file):
-
+  """read the node info from the file input
+  
+  Args:
+      node_info_file (str): path of ``node.txt``
+  
+  Returns:
+      dict: node information 
+  """
   nodes = {}
   node_file = open(node_info_file, "r")
   for line in node_file:
@@ -93,6 +114,16 @@ def k8s_get_nodes(node_info_file):
     
 
 def k8s_get_hosts(dag_info_file, node_info_file, mapping):
+  """read the hosts info from the input files
+  
+  Args:
+      dag_info_file (str): path of ``configuration.txt``
+      node_info_file (str): path of ``node.txt``  
+      mapping (dict): mapping between task and assigned node 
+  
+  Returns:
+      dict: DAG information and its corresponding mapping
+  """
 
   dag_info = k8s_read_dag(dag_info_file)
   nodes = k8s_get_nodes(node_info_file)
@@ -114,7 +145,14 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
 
 
 def k8s_get_nodes_string(node_info_file):
-
+  """read the node info from the file input
+  
+  Args:
+      node_info_file (str): path of ``node.txt``
+  
+  Returns:
+      str: node information in string format
+  """
   nodes = ""
   node_file = open(node_info_file, "r")
   for line in node_file:

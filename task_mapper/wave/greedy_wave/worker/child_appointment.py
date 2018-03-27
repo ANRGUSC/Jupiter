@@ -1,14 +1,10 @@
 """
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pranav Sakulkar
- *      Jiatong Wang
- *      Pradipta Ghosh
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
+.. note:: This is the main script to run in every worker node for greedy WAVE.
 """
-
-# -*- coding: utf-8 -*-
+__author__ = "Pranav Sakulkar, Jiatong Wang, Pradipta Ghosh, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import json
 import re

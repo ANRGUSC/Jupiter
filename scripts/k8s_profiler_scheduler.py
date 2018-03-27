@@ -1,12 +1,8 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import sys
 sys.path.append("../")
 import jupiter_config
@@ -25,7 +21,8 @@ import os
 import jupiter_config
 
 def check_status_profilers():
-    
+    """Verify if all the network profilers have been deployed and UP in the system.
+    """
 
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes = read_node_list(path1)
@@ -74,6 +71,10 @@ def check_status_profilers():
     return result
 
 def k8s_profiler_scheduler(): 
+    """
+        Deploy DRUPE in the system. 
+    """
+
     """
         This loads the task graph and node list
     """

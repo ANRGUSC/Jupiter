@@ -1,3 +1,7 @@
+"""
+Static assignments for testing the Jupiter system.
+"""
+
 dag=['localpro',
  {'aggregate0': ['1',
                  'true',
