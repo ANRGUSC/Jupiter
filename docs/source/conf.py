@@ -19,14 +19,21 @@ import mock
 sys.path.insert(0, os.path.abspath('../../'))
 sys.path.insert(0, os.path.abspath('../../circe'))
 
-sys.path.insert(0, os.path.abspath('../../profilers/central'))
-sys.path.insert(0, os.path.abspath('../../profilers/central/resource_profiling_files'))
-sys.path.insert(0, os.path.abspath('../../profilers/droplet'))
+sys.path.insert(0, os.path.abspath('../../profilers/execution_profiler'))
+sys.path.insert(0, os.path.abspath('../../profilers/central/network_resource_profiler/home/resource_profiling_files'))
+sys.path.insert(0, os.path.abspath('../../profilers/central/network_resource_profiler/home'))
+sys.path.insert(0, os.path.abspath('../../profilers/central/network_resource_profiler/worker'))
 
 sys.path.insert(0, os.path.abspath('../../scripts'))
 
-sys.path.insert(0, os.path.abspath('../../wave/home'))
-sys.path.insert(0, os.path.abspath('../../wave/worker'))
+sys.path.insert(0, os.path.abspath('../../task_mapper/wave/random_wave/home'))
+sys.path.insert(0, os.path.abspath('../../task_mapper/wave/random_wave/worker'))
+
+sys.path.insert(0, os.path.abspath('../../task_mapper/wave/greedy_wave/home'))
+sys.path.insert(0, os.path.abspath('../../task_mapper/wave/greedy_wave/worker'))
+
+sys.path.insert(0, os.path.abspath('../../task_mapper/heft'))
+
 
 autodoc_mock_imports = ['numpy', 'paramiko','pymongo','netifaces','pandas','scp','flask','urllib','urllib.request',
                 'apscheduler', 'pyinotify','psutil','_thread','kubernetes','kubernetes.client','kubernetes.client.apis',

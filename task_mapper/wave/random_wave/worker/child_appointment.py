@@ -26,17 +26,6 @@ from pymongo import MongoClient
 import configparser
 from os import path
 
-##
-## Load all the confuguration
-##
-INI_PATH = '/jupiter_config.ini'
-
-config = configparser.ConfigParser()
-config.read(INI_PATH)
-
-FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
-FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
-MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
 
 
 app = Flask(__name__)
@@ -44,6 +33,19 @@ app = Flask(__name__)
 def prepare_global():
     """Prepare global information (Node info, relations between tasks)
     """
+
+    ##
+    ## Load all the confuguration
+    ##
+    INI_PATH = '/jupiter_config.ini'
+
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
+    FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
+    MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
+
 
     # Get ALL node info
     node_count = 0
@@ -100,7 +102,8 @@ def kill_thread():
 
 
 def init_folder():
-    """Initialize folders (``local``,``local_responsibility``), prepare ``local_children`` and ``local_mapping`` file.
+    """
+    Initialize folders ``local`` and ``local_responsibility``, prepare ``local_children`` and ``local_mapping`` file.
     
     Raises:
         Exception: ``ok`` if successful, ``not ok`` otherwise
@@ -206,7 +209,7 @@ def call_send_mapping(mapping, node):
 
 def watcher():
     """- thread to watch directory: ``local/task_responsibility``
-       - Write tasks to `local/local_children.txt` and `local/local_mapping.txt` that appear under the watching folder
+       - Write tasks to ``local/local_children.txt`` and ``local/local_mapping.txt`` that appear under the watching folder
     """
     pre_time = time.time()
 
@@ -401,7 +404,7 @@ def get_network_profile_data():
 def main():
     """
         - Prepare global information
-        - Initialize folders (``local``,``local_responsibility``), prepare ``local_children`` and ``local_mapping`` file.
+        - Initialize folders ``local`` and ``local_responsibility``, prepare ``local_children`` and ``local_mapping`` file.
         - Start thread to get resource profiling data
         - Start thread to get network profiling data
         - Start thread to watch directory: ``local/task_responsibility``

@@ -57,7 +57,7 @@ def monitor_neighbours():
 
 def monitor_local_resources():
     """
-    Obtain local resource stats(CPU, Memory usage and the lastest timestamp) from local node and store it to the variable `local_resources`
+    Obtain local resource stats (CPU, Memory usage and the lastest timestamp) from local node and store it to the variable ``local_resources``
     """
     global local_resources
     while True:
@@ -73,8 +73,10 @@ def monitor_local_resources():
             local_resources = res
         time.sleep(60) # Profile variables every minute
 
-#@app.route('/') # Send local stats
+#@app.route('/') 
 def performance():
+    """Send local stats
+    """
     print("Responding to the loal resource performance request")
     with lock:
         print(local_resources)
@@ -82,8 +84,10 @@ def performance():
     return js
 app.add_url_rule('/', 'performance', performance)
 
-#@app.route('/all') # Send all stats
+#@app.route('/all') 
 def all_performance():
+    """Send all stats
+    """
     with all_lock:
         if len(all_resources) == len(IPs) - 1:
             print("Sending resource stats for all neighbors")

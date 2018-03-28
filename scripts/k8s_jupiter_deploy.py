@@ -48,9 +48,6 @@ def task_mapping_decorator(f):
 def empty_function():
     return []
 
-
-
-
 def main():
     """
         Deploy all Jupiter components (WAVE, CIRCE, DRUPE) in the system.
@@ -64,78 +61,74 @@ def main():
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
         exec_profiler_function = empty_function
 
+    # This loads the task graph and node list
     if not static_mapping:
-    """
-        This loads the task graph and node list
-    """
-    path1 = jupiter_config.APP_PATH + 'configuration.txt'
-    path2 = jupiter_config.HERE + 'nodes.txt'
+        path1 = jupiter_config.APP_PATH + 'configuration.txt'
+        path2 = jupiter_config.HERE + 'nodes.txt'
+
+        # start the profilers
+        # profiler_ips = get_all_profilers()
+        profiler_ips = k8s_profiler_scheduler()
 
 
+        # start the execution profilers
+        # execution_ips = get_all_execs()
+        execution_ips = exec_profiler_function()
 
-    # start the profilers
-    # profiler_ips = get_all_profilers()
-    profiler_ips = k8s_profiler_scheduler()
-
-
-    # start the execution profilers
-    # execution_ips = get_all_execs()
-    execution_ips = exec_profiler_function()
-
-    print('*************************')
-    print('Network Profiling Information:')
-    print(profiler_ips)
-    print('Execution Profiling Information:')
-    print(execution_ips)
-    print('*************************')
+        print('*************************')
+        print('Network Profiling Information:')
+        print(profiler_ips)
+        print('Execution Profiling Information:')
+        print(execution_ips)
+        print('*************************')
 
 
-    node_names = k8s_get_nodes_string(path2)
-    print('*************************')
+        node_names = k8s_get_nodes_string(path2)
+        print('*************************')
 
-    #Start the task to node mapper
-    task_mapping_function(profiler_ips,execution_ips,node_names)
+        #Start the task to node mapper
+        task_mapping_function(profiler_ips,execution_ips,node_names)
 
-    """
-        Make sure you run kubectl proxy --port=8080 on a terminal.
-        Then this is link to get the task to node mapping
-    """
+        """
+            Make sure you run kubectl proxy --port=8080 on a terminal.
+            Then this is link to get the task to node mapping
+        """
 
-    line = "http://localhost:8080/api/v1/namespaces/"
-    line = line + jupiter_config.MAPPER_NAMESPACE + "/services/home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
-    time.sleep(5)
-    print(line)
-    while 1:
-        try:
-            # print("get the data from " + line)
-            r = requests.get(line)
-            mapping = r.json()
-            data = json.dumps(mapping)
-            # print(mapping)
-            # print(len(mapping))
-            if len(mapping) != 0:
-                if "status" not in data:
-                    break
-        except:
-            print("Some Exception")
-    pprint(mapping)
-    schedule = k8s_get_hosts(path1, path2, mapping)
-    dag = k8s_read_dag(path1)
-    dag.append(mapping)
-    print("Printing DAG:")
-    pprint(dag)
-    print("Printing schedule")
-    pprint(schedule)
-    print("End print")
+        line = "http://localhost:8080/api/v1/namespaces/"
+        line = line + jupiter_config.MAPPER_NAMESPACE + "/services/home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
+        time.sleep(5)
+        print(line)
+        while 1:
+            try:
+                # print("get the data from " + line)
+                r = requests.get(line)
+                mapping = r.json()
+                data = json.dumps(mapping)
+                # print(mapping)
+                # print(len(mapping))
+                if len(mapping) != 0:
+                    if "status" not in data:
+                        break
+            except:
+                print("Some Exception")
+        pprint(mapping)
+        schedule = k8s_get_hosts(path1, path2, mapping)
+        dag = k8s_read_dag(path1)
+        dag.append(mapping)
+        print("Printing DAG:")
+        pprint(dag)
+        print("Printing schedule")
+        pprint(schedule)
+        print("End print")
 
     
-  else:
-    import static_assignment
-    # dag = static_assignment.dag
-    # schedule = static_assignment.schedule
+    else:
+        import static_assignment
+        # dag = static_assignment.dag
+        # schedule = static_assignment.schedule
 
-  # Start CIRCE
-  k8s_circe_scheduler(dag,schedule)
+    # Start CIRCE
+    k8s_circe_scheduler(dag,schedule)
 
 if __name__ == '__main__':
     main()

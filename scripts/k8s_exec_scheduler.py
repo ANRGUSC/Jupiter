@@ -31,11 +31,7 @@ import jupiter_config
 
 
 
-configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
-taskmap = configs["taskname_map"]
 
-path1 = jupiter_config.APP_PATH + 'configuration.txt'
-path2 = jupiter_config.HERE + 'nodes.txt'
 
 def check_status_exec_profiler():
     """
@@ -328,4 +324,11 @@ def k8s_exec_scheduler():
     return(service_ips)
 
 if __name__ == '__main__':
+    
+    configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
+    taskmap = configs["taskname_map"]
+
+    path1 = jupiter_config.APP_PATH + 'configuration.txt'
+    path2 = jupiter_config.HERE + 'nodes.txt'
+
     k8s_exec_scheduler()

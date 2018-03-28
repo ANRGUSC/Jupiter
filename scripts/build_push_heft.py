@@ -9,12 +9,15 @@ sys.path.append("../")
 import os
 import jupiter_config
 
-sys.path.append(jupiter_config.HEFT_PATH)
-import heft_dockerfile_generator as dc
-port_list = []
-port_list.append(jupiter_config.SSH_DOCKER)
-port_list.append(jupiter_config.FLASK_DOCKER)
-print('The list of ports to be exposed in the heft dockers are ', " ".join(port_list))
+def prepare_global_info():
+    """Read configuration information
+    """
+    sys.path.append(jupiter_config.HEFT_PATH)
+    import heft_dockerfile_generator as dc
+    port_list = []
+    port_list.append(jupiter_config.SSH_DOCKER)
+    port_list.append(jupiter_config.FLASK_DOCKER)
+    print('The list of ports to be exposed in the heft dockers are ', " ".join(port_list))
 
 def build_push_heft():
     """Build HEFT home and worker image from Docker files and push them to the Dockerhub.
@@ -35,4 +38,5 @@ def build_push_heft():
 
 
 if __name__ == '__main__':
+    prepare_global_info()
     build_push_heft()
