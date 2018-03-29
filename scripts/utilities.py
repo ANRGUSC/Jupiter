@@ -115,9 +115,9 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
   """read the hosts info from the input files
   
   Args:
-      dag_info_file (str): path of ``configuration.txt``
-      node_info_file (str): path of ``node.txt``  
-      mapping (dict): mapping between task and assigned node 
+      - dag_info_file (str): path of ``configuration.txt``
+      - node_info_file (str): path of ``node.txt``  
+      - mapping (dict): mapping between task and assigned node 
   
   Returns:
       dict: DAG information and its corresponding mapping

@@ -149,7 +149,7 @@ CMD ["./start.sh"]
 
 def write_exec_worker_docker(**kwargs):
     """
-      Function to Generate the Dockerfile of the worker nodes
+      Function to Generate the Dockerfile of the worker nodes of Execution Profiler.
     """
     dfp = DockerfileParser(path='exec_worker.Dockerfile')
     dfp.content =template_worker.format(**kwargs)

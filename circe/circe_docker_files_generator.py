@@ -152,7 +152,7 @@ def write_circe_worker_docker(**kwargs):
 
 def write_circe_home_docker(**kwargs):
     """
-        Function to Generate the Dockerfile of the home/master node
+        Function to Generate the Dockerfile of the home/master node of CIRCE
     """
     dfp = DockerfileParser(path='home_node.Dockerfile')
     dfp.content =template_home.format(**kwargs)

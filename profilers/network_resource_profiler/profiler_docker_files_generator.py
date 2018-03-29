@@ -157,7 +157,7 @@ def write_profiler_worker_docker(**kwargs):
 
 def write_profiler_home_docker(**kwargs):
     """
-        Function to Generate the Dockerfile of the home/master node
+        Function to Generate the Dockerfile of the home/master node of Network Profiler.
     """
     dfp = DockerfileParser(path='profiler_home.Dockerfile')
     dfp.content =template_home.format(**kwargs)
