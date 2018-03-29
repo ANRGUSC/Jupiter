@@ -5,8 +5,6 @@ __version__ = "2.0"
 
 import sys
 sys.path.append("../")
-import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 import time
 import os
@@ -24,7 +22,8 @@ def check_status_circe(dag):
     This function prints out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
     """
-
+    import jupiter_config
+    sys.path.append(jupiter_config.CIRCE_PATH)
     """
         This loads the kubernetes instance configuration.
         In our case this is stored in admin.conf.
@@ -73,6 +72,8 @@ def k8s_circe_scheduler(dag_info , temp_info):
     """
         This script deploys CIRCE in the system. 
     """
+    import jupiter_config
+    sys.path.append(jupiter_config.CIRCE_PATH)
 
     """
         This loads the kubernetes instance configuration.

@@ -5,8 +5,6 @@ __version__ = "2.0"
 
 import sys
 sys.path.append("../")
-import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 from readconfig import *
 import yaml
@@ -19,6 +17,8 @@ def get_all_profilers():
     """
         This function loads all of the service ips of network profilers deployments.
     """
+    import jupiter_config
+    sys.path.append(jupiter_config.CIRCE_PATH)
 
     """
         This loads the node lists in use
@@ -75,6 +75,9 @@ def get_all_waves():
     """
         This function loads all of the service ips of WAVE deployments.
     """
+    import jupiter_config
+    sys.path.append(jupiter_config.CIRCE_PATH)
+
     mapping = {}
 
     """
@@ -130,6 +133,8 @@ def get_all_execs():
     """
         This load all of the service ips of execution profiler deployments.
     """
+    import jupiter_config
+    sys.path.append(jupiter_config.CIRCE_PATH)
 
     mapping = {}
 

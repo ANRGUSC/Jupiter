@@ -5,8 +5,7 @@ __version__ = "2.0"
 
 import sys
 sys.path.append("../")
-import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
+
 
 import time
 import os
@@ -23,7 +22,9 @@ import jupiter_config
 def check_status_profilers():
     """Verify if all the network profilers have been deployed and UP in the system.
     """
-
+    import jupiter_config
+    sys.path.append(jupiter_config.CIRCE_PATH)
+    
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes = read_node_list(path1)
 
@@ -74,6 +75,8 @@ def k8s_profiler_scheduler():
     """
         Deploy DRUPE in the system. 
     """
+    import jupiter_config
+    sys.path.append(jupiter_config.CIRCE_PATH)
 
     """
         This loads the task graph and node list

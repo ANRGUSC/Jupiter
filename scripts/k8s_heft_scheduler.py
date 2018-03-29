@@ -5,8 +5,6 @@ __version__ = "2.0"
 
 import sys
 sys.path.append("../")
-import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 import time
 import os
@@ -27,6 +25,8 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names):
     """
         This script deploys HEFT in the system. 
     """
+    import jupiter_config
+    sys.path.append(jupiter_config.CIRCE_PATH)
 
     """
         This loads the node list

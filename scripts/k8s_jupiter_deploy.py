@@ -5,7 +5,6 @@ __version__ = "2.0"
 
 import sys
 sys.path.append("../")
-import jupiter_config
 
 
 import time
@@ -52,6 +51,8 @@ def main():
     """
         Deploy all Jupiter components (WAVE, CIRCE, DRUPE) in the system.
     """
+    import jupiter_config
+    
     static_mapping = jupiter_config.STATIC_MAPPING
 
     if jupiter_config.SCHEDULER == 0: # HEFT
