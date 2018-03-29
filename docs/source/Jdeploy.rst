@@ -67,9 +67,7 @@ Step 4 : Setup APP Folder
 -------------------------
 
 You need to make sure that you have a ``APP_folder`` with all the task specific files
-inside the ``task_specific_files`` folder. The ``APP_folder`` needs to have a configuration.txt and a DAG_Scheduler.txt. The configuration.txt is used by CIRCE while the DAG_Scheduler.txt is used by WAVE. 
-
-.. warning:: We are currently working on merging these two files. 
+inside the ``task_specific_files`` folder. The ``APP_folder`` needs to have a ``configuration.txt``. 
 
 The ``APP_folder`` MUST also contain all executable files of the task graph under the ``scripts`` sub-folder. 
 You need to follow this exact folder structure to develop an APP for the Jupiter Orchestrator. 
@@ -80,8 +78,7 @@ You need to follow this exact folder structure to develop an APP for the Jupiter
 
     APP_folder
     |
-    |   configuration.txt
-    |   DAG_Scheduler.txt   
+    |   configuration.txt  
     |
     └───scripts
     |
@@ -91,6 +88,9 @@ You need to follow this exact folder structure to develop an APP for the Jupiter
 
 Step 5 : Setup the Dockers
 --------------------------
+
+Version 1.0
+^^^^^^^^^^^
 
 The dockerfiles can be found under the ``circe/`` folder.
 
@@ -125,12 +125,26 @@ Also change the following line to refer to your app:
 
     ADD task_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
 
+Version 2.0
+^^^^^^^^^^^
+In version 2.0, to simplify the process we have provided with the following scripts:
+    
+.. code-block:: text
+    :linenos:
+
+    circe/circe_docker_files_generator.py --- prepare Docker files for CIRCE
+    profilers/execution_profiler/exec_docker_files_generator.py --- for execution profiler
+    circe/network_resource_profiler/profiler_docker_files_generator.py --- for DRUPE 
+    task_mapper/heft/heft_docker_files_generator.py --- for HEFT
+
+These scripts will read the configuration information from ``jupiter_config.ini`` and ``jupiter_config.py`` to help generate corresponding Docker files for all the components. 
+
 
 Step 6 : Push the Dockers
 -------------------------
 
 Now, you need to build your Docker images. 
-There are currently six different docker images with two each for the profiler, wave, and circe.
+There are currently nine different docker images (two each for DRUPE, WAVE, CIRCE, execution profiler and one for HEFT).
 
 To build Docker images and push them to the Docker Hub repo, first login 
 to Docker Hub using your own credentials by running ``docker login``. Then, in the
@@ -153,7 +167,7 @@ Example:
     docker build -f home_node.Dockerfile . -t johndoe/home_node:v1
     docker push johndoe/home_node:v1
 
-The same thing needs to be done for the profiles and the WAVE files.
+The same thing needs to be done for the profilers, the WAVE and HEFT files.
 
 .. note:: To simplify the process we have provided with the following scripts:
     
@@ -163,8 +177,10 @@ The same thing needs to be done for the profiles and the WAVE files.
     scripts/build_push_circe.py --- Push CIRCE dockers only
     scripts/build push_profiler.py --- Push DRUPE dockers only
     scripts/build_push_wave.py --- Push WAVE dockers only
+    scripts/build_push_heft.py --- Push HEFT dockers only
+    scripts/build_push_exec.py --- Push execution profiler's  dockers only
 
-.. warning:: However, before running any of these four script you should update the ``jupiter_config`` file with your own docker names as well as dockerhub username. DO NOT run the script without crosschecking the config file.
+.. warning:: However, before running any of these scripts you should update the ``jupiter_config`` file with your own docker names as well as dockerhub username. DO NOT run the script without crosschecking the config file.
 
 Step 7 : Setup the Proxy
 ------------------------
@@ -180,16 +196,17 @@ Now, you have to create a kubernetes proxy. You can do that by running the follw
 Step 8 : Create the Namespaces
 ------------------------------
 
-You need to create three difference namespaces in your Kubernetes cluster 
-that will be dedicated to the profiler, WAVE, and CIRCE deployments, respectively.
+You need to create difference namespaces in your Kubernetes cluster 
+that will be dedicated to the DRUPE, execution profiler, scheduler mapper, and CIRCE deployments, respectively.
 You can create these namespaces commands similar to the following:
 
 .. code-block:: bash
     :linenos:
 
-     kubectl create namespace johndoe-circe
      kubectl create namespace johndoe-profiler
-     kubectl create namespace johndoe-wave
+     kubectl create namespace johndoe-exec
+     kubectl create namespace johndoe-mapper
+     kubectl create namespace johndoe-circe
 
 .. warning:: You also need to change the respective lines in the ``jupiter_config.py`` file.
 
@@ -198,11 +215,26 @@ You can create these namespaces commands similar to the following:
 
     DEPLOYMENT_NAMESPACE    = 'johndoe-circe'
     PROFILER_NAMESPACE      = 'johndoe-profiler'
-    WAVE_NAMESPACE          = 'johndoe-wave'
+    MAPPER_NAMESPACE        = 'johndoe-mapper'
+    EXEC_NAMESPACE          = 'johndoe-exec'
 
 
 Step 9 : Run the Jupiter Orchestrator
 -------------------------------------
+
+You must choose the scheduler mapper from ``config.ini``. Currently, there are 3 options from the scheduling algorithm list: centralized (HEFT), distributed(random WAVE, greedy WAVE).
+
+.. code-block:: text
+    :linenos:
+
+    [CONFIG]
+        STATIC_MAPPING = 0
+        SCHEDULER = 1
+
+    [SCHEDULER_LIST]
+        HEFT = 0
+        WAVE_RANDOM = 1
+        WAVE_GREEDY = 2
 
 Next, you can simply run:
 
@@ -216,8 +248,7 @@ Next, you can simply run:
 Step 9 : Alternate
 ------------------
 
-If you do not want to use WAVE for the scheduler and design your own, you can do that by simply using the ``static_assignment.py`` and changing the ``static_mapping`` flag to ``True``. 
-To that you have to pipe your scheduling output to the static_assignment.py while conforming to the sample dag and sample schedule structure. Then you can run:
+If you do not want to use WAVE for the scheduler and design your own, you can do that by simply using the ``static_assignment.py``. You must do that by setting ``STATIC_MAPPING`` to ``1`` from ``jupiter_config.ini``. You have to pipe your scheduling output to the static_assignment.py while conforming to the sample dag and sample schedule structure. Then you can run:
 
 .. code-block:: bash
     :linenos:
