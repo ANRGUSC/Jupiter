@@ -18,7 +18,6 @@ from delete_all_circe_deployments import *
 from delete_all_profilers import *
 from delete_all_waves import *
 from pprint import *
-import jupiter_config
 import requests
 import json
 from pprint import *
