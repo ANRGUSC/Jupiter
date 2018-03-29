@@ -7,7 +7,6 @@ __license__ = "GPL"
 __version__ = "2.0"
 
 import sys
-import jupiter_config
 import time
 import os
 from os import path
