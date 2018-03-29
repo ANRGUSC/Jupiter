@@ -9,9 +9,7 @@ sys.path.append("../")
 from jupiter_config import *
 import configparser
 
-INI_PATH  = APP_PATH + 'app_config.ini'
-config = configparser.ConfigParser()
-config.read(INI_PATH)
+
 
 
 def add_app_specific_ports(dep):
@@ -85,6 +83,10 @@ def write_exec_service_specs(**kwargs):
     Returns:
         dict: loaded configuration 
     """
+
+    INI_PATH  = APP_PATH + 'app_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
 
     # insert your values
     specific_yaml = template_worker.format(ssh_svc = SSH_SVC,

@@ -9,9 +9,7 @@ sys.path.append("../")
 from jupiter_config import *
 import configparser
 
-INI_PATH  = APP_PATH + 'app_config.ini'
-config = configparser.ConfigParser()
-config.read(INI_PATH)
+
 
 def add_app_specific_ports(dep):
   """Add information of specific ports for the application
@@ -77,6 +75,9 @@ def write_circe_home_specs(**kwargs):
     Returns:
         dict: loaded configuration 
     """
+    INI_PATH  = APP_PATH + 'app_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
 
     specific_yaml = template_home.format(ssh_port = SSH_DOCKER, 
                                     flask_port = FLASK_DOCKER,
