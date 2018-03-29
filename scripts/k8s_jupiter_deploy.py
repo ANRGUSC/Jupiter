@@ -29,13 +29,13 @@ from functools import wraps
 
 
 def task_mapping_decorator(f):
-    """Mapping the chosen scheduling modules
+    """Mapping the chosen scheduling modules based on ``jupiter_config.SCHEDULER`` in ``jupiter_config.ini``
     
     Args:
-        f (TYPE): either HEFT or WAVE scheduling modules specified from ``jupiter_config.ini``
+        f (function): either HEFT or WAVE scheduling modules specified from ``jupiter_config.ini``
     
     Returns:
-        TYPE: chosen scheduling modules
+        function: chosen scheduling modules
     """
     @wraps(f)
     def task_mapping(*args, **kwargs):

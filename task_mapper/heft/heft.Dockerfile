@@ -27,7 +27,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN mkdir -p heft
 ADD task_mapper/heft/start.sh /heft/start.sh
 ADD task_mapper/heft/keep_alive.py /heft/keep_alive.py
-ADD task_mapper/heft/master.py  /heft/master.py
+ADD task_mapper/heft/master_heft.py  /heft/master.py
 ADD task_mapper/heft/heft_dup.py /heft/heft_dup.py
 ADD task_mapper/heft/create_input.py /heft/create_input.py
 ADD task_mapper/heft/read_input_heft.py /heft/read_input_heft.py

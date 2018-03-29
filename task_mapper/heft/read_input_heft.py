@@ -1,8 +1,12 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """
- ** Copyright (c) 2017, Autonomous Networks Research Group. All rights reserved.
- **     contributor: Quynh Nguyen, Aleksandra Knezevic, Bhaskar Krishnamachari
- **     Read license file in main directory for more details
+   This file read the generated TGFF file as an input of HEFT
 """
+__author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import os
 import pymongo
@@ -19,21 +23,6 @@ import csv
 import configparser
 from os import path
 
-##
-## Load all the confuguration
-##
-HERE     = path.abspath(path.dirname(__file__)) + "/"
-INI_PATH = HERE + 'jupiter_config.ini'
-
-config = configparser.ConfigParser()
-config.read(INI_PATH)
-
-EXC_FPORT = int(config['PORT']['FLASK_SVC'])
-MONGO_SVC_PORT = config['PORT']['MONGO_SVC']
-
-
-# from node_info import *
-print("starting the main thread on port")
 
 app = Flask(__name__)
 
@@ -42,13 +31,18 @@ app = Flask(__name__)
 
 network_info = []
 execution_info = []
-debug = True
-
-def output(msg):
-    if debug:
-        print(msg)
 
 def get_global_info():
+    """Get all information of profilers (network profilers, execution profilers)
+    
+    Returns:
+        -   list: profiler_ip - IPs of network profilers
+        -   list: exec_home_ip - IPs of execution profilers
+        -   int:  num_nodes - number of nodes
+        -   str:  MONGO_SVC_PORT - Mongo service port
+        -   dict: network_map - mapping of node IPs and node names
+        -   dict: node_list - node list
+    """
     profiler_ip = os.environ['PROFILERS'].split(' ')
     profiler_ip = [info.split(":") for info in profiler_ip]
     exec_home_ip = os.environ['EXECUTION_HOME_IP']
@@ -60,8 +54,14 @@ def get_global_info():
     return profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list
 
 def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
+    """Collect the execution profile from the home execution profiler's MongoDB
+    
+    Args:
+        - exec_home_ip (str): IP of execution profiler home
+        - MONGO_SVC_PORT (str): Mongo service port
+        - num_nodes (int): number of nodes
+    """
 
-    # Collect the execution profile from the home execution profiler's MongoDB
     num_profilers = 0
     conn = False
     while not conn:
@@ -91,7 +91,7 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
             # Node ID, Task, Execution Time, Output size
             info_to_csv=[col,record['Task'],record['Duration [sec]'],str(record['Output File [Kbit]'])]
             execution_info.append(info_to_csv)
-    output('Execution information has already been provided')
+    print('Execution information has already been provided')
     # print(execution_info)
     with open('/heft/execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
@@ -99,8 +99,14 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
     return
 
 def get_network_profile_data(profiler_ip, MONGO_SVC_PORT, network_map):
-    # Collect the network profile from local MongoDB peer
-    output(profiler_ip)
+    """Collect the network profile from local MongoDB peer
+    
+    Args:
+        - profiler_ip (list): IPs of network profilers
+        - MONGO_SVC_PORT (str): Mongo service port
+        - network_map (dict): mapping of node IPs and node names
+    """
+    print(profiler_ip)
     for ip in profiler_ip:
         print('Check Network Profiler IP: '+ip[0]+ '-' +ip[1])
         client_mongo = MongoClient('mongodb://'+ip[1]+':'+MONGO_SVC_PORT+'/')
@@ -112,7 +118,7 @@ def get_network_profile_data(profiler_ip, MONGO_SVC_PORT, network_map):
             time.sleep(60)
             collection = db.collection_names(include_system_collections=False)
             num_nb = len(collection)-1
-        output('--- Number of neighbors: '+str(num_nb))
+        print('--- Number of neighbors: '+str(num_nb))
         num_rows = db[ip[1]].count()
         while num_rows < num_nb:
             print('--- Network profiler regression info not yet loaded into MongoDB!')
@@ -124,7 +130,7 @@ def get_network_profile_data(profiler_ip, MONGO_SVC_PORT, network_map):
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             info_to_csv=[network_map[record['Source[IP]']],record['Source[IP]'],network_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info.append(info_to_csv)
-    output('Network information has already been provided')
+    print('Network information has already been provided')
     #print(network_info)
     with open('/heft/network_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
@@ -132,18 +138,33 @@ def get_network_profile_data(profiler_ip, MONGO_SVC_PORT, network_map):
     return
 
 if __name__ == '__main__':
+    """
+        - Load all the confuguration
+        - Read task list from DAG file and global information
+        - Read network profiler information
+        - Read execution Profiler Information
+    """
 
+    ## Load all the configuration
+    HERE     = path.abspath(path.dirname(__file__)) + "/"
+    INI_PATH = HERE + 'jupiter_config.ini'
+
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    EXC_FPORT = int(config['PORT']['FLASK_SVC'])
+    MONGO_SVC_PORT = config['PORT']['MONGO_SVC']
 
     print('---------------------------------------------')
     print('\n Step 1: Read task list from DAG file and global information \n')
 
     configuration_path='/heft/dag.txt'
     profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list = get_global_info()
-    output(profiler_ip)
-    output(exec_home_ip)
-    output("Num nodes :" + str(num_nodes))
-    output(network_map)
-    output(node_list)
+    print(profiler_ip)
+    print(exec_home_ip)
+    print("Num nodes :" + str(num_nodes))
+    print(network_map)
+    print(node_list)
 
     print('------------------------------------------------------------')
     print("\n Step 2: Read network profiler information : \n")

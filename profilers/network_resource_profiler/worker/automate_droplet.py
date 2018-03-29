@@ -27,29 +27,7 @@ from os import path
 
 import configparser
 
-##
-## Load all the confuguration
-##
-INI_PATH = '/network_profiling/jupiter_config.ini'
 
-config = configparser.ConfigParser()
-config.read(INI_PATH)
-
-username    = config['AUTH']['USERNAME']
-password    = config['AUTH']['PASSWORD']
-ssh_port    = int(config['PORT']['SSH_SVC'])
-num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
-retry       = 1
-dir_local   = "generated_test"
-dir_remote  = "networkprofiling/received_test"
-dir_remote_central = "/network_profiling/parameters"
-dir_scheduler      = "scheduling/scheduling.txt"
-
-
-MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
-MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
-FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
-FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 
 
 def does_file_exist_in_dir(path):
@@ -59,7 +37,7 @@ def does_file_exist_in_dir(path):
         path (str): directory path
     
     Returns:
-        bool: True if exist, False otherwise
+        bool: ``True`` if exist, ``False`` otherwise
     """
 
     return any(isfile(join(path, i)) for i in listdir(path))
@@ -336,6 +314,31 @@ class MyEventHandler(pyinotify.ProcessEvent):
 def main():
     """Start watching process for ``scheduling`` folder.
     """
+
+    ##
+    ## Load all the confuguration
+    ##
+    INI_PATH = '/network_profiling/jupiter_config.ini'
+
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    username    = config['AUTH']['USERNAME']
+    password    = config['AUTH']['PASSWORD']
+    ssh_port    = int(config['PORT']['SSH_SVC'])
+    num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+    retry       = 1
+    dir_local   = "generated_test"
+    dir_remote  = "networkprofiling/received_test"
+    dir_remote_central = "/network_profiling/parameters"
+    dir_scheduler      = "scheduling/scheduling.txt"
+
+
+    MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+    MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+    FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
+    FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+
     # watch manager
     wm = pyinotify.WatchManager()
     wm.add_watch('scheduling', pyinotify.ALL_EVENTS, rec=True)

@@ -23,6 +23,7 @@ scripts
    k8s_jupiter_teardown
    k8s_profiler_scheduler
    k8s_wave_scheduler
+   keep_alive
    static_assignment
    utilities
    write_circe_service_specs

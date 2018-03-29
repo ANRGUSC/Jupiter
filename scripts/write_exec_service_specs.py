@@ -80,7 +80,7 @@ def write_exec_service_specs(**kwargs):
     
 
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 
@@ -140,7 +140,7 @@ def write_exec_service_specs_home(**kwargs):
     
 
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 

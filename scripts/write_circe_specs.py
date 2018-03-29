@@ -72,7 +72,7 @@ def write_circe_home_specs(**kwargs):
       -   kubernetes.io/hostname: {host}
     
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 
@@ -156,7 +156,7 @@ def write_circe_deployment_specs(**kwargs):
       -   kubernetes.io/hostname: {host}
     
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 

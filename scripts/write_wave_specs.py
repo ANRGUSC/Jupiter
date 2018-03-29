@@ -65,7 +65,7 @@ def write_wave_specs(**kwargs):
       -   PROFILER: {profiler_ip}
     
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 

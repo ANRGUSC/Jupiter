@@ -35,6 +35,11 @@ import jupiter_config
 
 def check_status_exec_profiler():
     """
+    This function prints out all the tasks that are not running.
+    If all the tasks are running: return ``True``; else return ``False``.
+    """
+
+    """
         This loads the kubernetes instance configuration.
         In our case this is stored in admin.conf.
         You should set the config file path in the jupiter_config.py file.

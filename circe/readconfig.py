@@ -7,7 +7,7 @@ import os
 
 def read_config(path1,path2):
     """
-    Reads configuration.txt and nodes.txt
+    Reads ``configuration.txt`` and ``nodes.txt``
 
     Args:
         - path1 (str): the path to ``configuration.txt``
@@ -70,7 +70,7 @@ def read_config(path1,path2):
 
 def read_node_list(path2):
     """
-    Reads nodes.txt
+    Reads ``nodes.txt``
 
     Args:
         path2 (str): the path to nodes.txt

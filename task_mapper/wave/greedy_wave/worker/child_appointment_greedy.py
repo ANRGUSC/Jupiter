@@ -22,83 +22,98 @@ from pymongo import MongoClient
 import configparser
 from os import path
 
-##
-## Load all the confuguration
-##
-INI_PATH = '/jupiter_config.ini'
-
-config = configparser.ConfigParser()
-config.read(INI_PATH)
-
-FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
-FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
-MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
-
-
 app = Flask(__name__)
 
-'''
-'''
 
-# Get ALL node info
-node_count = 0
-nodes = {}
-ip_to_node_name = {}
-docker_ip_to_node_name = {}
+def prepare_global():
+    """Prepare global information (Node info, relations between tasks)
+    """
 
-for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
-    if node_name == "":
-        continue
-    nodes[node_name] = node_ip + ":" + str(FLASK_SVC)
-    ip_to_node_name[node_ip] = node_name
-    node_count += 1
+    ##
+    ## Load all the confuguration
+    ##
+    INI_PATH = '/jupiter_config.ini'
 
-master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
-print("Nodes", nodes)
-print("os.en:", os.environ['PROFILER'])
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
 
-#
-threshold = 15
-resource_data = {}
-is_resource_data_ready = False
-network_profile_data = {}
-is_network_profile_data_ready = False
-
-#
-node_id = -1
-node_name = ""
-debug = True
-
-# control relations between tasks
-control_relation = {}
-
-local_children = "local/local_children.txt"
-local_mapping = "local/local_mapping.txt"
-local_responsibility = "local/task_responsibility"
-
-# lock for sync file operation
-lock = threading.Lock()
-kill_flag = False
+    FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
+    FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
+    MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
 
 
-@app.route('/assign_task')
+    # Get ALL node info
+    node_count = 0
+    nodes = {}
+    ip_to_node_name = {}
+    docker_ip_to_node_name = {}
+
+    for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
+        if node_name == "":
+            continue
+        nodes[node_name] = node_ip + ":" + str(FLASK_SVC)
+        ip_to_node_name[node_ip] = node_name
+        node_count += 1
+
+    master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
+    print("Nodes", nodes)
+    print("os.en:", os.environ['PROFILER'])
+
+    #
+    threshold = 15
+    resource_data = {}
+    is_resource_data_ready = False
+    network_profile_data = {}
+    is_network_profile_data_ready = False
+
+    #
+    node_id = -1
+    node_name = ""
+    debug = True
+
+    # control relations between tasks
+    control_relation = {}
+
+    local_children = "local/local_children.txt"
+    local_mapping = "local/local_mapping.txt"
+    local_responsibility = "local/task_responsibility"
+
+    # lock for sync file operation
+    lock = threading.Lock()
+    kill_flag = False
+
+
+#@app.route('/assign_task')
 def assign_task():
+    """Request assigned node for a specific task, write task assignment in local file at ``local_responsibility/task_name``.
+    
+    Raises:
+        Exception: ``ok`` if successful, ``not ok`` if either the request or the writing is failed
+    """
     try:
         task_name = request.args.get('task_name')
         write_file(local_responsibility + "/" + task_name, [], "w+")
         return "ok"
     except Exception:
         return "not ok"
+app.add_url_rule('/assign_task', 'assign_task', assign_task)
 
-
-@app.route('/kill_thread')
+#@app.route('/kill_thread')
 def kill_thread():
+    """assign kill thread as True
+    """
     global kill_flag
     kill_flag = True
     return "ok"
 
 
 def init_folder():
+    """
+    Initialize folders ``local`` and ``local_responsibility``, prepare ``local_children`` and ``local_mapping`` file.
+    
+    Raises:
+        Exception: ``ok`` if successful, ``not ok`` otherwise
+    """
     print("Trying to initialize folders here")
     try:
         if not os.path.exists("./local"):
@@ -118,8 +133,13 @@ def init_folder():
         return "not ok"
 
 
-@app.route('/recv_control')
+#@app.route('/recv_control')
 def recv_control():
+    """Get assigned control function, prepare file ``DAG/parent_controller.txt`` storing parent control information of tasks 
+    
+    Raises:
+        Exception: ``ok`` if successful, ``not ok`` otherwise
+    """
     try:
         control = request.args.get('control')
         items = re.split(r'#', control)
@@ -139,9 +159,18 @@ def recv_control():
     except Exception:
         return "not ok"
     return "ok"
-
+app.add_url_rule('/recv_control', 'recv_control', recv_control)
 
 def assign_task_to_remote(assigned_node, task_name):
+    """Assign task to remote node
+    
+    Args:
+        - assigned_node (str): Node to be assigned
+        - task_name (str): task name 
+    
+    Raises:
+        Exception: request if successful, ``not ok`` if failed
+    """
     try:
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
@@ -156,6 +185,17 @@ def assign_task_to_remote(assigned_node, task_name):
 
 
 def call_send_mapping(mapping, node):
+    """
+    - A function that used for intermediate data transfer.
+    - Return mapping information for specific node.
+    
+    Args:
+        - mapping (dict): mapping information (task-assigned node)
+        - node (str): node name
+    
+    Raises:
+        Exception: request if successful, ``not ok`` if failed
+    """
     try:
         url = "http://" + master_host + "/recv_mapping"
         params = {'mapping': mapping, "node": node}
@@ -169,8 +209,11 @@ def call_send_mapping(mapping, node):
     return res
 
 
-# thread to watch directory: local/task_responsibility
+
 def watcher():
+    """- thread to watch directory: ``local/task_responsibility``
+       - Write tasks to ``local/local_children.txt`` and ``local/local_mapping.txt`` that appear under the watching folder
+    """
     pre_time = time.time()
 
     tmp_mapping = ""
@@ -222,8 +265,10 @@ def watcher():
         time.sleep(10)
 
 
-# thread to assign todo task to nodes
+
 def distribute():
+    """thread to assign todo task to remote nodes
+    """
     done_dict = set()
     start = int(time.time())
 
@@ -281,8 +326,13 @@ def distribute():
 
         time.sleep(10)
 
-#send summary of task assignment info to master node and print
+
 def send_task_assign_info_to_master(info):
+    """send summary of task assignment info to master node and print
+    
+    Args:
+        info (str): node information
+    """
     try:
         tmp_home_ip = os.environ['HOME_IP']
         url = "http://" + tmp_home_ip + ":" + str(FLASK_SVC) + "/recv_task_assign_info?assign=" + info
@@ -295,8 +345,15 @@ def send_task_assign_info_to_master(info):
 
     output('Send task assign info to master failed')
 
-#Calculate network delay + resource delay
 def get_most_suitable_node(size):
+    """Calculate network delay + resource delay
+    
+    Args:
+        size (int): file size
+    
+    Returns:
+        str: result_node_name - assigned node for the current task
+    """
     weight_network = 1
     weight_cpu = 1
     weight_memory = 1
@@ -361,6 +418,14 @@ def get_most_suitable_node(size):
 
 
 def scan_dir(directory):
+    """Scan the directory, append all file names to list ``tasks``
+    
+    Args:
+        directory (str): directory path
+    
+    Returns:
+        list: tasks - List of all file names in the directory
+    """
     tasks = []
     for file_name in os.listdir(directory):
         tasks.append(file_name)
@@ -368,10 +433,19 @@ def scan_dir(directory):
 
 
 def create_file():
+    """Do nothing/ pass
+    """
     pass
 
 
 def write_file(file_name, content, mode):
+    """Write the content to file
+    
+    Args:
+        - file_name (str): file path
+        - content (str): content to be written
+        - mode (str): write mode 
+    """
     lock.acquire()
     file = open(file_name, mode)
     for line in content:
@@ -380,8 +454,16 @@ def write_file(file_name, content, mode):
     lock.release()
 
 
-# get all lines in a file
 def read_file(file_name):
+    """get all lines in a file
+    
+    Args:
+        file_name (str): file path
+    
+    Returns:
+        str: file_contents - all lines in a file
+    """
+
     lock.acquire()
     file_contents = []
     file = open(file_name)
@@ -395,16 +477,18 @@ def read_file(file_name):
 
 
 def output(msg):
+    """if debug is True, print the msg
+    
+    Args:
+        msg (str): message to be printed
+    """
     if debug:
         print(msg)
 
 
-# @app.route('/')
-# def hello_world():
-#     return 'Hello World!'
-
-
 def get_resource_data():
+    """Collect resource profiling information
+    """
     print("Starting resource profile collection thread")
     # Requsting resource profiler data using flask for its corresponding profiler node
     st = int(time.time())
@@ -434,7 +518,8 @@ def get_resource_data():
 
 
 def get_network_profile_data():
-    # Collect the network profile from local MongoDB peer
+    """Collect the network profile from local MongoDB peer
+    """
     print('Collecting Netowrk Monitoring Data from MongoDB')
     # MONGO_SVC = 6200
     start_ts = int(time.time())
@@ -490,9 +575,9 @@ def get_network_profile_data():
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
 
-
-# used to send (node_name - profiler ip) mapping to master node
 def send_node_name2docker_ip_to_master():
+    """used to send (node_name - profiler ip) mapping to master node
+    """
     flag = False
     try_times = 0
     while True:
@@ -523,8 +608,9 @@ def send_node_name2docker_ip_to_master():
         print("Send node_name to docker_ip mapping to master succeed")
 
 
-# get all the (profiler ip - node name) mapping from master node
 def get_node_name2docker_ip_mapping_from_master():
+    """get all the (profiler ip - node name) mapping from master node
+    """
     flag = False
     try_times = 0
     while True:
@@ -555,6 +641,8 @@ def get_node_name2docker_ip_mapping_from_master():
 
 
 def sync_docker_ip2node_name_info():
+    """Waiting for all the other nodes report docker ip to node name mapping to master
+    """
     send_node_name2docker_ip_to_master()
     for i in range(10):
         print("Waiting for all the other nodes report docker ip to node name mapping to master")

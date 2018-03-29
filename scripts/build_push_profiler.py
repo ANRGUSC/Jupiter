@@ -24,6 +24,9 @@ def build_push_profiler():
     """Build DRUPE home and worker image from Docker files and push them to the Dockerhub.
     """
     
+    os.system("cp " + jupiter_config.SCRIPT_PATH + "keep_alive.py " 
+                    + jupiter_config.NETR_PROFILER_PATH + "worker/keep_alive.py")
+
     os.chdir(jupiter_config.NETR_PROFILER_PATH)
 
     dc.write_profiler_home_docker(username = jupiter_config.USERNAME,
@@ -43,5 +46,6 @@ def build_push_profiler():
                                  + jupiter_config.PROFILER_WORKER_IMAGE)
     os.system("sudo docker push " + jupiter_config.PROFILER_WORKER_IMAGE)
 
+    os.system("rm worker/keep_alive.py")
 if __name__ == '__main__':
     build_push_profiler()

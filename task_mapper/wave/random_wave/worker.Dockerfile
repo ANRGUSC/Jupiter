@@ -8,7 +8,7 @@ ARG port_expose=8888
 EXPOSE $port_expose
 
 RUN ls -la /
-COPY worker/child_appointment.py /
+COPY worker/child_appointment_random.py /child_appointment.py
 COPY worker/start.sh /
 
 ADD jupiter_config.ini /jupiter_config.ini

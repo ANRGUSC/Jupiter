@@ -7,7 +7,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 ADD home/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY home/master.py /
+COPY home/master_random.py /master.py
 
 RUN mkdir -p DAG
 COPY DAG.txt DAG/DAG_application.txt

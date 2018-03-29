@@ -18,7 +18,7 @@ import requests
 import configparser
 from os import path
 
-
+app = Flask(__name__)
 
 def monitor_neighbours():
     """
@@ -116,8 +116,6 @@ def main():
     MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
     FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
-
-    app = Flask(__name__)
 
     all_resources = {} #Storage for observations for all_resources
     # Key is the IP address and value is the dictionary of resouces for that IP

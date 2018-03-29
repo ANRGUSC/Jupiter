@@ -7,15 +7,15 @@ import time, os
 
 def re_exe(cmd, inc = 60):
 	"""Perform the command every interval
-    
-    Args:
-        - cmd (str): command name
-        - inc (int, optional): interval time
-    """
+	
+	Args:
+		- cmd (str): command name
+		- inc (int, optional): interval time
+	"""
 
-    while True:
-        os.system(cmd)
-        time.sleep(inc)
+	while True:
+		os.system(cmd)
+		time.sleep(inc)
 
 def main():
 	"""

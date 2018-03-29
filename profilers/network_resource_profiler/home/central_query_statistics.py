@@ -28,12 +28,12 @@ class central_query_statistics():
         """Query network profiling information and use these info to predict transfer time given source node, destination node and file size.
         
         Args:
-            source (str): source IP address
-            destination (str): destination IP address
-            file_size (int): file size [Bytes]
+            -   source (str): source IP address
+            -   destination (str): destination IP address
+            -   file_size (int): file size [Bytes]
         
         Returns:
-            TYPE: predicted transfer time [seconds]
+            float: predicted transfer time [seconds]
         """
 
         self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/') 

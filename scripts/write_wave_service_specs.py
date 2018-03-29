@@ -37,7 +37,7 @@ def write_wave_service_specs(**kwargs):
     
 
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 

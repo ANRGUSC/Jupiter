@@ -20,9 +20,10 @@ sys.path.insert(0, os.path.abspath('../../'))
 sys.path.insert(0, os.path.abspath('../../circe'))
 
 sys.path.insert(0, os.path.abspath('../../profilers/execution_profiler'))
-sys.path.insert(0, os.path.abspath('../../profilers/central/network_resource_profiler/home/resource_profiling_files'))
-sys.path.insert(0, os.path.abspath('../../profilers/central/network_resource_profiler/home'))
-sys.path.insert(0, os.path.abspath('../../profilers/central/network_resource_profiler/worker'))
+sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler'))
+sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler/home/resource_profiling_files'))
+sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler/home'))
+sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler/worker'))
 
 sys.path.insert(0, os.path.abspath('../../scripts'))
 

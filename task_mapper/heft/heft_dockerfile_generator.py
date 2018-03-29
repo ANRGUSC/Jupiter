@@ -1,10 +1,7 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+__author__ = "Pradipta Ghosh and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 from pprint import pprint
 from dockerfile_parse import DockerfileParser
@@ -41,7 +38,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN mkdir -p heft
 ADD task_mapper/heft/start.sh /heft/start.sh
 ADD task_mapper/heft/keep_alive.py /heft/keep_alive.py
-ADD task_mapper/heft/master.py  /heft/master.py
+ADD task_mapper/heft/master_heft.py  /heft/master.py
 ADD task_mapper/heft/heft_dup.py /heft/heft_dup.py
 ADD task_mapper/heft/create_input.py /heft/create_input.py
 ADD task_mapper/heft/read_input_heft.py /heft/read_input_heft.py
@@ -65,12 +62,15 @@ CMD ["./start.sh"]
 ############################################ DOCKER GENERATORS #########################################################
 
 def write_heft_docker(**kwargs):
-    dfp = DockerfileParser(path='heft.Dockerfile')
-    dfp.content =template_heft.format(**kwargs)
-    # print(dfp.content)
+		"""
+				Function to Generate the Dockerfile of HEFT
+		"""
+		dfp = DockerfileParser(path='heft.Dockerfile')
+		dfp.content =template_heft.format(**kwargs)
+		# print(dfp.content)
 
 if __name__ == '__main__':
-    write_heft_docker(username = 'root',
-                      password = 'PASSWORD',
-                      app_file = 'app_specific_files/network_monitoring',
-                      ports = '22 8888')
+		write_heft_docker(username = 'root',
+											password = 'PASSWORD',
+											app_file = 'app_specific_files/network_monitoring',
+											ports = '22 8888')

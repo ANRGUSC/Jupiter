@@ -96,7 +96,7 @@ def write_exec_specs_non_dag_tasks(**kwargs):
     
 
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 
@@ -186,7 +186,7 @@ def write_exec_specs_home_control(**kwargs):
       -   ALL_PROFILERS_NAMES: {allprofiler_names}
 
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 
@@ -255,7 +255,7 @@ def write_exec_specs(**kwargs):
       -   HOME_NODE: {home_node_ip}
 
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 

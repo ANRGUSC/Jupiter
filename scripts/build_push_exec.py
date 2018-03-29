@@ -39,6 +39,9 @@ def prepare_global_info():
 def build_push_exec():
     """Build execution profiler home and worker image from Docker files and push them to the Dockerhub.
     """
+    os.system("cp " + jupiter_config.SCRIPT_PATH + "keep_alive.py " 
+                    + jupiter_config.EXEC_PROFILER_PATH + "keep_alive.py")
+
     os.chdir(jupiter_config.EXEC_PROFILER_PATH )
 
     dc.write_exec_home_docker(username = jupiter_config.USERNAME,
@@ -59,7 +62,7 @@ def build_push_exec():
                                  + jupiter_config.EXEC_WORKER_IMAGE)
     os.system("sudo docker push " + jupiter_config.EXEC_WORKER_IMAGE)
 
-    # os.system("rm *.Dockerfile")
+    os.system("rm keep_alive.py")
 
 if __name__ == '__main__':
     prepare_global_info()

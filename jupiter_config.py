@@ -1,15 +1,12 @@
 """
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Quynh Nguyen
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
+Top level config file (leave this file at the root directory). ``import config`` on the top of your file to include the global information included here.
+
 """
-# Top level config file (leave this file at the root directory). `import config`
-# on the top of your file to include the global information included here.
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 
 from os import path
 import os
@@ -45,6 +42,7 @@ EXEC_PROFILER_PATH      = HERE + 'profilers/execution_profiler/'
 CIRCE_PATH              = HERE + 'circe/'
 HEFT_PATH               = HERE + 'task_mapper/heft/'
 WAVE_PATH               = HERE + 'task_mapper/wave/random_wave/'
+SCRIPT_PATH             = HERE + 'scripts/'
 
 if SCHEDULER == 1:
     WAVE_PATH           = HERE + 'task_mapper/wave/random_wave/'
@@ -84,5 +82,6 @@ EXEC_WORKER_IMAGE       = 'docker.io/johndoe/exec_worker:v1'
 # Heft docker image
 HEFT_IMAGE              = 'docker.io/johndoe/heft:v1'
 
+# Application folder 
 APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
 APP_NAME                = 'app_specific_files/network_monitoring_app'

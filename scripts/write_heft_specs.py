@@ -55,7 +55,7 @@ def write_heft_specs(**kwargs):
       -   HOME_IP: {home_ip}
     
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 

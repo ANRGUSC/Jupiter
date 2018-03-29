@@ -36,7 +36,7 @@ def write_heft_service_specs(**kwargs):
       -   app: {label}
     
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 

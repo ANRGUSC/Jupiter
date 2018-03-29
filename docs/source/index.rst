@@ -1,6 +1,6 @@
 
 Welcome to Jupiter!
-===================================
+===================
 
 `Jupiter`_ is a Central orchestrator for Dispersed Computing that uses `Docker`_ containers and `Kubernetes`_ (K8s). 
 
@@ -32,6 +32,7 @@ The main documentation for the site is organized into a couple sections:
    Jteardown
    Jstructure
    Jreferences
+   Jexample
    Jtroubleshooting
    Jacknowledge
    Jlicense
@@ -72,8 +73,8 @@ The main documentation for the site is organized into a couple sections:
    :caption: Jupiter API Reference
 
    Acirce
-   Adrupe
-   Awave
+   Aprofilers
+   Ataskmapper
    Ascripts
 
 

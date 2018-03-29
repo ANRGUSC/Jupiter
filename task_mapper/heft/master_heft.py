@@ -1,3 +1,13 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+"""
+   This file implements HEFT code in the kubernettes system.
+"""
+__author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import heft_dup
 import os
 import time
@@ -7,31 +17,17 @@ from random import randint
 import configparser
 from os import path
 
-
-NODE_NAMES = os.environ["NODE_NAMES"]
-node_info = NODE_NAMES.split(":")
-
-##
-## Load all the confuguration
-##
-HERE     = path.abspath(path.dirname(__file__)) + "/"
-INI_PATH = HERE + 'jupiter_config.ini'
-
-config = configparser.ConfigParser()
-config.read(INI_PATH)
-
-FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
-MONGO_SVC_PORT = config['PORT']['MONGO_SVC']
-
-
-# from node_info import *
-print("starting the main thread on port")
-
 app = Flask(__name__)
 
-'''
-'''
 def read_file(file_name):
+    """Read file content to a list
+    
+    Args:
+        file_name (str): path of file
+    
+    Returns:
+        list: file content 
+    """
     file_contents = []
     file = open(file_name)
     line = file.readline()
@@ -40,27 +36,36 @@ def read_file(file_name):
         line = file.readline()
     file.close()
     return file_contents
-"""
-This module is a test module. You should take three steps:
-1. Instantiating a HEFT objects.
-2. Calling run() method.
-3. Calling display_result() method.
-"""
-application = read_file("dag.txt")
-MAX_TASK_NUMBER = int(application[0])
-# MAX_TASK_NUMBER = 41 # Total number of tasks in the DAG ## TODO : Automate
+    
+
+
 assignments = {}
 
-@app.route('/')
+#@app.route('/')
 def return_assignment():
+    """Return the current assignments have been done until the request time
+    
+    Returns:
+        json: assignments of tasks and corresponding nodes
+    """
     print("Recieved request for current mapping. Current mappings done:", len(assignments))
     print(assignments)
     if len(assignments) == MAX_TASK_NUMBER:
         return json.dumps(assignments)
     else:
         return json.dumps(dict())
+app.add_url_rule('/', 'return_assignment', return_assignment)
 
 def get_global_info():
+    """Get global information (network profilers and execution profilers)
+    
+    Returns:
+        - str: profiler_ip - IPs of network profilers
+        - str: exec_home_ip - IP of execution profiler
+        - int: num_nodes - number of nodes
+        - dict: network_map - mapping between node IPs and node names
+        - list: node_list - list of nodes
+    """
     profiler_ip = os.environ['PROFILERS'].split(' ')
     profiler_ip = [info.split(":") for info in profiler_ip]
     exec_home_ip = os.environ['EXECUTION_HOME_IP']
@@ -71,6 +76,14 @@ def get_global_info():
     return profiler_ip,exec_home_ip,num_nodes,network_map,node_list
 
 def get_taskmap():
+    """Get the task map from ``config.json`` and ``dag.txt`` files.
+    
+    Returns:
+        - dict: tasks - DAG dictionary
+        - list: task_order - (DAG) task list in the order of execution
+        - list: super_tasks 
+        - list: non_tasks - tasks not belong to DAG
+    """
     configs = json.load(open('/heft/config.json'))
     task_map = configs['taskname_map']
     execution_map = configs['exec_profiler']
@@ -110,12 +123,36 @@ def get_taskmap():
     print("non tasks", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
-if __name__ == '__main__':
+def main():
+    """
+        - Load all the confuguration
+        - Check whether the input TGFF file has been generated
+        - Assign random master and slaves for now
+    """
+    NODE_NAMES = os.environ["NODE_NAMES"]
+    node_info = NODE_NAMES.split(":")
+
+    application = read_file("dag.txt")
+    MAX_TASK_NUMBER = int(application[0])
+
+    ##
+    ## Load all the confuguration
+    ##
+    HERE     = path.abspath(path.dirname(__file__)) + "/"
+    INI_PATH = HERE + 'jupiter_config.ini'
+
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
+    MONGO_SVC_PORT = config['PORT']['MONGO_SVC']
+
     tgff_file = '/heft/input.tgff'
     output_file = '/heft/input_to_CIRCE.txt'
     tasks, task_order, super_tasks, non_tasks = get_taskmap()
     configuration_path='/heft/dag.txt'
     profiler_ip,exec_home_ip,num_nodes,network_map,node_list = get_global_info()
+    
     while True:
         if os.path.isfile(tgff_file):
             heft_scheduler = heft_dup.HEFT(tgff_file)
@@ -133,3 +170,6 @@ if __name__ == '__main__':
             time.sleep(15)
 
     app.run(host='0.0.0.0', port = int(FLASK_PORT)) # TODO?
+
+if __name__ == '__main__':
+    main()

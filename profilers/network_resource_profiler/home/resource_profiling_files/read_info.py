@@ -15,44 +15,44 @@ from os import path
 
 
 def open_file():
-    """
-        - Read node IP information from file. 
-        - Request resource profiling info for each node
-        - Append time stamp
-    
-    Returns:
-        list: resource profiling information for all of the nodes in the node list
-    """
+	"""
+		- Read node IP information from file. 
+		- Request resource profiling info for each node
+		- Append time stamp
+	
+	Returns:
+		list: resource profiling information for all of the nodes in the node list
+	"""
 
-    list=[]
-    ip_path = sys.argv[1]
+	list=[]
+	ip_path = sys.argv[1]
 
-    with open(ip_path, "r") as ins:
-        for line in ins:
-            if node_ip == line:
-                continue
+	with open(ip_path, "r") as ins:
+		for line in ins:
+			if node_ip == line:
+				continue
 
-            line = line.strip('\n')
-            print("get the data from http://"+line+ ":" + str(FLASK_SVC))
-            r = requests.get("http://"+line+":" + str(FLASK_SVC))
-            result = r.json()
-            result['ip']=line
-            result['last_update']=datetime.datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')
-            data=json.dumps(result)
-            print(result)
-            list.append(data)
-        # print list
-        return list
+			line = line.strip('\n')
+			print("get the data from http://"+line+ ":" + str(FLASK_SVC))
+			r = requests.get("http://"+line+":" + str(FLASK_SVC))
+			result = r.json()
+			result['ip']=line
+			result['last_update']=datetime.datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')
+			data=json.dumps(result)
+			print(result)
+			list.append(data)
+		# print list
+		return list
 
 def main():
-    """Load all the configuration
-    """
-    INI_PATH = '/network_profiling/jupiter_config.ini'
-    config = configparser.ConfigParser()
-    config.read(INI_PATH)
+	"""Load all the configuration
+	"""
+	INI_PATH = '/network_profiling/jupiter_config.ini'
+	config = configparser.ConfigParser()
+	config.read(INI_PATH)
 
-    MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
-    MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
-    FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
+	MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+	MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+	FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
 
-    node_ip = os.environ['SELF_IP']  
+	node_ip = os.environ['SELF_IP']  

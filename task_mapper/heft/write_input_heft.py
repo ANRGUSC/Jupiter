@@ -1,8 +1,12 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 """
- ** Copyright (c) 2017, Autonomous Networks Research Group. All rights reserved.
- **     contributor: Quynh Nguyen, Aleksandra Knezevic, Bhaskar Krishnamachari
- **     Read license file in main directory for more details
+   This file generate the TGFF file required as an input of HEFT
 """
+__author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import os
 import sys
@@ -16,13 +20,6 @@ from flask import Flask, request
 import csv
 import os
 
-NODE_NAMES = os.environ["NODE_NAMES"]
-node_info = NODE_NAMES.split(":")
-node_ids = {v:k for k,v in enumerate(node_info)}
-
-# from node_info import *
-print("starting the main thread on port")
-
 app = Flask(__name__)
 
 '''
@@ -30,14 +27,19 @@ app = Flask(__name__)
 
 network_info = []
 execution_info = []
-debug = True
 
-
-def output(msg):
-    if debug:
-        print(msg)
 
 def get_global_info():
+    """Get all information of profilers (network profilers, execution profilers)
+    
+    Returns:
+        -   list: profiler_ip - IPs of network profilers
+        -   list: exec_home_ip - IPs of execution profilers
+        -   int:  num_nodes - number of nodes
+        -   str:  MONGO_SVC_PORT - Mongo service port
+        -   dict: network_map - mapping of node IPs and node names
+        -   dict: node_list - node list
+    """
     profiler_ip = os.environ['PROFILERS'].split(' ')
     profiler_ip = [info.split(":") for info in profiler_ip]
     exec_home_ip = os.environ['EXECUTION_HOME_IP']
@@ -48,6 +50,14 @@ def get_global_info():
     return profiler_ip,exec_home_ip,num_nodes,network_map,node_list
 
 def get_taskmap():
+    """Get the task map from ``config.json`` and ``dag.txt`` files.
+    
+    Returns:
+        - dict: tasks - DAG dictionary
+        - list: task_order - (DAG) task list in the order of execution
+        - list: super_tasks 
+        - list: non_tasks - tasks not belong to DAG
+    """
     configs = json.load(open('/heft/config.json'))
     task_map = configs['taskname_map']
     execution_map = configs['exec_profiler']
@@ -81,19 +91,29 @@ def get_taskmap():
     return tasks, task_order, super_tasks
 
 def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,task_list,tasks):
-
+    """Generate the TGFF file
+    
+    Args:
+        - tgff_file (str): file of output TGFF file
+        - num_nodes (int): number of nodes 
+        - network_info (list): network profling information
+        - execution_info (list): execution profiling information
+        - node_list (list): list of nodes
+        - task_list (list): (DAG) task list in the order of execution
+        - tasks (list): DAG dictionary 
+    """
     target = open(tgff_file, 'w')
     target.write('@TASK_GRAPH 0 {')
     target.write("\n")
     target.write('\tAPERIODIC')
     target.write("\n\n")
 
-    output(task_list)
+    print(task_list)
     task_map = ['t0_%d'%(i) for i in range(0,len(task_list))]
     task_ID_dict = dict(zip(task_list,range(0,len(task_list))))
     task_dict = dict(zip(task_list, task_map))
-    output(task_dict)
-    output(task_ID_dict)
+    print(task_dict)
+    print(task_ID_dict)
 
     computation_matrix =[]
     for i in range(0, len(task_list)):
@@ -107,8 +127,8 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
         computation_matrix[task_ID_dict[row[1]]][node_ids[row[0]] - 1] = int(float(row[2])*10) 
         #100000
         task_size[row[1]] = row[3]
-    output(task_size)
-    output(computation_matrix)
+    print(task_size)
+    print(computation_matrix)
 
     for i in range(0,len(task_list)):
         line = "\tTASK %s\tTYPE %d \n" %(task_list[i], i)
@@ -153,29 +173,31 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
     target.close()
 
     num_task, task_names, num_node, comp_cost, rate, data, quaratic_profile = init(tgff_file)
-    output('Checking the written information')
-    output(num_task)
-    # output(num_processor)
-    output(comp_cost)
-    output(rate)
-    output(data)
-    output(quaratic_profile)
+    print('Checking the written information')
+    print(num_task)
+    print(comp_cost)
+    print(rate)
+    print(data)
+    print(quaratic_profile)
 
     return
 
 if __name__ == '__main__':
 
+    NODE_NAMES = os.environ["NODE_NAMES"]
+    node_info = NODE_NAMES.split(":")
+    node_ids = {v:k for k,v in enumerate(node_info)}
 
     print('---------------------------------------------')
     print('\n Read task list from DAG file, Non-DAG info and global information \n')
 
     configuration_path='/heft/dag.txt'
     profiler_ip,exec_home_ip,num_nodes,network_map,node_list = get_global_info()
-    # output(profiler_ip)
-    # output(exec_home_ip)
-    # output("Num nodes :" + str(num_nodes))
-    # output(network_map)
-    # output(node_list)
+    # print(profiler_ip)
+    # print(exec_home_ip)
+    # print("Num nodes :" + str(num_nodes))
+    # print(network_map)
+    # print(node_list)
     tasks, task_order, super_tasks = get_taskmap()
 
     print('---------------------------------------------')
@@ -186,11 +208,11 @@ if __name__ == '__main__':
             with open('/heft/network_log.txt','r') as f:
                 reader = csv.reader(f)
                 network_info = list(reader)
-                #output(network_info)
+                #print(network_info)
             with open('/heft/execution_log.txt','r') as f:
                 reader = csv.reader(f)
                 execution_info = list(reader)
-                #output(execution_info)
+                #print(execution_info)
             # fix non-DAG tasks (temporary approach)
             new_execution = []
             for row in execution_info:

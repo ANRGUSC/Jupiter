@@ -68,7 +68,7 @@ def write_profiler_specs(**kwargs):
       -   SELF_IP: {serv_ip}
     
     Args:
-        **kwargs: list of key value pair
+        ``**kwargs``: list of key value pair
     
     Returns:
         dict: loaded configuration 

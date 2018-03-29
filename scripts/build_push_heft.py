@@ -22,7 +22,9 @@ def prepare_global_info():
 def build_push_heft():
     """Build HEFT home and worker image from Docker files and push them to the Dockerhub.
     """
-
+    os.system("cp " + jupiter_config.SCRIPT_PATH + "keep_alive.py " 
+                    + jupiter_config.HEFT_PATH + "keep_alive.py")
+    
     os.chdir(jupiter_config.HEFT_PATH)
 
     dc.write_heft_docker(username = jupiter_config.USERNAME,
@@ -34,6 +36,7 @@ def build_push_heft():
                                  + jupiter_config.HEFT_IMAGE)
     os.system("sudo docker push " + jupiter_config.HEFT_IMAGE)
 
+    os.system("rm keep_alive.py")
     # os.system("rm Dockerfile")
 
 
