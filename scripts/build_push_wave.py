@@ -7,12 +7,13 @@ import sys
 sys.path.append("../")
 
 import os
-import jupiter_config
+
 
 
 def build_push_wave():
     """Build WAVE home and worker image from Docker files and push them to the Dockerhub.
     """
+    import jupiter_config
     os.system("cp " + jupiter_config.APP_PATH + "configuration.txt " 
                     + jupiter_config.WAVE_PATH + "DAG.txt")
 

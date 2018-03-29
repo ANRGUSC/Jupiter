@@ -5,7 +5,6 @@ __version__ = "2.0"
 
 import sys
 sys.path.append("../")
-import jupiter_config
 
 from utilities import *
 
@@ -19,7 +18,7 @@ from kubernetes.client.rest import ApiException
 def delete_all_exec():
     """Tear down all execution profiler deployments.
     """
-
+    import jupiter_config
     """
         This loads the task graph
     """

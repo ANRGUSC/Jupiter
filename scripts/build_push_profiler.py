@@ -5,13 +5,12 @@ __version__ = "2.0"
 
 import sys
 sys.path.append("../")
-
-import jupiter_config
 import os
 
 def prepare_global_info():
     """Read configuration information
     """
+    import jupiter_config
     sys.path.append(jupiter_config.NETR_PROFILER_PATH)
     import profiler_docker_files_generator as dc
     port_list = []

@@ -5,8 +5,6 @@ __version__ = "2.0"
 
 import sys
 sys.path.append("../")
-import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 from readconfig import *
 import yaml
@@ -18,6 +16,9 @@ from kubernetes.client.rest import ApiException
 def delete_all_profilers():
     """Tear down all DRUPE deployments.
     """
+    import jupiter_config
+    sys.path.append(jupiter_config.CIRCE_PATH)
+
     
     """
         This loads the node lists in use

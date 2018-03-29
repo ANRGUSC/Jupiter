@@ -5,13 +5,14 @@ __version__ = "2.0"
 
 import sys
 sys.path.append("../")
-import jupiter_config
 import os
 import configparser
 
 def prepare_global_info():
     """Read configuration information from ``app_config.ini``
     """
+    import jupiter_config
+    
     INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)

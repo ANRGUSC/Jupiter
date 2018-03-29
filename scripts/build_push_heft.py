@@ -7,11 +7,14 @@ import sys
 sys.path.append("../")
 
 import os
-import jupiter_config
+
 
 def prepare_global_info():
     """Read configuration information
     """
+
+    import jupiter_config
+    
     sys.path.append(jupiter_config.HEFT_PATH)
     import heft_dockerfile_generator as dc
     port_list = []
