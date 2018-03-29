@@ -2,7 +2,7 @@
 Welcome to Jupiter!
 ===================
 
-`Jupiter`_ is a Central orchestrator for Dispersed Computing that uses `Docker`_ containers and `Kubernetes`_ (K8s). 
+`Jupiter`_ is an Orchestrator for Dispersed Computing that uses `Docker`_ containers and `Kubernetes`_ (K8s). 
 
 The code is open source, and `available on GitHub`_.
 

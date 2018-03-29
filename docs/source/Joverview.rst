@@ -4,7 +4,7 @@ Overview
 Components
 ==========
 
-The Jupiter system has three main components: Profilers, Scheduler Mapper and `CIRCE`_ Dispatcher.
+`Jupiter`_ is an Orchestrator for Dispersed Computing that uses `Docker`_ containers and `Kubernetes`_ (K8s). The Jupiter system has three main components: Profilers, Scheduler Mapper and `CIRCE`_ Dispatcher.
 
 - Profilers are tools used to collect information about the system.
 
@@ -19,6 +19,9 @@ The Jupiter system has three main components: Profilers, Scheduler Mapper and `C
 
 - `CIRCE`_ is a dispatcher tool for dispersed computing, which can deploy pipelined computations described in the form of a directed acyclic graph (DAG) on multiple geographically dispersed computers (compute nodes). CIRCE deploys each task on the corresponding compute node (from the output of WAVE), uses input and output queues for pipelined execution, and takes care of the data transfer between different tasks.
 
+.. _Jupiter: https://github.com/ANRGUSC/Jupiter
+.. _Docker: https://docs.docker.com/
+.. _Kubernetes: https://kubernetes.io/docs/home/
 .. _DRUPE: https://github.com/ANRGUSC/DRUPE
 .. _WAVE: https://github.com/ANRGUSC/WAVE
 .. _CIRCE: https://github.com/ANRGUSC/CIRCE
