@@ -7,6 +7,7 @@ import sys
 sys.path.append("../")
 import os
 import configparser
+import exec_docker_files_generator as dc
 
 def prepare_global_info():
     """Read configuration information from ``app_config.ini``
@@ -17,8 +18,7 @@ def prepare_global_info():
     config.read(INI_PATH)
 
     sys.path.append(jupiter_config.EXEC_PROFILER_PATH)
-    import exec_docker_files_generator as dc
-
+    
     port_list_home = []
     port_list_home.append(jupiter_config.SSH_DOCKER)
     port_list_home.append(jupiter_config.MONGO_DOCKER)
