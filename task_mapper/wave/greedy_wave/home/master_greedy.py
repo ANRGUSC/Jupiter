@@ -25,6 +25,29 @@ app = Flask(__name__)
 
 '''
 '''
+# get all lines in a file
+def read_file(file_name):
+    """
+    Get all lines in a file
+    
+    Args:
+        file_name (str): file path
+    
+    Returns:
+        str: file_contents - all lines in a file
+    """
+    
+    lock.acquire()
+    file_contents = []
+    file = open(file_name)
+    line = file.readline()
+    while line:
+        file_contents.append(line)
+        line = file.readline()
+    file.close()
+    lock.release()
+    return file_contents
+
 def prepare_global():
     """
     Prepare global information (Node info, relations between tasks, initial task)
@@ -39,12 +62,16 @@ def prepare_global():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
+    global FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host
+
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
     MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
 
     # from node_info import *
     print("starting the main thread on port")
+
+    
 
     # Get ALL node info
     node_count = 0
@@ -60,10 +87,14 @@ def prepare_global():
     master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
     print("Nodes", nodes)
 
+    global node_id, node_name, debug
+
     #
     node_id = -1
     node_name = ""
     debug = True
+
+    global control_relation, children, parents, init_tasks, local_children, local_mapping, local_responsibility
 
     # control relations between tasks
     control_relation = {}
@@ -78,20 +109,11 @@ def prepare_global():
     local_mapping = "local/local_mapping.txt"
     local_responsibility = "local/task_responsibility"
 
+    global lock, assigned_tasks, application, MAX_TASK_NUMBER,assignments
+    
     # lock for sync file operation
     lock = threading.Lock()
-    # get all lines in a file
-    def read_file(file_name):
-        lock.acquire()
-        file_contents = []
-        file = open(file_name)
-        line = file.readline()
-        while line:
-            file_contents.append(line)
-            line = file.readline()
-        file.close()
-        lock.release()
-        return file_contents
+    
 
 
     assigned_tasks = {}

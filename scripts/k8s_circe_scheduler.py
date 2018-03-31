@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -15,6 +15,8 @@ from write_circe_specs import *
 import yaml
 from kubernetes import client, config
 from pprint import *
+import jupiter_config
+
 
 
 def check_status_circe(dag):
@@ -22,7 +24,9 @@ def check_status_circe(dag):
     This function prints out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
     """
-    import jupiter_config
+
+    jupiter_config.set_globals()
+
     sys.path.append(jupiter_config.CIRCE_PATH)
     """
         This loads the kubernetes instance configuration.
@@ -72,7 +76,9 @@ def k8s_circe_scheduler(dag_info , temp_info):
     """
         This script deploys CIRCE in the system. 
     """
-    import jupiter_config
+
+    jupiter_config.set_globals()
+    
     sys.path.append(jupiter_config.CIRCE_PATH)
 
     """

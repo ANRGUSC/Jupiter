@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -6,26 +6,30 @@ __version__ = "2.0"
 import sys
 sys.path.append("../")
 
-from readconfig import *
+# from readconfig import *
 import yaml
 from kubernetes import client, config
 from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
+import jupiter_config
 
 def get_all_profilers():
     """
         This function loads all of the service ips of network profilers deployments.
     """
-    import jupiter_config
+    
+    jupiter_config.set_globals()
+
     sys.path.append(jupiter_config.CIRCE_PATH)
 
+    import readconfig
     """
         This loads the node lists in use
     """
     mapping = {}
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = read_node_list(path1)
+    nodes = readconfig.read_node_list(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -75,8 +79,10 @@ def get_all_waves():
     """
         This function loads all of the service ips of WAVE deployments.
     """
-    import jupiter_config
+    
+    jupiter_config.set_globals()
     sys.path.append(jupiter_config.CIRCE_PATH)
+    import readconfig
 
     mapping = {}
 
@@ -84,7 +90,7 @@ def get_all_waves():
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = read_node_list(path1)
+    nodes = readconfig.read_node_list(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -133,8 +139,9 @@ def get_all_execs():
     """
         This load all of the service ips of execution profiler deployments.
     """
-    import jupiter_config
+    jupiter_config.set_globals()
     sys.path.append(jupiter_config.CIRCE_PATH)
+    import readconfig
 
     mapping = {}
 
@@ -142,7 +149,7 @@ def get_all_execs():
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = read_node_list(path1)
+    nodes = readconfig.read_node_list(path1)
 
     """
         This loads the kubernetes instance configuration.

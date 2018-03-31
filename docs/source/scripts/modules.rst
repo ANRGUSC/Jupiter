@@ -10,7 +10,7 @@ scripts
    build_push_jupiter
    build_push_profiler
    build_push_wave
-   delete_all_circe_deployments
+   delete_all_circe
    delete_all_exec
    delete_all_heft
    delete_all_profilers

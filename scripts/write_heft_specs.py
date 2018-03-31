@@ -6,7 +6,7 @@ __version__ = "2.0"
 import yaml
 import sys
 sys.path.append("../")
-from jupiter_config import *
+import jupiter_config
 
 
 template = """
@@ -60,8 +60,9 @@ def write_heft_specs(**kwargs):
     Returns:
         dict: loaded configuration 
     """
-
-    specific_yaml = template.format(flask_port = FLASK_DOCKER,
+    jupiter_config.set_globals()
+    
+    specific_yaml = template.format(flask_port = jupiter_config.FLASK_DOCKER,
                                     **kwargs)
     
     dep = yaml.load(specific_yaml)

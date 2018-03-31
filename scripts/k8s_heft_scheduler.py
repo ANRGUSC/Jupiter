@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar, Jason A Tran, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -11,7 +11,7 @@ import os
 from os import path
 from multiprocessing import Process
 from write_heft_service_specs import *
-from readconfig import *
+#from readconfig import *
 from write_heft_specs import *
 from kubernetes import client, config
 from pprint import *
@@ -25,16 +25,16 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names):
     """
         This script deploys HEFT in the system. 
     """
-    import jupiter_config
+    jupiter_config.set_globals()
     sys.path.append(jupiter_config.CIRCE_PATH)
-
+    import readconfig
     """
         This loads the node list
     """
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = read_node_list(path2)
+    nodes = readconfig.read_node_list(path2)
     pprint(nodes)
 
     """

@@ -59,13 +59,13 @@ class Processor:
 class HEFT:
     """A class of scheduling algorithm
     """
-    
+
     def __init__(self, filename):
         """
         Initialize some parameters.
         """
         NODE_NAMES = os.environ["NODE_NAMES"]
-        node_info = NODE_NAMES.split(":")
+        self.node_info = NODE_NAMES.split(":")
         self.num_task, self.task_names, self.num_processor, comp_cost, self.rate, self.data,self.quaratic_profile = init(filename)
 
         self.tasks = [Task(n) for n in range(self.num_task)]
@@ -278,7 +278,7 @@ class HEFT:
                 self.processors[dup_task.processor_num].time_line.append(
                                 Duration(-1, dup_task.ast, dup_task.aft))
                 self.processors[processor_num].time_line.sort(cmp=lambda x, y: cmp(x.start, y.start))
-                print('task %d dup on %s' % (pre_task.number, node_info[processor_num]))
+                print('task %d dup on %s' % (pre_task.number, self.node_info[processor_num]))
 
     def reschedule(self):
         """
@@ -339,14 +339,14 @@ class HEFT:
                 makespan = t.aft
 
         for p in self.processors:
-            print('%s:' % (node_info[p.number + 1]))
+            print('%s:' % (self.node_info[p.number + 1]))
             for duration in p.time_line:
                 if duration.task_num != -1:
                     print('task %d : ast = %d, aft = %d' % (duration.task_num + 1,
                                                             duration.start, duration.end))
 
         for dup in self.dup_tasks:
-            print('redundant task %s on %s' % (dup.number + 1, node_info[dup.processor_num + 1]))
+            print('redundant task %s on %s' % (dup.number + 1, self.node_info[dup.processor_num + 1]))
 
         print('makespan = %d' % makespan)
 
@@ -361,7 +361,7 @@ class HEFT:
         for p in self.processors:
             for duration in p.time_line:
                 if duration.task_num != -1:
-                    output.write(self.task_names[duration.task_num] + " " + node_info[p.number+1])
+                    output.write(self.task_names[duration.task_num] + " " + self.node_info[p.number+1])
                     output.write('\n')
 
         output.close()
@@ -376,7 +376,7 @@ class HEFT:
         for p in self.processors:
             for duration in p.time_line:
                 if duration.task_num != -1:
-                    assignments[self.task_names[duration.task_num]] = node_info[p.number+1]
+                    assignments[self.task_names[duration.task_num]] = self.node_info[p.number+1]
         return assignments
 
 

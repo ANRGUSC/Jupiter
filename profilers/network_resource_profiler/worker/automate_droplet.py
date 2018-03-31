@@ -24,8 +24,10 @@ import sys
 from os import listdir
 from os.path import isfile, join
 from os import path
-
 import configparser
+sys.path.append("../")
+
+
 
 
 
@@ -315,9 +317,9 @@ def main():
     """Start watching process for ``scheduling`` folder.
     """
 
-    ##
-    ## Load all the confuguration
-    ##
+    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER
+
+    # Load all the confuguration
     INI_PATH = '/network_profiling/jupiter_config.ini'
 
     config = configparser.ConfigParser()
@@ -332,7 +334,6 @@ def main():
     dir_remote  = "networkprofiling/received_test"
     dir_remote_central = "/network_profiling/parameters"
     dir_scheduler      = "scheduling/scheduling.txt"
-
 
     MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
     MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])

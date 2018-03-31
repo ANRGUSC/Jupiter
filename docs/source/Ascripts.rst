@@ -20,11 +20,12 @@ Teardown scripts
 .. toctree::
    :maxdepth: 4
 
-   scripts/delete_all_circe_deployments
+   scripts/delete_all_circe
    scripts/delete_all_exec
    scripts/delete_all_heft
    scripts/delete_all_profilers
    scripts/delete_all_waves
+   scripts/k8s_jupiter_teardown
 
 Deploy scripts
 --------------
@@ -35,7 +36,6 @@ Deploy scripts
    scripts/k8s_exec_scheduler
    scripts/k8s_heft_scheduler
    scripts/k8s_jupiter_deploy
-   scripts/k8s_jupiter_teardown
    scripts/k8s_profiler_scheduler
    scripts/k8s_wave_scheduler
 

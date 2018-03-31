@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -12,13 +12,14 @@ from kubernetes import client, config
 from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
+import jupiter_config
 
 
-
-def delete_all_circe_deployments():
+def delete_all_circe():
     """Tear down all CIRCE deployments.
     """
-    import jupiter_config
+    jupiter_config.set_globals()
+    
     """
         This loads the task graph
     """
@@ -148,4 +149,4 @@ def delete_all_circe_deployments():
         print("Service Deleted. status='%s'" % str(del_resp_2.status))    
 
 if __name__ == '__main__':
-    delete_all_circe_deployments()
+    delete_all_circe()

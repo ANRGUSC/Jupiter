@@ -45,6 +45,8 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
+    global MONGO_SVC, MONGO_DOCKER, ip_path
+
     MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
     MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
 

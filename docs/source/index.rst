@@ -33,6 +33,7 @@ The main documentation for the site is organized into a couple sections:
    Jstructure
    Jreferences
    Jexample
+   Jvisualization
    Jtroubleshooting
    Jacknowledge
    Jlicense

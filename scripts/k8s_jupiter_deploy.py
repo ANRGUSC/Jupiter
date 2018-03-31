@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -51,7 +51,7 @@ def main():
     """
         Deploy all Jupiter components (WAVE, CIRCE, DRUPE) in the system.
     """
-    import jupiter_config
+    jupiter_config.set_globals()
     
     static_mapping = jupiter_config.STATIC_MAPPING
 
@@ -68,13 +68,13 @@ def main():
         path2 = jupiter_config.HERE + 'nodes.txt'
 
         # start the profilers
-        # profiler_ips = get_all_profilers()
-        profiler_ips = k8s_profiler_scheduler()
+        profiler_ips = get_all_profilers()
+        #profiler_ips = k8s_profiler_scheduler()
 
 
         # start the execution profilers
-        # execution_ips = get_all_execs()
-        execution_ips = exec_profiler_function()
+        execution_ips = get_all_execs()
+        #execution_ips = exec_profiler_function()
 
         print('*************************')
         print('Network Profiling Information:')

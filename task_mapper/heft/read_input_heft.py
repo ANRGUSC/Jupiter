@@ -152,6 +152,8 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
+    global EXC_FPORT, MONGO_SVC_PORT
+    
     EXC_FPORT = int(config['PORT']['FLASK_SVC'])
     MONGO_SVC_PORT = config['PORT']['MONGO_SVC']
 

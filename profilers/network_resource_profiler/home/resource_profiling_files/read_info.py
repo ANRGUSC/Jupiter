@@ -23,6 +23,17 @@ def open_file():
 	Returns:
 		list: resource profiling information for all of the nodes in the node list
 	"""
+	"""Load all the configuration
+	"""
+	INI_PATH = '/network_profiling/jupiter_config.ini'
+	config = configparser.ConfigParser()
+	config.read(INI_PATH)
+	
+	MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+	MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+	FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
+
+	node_ip = os.environ['SELF_IP']  
 
 	list=[]
 	ip_path = sys.argv[1]
@@ -44,15 +55,5 @@ def open_file():
 		# print list
 		return list
 
-def main():
-	"""Load all the configuration
-	"""
-	INI_PATH = '/network_profiling/jupiter_config.ini'
-	config = configparser.ConfigParser()
-	config.read(INI_PATH)
-
-	MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
-	MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
-	FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
-
-	node_ip = os.environ['SELF_IP']  
+if __name__ == '__main__':
+    open_file()

@@ -1,7 +1,7 @@
 """
   This script contains all useful functions to be used in the system, for example, reading input files.
 """
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -10,17 +10,17 @@ import sys
 import time
 import os
 from os import path
-from multiprocessing import Process
-from k8s_profiler_scheduler import *
-from k8s_wave_scheduler import *
-from k8s_circe_scheduler import *
-from delete_all_circe_deployments import *
-from delete_all_profilers import *
-from delete_all_waves import *
+# from multiprocessing import Process
+# from k8s_profiler_scheduler import *
+# from k8s_wave_scheduler import *
+# from k8s_circe_scheduler import *
+# from delete_all_circe import *
+# from delete_all_profilers import *
+# from delete_all_waves import *
 from pprint import *
-import requests
-import json
-from pprint import *
+# import requests
+# import json
+# from pprint import *
 
 
 def k8s_read_config(configuration_file):
@@ -128,6 +128,9 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
   print(nodes)
   hosts={}
 
+  print('Receive mapping')
+  print(mapping)
+  
   for i in mapping:
       #get task, node IP, username and password
       print(i, mapping[i], nodes[mapping[i]])

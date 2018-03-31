@@ -230,6 +230,8 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
+    global FLASK_DOCKER, username, password, ssh_port, num_retries
+
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']

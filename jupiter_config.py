@@ -2,7 +2,7 @@
 Top level config file (leave this file at the root directory). ``import config`` on the top of your file to include the global information included here.
 
 """
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran, Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -98,14 +98,18 @@ def set_globals():
 
 	"""WAVE home and worker images"""
 	global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
-	WAVE_HOME_IMAGE         = 'docker.io/anrg/wave_home:q0'
-	WAVE_WORKER_IMAGE       = 'docker.io/anrg/wave_worker:q0'
+
+	#q0: random, q1: greedy
+
+	WAVE_HOME_IMAGE         = 'docker.io/anrg/wave_home:q1'
+	WAVE_WORKER_IMAGE       = 'docker.io/anrg/wave_worker:q1'
 
 	"""Execution profiler home and worker images"""
 	global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
+
 	EXEC_HOME_IMAGE         = 'docker.io/anrg/exec_home:q0'
-	EXEC_WORKER_IMAGE       = 'docker.io/anrg/exec_worker:q1'
+	EXEC_WORKER_IMAGE       = 'docker.io/anrg/exec_worker:q0'
 
 	"""HEFT docker image"""
 	global HEFT_IMAGE

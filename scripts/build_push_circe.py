@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -11,6 +11,10 @@ import jupiter_config
 
 def prepare_global_info():
     """Read configuration information from ``app_config.ini``
+    
+    Returns:
+        - list: port_list_home - The list of ports to be exposed in the exec home dockers
+        - list: port_list_worker - The list of ports to be exposed in the exec worker dockers
     """
     
     jupiter_config.set_globals()

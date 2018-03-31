@@ -340,6 +340,8 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
+    global FLASK_SVC, MONGO_PORT, username,password,ssh_port, num_retries
+
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
     username    = config['AUTH']['USERNAME']
@@ -348,6 +350,7 @@ def main():
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 
 
+    global taskmap, taskname, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
 
     configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]

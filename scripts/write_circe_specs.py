@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -6,7 +6,7 @@ __version__ = "2.0"
 import yaml
 import sys
 sys.path.append("../")
-from jupiter_config import *
+import jupiter_config
 import configparser
 
 
@@ -20,7 +20,12 @@ def add_app_specific_ports(dep):
   Returns:
       str: deployment service description with added specific port information for the application
   """
+  jupiter_config.set_globals()
 
+  INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
+  config = configparser.ConfigParser()
+  config.read(INI_PATH)
+  
   a = dep['spec']['template']['spec']['containers'][0]['ports']
   for i in config['DOCKER_PORT']:
     a.append({'containerPort': config['DOCKER_PORT'][i]})
@@ -75,13 +80,16 @@ def write_circe_home_specs(**kwargs):
     Returns:
         dict: loaded configuration 
     """
-    INI_PATH  = APP_PATH + 'app_config.ini'
+
+    jupiter_config.set_globals()
+
+    INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    specific_yaml = template_home.format(ssh_port = SSH_DOCKER, 
-                                    flask_port = FLASK_DOCKER,
-                                    mongo_port = MONGO_DOCKER,
+    specific_yaml = template_home.format(ssh_port = jupiter_config.SSH_DOCKER, 
+                                    flask_port = jupiter_config.FLASK_DOCKER,
+                                    mongo_port = jupiter_config.MONGO_DOCKER,
                                     **kwargs)
 
     dep = yaml.load(specific_yaml)
@@ -165,9 +173,9 @@ def write_circe_deployment_specs(**kwargs):
 
     # insert your values
 
-    specific_yaml = template_worker.format(ssh_port = SSH_DOCKER, 
-                                    flask_port = FLASK_DOCKER,
-                                    mongo_port = MONGO_DOCKER,
+    specific_yaml = template_worker.format(ssh_port = jupiter_config.SSH_DOCKER, 
+                                    flask_port = jupiter_config.FLASK_DOCKER,
+                                    mongo_port = jupiter_config.MONGO_DOCKER,
                                     **kwargs)
 
     dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)

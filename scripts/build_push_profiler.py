@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -6,23 +6,33 @@ __version__ = "2.0"
 import sys
 sys.path.append("../")
 import os
+import jupiter_config
 
 def prepare_global_info():
     """Read configuration information
+
+    Returns:
+        list: port_list - The list of ports to be exposed in the profiler dockers
     """
-    import jupiter_config
+    jupiter_config.set_globals()
+
     sys.path.append(jupiter_config.NETR_PROFILER_PATH)
-    import profiler_docker_files_generator as dc
+    
     port_list = []
     port_list.append(jupiter_config.SSH_DOCKER)
     port_list.append(jupiter_config.MONGO_DOCKER)
     port_list.append(jupiter_config.FLASK_DOCKER)
     print('The list of ports to be exposed in the profiler dockers are ', " ".join(port_list))
 
+    return port_list
+
 def build_push_profiler():
     """Build DRUPE home and worker image from Docker files and push them to the Dockerhub.
     """
-    
+    import profiler_docker_files_generator as dc
+
+    port_list = prepare_global_info()
+
     os.system("cp " + jupiter_config.SCRIPT_PATH + "keep_alive.py " 
                     + jupiter_config.NETR_PROFILER_PATH + "worker/keep_alive.py")
 
@@ -47,4 +57,5 @@ def build_push_profiler():
 
     os.system("rm worker/keep_alive.py")
 if __name__ == '__main__':
+    prepare_global_info()
     build_push_profiler()

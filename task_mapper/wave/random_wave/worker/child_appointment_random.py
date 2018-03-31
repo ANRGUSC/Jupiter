@@ -42,6 +42,7 @@ def prepare_global():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
+    global FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host, node_id, node_name, debug
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
     MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
@@ -58,10 +59,11 @@ def prepare_global():
     master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
     print("Nodes", nodes)
 
-    #
     node_id = -1
     node_name = ""
     debug = True
+
+    global control_relation, children, parents, init_tasks, local_children, local_mapping, local_responsibility
 
     # control relations between tasks
     control_relation = {}
@@ -70,6 +72,7 @@ def prepare_global():
     local_mapping = "local/local_mapping.txt"
     local_responsibility = "local/task_responsibility"
 
+    global lock, kill_flag
     # lock for sync file operation
     lock = threading.Lock()
 
@@ -99,7 +102,7 @@ def kill_thread():
     global kill_flag
     kill_flag = True
     return "ok"
-
+app.add_url_rule('/kill_thread', 'kill_thread', kill_thread)
 
 def init_folder():
     """
@@ -412,6 +415,8 @@ def main():
     """
 
     prepare_global()
+
+    global node_name, node_id, FLASK_PORT
 
     node_name = os.environ['SELF_NAME']
     node_id = int(node_name.split("e")[-1])

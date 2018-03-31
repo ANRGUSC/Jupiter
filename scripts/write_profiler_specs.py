@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -6,7 +6,7 @@ __version__ = "2.0"
 import yaml
 import sys
 sys.path.append("../")
-from jupiter_config import *
+import jupiter_config
 
 
 template = """
@@ -73,10 +73,11 @@ def write_profiler_specs(**kwargs):
     Returns:
         dict: loaded configuration 
     """
-
-    specific_yaml = template.format(ssh_port = SSH_DOCKER,
-                                    flask_port = FLASK_DOCKER,
-                                    mongo_port = MONGO_DOCKER,
+    jupiter_config.set_globals()
+    
+    specific_yaml = template.format(ssh_port = jupiter_config.SSH_DOCKER,
+                                    flask_port = jupiter_config.FLASK_DOCKER,
+                                    mongo_port = jupiter_config.MONGO_DOCKER,
                                     **kwargs)
     dep = yaml.load(specific_yaml)
     return dep

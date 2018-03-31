@@ -129,6 +129,8 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
+    global MONGO_PORT
+
     EXC_FPORT = int(config['PORT']['FLASK_SVC'])
     MONGO_PORT = int(config['PORT']['MONGO_DOCKER'])
 

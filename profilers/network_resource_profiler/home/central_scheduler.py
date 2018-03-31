@@ -60,12 +60,15 @@ def main():
         - Transfer the ``scheduler.txt`` and ``central.txt`` file to proper folders in order to trigger the profiling
         - Schedule updating the central database every minute
     """
+
     # Load all the confuguration
     HERE     = path.abspath(path.dirname(__file__)) + "/"
     INI_PATH = HERE + 'jupiter_config.ini'
 
     config = configparser.ConfigParser()
     config.read(INI_PATH)
+
+    global MONGO_DOCKER
 
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']

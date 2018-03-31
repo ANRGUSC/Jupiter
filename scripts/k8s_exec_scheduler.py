@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Jason A Tran, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -19,7 +19,6 @@ from kubernetes.client.rest import ApiException
 
 from write_exec_service_specs import *
 from write_exec_specs import *
-from readconfig import *
 from utilities import *
 
 
@@ -30,15 +29,15 @@ import jupiter_config
 
 
 
-
 def check_status_exec_profiler():
     """
     This function prints out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
     """
+    jupiter_config.set_globals()
 
-    import jupiter_config
     sys.path.append(jupiter_config.CIRCE_PATH)
+    
 
     """
         This loads the kubernetes instance configuration.
@@ -101,6 +100,11 @@ def k8s_exec_scheduler():
     """
         This script deploys execution profiler in the system. 
     """
+
+    jupiter_config.set_globals()
+    sys.path.append(jupiter_config.CIRCE_PATH)
+    
+    import readconfig
 
     dag_info = k8s_read_dag(path1)
 
@@ -184,7 +188,7 @@ def k8s_exec_scheduler():
     print(all_node)
 
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = read_node_list(path2)
+    nodes = readconfig.read_node_list(path2)
     allprofiler_ips =''
     allprofiler_names = ''
 
@@ -331,6 +335,7 @@ def k8s_exec_scheduler():
 
 if __name__ == '__main__':
     
+    jupiter_config.set_globals()
     configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
     taskmap = configs["taskname_map"]
 

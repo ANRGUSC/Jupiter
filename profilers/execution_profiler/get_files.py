@@ -48,6 +48,8 @@ def main():
 	config = configparser.ConfigParser()
 	config.read(INI_PATH)
 
+	global EXC_FPORT
+	
 	EXC_FPORT = config['PORT']['FLASK_DOCKER']
 
 	print("starting Flask")

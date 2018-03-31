@@ -37,6 +37,8 @@ def prepare_global():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
+    global FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host, node_id, node_name, debug
+
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
     MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
@@ -59,6 +61,10 @@ def prepare_global():
     print("Nodes", nodes)
     print("os.en:", os.environ['PROFILER'])
 
+    global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
+
+    
+
     #
     threshold = 15
     resource_data = {}
@@ -71,12 +77,16 @@ def prepare_global():
     node_name = ""
     debug = True
 
+    global control_relation, children, parents, init_tasks, local_children, local_mapping, local_responsibility
+
     # control relations between tasks
     control_relation = {}
 
     local_children = "local/local_children.txt"
     local_mapping = "local/local_mapping.txt"
     local_responsibility = "local/task_responsibility"
+
+    global lock, kill_flag
 
     # lock for sync file operation
     lock = threading.Lock()
@@ -105,7 +115,7 @@ def kill_thread():
     global kill_flag
     kill_flag = True
     return "ok"
-
+app.add_url_rule('/kill_thread', 'kill_thread', kill_thread)
 
 def init_folder():
     """
@@ -650,9 +660,20 @@ def sync_docker_ip2node_name_info():
     get_node_name2docker_ip_mapping_from_master()
 
     
+def main():
+    """
+        - Prepare global information
+        - Initialize folders ``local`` and ``local_responsibility``, prepare ``local_children`` and ``local_mapping`` file.
+        - Start thread to get resource profiling data
+        - Start thread to get network profiling data
+        - Start thread to watch directory: ``local/task_responsibility``
+        - Start thread to thread to assign todo task to nodes
+    """
+    
+    prepare_global()
 
+    global node_name, node_id, FLASK_PORT
 
-if __name__ == '__main__':
     node_name = os.environ['SELF_NAME']
     node_id = int(node_name.split("e")[-1])
 
@@ -674,3 +695,8 @@ if __name__ == '__main__':
     _thread.start_new_thread(distribute, ())
 
     app.run(host='0.0.0.0', port=int(FLASK_PORT))
+
+
+if __name__ == '__main__':
+    main()
+    
