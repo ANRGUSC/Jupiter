@@ -48,8 +48,6 @@ def build_push_exec():
     port_list_home, port_list_worker = prepare_global_info()
     import exec_docker_files_generator as dc
 
-    os.system("cp " + jupiter_config.SCRIPT_PATH + "keep_alive.py " 
-                    + jupiter_config.EXEC_PROFILER_PATH + "keep_alive.py")
 
     os.chdir(jupiter_config.EXEC_PROFILER_PATH )
 
@@ -71,8 +69,5 @@ def build_push_exec():
                                  + jupiter_config.EXEC_WORKER_IMAGE)
     os.system("sudo docker push " + jupiter_config.EXEC_WORKER_IMAGE)
 
-    os.system("rm keep_alive.py")
-
 if __name__ == '__main__':
-    prepare_global_info()
     build_push_exec()

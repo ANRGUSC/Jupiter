@@ -109,7 +109,9 @@ def k8s_get_nodes(node_info_file):
       for i in range(1, len(node_line)):
           nodes[node_line[0]].append(node_line[i])
   return nodes
+
     
+  
 
 def k8s_get_hosts(dag_info_file, node_info_file, mapping):
   """read the hosts info from the input files

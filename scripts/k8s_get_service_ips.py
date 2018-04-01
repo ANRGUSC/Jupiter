@@ -6,13 +6,13 @@ __version__ = "2.0"
 import sys
 sys.path.append("../")
 
-# from readconfig import *
 import yaml
 from kubernetes import client, config
 from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
+from utilities import *
 
 def get_all_profilers():
     """
@@ -21,15 +21,12 @@ def get_all_profilers():
     
     jupiter_config.set_globals()
 
-    sys.path.append(jupiter_config.CIRCE_PATH)
-
-    import readconfig
     """
         This loads the node lists in use
     """
     mapping = {}
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = readconfig.read_node_list(path1)
+    nodes = k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -81,8 +78,6 @@ def get_all_waves():
     """
     
     jupiter_config.set_globals()
-    sys.path.append(jupiter_config.CIRCE_PATH)
-    import readconfig
 
     mapping = {}
 
@@ -90,7 +85,7 @@ def get_all_waves():
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = readconfig.read_node_list(path1)
+    nodes = k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -140,8 +135,6 @@ def get_all_execs():
         This load all of the service ips of execution profiler deployments.
     """
     jupiter_config.set_globals()
-    sys.path.append(jupiter_config.CIRCE_PATH)
-    import readconfig
 
     mapping = {}
 
@@ -149,7 +142,7 @@ def get_all_execs():
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = readconfig.read_node_list(path1)
+    nodes = k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.

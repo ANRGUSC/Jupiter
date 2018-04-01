@@ -36,6 +36,7 @@ def prepare_global_info():
     print('The list of ports to be exposed in the circe workers are ', " ".join(port_list_worker))
 
     return port_list_home, port_list_worker
+    
 def build_push_circe():
     """Build CIRCE home and worker image from Docker files and push them to the Dockerhub.
     """

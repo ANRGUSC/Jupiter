@@ -11,26 +11,25 @@ import os
 from os import path
 from multiprocessing import Process
 from write_wave_service_specs import *
-#from readconfig import *
 from write_wave_specs import *
 from kubernetes import client, config
 from pprint import *
 import os
 import jupiter_config
+from utilities import *
 
 
 def check_status_waves():
     """Verify if all the WAVE home and workers have been deployed and UP in the system.
     """
     jupiter_config.set_globals()
-    sys.path.append(jupiter_config.CIRCE_PATH)
-    import readconfig
+
 
     """
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = readconfig.read_node_list(path1)
+    nodes = k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -77,15 +76,14 @@ def k8s_wave_scheduler(profiler_ips):
         Deploy WAVE in the system. 
     """
     jupiter_config.set_globals()
-    sys.path.append(jupiter_config.CIRCE_PATH)
-    import readconfig
+
     """
         This loads the node list
     """
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = readconfig.read_node_list(path2)
+    nodes = k8s_get_nodes(path2)
     pprint(nodes)
 
     """

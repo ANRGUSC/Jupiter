@@ -12,6 +12,9 @@ from os import path
 import os
 import configparser
 
+HERE       = path.abspath(path.dirname(__file__)) + "/"
+INI_PATH   = HERE + 'jupiter_config.ini'
+
 def get_home_node(file_name):
     with open(file_name) as file:
         line = file.readline().split()
@@ -22,14 +25,9 @@ def set_globals():
 	"""
 
 	"""Configuration Paths"""
-	global HERE, INI_PATH
-
-	HERE                    = path.abspath(path.dirname(__file__)) + "/"
-	INI_PATH                = HERE + 'jupiter_config.ini'
 
 	config = configparser.ConfigParser()
 	config.read(INI_PATH)
-
 	"""User input for scheduler information"""
 	global STATIC_MAPPING, SCHEDULER 
 
@@ -73,51 +71,54 @@ def set_globals():
 	KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
 	# Namespaces
-	DEPLOYMENT_NAMESPACE    = 'quynh-circe'
-	PROFILER_NAMESPACE      = 'quynh-profiler'
-	MAPPER_NAMESPACE        = 'quynh-mapper'
-	EXEC_NAMESPACE          = 'quynh-exec'
+	DEPLOYMENT_NAMESPACE    = 'johndoe-circe'
+	PROFILER_NAMESPACE      = 'johndoe-profiler'
+	MAPPER_NAMESPACE        = 'johndoe-mapper'
+	EXEC_NAMESPACE          = 'johndoe-exec'
 
 	""" Node file path and first task information """
 	global HOME_NODE, HOME_CHILD
 
 	HOME_NODE               = get_home_node(HERE + 'nodes.txt')
-	HOME_CHILD              = 'localhost'
+	HOME_CHILD              = 'sample_ingress_task'
 
 	"""CIRCE home and worker images"""
 	global HOME_IMAGE, WORKER_IMAGE
 
-	HOME_IMAGE              = 'docker.io/anrg/circe_home:q0'
-	WORKER_IMAGE            = 'docker.io/anrg/circe_worker:q0'
+	HOME_IMAGE              = 'docker.io/johndoe/circe_home:v1'
+	WORKER_IMAGE            = 'docker.io/johndoe/circe_worker:v1'
 
 	"""DRUPE home and worker images"""
 	global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
 	
-	PROFILER_HOME_IMAGE     = 'docker.io/anrg/profiler_home:q0'
-	PROFILER_WORKER_IMAGE   = 'docker.io/anrg/profiler_worker:q0'
+	PROFILER_HOME_IMAGE     = 'docker.io/johndoe/profiler_home:v1'
+	PROFILER_WORKER_IMAGE   = 'docker.io/johndoe/profiler_worker:v1'
 
 	"""WAVE home and worker images"""
 	global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
 
-	#q0: random, q1: greedy
+	#v0: random, v1: greedy
 
-	WAVE_HOME_IMAGE         = 'docker.io/anrg/wave_home:q1'
-	WAVE_WORKER_IMAGE       = 'docker.io/anrg/wave_worker:q1'
+	WAVE_HOME_IMAGE         = 'docker.io/johndoe/wave_home:v1'
+	WAVE_WORKER_IMAGE       = 'docker.io/johndoe/wave_worker:v1'
 
 	"""Execution profiler home and worker images"""
 	global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-	EXEC_HOME_IMAGE         = 'docker.io/anrg/exec_home:q0'
-	EXEC_WORKER_IMAGE       = 'docker.io/anrg/exec_worker:q0'
+	EXEC_HOME_IMAGE         = 'docker.io/johndoe/exec_home:v1'
+	EXEC_WORKER_IMAGE       = 'docker.io/johndoe/exec_worker:v1'
 
 	"""HEFT docker image"""
 	global HEFT_IMAGE
 
-	HEFT_IMAGE              = 'docker.io/anrg/heft:q0'
+	HEFT_IMAGE              = 'docker.io/johndoe/heft:v1'
 
 	"""Application Information"""
 	global APP_PATH, APP_NAME
 
 	APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
 	APP_NAME                = 'app_specific_files/network_monitoring_app'
+
+if __name__ == '__main__':
+	set_globals()

@@ -16,6 +16,7 @@ import yaml
 from kubernetes import client, config
 from pprint import *
 import jupiter_config
+from utilities import *
 
 
 
@@ -241,7 +242,9 @@ def k8s_circe_scheduler(dag_info , temp_info):
 
     home_dep = write_circe_home_specs(image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
-                                child_ips = service_ips.get(jupiter_config.HOME_CHILD), dir = '{}')
+                                child = jupiter_config.HOME_CHILD,
+                                child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
+                                dir = '{}')
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 

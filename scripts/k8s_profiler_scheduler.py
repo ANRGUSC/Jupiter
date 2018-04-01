@@ -15,18 +15,16 @@ from kubernetes import client, config
 from pprint import *
 import os
 import jupiter_config
+from utilities import *
  
 
 def check_status_profilers():
     """Verify if all the network profilers have been deployed and UP in the system.
     """
     jupiter_config.set_globals()
-    sys.path.append(jupiter_config.CIRCE_PATH)
-    import readconfig
     
-
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = readconfig.read_node_list(path1)
+    nodes = k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -76,15 +74,15 @@ def k8s_profiler_scheduler():
         Deploy DRUPE in the system. 
     """
     jupiter_config.set_globals()
-    sys.path.append(jupiter_config.CIRCE_PATH)
-    import readconfig
+
+
     """
         This loads the task graph and node list
     """
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = readconfig.read_node_list(path2)
+    nodes = k8s_get_nodes(path2)
 
 
     """

@@ -5,6 +5,7 @@ __version__ = "2.0"
 
 import sys
 sys.path.append("../")
+from utilities import *
 import yaml
 from kubernetes import client, config
 from pprint import *
@@ -16,13 +17,12 @@ def delete_all_heft():
     """Tear down all HEFT deployments.
     """
     jupiter_config.set_globals()
-    sys.path.append(jupiter_config.CIRCE_PATH)
-    import readconfig
+    
     """
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = readconfig.read_node_list(path1)
+    nodes = k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.

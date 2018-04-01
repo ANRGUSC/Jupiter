@@ -51,7 +51,7 @@ spec:
         - containerPort: {flask_port}
         env:
         - name: CHILD_NODES
-          value: localpro
+          value: {child}
         - name: CHILD_NODES_IPS
           value: {child_ips}
         - name: TASK

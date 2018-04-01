@@ -130,7 +130,7 @@ def main():
         - Assign random master and slaves for now
     """
 
-    global node_info, MAX_TASK_NUMBER, FLASK_PORT, MONGO_SVC_PORT
+    global node_info, MAX_TASK_NUMBER, FLASK_PORT, MONGO_SVC_PORT, assignments
 
     NODE_NAMES = os.environ["NODE_NAMES"]
     node_info = NODE_NAMES.split(":")

@@ -29,9 +29,11 @@ def prepare_global_info():
 def build_push_profiler():
     """Build DRUPE home and worker image from Docker files and push them to the Dockerhub.
     """
-    import profiler_docker_files_generator as dc
 
     port_list = prepare_global_info()
+
+    import profiler_docker_files_generator as dc
+
 
     os.system("cp " + jupiter_config.SCRIPT_PATH + "keep_alive.py " 
                     + jupiter_config.NETR_PROFILER_PATH + "worker/keep_alive.py")

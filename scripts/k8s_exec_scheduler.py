@@ -34,10 +34,7 @@ def check_status_exec_profiler():
     This function prints out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
     """
-    jupiter_config.set_globals()
-
-    sys.path.append(jupiter_config.CIRCE_PATH)
-    
+    jupiter_config.set_globals()    
 
     """
         This loads the kubernetes instance configuration.
@@ -102,9 +99,6 @@ def k8s_exec_scheduler():
     """
 
     jupiter_config.set_globals()
-    sys.path.append(jupiter_config.CIRCE_PATH)
-    
-    import readconfig
 
     dag_info = k8s_read_dag(path1)
 
@@ -188,7 +182,7 @@ def k8s_exec_scheduler():
     print(all_node)
 
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = readconfig.read_node_list(path2)
+    nodes = k8s_get_nodes(path2)
     allprofiler_ips =''
     allprofiler_names = ''
 

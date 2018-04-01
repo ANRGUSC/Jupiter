@@ -37,13 +37,13 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 # Prepare heft files
 RUN mkdir -p heft
 ADD task_mapper/heft/start.sh /heft/start.sh
-ADD task_mapper/heft/keep_alive.py /heft/keep_alive.py
 ADD task_mapper/heft/master_heft.py  /heft/master.py
 ADD task_mapper/heft/heft_dup.py /heft/heft_dup.py
 ADD task_mapper/heft/create_input.py /heft/create_input.py
 ADD task_mapper/heft/read_input_heft.py /heft/read_input_heft.py
 ADD task_mapper/heft/write_input_heft.py /heft/write_input_heft.py
 ADD jupiter_config.ini /heft/jupiter_config.ini
+ADD scripts/keep_alive.py /heft/keep_alive.py
 
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh

@@ -96,7 +96,7 @@ RUN apt-get install iproute2 -y
 ##RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
 RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
 RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
-
+RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt

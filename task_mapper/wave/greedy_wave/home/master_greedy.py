@@ -72,7 +72,7 @@ def prepare_global():
     print("starting the main thread on port")
 
     
-
+    global task_assign_summary, docker_ip2node_name
     # Get ALL node info
     node_count = 0
     nodes = {}

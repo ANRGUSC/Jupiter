@@ -290,7 +290,7 @@ class Handler(FileSystemEventHandler):
                 line = 'created_input, %s, %s, %s, %s\n' %(node_name, taskname, temp_name, execution_start_time)
                 f.write(line)
 
-            q.put(new_file)
+            queue_mul.put(new_file)
             filename = new_file
             
 
@@ -300,7 +300,7 @@ class Handler(FileSystemEventHandler):
             if flag1 == "1":
                 # Start msg
                 send_monitor_data("start")
-                inputfile=q.get()
+                inputfile=queue_mul.get()
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
                 dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
@@ -310,7 +310,7 @@ class Handler(FileSystemEventHandler):
                 # end msg
             else:
 
-                filenames.append(q.get())
+                filenames.append(queue_mul.get())
                 if (len(filenames) == int(flag1)):
                     #start msg
                     send_monitor_data("start")
@@ -340,7 +340,7 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global FLASK_SVC, MONGO_PORT, username,password,ssh_port, num_retries
+    global FLASK_SVC, MONGO_PORT, username,password,ssh_port, num_retries, queue_mul
 
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
@@ -350,7 +350,7 @@ def main():
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 
 
-    global taskmap, taskname, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
+    global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
 
     configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
@@ -370,7 +370,7 @@ def main():
     all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
 
     if taskmap[1] == True:
-        q=multiprocessing.Queue()
+        queue_mul=multiprocessing.Queue()
 
         #monitor INPUT as another process
         w=Watcher()
