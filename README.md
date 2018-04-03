@@ -1,9 +1,11 @@
 # Jupiter  
 
-Jupiter is a Central orchestrator for Dispersed Computing that 
+Jupiter is a orchestrator for Dispersed Computing that 
 uses Docker containers and Kubernetes (K8s).  The Jupiter system has three
 main components: Profilers, Task Mappers, and
-CIRCE Dispatcher.  
+CIRCE Dispatcher. **(For a detailed documentation refer to our [http://jupiter.readthedocs.io/](http://jupiter.readthedocs.io/))**
+
+
 
 ### Profilers
 Jupiter comes with two different profiler tools: DRUPE (Network and Resource Profiler) and an one time Execution Profiler.
