@@ -1,8 +1,8 @@
-'''
- * Copyright (c) 2017, Autonomous Networks Research Group. All rights reserved.
- *     contributor: Pradipta Ghosh, Jiatong Wang, Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-'''
+
+__author__ = "Jiatong Wang, Quynh Nguyen, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 from pymongo import MongoClient
 import sys
@@ -10,18 +10,14 @@ import read_info
 import configparser
 from os import path
 
-##
-## Load all the confuguration
-##
-INI_PATH = '/network_profiling/jupiter_config.ini'
-config = configparser.ConfigParser()
-config.read(INI_PATH)
 
-MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
-MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
 
 def insert_data(res):
-
+    """Insert resource information(CPU and Memory usage information) in the ``central_resource_profiler`` Mongo database
+    
+    Args:
+        res (list): node list read from node file
+    """
 
     Client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
 
@@ -35,11 +31,31 @@ def insert_data(res):
 
     print("insert successfully")
 
+def main():
+    """
+        - Load all the configuration
+        - Get node list file path from environment variable
+        - Get resource profiling information for all the nodes in the node file
+        - Insert resource profiling information to ``central_resource_profiler`` database 
+    """
 
-if __name__ == '__main__':
+    # Load all the configuration
+    
+    INI_PATH = '/network_profiling/jupiter_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    global MONGO_SVC, MONGO_DOCKER, ip_path
+
+    MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+    MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+
     if  len(sys.argv)!=2:
         print("Usage:python3 insert_to_container.py ip_file")
         sys.exit(2)
     ip_path = sys.argv[1]
     res=read_info.open_file()
     insert_data(res)
+
+if __name__ == '__main__':
+    main()    

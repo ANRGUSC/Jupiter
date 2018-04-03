@@ -1,10 +1,10 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+__author__ = "Pradipta Ghosh and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 from pprint import pprint
 from dockerfile_parse import DockerfileParser
@@ -93,9 +93,10 @@ RUN apt-get install sudo -y
 RUN apt-get install iproute2 -y
 
 ## Install TASK specific needs. The hadoop is a requirement for the network profiler application
-RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
+##RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
+RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
 RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
-
+RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
@@ -140,20 +141,23 @@ CMD ["./start.sh"]
 ############################################ DOCKER GENERATORS #########################################################
 
 
-"""
-    Function to Generate the Dockerfile of the worker nodes
-"""
+  
 def write_circe_worker_docker(**kwargs):
+    """
+        Function to Generate the Dockerfile of the worker nodes
+    """
     dfp = DockerfileParser(path='worker_node.Dockerfile')
     dfp.content =template_worker.format(**kwargs)
     # print(dfp.content)
 
-"""
-    Function to Generate the Dockerfile of the home/master node
-"""
+
 def write_circe_home_docker(**kwargs):
+    """
+        Function to Generate the Dockerfile of the home/master node of CIRCE
+    """
     dfp = DockerfileParser(path='home_node.Dockerfile')
     dfp.content =template_home.format(**kwargs)
+
 
 if __name__ == '__main__':
     write_circe_home_docker(username = 'root',

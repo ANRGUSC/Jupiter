@@ -1,8 +1,11 @@
 """
- ** Copyright (c) 2017, Autonomous Networks Research Group. All rights reserved.
- **     contributor: Pradipta Ghosh, Quynh Nguyen, Bhaskar Krishnamachari
- **     Read license file in main directory for more details
+.. note:: This is the main script to run in every node in the system for network profiling procedure.
 """
+
+__author__ = "Quynh Nguyen, Pradipta Ghosh, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import random
 import subprocess
@@ -21,43 +24,30 @@ import sys
 from os import listdir
 from os.path import isfile, join
 from os import path
-
 import configparser
-
-##
-## Load all the confuguration
-##
-INI_PATH = '/network_profiling/jupiter_config.ini'
-
-config = configparser.ConfigParser()
-config.read(INI_PATH)
-
-username    = config['AUTH']['USERNAME']
-password    = config['AUTH']['PASSWORD']
-ssh_port    = int(config['PORT']['SSH_SVC'])
-num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
-retry       = 1
-dir_local   = "generated_test"
-dir_remote  = "networkprofiling/received_test"
-dir_remote_central = "/network_profiling/parameters"
-dir_scheduler      = "scheduling/scheduling.txt"
+sys.path.append("../")
 
 
-MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
-MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
-FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
-FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+
+
 
 
 def does_file_exist_in_dir(path):
+    """Check if file exist in directory
+    
+    Args:
+        path (str): directory path
+    
+    Returns:
+        bool: ``True`` if exist, ``False`` otherwise
+    """
+
     return any(isfile(join(path, i)) for i in listdir(path))
 
-"""
-    This class deals with the network profiling measurements
-"""
+
 class droplet_measurement():
     """
-        Intialize the class
+    This class deals with the network profiling measurements.
     """
     def __init__(self):
         self.username   = username
@@ -74,12 +64,12 @@ class droplet_measurement():
         self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
         self.db = self.client_mongo.droplet_network_profiler
         
-
-    """
-        This function reads the scheduler.txt file to
-        add other droplets info
-    """
     def do_add_host(self, file_hosts):
+        """This function reads the ``scheduler.txt`` file to add other droplets info 
+        
+        Args:
+            file_hosts (str): the path of ``scheduler.txt``
+        """
         if file_hosts:
             with open(file_hosts, 'r') as f:
                 reader = csv.reader(f, delimiter=',')
@@ -93,6 +83,8 @@ class droplet_measurement():
             print("No detected droplets information... ")
 
     def do_log_measurement(self):
+        """This function pick a random file size, send the file to all of the neighbors and log the transfer time in the local Mongo database.
+        """
 
         for idx in range (0, len(self.hosts)):
             random_size = random.choice(self.file_size)
@@ -127,10 +119,10 @@ class droplet_measurement():
             log_id   = logging.insert_one(new_log).inserted_id
             # print(log_id)
 
-"""
-    This class is used for the regression of the collected data
-"""
+
 class droplet_regression():
+    """This class is used for the regression of the collected data
+    """
     def __init__(self):
         self.client_mongo = None
         self.db           = None
@@ -151,11 +143,12 @@ class droplet_regression():
             self.username   = line[1]
             self.password   = line[2]
 
-    """
-        This function reads the scheduler.txt file to
-        add other droplets info
-    """
     def do_add_host(self, file_hosts):
+        """This function reads the ``scheduler.txt`` file to add other droplets info 
+        
+        Args:
+            file_hosts (str): the path of ``scheduler.txt``
+        """
         if file_hosts:
             with open(file_hosts, 'r') as f:
                 reader = csv.reader(f, delimiter=',')
@@ -172,10 +165,9 @@ class droplet_regression():
         else:
             print("No detected droplets information... ")
 
-    """
-        This function performs the regression on the collected data
-    """
     def do_regression(self):
+        """This function performs the regression on the collected data, store the quaratic parameters in the local database, and write parameters into text file.
+        """
         print('Store regression parameters in MongoDB')
         regression = self.db[self.my_host]
         reg_cols   = ['Source[IP]',
@@ -224,11 +216,9 @@ class droplet_regression():
             writer = csv.writer(f)
             writer.writerows(reg_data)
 
-    """
-        This function sends the local regression data to the 
-        central profiler
-    """
     def do_send_parameters(self):
+        """This function sends the local regression data to the central profiler
+        """
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(self.central_IP, username = self.username,
@@ -240,16 +230,22 @@ class droplet_regression():
         scp.close()
 
 
-"""
-    Setup the event handler for all the events
-"""
 class MyEventHandler(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
+    """
+
     def __init__(self):
         self.Mjob = None
         self.Rjob = None
         self.cur_file = None
 
     def prepare_database(self,filename):
+        """Connect to MongoDB server, prepare the database ``droplet_network_profiler`` at every node
+        
+        Args:
+            filename (str): info file having the node's name/IP address
+        """
+
         client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
         db = client['droplet_network_profiler']
         c = 0
@@ -265,6 +261,8 @@ class MyEventHandler(pyinotify.ProcessEvent):
             db.create_collection(ip, capped=True, size=100000, max=c*100)
 
     def regression_job(self):
+        """Scheduling regression process every 10 minutes
+        """
         print('Log regression every 10 minutes ....')
         d = droplet_regression()
         d.do_add_host(d.scheduling_file)
@@ -272,6 +270,8 @@ class MyEventHandler(pyinotify.ProcessEvent):
         d.do_send_parameters()
 
     def measurement_job(self):
+        """Scheduling logging measurement process every minute
+        """
         print('Log measurement every minute ....')
         d = droplet_measurement()
         d.do_add_host(d.scheduling_file)
@@ -279,6 +279,16 @@ class MyEventHandler(pyinotify.ProcessEvent):
 
 
     def process_IN_CLOSE_WRITE(self, event):
+        """On every node, whenever there is scheduling information sent from the central network profiler:
+            - Connect the database
+            - Scheduling measurement procedure
+            - Scheduling regression procedure
+            - Start the schedulers
+        
+        Args:
+            event (ProcessEvent): a new file is created
+        """
+
         print("CREATE event:", event.pathname)
         print(event.pathname)
         if self.Mjob == None:
@@ -302,16 +312,34 @@ class MyEventHandler(pyinotify.ProcessEvent):
              print('New scheduling file, setting up a new job')
 
 
-    # def process_IN_DELETE(self, event):
-    #     print("DELETE event:", event.pathname)
-    #     if self.cur_file!= None and self.cur_file == event.pathname:
-    #         # self.Mjob.remove()
-    #         # self.Rjob.remove()
-    #         self.Mjob = None
-    #         self.Rjob = None
-    #         self.cur_file = None
 
 def main():
+    """Start watching process for ``scheduling`` folder.
+    """
+
+    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER
+
+    # Load all the confuguration
+    INI_PATH = '/network_profiling/jupiter_config.ini'
+
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    username    = config['AUTH']['USERNAME']
+    password    = config['AUTH']['PASSWORD']
+    ssh_port    = int(config['PORT']['SSH_SVC'])
+    num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+    retry       = 1
+    dir_local   = "generated_test"
+    dir_remote  = "networkprofiling/received_test"
+    dir_remote_central = "/network_profiling/parameters"
+    dir_scheduler      = "scheduling/scheduling.txt"
+
+    MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+    MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+    FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
+    FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+
     # watch manager
     wm = pyinotify.WatchManager()
     wm.add_watch('scheduling', pyinotify.ALL_EVENTS, rec=True)

@@ -1,11 +1,11 @@
 """
- ** Copyright (c) 2017, Autonomous Networks Research Group. All rights reserved.
- **     contributor: Quynh Nguyen, Pradipta Ghosh, Bhaskar Krishnamachari
- **     Read license file in main directory for more details
+    .. note:: This is the main script to run in the central network profiler.
 """
-"""
-    This is the main script to run in the central network profiler
-"""
+
+__author__ = "Quynh Nguyen, Pradipta Ghosh, Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import pandas as pd
 import os
@@ -22,38 +22,14 @@ from os import path
 from socket import gethostbyname, gaierror
 import configparser
 
-##
-## Load all the confuguration
-##
-HERE     = path.abspath(path.dirname(__file__)) + "/"
-INI_PATH = HERE + 'jupiter_config.ini'
-
-config = configparser.ConfigParser()
-config.read(INI_PATH)
-
-username    = config['AUTH']['USERNAME']
-password    = config['AUTH']['PASSWORD']
-ssh_port    = int(config['PORT']['SSH_SVC'])
-num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
-retry       = 1
 
 
-MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
-MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
-
-
-
-dir_remote   = '/network_profiling/scheduling/'
-dir_remote_profiler  =  '/network_profiling/'
-source_central_file  = '/network_profiling/central.txt'
-
-"""
-    This function updates the estimated quadratic parameters
-    in the mongodb server. It checks for any received files 
-    from each of the worker droplets in the parameters/ folder.
-    If any a file exists, it updates the mongodb.
-"""
 def do_update_quadratic():
+    """
+    This function updates the estimated quadratic parameters in the mongodb server, database ``central_network_profiler``, collection ``quadratic_parameters``. It checks for any received files 
+    from each of the worker droplets in the ``parameters/`` folder. If any a file exists, it updates the mongodb.
+    """
+
     client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/') 
     db = client_mongo.central_network_profiler
     parameters_folder = os.path.join(os.getcwd(),'parameters')
@@ -73,9 +49,42 @@ def do_update_quadratic():
         print(e)
 
 
+def main():
+    """
+        - Load node information from ``central_input/nodes.txt`` and link list information from ``central_input/link_list.txt``
+        - Create ``scheduling`` folder if not existed
+        - Write central profiler info where each node should send their data
+        - Create the central database
+        - Preparing the scheduling files (neighbors info for each node including IP, username, password)
+        - Copy files and network scripts to every droplets
+        - Transfer the ``scheduler.txt`` and ``central.txt`` file to proper folders in order to trigger the profiling
+        - Schedule updating the central database every minute
+    """
+
+    # Load all the confuguration
+    HERE     = path.abspath(path.dirname(__file__)) + "/"
+    INI_PATH = HERE + 'jupiter_config.ini'
+
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    global MONGO_DOCKER
+
+    username    = config['AUTH']['USERNAME']
+    password    = config['AUTH']['PASSWORD']
+    ssh_port    = int(config['PORT']['SSH_SVC'])
+    num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+    retry       = 1
 
 
-if __name__ == '__main__':
+    MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
+    MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+
+
+
+    dir_remote   = '/network_profiling/scheduling/'
+    dir_remote_profiler  =  '/network_profiling/'
+    source_central_file  = '/network_profiling/central.txt'
 
     nodes_info = 'central_input/nodes.txt'
     df_nodes   = pd.read_csv(nodes_info, header = 0, delimiter = ',',index_col = 0)
@@ -171,4 +180,8 @@ if __name__ == '__main__':
         print('waiting for update...')
         time.sleep(60)
     #sched.shutdown()
+
+if __name__ == '__main__':
+    main()
+    
 

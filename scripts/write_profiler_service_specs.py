@@ -1,17 +1,12 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import yaml
 import sys
 sys.path.append("../")
-from jupiter_config import *
+import jupiter_config
 
 
 template = """
@@ -39,18 +34,39 @@ spec:
     app: {label}
 """
 
-## \brief this function genetares the service description yaml for a task 
-# \param kwargs             list of key value pair. 
-# In this case, call argument should be, name = {taskname}
 def write_profiler_service_specs(**kwargs):
+    """
+    This function genetares the service description yaml for Network Profiler
+    
+    In this case, call argument should be:
+    
+      -   name: {name}
+      -   SSH port: {ssh_svc}
+      -   target SSH Port: {ssh_port}
+      -   Flask port: {flask_svc}
+      -   target Flask Port: {flask_port}
+      -   Mongo port: {mongo_svc}
+      -   target Mongo Port: {mongo_port}
+      -   app: {label}
+    
+
+    Args:
+        ``**kwargs``: list of key value pair
+    
+    Returns:
+        dict: loaded configuration 
+    """
+
+    jupiter_config.set_globals()
+    
     # insert your values
 
-    specific_yaml = template.format(ssh_svc = SSH_SVC,
-                                    ssh_port = SSH_DOCKER, 
-                                    flask_svc = FLASK_SVC,
-                                    flask_port = FLASK_DOCKER,
-                                    mongo_svc = MONGO_SVC,
-                                    mongo_port = MONGO_DOCKER,
+    specific_yaml = template.format(ssh_svc = jupiter_config.SSH_SVC,
+                                    ssh_port = jupiter_config.SSH_DOCKER, 
+                                    flask_svc = jupiter_config.FLASK_SVC,
+                                    flask_port = jupiter_config.FLASK_DOCKER,
+                                    mongo_svc = jupiter_config.MONGO_SVC,
+                                    mongo_port = jupiter_config.MONGO_DOCKER,
                                     **kwargs)
 
     dep = yaml.load(specific_yaml)

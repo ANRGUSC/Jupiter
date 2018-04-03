@@ -1,16 +1,10 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import sys
 sys.path.append("../")
-import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 import time
 import os
@@ -25,7 +19,6 @@ from kubernetes.client.rest import ApiException
 
 from write_exec_service_specs import *
 from write_exec_specs import *
-from readconfig import *
 from utilities import *
 
 
@@ -35,22 +28,22 @@ import jupiter_config
 
 
 
-configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
-taskmap = configs["taskname_map"]
-
-path1 = jupiter_config.APP_PATH + 'configuration.txt'
-path2 = jupiter_config.HERE + 'nodes.txt'
 
 def check_status_exec_profiler():
-
-    dag_info = k8s_read_config(path1)
-    dag = dag_info[1]
+    """
+    This function prints out all the tasks that are not running.
+    If all the tasks are running: return ``True``; else return ``False``.
+    """
+    jupiter_config.set_globals()    
 
     """
         This loads the kubernetes instance configuration.
         In our case this is stored in admin.conf.
         You should set the config file path in the jupiter_config.py file.
     """
+    dag_info = k8s_read_config(path1)
+    dag = dag_info[1]
+
     config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
 
 
@@ -101,6 +94,11 @@ def check_status_exec_profiler():
 
 # if __name__ == '__main__':
 def k8s_exec_scheduler():
+    """
+        This script deploys execution profiler in the system. 
+    """
+
+    jupiter_config.set_globals()
 
     dag_info = k8s_read_dag(path1)
 
@@ -184,7 +182,7 @@ def k8s_exec_scheduler():
     print(all_node)
 
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = read_node_list(path2)
+    nodes = k8s_get_nodes(path2)
     allprofiler_ips =''
     allprofiler_names = ''
 
@@ -330,4 +328,12 @@ def k8s_exec_scheduler():
     return(service_ips)
 
 if __name__ == '__main__':
+    
+    jupiter_config.set_globals()
+    configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
+    taskmap = configs["taskname_map"]
+
+    path1 = jupiter_config.APP_PATH + 'configuration.txt'
+    path2 = jupiter_config.HERE + 'nodes.txt'
+
     k8s_exec_scheduler()

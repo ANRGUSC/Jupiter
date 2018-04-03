@@ -1,13 +1,8 @@
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
 import sys
 sys.path.append("../")
 
@@ -16,9 +11,10 @@ import jupiter_config
 
 
 def build_push_wave():
-
-
-
+    """Build WAVE home and worker image from Docker files and push them to the Dockerhub.
+    """
+    jupiter_config.set_globals()
+    
     os.system("cp " + jupiter_config.APP_PATH + "configuration.txt " 
                     + jupiter_config.WAVE_PATH + "DAG.txt")
 
