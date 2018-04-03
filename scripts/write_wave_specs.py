@@ -1,14 +1,13 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import yaml
+import sys
+sys.path.append("../")
+import jupiter_config
+
 
 template = """
 apiVersion: extensions/v1beta1
@@ -28,7 +27,7 @@ spec:
         imagePullPolicy: Always
         image: {image}
         ports:
-        - containerPort: 8080
+        - containerPort: {flask_port}
         env:
         - name: ALL_NODES
           value: {all_node}
@@ -46,12 +45,34 @@ spec:
           value: {profiler_ip}
 """
 
-## \brief this function genetares the service description yaml for a task 
-# \param kwargs             list of key value pair. 
-# In this case, call argument should be, 
-# name = {taskname}, dir = '{}', host = {hostname}
-
 def write_wave_specs(**kwargs):
-    specific_yaml = template.format(**kwargs)
+    """
+    This function genetares the description yaml for WAVE
+     
+    In this case, call argument should be:
+    
+      -   name: {name}
+      -   app: {label}
+      -   kubernetes.io/hostname: {host}
+      -   image: {image}
+      -   Flask Port: {flask_port}
+      -   ALL_NODES: {all_node}
+      -   ALL_NODES_IPS: {all_node_ips}
+      -   SELF_NAME: {name}
+      -   SELF_IP: {serv_ip}
+      -   HOME_IP: {home_ip}
+      -   HOME_NAME: {home_name}
+      -   PROFILER: {profiler_ip}
+    
+    Args:
+        ``**kwargs``: list of key value pair
+    
+    Returns:
+        dict: loaded configuration 
+    """
+    jupiter_config.set_globals()
+    
+    specific_yaml = template.format(flask_port = jupiter_config.FLASK_DOCKER,
+                                    **kwargs)
     dep = yaml.load(specific_yaml)
     return dep

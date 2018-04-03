@@ -1,14 +1,13 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import yaml
+import sys
+sys.path.append("../")
+import jupiter_config
+
 
 template = """
 apiVersion: v1
@@ -19,17 +18,34 @@ metadata:
     purpose: wave-demo
 spec:
   ports:
-  - port: 48080
-    targetPort: 8080
+  - port: {flask_svc}
+    targetPort: {flask_port}
   selector:
     app: {label}
 """
 
-## \brief this function genetares the service description yaml for a task 
-# \param kwargs             list of key value pair. 
-# In this case, call argument should be, name = {taskname}
 def write_wave_service_specs(**kwargs):
+    """
+    This function genetares the service description yaml for WAVE
+    
+    In this case, call argument should be:
+    
+      -   name: {name}
+      -   Flask port: {flask_svc}
+      -   target Flask Port: {flask_port}
+      -   app: {label}
+    
+
+    Args:
+        ``**kwargs``: list of key value pair
+    
+    Returns:
+        dict: loaded configuration 
+    """
+    jupiter_config.set_globals()
     # insert your values
-    specific_yaml = template.format(**kwargs)
+    specific_yaml = template.format(flask_svc = jupiter_config.FLASK_SVC,
+                                    flask_port = jupiter_config.FLASK_DOCKER,
+                                    **kwargs)
     dep = yaml.load(specific_yaml)
     return dep

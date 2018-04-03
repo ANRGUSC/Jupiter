@@ -1,0 +1,4 @@
+Troubleshooting
+===============
+
+.. warning:: While running the system for the first time, there might be a case that CIRCE is not launched. That happens because the WAVE does not reply with the mapping. This is due to the current design of WAVE where the WAVE home needs to run only after all the WAVE worker have booted up. Currently, Jupiter handles it using a static delay between the worker and master deployments. Thus, due to random docker download time, during the first deploy some workers boot up after the master has boot up. This causes a race condition that results in the failure of WAVE. A better safeguarding against such situation is part of our plan for next release. If this happens (CIRCE is not launched within approximately 10 min), just teardown the whole deployment and redeploy. It should work fine.
