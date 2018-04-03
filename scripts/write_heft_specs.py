@@ -1,18 +1,12 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Quynh Nguyen
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+__author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import yaml
 import sys
 sys.path.append("../")
-from jupiter_config import *
+import jupiter_config
 
 
 template = """
@@ -45,13 +39,30 @@ spec:
           value: {home_ip}
 """
 
-## \brief this function genetares the service description yaml for a task
-# \param kwargs             list of key value pair.
-# In this case, call argument should be,
-# name = {taskname}, dir = '{}', host = {hostname}
-
 def write_heft_specs(**kwargs):
-    specific_yaml = template.format(flask_port = FLASK_DOCKER,
+    """
+    This function genetares the deployment service description yaml for HEFT
+    In this case, call argument should be:
+    
+      -   app: {name}
+      -   kubernetes.io/hostname: {host}
+      -   image: {image}
+      -   app: {label}
+      -   flask Port: {flask_port}
+      -   PROFILERS: {profiler_ips}
+      -   NODE_NAMES: {node_names}
+      -   EXECUTION_HOME_IP: {execution_home_ip}
+      -   HOME_IP: {home_ip}
+    
+    Args:
+        ``**kwargs``: list of key value pair
+    
+    Returns:
+        dict: loaded configuration 
+    """
+    jupiter_config.set_globals()
+    
+    specific_yaml = template.format(flask_port = jupiter_config.FLASK_DOCKER,
                                     **kwargs)
     
     dep = yaml.load(specific_yaml)

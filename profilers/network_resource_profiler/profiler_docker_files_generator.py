@@ -1,10 +1,7 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+__author__ = "Pradipta Ghosh and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 from pprint import pprint
 from dockerfile_parse import DockerfileParser
@@ -120,7 +117,7 @@ ADD profilers/network_resource_profiler/worker/droplet_mongod /network_profiling
 ADD profilers/network_resource_profiler/worker/droplet_generate_random_files /network_profiling/droplet_generate_random_files
 ADD profilers/network_resource_profiler/worker/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
 ADD profilers/network_resource_profiler/worker/automate_droplet.py /network_profiling/automate_droplet.py
-ADD profilers/network_resource_profiler/worker/keep_alive.py /network_profiling/keep_alive.py
+ADD scripts/keep_alive.py /network_profiling/keep_alive.py
 
 RUN mkdir -p /network_profiling/generated_test
 RUN mkdir -p /network_profiling/received_test
@@ -148,18 +145,20 @@ CMD ["./start.sh"]
 ############################################ DOCKER GENERATORS #########################################################
 
 
-"""
-    Function to Generate the Dockerfile of the worker nodes
-"""
+
 def write_profiler_worker_docker(**kwargs):
+    """
+        Function to Generate the Dockerfile of the worker nodes
+    """
     dfp = DockerfileParser(path='profiler_worker.Dockerfile')
     dfp.content =template_worker.format(**kwargs)
     # print(dfp.content)
 
-"""
-    Function to Generate the Dockerfile of the home/master node
-"""
+
 def write_profiler_home_docker(**kwargs):
+    """
+        Function to Generate the Dockerfile of the home/master node of Network Profiler.
+    """
     dfp = DockerfileParser(path='profiler_home.Dockerfile')
     dfp.content =template_home.format(**kwargs)
 

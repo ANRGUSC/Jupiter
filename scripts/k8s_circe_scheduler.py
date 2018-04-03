@@ -1,17 +1,10 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import sys
 sys.path.append("../")
-import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 import time
 import os
@@ -22,14 +15,20 @@ from write_circe_specs import *
 import yaml
 from kubernetes import client, config
 from pprint import *
+import jupiter_config
+from utilities import *
 
-"""
-    This function prints out all the tasks that are not running.
-    If all the tasks are running: return True; else return False.
-"""
+
+
 def check_status_circe(dag):
-    
+    """
+    This function prints out all the tasks that are not running.
+    If all the tasks are running: return ``True``; else return ``False``.
+    """
 
+    jupiter_config.set_globals()
+
+    sys.path.append(jupiter_config.CIRCE_PATH)
     """
         This loads the kubernetes instance configuration.
         In our case this is stored in admin.conf.
@@ -75,6 +74,13 @@ def check_status_circe(dag):
 
 # if __name__ == '__main__':
 def k8s_circe_scheduler(dag_info , temp_info):
+    """
+        This script deploys CIRCE in the system. 
+    """
+
+    jupiter_config.set_globals()
+    
+    sys.path.append(jupiter_config.CIRCE_PATH)
 
     """
         This loads the kubernetes instance configuration.
@@ -236,7 +242,9 @@ def k8s_circe_scheduler(dag_info , temp_info):
 
     home_dep = write_circe_home_specs(image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
-                                child_ips = service_ips.get(jupiter_config.HOME_CHILD), dir = '{}')
+                                child = jupiter_config.HOME_CHILD,
+                                child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
+                                dir = '{}')
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 

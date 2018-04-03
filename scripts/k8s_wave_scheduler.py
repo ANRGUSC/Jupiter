@@ -1,38 +1,35 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import sys
 sys.path.append("../")
-import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 import time
 import os
 from os import path
 from multiprocessing import Process
 from write_wave_service_specs import *
-from readconfig import *
 from write_wave_specs import *
 from kubernetes import client, config
 from pprint import *
 import os
 import jupiter_config
+from utilities import *
 
 
 def check_status_waves():
-    
+    """Verify if all the WAVE home and workers have been deployed and UP in the system.
+    """
+    jupiter_config.set_globals()
+
 
     """
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = read_node_list(path1)
+    nodes = k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -76,12 +73,17 @@ def check_status_waves():
 # if __name__ == '__main__':
 def k8s_wave_scheduler(profiler_ips):
     """
+        Deploy WAVE in the system. 
+    """
+    jupiter_config.set_globals()
+
+    """
         This loads the node list
     """
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = read_node_list(path2)
+    nodes = k8s_get_nodes(path2)
     pprint(nodes)
 
     """

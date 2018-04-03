@@ -1,22 +1,21 @@
 """
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
+    Tear down all Jupiter components (WAVE, CIRCE, DRUPE).
 """
 
-from delete_all_circe_deployments import *
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
+from delete_all_circe import *
 from delete_all_profilers import *
 from delete_all_waves import *
 from delete_all_exec import *
 from delete_all_heft import *
 
-
-delete_all_circe_deployments()
-delete_all_waves()
-delete_all_heft()
-delete_all_profilers()
-delete_all_exec()
+if __name__ == '__main__':
+	delete_all_circe()
+	delete_all_waves()
+	delete_all_heft()
+	delete_all_profilers()
+	delete_all_exec()

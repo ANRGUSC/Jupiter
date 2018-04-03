@@ -1,17 +1,23 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Aleksandra Knezevic,Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar, Jason A Tran and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import os
 
 def read_config(path1,path2):
+    """
+    Reads ``configuration.txt`` and ``nodes.txt``
 
+    Args:
+        - path1 (str): the path to ``configuration.txt``
+        - path2 (str): the path to ``nodes.txt``
+
+    Returns:
+        dict: DAG info (task-node mapping, child tasks and node information)
+
+    """
+    
     nodes = {}
     node_file = open(path2, "r")
     for line in node_file:
@@ -63,7 +69,16 @@ def read_config(path1,path2):
 
 
 def read_node_list(path2):
+    """
+    Reads ``nodes.txt``
 
+    Args:
+        path2 (str): the path to nodes.txt
+
+    Returns:
+        dict: nodes info
+
+    """
     nodes = {}
     node_file = open(path2, "r")
     for line in node_file:

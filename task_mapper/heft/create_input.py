@@ -1,16 +1,41 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+"""
+   This file created input tgff file for the HEFT algorithm.
+"""
+__author__ = "Quynh Nguyen, Aleksandra Knezevic, Pradipta Ghosh and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import re
 import os
 
-NODE_NAMES = os.environ["NODE_NAMES"]
-node_info = NODE_NAMES.split(":")
-node_ids = {v:k for k,v in enumerate(node_info)}
+
 
 def init(filename):
     """
     This function read the tgff file and
     build computation matrix, communication matrix, rate matrix.
     TGFF is a useful tool to generate directed acyclic graph, tfgg file represent a task graph.
+    
+    Args:
+        filename (str): name of output TGFF file
+    
+    Returns:
+        - int: number of tasks
+        - list: task names
+        - int: number of processors
+        - list: computing matrix
+        - list: rate matrix
+        - list: file size transfer matrix
+        - list: communication matrix
     """
+
+    NODE_NAMES = os.environ["NODE_NAMES"]
+    node_info = NODE_NAMES.split(":")
+    node_ids = {v:k for k,v in enumerate(node_info)}
+
     f = open(filename, 'r')
     f.readline()
     f.readline()

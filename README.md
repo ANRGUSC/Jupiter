@@ -1,9 +1,11 @@
 # Jupiter  
 
-Jupiter is a Central orchestrator for Dispersed Computing that 
+Jupiter is a orchestrator for Dispersed Computing that 
 uses Docker containers and Kubernetes (K8s).  The Jupiter system has three
 main components: Profilers, Task Mappers, and
-CIRCE Dispatcher.  
+CIRCE Dispatcher. **(For a detailed documentation refer to our [http://jupiter.readthedocs.io/](http://jupiter.readthedocs.io/))**
+
+
 
 ### Profilers
 Jupiter comes with two different profiler tools: DRUPE (Network and Resource Profiler) and an one time Execution Profiler.
@@ -491,6 +493,8 @@ The directory structure of the project MUST conform with the following:
 
 ```
 
+# Visualization
+The visualization tool for Jupiter is given [here](https://github.com/ANRGUSC/Jupiter_Visualization ). This tool generates an interactive plot to show the scheduling result of WAVE and the dispatcher mapping of CIRCE. To visualize your own application, make sure the format of your logs are in line with the input files of the tools. We will integrate this as a real-time visualization tool for Jupiter in the next release.  
 
 # References
 [1] Quynh Nguyen, Pradipta Ghosh, and Bhaskar Krishnamachari, “End-to-End Network Performance Monitoring for Dispersed Computing“, International Conference on Computing, Networking and Communications, March 2018

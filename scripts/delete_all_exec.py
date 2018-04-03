@@ -1,28 +1,23 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 import sys
 sys.path.append("../")
-import jupiter_config
-
 from utilities import *
-
-from readconfig import *
 import yaml
 from kubernetes import client, config
 from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
+import jupiter_config
 
 def delete_all_exec():
-
+    """Tear down all execution profiler deployments.
+    """
+    jupiter_config.set_globals()
+    
     """
         This loads the task graph
     """
@@ -155,7 +150,7 @@ def delete_all_exec():
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = read_node_list(path1)
+    nodes = k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.

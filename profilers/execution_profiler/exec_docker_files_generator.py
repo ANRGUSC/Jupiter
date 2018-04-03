@@ -1,10 +1,10 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
+__author__ = "Pradipta Ghosh and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
 
 from pprint import pprint
 from dockerfile_parse import DockerfileParser
@@ -53,7 +53,7 @@ ADD {app_file}/configuration.txt /centralized_scheduler/DAG.txt
 ADD profilers/execution_profiler/profiler_worker.py /centralized_scheduler/profiler.py
 
 ADD profilers/execution_profiler/start_worker.sh /centralized_scheduler/start.sh
-ADD profilers/execution_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
+ADD scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD profilers/execution_profiler/get_files.py /centralized_scheduler/get_files.py
 ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
 
@@ -126,7 +126,7 @@ RUN mkdir -p /home/darpa/apps/data
 ADD {app_file}/configuration.txt /centralized_scheduler/DAG.txt
 
 ADD profilers/execution_profiler/start_home.sh /centralized_scheduler/start.sh
-ADD profilers/execution_profiler/keep_alive.py /centralized_scheduler/keep_alive.py
+ADD scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD profilers/execution_profiler/profiler_home.py /centralized_scheduler/profiler_home.py
 ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
 
@@ -146,18 +146,20 @@ CMD ["./start.sh"]
 ############################################ DOCKER GENERATORS #########################################################
 
 
-"""
-    Function to Generate the Dockerfile of the worker nodes
-"""
+
 def write_exec_worker_docker(**kwargs):
+    """
+      Function to Generate the Dockerfile of the worker nodes of Execution Profiler.
+    """
     dfp = DockerfileParser(path='exec_worker.Dockerfile')
     dfp.content =template_worker.format(**kwargs)
     # print(dfp.content)
 
-"""
-    Function to Generate the Dockerfile of the home/master node
-"""
+
 def write_exec_home_docker(**kwargs):
+    """
+      Function to Generate the Dockerfile of the home/master node
+    """
     dfp = DockerfileParser(path='exec_home.Dockerfile')
     dfp.content =template_home.format(**kwargs)
 

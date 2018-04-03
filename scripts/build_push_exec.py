@@ -1,45 +1,53 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors:
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import sys
 sys.path.append("../")
-
-import jupiter_config
 import os
 import configparser
-
-INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
-config = configparser.ConfigParser()
-config.read(INI_PATH)
+import jupiter_config
 
 
+def prepare_global_info():
+    """Read configuration information from ``app_config.ini``
+    
+    Returns:
+        - list: port_list_home - The list of ports to be exposed in the exec home dockers
+        - list: port_list_worker - The list of ports to be exposed in the exec worker dockers
+    """
+    jupiter_config.set_globals()
 
-sys.path.append(jupiter_config.EXEC_PROFILER_PATH)
-import exec_docker_files_generator as dc
+    INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
 
-port_list_home = []
-port_list_home.append(jupiter_config.SSH_DOCKER)
-port_list_home.append(jupiter_config.MONGO_DOCKER)
-port_list_home.append(jupiter_config.FLASK_DOCKER)
-for key in config["DOCKER_PORT"]:
-  print(config["DOCKER_PORT"][key])
-  port_list_home.append(config["DOCKER_PORT"][key])
-print('The list of ports to be exposed in the exec home dockers are ', " ".join(port_list_home))
+    sys.path.append(jupiter_config.EXEC_PROFILER_PATH)
+    
+    port_list_home = []
+    port_list_home.append(jupiter_config.SSH_DOCKER)
+    port_list_home.append(jupiter_config.MONGO_DOCKER)
+    port_list_home.append(jupiter_config.FLASK_DOCKER)
+    for key in config["DOCKER_PORT"]:
+      print(config["DOCKER_PORT"][key])
+      port_list_home.append(config["DOCKER_PORT"][key])
+    print('The list of ports to be exposed in the exec home dockers are ', " ".join(port_list_home))
 
-port_list_worker = []
-port_list_worker.append(jupiter_config.SSH_DOCKER)
-port_list_worker.append(jupiter_config.MONGO_DOCKER)
-port_list_worker.append(jupiter_config.FLASK_DOCKER)
-print('The list of ports to be exposed in the exec worker dockers are ', " ".join(port_list_worker))
+    port_list_worker = []
+    port_list_worker.append(jupiter_config.SSH_DOCKER)
+    port_list_worker.append(jupiter_config.MONGO_DOCKER)
+    port_list_worker.append(jupiter_config.FLASK_DOCKER)
+    print('The list of ports to be exposed in the exec worker dockers are ', " ".join(port_list_worker))
 
+    return port_list_home, port_list_worker
 
 def build_push_exec():
+    """Build execution profiler home and worker image from Docker files and push them to the Dockerhub.
+    """
+    port_list_home, port_list_worker = prepare_global_info()
+    import exec_docker_files_generator as dc
+
 
     os.chdir(jupiter_config.EXEC_PROFILER_PATH )
 
@@ -60,8 +68,6 @@ def build_push_exec():
     os.system("sudo docker build -f exec_worker.Dockerfile ../.. -t "
                                  + jupiter_config.EXEC_WORKER_IMAGE)
     os.system("sudo docker push " + jupiter_config.EXEC_WORKER_IMAGE)
-
-    # os.system("rm *.Dockerfile")
 
 if __name__ == '__main__':
     build_push_exec()
