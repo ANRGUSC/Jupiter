@@ -10,9 +10,10 @@ RUN apt-get install sudo -y
 RUN apt-get install iproute2 -y
 
 ## Install TASK specific needs. The hadoop is a requirement for the network profiler application
-RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
+##RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
+RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
 RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
-
+RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
@@ -36,8 +37,9 @@ RUN mkdir -p /home/darpa/apps/data
 ADD circe/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD task_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
+ADD app_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
 
+ADD jupiter_config.ini /jupiter_config.ini
 
 
 ADD circe/start_worker.sh /start.sh
@@ -50,3 +52,4 @@ EXPOSE 22 57021
 
 # run the command
 CMD ["./start.sh"]
+

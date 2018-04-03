@@ -1,39 +1,35 @@
-"""
- * Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
- *     contributors: 
- *      Pradipta Ghosh
- *      Pranav Sakulkar
- *      Jason A Tran
- *      Bhaskar Krishnamachari
- *     Read license file in main directory for more details  
-"""
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.0"
+
 import sys
 sys.path.append("../")
-import jupiter_config
-sys.path.append(jupiter_config.CIRCE_PATH)
 
 import time
 import os
 from os import path
 from multiprocessing import Process
 from write_wave_service_specs import *
-from readconfig import *
 from write_wave_specs import *
 from kubernetes import client, config
 from pprint import *
 import os
 import jupiter_config
-from k8s_get_service_ips import *
+from utilities import *
 
-"""
-    This function prints out all the waves that are not running.
-    If all the waves are running: return True; else return False.
-"""
+
 def check_status_waves():
-    
+    """Verify if all the WAVE home and workers have been deployed and UP in the system.
+    """
+    jupiter_config.set_globals()
 
+
+    """
+        This loads the node lists in use
+    """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = read_node_list(path1)
+    nodes = k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -41,7 +37,7 @@ def check_status_waves():
         You should set the config file path in the jupiter_config.py file.
     """
     config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
-    namespace = jupiter_config.WAVE_NAMESPACE
+    namespace = jupiter_config.MAPPER_NAMESPACE
 
 
     # We have defined the namespace for deployments in jupiter_config
@@ -54,11 +50,7 @@ def check_status_waves():
     result = True
     for key in nodes:
 
-        # First check if there is a deployment existing with
-        # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
-        # The label of kubernets are used to identify replicaset associate to each task
         label = "app=wave_" + key
-
         resp = None
 
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
@@ -69,8 +61,6 @@ def check_status_waves():
                 print("Pod Not Running", key)
                 result = False
 
-            # print("Pod Deleted. status='%s'" % str(del_resp_2.status))
-
     if result:
         print("All systems GOOOOO!!")
     else:
@@ -78,15 +68,22 @@ def check_status_waves():
 
     return result
 
+
+
 # if __name__ == '__main__':
 def k8s_wave_scheduler(profiler_ips):
+    """
+        Deploy WAVE in the system. 
+    """
+    jupiter_config.set_globals()
+
     """
         This loads the node list
     """
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = read_node_list(path2)
+    nodes = k8s_get_nodes(path2)
     pprint(nodes)
 
     """
@@ -99,7 +96,7 @@ def k8s_wave_scheduler(profiler_ips):
     """
         We have defined the namespace for deployments in jupiter_config
     """
-    namespace = jupiter_config.WAVE_NAMESPACE
+    namespace = jupiter_config.MAPPER_NAMESPACE
     
     """
         Get proper handles or pointers to the k8-python tool to call different functions.
@@ -186,7 +183,8 @@ def k8s_wave_scheduler(profiler_ips):
             
 
 
-    # TODO: have to make sure that the worker nodes are on and working by this time
+    # have to somehow make sure that the worker nodes are on and working by this time
+    
     while 1:
         if check_status_waves():
             break
@@ -204,8 +202,3 @@ def k8s_wave_scheduler(profiler_ips):
     print("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
-
-
-if __name__ == '__main__':
-    profiler_ips = get_all_profilers()
-    k8s_wave_scheduler(profiler_ips)

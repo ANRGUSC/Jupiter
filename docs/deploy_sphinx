@@ -1,0 +1,33 @@
+#!/bin/bash
+
+make clean
+
+rm -rf source/circe
+sphinx-apidoc -o source/circe ../circe 
+
+rm -rf source/profilers/execution_profiler
+sphinx-apidoc -o source/profilers/execution_profiler ../profilers/execution_profiler
+
+rm -rf source/profilers/network_resource_profiler
+
+sphinx-apidoc -o source/profilers/network_resource_profiler ../profilers/network_resource_profiler
+
+sphinx-apidoc -o source/profilers/network_resource_profiler/home ../profilers/network_resource_profiler/home
+sphinx-apidoc -o source/profilers/network_resource_profiler/worker ../profilers/network_resource_profiler/worker
+
+sphinx-apidoc -o source/profilers/network_resource_profiler/home/resource_profiling_files ../profilers/network_resource_profiler/home/resource_profiling_files
+
+rm -rf source/scripts 
+sphinx-apidoc -o source/scripts ../scripts
+
+rm -rf source/task_mapper/heft
+sphinx-apidoc -o source/task_mapper/heft ../task_mapper/heft
+
+rm -rf source/task_mapper/wave
+sphinx-apidoc -o source/task_mapper/wave/greedy_wave/home ../task_mapper/wave/greedy_wave/home
+sphinx-apidoc -o source/task_mapper/wave/greedy_wave/worker ../task_mapper/wave/greedy_wave/worker
+sphinx-apidoc -o source/task_mapper/wave/random_wave/home ../task_mapper/wave/random_wave/home
+sphinx-apidoc -o source/task_mapper/wave/random_wave/worker ../task_mapper/wave/random_wave/worker
+
+make html
+xdg-open build/html/index.html
