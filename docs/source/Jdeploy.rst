@@ -78,7 +78,8 @@ You need to follow this exact folder structure to develop an APP for the Jupiter
 
     APP_folder
     |
-    |   configuration.txt  
+    |   configuration.txt
+    |   app_config.ini  
     |
     └───scripts
     |
@@ -139,8 +140,24 @@ In version 2.0, to simplify the process we have provided with the following scri
 
 These scripts will read the configuration information from ``jupiter_config.ini`` and ``jupiter_config.py`` to help generate corresponding Docker files for all the components. 
 
+Step 6 : Choose the task mapper
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Step 6 : Push the Dockers
+You must choose the scheduler mapper from ``config.ini``. Currently, there are 3 options from the scheduling algorithm list: centralized (HEFT), distributed(random WAVE, greedy WAVE).
+
+.. code-block:: text
+    :linenos:
+
+    [CONFIG]
+        STATIC_MAPPING = 0
+        SCHEDULER = 1
+
+    [SCHEDULER_LIST]
+        HEFT = 0
+        WAVE_RANDOM = 1
+        WAVE_GREEDY = 2
+
+Step 7 : Push the Dockers
 -------------------------
 
 Now, you need to build your Docker images. 
@@ -182,7 +199,7 @@ The same thing needs to be done for the profilers, the WAVE and HEFT files.
 
 .. warning:: However, before running any of these scripts you should update the ``jupiter_config`` file with your own docker names as well as dockerhub username. DO NOT run the script without crosschecking the config file.
 
-Step 7 : Setup the Proxy
+Step 8 : Setup the Proxy
 ------------------------
 
 Now, you have to create a kubernetes proxy. You can do that by running the follwing command on a terminal.
@@ -193,7 +210,7 @@ Now, you have to create a kubernetes proxy. You can do that by running the follw
     kubectl proxy -p 8080
 
 
-Step 8 : Create the Namespaces
+Step 9 : Create the Namespaces
 ------------------------------
 
 You need to create difference namespaces in your Kubernetes cluster 
@@ -219,22 +236,9 @@ You can create these namespaces commands similar to the following:
     EXEC_NAMESPACE          = 'johndoe-exec'
 
 
-Step 9 : Run the Jupiter Orchestrator
+Step 10 : Run the Jupiter Orchestrator
 -------------------------------------
 
-You must choose the scheduler mapper from ``config.ini``. Currently, there are 3 options from the scheduling algorithm list: centralized (HEFT), distributed(random WAVE, greedy WAVE).
-
-.. code-block:: text
-    :linenos:
-
-    [CONFIG]
-        STATIC_MAPPING = 0
-        SCHEDULER = 1
-
-    [SCHEDULER_LIST]
-        HEFT = 0
-        WAVE_RANDOM = 1
-        WAVE_GREEDY = 2
 
 Next, you can simply run:
 
@@ -245,8 +249,8 @@ Next, you can simply run:
     python3 k8s_jupiter_deploy.py
 
 
-Step 9 : Alternate
-------------------
+Step 10 : Alternate
+-------------------
 
 If you do not want to use WAVE for the scheduler and design your own, you can do that by simply using the ``static_assignment.py``. You must do that by setting ``STATIC_MAPPING`` to ``1`` from ``jupiter_config.ini``. You have to pipe your scheduling output to the static_assignment.py while conforming to the sample dag and sample schedule structure. Then you can run:
 
@@ -256,7 +260,7 @@ If you do not want to use WAVE for the scheduler and design your own, you can do
     cd scripts/
     python3 k8s_jupiter_deploy.py
 
-Step 10 : Interact With the DAG
+Step 11 : Interact With the DAG
 -------------------------------
 
 Now you can interact with the pos using the kubernetes dashboard. 
