@@ -107,8 +107,7 @@ to re-run the full set of commands if the `admin.conf` file has changed:
         |   |
         |   └───APP_folder
         |       |
-        |       |   configuration.txt
-        |       |   DAG_Scheduler.txt  
+        |       |   configuration.txt 
         |       |   app_config.ini 
         |       |
         |       └───scripts
@@ -166,9 +165,8 @@ But if there are multiple ingreass tasks, you have to put all of them by separat
 ### Step 4 (Setup APP Folder)
 You need to make sure that you have a `APP_folder` with all the task specific files
 inside the `app_specific_files` folder. 
-The `APP_folder` needs to have a configuration.txt and a DAG_Scheduler.txt
-The configuration.txt is used by CIRCE while the DAG_Scheduler.txt is used by WAVE.
-**We are currently working on merging these two files.** 
+The `APP_folder` needs to have a configuration.txt.
+
 The `APP_folder` MUST also contain all executable files of the task graph
 under the `scripts` sub-folder. 
 You need to follow this exact folder structure to develop an APP for 
@@ -178,7 +176,6 @@ the Jupiter Orchestrator.
     APP_folder
     |
     |   configuration.txt
-    |   DAG_Scheduler.txt
     |   app_config.ini   
     |
     └───scripts
