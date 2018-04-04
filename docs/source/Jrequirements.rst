@@ -36,25 +36,27 @@ In order to use the Jupiter Orchestrator tool, your computer needs to fulfill th
 .. code-block:: text
 
         Jupiter
-        │   jupiter_config.py 
-        |   nodes.txt
-        │
-        └───profilers
-        │  
-        └───wave
-        |   
-        └───circe
-        |
-        └───task_specific_files
-        |   |
-        |   └───APP_folder
-        |       |
-        |       |   configuration.txt
-        |       |   DAG_Scheduler.txt   
-        |       |
-        |       └───scripts
-        |       |
-        |       └───sample_input
-        |
-        └───scripts
+               │   jupiter_config.py 
+               |   jupiter_config.ini
+               |   nodes.txt
+               │
+               └───profilers
+               │  
+               └───task_mapper
+               |   
+               └───circe
+               |
+               └───app_specific_files
+               |   |
+               |   └───APP_folder
+               |       |
+               |       |   configuration.txt 
+               |       |   app_config.ini 
+               |       |
+               |       └───scripts
+               |       |
+               |       └───sample_input
+               |
+               └───scripts
+
 
