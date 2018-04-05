@@ -47,7 +47,7 @@ def get_global_info():
     profiler_ip = [info.split(":") for info in profiler_ip]
     exec_home_ip = os.environ['EXECUTION_HOME_IP']
     num_nodes = len(profiler_ip)
-    print(num_nodes)
+    print('Number of Nodes ',num_nodes)
     node_list = [info[0] for info in profiler_ip]
     node_IP = [info[1] for info in profiler_ip]
     network_map = dict(zip(node_IP, node_list))
@@ -74,7 +74,7 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
             time.sleep(60)
 
     print(db)
-    while num_profilers < (num_nodes+1):
+    while num_profilers < (num_nodes + 1):
         try:
             collection = db.collection_names(include_system_collections=False)
             num_profilers = len(collection)
@@ -107,7 +107,9 @@ def get_network_profile_data(profiler_ip, MONGO_SVC_PORT, network_map):
         - network_map (dict): mapping of node IPs and node names
     """
     print(profiler_ip)
+    count = 0
     for ip in profiler_ip:
+        print('Got Network Info from' + str(count) + " Number of Nodes")
         print('Check Network Profiler IP: '+ip[0]+ '-' +ip[1])
         client_mongo = MongoClient('mongodb://'+ip[1]+':'+MONGO_SVC_PORT+'/')
         db = client_mongo.droplet_network_profiler
@@ -130,6 +132,7 @@ def get_network_profile_data(profiler_ip, MONGO_SVC_PORT, network_map):
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             info_to_csv=[network_map[record['Source[IP]']],record['Source[IP]'],network_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info.append(info_to_csv)
+        count += 1
     print('Network information has already been provided')
     #print(network_info)
     with open('/heft/network_log.txt','w') as f:

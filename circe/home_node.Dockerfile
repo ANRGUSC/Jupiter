@@ -1,5 +1,5 @@
 # Instructions copied from - https://hub.docker.com/_/python/
-FROM ubuntu:16.04
+FROM anrg/rpi_circe_home:v0
 
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
@@ -12,10 +12,13 @@ RUN apt-get install -y sshpass nano
 # Taken from quynh's network profiler
 RUN pip install cryptography
 
+COPY mongo3-2 /usr/bin
 
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
@@ -34,6 +37,7 @@ RUN mkdir -p /runtime
 
 # Add input files
 COPY  app_specific_files/network_monitoring_app/sample_input /sample_input
+COPY mongo3-2 /usr/bin
 
 # Add the mongodb scripts
 ADD circe/runtime_profiler_mongodb /central_mongod

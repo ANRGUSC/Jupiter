@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM anrg/rpi_exec_worker:v0
 
 RUN apt-get -yqq update
 
@@ -10,6 +10,7 @@ RUN apt-get install -y vim
 RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
 RUN apt-get install sudo -y
 RUN apt-get install iproute2 -y
+
 
 RUN apt-get install -y openssh-server
 RUN echo 'root:PASSWORD' | chpasswd
@@ -25,7 +26,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 ADD profilers/execution_profiler/requirements.txt /requirements.txt
 
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r /requirements.txt
 
 RUN mkdir -p /home/darpa/apps/data
 

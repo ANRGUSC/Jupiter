@@ -97,7 +97,6 @@ def k8s_exec_scheduler():
     """
         This script deploys execution profiler in the system. 
     """
-
     jupiter_config.set_globals()
 
     global configs, taskmap, path1, path2
