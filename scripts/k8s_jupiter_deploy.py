@@ -95,7 +95,7 @@ def main():
             Then this is link to get the task to node mapping
         """
 
-        line = "http://localhost:8080/api/v1/namespaces/"
+        line = "http://localhost:8001/api/v1/namespaces/"
         line = line + jupiter_config.MAPPER_NAMESPACE + "/services/home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
         time.sleep(5)
         print(line)
@@ -125,8 +125,8 @@ def main():
     
     else:
         import static_assignment
-        # dag = static_assignment.dag
-        # schedule = static_assignment.schedule
+        dag = static_assignment.dag
+        schedule = static_assignment.schedule
 
     # Start CIRCE
     k8s_circe_scheduler(dag,schedule)

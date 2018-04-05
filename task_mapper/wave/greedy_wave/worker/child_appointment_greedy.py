@@ -37,7 +37,7 @@ def prepare_global():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global ip_to_node_name, FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host, node_id, node_name, debug
+    global ip_to_node_name, docker_ip_to_node_name, FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host, node_id, node_name, debug
 
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
@@ -56,18 +56,18 @@ def prepare_global():
         nodes[node_name] = node_ip + ":" + str(FLASK_SVC)
         node_count += 1
 
-    #Get nodes to profiler_ip mapping
+
     for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
         if node_name == "":
             continue
-        #First get mapping like {node: profiler_ip}, and later convert it to {profiler_ip: node}
         tmp_nodes_for_convert[node_name] = node_ip
 
-    # ip_to_node_name is a dict that contains node names and profiler ips mapping
     ip_to_node_name = {v: k for k, v in tmp_nodes_for_convert.items()}
 
     master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
     print("Nodes", nodes)
+
+    # ip_to_node_name is a dict that contains node names and profiler ips mapping
     print(ip_to_node_name)
 
 
@@ -78,6 +78,8 @@ def prepare_global():
 
     #
     threshold = 15
+
+    # Variables for collecting network and resource profiler data
     resource_data = {}
     is_resource_data_ready = False
     network_profile_data = {}
@@ -273,6 +275,7 @@ def watcher():
         shutil.rmtree(local_responsibility)
         os.mkdir(local_responsibility)
 
+        # What is this??
         if time.time() - pre_time >= 60:
             if tmp_mapping != "":
                 res = call_send_mapping(tmp_mapping, node_name)
@@ -394,6 +397,7 @@ def get_most_suitable_node(size):
         all_nodes.append({'node_name': tmp_node_name, 'delay': tmp, "node_ip": data['ip']})
 
     # print(all_nodes)
+    best_neighbor_delay_only = tmp_node_name
 
     # get all the nodes that satisfy: time < tmin * threshold
     for _, item in enumerate(all_nodes):
@@ -414,7 +418,9 @@ def get_most_suitable_node(size):
             tmp_cpu = tmp_resource_data['cpu']
             tmp_memory = tmp_resource_data['memory']
 
-        if weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory < min_value:
+        # TODO?? Data Sanity check
+
+        if weight_network * tmp_value + weight_cpu * tmp_cpu + weight_memory * tmp_memory < min_value:
             min_value = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
             result_node_name = tmp_node_name
 
@@ -424,17 +430,21 @@ def get_most_suitable_node(size):
             tmp_resource_data = resource_data[tmp_node_name]
             tmp_cpu = tmp_resource_data['cpu']
             tmp_memory = tmp_resource_data['memory']
-            if weight_cpu*tmp_cpu + weight_memory*tmp_memory < min_value:
+            if weight_cpu * tmp_cpu + weight_memory * tmp_memory < min_value:
                 min_value = weight_cpu*tmp_cpu + weight_memory*tmp_memory
                 result_node_name = tmp_node_name
 
+
     if result_node_name:
         # del network_profile_data[result_node_name]
-        network_profile_data[result_node_name]['c'] = 100000
-            # resource_data[result_node_name]['cpu'] = 100000
-
+        network_profile_data[result_node_name]['c'] = 100000 ## This is to make that node unavailable i presume??
+        # resource_data[result_node_name]['cpu'] = 100000
+    else:
+        if best_neighbor_delay_only:
+            network_profile_data[best_neighbor_delay_only]['c'] = 100000
+            result_node_name = best_neighbor_delay_only
+    
     return result_node_name
-
 
 def scan_dir(directory):
     """Scan the directory, append all file names to list ``tasks``
@@ -555,7 +565,7 @@ def get_network_profile_data():
 
             #get mongoDB collections
             collections = db.collection_names(include_system_collections=False)
-            # print(collections)
+            print(collections)
 
             num_db = len(nodes)-1
             num_rows = db[table_name].count()
@@ -591,7 +601,6 @@ def get_network_profile_data():
             try_network_times += 1
             time.sleep(10)
             
-
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True

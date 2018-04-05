@@ -14,27 +14,33 @@ template_home ="""\
 # **     Read license file in main directory for more details
 
 # Instructions copied from - https://hub.docker.com/_/python/
-FROM ubuntu:16.04
+FROM anrg/rpi_netr_home:v0
 
+RUN apt-get update && apt-get upgrade -y
 # Install required libraries
 RUN apt-get update
 RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev
 RUN apt-get -yqq install python3-pip python3-dev
 RUN pip3 install --upgrade pip
-RUN apt-get install -y openssh-server mongodb sshpass nano virtualenv supervisor
+RUN apt-get install -y openssh-server sshpass nano virtualenv supervisor
 
 # Install required python libraries
 ADD profilers/network_resource_profiler/home/requirements.txt /requirements.txt
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r /requirements.txt
 
 
 # Authentication
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
+
+COPY mongo3-2 /usr/bin
 
 # Prepare MongoDB
 RUN mkdir -p /mongodb/data
@@ -86,23 +92,29 @@ template_worker ="""\
 # **     Read license file in main directory for more details
 
 # Instructions copied from - https://hub.docker.com/_/python/
-FROM ubuntu:16.04
+FROM anrg/rpi_netr_worker:v0
 
+RUN apt-get update && apt-get upgrade -y
 # Install required libraries
-RUN apt-get update
 RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev
 RUN apt-get -yqq install python3-pip python3-dev
 RUN pip3 install --upgrade pip
-RUN apt-get install -y openssh-server mongodb net-tools sshpass nano virtualenv supervisor
+RUN apt-get install -y openssh-server net-tools sshpass nano virtualenv supervisor
+RUN apt-get install software-properties-common python-software-properties
+
+COPY mongo3-2 /usr/bin
 
 # Install required python libraries
 ADD profilers/network_resource_profiler/worker/requirements.txt /requirements.txt
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r /requirements.txt
 
 
 # Authentication
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 ENV NOTVISIBLE "in users profile"

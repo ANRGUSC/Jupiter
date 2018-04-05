@@ -6,4 +6,4 @@
 # 
 
 echo 'Starting home or master node'
-python -u /master.py
+python3 -u /master.py
