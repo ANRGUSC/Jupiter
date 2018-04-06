@@ -99,6 +99,9 @@ def k8s_exec_scheduler():
     """
 
     jupiter_config.set_globals()
+
+    global configs, taskmap, path1, path2
+    
     configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
     taskmap = configs["taskname_map"]
 
