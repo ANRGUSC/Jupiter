@@ -37,7 +37,7 @@ def prepare_global():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global docker_ip_to_node_name, FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host, node_id, node_name, debug
+    global ip_to_node_name, docker_ip_to_node_name, FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host, node_id, node_name, debug
 
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
@@ -47,6 +47,7 @@ def prepare_global():
     # Get ALL node info
     node_count = 0
     nodes = {}
+    tmp_nodes_for_convert={}
     ip_to_node_name = {}
     docker_ip_to_node_name = {}
 
@@ -57,9 +58,23 @@ def prepare_global():
         ip_to_node_name[node_ip] = node_name
         node_count += 1
 
+    for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
+        if node_name == "":
+            continue
+        tmp_nodes_for_convert[node_name] = node_ip
+
+    ip_to_node_name = {v: k for k, v in tmp_nodes_for_convert.items()}
+
+
+
+
     master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
     print("Nodes", nodes)
-    print("os.en:", os.environ['PROFILER'])
+
+    # ip_to_node_name is a dict that contains node names and profiler ips mapping
+    print(ip_to_node_name)
+
+
 
     global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
 
@@ -555,14 +570,15 @@ def get_network_profile_data():
                 print("Network profiler info not yet loaded into mongoDB")
                 time.sleep(360)
                 num_rows = db[table_name].count()
+            print("We got network profiler data!")
 
             #Parse parameters metrix from network profiler
             for item in db[table_name].find():
                 if 'Parameters' not in item or 'Destination[IP]' not in item:
                     continue
                 destination_ip = item['Destination[IP]']
-                if destination_ip in docker_ip_to_node_name:
-                    tmp_node_name = docker_ip_to_node_name[destination_ip]
+                if destination_ip in ip_to_node_name:
+                    tmp_node_name = ip_to_node_name[destination_ip]
                     params = item['Parameters']
                     param_items = re.split(r'\s+', params)
                     network_profile_data[tmp_node_name] = {'a': float(param_items[0]), 'b': float(param_items[1]),
@@ -585,79 +601,6 @@ def get_network_profile_data():
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
 
-def send_node_name2docker_ip_to_master():
-    """used to send (node_name - profiler ip) mapping to master node
-    """
-    flag = False
-    try_times = 0
-    while True:
-        try:
-            if try_times >= 3:
-                break
-
-            tmp_home_ip = os.environ['HOME_IP']
-            tmp_docker_ip = os.environ['PROFILER']
-            tmp_node_name = os.environ['SELF_NAME']
-
-            mapping = tmp_node_name + ":" + tmp_docker_ip
-            url = "http://" + tmp_home_ip + ":" + str(FLASK_SVC) + "/recv_node_name2docker_ip?mapping=" + mapping
-            resp = requests.get(url)
-            text = resp.text
-            if text == 'ok':
-                flag = True
-                break
-            else:
-                try_times += 1
-        except Exception as e:
-            try_times += 1
-            print('Send node_name to docker_ip mapping to master error, details: ' + str(e))
-
-    if not flag:
-        print("Send node_name to docker_ip mapping to master failed")
-    else:
-        print("Send node_name to docker_ip mapping to master succeed")
-
-
-def get_node_name2docker_ip_mapping_from_master():
-    """get all the (profiler ip - node name) mapping from master node
-    """
-    flag = False
-    try_times = 0
-    while True:
-        try:
-            if try_times >= 3:
-                break
-
-            tmp_home_ip = os.environ['HOME_IP']
-            url = "http://" + tmp_home_ip + ":" + str(FLASK_SVC) + "/send_node_name2docker_ip"
-            resp = requests.get(url)
-            text = resp.text
-
-            global docker_ip_to_node_name
-            docker_ip_to_node_name = json.loads(text)
-            if len(docker_ip_to_node_name) > 0:
-                flag = True
-                break
-            else:
-                try_times += 1
-        except Exception as e:
-            try_times += 1
-            print('Recv node name to docker ip mappings from master error, details: ' + str(e))
-
-    if not flag:
-        print("Recv node name to docker ip mappings from master failed")
-    else:
-        print("Recv node name to docker ip mappings from master succeed")
-
-
-def sync_docker_ip2node_name_info():
-    """Waiting for all the other nodes report docker ip to node name mapping to master
-    """
-    send_node_name2docker_ip_to_master()
-    for i in range(10):
-        print("Waiting for all the other nodes report docker ip to node name mapping to master")
-        time.sleep(10)
-    get_node_name2docker_ip_mapping_from_master()
 
     
 def main():
@@ -682,8 +625,6 @@ def main():
 
     while init_folder() != "ok":  # Initialize the local folers
         pass
-
-    _thread.start_new_thread(sync_docker_ip2node_name_info, ())
 
     # Get resource data
     _thread.start_new_thread(get_resource_data, ())
