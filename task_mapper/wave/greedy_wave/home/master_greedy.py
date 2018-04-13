@@ -137,25 +137,7 @@ def recv_task_assign_info():
     return 'ok'
 app.add_url_rule('/recv_task_assign_info', 'recv_task_assign_info', recv_task_assign_info)
 
-#@app.route('/recv_node_name2docker_ip')
-def recv_node_name2docker_ip():
-    """
-        Receive corresponding Kubernetes IP address of node list
-    """
-    mapping = request.args.get('mapping')
-    items = re.split(r':', mapping)
-    docker_ip2node_name[items[1]] = items[0]
-    return 'ok'
-app.add_url_rule('/recv_node_name2docker_ip', 'recv_node_name2docker_ip', recv_node_name2docker_ip)
 
-#@app.route('/send_node_name2docker_ip')
-def send_node_name2docker_ip():
-    """Return corresponding node list of given Kubernetes IP address
-    """
-    return json.dumps(docker_ip2node_name)
-app.add_url_rule('/send_node_name2docker_ip', 'send_node_name2docker_ip', send_node_name2docker_ip)
-
-#@app.route('/recv_mapping')
 def recv_mapping():
     """
     From each droplet, the master receive the local mapping of the assigned task for that droplet, combine all of the information
