@@ -1,7 +1,7 @@
-Scheduler Mapper Reference
-**************************
+Task Mapper Reference
+*********************
 
-.. note:: This page gives an overview of all public scheduler mapper objects (including **HEFT** and **WAVE** scheduling algorithm), functions and methods which have been used the **JUPITER** system. 
+.. note:: This page gives an overview of all public Task Mapper objects (including **HEFT** and **WAVE** scheduling algorithm), functions and methods which have been used the **JUPITER** system. 
 
 
 HEFT

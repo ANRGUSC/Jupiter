@@ -85,34 +85,34 @@ def set_globals():
 	"""CIRCE home and worker images"""
 	global HOME_IMAGE, WORKER_IMAGE
 
-	HOME_IMAGE              = 'docker.io/johndoe/circe_home:v1'
-	WORKER_IMAGE            = 'docker.io/johndoe/circe_worker:v1'
+	HOME_IMAGE              = 'docker.io/johndoe/circe_home:v0'
+	WORKER_IMAGE            = 'docker.io/johndoe/circe_worker:v0'
 
 	"""DRUPE home and worker images"""
 	global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
 	
-	PROFILER_HOME_IMAGE     = 'docker.io/johndoe/profiler_home:v1'
-	PROFILER_WORKER_IMAGE   = 'docker.io/johndoe/profiler_worker:v1'
+	PROFILER_HOME_IMAGE     = 'docker.io/johndoe/profiler_home:v0'
+	PROFILER_WORKER_IMAGE   = 'docker.io/johndoe/profiler_worker:v0'
 
 	"""WAVE home and worker images"""
 	global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
 
 	#v0: random, v1: greedy
 
-	WAVE_HOME_IMAGE         = 'docker.io/johndoe/wave_home:v1'
-	WAVE_WORKER_IMAGE       = 'docker.io/johndoe/wave_worker:v1'
+	WAVE_HOME_IMAGE         = 'docker.io/johndoe/wave_home:v0'
+	WAVE_WORKER_IMAGE       = 'docker.io/johndoe/wave_worker:v0'
 
 	"""Execution profiler home and worker images"""
 	global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-	EXEC_HOME_IMAGE         = 'docker.io/johndoe/exec_home:v1'
-	EXEC_WORKER_IMAGE       = 'docker.io/johndoe/exec_worker:v1'
+	EXEC_HOME_IMAGE         = 'docker.io/johndoe/exec_home:v0'
+	EXEC_WORKER_IMAGE       = 'docker.io/johndoe/exec_worker:v0'
 
 	"""HEFT docker image"""
 	global HEFT_IMAGE
 
-	HEFT_IMAGE              = 'docker.io/johndoe/heft:v1'
+	HEFT_IMAGE              = 'docker.io/johndoe/heft:v0'
 
 	"""Application Information"""
 	global APP_PATH, APP_NAME
