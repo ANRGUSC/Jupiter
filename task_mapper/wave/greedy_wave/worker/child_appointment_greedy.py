@@ -37,41 +37,36 @@ def prepare_global():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global ip_to_node_name, docker_ip_to_node_name, FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host, node_id, node_name, debug
+    global ip_to_node_name, FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host, node_id, node_name, debug
 
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
     MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
-
 
     # Get ALL node info
     node_count = 0
     nodes = {}
     tmp_nodes_for_convert={}
     ip_to_node_name = {}
-    docker_ip_to_node_name = {}
 
+    #Get nodes to self_ip mapping
     for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
         if node_name == "":
             continue
         nodes[node_name] = node_ip + ":" + str(FLASK_SVC)
-        ip_to_node_name[node_ip] = node_name
         node_count += 1
 
+    #Get nodes to profiler_ip mapping
     for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
         if node_name == "":
             continue
         tmp_nodes_for_convert[node_name] = node_ip
 
+    # ip_to_node_name is a dict that contains node names and profiler ips mapping
     ip_to_node_name = {v: k for k, v in tmp_nodes_for_convert.items()}
-
-
-
 
     master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
     print("Nodes", nodes)
-
-    # ip_to_node_name is a dict that contains node names and profiler ips mapping
     print(ip_to_node_name)
 
 
