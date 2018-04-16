@@ -60,6 +60,7 @@ def prepare_global():
     for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
         if node_name == "":
             continue
+        #First get mapping like {node: profiler_ip}, and later convert it to {profiler_ip: node}
         tmp_nodes_for_convert[node_name] = node_ip
 
     # ip_to_node_name is a dict that contains node names and profiler ips mapping
