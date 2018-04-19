@@ -298,10 +298,8 @@ def distribute():
         if is_network_profile_data_ready and is_resource_data_ready:
             break
         else:
+            print("Waiting for the profiler data")
             time.sleep(100)
-            end = int(time.time())
-            if end - start >= 1800:
-                break
 
     while True:
         if kill_flag:
@@ -408,7 +406,7 @@ def get_most_suitable_node(size):
         tmp_node_name = item['node_name']
         tmp_value = item['delay']
 
-        if (tmp_node_name not in resource_data.keys()) or (tmp_node_name == 'node77'):
+        if (tmp_node_name not in resource_data.keys()) :
             tmp_cpu = 10000
             tmp_memory = 10000
         else:
@@ -512,22 +510,23 @@ def get_resource_data():
     """
     print("Starting resource profile collection thread")
     # Requsting resource profiler data using flask for its corresponding profiler node
-    st = int(time.time())
+    try_resource_times = 0
     while True:
         time.sleep(60)
         try:
+            if try_resource_times >= 10:
+                print("Exceeded maximum try times, break.")
+                break
             r = requests.get("http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC) + "/all")
             result = r.json()
             print(result)
             if len(result) != 0:
                 break
             else:
-                et = int(time.time())
-                if et -st >= 180:
-                    break
+                try_resource_times += 1
         except Exception as e:
             print("Resource request failed. Will try again, details: " + str(e))
-            break
+            try_resource_times += 1
     global resource_data
     resource_data = result
 
@@ -543,9 +542,12 @@ def get_network_profile_data():
     """
     print('Collecting Netowrk Monitoring Data from MongoDB')
     # MONGO_SVC = 6200
-    start_ts = int(time.time())
+    try_network_times = 0
     while True:
         try:
+            if try_network_times >= 10:
+                print("Exceeded maximum try times, break.")
+                break
             client_mongo = MongoClient('mongodb://' + os.environ['PROFILER'] + ':' + str(MONGO_SVC) + '/')
             db = client_mongo.droplet_network_profiler
             table_name = os.environ['PROFILER']
@@ -582,17 +584,14 @@ def get_network_profile_data():
             if len(network_profile_data) > 0:
                 break
             else:
-                tmp_ts = int(time.time())
-                if tmp_ts - start_ts >= 600:
-                    break
+                try_network_times += 1
 
         except Exception as e:
             print('Get network profile data error, details: ' + str(e))
-            end_time = int(time.time())
+            try_network_times += 1
             time.sleep(10)
-            if end_time - start_ts >=600:
-                break
             
+
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
