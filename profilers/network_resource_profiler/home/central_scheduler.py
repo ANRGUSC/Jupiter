@@ -67,13 +67,9 @@ def send_schedule(ip):
         return_obj['status'] = "Success"
     else:
         return_obj['status'] = "Fail"
-
-    
+   
     return json.dumps(return_obj)
-
-
 app.add_url_rule('/schedule/<ip>', 'send_schedule', send_schedule)
-
 
 def do_update_quadratic():
     """
