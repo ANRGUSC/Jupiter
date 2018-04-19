@@ -8,7 +8,7 @@ FROM anrg/rpi_netr_home:v0
 RUN apt-get update && apt-get upgrade -y
 # Install required libraries
 RUN apt-get update
-RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev
+RUN apt-get -y install build-essential libssl-dev vim libffi-dev python-dev
 RUN apt-get -yqq install python3-pip python3-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y openssh-server sshpass nano virtualenv supervisor
