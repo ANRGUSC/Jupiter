@@ -95,7 +95,7 @@ def all_performance():
             js = json.dumps(all_resources)
         else:
             print("Not all neighbor stats are received")
-            js = json.dumps({})
+            js = json.dumps(all_resources)
     return js
 app.add_url_rule('/all', 'all_performance', all_performance)
 

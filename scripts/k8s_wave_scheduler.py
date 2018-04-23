@@ -80,6 +80,7 @@ def k8s_wave_scheduler(profiler_ips):
     """
         This loads the node list
     """
+    all_profiler_ips = ''
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
@@ -152,9 +153,15 @@ def k8s_wave_scheduler(profiler_ips):
             service_ips[i] = resp.spec.cluster_ip
             nexthost_ips = nexthost_ips + ':' + service_ips[i]
             nexthost_names = nexthost_names + ':' + i
+            all_profiler_ips = all_profiler_ips + ':' + profiler_ips[i]
     print(service_ips)
     print(nexthost_ips)
     print(nexthost_names)
+
+    print("####################################")
+    print(profiler_ips)
+    print("####################################")
+    print(all_profiler_ips)
 
     for i in nodes:
 
@@ -175,7 +182,8 @@ def k8s_wave_scheduler(profiler_ips):
                                              home_ip = home_ip,
                                              home_name = home_name,
                                              serv_ip = service_ips[i],
-                                             profiler_ip = profiler_ips[i])
+                                             profiler_ip = profiler_ips[i],
+                                             all_profiler_ips = all_profiler_ips)
             # # pprint(dep)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
@@ -197,7 +205,8 @@ def k8s_wave_scheduler(profiler_ips):
                                              home_ip = home_ip,
                                              home_name = home_name,
                                              serv_ip = service_ips['home'],
-                                             profiler_ip = profiler_ips['home'])
+                                             profiler_ip = profiler_ips['home'],
+                                             all_profiler_ips = all_profiler_ips)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 
