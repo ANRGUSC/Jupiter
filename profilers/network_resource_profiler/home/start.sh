@@ -48,8 +48,8 @@ python3 -u /network_profiling/generate_link_list.py
 python3 -u /resource_profiling/job.py &
 
 echo 'Automatically run the central network scheduler'
-python3 -u /network_profiling/central_scheduler.py
+python3 -u /network_profiling/central_scheduler.py &
 
-
+python3 -u /network_profiling/keep_alive.py
 
 

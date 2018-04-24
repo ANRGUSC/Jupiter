@@ -25,12 +25,10 @@ from os import listdir
 from os.path import isfile, join
 from os import path
 import configparser
+import requests
+
+
 sys.path.append("../")
-
-
-
-
-
 
 def does_file_exist_in_dir(path):
     """Check if file exist in directory
@@ -288,7 +286,6 @@ class MyEventHandler(pyinotify.ProcessEvent):
         Args:
             event (ProcessEvent): a new file is created
         """
-
         print("CREATE event:", event.pathname)
         print(event.pathname)
         if self.Mjob == None:
@@ -339,6 +336,8 @@ def main():
     MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
     FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+    SELF_IP = os.environ["SELF_IP"]
+    HOME_IP = os.environ["HOME_IP"]
 
     # watch manager
     wm = pyinotify.WatchManager()
@@ -349,7 +348,6 @@ def main():
     # notifier
     notifier = pyinotify.Notifier(wm, eh)
     # if does_file_exist_in_dir(os.path.dirname(os.path.abspath(__file__)) + "scheduling/"):
-
 
     notifier.loop()
 

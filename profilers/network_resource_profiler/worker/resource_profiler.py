@@ -94,6 +94,7 @@ def all_performance():
             print(all_resources)
             js = json.dumps(all_resources)
         else:
+            print(all_resources)
             print("Not all neighbor stats are received")
             js = json.dumps(all_resources)
     return js
@@ -113,13 +114,13 @@ def main():
     INI_PATH = '/network_profiling/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
+    global all_resources, local_resources, lock, all_lock, IPs, node_names, MONGO_SVC, MONGO_DOCKER, FLASK_DOCKER, FLASK_SVC
 
     MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
     MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
     FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 
-    global all_resources, local_resources, lock, all_lock, IPs, node_names, MONGO_SVC, MONGO_DOCKER, FLASK_DOCKER, FLASK_SVC
     all_resources = {} #Storage for observations for all_resources
     # Key is the IP address and value is the dictionary of resouces for that IP
 

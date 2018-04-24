@@ -48,6 +48,7 @@ ADD profilers/network_resource_profiler/home/central_input /network_profiling/ce
 ADD profilers/network_resource_profiler/home/central_query_statistics.py /network_profiling/central_query_statistics.py
 ADD profilers/network_resource_profiler/home/central_scheduler.py /network_profiling/central_scheduler.py
 ADD profilers/network_resource_profiler/home/generate_link_list.py /network_profiling/generate_link_list.py
+ADD scripts/keep_alive.py /network_profiling/keep_alive.py
 
 
 RUN mkdir -p /network_profiling/scheduling
@@ -117,6 +118,8 @@ ADD profilers/network_resource_profiler/worker/droplet_mongod /network_profiling
 ADD profilers/network_resource_profiler/worker/droplet_generate_random_files /network_profiling/droplet_generate_random_files
 ADD profilers/network_resource_profiler/worker/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
 ADD profilers/network_resource_profiler/worker/automate_droplet.py /network_profiling/automate_droplet.py
+ADD profilers/network_resource_profiler/worker/get_schedule.py /network_profiling/get_schedule.py
+
 ADD scripts/keep_alive.py /network_profiling/keep_alive.py
 
 RUN mkdir -p /network_profiling/generated_test

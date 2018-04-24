@@ -37,6 +37,7 @@ ADD profilers/network_resource_profiler/home/central_input /network_profiling/ce
 ADD profilers/network_resource_profiler/home/central_query_statistics.py /network_profiling/central_query_statistics.py
 ADD profilers/network_resource_profiler/home/central_scheduler.py /network_profiling/central_scheduler.py
 ADD profilers/network_resource_profiler/home/generate_link_list.py /network_profiling/generate_link_list.py
+ADD scripts/keep_alive.py /network_profiling/keep_alive.py
 
 
 RUN mkdir -p /network_profiling/scheduling

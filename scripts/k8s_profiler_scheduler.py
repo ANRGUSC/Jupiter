@@ -184,7 +184,8 @@ def k8s_profiler_scheduler():
             dep = write_profiler_specs(name = i, label = i + "profiler", image = jupiter_config.PROFILER_WORKER_IMAGE,
                                              host = nodes[i][0], dir = '{}', all_node = nexthost_names,
                                              all_node_ips = nexthost_ips,
-                                             serv_ip = service_ips[i])
+                                             serv_ip = service_ips[i],
+                                             home_ip = service_ips['home'])
             # # pprint(dep)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
@@ -201,7 +202,8 @@ def k8s_profiler_scheduler():
                                 host = jupiter_config.HOME_NODE, 
                                 dir = '{}', all_node = nexthost_names,
                                              all_node_ips = nexthost_ips,
-                                             serv_ip = service_ips['home'])
+                                             serv_ip = service_ips['home'],
+                                             home_ip = service_ips['home'])
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 
