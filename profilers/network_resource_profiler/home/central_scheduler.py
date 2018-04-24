@@ -21,7 +21,58 @@ import sys
 from os import path
 from socket import gethostbyname, gaierror
 import configparser
+from flask import Flask, Response, request, jsonify
 
+app = Flask(__name__)
+
+#@app.route('/schedule') 
+def send_schedule(ip):
+    """
+    Sends the schedule to the requesting worker profiler
+
+    Args:
+        - ip (str): the ip address of the requesting worker
+
+    Returns:
+        dict: Status of the Schdule transfer ("Sucess" or "Fail")
+
+    """
+    cur_schedule = os.path.join(scheduling_folder, ip)
+    scheduler_file = os.path.join(cur_schedule, output_file)
+    retry = 1
+    success_flag = False
+    if path.isfile(scheduler_file) and path.isfile(source_central_file):
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        while retry < num_retries:
+            try:
+                client.connect(ip, username = username, password = password,
+                        port = ssh_port)
+                scp = SCPClient(client.get_transport())
+                scp.put(scheduler_file, dir_remote)
+                scp.put(source_central_file, dir_remote_profiler)
+                scp.close() 
+                print('File transfer complete to ' + ip + '\n')
+                success_flag = True
+                break
+            except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
+                print('SSH Connection refused, will retry in 2 seconds')
+                time.sleep(2)
+                retry += 1
+    else:
+        print('No such file exists...')
+
+    return_obj = {}
+    if success_flag:
+        return_obj['status'] = "Success"
+    else:
+        return_obj['status'] = "Fail"
+
+    
+    return json.dumps(return_obj)
+
+
+app.add_url_rule('/schedule/<ip>', 'send_schedule', send_schedule)
 
 
 def do_update_quadratic():
@@ -68,7 +119,7 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global MONGO_DOCKER
+    global MONGO_DOCKER, FLASK_SVC, FLASK_DOCKER, num_retries, username, password, ssh_port
 
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
@@ -79,9 +130,10 @@ def main():
 
     MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
     MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
+    FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
+    FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 
-
-
+    global source_central_file, dir_remote, dir_remote_profiler
     dir_remote   = '/network_profiling/scheduling/'
     dir_remote_profiler  =  '/network_profiling/'
     source_central_file  = '/network_profiling/central.txt'
@@ -96,6 +148,7 @@ def main():
     df_links.replace('(^\s+|\s+$)', '', regex = True, inplace = True)
 
     # check the folder for putting output files
+    global scheduling_folder, output_file
     scheduling_folder = 'scheduling'
     output_file = 'scheduling.txt'
     if not os.path.exists(scheduling_folder):
@@ -110,8 +163,7 @@ def main():
     client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
     db = client_mongo['central_network_profiler']
     buffer_size = len(df_links.index) * 100
-    db.create_collection('quadratic_parameters', capped = True,
-                                 size = 100000, max = buffer_size)
+    db.create_collection('quadratic_parameters', capped = True, size = 100000, max = buffer_size)
 
     print('Step 2: Preparing the scheduling text files')
     for cur_node, row in df_nodes.iterrows():
@@ -135,37 +187,7 @@ def main():
         scheduler_file = os.path.join(cur_schedule, output_file)
         schedule_info.to_csv(scheduler_file, header = False, index = False)
         
-        print('Step 3: Copying files and network scripts to the droplets ')
-
-        """
-            Create a ssh connection to the respective droplet and transfer
-            the scheduler.txt and central.txt file to proper folders in order
-            to trigger the profiling
-        """
-        if path.isfile(scheduler_file) and path.isfile(source_central_file):
-            client = paramiko.SSHClient()
-            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            while retry < num_retries:
-                try:
-                    client.connect(node_list.get(cur_node)[0],
-                            username = username, password = password,
-                            port = ssh_port)
-                    scp = SCPClient(client.get_transport())
-                    scp.put(scheduler_file, dir_remote)
-                    scp.put(source_central_file, dir_remote_profiler)
-                    scp.close() 
-                    print('File transfer complete to ' + cur_node + '\n')
-                    break
-                except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
-                    print('SSH Connection refused, will retry in 2 seconds')
-                    time.sleep(2)
-                    retry += 1
-        else:
-            print('No such file exists...')
-
-
-
-    print('Step 4: Scheduling updating the central database')
+    print('Step 3: Scheduling updating the central database')
     # create the folder for each droplet/node to report the local data to
     parameters_folder = 'parameters'
     if not os.path.exists(parameters_folder):
@@ -176,10 +198,8 @@ def main():
     sched.add_job(do_update_quadratic,'interval', id = 'update',
                                minutes = 10,replace_existing = True)
     sched.start()
-    while True:
-        print('waiting for update...')
-        time.sleep(60)
-    #sched.shutdown()
+
+    app.run(host='0.0.0.0', port=FLASK_DOCKER) #run this web application on 0.0.0.0 and default port is 5000
 
 if __name__ == '__main__':
     main()

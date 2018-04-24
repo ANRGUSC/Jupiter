@@ -35,9 +35,6 @@ def build_push_profiler():
     import profiler_docker_files_generator as dc
 
 
-    os.system("cp " + jupiter_config.SCRIPT_PATH + "keep_alive.py " 
-                    + jupiter_config.NETR_PROFILER_PATH + "worker/keep_alive.py")
-
     os.chdir(jupiter_config.NETR_PROFILER_PATH)
 
     dc.write_profiler_home_docker(username = jupiter_config.USERNAME,
@@ -57,7 +54,6 @@ def build_push_profiler():
                                  + jupiter_config.PROFILER_WORKER_IMAGE)
     os.system("sudo docker push " + jupiter_config.PROFILER_WORKER_IMAGE)
 
-    os.system("rm worker/keep_alive.py")
 if __name__ == '__main__':
     prepare_global_info()
     build_push_profiler()
