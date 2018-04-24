@@ -15,6 +15,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
 import os
+import json
 from multiprocessing import Process
 from readconfig import read_config
 from socket import gethostbyname, gaierror, error
@@ -26,6 +27,7 @@ from collections import defaultdict
 
 from os import path
 import configparser
+
 
 
 
@@ -41,11 +43,13 @@ app = Flask(__name__)
 start_time = defaultdict(list)
 end_time = defaultdict(list)
 
+rt_enter_time = defaultdict(list)
+rt_exec_time = defaultdict(list)
+rt_finish_time = defaultdict(list)
 
 #@app.route('/recv_monitor_data')
 def recv_mapping():
     """
-    recv_mapping()
 
     Receiving run-time profiling information from WAVE/HEFT for every task (task name, start time stats, end time stats)
     
@@ -79,6 +83,77 @@ def recv_mapping():
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_monitor_data', 'recv_mapping', recv_mapping)
+
+
+def recv_runtime_profile():
+    """
+
+    Receiving run-time profiling information for every task (task name, start time stats, waiting time stats, end time stats)
+    
+    Raises:
+        Exception: failed processing in Flask
+    """
+
+    global rt_enter_time
+    global rt_exec_time
+    global rt_finish_time
+
+    try:
+        worker_node = request.args.get('work_node')
+        msg = request.args.get('msg').split()
+        
+
+        print("Received flask message:", worker_node, msg[0],msg[1], msg[2])
+
+        if msg[0] == 'rt_enter':
+            rt_enter_time[(worker_node,msg[1])] = float(msg[2])
+        elif msg[0] == 'rt_exec' :
+            rt_exec_time[(worker_node,msg[1])] = float(msg[2])
+        else: #rt_finish
+            rt_finish_time[(worker_node,msg[1])] = float(msg[2])
+
+            print('----------------------------')
+            print("Worker node: "+ worker_node)
+            print("Input file : "+ msg[1])
+            print("Total duration time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
+            print("Waiting time:" + str(rt_exec_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
+            print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
+            
+            print('----------------------------')  
+            if worker_node == "globalfusion":
+                # Per task stats:
+                print('********************************************') 
+                print("Runtime profiling info:")
+                """
+                    - Worker node: task name
+                    - Input file: input files
+                    - Enter time: time the input file enter the queue
+                    - Execute time: time the input file is processed
+                    - Finish time: time the output file is generated
+                    - Elapse time: total time since the input file is created till the output file is created
+                    - Duration time: total execution time of the task
+                    - Waiting time: total time since the input file is created till it is processed
+                """
+                
+                s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
+                print(s)
+                for k, v in rt_enter_time.items():
+                    worker, file = k
+                    if k in rt_finish_time:
+                        elapse = rt_finish_time[k]-v
+                        duration = rt_finish_time[k]-rt_exec_time[k]
+                        waiting = rt_exec_time[k]-v
+                        s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
+                        print(s)
+                print('********************************************')
+
+                
+    except Exception as e:
+        print("Bad reception or failed processing in Flask for runtime profiling")
+        print(e)
+        return "not ok"
+    return "ok"
+app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
 
 class MonitorRecv(multiprocessing.Process):
     def __init__(self):
@@ -271,6 +346,9 @@ def main():
         observer.stop()
 
     observer.join()
+
+
+    
     
 if __name__ == '__main__':
 
