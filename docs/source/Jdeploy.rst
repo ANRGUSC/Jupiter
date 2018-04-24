@@ -143,7 +143,7 @@ These scripts will read the configuration information from ``jupiter_config.ini`
 Step 6 : Choose the task mapper
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-You must choose the scheduler mapper from ``config.ini``. Currently, there are 3 options from the scheduling algorithm list: centralized (HEFT), distributed(random WAVE, greedy WAVE).
+You must choose the Task Mapper from ``config.ini``. Currently, there are 3 options from the scheduling algorithm list: centralized (HEFT), distributed(random WAVE, greedy WAVE).
 
 .. code-block:: text
     :linenos:
@@ -214,7 +214,7 @@ Step 9 : Create the Namespaces
 ------------------------------
 
 You need to create difference namespaces in your Kubernetes cluster 
-that will be dedicated to the DRUPE, execution profiler, scheduler mapper, and CIRCE deployments, respectively.
+that will be dedicated to the DRUPE, execution profiler, Task Mapper, and CIRCE deployments, respectively.
 You can create these namespaces commands similar to the following:
 
 .. code-block:: bash
