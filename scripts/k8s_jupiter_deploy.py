@@ -68,13 +68,13 @@ def main():
         path2 = jupiter_config.HERE + 'nodes.txt'
 
         # start the profilers
-        profiler_ips = get_all_profilers()
-        # profiler_ips = k8s_profiler_scheduler()
+        # profiler_ips = get_all_profilers()
+        profiler_ips = k8s_profiler_scheduler()
 
 
         # start the execution profilers
-        execution_ips = get_all_execs()
-        # execution_ips = exec_profiler_function()
+        # execution_ips = get_all_execs()
+        execution_ips = exec_profiler_function()
 
         print('*************************')
         print('Network Profiling Information:')

@@ -19,7 +19,7 @@ RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
 ADD circe/requirements.txt /requirements.txt
-RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev
+RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev vim
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano 
 
@@ -99,9 +99,9 @@ RUN apt-get install iproute2 -y
 
 ## Install TASK specific needs. The hadoop is a requirement for the network profiler application
 ##RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
-RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
-RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
-RUN rm ~/hadoop-2.8.1.tar.gz
+# RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
+# RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
+# RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
