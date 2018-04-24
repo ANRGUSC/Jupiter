@@ -42,14 +42,17 @@ def monitor_neighbours():
                 continue
 
             print("Grab local resource data from http://"+node_ip+ ":" + str(FLASK_SVC))
-            r = requests.get("http://"+node_ip+":" + str(FLASK_SVC))
-            result = r.json()
-            if not result:
-                print("Request result empty from", node_name)
-                continue
+            try:
+                r = requests.get("http://"+node_ip+":" + str(FLASK_SVC))
+                result = r.json()
+                if not result:
+                    print("Request result empty from", node_name)
+                    continue   
+                with all_lock:
+                    all_resources[node_name] = result
 
-            with all_lock:
-                all_resources[node_name] = result
+            except Exception as e:
+                print("resource  request failed. details: " + str(e))        
 
         print("Local copy of All resources")
         with all_lock:

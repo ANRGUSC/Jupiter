@@ -45,13 +45,16 @@ def open_file():
 
 			line = line.strip('\n')
 			print("get the data from http://"+line+ ":" + str(FLASK_SVC))
-			r = requests.get("http://"+line+":" + str(FLASK_SVC))
-			result = r.json()
-			result['ip']=line
-			result['last_update']=datetime.datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')
-			data=json.dumps(result)
-			print(result)
-			list.append(data)
+			try:
+				r = requests.get("http://"+line+":" + str(FLASK_SVC))
+				result = r.json()
+				result['ip']=line
+				result['last_update']=datetime.datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')
+				data=json.dumps(result)
+				print(result)
+				list.append(data)
+			except Exception as e:
+				print("resource request failed. details: " + str(e))
 		# print list
 		return list
 
