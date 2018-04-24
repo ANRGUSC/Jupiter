@@ -4,7 +4,7 @@ Overview
 Components
 ==========
 
-`Jupiter`_ is an Orchestrator for Dispersed Computing that uses `Docker`_ containers and `Kubernetes`_ (K8s). The Jupiter system has three main components: Profilers, Scheduler Mapper and `CIRCE`_ Dispatcher.
+`Jupiter`_ is an Orchestrator for Dispersed Computing that uses `Docker`_ containers and `Kubernetes`_ (K8s). The Jupiter system has three main components: Profilers, Task Mapper and `CIRCE`_ Dispatcher.
 
 - Profilers are tools used to collect information about the system.
 
@@ -12,7 +12,7 @@ Components
 
 	- Execution profiler is a tool to collect the duration time as well as size of output files while performing a task on a specific computing node.
 
--  Scheduler Mapper is a tool to choose the specific scheduler as well as algorithm to be used for scheduling the tasks. 
+-  Task Mapper is a tool to choose the specific scheduler as well as algorithm to be used for scheduling the tasks. 
 	
 	- `HEFT`_ (Heterogeneous Earliest Finish Time) is a popular centralized scheduling algorithm
 	- `WAVE`_ is a distributed scheduler for DAG type task graph that outputs a mapping of tasks to real compute nodes. The current algorithm list includes random WAVE and greedy WAVE.
@@ -208,6 +208,18 @@ A given sample of application configuration file:
 
 .. figure::  images/app_config.png
    :align:   center
+
+File app_config.ini
+-------------------
+Inside the application folder, there should be a ``app_config.ini`` file having the required specific ports for the application. If the application does not need any specific ports, then the ``app_config.ini`` with the two sections ``[DOCKER_PORT]`` and ``[SVC_PORT]`` should be left empty. The section ``[SVC_PORT]`` should specify the required ports needed for the application, and the section ``[DOCKER_PORT]`` should specify the corresponding target ports for the docker. 
+
+.. code-block:: text
+    :linenos:
+
+    [DOCKER_PORT]
+        PYTHON-PORT = 57021
+    [SVC_PORT]
+        PYTHON-PORT = 57021
 
 Output
 ======
