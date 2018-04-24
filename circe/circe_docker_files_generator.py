@@ -56,6 +56,7 @@ ADD circe/rt_profiler_update_mongo.py /run_update.py
 ADD circe/readconfig.py /readconfig.py
 ADD circe/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
+ADD circe/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
 ADD {app_file}/configuration.txt /configuration.txt
