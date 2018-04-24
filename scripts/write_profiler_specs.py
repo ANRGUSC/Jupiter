@@ -45,6 +45,8 @@ spec:
           value: {name}
         - name: SELF_IP
           value: {serv_ip}
+        - name: HOME_IP
+          value: {home_ip}
 """
 
 
