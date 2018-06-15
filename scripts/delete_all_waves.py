@@ -95,7 +95,7 @@ def delete_all_waves():
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = api_2.delete_namespaced_service(key, namespace)
+            del_resp_2 = api_2.delete_namespaced_service(key, namespace,body)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running     

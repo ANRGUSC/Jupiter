@@ -96,7 +96,7 @@ def delete_all_exec():
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = core_v1_api.delete_namespaced_service(key, namespace)
+            del_resp_2 = core_v1_api.delete_namespaced_service(key, namespace,v1_delete_options)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the related service, pods, deployment running
@@ -143,7 +143,7 @@ def delete_all_exec():
         print("Exception Occurred")
     # if a service is running, kill it
     if resp:
-        del_resp_2 = core_v1_api.delete_namespaced_service('home', namespace)
+        del_resp_2 = core_v1_api.delete_namespaced_service('home', namespace, v1_delete_options)
         print("Service Deleted. status='%s'" % str(del_resp_2.status))    
 
     """
@@ -222,7 +222,7 @@ def delete_all_exec():
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = api_2.delete_namespaced_service(key, namespace)
+            del_resp_2 = api_2.delete_namespaced_service(key, namespace,body)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running

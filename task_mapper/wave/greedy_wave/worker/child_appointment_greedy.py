@@ -21,6 +21,7 @@ import requests
 from pymongo import MongoClient
 import configparser
 from os import path
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -42,6 +43,9 @@ def prepare_global():
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
     MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
+
+    global PROFILER
+    PROFILER = int(config['CONFIG']['PROFILER'])
 
     # Get ALL node info
     node_count = 0
@@ -505,7 +509,7 @@ def output(msg):
         print(msg)
 
 
-def get_resource_data():
+def get_resource_data_drupe():
     """Collect resource profiling information
     """
     print("Starting resource profile collection thread")
@@ -537,7 +541,7 @@ def get_resource_data():
     print("Resource profiles: ", json.dumps(result))
 
 
-def get_network_profile_data():
+def get_network_data_drupe():
     """Collect the network profile from local MongoDB peer
     """
     print('Collecting Netowrk Monitoring Data from MongoDB')
@@ -596,8 +600,41 @@ def get_network_profile_data():
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
 
+def profilers_mapping_decorator(f):
+    """General Mapping decorator function
+    """
+    @wraps(f)
+    def profiler_mapping(*args, **kwargs):
+      return f(*args, **kwargs)
+    return profiler_mapping
 
+def get_network_data_mapping(PROFILER=0):
+    """Mapping the chosen TA2 module (network monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
     
+    Args:
+        PROFILER (str): specified from ``jupiter_config.ini``
+    
+    Returns:
+        TYPE: corresponding network function
+    """
+    if PROFILER==0: 
+        return profilers_mapping_decorator(get_network_data_drupe)
+    return profilers_mapping_decorator(get_network_data_drupe)
+
+def get_resource_data_mapping(PROFILER):
+    """Mapping the chosen TA2 module (resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        PROFILER (str): specified from ``jupiter_config.ini``
+    
+    Returns:
+        TYPE: corresponding resource function
+    """
+    if PROFILER==0: 
+        return profilers_mapping_decorator(get_resource_data_drupe)
+    return profilers_mapping_decorator(get_resource_data_drupe)
+
+
 def main():
     """
         - Prepare global information
@@ -618,6 +655,9 @@ def main():
     print("Node name:", node_name, "and id", node_id)
     print("Starting the main thread on port", FLASK_PORT)
 
+    
+    get_network_data = get_network_data_mapping(PROFILER)
+    get_resource_data = get_resource_data_mapping(PROFILER)
     while init_folder() != "ok":  # Initialize the local folers
         pass
 
@@ -625,7 +665,7 @@ def main():
     _thread.start_new_thread(get_resource_data, ())
 
     # Get network profile data
-    _thread.start_new_thread(get_network_profile_data, ())
+    _thread.start_new_thread(get_network_data, ())
 
     _thread.start_new_thread(watcher, ())
     _thread.start_new_thread(distribute, ())

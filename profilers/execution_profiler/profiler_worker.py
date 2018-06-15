@@ -41,6 +41,58 @@ def file_size(file_path):
         file_info = os.stat(file_path)
         return convert_bytes(file_info.st_size)
 
+def transfer_mapping_decorator(TRANSFER=0):
+    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        TRANSFER (int): TRANSFER specified from ``jupiter_config.ini``
+    
+    Returns:
+        function: chosen transfer method
+    """
+    def data_transfer_scp(IP,user,pword,source, destination):
+        """Transfer data using SCP
+        
+        Args:
+            IP (str): destination IP address
+            user (str): username
+            pword (str): password
+            source (str): source file path
+            destination (str): destination file path
+        """
+        #Keep retrying in case the containers are still building/booting up on
+        #the child nodes.
+        print(IP)
+        retry = 0
+        while retry < num_retries:
+            try:
+                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+                os.system(cmd)
+                print('data transfer complete\n')
+                break
+            except:
+                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+                time.sleep(2)
+                retry += 1
+
+    if TRANSFER==0:
+        return data_transfer_scp
+    return data_transfer_scp
+
+@transfer_mapping_decorator
+def data_transfer(IP,user,pword,source, destination):
+    """Transfer data with given parameters
+    
+    Args:
+        IP (str): destination IP 
+        user (str): username
+        pword (str): password
+        source (str): source file path
+        destination (str): destination file path
+    """
+    msg = 'Transfer to IP: %s , username:%s, password: %s,source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    print(msg)
+
 def main():
     """
         -   Load all the confuguration
@@ -146,36 +198,35 @@ def main():
 
 
     #send output file back to the scheduler machine
+    global username,password,ssh_port,num_retries
+
     master_IP   = os.environ['HOME_NODE']
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
-    retry       = 0
+
 
     local_profiler_path    = os.path.join(os.path.dirname(__file__), 'profiler_' + nodename + '.txt')
     remote_path = "/centralized_scheduler/profiler_files/"
 
-    # cmd = "sshpass -p " + password + " scp -P " + str(ssh_port) + " -o StrictHostKeyChecking=no %s %s:%s" % (local_profiler_path,master_IP, remote_path)
-    # print("cmd:", cmd)
-    # os.system(cmd)
-
     if path.isfile(local_profiler_path):
-        client = paramiko.SSHClient()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        while retry < num_retries:
-            try:
-                client.connect(master_IP, username=username, password=password, port=ssh_port)
-                scp = SCPClient(client.get_transport())
-                scp.put(local_profiler_path, remote_path)
-                scp.close()
-                # os.remove(local_profiler_path)
-                print('execution profiling data transfer complete\n')
-                break
-            except:
-                print('SSH Connection refused, will retry in 2 seconds')
-                time.sleep(2)
-                retry += 1
+        data_transfer(master_IP,username,password,local_profiler_path, remote_path)
+        # client = paramiko.SSHClient()
+        # client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        # while retry < num_retries:
+        #     try:
+        #         client.connect(master_IP, username=username, password=password, port=ssh_port)
+        #         scp = SCPClient(client.get_transport())
+        #         scp.put(local_profiler_path, remote_path)
+        #         scp.close()
+        #         # os.remove(local_profiler_path)
+        #         print('execution profiling data transfer complete\n')
+        #         break
+        #     except:
+        #         print('SSH Connection refused, will retry in 2 seconds')
+        #         time.sleep(2)
+        #         retry += 1
     else:
         print('No Runtime data file exists...')
 

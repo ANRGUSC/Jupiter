@@ -111,7 +111,58 @@ def file_size(file_path):
         file_info = os.stat(file_path)
         return convert_bytes(file_info.st_size)
 
+def transfer_mapping_decorator(TRANSFER=0):
+    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        TRANSFER (int): TRANSFER specified from ``jupiter_config.ini``
+    
+    Returns:
+        function: chosen transfer method
+    """
+    def data_transfer_scp(IP,user,pword,source, destination):
+        """Transfer data using SCP
+        
+        Args:
+            IP (str): destination IP address
+            user (str): username
+            pword (str): password
+            source (str): source file path
+            destination (str): destination file path
+        """
 
+        #Keep retrying in case the containers are still building/booting up on
+        #the child nodes.
+        retry = 0
+        while retry < num_retries:
+            try:
+                print(IP)
+                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+                os.system(cmd)
+                print('data transfer complete\n')
+                break
+            except:
+                print('profiler_home.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+                time.sleep(2)
+                retry += 1
+
+    if TRANSFER==0:
+        return data_transfer_scp
+    return data_transfer_scp
+
+@transfer_mapping_decorator
+def data_transfer(IP,user,pword,source, destination):
+    """Transfer data with given parameters
+    
+    Args:
+        IP (str): destination IP 
+        user (str): destination username
+        pword (str): destination password
+        source (str): source file path
+        destination (str): destination file path
+    """
+    msg = 'Transfer to IP: %s , username:%s, password: %s,source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    print(msg)
 
 def main():
     """
@@ -129,7 +180,7 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global MONGO_PORT
+    global MONGO_PORT,EXC_FPORT
 
     EXC_FPORT = int(config['PORT']['FLASK_SVC'])
     MONGO_PORT = int(config['PORT']['MONGO_DOCKER'])
@@ -216,12 +267,12 @@ def main():
     # TODO: send a signal to the k8 to remove the nonDAG tasks
 
     ## send intermediate files to the worker execution profilers
+    global username,password,ssh_port,num_retries
+
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
     ssh_port    = int(config['PORT']['SSH_SVC'])
-    num_retries = 20
-    retry       = 0
-
+    num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 
     # dir_remote          = '/profiler_files'
     # node_name           = os.environ['NODE_NAME']
@@ -245,13 +296,18 @@ def main():
 
     """
         Transfer the Intermdiate Files Tt all the Workers. 
-        TODO?? Use Paramiko or similar tool instead of the commandline scp
     """
     for itr in range(1, len(profilers_ips)):
         i = profilers_ips[itr]
-        cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s:%s" % (password, ssh_port, ptFile, i, ptFile1)
         print("Sending data to ", allprofiler_names[itr])
-        os.system(cmd)
+        data_transfer(i,username,password,ptFile, ptFile1)
+        print(password)
+        print(ssh_port)
+        print(ptFile)
+        print(ptFile1)
+        print(i)
+        # cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s:%s" % (password, ssh_port, ptFile, i, ptFile1)
+        #os.system(cmd)
 
         try:
             print("start the profiler in ", i)
