@@ -114,7 +114,7 @@ dag=['localpro',
   'teraworker20': 'node41',
   'teraworker21': 'node15',
   'teraworker22': 'node10'}]
-schedule = ['localpro',
+schedule=['localpro',
  {'aggregate0': ['1',
                  'true',
                  'simpledetector0',
