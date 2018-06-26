@@ -33,19 +33,25 @@ def evaluate_interval(interval):
     
     """
     file_count = len(os.listdir("sample_input/"))
+    file_count_out = len(os.listdir("output/"))
     src = "sample_input/1botnet.ipsum"
     dest = "input/1botnet.ipsum"
-    print('---- Generate random input files')
-    shutil.copyfile(src,dest)
-    for i in range(2,file_count+1):
-        count = 0
-        while count<interval:
-            count = count+1
-            time.sleep(1)
+    # print('---- Generate random input files')
+    # shutil.copyfile(src,dest)
+    for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
         print('---- Generate random input files')
         shutil.copyfile(src,dest)
+        count = 0
+        while 1:
+            time.sleep(5)
+            file_count_out = len(os.listdir("output/"))
+            if file_count_out ==  i:
+                time.sleep(30)
+                break
+
+
     print('---- Finish generating sequential input files')
     
 
