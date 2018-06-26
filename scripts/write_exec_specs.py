@@ -9,27 +9,35 @@ sys.path.append("../")
 import jupiter_config
 import configparser
 
-
-
-def add_app_specific_ports(dep):
-  """Add information of specific ports for the application
+def add_ports(dep, app_specific_flag, *args):
+  """Add information of ports for the application
   
   Args:
       dep (str): deployment service description
+      app_specific_flag (boolean) : flag to add app specific ports
+      args (list): List of app independent ports required by circe
   
   Returns:
-      str: deployment service description with added specific port information for the application
+      str: deployment service description with added port information for the application
   """
   jupiter_config.set_globals()
 
   INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
   config = configparser.ConfigParser()
   config.read(INI_PATH)
-  
+
+  dep['spec']['template']['spec']['containers'][0]['ports'] = []
   a = dep['spec']['template']['spec']['containers'][0]['ports']
-  for i in config['DOCKER_PORT']:
-    a.append({'containerPort': config['DOCKER_PORT'][i]})
+  for i in args:
+    a.append({'containerPort': int(i)})
+
+  # Add app specific ports 
+  if app_specific_flag == 1:
+    for i in config['DOCKER_PORT']:
+      a.append({'containerPort': int(config['DOCKER_PORT'][i])})
+
   return dep
+
 
 template_nondag = """
     apiVersion: extensions/v1beta1
@@ -46,11 +54,6 @@ template_nondag = """
           - name: {name}
             imagePullPolicy: Always
             image: {image}
-            ports:
-            - containerPort: {ssh_port}
-            - containerPort: {mongo_port}
-            - containerPort: 80
-            - containerPort: {flask_port}
             env:
             - name: FLAG
               value: {flag}
@@ -113,14 +116,14 @@ def write_exec_specs_non_dag_tasks(**kwargs):
 
     # insert your values
 
-    specific_yaml = template_nondag.format(ssh_port = jupiter_config.SSH_DOCKER, 
-                                    flask_port = jupiter_config.FLASK_DOCKER,
-                                    mongo_port = jupiter_config.MONGO_DOCKER,
-                                    **kwargs)
+    specific_yaml = template_nondag.format(**kwargs)
 
     dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
 
-    return add_app_specific_ports(dep)
+    return add_ports(dep, 1,
+                      jupiter_config.SSH_DOCKER,
+                      jupiter_config.FLASK_DOCKER,
+                      jupiter_config.MONGO_DOCKER)
 
 template_home = """
     apiVersion: extensions/v1beta1
@@ -137,10 +140,6 @@ template_home = """
           - name: {name}
             imagePullPolicy: Always
             image: {image}
-            ports:
-            - containerPort: {ssh_port}
-            - containerPort: {mongo_port}
-            - containerPort: 80
             env:
             - name: FLAG
               value: {flag}
@@ -166,8 +165,6 @@ template_home = """
               value: {allprofiler_ips}
             - name: ALL_PROFILERS_NAMES
               value: {allprofiler_names}
-          nodeSelector:
-            kubernetes.io/hostname: {host}
           restartPolicy: Always
 
 """
@@ -205,14 +202,13 @@ def write_exec_specs_home_control(**kwargs):
 
     jupiter_config.set_globals()
 
-    specific_yaml = template_home.format(ssh_port = jupiter_config.SSH_DOCKER, 
-                                    flask_port = jupiter_config.FLASK_DOCKER,
-                                    mongo_port = jupiter_config.MONGO_DOCKER,
-                                    **kwargs)
+    specific_yaml = template_home.format(**kwargs)
 
     dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
 
-    return add_app_specific_ports(dep)
+    return add_ports(dep, 1,
+                      jupiter_config.SSH_DOCKER,
+                      jupiter_config.MONGO_DOCKER)
 
 
 
