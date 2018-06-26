@@ -245,6 +245,7 @@ def k8s_circe_scheduler(dag_info , temp_info):
                                 child = jupiter_config.HOME_CHILD,
                                 child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
                                 dir = '{}')
+    print(home_dep)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 
