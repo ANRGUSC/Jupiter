@@ -84,6 +84,17 @@ def recv_mapping():
     return "ok"
 app.add_url_rule('/recv_monitor_data', 'recv_mapping', recv_mapping)
 
+def return_output_files():
+    """
+    Return number of output files
+    
+    Returns:
+        int: number of output files
+    """
+    num_files = len(os.listdir("output/"))
+    print("Recieved request for number of output files. Current done:", num_files)
+    return json.dumps(num_files)
+app.add_url_rule('/', 'return_output_files', return_output_files)
 
 def recv_runtime_profile():
     """
