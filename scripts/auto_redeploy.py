@@ -142,11 +142,11 @@ def redeploy_system():
         task_mapping_function(profiler_ips,execution_ips,node_names)
 
         """
-            Make sure you run kubectl proxy --port=8001 on a terminal.
+            Make sure you run kubectl proxy --port=8080 on a terminal.
             Then this is link to get the task to node mapping
         """
 
-        line = "http://localhost:8001/api/v1/namespaces/"
+        line = "http://localhost:8080/api/v1/namespaces/"
         line = line + jupiter_config.MAPPER_NAMESPACE + "/services/home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
         time.sleep(5)
         print(line)
@@ -187,7 +187,7 @@ def redeploy_system():
 
 def check_finish_evaluation():
     jupiter_config.set_globals()
-    line = "http://localhost:8001/api/v1/namespaces/"
+    line = "http://localhost:8080/api/v1/namespaces/"
     line = line + jupiter_config.DEPLOYMENT_NAMESPACE + "/services/home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
     print('Check if finishing evaluation sample tests')
     print(line)
@@ -204,8 +204,9 @@ def check_finish_evaluation():
                 print('Finish running all sample files!!!!!!!!')
                 return
             time.sleep(60)
-        except:
-            print("Some Exception")
+        except Exception as e: 
+            print(e)
+            # print("Some Exception")
             time.sleep(120)
     
     
