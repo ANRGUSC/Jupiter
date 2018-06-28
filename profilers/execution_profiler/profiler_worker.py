@@ -50,7 +50,7 @@ def transfer_mapping_decorator(TRANSFER=0):
     Returns:
         function: chosen transfer method
     """
-    def data_transfer_scp(IP,user,pword,source, destination):
+    def transfer_data_scp(IP,user,pword,source, destination):
         """Transfer data using SCP
         
         Args:
@@ -76,11 +76,11 @@ def transfer_mapping_decorator(TRANSFER=0):
                 retry += 1
 
     if TRANSFER==0:
-        return data_transfer_scp
-    return data_transfer_scp
+        return transfer_data_scp
+    return transfer_data_scp
 
 @transfer_mapping_decorator
-def data_transfer(IP,user,pword,source, destination):
+def transfer_data(IP,user,pword,source, destination):
     """Transfer data with given parameters
     
     Args:
@@ -211,7 +211,7 @@ def main():
     remote_path = "/centralized_scheduler/profiler_files/"
 
     if path.isfile(local_profiler_path):
-        data_transfer(master_IP,username,password,local_profiler_path, remote_path)
+        transfer_data(master_IP,username,password,local_profiler_path, remote_path)
         # client = paramiko.SSHClient()
         # client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         # while retry < num_retries:

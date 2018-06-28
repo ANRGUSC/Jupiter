@@ -95,7 +95,7 @@ def transfer_mapping_decorator(TRANSFER=0):
     Returns:
         function: chosen transfer method
     """
-    def data_transfer_scp(IP,user,pword,source, destination):
+    def transfer_data_scp(IP,user,pword,source, destination):
         """Transfer data using SCP
         
         Args:
@@ -121,11 +121,11 @@ def transfer_mapping_decorator(TRANSFER=0):
                 retry += 1
 
     if TRANSFER==0:
-        return data_transfer_scp
-    return data_transfer_scp
+        return transfer_data_scp
+    return transfer_data_scp
 
 @transfer_mapping_decorator
-def data_transfer(IP,user,pword,source, destination):
+def transfer_data(IP,user,pword,source, destination):
     """Transfer data with given parameters
     
     Args:
@@ -213,7 +213,7 @@ class Handler1(FileSystemEventHandler):
                 source = event.src_path
                 destination = os.path.join('/output', new_file)
 
-                data_transfer(IPaddr,user,password,source, destination)
+                transfer_data(IPaddr,user,password,source, destination)
                 
 
             elif flag2 == 'true':
@@ -224,7 +224,7 @@ class Handler1(FileSystemEventHandler):
                     password = sys.argv[i+3]
                     source = event.src_path
                     destination = os.path.join('/centralized_scheduler', 'input', new_file)
-                    data_transfer(IPaddr,user,password,source, destination)
+                    transfer_data(IPaddr,user,password,source, destination)
 
             else:
                 num_child = (len(sys.argv) - 4) / 4
@@ -242,7 +242,7 @@ class Handler1(FileSystemEventHandler):
 
                         source = event.src_path
                         destination = os.path.join('/centralized_scheduler','input', myfile)
-                        data_transfer(IPaddr,user,password,source, destination)
+                        transfer_data(IPaddr,user,password,source, destination)
 
                     files_out=[]
 
