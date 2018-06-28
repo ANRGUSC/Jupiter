@@ -1,7 +1,7 @@
 __author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.0"
+__version__ = "2.1"
 
 import sys
 sys.path.append("../")
@@ -47,7 +47,7 @@ def task_mapping_decorator(f):
 def empty_function():
     return []
 
-def main():
+def k8s_jupiter_deploy():
     """
         Deploy all Jupiter components (WAVE, CIRCE, DRUPE) in the system.
     """
@@ -102,6 +102,7 @@ def main():
         while 1:
             try:
                 # print("get the data from " + line)
+                #time.sleep(5)
                 r = requests.get(line)
                 mapping = r.json()
                 data = json.dumps(mapping)
@@ -110,8 +111,10 @@ def main():
                 if len(mapping) != 0:
                     if "status" not in data:
                         break
-            except:
-                print("Some Exception")
+            except Exception as e:
+                print(e)
+                print("Will retry to get the mapping!")
+
         pprint(mapping)
         schedule = k8s_get_hosts(path1, path2, mapping)
         dag = k8s_read_dag(path1)
@@ -124,13 +127,15 @@ def main():
 
     
     else:
-        import static_assignment
-        # dag = static_assignment.dag
-        # schedule = static_assignment.schedule
+        import static_assignment1 as st
+        dag = st.dag
+        schedule = st.schedule
 
     # Start CIRCE
     k8s_circe_scheduler(dag,schedule)
 
+    print("The Jupiter Deployment is Successful!")
+    
 if __name__ == '__main__':
-    main()
+    k8s_jupiter_deploy()
   

@@ -7,7 +7,7 @@
 __author__ = "Pradipta Ghosh and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.0"
+__version__ = "2.1"
 
 
 # Source http://flask.pocoo.org/docs/0.12/patterns/fileuploads/

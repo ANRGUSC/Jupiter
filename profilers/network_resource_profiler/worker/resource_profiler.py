@@ -4,7 +4,7 @@
 __author__ = "Jiatong Wang, Pranav Sakulkar, Quynh Nguyen, Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.0"
+__version__ = "2.1"
 
 from flask import Flask
 import psutil
