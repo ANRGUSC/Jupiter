@@ -2,7 +2,7 @@
 __author__ = "Jiatong Wang, Quynh Nguyen, Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.0"
+__version__ = "2.1"
 
 from pymongo import MongoClient
 import sys
@@ -19,18 +19,21 @@ def insert_data(res):
         res (list): node list read from node file
     """
 
-    Client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+    try:
+        Client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
 
-    db = Client["central_resource_profiler"]
+        db = Client["central_resource_profiler"]
 
-    coll = db["resource_info"]
-    for i in res:
-        info = eval(i)
-        key_to_check = {'ip':info['ip']}
-        coll.update(key_to_check,info,upsert=True)  
+        coll = db["resource_info"]
+        for i in res:
+            info = eval(i)
+            key_to_check = {'ip':info['ip']}
+            coll.update(key_to_check,info,upsert=True)  
 
-    print("insert successfully")
-
+        print("insert successfully")
+    except Exception as e:
+        print("data insertion failed. details: " + str(e))
+        
 def main():
     """
         - Load all the configuration

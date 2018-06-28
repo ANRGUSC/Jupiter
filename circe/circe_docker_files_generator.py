@@ -4,7 +4,7 @@
 __author__ = "Pradipta Ghosh and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.0"
+__version__ = "2.1"
 
 from pprint import pprint
 from dockerfile_parse import DockerfileParser
@@ -56,6 +56,7 @@ ADD circe/rt_profiler_update_mongo.py /run_update.py
 ADD circe/readconfig.py /readconfig.py
 ADD circe/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
+ADD circe/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
 ADD {app_file}/configuration.txt /configuration.txt

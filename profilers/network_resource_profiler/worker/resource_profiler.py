@@ -4,7 +4,7 @@
 __author__ = "Jiatong Wang, Pranav Sakulkar, Quynh Nguyen, Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.0"
+__version__ = "2.1"
 
 from flask import Flask
 import psutil
@@ -42,14 +42,17 @@ def monitor_neighbours():
                 continue
 
             print("Grab local resource data from http://"+node_ip+ ":" + str(FLASK_SVC))
-            r = requests.get("http://"+node_ip+":" + str(FLASK_SVC))
-            result = r.json()
-            if not result:
-                print("Request result empty from", node_name)
-                continue
+            try:
+                r = requests.get("http://"+node_ip+":" + str(FLASK_SVC))
+                result = r.json()
+                if not result:
+                    print("Request result empty from", node_name)
+                    continue   
+                with all_lock:
+                    all_resources[node_name] = result
 
-            with all_lock:
-                all_resources[node_name] = result
+            except Exception as e:
+                print("resource  request failed. details: " + str(e))        
 
         print("Local copy of All resources")
         with all_lock:

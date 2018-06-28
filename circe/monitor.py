@@ -7,7 +7,7 @@
 __author__ = "Aleksandra Knezevic,Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.0"
+__version__ = "2.1"
 
 import multiprocessing
 from watchdog.observers import Observer
@@ -57,6 +57,33 @@ def send_monitor_data(msg):
         return "not ok"
     return res
 
+def send_runtime_profile(msg):
+    """
+    Sending runtime profiling information to flask server on home
+
+    Args:
+        msg (str): the message to be sent
+
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+
+    Raises:
+        Exception: if sending message to flask server on home is failed
+    """
+    try:
+        print("Sending message", msg)
+        url = "http://" + home_node_host_port + "/recv_runtime_profile"
+        params = {'msg': msg, "work_node": taskname}
+        params = parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print("Sending runtime profiling info to flask server on home FAILED!!!")
+        print(e)
+        return "not ok"
+    return res
 
 #for OUTPUT folder 
 class Watcher1():
@@ -291,29 +318,45 @@ class Handler(FileSystemEventHandler):
                 f.write(line)
 
             queue_mul.put(new_file)
+            ts = time.time()
+            """
+                Save the time the input file enters the queue
+            """
             filename = new_file
-            
-
             global filenames
+
+            if len(filenames) == 0:
+                runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
+                send_runtime_profile(runtime_info)
+
             flag1 = sys.argv[1]
 
             if flag1 == "1":
                 # Start msg
-                send_monitor_data("start")
+                # send_monitor_data("start")
+                ts = time.time()
+                runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+                send_runtime_profile(runtime_info)
                 inputfile=queue_mul.get()
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
                 dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
                 dag_task.start()
                 dag_task.join()
-                send_monitor_data("end")
+                ts = time.time()
+                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                send_runtime_profile(runtime_info)
+                # send_monitor_data("end")
                 # end msg
             else:
 
                 filenames.append(queue_mul.get())
                 if (len(filenames) == int(flag1)):
                     #start msg
-                    send_monitor_data("start")
+                    #send_monitor_data("start")
+                    ts = time.time()
+                    runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+                    send_runtime_profile(runtime_info)
                     input_path = os.path.split(event.src_path)[0]
                     output_path = os.path.join(os.path.split(input_path)[0],'output')
 
@@ -321,7 +364,10 @@ class Handler(FileSystemEventHandler):
                     dag_task.start()
                     dag_task.join()
                     filenames = []
-                    send_monitor_data("end")
+                    ts = time.time()
+                    runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                    send_runtime_profile(runtime_info)
+                    #send_monitor_data("end")
                     # end msg
 
 def main():

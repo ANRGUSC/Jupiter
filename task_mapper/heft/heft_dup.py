@@ -8,7 +8,7 @@ This module is the HEFT algorithm modifed based on the `source`_ by Ouyang Liduo
 __author__ = "Ouyang Liduo, Quynh Nguyen, Aleksandra Knezevic, Pradipta Ghosh and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.0"
+__version__ = "2.1"
 #from __future__ import division
 import create_input
 from create_input import init
