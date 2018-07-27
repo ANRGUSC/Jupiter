@@ -67,5 +67,7 @@ def evaluate_interval(interval):
 
 if __name__ == '__main__':
     #evaluate_random()
-    time.sleep(900)
+    #time.sleep(900)
+    time.sleep(60)
+    print('Start copying sample files for evaluation')
     evaluate_interval(900)

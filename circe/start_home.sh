@@ -16,10 +16,10 @@ echo 'Installing and starting mongodb'
 ./central_mongod start
 
 echo 'Starting Mongodb Update Script'
-python3 -u /run_update.py &
+python3 -u run_update.py &
 
 # echo '(Optional) Starting The Evaluation Script'
-# python3 -u /evaluate.py &
+python3 -u evaluate.py &
 
 
 echo 'Starting the scheduler'

@@ -70,7 +70,7 @@ def delete_all_exec():
         # Check if there is a replicaset running by using the label app={key}
         # The label of kubernets are used to identify replicaset associate to each task
         label = "app=" + key
-        resp = extensions_v1_beta1_api.list_replica_set_for_all_namespaces(label_selector = label)
+        resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
         # if a replicaset exist, delete it
         
         # print resp.items[0].metadata.namespace
@@ -96,7 +96,8 @@ def delete_all_exec():
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = core_v1_api.delete_namespaced_service(key, namespace,v1_delete_options)
+            del_resp_2 = core_v1_api.delete_namespaced_service(key, namespace)
+            #del_resp_2 = core_v1_api.delete_namespaced_service(key, namespace,v1_delete_options)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the related service, pods, deployment running
@@ -118,7 +119,7 @@ def delete_all_exec():
     # Check if there is a replicaset running by using the label app=home
     # The label of kubernets are used to identify replicaset associate to each task
     label = "app=home"
-    resp = extensions_v1_beta1_api.list_replica_set_for_all_namespaces(label_selector = label)
+    resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
     # if a replicaset exist, delete it
     
     # print resp.items[0].metadata.namespace
@@ -143,7 +144,8 @@ def delete_all_exec():
         print("Exception Occurred")
     # if a service is running, kill it
     if resp:
-        del_resp_2 = core_v1_api.delete_namespaced_service('home', namespace, v1_delete_options)
+        del_resp_2 = core_v1_api.delete_namespaced_service('home', namespace)
+        #del_resp_2 = core_v1_api.delete_namespaced_service('home', namespace, v1_delete_options)
         print("Service Deleted. status='%s'" % str(del_resp_2.status))    
 
     """
@@ -195,7 +197,7 @@ def delete_all_exec():
         # Check if there is a replicaset running by using the label "app={key} + profiler" e.g, "app=node1profiler"
         # The label of kubernets are used to identify replicaset associate to each task
         label = "app=" + key + "exec_profiler"
-        resp = api.list_replica_set_for_all_namespaces(label_selector = label)
+        resp = api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
         # if a replicaset exist, delete it
         # pprint(resp)
         # print resp.items[0].metadata.namespace
@@ -222,7 +224,7 @@ def delete_all_exec():
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = api_2.delete_namespaced_service(key, namespace,body)
+            del_resp_2 = api_2.delete_namespaced_service(key, namespace)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running
