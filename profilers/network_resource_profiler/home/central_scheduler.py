@@ -25,7 +25,6 @@ from flask import Flask, Response, request, jsonify
 
 app = Flask(__name__)
 
-#@app.route('/schedule') 
 def send_schedule(ip):
     """
     Sends the schedule to the requesting worker profiler
@@ -70,8 +69,6 @@ def send_schedule(ip):
 
     
     return json.dumps(return_obj)
-
-
 app.add_url_rule('/schedule/<ip>', 'send_schedule', send_schedule)
 
 
@@ -112,7 +109,6 @@ def main():
         - Schedule updating the central database every minute
     """
 
-    # Load all the confuguration
     HERE     = path.abspath(path.dirname(__file__)) + "/"
     INI_PATH = HERE + 'jupiter_config.ini'
 

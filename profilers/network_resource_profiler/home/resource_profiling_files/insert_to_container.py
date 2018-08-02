@@ -42,8 +42,6 @@ def main():
         - Insert resource profiling information to ``central_resource_profiler`` database 
     """
 
-    # Load all the configuration
-    
     INI_PATH = '/network_profiling/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)

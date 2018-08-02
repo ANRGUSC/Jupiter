@@ -23,7 +23,6 @@ import configparser
 
 app = Flask(__name__)
 
-# @app.route('/') 
 def performance():
 	"""Send local stats
 	
