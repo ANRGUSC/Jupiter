@@ -25,6 +25,7 @@ import datetime
 from pymongo import MongoClient
 import configparser
 from os import path
+from functools import wraps
 
 
 
@@ -34,9 +35,6 @@ def prepare_global():
     """Prepare global information (Node info, relations between tasks)
     """
 
-    ##
-    ## Load all the confuguration
-    ##
     INI_PATH = '/jupiter_config.ini'
 
     config = configparser.ConfigParser()
@@ -46,6 +44,9 @@ def prepare_global():
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
     MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
+
+    global PROFILER
+    PROFILER = int(config['CONFIG']['PROFILER'])
 
 
     # Get ALL node info
@@ -78,8 +79,6 @@ def prepare_global():
 
     kill_flag = False
 
-
-#@app.route('/assign_task')
 def assign_task():
     """Request assigned node for a specific task, write task assignment in local file at ``local_responsibility/task_name``.
     
@@ -95,7 +94,6 @@ def assign_task():
         return "not ok"
 app.add_url_rule('/assign_task', 'assign_task', assign_task)
 
-#@app.route('/kill_thread')
 def kill_thread():
     """assign kill thread as True
     """
@@ -131,7 +129,6 @@ def init_folder():
         return "not ok"
 
 
-#@app.route('/recv_control')
 def recv_control():
     """Get assigned control function, prepare file ``DAG/parent_controller.txt`` storing parent control information of tasks 
     
@@ -373,7 +370,7 @@ def output(msg):
         print(msg)
 
 
-def get_resource_data():
+def get_resource_data_drupe():
     """Collect resource profiling information
     """
 
@@ -395,11 +392,45 @@ def get_resource_data():
     print("Got profiler data from http://"+os.environ['PROFILER']+ ":" + str(FLASK_SVC))
     print("Resource profiles:", data)
 
-def get_network_profile_data():
+def profilers_mapping_decorator(f):
+    """General Mapping decorator function
+    """
+    @wraps(f)
+    def profiler_mapping(*args, **kwargs):
+      return f(*args, **kwargs)
+    return profiler_mapping
+
+def get_network_data_mapping(PROFILER=0):
+    """Mapping the chosen TA2 module (network monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        PROFILER (str): specified from ``jupiter_config.ini``
+    
+    Returns:
+        TYPE: corresponding network function
+    """
+    if PROFILER==0: 
+        return profilers_mapping_decorator(get_network_data_drupe)
+    return profilers_mapping_decorator(get_network_data_drupe)
+
+def get_resource_data_mapping(PROFILER):
+    """Mapping the chosen TA2 module (resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        PROFILER (str): specified from ``jupiter_config.ini``
+    
+    Returns:
+        TYPE: corresponding resource function
+    """
+    if PROFILER==0: 
+        return profilers_mapping_decorator(get_resource_data_drupe)
+    return profilers_mapping_decorator(get_resource_data_drupe)
+
+def get_network_data_drupe():
     """Collect the network profile from local MongoDB peer
     """
 
-    print('Collecting Netowrk Monitoring Data from MongoDB')
+    print('Collecting Network Monitoring Data from MongoDB')
     client_mongo = MongoClient('mongodb://'+os.environ['PROFILER']+':'+str(MONGO_SVC)+'/')
     db = client_mongo.droplet_network_profiler
     print(db[os.environ['PROFILER']])
@@ -424,6 +455,9 @@ def main():
     print("Node name:", node_name, "and id", node_id)
     print("Starting the main thread on port", FLASK_PORT)
 
+    get_network_data = get_network_data_mapping(PROFILER)
+    get_resource_data = get_resource_data_mapping(PROFILER)
+
     while init_folder() != "ok": # Initialize the local folders
         pass
 
@@ -431,7 +465,7 @@ def main():
     _thread.start_new_thread(get_resource_data, ())
 
     # Get network profile data
-    _thread.start_new_thread(get_network_profile_data, ())
+    _thread.start_new_thread(get_network_data, ())
 
     _thread.start_new_thread(watcher, ())
     _thread.start_new_thread(distribute, ())

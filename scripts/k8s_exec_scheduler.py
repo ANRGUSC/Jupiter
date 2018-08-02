@@ -387,7 +387,7 @@ def k8s_exec_scheduler():
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 
-    pprint(service_ips)
+    # pprint(service_ips)
 
 
 

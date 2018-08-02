@@ -23,9 +23,6 @@ from os import path
 
 app = Flask(__name__)
 
-'''
-'''
-# get all lines in a file
 def read_file(file_name):
     """
     Get all lines in a file
@@ -53,10 +50,6 @@ def prepare_global():
     Prepare global information (Node info, relations between tasks, initial task)
     """
 
-    #  Load all the confuguration
-    ##
-    ## Load all the confuguration
-    ##
     INI_PATH = '/jupiter_config.ini'
 
     config = configparser.ConfigParser()
@@ -68,7 +61,6 @@ def prepare_global():
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
     MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
 
-    # from node_info import *
     print("starting the main thread on port")
 
     
@@ -89,7 +81,6 @@ def prepare_global():
 
     global node_id, node_name, debug
 
-    #
     node_id = -1
     node_name = ""
     debug = True
@@ -126,7 +117,6 @@ def prepare_global():
     assignments = {}
 
 
-#@app.route('/recv_task_assign_info')
 def recv_task_assign_info():
     """
         Receive task assignment information from the workers
@@ -171,7 +161,6 @@ def recv_mapping():
     return "ok"
 app.add_url_rule('/recv_mapping', 'recv_mapping', recv_mapping)
 
-#@app.route('/')
 def return_assignment():
     """
     Return mapping assignments which have been finished at the current time of request.
@@ -262,8 +251,8 @@ def init_thread():
     """
     Create initial folders and files under ``local/task_responsibility`` for all nodes
     """
-    # init folder and file under local for all nodes
 
+    # init folder and file under local for all nodes
     # send control info to all nodes
     line = ""
     for key in control_relation:
@@ -360,7 +349,6 @@ def init_task_topology():
     del input_nodes[0]
     for line in input_nodes:
         line = line.strip()
-        # items = re.split(r'\t+', line)
         items = line.split()
         task = items[0]
 
@@ -372,12 +360,8 @@ def init_task_topology():
 
     print("init_tasks" ,init_tasks)
 
-    # application = read_file("DAG/DAG_application.txt")
-    # MAX_TASK_NUMBER = int(application[0])
-    # del application[0]
     for line in application:
         line = line.strip()
-        # items = re.split(r'\t+', line)
         items = line.split()
 
         parent = items[0]

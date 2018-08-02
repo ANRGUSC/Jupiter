@@ -29,10 +29,15 @@ def set_globals():
 	config = configparser.ConfigParser()
 	config.read(INI_PATH)
 	"""User input for scheduler information"""
-	global STATIC_MAPPING, SCHEDULER 
+	global STATIC_MAPPING, SCHEDULER, TRANSFER 
 
 	STATIC_MAPPING          = int(config['CONFIG']['STATIC_MAPPING'])
+	# scheduler option chosen from SCHEDULER_LIST
 	SCHEDULER               = int(config['CONFIG']['SCHEDULER'])
+	# transfer option chosen from TRANSFER_LIST
+	TRANSFER 				= int(config['CONFIG']['TRANSFER'])
+	# Network and Resource profiler (TA2) option chosen from TA2_LIST
+	PROFILER                = int(config['CONFIG']['PROFILER'])
 
 	"""Authorization information in the containers"""
 	global USERNAME, PASSWORD
@@ -53,18 +58,22 @@ def set_globals():
 	"""Modules path of Jupiter"""
 	global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH 
 
+	# default network and resource profiler: DRUPE
+	# default wave mapper: random wave
 	NETR_PROFILER_PATH      = HERE + 'profilers/network_resource_profiler/'
 	EXEC_PROFILER_PATH      = HERE + 'profilers/execution_profiler/'
 	CIRCE_PATH              = HERE + 'circe/'
-	HEFT_PATH               = HERE + 'task_mapper/heft/'
+	HEFT_PATH               = HERE + 'task_mapper/heft/original/'
 	WAVE_PATH               = HERE + 'task_mapper/wave/random_wave/'
 	SCRIPT_PATH             = HERE + 'scripts/'
 
-	if SCHEDULER == 1:
+	if SCHEDULER == config['SCHEDULER_LIST']['WAVE_RANDOM']:
 	    WAVE_PATH           = HERE + 'task_mapper/wave/random_wave/'
-	elif SCHEDULER == 2:
+	elif SCHEDULER == config['SCHEDULER_LIST']['WAVE_GREEDY']:
 	    WAVE_PATH           = HERE + 'task_mapper/wave/greedy_wave/'
-
+	elif SCHEDULER == config['SCHEDULER_LIST']['HEFT_MODIFIED']:
+		HEFT_PATH           = HERE + 'task_mapper/heft/modified/'
+	
 	"""Kubernetes required information"""
 	global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 

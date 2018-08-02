@@ -23,9 +23,6 @@ import configparser
 from os import path
 
 
-
-
-# from node_info import *
 print("starting the main thread on port")
 
 app = Flask(__name__)
@@ -62,7 +59,7 @@ def prepare_global():
     print("Nodes", nodes)
 
     global node_id, node_name, debug
-    #
+
     node_id = -1
     node_name = ""
     debug = True
@@ -118,10 +115,6 @@ def read_file(file_name):
     return file_contents
 
 
-
-
-
-#@app.route('/recv_mapping')
 def recv_mapping():
     """
     From each droplet, the master receive the local mapping of the assigned task for that droplet, combine all of the information
@@ -155,8 +148,6 @@ def recv_mapping():
     return "ok"
 app.add_url_rule('/recv_mapping', 'recv_mapping', recv_mapping)
 
-
-#@app.route('/')
 def return_assignment():
     """
     Return mapping assignments which have been finished at the current time of request.
@@ -361,14 +352,8 @@ def init_task_topology():
     
     print("init_tasks",init_tasks)
 
-    # application = read_file("DAG/DAG_application.txt")
-    # MAX_TASK_NUMBER = int(application[0])
-    # print("Max task number ", MAX_TASK_NUMBER)
-
-    # del application[0]
     for line in application:
         line = line.strip()
-        # items = re.split(r'\t+', line)
         items = line.split()
 
         parent = items[0]

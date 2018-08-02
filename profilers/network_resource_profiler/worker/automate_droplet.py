@@ -153,13 +153,9 @@ class droplet_regression():
                 header = next(reader, None)
                 self.my_host   = header[0]
                 self.my_region = header[1]
-                # print('**************************')
-                # print(self.my_host)
                 for row in reader:
                     self.hosts.append(row[0])
                     self.regions.append(row[1])
-            # print('**************************')
-            # print(self.hosts)
         else:
             print("No detected droplets information... ")
 
@@ -347,7 +343,6 @@ def main():
     eh = MyEventHandler()
     # notifier
     notifier = pyinotify.Notifier(wm, eh)
-    # if does_file_exist_in_dir(os.path.dirname(os.path.abspath(__file__)) + "scheduling/"):
 
     notifier.loop()
 
