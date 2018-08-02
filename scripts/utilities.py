@@ -10,17 +10,7 @@ import sys
 import time
 import os
 from os import path
-# from multiprocessing import Process
-# from k8s_profiler_scheduler import *
-# from k8s_wave_scheduler import *
-# from k8s_circe_scheduler import *
-# from delete_all_circe import *
-# from delete_all_profilers import *
-# from delete_all_waves import *
 from pprint import *
-# import requests
-# import json
-# from pprint import *
 
 
 def k8s_read_config(configuration_file):
