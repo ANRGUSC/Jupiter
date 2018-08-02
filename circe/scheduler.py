@@ -5,12 +5,13 @@
 
 """
 
-__author__ = "Aleksandra Knezevic,Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen,  Jason A Tran and Bhaskar Krishnamachari"
+__author__ = "Aleksandra Knezevic,Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar,   Jason A Tran and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
 
 import paramiko
+from scp import SCPClient
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import time
@@ -47,7 +48,6 @@ rt_enter_time = defaultdict(list)
 rt_exec_time = defaultdict(list)
 rt_finish_time = defaultdict(list)
 
-#@app.route('/recv_monitor_data')
 def recv_mapping():
     """
 
@@ -177,6 +177,49 @@ class MonitorRecv(multiprocessing.Process):
         print("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
+def transfer_mapping_decorator(TRANSFER):
+    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        TRANSFER: transfer method from ``jupiter_config.ini``
+    
+    Returns:
+        function: chosen transfer method
+    """
+    def data_transfer_scp(IP,user,pword,source, destination):
+        """Transfer data using SCP
+        
+        Args:
+            IP (str): destination IP address
+            user (str): username
+            pword (str): password
+            source (str): source file path
+            destination (str): destination file path
+        """
+        #Keep retrying in case the containers are still building/booting up on
+        #the child nodes.
+
+        print(IP)
+        retry = 0
+        while retry < num_retries:
+            try:
+                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+                os.system(cmd)
+                print('data transfer complete\n')
+                break
+            except:
+                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+                time.sleep(2)
+                retry += 1
+
+    if TRANSFER==0:
+        return data_transfer_scp
+    return data_transfer_scp
+
+@transfer_mapping_decorator
+def data_transfer(IP,user,pword,source, destination):
+    msg = 'Transfer to IP: %s , username:%s, password: %s,source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    print(msg)
 
 class MyHandler(PatternMatchingEventHandler):
     """
@@ -212,7 +255,6 @@ class MyHandler(PatternMatchingEventHandler):
             exec_times.append(end_times[count] - start_times[count])
 
             print("execution time is: ", exec_times)
-            # global count
             count+=1
 
     def on_modified(self, event):
@@ -280,27 +322,9 @@ class Handler(FileSystemEventHandler):
             #This part should be optimized to avoid hardcoding IP, user and password
             #of the first task node
             IP = os.environ['CHILD_NODES_IPS']
-            #IP= 'localpro'
-
-            ssh = paramiko.SSHClient()
-            ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            retry = 0
-            # num_retries = 30
-            print("Starting the connection")
-            while retry < num_retries:
-                try:
-                    ssh.connect(IP, username=username, password=password, port=ssh_port)
-                    sftp = ssh.open_sftp()
-                    sftp.put(event.src_path, os.path.join('/centralized_scheduler', 'input', new_file_name))
-                    sftp.close()
-                    break
-                except:
-                    print('SSH connection refused or file transfer failed, will retry in 2 seconds')
-                    time.sleep(2)
-                    retry += 1
-
-            ssh.close()
-
+            source = event.src_path
+            destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
+            data_transfer(IP,username, password,source, destination)
 def main():
     """
         -   Read configurations (DAG info, node info) from ``nodes.txt`` and ``configuration.txt``
@@ -309,9 +333,6 @@ def main():
         -   Collect execution profiling information from the system.
     """
 
-    ##
-    ## Load all the confuguration
-    ##
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
@@ -324,6 +345,8 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 
+    global TRANSFER 
+    TRANSFER = int(config['CONFIG']['TRANSFER'])
 
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'

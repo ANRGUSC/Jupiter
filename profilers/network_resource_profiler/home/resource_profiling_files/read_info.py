@@ -23,8 +23,7 @@ def open_file():
 	Returns:
 		list: resource profiling information for all of the nodes in the node list
 	"""
-	"""Load all the configuration
-	"""
+
 	INI_PATH = '/network_profiling/jupiter_config.ini'
 	config = configparser.ConfigParser()
 	config.read(INI_PATH)

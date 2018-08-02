@@ -4,7 +4,7 @@
     .. note:: This script runs on every node of the system.
 """
 
-__author__ = "Aleksandra Knezevic,Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran and Bhaskar Krishnamachari"
+__author__ = "Aleksandra Knezevic,Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar,  Jason A Tran and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
@@ -17,6 +17,7 @@ import sys
 import time
 import json
 import paramiko
+from scp import SCPClient
 import datetime
 from netifaces import AF_INET, AF_INET6, AF_LINK, AF_PACKET, AF_BRIDGE
 import netifaces as ni
@@ -84,6 +85,58 @@ def send_runtime_profile(msg):
         print(e)
         return "not ok"
     return res
+
+def transfer_mapping_decorator(TRANSFER=0):
+    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        TRANSFER (int): TRANSFER specified from ``jupiter_config.ini``
+    
+    Returns:
+        function: chosen transfer method
+    """
+    def transfer_data_scp(IP,user,pword,source, destination):
+        """Transfer data using SCP
+        
+        Args:
+            IP (str): destination IP address
+            user (str): username
+            pword (str): password
+            source (str): source file path
+            destination (str): destination file path
+        """
+        #Keep retrying in case the containers are still building/booting up on
+        #the child nodes.
+        print(IP)
+        retry = 0
+        while retry < num_retries:
+            try:
+                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+                os.system(cmd)
+                print('data transfer complete\n')
+                break
+            except:
+                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+                time.sleep(2)
+                retry += 1
+
+    if TRANSFER==0:
+        return transfer_data_scp
+    return transfer_data_scp
+
+@transfer_mapping_decorator
+def transfer_data(IP,user,pword,source, destination):
+    """Transfer data with given parameters
+    
+    Args:
+        IP (str): destination IP 
+        user (str): destination username
+        pword (str): destination password
+        source (str): source file path
+        destination (str): destination file path
+    """
+    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    print(msg)
 
 #for OUTPUT folder 
 class Watcher1():
@@ -157,27 +210,11 @@ class Handler1(FileSystemEventHandler):
                 IPaddr = sys.argv[4]
                 user = sys.argv[5]
                 password=sys.argv[6]
-                #port=int(sys.argv[7])
-                ssh = paramiko.SSHClient()
-                ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                source = event.src_path
+                destination = os.path.join('/output', new_file)
 
-                #Keep retrying in case the containers are still building/booting up on
-                #the child nodes.
-                retry = 0
-                # num_retries = 30
-                while retry < num_retries:
-                    try:
-                        ssh.connect(IPaddr, username=user, password=password, port=ssh_port)
-                        sftp = ssh.open_sftp()
-                        sftp.put(event.src_path, os.path.join('/output', new_file))
-                        sftp.close()
-                        break
-                    except:
-                        print('SSH Connection refused or File tranfer failed, will retry in 2 seconds')
-                        time.sleep(2)
-                        retry += 1
+                transfer_data(IPaddr,user,password,source, destination)
                 
-                ssh.close()
 
             elif flag2 == 'true':
 
@@ -185,28 +222,9 @@ class Handler1(FileSystemEventHandler):
                     IPaddr = sys.argv[i+1]
                     user = sys.argv[i+2]
                     password = sys.argv[i+3]
-                    #port = int(sys.argv[i+4])
-
-                    ssh = paramiko.SSHClient()
-                    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-                    #Keep retrying in case the containers are still building/booting up on
-                    #the child nodes.
-                    retry = 0
-                    # num_retries = 30
-                    while retry < num_retries:
-                        try:
-                            ssh.connect(IPaddr, username=user, password=password, port=ssh_port)
-                            sftp = ssh.open_sftp()
-                            sftp.put(event.src_path, os.path.join('/centralized_scheduler', 'input', new_file))
-                            sftp.close()
-                            break
-                        except:
-                            print('SSH Connection refused or File transfer failed, will retry in 2 seconds')
-                            time.sleep(2)
-                            retry += 1
-
-                    ssh.close()
+                    source = event.src_path
+                    destination = os.path.join('/centralized_scheduler', 'input', new_file)
+                    transfer_data(IPaddr,user,password,source, destination)
 
             else:
                 num_child = (len(sys.argv) - 4) / 4
@@ -221,29 +239,10 @@ class Handler1(FileSystemEventHandler):
                         IPaddr = sys.argv[i+1]
                         user = sys.argv[i+2]
                         password = sys.argv[i+3]
-                        #port = int(sys.argv[i+4])
 
-                        ssh = paramiko.SSHClient()
-                        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-
-                        #Keep retrying in case the containers are still building/booting up on
-                        #the child nodes.
-                        retry = 0
-                        # num_retries = 30
-                        while retry < num_retries:
-                            try:
-                                ssh.connect(IPaddr, username=user, password=password, port=ssh_port)
-                                sftp = ssh.open_sftp()
-                                sftp.put(event_path, os.path.join('/centralized_scheduler','input', myfile))
-                                sftp.close()
-                                break
-                            except:
-                                print('SSH Connection refused or File transfer failed, will retry in 2 seconds')
-                                time.sleep(2)
-                                retry += 1
-                
-                        
-                        ssh.close()
+                        source = event.src_path
+                        destination = os.path.join('/centralized_scheduler','input', myfile)
+                        transfer_data(IPaddr,user,password,source, destination)
 
                     files_out=[]
 
@@ -333,7 +332,6 @@ class Handler(FileSystemEventHandler):
 
             if flag1 == "1":
                 # Start msg
-                # send_monitor_data("start")
                 ts = time.time()
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
@@ -346,14 +344,12 @@ class Handler(FileSystemEventHandler):
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
-                # send_monitor_data("end")
                 # end msg
             else:
 
                 filenames.append(queue_mul.get())
                 if (len(filenames) == int(flag1)):
                     #start msg
-                    #send_monitor_data("start")
                     ts = time.time()
                     runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info)
@@ -367,7 +363,6 @@ class Handler(FileSystemEventHandler):
                     ts = time.time()
                     runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info)
-                    #send_monitor_data("end")
                     # end msg
 
 def main():
@@ -390,8 +385,6 @@ def main():
 
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
-    username    = config['AUTH']['USERNAME']
-    password    = config['AUTH']['PASSWORD']
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 

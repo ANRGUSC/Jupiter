@@ -34,7 +34,6 @@ def main():
     """ Start polling the profiler home to request the ``scheduling`` file. If succeed, stop the process.
     """
 
-    # Load all the confuguration
     INI_PATH = '/network_profiling/jupiter_config.ini'
 
     config = configparser.ConfigParser()
@@ -56,7 +55,6 @@ def main():
             if len(r):
                 flag_schedule = r["status"]
             print(flag_schedule)
-            # r = requests.get("http://"+HOME_IP+":" + str(FLASK_SVC) + "/schedule/" + SELF_IP)
         except Exception as e:
             print("Scheduler request failed. Will try again, details: " + str(e))
 

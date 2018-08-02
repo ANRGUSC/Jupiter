@@ -47,7 +47,6 @@ def evaluate_interval(interval):
     src = "sample_input/1botnet.ipsum"
     dest = "input/1botnet.ipsum"
     # print('---- Generate random input files')
-    # shutil.copyfile(src,dest)
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
@@ -67,5 +66,6 @@ def evaluate_interval(interval):
 
 if __name__ == '__main__':
     #evaluate_random()
-    time.sleep(900)
+    time.sleep(60)
+    print('Start copying sample files for evaluation')
     evaluate_interval(900)

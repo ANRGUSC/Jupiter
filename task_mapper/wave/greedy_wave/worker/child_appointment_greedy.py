@@ -21,6 +21,7 @@ import requests
 from pymongo import MongoClient
 import configparser
 from os import path
+from functools import wraps
 
 app = Flask(__name__)
 
@@ -29,9 +30,6 @@ def prepare_global():
     """Prepare global information (Node info, relations between tasks)
     """
 
-    ##
-    ## Load all the confuguration
-    ##
     INI_PATH = '/jupiter_config.ini'
 
     config = configparser.ConfigParser()
@@ -42,6 +40,9 @@ def prepare_global():
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
     MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
+
+    global PROFILER
+    PROFILER = int(config['CONFIG']['PROFILER'])
 
     # Get ALL node info
     node_count = 0
@@ -75,15 +76,12 @@ def prepare_global():
     global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
 
     
-
-    #
     threshold = 15
     resource_data = {}
     is_resource_data_ready = False
     network_profile_data = {}
     is_network_profile_data_ready = False
 
-    #
     node_id = -1
     node_name = ""
     debug = True
@@ -103,8 +101,6 @@ def prepare_global():
     lock = threading.Lock()
     kill_flag = False
 
-
-#@app.route('/assign_task')
 def assign_task():
     """Request assigned node for a specific task, write task assignment in local file at ``local_responsibility/task_name``.
     
@@ -119,7 +115,6 @@ def assign_task():
         return "not ok"
 app.add_url_rule('/assign_task', 'assign_task', assign_task)
 
-#@app.route('/kill_thread')
 def kill_thread():
     """assign kill thread as True
     """
@@ -154,7 +149,6 @@ def init_folder():
         return "not ok"
 
 
-#@app.route('/recv_control')
 def recv_control():
     """Get assigned control function, prepare file ``DAG/parent_controller.txt`` storing parent control information of tasks 
     
@@ -429,9 +423,7 @@ def get_most_suitable_node(size):
                 result_node_name = tmp_node_name
 
     if result_node_name:
-        # del network_profile_data[result_node_name]
         network_profile_data[result_node_name]['c'] = 100000
-            # resource_data[result_node_name]['cpu'] = 100000
 
     return result_node_name
 
@@ -505,7 +497,7 @@ def output(msg):
         print(msg)
 
 
-def get_resource_data():
+def get_resource_data_drupe():
     """Collect resource profiling information
     """
     print("Starting resource profile collection thread")
@@ -537,11 +529,10 @@ def get_resource_data():
     print("Resource profiles: ", json.dumps(result))
 
 
-def get_network_profile_data():
+def get_network_data_drupe():
     """Collect the network profile from local MongoDB peer
     """
     print('Collecting Netowrk Monitoring Data from MongoDB')
-    # MONGO_SVC = 6200
     try_network_times = 0
     while True:
         try:
@@ -596,8 +587,41 @@ def get_network_profile_data():
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
 
+def profilers_mapping_decorator(f):
+    """General Mapping decorator function
+    """
+    @wraps(f)
+    def profiler_mapping(*args, **kwargs):
+      return f(*args, **kwargs)
+    return profiler_mapping
 
+def get_network_data_mapping(PROFILER=0):
+    """Mapping the chosen TA2 module (network monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
     
+    Args:
+        PROFILER (str): specified from ``jupiter_config.ini``
+    
+    Returns:
+        TYPE: corresponding network function
+    """
+    if PROFILER==0: 
+        return profilers_mapping_decorator(get_network_data_drupe)
+    return profilers_mapping_decorator(get_network_data_drupe)
+
+def get_resource_data_mapping(PROFILER):
+    """Mapping the chosen TA2 module (resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        PROFILER (str): specified from ``jupiter_config.ini``
+    
+    Returns:
+        TYPE: corresponding resource function
+    """
+    if PROFILER==0: 
+        return profilers_mapping_decorator(get_resource_data_drupe)
+    return profilers_mapping_decorator(get_resource_data_drupe)
+
+
 def main():
     """
         - Prepare global information
@@ -618,6 +642,9 @@ def main():
     print("Node name:", node_name, "and id", node_id)
     print("Starting the main thread on port", FLASK_PORT)
 
+    
+    get_network_data = get_network_data_mapping(PROFILER)
+    get_resource_data = get_resource_data_mapping(PROFILER)
     while init_folder() != "ok":  # Initialize the local folers
         pass
 
@@ -625,7 +652,7 @@ def main():
     _thread.start_new_thread(get_resource_data, ())
 
     # Get network profile data
-    _thread.start_new_thread(get_network_profile_data, ())
+    _thread.start_new_thread(get_network_data, ())
 
     _thread.start_new_thread(watcher, ())
     _thread.start_new_thread(distribute, ())
