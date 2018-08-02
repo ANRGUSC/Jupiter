@@ -63,16 +63,17 @@ def set_globals():
 	NETR_PROFILER_PATH      = HERE + 'profilers/network_resource_profiler/'
 	EXEC_PROFILER_PATH      = HERE + 'profilers/execution_profiler/'
 	CIRCE_PATH              = HERE + 'circe/'
-	HEFT_PATH               = HERE + 'task_mapper/heft/'
+	HEFT_PATH               = HERE + 'task_mapper/heft/original/'
 	WAVE_PATH               = HERE + 'task_mapper/wave/random_wave/'
 	SCRIPT_PATH             = HERE + 'scripts/'
 
-	if SCHEDULER == 1:
+	if SCHEDULER == config['SCHEDULER_LIST']['WAVE_RANDOM']:
 	    WAVE_PATH           = HERE + 'task_mapper/wave/random_wave/'
-	elif SCHEDULER == 2:
+	elif SCHEDULER == config['SCHEDULER_LIST']['WAVE_GREEDY']:
 	    WAVE_PATH           = HERE + 'task_mapper/wave/greedy_wave/'
-
-
+	elif SCHEDULER == config['SCHEDULER_LIST']['HEFT_MODIFIED']:
+		HEFT_PATH           = HERE + 'task_mapper/heft/modified/'
+	
 	"""Kubernetes required information"""
 	global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 
