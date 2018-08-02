@@ -76,7 +76,6 @@ def monitor_local_resources():
             local_resources = res
         time.sleep(60) # Profile variables every minute
 
-#@app.route('/') 
 def performance():
     """Send local stats
     """
@@ -86,8 +85,7 @@ def performance():
         js = json.dumps(local_resources)
     return js
 app.add_url_rule('/', 'performance', performance)
-
-#@app.route('/all') 
+ 
 def all_performance():
     """Send all stats
     """
@@ -110,9 +108,6 @@ def main():
         - Start a thread obtain and store the local stats
         - Start a thread to monitor resouces of all the nodes in the network and store their stats
     """
-
-    # Load all the confuguration
-
 
     INI_PATH = '/network_profiling/jupiter_config.ini'
     config = configparser.ConfigParser()

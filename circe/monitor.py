@@ -332,7 +332,6 @@ class Handler(FileSystemEventHandler):
 
             if flag1 == "1":
                 # Start msg
-                # send_monitor_data("start")
                 ts = time.time()
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
@@ -345,14 +344,12 @@ class Handler(FileSystemEventHandler):
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
-                # send_monitor_data("end")
                 # end msg
             else:
 
                 filenames.append(queue_mul.get())
                 if (len(filenames) == int(flag1)):
                     #start msg
-                    #send_monitor_data("start")
                     ts = time.time()
                     runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info)
@@ -366,7 +363,6 @@ class Handler(FileSystemEventHandler):
                     ts = time.time()
                     runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info)
-                    #send_monitor_data("end")
                     # end msg
 
 def main():
@@ -389,8 +385,6 @@ def main():
 
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
-    # username    = config['AUTH']['USERNAME']
-    # password    = config['AUTH']['PASSWORD']
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 

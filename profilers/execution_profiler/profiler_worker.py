@@ -212,21 +212,6 @@ def main():
 
     if path.isfile(local_profiler_path):
         transfer_data(master_IP,username,password,local_profiler_path, remote_path)
-        # client = paramiko.SSHClient()
-        # client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        # while retry < num_retries:
-        #     try:
-        #         client.connect(master_IP, username=username, password=password, port=ssh_port)
-        #         scp = SCPClient(client.get_transport())
-        #         scp.put(local_profiler_path, remote_path)
-        #         scp.close()
-        #         # os.remove(local_profiler_path)
-        #         print('execution profiling data transfer complete\n')
-        #         break
-        #     except:
-        #         print('SSH Connection refused, will retry in 2 seconds')
-        #         time.sleep(2)
-        #         retry += 1
     else:
         print('No Runtime data file exists...')
 

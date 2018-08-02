@@ -274,8 +274,6 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 
-    # dir_remote          = '/profiler_files'
-    # node_name           = os.environ['NODE_NAME']
     print('Copy supertask information to profilers folder')
     master_profile_file_name = os.path.join(os.path.dirname(__file__), 'profiler_' + nodename + '.txt')
     local_profiler_path    = os.path.join(os.path.dirname(__file__), 'profiler_files/')
@@ -301,13 +299,11 @@ def main():
         i = profilers_ips[itr]
         print("Sending data to ", allprofiler_names[itr])
         data_transfer(i,username,password,ptFile, ptFile1)
-        print(password)
-        print(ssh_port)
-        print(ptFile)
-        print(ptFile1)
-        print(i)
-        # cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s:%s" % (password, ssh_port, ptFile, i, ptFile1)
-        #os.system(cmd)
+        # print(password)
+        # print(ssh_port)
+        # print(ptFile)
+        # print(ptFile1)
+        # print(i)
 
         try:
             print("start the profiler in ", i)

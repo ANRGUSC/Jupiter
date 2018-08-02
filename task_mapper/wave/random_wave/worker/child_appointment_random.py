@@ -35,9 +35,6 @@ def prepare_global():
     """Prepare global information (Node info, relations between tasks)
     """
 
-    ##
-    ## Load all the confuguration
-    ##
     INI_PATH = '/jupiter_config.ini'
 
     config = configparser.ConfigParser()
@@ -82,8 +79,6 @@ def prepare_global():
 
     kill_flag = False
 
-
-#@app.route('/assign_task')
 def assign_task():
     """Request assigned node for a specific task, write task assignment in local file at ``local_responsibility/task_name``.
     
@@ -99,7 +94,6 @@ def assign_task():
         return "not ok"
 app.add_url_rule('/assign_task', 'assign_task', assign_task)
 
-#@app.route('/kill_thread')
 def kill_thread():
     """assign kill thread as True
     """
@@ -135,7 +129,6 @@ def init_folder():
         return "not ok"
 
 
-#@app.route('/recv_control')
 def recv_control():
     """Get assigned control function, prepare file ``DAG/parent_controller.txt`` storing parent control information of tasks 
     

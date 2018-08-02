@@ -30,9 +30,6 @@ def prepare_global():
     """Prepare global information (Node info, relations between tasks)
     """
 
-    ##
-    ## Load all the confuguration
-    ##
     INI_PATH = '/jupiter_config.ini'
 
     config = configparser.ConfigParser()
@@ -79,15 +76,12 @@ def prepare_global():
     global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
 
     
-
-    #
     threshold = 15
     resource_data = {}
     is_resource_data_ready = False
     network_profile_data = {}
     is_network_profile_data_ready = False
 
-    #
     node_id = -1
     node_name = ""
     debug = True
@@ -107,8 +101,6 @@ def prepare_global():
     lock = threading.Lock()
     kill_flag = False
 
-
-#@app.route('/assign_task')
 def assign_task():
     """Request assigned node for a specific task, write task assignment in local file at ``local_responsibility/task_name``.
     
@@ -123,7 +115,6 @@ def assign_task():
         return "not ok"
 app.add_url_rule('/assign_task', 'assign_task', assign_task)
 
-#@app.route('/kill_thread')
 def kill_thread():
     """assign kill thread as True
     """
@@ -158,7 +149,6 @@ def init_folder():
         return "not ok"
 
 
-#@app.route('/recv_control')
 def recv_control():
     """Get assigned control function, prepare file ``DAG/parent_controller.txt`` storing parent control information of tasks 
     
@@ -433,9 +423,7 @@ def get_most_suitable_node(size):
                 result_node_name = tmp_node_name
 
     if result_node_name:
-        # del network_profile_data[result_node_name]
         network_profile_data[result_node_name]['c'] = 100000
-            # resource_data[result_node_name]['cpu'] = 100000
 
     return result_node_name
 
@@ -545,7 +533,6 @@ def get_network_data_drupe():
     """Collect the network profile from local MongoDB peer
     """
     print('Collecting Netowrk Monitoring Data from MongoDB')
-    # MONGO_SVC = 6200
     try_network_times = 0
     while True:
         try:

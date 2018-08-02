@@ -48,7 +48,6 @@ rt_enter_time = defaultdict(list)
 rt_exec_time = defaultdict(list)
 rt_finish_time = defaultdict(list)
 
-#@app.route('/recv_monitor_data')
 def recv_mapping():
     """
 
@@ -200,10 +199,6 @@ def transfer_mapping_decorator(TRANSFER):
         #Keep retrying in case the containers are still building/booting up on
         #the child nodes.
 
-        #             ssh.connect(IP, username=user, password=pword, port=ssh_port)
-        #             scp = SCPClient(client.get_transport())
-        #             scp.put(source, destination)
-        #             scp.close() 
         print(IP)
         retry = 0
         while retry < num_retries:
@@ -260,7 +255,6 @@ class MyHandler(PatternMatchingEventHandler):
             exec_times.append(end_times[count] - start_times[count])
 
             print("execution time is: ", exec_times)
-            # global count
             count+=1
 
     def on_modified(self, event):
@@ -330,23 +324,6 @@ class Handler(FileSystemEventHandler):
             IP = os.environ['CHILD_NODES_IPS']
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
-            #IP= 'localpro'
-            # ssh = paramiko.SSHClient()
-            # ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            # retry = 0
-            # print("Starting the connection")
-            # while retry < num_retries:
-            #     try:
-            #         ssh.connect(IP, username=username, password=password, port=ssh_port)
-            #         sftp = ssh.open_sftp()
-            #         sftp.put(event.src_path, os.path.join('/centralized_scheduler', 'input', new_file_name))
-            #         sftp.close()
-            #         break
-            #     except:
-            #         print('SSH connection refused or file transfer failed, will retry in 2 seconds')
-            #         time.sleep(2)
-            #         retry += 1
-            # ssh.close()
             data_transfer(IP,username, password,source, destination)
 def main():
     """
@@ -356,9 +333,6 @@ def main():
         -   Collect execution profiling information from the system.
     """
 
-    ##
-    ## Load all the confuguration
-    ##
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
