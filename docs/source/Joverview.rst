@@ -73,6 +73,8 @@ This file includes all paths configuration for Jupiter system to start. The late
 
     STATIC_MAPPING          = int(config['CONFIG']['STATIC_MAPPING'])
     SCHEDULER               = int(config['CONFIG']['SCHEDULER'])
+    TRANSFER                = int(config['CONFIG']['TRANSFER'])
+    PROFILER                = int(config['CONFIG']['PROFILER'])
 
     USERNAME                = config['AUTH']['USERNAME']
     PASSWORD                = config['AUTH']['PASSWORD']
@@ -91,10 +93,12 @@ This file includes all paths configuration for Jupiter system to start. The late
     WAVE_PATH               = HERE + 'task_mapper/wave/random_wave/'
     SCRIPT_PATH             = HERE + 'scripts/'
 
-    if SCHEDULER == 1:
+    if SCHEDULER == config['SCHEDULER_LIST']['WAVE_RANDOM']:
         WAVE_PATH           = HERE + 'task_mapper/wave/random_wave/'
-    elif SCHEDULER == 2:
+    elif SCHEDULER == config['SCHEDULER_LIST']['WAVE_GREEDY']:
         WAVE_PATH           = HERE + 'task_mapper/wave/greedy_wave/'
+    elif SCHEDULER == config['SCHEDULER_LIST']['HEFT_MODIFIED']:
+        HEFT_PATH           = HERE + 'task_mapper/heft/modified/'
 
     KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
@@ -156,7 +160,7 @@ You also need to specify the corresponding information:
 File config.ini
 ---------------
 
-This file includes all configuration options for Jupiter system to start. The latest version of ``config.ini`` file includes types of mapping (static or dynamic), port information (SSH, Flask, Mongo), authorization (username and password), scheduling algorithm (Heft, random WAVE, greedy WAVE):
+This file includes all configuration options for Jupiter system to start. The latest version of ``config.ini`` file includes types of mapping (static or dynamic), port information (SSH, Flask, Mongo), authorization (username and password), scheduling algorithm (HEFT original, random WAVE, greedy WAVE, HEFT modified):
 
 .. code-block:: text
     :linenos:
@@ -164,6 +168,8 @@ This file includes all configuration options for Jupiter system to start. The la
     [CONFIG]
         STATIC_MAPPING = 0
         SCHEDULER = 2
+        TRANSFER = 0
+        PROFILER = 0
     [PORT]
         MONGO_SVC = 6200
         MONGO_DOCKER = 27017
@@ -182,8 +188,17 @@ This file includes all configuration options for Jupiter system to start. The la
         HEFT = 0
         WAVE_RANDOM = 1
         WAVE_GREEDY = 2
+        HEFT_MODIFIED = 3
+    [PROFILERS_LIST]
+        DRUPE = 0
+    [TRANSFER_LIST]
+        SCP = 0
 
-.. warning:: You should specify the information in ``CONFIG`` section to choose the specific scheduling algorithm from the ``SCHEDULER_LIST``. ``STATIC_MAPPING`` is only chosen on testing purpose. 
+.. warning:: You should specify ``SCHEDULER`` in ``CONFIG`` section to choose the specific scheduling algorithm from the ``SCHEDULER_LIST``. ``STATIC_MAPPING`` is only chosen on testing purpose. 
+
+.. warning:: You should specify ``TRANSFER`` in ``CONFIG`` section to choose the specific file transfer method from the ``TRANSFER_LIST``. The default file transfer method that we used is ``SCP``. If you want to use another file transfer method, please refer to the guideline how to use the interface. 
+
+.. warning:: You should specify ``PROFILER`` in ``CONFIG`` section to choose the specific network monitoring from the ``PROFILERS_LIST``. The default network monitoring tool that we used is ``DRUPE``. If you want to use another network monitoring tool, please refer to the guideline how to use the interface.
 
 File configuration.txt
 ----------------------
@@ -224,7 +239,7 @@ Inside the application folder, there should be a ``app_config.ini`` file having 
 Output
 ======
 
-.. note:: Taking the node list from ``nodes.txt`` and DAG information from ``configuration.txt``, Jupiter will consider both updated network connectivity (from ``DRUPE-network profiler`` ) and computational capabilities (from ``DRUPE - resource profiler``) of all the nodes in the system, Jupiter use the chosen scheduling algorithm (``HEFT``, ``random WAVE`` or ``greedy WAVE``) to give the optimized mapping of tasks and nodes in the system. Next, ``CIRCE`` will handle deploying the optimized mapping in the **Kubernetes** system.
+.. note:: Taking the node list from ``nodes.txt`` and DAG information from ``configuration.txt``, Jupiter will consider both updated network connectivity (from ``DRUPE-network profiler`` or your chosen tool) and computational capabilities (from ``DRUPE - resource profiler`` or your chosen tool) of all the nodes in the system, Jupiter use the chosen scheduling algorithm (``HEFT original``, ``random WAVE``,``greedy WAVE`` or ``HEFT modified``) to give the optimized mapping of tasks and nodes in the system. Next, ``CIRCE`` will handle deploying the optimized mapping in the **Kubernetes** system.
 
 
 

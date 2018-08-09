@@ -63,7 +63,7 @@ Docker file preparation scripts
    circe/circe_docker_files_generator
    profilers/execution_profiler/exec_docker_files_generator
    profilers/network_resource_profiler/profiler_docker_files_generator
-   task_mapper/heft/heft_dockerfile_generator
+   task_mapper/heft/modified/heft_dockerfile_generator
 
 
 Other scripts
@@ -71,6 +71,7 @@ Other scripts
 .. toctree::
    :maxdepth: 4
 
+   scripts/auto_redeploy
    scripts/static_assignment
    scripts/utilities
    scripts/keep_alive

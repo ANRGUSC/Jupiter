@@ -33,12 +33,14 @@ sys.path.insert(0, os.path.abspath('../../task_mapper/wave/random_wave/worker'))
 sys.path.insert(0, os.path.abspath('../../task_mapper/wave/greedy_wave/home'))
 sys.path.insert(0, os.path.abspath('../../task_mapper/wave/greedy_wave/worker'))
 
-sys.path.insert(0, os.path.abspath('../../task_mapper/heft'))
+sys.path.insert(0, os.path.abspath('../../task_mapper/heft/modified'))
+sys.path.insert(0, os.path.abspath('../../task_mapper/heft/original'))
 
 
 autodoc_mock_imports = ['numpy', 'paramiko','pymongo','netifaces','pandas','scp','flask','urllib','urllib.request',
                 'apscheduler', 'pyinotify','psutil','_thread','kubernetes','kubernetes.client','kubernetes.client.apis',
-                'xmlrpc','watchdog','yaml','watchdog.events','watchdog.observers','watchdog.utils.BaseThread','dockerfile_parse','utilities','jupiter_config']
+                'xmlrpc','watchdog','yaml','watchdog.events','watchdog.observers','watchdog.utils.BaseThread','dockerfile_parse','utilities','jupiter_config',
+                'request','configparser','parse']
 # -- Project information -----------------------------------------------------
 
 project = 'Jupiter'
@@ -64,6 +66,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.autosummary',
+    'sphinx.ext.autosectionlabel',
 ]
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

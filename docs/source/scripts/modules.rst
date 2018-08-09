@@ -4,6 +4,7 @@ scripts
 .. toctree::
    :maxdepth: 4
 
+   auto_redeploy
    build_push_circe
    build_push_exec
    build_push_heft

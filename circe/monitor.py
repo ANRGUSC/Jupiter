@@ -26,8 +26,7 @@ from os import path
 from socket import gethostbyname, gaierror, error
 import multiprocessing
 import time
-import urllib.request
-from urllib import parse
+import urllib
 import configparser
 
 def send_monitor_data(msg):
@@ -47,7 +46,7 @@ def send_monitor_data(msg):
         print("Sending message", msg)
         url = "http://" + home_node_host_port + "/recv_monitor_data"
         params = {'msg': msg, "work_node": taskname}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -75,7 +74,7 @@ def send_runtime_profile(msg):
         print("Sending message", msg)
         url = "http://" + home_node_host_port + "/recv_runtime_profile"
         params = {'msg': msg, "work_node": taskname}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
