@@ -10,11 +10,11 @@ HEFT
 .. toctree::
    :maxdepth: 4
 
-   task_mapper/heft/create_input
-   task_mapper/heft/heft_dup
-   task_mapper/heft/master_heft
-   task_mapper/heft/read_input_heft
-   task_mapper/heft/write_input_heft
+   task_mapper/heft/modified/create_input
+   task_mapper/heft/modified/heft_dup
+   task_mapper/heft/modified/master_heft
+   task_mapper/heft/modified/read_input_heft
+   task_mapper/heft/modified/write_input_heft
 
 
 WAVE

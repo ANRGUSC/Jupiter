@@ -13,7 +13,6 @@ import time
 import os
 import sys
 import urllib
-from urllib import parse
 import shutil
 import _thread
 from flask import Flask, request
@@ -189,7 +188,7 @@ def assign_task_to_remote(assigned_node, task_name):
     try:
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -214,7 +213,7 @@ def call_send_mapping(mapping, node):
     try:
         url = "http://" + master_host + "/recv_mapping"
         params = {'mapping': mapping, "node": node}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -608,7 +607,7 @@ def get_network_data_mapping(PROFILER=0):
         return profilers_mapping_decorator(get_network_data_drupe)
     return profilers_mapping_decorator(get_network_data_drupe)
 
-def get_resource_data_mapping(PROFILER):
+def get_resource_data_mapping(PROFILER=0):
     """Mapping the chosen TA2 module (resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
     
     Args:

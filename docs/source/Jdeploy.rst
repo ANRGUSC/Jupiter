@@ -128,7 +128,7 @@ Also change the following line to refer to your app:
 
 Version 2.0
 ^^^^^^^^^^^
-In version 2.0, to simplify the process we have provided with the following scripts:
+Starting from version 2.0, to simplify the process we have provided with the following scripts:
     
 .. code-block:: text
     :linenos:
@@ -141,9 +141,9 @@ In version 2.0, to simplify the process we have provided with the following scri
 These scripts will read the configuration information from ``jupiter_config.ini`` and ``jupiter_config.py`` to help generate corresponding Docker files for all the components. 
 
 Step 6 : Choose the task mapper
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------
 
-You must choose the Task Mapper from ``config.ini``. Currently, there are 3 options from the scheduling algorithm list: centralized (HEFT), distributed(random WAVE, greedy WAVE).
+You must choose the Task Mapper from ``config.ini``. Currently, there are 4 options from the scheduling algorithm list: centralized (original HEFT, modified HEFT), distributed(random WAVE, greedy WAVE).
 
 .. code-block:: text
     :linenos:
@@ -156,8 +156,48 @@ You must choose the Task Mapper from ``config.ini``. Currently, there are 3 opti
         HEFT = 0
         WAVE_RANDOM = 1
         WAVE_GREEDY = 2
+        HEFT_MODIFIED = 3
 
-Step 7 : Push the Dockers
+.. note:: When HEFT tries to optimize the Makespan by reducing communication overhead and putting many tasks on the same computing node, it ends up overloading them. While the Jupiter system can recover from failures, multiple failures of the overloaded computing nodes actually ends up adding more delay in the execution of the tasks as well as the communication between tasks due to temporary disruptions of the data flow. The modified HEFT is restricted to allocate no more than ``MAX_TASK_ALLOWED`` containers per computing node where the number ``MAX_TASK_ALLOWED`` is dependent upon the processing power of the node. You can find ``MAX_TASK_ALLOWED`` variable from ``heft_dup.py``. 
+
+Step 7 : Optional - Modify the File Transfer Method or Network & Resource Monitor Tool
+--------------------------------------------------------------------------------------
+
+Select File Transfer method 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Jupiter by default use ``SCP`` as the file transfer method. If you want to use any other file transfer tool instead (like ``XCP``, etc...), you can perform the following 2 steps:
+
+Firstly, refer the :ref:`Integration Interface` and write your corresponding File Transfer module. 
+
+Secondly, update ``config.ini`` to make Jupiter use your corresponding File Transfer method. 
+
+.. code-block:: text
+    :linenos:
+
+    [CONFIG]
+    TRANSFER = 0
+
+    [TRANSFER_LIST]
+    SCP = 0
+
+Select Network & Resource Monitor Tool 
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Jupiter by default use ``DRUPE`` as the Network & Resource Monitor Tool. If you want to use any other Network & Resource Monitor Tool, you can perform the following 2 steps:
+
+Firstly, refer the :ref:`Integration Interface` and write your corresponding Network & Resource Monitor module. 
+
+Secondly, update ``config.ini`` to make Jupiter use your corresponding Network & Resource Monitor module. 
+
+.. code-block:: text
+    :linenos:
+
+    [CONFIG]
+    PROFILER = 0
+
+    [PROFILERS_LIST]
+    DRUPE = 0
+
+Step 8 : Push the Dockers
 -------------------------
 
 Now, you need to build your Docker images. 
@@ -199,7 +239,7 @@ The same thing needs to be done for the profilers, the WAVE and HEFT files.
 
 .. warning:: However, before running any of these scripts you should update the ``jupiter_config`` file with your own docker names as well as dockerhub username. DO NOT run the script without crosschecking the config file.
 
-Step 8 : Setup the Proxy
+Step 9 : Setup the Proxy
 ------------------------
 
 Now, you have to create a kubernetes proxy. You can do that by running the follwing command on a terminal.
@@ -210,8 +250,8 @@ Now, you have to create a kubernetes proxy. You can do that by running the follw
     kubectl proxy -p 8080
 
 
-Step 9 : Create the Namespaces
-------------------------------
+Step 10 : Create the Namespaces
+-------------------------------
 
 You need to create difference namespaces in your Kubernetes cluster 
 that will be dedicated to the DRUPE, execution profiler, Task Mapper, and CIRCE deployments, respectively.
@@ -236,8 +276,8 @@ You can create these namespaces commands similar to the following:
     EXEC_NAMESPACE          = 'johndoe-exec'
 
 
-Step 10 : Run the Jupiter Orchestrator
--------------------------------------
+Step 11 : Run the Jupiter Orchestrator
+--------------------------------------
 
 
 Next, you can simply run:
@@ -249,10 +289,10 @@ Next, you can simply run:
     python3 k8s_jupiter_deploy.py
 
 
-Step 10 : Alternate
--------------------
+Step 12 : Optional - Alternate scheduler
+----------------------------------------
 
-If you do not want to use WAVE for the scheduler and design your own, you can do that by simply using the ``static_assignment.py``. You must do that by setting ``STATIC_MAPPING`` to ``1`` from ``jupiter_config.ini``. You have to pipe your scheduling output to the static_assignment.py while conforming to the sample dag and sample schedule structure. Then you can run:
+If you do not want to use our task mappers (``HEFT`` or ``WAVE``) for the scheduler and design your own, you can do that by simply using the ``static_assignment.py``. You must do that by setting ``STATIC_MAPPING`` to ``1`` from ``jupiter_config.ini``. You have to pipe your scheduling output to the ``static_assignment.py`` while conforming to the sample dag and sample schedule structure. Then you can run:
 
 .. code-block:: bash
     :linenos:
@@ -260,7 +300,8 @@ If you do not want to use WAVE for the scheduler and design your own, you can do
     cd scripts/
     python3 k8s_jupiter_deploy.py
 
-Step 11 : Interact With the DAG
+
+Step 13 : Interact With the DAG
 -------------------------------
 
 Now you can interact with the pos using the kubernetes dashboard. 

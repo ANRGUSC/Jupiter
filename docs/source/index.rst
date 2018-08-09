@@ -30,6 +30,7 @@ The main documentation for the site is organized into a couple sections:
    Jrequirements
    Jdeploy
    Jteardown
+   Japi
    Jstructure
    Jreferences
    Jexample
