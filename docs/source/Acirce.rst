@@ -12,6 +12,7 @@ Circe Reference
    circe/rt_profiler_update_mongo
    circe/runSQuery
    circe/scheduler
+   circe/evaluate
 
 
 

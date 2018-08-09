@@ -13,6 +13,7 @@ Network Profiler
    profilers/network_resource_profiler/home/central_scheduler
    profilers/network_resource_profiler/home/generate_link_list
    profilers/network_resource_profiler/worker/automate_droplet
+   profilers/network_resource_profiler/worker/get_schedule
    
 
 

@@ -11,7 +11,6 @@ import re
 import threading
 import os
 import urllib
-from urllib import parse
 import json
 import sys
 
@@ -179,7 +178,7 @@ def assign_task_to_remote(assigned_node, task_name):
     try:
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -203,7 +202,7 @@ def call_recv_control(assigned_node, control):
         url = "http://" + nodes[assigned_node] + "/recv_control"
         print(url)
         params = {'control': control}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()

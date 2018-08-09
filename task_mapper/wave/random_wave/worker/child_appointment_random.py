@@ -15,7 +15,6 @@ import time
 import os
 import sys
 import urllib
-from urllib import parse
 import shutil
 
 import _thread
@@ -170,7 +169,7 @@ def assign_task_to_remote(assigned_node, task_name):
     try:
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -196,7 +195,7 @@ def call_send_mapping(mapping, node):
     try:
         url = "http://" + master_host + "/recv_mapping"
         params = {'mapping': mapping, "node": node}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()

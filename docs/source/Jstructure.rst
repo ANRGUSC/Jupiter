@@ -29,7 +29,18 @@ The directory structure of the project MUST conform with the following:
     │   └── worker_node.Dockerfile
     |
     ├── task_mapper 
-    │   ├── heft
+    │   |
+    |   heft
+    |   |__original
+    |   |   ├── heft.Dockerfile
+    |   |   ├── heft_dockerfile_generator.py
+    |   |   ├── heft_dup.py
+    |   |   ├── master_heft.py
+    |   |   ├── read_input_heft.py
+    |   |   ├── requirements.txt
+    |   |   ├── start.sh
+    |   |   ├── write_input_heft.py
+    |   |__modified
     |   |   ├── heft.Dockerfile
     |   |   ├── heft_dockerfile_generator.py
     |   |   ├── heft_dup.py
@@ -113,6 +124,7 @@ The directory structure of the project MUST conform with the following:
     │           └── task2.py
     |
     └── scripts
+        ├── auto_redeploy.py
         ├── build_push_circe.py
         ├── build_push_jupiter.py
         ├── build_push_profiler.py
@@ -144,5 +156,6 @@ The directory structure of the project MUST conform with the following:
         ├── write_heft_specs.py
         ├── write_wave_service_specs.py
         └── write_wave_specs.py
+
 
 
