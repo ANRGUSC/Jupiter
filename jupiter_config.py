@@ -67,11 +67,11 @@ def set_globals():
 	WAVE_PATH               = HERE + 'task_mapper/wave/random_wave/'
 	SCRIPT_PATH             = HERE + 'scripts/'
 
-	if SCHEDULER == config['SCHEDULER_LIST']['WAVE_RANDOM']:
+	if SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_RANDOM']):
 	    WAVE_PATH           = HERE + 'task_mapper/wave/random_wave/'
-	elif SCHEDULER == config['SCHEDULER_LIST']['WAVE_GREEDY']:
+	elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY']):
 	    WAVE_PATH           = HERE + 'task_mapper/wave/greedy_wave/'
-	elif SCHEDULER == config['SCHEDULER_LIST']['HEFT_MODIFIED']:
+	elif SCHEDULER == int(config['SCHEDULER_LIST']['HEFT_MODIFIED']):
 		HEFT_PATH           = HERE + 'task_mapper/heft/modified/'
 	
 	"""Kubernetes required information"""
