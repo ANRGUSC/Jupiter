@@ -44,14 +44,14 @@ RUN mkdir -p /mongodb/log
 # Create the input, output, and runtime profiler directories
 RUN mkdir -p /input
 RUN mkdir -p /output
-RUN mkdir -p /runtime
+#RUN mkdir -p /runtime
 
 # Add input files
 COPY  {app_file}/sample_input /sample_input
 
 # Add the mongodb scripts
 ADD circe/runtime_profiler_mongodb /central_mongod
-ADD circe/rt_profiler_update_mongo.py /run_update.py
+#ADD circe/rt_profiler_update_mongo.py /run_update.py
 
 ADD circe/readconfig.py /readconfig.py
 ADD circe/scheduler.py /scheduler.py
@@ -114,11 +114,11 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 RUN mkdir -p /centralized_scheduler/input
 RUN mkdir -p /centralized_scheduler/output
-RUN mkdir -p /centralized_scheduler/runtime
+#RUN mkdir -p /centralized_scheduler/runtime
 ADD circe/monitor.py /centralized_scheduler/monitor.py
 RUN mkdir -p /home/darpa/apps/data
 
-ADD circe/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
+#ADD circe/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
 ADD {app_file}/scripts/ /centralized_scheduler/

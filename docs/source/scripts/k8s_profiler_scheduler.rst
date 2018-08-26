@@ -1,5 +1,5 @@
-k8s\_profiler\_scheduler module
-===============================
+k8s_profiler_scheduler module
+=============================
 
 .. automodule:: k8s_profiler_scheduler
     :members:

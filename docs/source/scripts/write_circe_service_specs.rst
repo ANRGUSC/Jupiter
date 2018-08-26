@@ -1,5 +1,5 @@
-write\_circe\_service\_specs module
-===================================
+write_circe_service_specs module
+================================
 
 .. automodule:: write_circe_service_specs
     :members:

@@ -1,5 +1,5 @@
-get\_schedule module
-====================
+get_schedule module
+===================
 
 .. automodule:: get_schedule
     :members:

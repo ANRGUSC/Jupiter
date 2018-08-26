@@ -1,5 +1,5 @@
-write\_wave\_specs module
-=========================
+write_wave_specs module
+=======================
 
 .. automodule:: write_wave_specs
     :members:

@@ -145,9 +145,10 @@ def recv_runtime_profile():
                     - Duration time: total execution time of the task
                     - Waiting time: total time since the input file is created till it is processed
                 """
-                
+                log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks.txt'), "w")
                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
                 print(s)
+                log_file.write(s)
                 for k, v in rt_enter_time.items():
                     worker, file = k
                     if k in rt_finish_time:
@@ -156,6 +157,10 @@ def recv_runtime_profile():
                         waiting = rt_exec_time[k]-v
                         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
                         print(s)
+                        log_file.write(s)
+                        log_file.flush()
+
+                log_file.close()
                 print('********************************************')
 
                 
@@ -177,11 +182,11 @@ class MonitorRecv(multiprocessing.Process):
         print("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
-def transfer_mapping_decorator(TRANSFER):
+def transfer_mapping_decorator(TRANSFER=0):
     """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
     
     Args:
-        TRANSFER: transfer method from ``jupiter_config.ini``
+        TRANSFER (int, optional): transfer method from ``jupiter_config.ini``, default method is SCP
     
     Returns:
         function: chosen transfer method
@@ -201,18 +206,27 @@ def transfer_mapping_decorator(TRANSFER):
 
         print(IP)
         retry = 0
+        ts = -1
         while retry < num_retries:
             try:
                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
                 os.system(cmd)
                 print('data transfer complete\n')
+                ts = time.time()
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,ts)
+                runtime_sender_log.write(s)
+                runtime_sender_log.flush()
                 break
             except:
                 print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
                 time.sleep(2)
                 retry += 1
+        if retry == num_retries:
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,source,ts)
+            runtime_sender_log.write(s)
+            runtime_sender_log.flush()
 
-    if TRANSFER==0:
+    if TRANSFER==0: 
         return data_transfer_scp
     return data_transfer_scp
 
@@ -312,7 +326,13 @@ class Handler(FileSystemEventHandler):
 
         elif event.event_type == 'created':
 
-            print("Received file as input - %s." % event.src_path)
+            print("Received file as input - %s." % event.src_path)            
+
+            if RUNTIME == 1:   
+                ts = time.time() 
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.src_path,ts)
+                runtime_receiver_log.write(s)
+                runtime_receiver_log.flush()
 
             start_times.append(time.time())
             print("start time is: ", start_times)
@@ -337,6 +357,30 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
+    # Prepare transfer-runtime file:
+    global runtime_sender_log, RUNTIME,TRANSFER, transfer_type
+    RUNTIME = int(config['CONFIG']['RUNTIME'])
+    TRANSFER = int(config['CONFIG']['TRANSFER'])
+
+    if TRANSFER == 0:
+        transfer_type = 'scp'
+
+    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
+    s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
+    runtime_sender_log.write(s)
+    runtime_sender_log.close()
+    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
+    #Node_name, Transfer_Type, Source_path , Time_stamp
+
+    if RUNTIME == 1:
+        global runtime_receiver_log
+        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
+        runtime_receiver_log.write(s)
+        runtime_receiver_log.close()
+        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
+        #Node_name, Transfer_Type, Source_path , Time_stamp
+
     global FLASK_DOCKER, username, password, ssh_port, num_retries
 
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
@@ -345,12 +389,11 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 
-    global TRANSFER 
-    TRANSFER = int(config['CONFIG']['TRANSFER'])
-
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
     dag_info = read_config(path1,path2)
+
+
 
     #get DAG and home machine info
     first_task = dag_info[0]

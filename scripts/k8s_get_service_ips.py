@@ -12,7 +12,8 @@ from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
-from utilities import *
+#from utilities import *
+import utilities
 
 def get_all_profilers():
     """
@@ -26,7 +27,7 @@ def get_all_profilers():
     """
     mapping = {}
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = k8s_get_nodes(path1)
+    nodes = utilities.k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -85,7 +86,7 @@ def get_all_waves():
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = k8s_get_nodes(path1)
+    nodes = utilities.k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -142,7 +143,7 @@ def get_all_execs():
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = k8s_get_nodes(path1)
+    nodes = utilities.k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.

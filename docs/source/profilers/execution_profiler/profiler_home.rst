@@ -1,5 +1,5 @@
-profiler\_home module
-=====================
+profiler_home module
+====================
 
 .. automodule:: profiler_home
     :members:

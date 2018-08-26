@@ -1,5 +1,5 @@
-auto\_redeploy module
-=====================
+auto_redeploy module
+====================
 
 .. automodule:: auto_redeploy
     :members:

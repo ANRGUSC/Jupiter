@@ -5,7 +5,8 @@ __version__ = "2.1"
 
 import sys
 sys.path.append("../")
-from utilities import *
+#from utilities import *
+import utilities
 import yaml
 from kubernetes import client, config
 from pprint import *
@@ -22,7 +23,7 @@ def delete_all_exec():
         This loads the task graph
     """
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
-    dag_info = k8s_read_config(path1)
+    dag_info = utilities.k8s_read_config(path1)
     dag = dag_info[1]
 
     """
@@ -152,7 +153,7 @@ def delete_all_exec():
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = k8s_get_nodes(path1)
+    nodes = utilities.k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.

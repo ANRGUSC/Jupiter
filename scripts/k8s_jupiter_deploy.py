@@ -21,7 +21,8 @@ import jupiter_config
 import requests
 import json
 from pprint import *
-from utilities import *
+#from utilities import *
+import utilities
 from k8s_get_service_ips import *
 from functools import wraps
 
@@ -84,7 +85,7 @@ def k8s_jupiter_deploy():
         print('*************************')
 
 
-        node_names = k8s_get_nodes_string(path2)
+        node_names = utilities.k8s_get_nodes_string(path2)
         print('*************************')
 
         #Start the task to node mapper
@@ -116,8 +117,8 @@ def k8s_jupiter_deploy():
                 print("Will retry to get the mapping!")
 
         pprint(mapping)
-        schedule = k8s_get_hosts(path1, path2, mapping)
-        dag = k8s_read_dag(path1)
+        schedule = utilities.k8s_get_hosts(path1, path2, mapping)
+        dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
         print("Printing DAG:")
         pprint(dag)

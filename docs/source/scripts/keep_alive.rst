@@ -1,5 +1,5 @@
-keep\_alive module
-==================
+keep_alive module
+=================
 
 .. automodule:: keep_alive
     :members:

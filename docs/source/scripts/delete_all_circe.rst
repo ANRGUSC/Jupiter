@@ -1,5 +1,5 @@
-delete\_all\_circe module
-=========================
+delete_all_circe module
+=======================
 
 .. automodule:: delete_all_circe
     :members:

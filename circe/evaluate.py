@@ -36,17 +36,33 @@ def evaluate_random():
 
 def evaluate_interval(interval):
     """
-    Copy files from folder ``sample_input`` to folder ``input`` one after another for evaluation 
-    
+    Copy files from folder ``sample_input`` to folder ``input`` at regular intervals for evaluation 
+
     Args:
         interval (int): interval time to inject the sample input file
     
     """
+    file_count = len(os.listdir("sample_input/")) 
+    for i in range(1,file_count+1):
+        count = 0
+        while count<interval:
+            count = count+1
+            time.sleep(1)
+        src = "sample_input/%dbotnet.ipsum"%i
+        dest = "input/%dbotnet.ipsum"%i
+        print('---- Generate random input files')
+        shutil.copyfile(src,dest)
+
+def evaluate_sequential():
+    """
+    Copy files from folder ``sample_input`` to folder ``input`` one after another for evaluation 
+    
+    """
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
-    src = "sample_input/1botnet.ipsum"
-    dest = "input/1botnet.ipsum"
-    # print('---- Generate random input files')
+    # src = "sample_input/1botnet.ipsum"
+    # dest = "input/1botnet.ipsum"
+    #print('---- Generate random input files')
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
@@ -68,4 +84,4 @@ if __name__ == '__main__':
     #evaluate_random()
     time.sleep(60)
     print('Start copying sample files for evaluation')
-    evaluate_interval(900)
+    evaluate_sequential()

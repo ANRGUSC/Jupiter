@@ -16,8 +16,8 @@ import yaml
 from kubernetes import client, config
 from pprint import *
 import jupiter_config
-from utilities import *
-
+#from utilities import *
+import utilities
 
 
 def check_status_circe(dag):

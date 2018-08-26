@@ -1,5 +1,5 @@
-heft\_dup module
-================
+heft_dup module
+===============
 
 .. automodule:: heft_dup
     :members:
