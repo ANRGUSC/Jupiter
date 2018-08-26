@@ -27,6 +27,7 @@ from socket import gethostbyname, gaierror, error
 import multiprocessing
 import time
 import urllib
+import urllib.request
 import configparser
 
 def send_monitor_data(msg):
@@ -89,11 +90,12 @@ def transfer_mapping_decorator(TRANSFER=0):
     """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
     
     Args:
-        TRANSFER (int): TRANSFER specified from ``jupiter_config.ini``
+        TRANSFER (int, optional): TRANSFER specified from ``jupiter_config.ini``, default method is SCP
     
     Returns:
         function: chosen transfer method
     """
+    
     def transfer_data_scp(IP,user,pword,source, destination):
         """Transfer data using SCP
         
@@ -108,16 +110,25 @@ def transfer_mapping_decorator(TRANSFER=0):
         #the child nodes.
         print(IP)
         retry = 0
+        ts = -1
         while retry < num_retries:
             try:
                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
                 os.system(cmd)
                 print('data transfer complete\n')
+                ts = time.time()
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
+                runtime_sender_log.write(s)
+                runtime_sender_log.flush()
                 break
             except:
                 print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
                 time.sleep(2)
                 retry += 1
+        if retry == num_retries:
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,source,ts)
+            runtime_sender_log.write(s)
+            runtime_sender_log.flush()
 
     if TRANSFER==0:
         return transfer_data_scp
@@ -183,18 +194,18 @@ class Handler1(FileSystemEventHandler):
                 Save the time when a output file is available. This is taken as the end time of the task.
                 The output time is stored in the file central_scheduler/runtime/droplet_runtime_output_(%node name)
             """
-            execution_end_time = datetime.datetime.utcnow()
-            pathrun = '/centralized_scheduler/runtime/'
-            runtime_file = os.path.join(pathrun,'droplet_runtime_output_' + node_name)
+            # execution_end_time = datetime.datetime.utcnow()
+            # pathrun = '/centralized_scheduler/runtime/'
+            # runtime_file = os.path.join(pathrun,'droplet_runtime_output_' + node_name)
             new_file = os.path.split(event.src_path)[-1]
 
             if '_' in new_file:
                 temp_name = new_file.split('_')[0]
             else:
                 temp_name = new_file.split('.')[0]
-            with open(runtime_file, 'a') as f:
-                line = 'created_output, %s, %s, %s, %s\n' % (node_name, taskname, temp_name, execution_end_time)
-                f.write(line)
+            # with open(runtime_file, 'a') as f:
+            #     line = 'created_output, %s, %s, %s, %s\n' % (node_name, taskname, temp_name, execution_end_time)
+            #     f.write(line)
             
 
             global files_out
@@ -211,7 +222,6 @@ class Handler1(FileSystemEventHandler):
                 password=sys.argv[6]
                 source = event.src_path
                 destination = os.path.join('/output', new_file)
-
                 transfer_data(IPaddr,user,password,source, destination)
                 
 
@@ -231,15 +241,14 @@ class Handler1(FileSystemEventHandler):
 
                 if (len(files_out) == num_child):
 
-                        
+                
                     for i in range(3, len(sys.argv)-1,4):
                         myfile = files_out.pop(0)
                         event_path = os.path.join(''.join(os.path.split(event.src_path)[:-1]), myfile)
                         IPaddr = sys.argv[i+1]
                         user = sys.argv[i+2]
                         password = sys.argv[i+3]
-
-                        source = event.src_path
+                        source = event_path
                         destination = os.path.join('/centralized_scheduler','input', myfile)
                         transfer_data(IPaddr,user,password,source, destination)
 
@@ -285,38 +294,46 @@ class Handler(FileSystemEventHandler):
             print("Received file as input - %s." % event.src_path)
             new_file = os.path.split(event.src_path)[-1]
 
+        
+            
             #Runtime profiler (created_time)
             
-            if platform.system() == 'Windows':
-                print(os.path.getctime(event.src_path))
-            else:
-                print(event.src_path)
-                stat = os.stat(event.src_path)
-                try:
-                    print(stat.st_birthtime)
-                except AttributeError:
-                    created_time=datetime.datetime.fromtimestamp(stat.st_mtime)
-                    print(created_time)
+            # if platform.system() == 'Windows':
+            #     print(os.path.getctime(event.src_path))
+            # else:
+            #     print(event.src_path)
+            #     stat = os.stat(event.src_path)
+            #     try:
+            #         print(stat.st_birthtime)
+            #     except AttributeError:
+            #         created_time=datetime.datetime.fromtimestamp(stat.st_mtime)
+            #         print(created_time)
 
             """
                 Save the time when an input file is available. This is taken as the start time of the task.
                 The output time is stored in the file central_scheduler/runtime/droplet_runtime_input_(%node name)
             """
-            execution_start_time = datetime.datetime.utcnow()
-            pathrun = '/centralized_scheduler/runtime/'
-            runtime_file = os.path.join(pathrun,'droplet_runtime_input_' + node_name)
+            # execution_start_time = datetime.datetime.utcnow()
+            # pathrun = '/centralized_scheduler/runtime/'
+            # runtime_file = os.path.join(pathrun,'droplet_runtime_input_' + node_name)
             new_file = os.path.split(event.src_path)[-1]
             if '_' in new_file:
                 temp_name = new_file.split('_')[0]
             else:
                 temp_name = new_file.split('.')[0]
 
-            with open(runtime_file, 'a') as f:
-                line = 'created_input, %s, %s, %s, %s\n' %(node_name, taskname, temp_name, execution_start_time)
-                f.write(line)
+            # with open(runtime_file, 'a') as f:
+            #     line = 'created_input, %s, %s, %s, %s\n' %(node_name, taskname, temp_name, execution_start_time)
+            #     f.write(line)
 
             queue_mul.put(new_file)
+            
             ts = time.time()
+            if RUNTIME == 1:
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,event.src_path,ts)
+                runtime_receiver_log.write(s)
+                runtime_receiver_log.flush()
+
             """
                 Save the time the input file enters the queue
             """
@@ -380,6 +397,30 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
+    # Prepare transfer-runtime file:
+    global runtime_sender_log, RUNTIME, TRANSFER, transfer_type
+    RUNTIME = int(config['CONFIG']['RUNTIME'])
+    TRANSFER = int(config['CONFIG']['TRANSFER'])
+
+    if TRANSFER == 0:
+        transfer_type = 'scp'
+
+    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
+    s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
+    runtime_sender_log.write(s)
+    runtime_sender_log.close()
+    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
+    #Node_name, Transfer_Type, Source_path , Time_stamp
+
+    if RUNTIME == 1:
+        global runtime_receiver_log
+        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
+        runtime_receiver_log.write(s)
+        runtime_receiver_log.close()
+        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
+        #Node_name, Transfer_Type, Source_path , Time_stamp
+
     global FLASK_SVC, MONGO_PORT, username,password,ssh_port, num_retries, queue_mul
 
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
@@ -406,6 +447,9 @@ def main():
 
     all_nodes = os.environ["ALL_NODES"].split(":")
     all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
+
+    
+
 
     if taskmap[1] == True:
         queue_mul=multiprocessing.Queue()

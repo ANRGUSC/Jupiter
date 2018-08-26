@@ -1,5 +1,5 @@
-create\_input module
-====================
+create_input module
+===================
 
 .. automodule:: create_input
     :members:

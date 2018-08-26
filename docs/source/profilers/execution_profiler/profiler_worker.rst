@@ -1,5 +1,5 @@
-profiler\_worker module
-=======================
+profiler_worker module
+======================
 
 .. automodule:: profiler_worker
     :members:

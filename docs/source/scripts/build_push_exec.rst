@@ -1,5 +1,5 @@
-build\_push\_exec module
-========================
+build_push_exec module
+======================
 
 .. automodule:: build_push_exec
     :members:

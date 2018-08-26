@@ -1,5 +1,5 @@
-get\_files module
-=================
+get_files module
+================
 
 .. automodule:: get_files
     :members:

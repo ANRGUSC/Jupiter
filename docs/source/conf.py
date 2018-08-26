@@ -40,7 +40,8 @@ sys.path.insert(0, os.path.abspath('../../task_mapper/heft/original'))
 autodoc_mock_imports = ['numpy', 'paramiko','pymongo','netifaces','pandas','scp','flask','urllib','urllib.request',
                 'apscheduler', 'pyinotify','psutil','_thread','kubernetes','kubernetes.client','kubernetes.client.apis',
                 'xmlrpc','watchdog','yaml','watchdog.events','watchdog.observers','watchdog.utils.BaseThread','dockerfile_parse','utilities','jupiter_config',
-                'request','configparser','parse']
+                'requests','configparser','parse','apscheduler.schedulers.background','schedulers.background',
+                'kubernetes.client.rest','client.rest']
 # -- Project information -----------------------------------------------------
 
 project = 'Jupiter'

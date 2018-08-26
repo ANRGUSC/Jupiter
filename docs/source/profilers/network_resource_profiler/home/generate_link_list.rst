@@ -1,5 +1,5 @@
-generate\_link\_list module
-===========================
+generate_link_list module
+=========================
 
 .. automodule:: generate_link_list
     :members:

@@ -20,7 +20,8 @@ import jupiter_config
 import requests
 import json
 from pprint import *
-from utilities import *
+#from utilities import *
+import utilities
 from k8s_get_service_ips import *
 from functools import wraps
 from delete_all_circe import *
@@ -52,7 +53,7 @@ def export_circe_log():
     """
     jupiter_config.set_globals()
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
-    dag_info = k8s_read_dag(path1)
+    dag_info = utilities.k8s_read_dag(path1)
     dag = dag_info[1]
     print(dag)
     config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
@@ -134,7 +135,7 @@ def redeploy_system():
         print('*************************')
 
 
-        node_names = k8s_get_nodes_string(path2)
+        node_names = utilities.k8s_get_nodes_string(path2)
         print('*************************')
 
 
@@ -164,8 +165,8 @@ def redeploy_system():
             except:
                 print("Some Exception")
         pprint(mapping)
-        schedule = k8s_get_hosts(path1, path2, mapping)
-        dag = k8s_read_dag(path1)
+        schedule = utilities.k8s_get_hosts(path1, path2, mapping)
+        dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
         print("Printing DAG:")
         pprint(dag)

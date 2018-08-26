@@ -1,5 +1,5 @@
-write\_exec\_specs module
-=========================
+write_exec_specs module
+=======================
 
 .. automodule:: write_exec_specs
     :members:

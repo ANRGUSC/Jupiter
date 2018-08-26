@@ -1,5 +1,5 @@
-master\_heft module
-===================
+master_heft module
+==================
 
 .. automodule:: master_heft
     :members:

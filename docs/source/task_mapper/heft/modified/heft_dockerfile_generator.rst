@@ -1,5 +1,5 @@
-heft\_dockerfile\_generator module
-==================================
+heft_dockerfile_generator module
+================================
 
 .. automodule:: heft_dockerfile_generator
     :members:

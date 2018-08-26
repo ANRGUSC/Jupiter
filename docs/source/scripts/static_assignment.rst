@@ -1,5 +1,5 @@
-static\_assignment module
-=========================
+static_assignment module
+========================
 
 .. automodule:: static_assignment
     :members:

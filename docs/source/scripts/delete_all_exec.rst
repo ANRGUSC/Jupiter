@@ -1,5 +1,5 @@
-delete\_all\_exec module
-========================
+delete_all_exec module
+======================
 
 .. automodule:: delete_all_exec
     :members:

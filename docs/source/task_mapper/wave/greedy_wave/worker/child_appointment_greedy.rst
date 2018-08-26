@@ -1,5 +1,5 @@
-child\_appointment\_greedy module
-=================================
+child_appointment_greedy module
+===============================
 
 .. automodule:: child_appointment_greedy
     :members:

@@ -19,8 +19,8 @@ from kubernetes.client.rest import ApiException
 
 from write_exec_service_specs import *
 from write_exec_specs import *
-from utilities import *
-
+#from utilities import *
+import utilities
 
 import sys, json
 sys.path.append("../")
@@ -41,7 +41,7 @@ def check_status_exec_profiler():
         In our case this is stored in admin.conf.
         You should set the config file path in the jupiter_config.py file.
     """
-    dag_info = k8s_read_config(path1)
+    dag_info = utilities.k8s_read_config(path1)
     dag = dag_info[1]
 
     config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
@@ -99,7 +99,7 @@ def check_status_exec_profiler_workers():
     jupiter_config.set_globals()
     
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = k8s_get_nodes(path1)
+    nodes = utilities.k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -162,7 +162,7 @@ def k8s_exec_scheduler():
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
     path2 = jupiter_config.HERE + 'nodes.txt'
 
-    dag_info = k8s_read_dag(path1)
+    dag_info = utilities.k8s_read_dag(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -243,7 +243,7 @@ def k8s_exec_scheduler():
     all_node = ':'.join(service_ips.keys())
     print(all_node)
 
-    nodes = k8s_get_nodes(path2)
+    nodes = utilities.k8s_get_nodes(path2)
     allprofiler_ips =''
     allprofiler_names = ''
 

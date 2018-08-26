@@ -1,5 +1,5 @@
-central\_scheduler module
-=========================
+central_scheduler module
+========================
 
 .. automodule:: central_scheduler
     :members:

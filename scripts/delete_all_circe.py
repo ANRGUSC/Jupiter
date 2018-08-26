@@ -6,7 +6,8 @@ __version__ = "2.1"
 import sys
 sys.path.append("../")
 
-from utilities import *
+#from utilities import *
+import utilities
 import yaml
 from kubernetes import client, config
 from pprint import *
@@ -24,7 +25,7 @@ def delete_all_circe():
         This loads the task graph
     """
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
-    dag_info = k8s_read_config(path1)
+    dag_info = utilities.k8s_read_config(path1)
     dag = dag_info[1]
 
     """
