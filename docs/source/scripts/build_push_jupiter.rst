@@ -1,5 +1,5 @@
-build\_push\_jupiter module
-===========================
+build_push_jupiter module
+=========================
 
 .. automodule:: build_push_jupiter
     :members:

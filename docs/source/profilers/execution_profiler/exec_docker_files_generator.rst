@@ -1,5 +1,5 @@
-exec\_docker\_files\_generator module
-=====================================
+exec_docker_files_generator module
+==================================
 
 .. automodule:: exec_docker_files_generator
     :members:

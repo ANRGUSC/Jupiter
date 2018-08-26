@@ -1,5 +1,5 @@
-write\_heft\_specs module
-=========================
+write_heft_specs module
+=======================
 
 .. automodule:: write_heft_specs
     :members:

@@ -1,5 +1,5 @@
-write\_input\_heft module
-=========================
+write_input_heft module
+=======================
 
 .. automodule:: write_input_heft
     :members:

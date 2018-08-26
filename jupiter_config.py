@@ -38,6 +38,8 @@ def set_globals():
 	TRANSFER 				= int(config['CONFIG']['TRANSFER'])
 	# Network and Resource profiler (TA2) option chosen from TA2_LIST
 	PROFILER                = int(config['CONFIG']['PROFILER'])
+	# Runtime profiling for data transfer methods: 0 for only senders, 1 for both senders and receivers
+	RUNTIME                 = int(config['CONFIG']['RUNTIME'])
 
 	"""Authorization information in the containers"""
 	global USERNAME, PASSWORD

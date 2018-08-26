@@ -17,8 +17,8 @@ from pprint import *
 import os
 import jupiter_config
 from static_assignment import *
-from utilities import *
-
+#from utilities import *
+import utilities
 
 
 def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names):
@@ -33,7 +33,7 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names):
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = k8s_get_nodes(path2)
+    nodes = utilities.k8s_get_nodes(path2)
     pprint(nodes)
 
     """

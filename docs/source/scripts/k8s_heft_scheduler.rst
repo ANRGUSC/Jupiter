@@ -1,5 +1,5 @@
-k8s\_heft\_scheduler module
-===========================
+k8s_heft_scheduler module
+=========================
 
 .. automodule:: k8s_heft_scheduler
     :members:

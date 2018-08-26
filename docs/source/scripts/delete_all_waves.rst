@@ -1,5 +1,5 @@
-delete\_all\_waves module
-=========================
+delete_all_waves module
+=======================
 
 .. automodule:: delete_all_waves
     :members:

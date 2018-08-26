@@ -1,5 +1,5 @@
-delete\_all\_heft module
-========================
+delete_all_heft module
+======================
 
 .. automodule:: delete_all_heft
     :members:

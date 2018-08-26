@@ -15,8 +15,8 @@ from kubernetes import client, config
 from pprint import *
 import os
 import jupiter_config
-from utilities import *
- 
+#from utilities import *
+import utilities 
 
 def check_status_profilers():
     """Verify if all the network profilers have been deployed and UP in the system.
@@ -24,7 +24,7 @@ def check_status_profilers():
     jupiter_config.set_globals()
     
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = k8s_get_nodes(path1)
+    nodes = utilities.k8s_get_nodes(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -82,7 +82,7 @@ def k8s_profiler_scheduler():
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = k8s_get_nodes(path2)
+    nodes = utilities.k8s_get_nodes(path2)
 
 
     """

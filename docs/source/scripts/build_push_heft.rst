@@ -1,5 +1,5 @@
-build\_push\_heft module
-========================
+build_push_heft module
+======================
 
 .. automodule:: build_push_heft
     :members:

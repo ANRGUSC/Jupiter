@@ -1,5 +1,5 @@
-read\_input\_heft module
-========================
+read_input_heft module
+======================
 
 .. automodule:: read_input_heft
     :members:

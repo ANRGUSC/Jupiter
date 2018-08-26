@@ -1,5 +1,5 @@
-automate\_droplet module
-========================
+automate_droplet module
+=======================
 
 .. automodule:: automate_droplet
     :members:

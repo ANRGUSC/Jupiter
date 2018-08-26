@@ -1,5 +1,5 @@
-master\_greedy module
-=====================
+master_greedy module
+====================
 
 .. automodule:: master_greedy
     :members:

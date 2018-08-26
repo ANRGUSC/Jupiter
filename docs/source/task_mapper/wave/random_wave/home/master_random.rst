@@ -1,5 +1,5 @@
-master\_random module
-=====================
+master_random module
+====================
 
 .. automodule:: master_random
     :members:

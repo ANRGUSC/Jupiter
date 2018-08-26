@@ -1,5 +1,5 @@
-resource\_profiler module
-=========================
+resource_profiler module
+========================
 
 .. automodule:: resource_profiler
     :members:

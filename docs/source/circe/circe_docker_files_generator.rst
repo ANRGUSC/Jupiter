@@ -1,5 +1,5 @@
-circe\_docker\_files\_generator module
-======================================
+circe_docker_files_generator module
+===================================
 
 .. automodule:: circe_docker_files_generator
     :members:
