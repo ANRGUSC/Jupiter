@@ -15,7 +15,7 @@ from kubernetes.client.rest import ApiException
 import jupiter_config
 
 
-def delete_all_pricing_circe():
+def delete_all_pricing_circe(app_name):
     """Tear down all CIRCE deployments.
     """
     jupiter_config.set_globals()
@@ -59,24 +59,25 @@ def delete_all_pricing_circe():
     for key, value in dag.items():
 
         print(key)
+        pod_name = app_name+"-"+key
 
         # First check if there is a deployment existing with
         # the name = key in the respective namespace
         resp = None
         try:
-            resp = extensions_v1_beta1_api.read_namespaced_deployment(key, namespace)
+            resp = extensions_v1_beta1_api.read_namespaced_deployment(pod_name, namespace)
         except ApiException as e:
             print("No Such Deplyment Exists")
 
         # if a deployment with the name = key exists in the namespace, delete it
         if resp:
-            del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(key, namespace, v1_delete_options)
+            del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(pod_name, namespace, v1_delete_options)
             print("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
         # Check if there is a replicaset running by using the label app={key}
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=" + key
+        label = "app="+app_name+'-' + key
         resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
         # if a replicaset exist, delete it
         
@@ -98,7 +99,7 @@ def delete_all_pricing_circe():
         # Check if there is a service running by name = task#
         resp = None
         try:
-            resp = core_v1_api.read_namespaced_service(key, namespace)
+            resp = core_v1_api.read_namespaced_service(pod_name, namespace)
         except ApiException as e:
             print("Exception Occurred")
         # if a service is running, kill it
@@ -109,22 +110,22 @@ def delete_all_pricing_circe():
         # At this point you should not have any of the related service, pods, deployment running
     #end for
 
- 
+    home_name =app_name+"-home"
     #delete home deployment and service
     resp = None
     try:
-        resp = extensions_v1_beta1_api.read_namespaced_deployment('home', namespace)
+        resp = extensions_v1_beta1_api.read_namespaced_deployment(home_name, namespace)
     except ApiException as e:
         print("No Such Deplyment Exists")
 
     # if home exists, delete it 
     if resp:
-        del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment('home', namespace=namespace, body=v1_delete_options)
-        print("Deployment '%s' Deleted. status='%s'" % ('home', str(del_resp_0.status)))
+        del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(home_name, namespace=namespace, body=v1_delete_options)
+        print("Deployment '%s' Deleted. status='%s'" % (home_name, str(del_resp_0.status)))
 
     # Check if there is a replicaset running by using the label app=home
     # The label of kubernets are used to identify replicaset associate to each task
-    label = "app=home"
+    label = "app="+app_name+"-home"
     resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
     # if a replicaset exist, delete it
     
@@ -145,17 +146,18 @@ def delete_all_pricing_circe():
     # Check if there is a service running by name = task#
     resp = None
     try:
-        resp = core_v1_api.read_namespaced_service('home', namespace=namespace)
+        resp = core_v1_api.read_namespaced_service(home_name, namespace=namespace)
     except ApiException as e:
         print("Exception Occurred")
     # if a service is running, kill it
     if resp:
-        del_resp_2 = core_v1_api.delete_namespaced_service('home', namespace=namespace)
+        del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace=namespace)
         print("Service Deleted. status='%s'" % str(del_resp_2.status))    
 
     for key in nodes:
 
         print(key)
+        pod_name = app_name +'-'+key
 
         # Get proper handles or pointers to the k8-python tool to call different functions.
         api = client.ExtensionsV1beta1Api()
@@ -165,19 +167,19 @@ def delete_all_pricing_circe():
         # the name = key in the respective namespace
         resp = None
         try:
-            resp = api.read_namespaced_deployment(key, namespace)
+            resp = api.read_namespaced_deployment(pod_name, namespace)
         except ApiException as e:
             print("Exception Occurred")
 
         # if a deployment with the name = key exists in the namespace, delete it
         if resp:
-            del_resp_0 = api.delete_namespaced_deployment(key, namespace, body)
+            del_resp_0 = api.delete_namespaced_deployment(pod_name, namespace, body)
             print("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
         # Check if there is a replicaset running by using the label "app=wave_" + key e.g, "app=wave_node1"
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=" + key
+        label = "app=" + pod_name+'-'+ key
         resp = api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
         # if a replicaset exist, delete it
         # pprint(resp)
@@ -200,12 +202,13 @@ def delete_all_pricing_circe():
         resp = None
         api_2 = client.CoreV1Api()
         try:
-            resp = api_2.read_namespaced_service(key, namespace)
+            resp = api_2.read_namespaced_service(pod_name, namespace)
         except ApiException as e:
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = api_2.delete_namespaced_service(key, namespace)
+            del_resp_2 = api_2.delete_namespaced_service(pod_name, namespace)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 if __name__ == '__main__':
-    delete_all_pricing_circe()
+    app_name = 'dummy1'
+    delete_all_pricing_circe(app_name)

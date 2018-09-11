@@ -111,7 +111,7 @@ def k8s_jupiter_deploy(port,app_name):
         print('*************************')
 
         #Start the task to node mapper
-        #task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
+        task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
         """
             Make sure you run kubectl proxy --port=8080 on a terminal.
@@ -221,23 +221,7 @@ def task_mapping_decorator(f):
 def empty_function():
     return []
 
-def teardown_system(app_name):
-    jupiter_config.set_globals()
-    
-    static_mapping = jupiter_config.STATIC_MAPPING
-    pricing = jupiter_config.PRICING
-    
-    """
-        Tear down all current deployments
-    """
-    print('Tear down all current CIRCE deployments')
-    delete_all_circe(app_name)
-    if jupiter_config.SCHEDULER == 0: # HEFT
-        print('Tear down all current HEFT deployments')
-        delete_all_heft(app_name)
-    else:# WAVE
-        print('Tear down all current WAVE deployments')
-        delete_all_waves(app_name)
+
 
 def redeploy_system(app_name,port):
     """
@@ -391,7 +375,7 @@ def main():
     app_name = 'dummy'
     num_samples = 2
     num_runs = 2
-    num_dags = 2
+    num_dags = 1
     jupiter_config.set_globals()
     if jupiter_config.SCHEDULER == 0:
         alg = 'heft'
@@ -417,7 +401,8 @@ def main():
     for idx,app_name in enumerate(app_list):
         _thread.start_new_thread(deploy_app_jupiter, (app_name,port_list[idx],log_list[idx],num_runs,num_samples))
 
-    app.run(host='0.0.0.0')
-    #app.run(host='0.0.0.0', port=int(FLASK_PORT))
+
+
+    app.run(host='0.0.0.0', port=int(jupiter_config.FLASK_DOCKER))
 if __name__ == '__main__':
     main()

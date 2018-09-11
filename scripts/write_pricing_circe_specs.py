@@ -35,15 +35,15 @@ template_home = """
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: home
+  name: {name}
 spec:
   template:
     metadata:
       labels:
-        app: home 
+        app: {name}
     spec:
       containers:
-      - name: home
+      - name: {name}
         image: {image}
         imagePullPolicy: Always
         ports:

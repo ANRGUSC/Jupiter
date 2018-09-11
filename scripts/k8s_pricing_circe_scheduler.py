@@ -20,7 +20,7 @@ from utilities import *
 
 
 
-def check_status_circe_controller(dag):
+def check_status_circe_controller(dag,app_name):
     """
     This function prints out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
@@ -50,7 +50,7 @@ def check_status_circe_controller(dag):
         # First check if there is a deployment existing with
         # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=" + key
+        label = "app="+ app_name+'-' + key
 
         resp = None
 
@@ -71,7 +71,7 @@ def check_status_circe_controller(dag):
 
     return result
 
-def check_status_circe_computing():
+def check_status_circe_computing(app_name):
     """
     This function prints out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
@@ -104,7 +104,7 @@ def check_status_circe_computing():
         # First check if there is a deployment existing with
         # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=" + key 
+        label = "app=" + app_name+'-'+ key 
 
         resp = None
 
@@ -175,12 +175,13 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     """
         First create the home node's service.
     """
-    home_body = write_circe_service_specs(name = 'home')
+    home_name =app_name+"-home"
+    home_body = write_circe_service_specs(name = home_name)
     ser_resp = api.create_namespaced_service(namespace, home_body)
     print("Home service created. status = '%s'" % str(ser_resp.status))
 
     try:
-        resp = api.read_namespaced_service('home', namespace)
+        resp = api.read_namespaced_service(home_name, namespace)
     except ApiException as e:
         print("Exception Occurred")
 
@@ -209,14 +210,15 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         """
             Generate the yaml description of the required service for each task
         """
-        body = write_circe_service_specs(name = task)
+        pod_name = app_name+"-"+task
+        body = write_circe_service_specs(name = pod_name)
 
         # Call the Kubernetes API to create the service
         ser_resp = api.create_namespaced_service(namespace, body)
         print("Service created. status = '%s'" % str(ser_resp.status))
     
         try:
-            resp = api.read_namespaced_service(task, namespace)
+            resp = api.read_namespaced_service(pod_name, namespace)
         except ApiException as e:
             print("Exception Occurred")
 
@@ -241,15 +243,17 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         """
             Generate the yaml description of the required service for each computing node
         """
+
         if node != 'home':
-            body = write_circe_service_specs(name = node)
+            pod_name = app_name+"-"+node
+            body = write_circe_service_specs(name = pod_name)
 
             # Call the Kubernetes API to create the service
             ser_resp = api.create_namespaced_service(namespace, body)
             print("Service created. status = '%s'" % str(ser_resp.status))
         
             try:
-                resp = api.read_namespaced_service(node, namespace)
+                resp = api.read_namespaced_service(pod_name, namespace)
             except ApiException as e:
                 print("Exception Occurred")
 
@@ -290,8 +294,9 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
             """
                 Generate the yaml description of the required deployment for WAVE workers
             """
+            pod_name = app_name+"-"+i
             print(execution_ips)
-            dep = write_circe_computing_specs(name = i, label =  i, image = jupiter_config.WORKER_COMPUTING_IMAGE,
+            dep = write_circe_computing_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTING_IMAGE,
                                              host = nodes[i][0], all_node = all_node,
                                              all_node_ips = all_node_ips,
                                              all_computing_nodes = all_computing_nodes,
@@ -309,7 +314,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
 
     while 1:
-        if check_status_circe_computing():
+        if check_status_circe_computing(app_name):
             break
         time.sleep(30)
     
@@ -363,7 +368,9 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         print(task)
         print(dag_info[2][task])
 
-        dep = write_circe_controller_specs(flag = str(flag), inputnum = str(inputnum), name = task, node_name = hosts.get(task)[1],
+        pod_name = app_name+"-"+task
+
+        dep = write_circe_controller_specs(flag = str(flag), inputnum = str(inputnum), name = pod_name, node_name = hosts.get(task)[1],
             image = jupiter_config.WORKER_CONTROLLER_IMAGE, child = nexthosts, 
             child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
             home_node_ip = service_ips.get("home"),
@@ -381,13 +388,14 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
 
     while 1:
-        if check_status_circe_controller(dag):
+        if check_status_circe_controller(dag,app_name):
             break
         time.sleep(30)
 
     print('-------- Start home node')
 
-    home_dep = write_circe_home_specs(image = jupiter_config.PRICING_HOME_IMAGE, 
+    home_name =app_name+"-home"
+    home_dep = write_circe_home_specs(name=home_name,image = jupiter_config.PRICING_HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
                                 child = jupiter_config.HOME_CHILD,
                                 child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
