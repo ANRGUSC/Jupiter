@@ -36,8 +36,8 @@ ADD scripts/keep_alive.py /heft/keep_alive.py
 
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh
-ADD app_specific_files/network_monitoring_app/configuration.txt  /heft/dag.txt
-ADD app_specific_files/network_monitoring_app/scripts/config.json /heft/config.json
+ADD app_specific_files/network_monitoring_app_dag/configuration.txt  /heft/dag.txt
+ADD app_specific_files/network_monitoring_app_dag/scripts/config.json /heft/config.json
 
 WORKDIR /heft/
 
