@@ -33,6 +33,7 @@ import datetime
 
 from k8s_get_service_ips import *
 from functools import wraps
+import _thread
 
 
 
@@ -58,6 +59,14 @@ def task_mapping_decorator(f):
 
 def empty_function():
     return []
+
+def setup_port(port):
+    cmd = "kubectl proxy -p " + str(port)+ " &"
+    try:
+        os.system(cmd)
+    except e:
+        print('Error setting up port \n')
+        print(e)
 
 def k8s_jupiter_deploy(port,app_name):
     """
@@ -125,7 +134,9 @@ def k8s_jupiter_deploy(port,app_name):
                         break
             except Exception as e:
                 #print(e)
-                print("Will retry to get the mapping!")
+                print("Will retry to get the mapping for app "+ app_name)
+                time.sleep(30)
+
 
         pprint(mapping)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
@@ -228,7 +239,7 @@ def teardown_system(app_name):
         print('Tear down all current WAVE deployments')
         delete_all_waves(app_name)
 
-def redeploy_system(port,app_name):
+def redeploy_system(app_name,port):
     """
         Redeploy the whole system
     """
@@ -303,7 +314,8 @@ def redeploy_system(port,app_name):
                     if "status" not in data:
                         break
             except:
-                print("Some Exception")
+                print("Will retry to get the mapping for " + app_name)
+                time.sleep(30)
         pprint(mapping)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
@@ -328,47 +340,58 @@ def redeploy_system(port,app_name):
 
 
 
-def check_finish_evaluation(port_list,app_name_list,num_samples):
-    res = [False] * len(port_list)
+def check_finish_evaluation(app_name,port,num_samples):
     jupiter_config.set_globals()
-    for idx,port in enumerate(port_list):
-        line = "http://localhost:%d/api/v1/namespaces/"%(port)
-        line = line + jupiter_config.MAPPER_NAMESPACE + "/services/"+app_name_list[idx]+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
-        print('Check if finishing evaluation sample tests')
-        print(line)
-        while 1:
-            try:
-                print("Number of output files :")
-                r = requests.get(line)
-                num_files = r.json()
-                data = int(json.dumps(num_files))
-                # print(data)
-                # print(NUM_SAMPLES)
-                if data==NUM_SAMPLES:
-                    print('Finish running all sample files!!!!!!!!')
-                    res[idx] = True
-                    break
-                time.sleep(60)
-            except Exception as e: 
-                #print(e)
-                # print("Some Exception")
-                time.sleep(120)
+    line = "http://localhost:%d/api/v1/namespaces/"%(port)
+    line = line + jupiter_config.DEPLOYMENT_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
+    print('Check if finishing evaluation sample tests')
+    print(line)
+    while 1:
+        try:
+            print("Number of output files :")
+            r = requests.get(line)
+            num_files = r.json()
+            data = int(json.dumps(num_files))
+            print(data)
+            print(num_samples)
+            if data==num_samples:
+                print('Finish running all sample files!!!!!!!!')
+                break
+            time.sleep(60)
+        except Exception as e: 
+            #print(e)
+            print("Will check back later if finishing all the samples for app "+app_name)
+            time.sleep(60)
 
-    print(res)
-    return all(res)
-    
+   
+def deploy_app_jupiter(app_name,port,log,num_runs,num_samples):
+    setup_port(port)
+    k8s_jupiter_deploy(port,app_name)
+    log_name = "../logs/evaluation_log_" + app_name+":"+str(port) 
+    with open(log_name,'w+') as f:
+        for i in range(0,num_runs):
+            file_log = log+'_'+str(i)
+            f.write('============================\n')
+            check_finish_evaluation(app_name,port,num_samples)
+            f.write('\nFinish one run !!!!!!!!!!!!!!!!!!!!!!')
+            t = str(datetime.datetime.now())
+            print(t)            
+            f.write(t)
+            f.write('\nExport the log for this run')
+            export_circe_log(app_name,file_log)
+            time.sleep(30)
+            f.write('\nRedeploy the system')
+            redeploy_system(app_name,port)
+        f.write('\nFinish the experiments for the current application')
     
 def main():
     """ 
-        Generate logs, extract log information and redeploy system
+        Deploy num_dags of the application specified by app_name
     """
     app_name = 'dummy'
-    num_samples = 3
-    num_runs = 1
-    num_dags = 1
-    interval = 2
-    finished = False
-
+    num_samples = 2
+    num_runs = 2
+    num_dags = 2
     jupiter_config.set_globals()
     if jupiter_config.SCHEDULER == 0:
         alg = 'heft'
@@ -376,36 +399,25 @@ def main():
         alg = 'random'
     else:
         alg = 'greedy'
+    
+    port_list = []
+    app_list = []
+    log_list = []
+    for num in range(1,num_dags+1):
+        log_name = '../logs/%s_DAG%d_%dRUN_circehome' %(alg,num,num_runs)
+        port =  8080 + num-1
+        cur_app = app_name+str(num)
+        port_list.append(port)
+        app_list.append(cur_app)
+        log_list.append(log_name)        
+    print(port_list)
+    print(app_list)
+    print(log_list)
+   
+    for idx,app_name in enumerate(app_list):
+        _thread.start_new_thread(deploy_app_jupiter, (app_name,port_list[idx],log_list[idx],num_runs,num_samples))
 
-    k8s_jupiter_deploy(8080,'dummy1')
-    # for i in range(0,num_runs):
-    #     print('---------------')
-    #     print(i+1)
-    #     listening_port_list = []
-    #     app_name_list = []
-    #     log_name_list = []
-    #     for num in range(1,num_dags+1):
-    #         log_name = '../logs/%s_%dDAG_%dRUN_circehome' %(alg,num,i)
-    #         listening_port =  8080 + num-1
-    #         cur_app_name = app_name+str(num)
-    #         listening_port_list.append(listening_port)
-    #         app_name_list.append(cur_app_name)
-    #         log_name_list.append(log_name)
-    #         k8s_jupiter_deploy(listening_port,cur_app_name)
-        
-    #     print(listening_port_list)
-    #     print(app_name_list)
-    #     print(log_name_list)
-    #     while not finished:
-    #         finished = check_finish_evaluation(listening_port_list,app_name_list,num_samples)
-    #     print('\nFinish one more run !!!!!!!!!!!!!!!!!!!!!!')
-    #     print('\nExport the log for this run')
-        
-    #     for idx,name in enumerate(app_name_list):
-    #         export_circe_log(name,log_name_list[idx])
-    #         time.sleep(30)
-    #     print('\nRedeploy the system')
-    #     for name in app_name_list:
-    #         teardown_system(name)
+    app.run(host='0.0.0.0')
+    #app.run(host='0.0.0.0', port=int(FLASK_PORT))
 if __name__ == '__main__':
     main()

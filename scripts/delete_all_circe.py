@@ -158,5 +158,5 @@ def delete_all_circe(app_name):
         print("Service Deleted. status='%s'" % str(del_resp_2.status))    
 
 if __name__ == '__main__':
-    app_name = 'dummy'
+    app_name = 'dummy1'
     delete_all_circe(app_name)

@@ -138,14 +138,13 @@ def set_globals():
 	HEFT_IMAGE              = 'docker.io/anrg/heft:mdummy'
 
 	"""Application Information"""
-	global APP_PATH, APP_NAME, APP_ID 
+	global APP_PATH, APP_NAME
 
 	# APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app_dag/'
 	# APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
 
 	APP_PATH                = HERE  + 'app_specific_files/dummy_app/'
 	APP_NAME                = 'app_specific_files/dummy_app'
-	APP_ID					= 'dummy'
 
 if __name__ == '__main__':
 	set_globals()

@@ -18,4 +18,4 @@ if __name__ == '__main__':
 	delete_all_waves()
 	delete_all_heft()
 	#delete_all_profilers()
-	delete_all_exec()
+	#delete_all_exec()
