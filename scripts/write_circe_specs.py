@@ -43,15 +43,15 @@ template_home = """
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: home
+  name: {name}
 spec:
   template:
     metadata:
       labels:
-        app: home 
+        app: {name}
     spec:
       containers:
-      - name: home
+      - name: {name}
         image: {image}
         imagePullPolicy: Always
         ports:
@@ -130,7 +130,7 @@ spec:
         - name: CHILD_NODES_IPS
           value: {child_ips}
         - name: TASK
-          value: {name}
+          value: {task_name}
         - name: NODE_NAME
           value: {node_name}
         - name: HOME_NODE

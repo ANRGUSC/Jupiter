@@ -69,13 +69,13 @@ def k8s_jupiter_deploy():
         path2 = jupiter_config.HERE + 'nodes.txt'
 
         # start the profilers
-        # profiler_ips = get_all_profilers()
-        profiler_ips = k8s_profiler_scheduler()
+        profiler_ips = get_all_profilers()
+        #profiler_ips = k8s_profiler_scheduler()
 
 
         # start the execution profilers
-        # execution_ips = get_all_execs()
-        execution_ips = exec_profiler_function()
+        execution_ips = get_all_execs()
+        #execution_ips = exec_profiler_function()
 
         print('*************************')
         print('Network Profiling Information:')
@@ -89,14 +89,14 @@ def k8s_jupiter_deploy():
         print('*************************')
 
         #Start the task to node mapper
-        task_mapping_function(profiler_ips,execution_ips,node_names)
+        #task_mapping_function(profiler_ips,execution_ips,node_names)
 
         """
             Make sure you run kubectl proxy --port=8080 on a terminal.
             Then this is link to get the task to node mapping
         """
 
-        line = "http://localhost:8080/api/v1/namespaces/"
+        line = "http://localhost:8089/api/v1/namespaces/"
         line = line + jupiter_config.MAPPER_NAMESPACE + "/services/home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
         time.sleep(5)
         print(line)

@@ -56,6 +56,9 @@ def delete_all_exec():
 
         # First check if there is a deployment existing with
         # the name = key in the respective namespace
+        print(key)
+        print(value)
+        
         resp = None
         try:
             resp = extensions_v1_beta1_api.read_namespaced_deployment(key, namespace)

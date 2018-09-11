@@ -33,7 +33,7 @@ from k8s_jupiter_deploy import *
 import datetime
 
 NUM_SAMPLES = 10
-NUM_RUNS = 10
+NUM_RUNS = 7
 app = Flask(__name__)
 
 def get_pod_logs(namespace, pod_name):
@@ -44,9 +44,13 @@ def get_pod_logs(namespace, pod_name):
         pod_name (str): corresponding pod name
     """
     ts = int(time.time())
-    log_file = "../logs/circehome_%d.log" %(ts)
-    bashCommand = "kubectl logs %s -n %s > %s"%(pod_name,namespace,log_file)
-    os.system(bashCommand)
+    log_file = "../logs/original_greedy_both_dummy_circehome_%d.log" %(ts)
+    bash_log = "kubectl logs %s -n %s > %s"%(pod_name,namespace,log_file)
+    os.system(bash_log)
+    log_runtime = "../logs/original_greedy_both_dummy_runtime_%d.log" %(ts)
+    bash_runtime = "kubectl cp %s/%s:runtime_tasks.txt %s "%(namespace,pod_name,log_runtime)
+    os.system(bash_runtime)
+
 
 def export_circe_log():
     """Export circe home log for evaluation, should only use when for non-static mapping
@@ -147,7 +151,7 @@ def redeploy_system():
             Then this is link to get the task to node mapping
         """
 
-        line = "http://localhost:8080/api/v1/namespaces/"
+        line = "http://localhost:8089/api/v1/namespaces/"
         line = line + jupiter_config.MAPPER_NAMESPACE + "/services/home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
         time.sleep(5)
         print(line)
@@ -188,7 +192,7 @@ def redeploy_system():
 
 def check_finish_evaluation():
     jupiter_config.set_globals()
-    line = "http://localhost:8080/api/v1/namespaces/"
+    line = "http://localhost:8089/api/v1/namespaces/"
     line = line + jupiter_config.DEPLOYMENT_NAMESPACE + "/services/home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
     print('Check if finishing evaluation sample tests')
     print(line)

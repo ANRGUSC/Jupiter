@@ -1,7 +1,7 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar,  Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.1"
+__version__ = "3.0"
 
 import sys
 sys.path.append("../")
@@ -19,7 +19,7 @@ import jupiter_config
 #from utilities import *
 import utilities
 
-def check_status_waves():
+def check_status_waves(app_name):
     """Verify if all the WAVE home and workers have been deployed and UP in the system.
     """
     jupiter_config.set_globals()
@@ -50,7 +50,8 @@ def check_status_waves():
     result = True
     for key in nodes:
 
-        label = "app=wave_" + key
+        label = "app=%s_wave_"%(app_name)
+        label = label + key
         resp = None
 
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
@@ -71,7 +72,7 @@ def check_status_waves():
 
 
 # if __name__ == '__main__':
-def k8s_wave_scheduler(profiler_ips):
+def k8s_wave_scheduler(profiler_ips,app_name):
     """
         Deploy WAVE in the system. 
     """
@@ -116,18 +117,19 @@ def k8s_wave_scheduler(profiler_ips):
             kubectl get replicaset -n "namespace name"
             kubectl get pod -n "namespace name"
     """   
-    home_body = write_wave_service_specs(name = 'home', label = "wave_home")
+    home_name = app_name+'-home'
+    home_label = app_name+'-wave_home'
+    home_body = write_wave_service_specs(name = home_name, label = home_label)
     ser_resp = api.create_namespaced_service(namespace, home_body)
     print("Home service created. status = '%s'" % str(ser_resp.status))
 
     try:
-        resp = api.read_namespaced_service('home', namespace)
+        resp = api.read_namespaced_service(home_name, namespace)
     except ApiException as e:
         print("Exception Occurred")
     
     service_ips['home'] = resp.spec.cluster_ip
     home_ip = service_ips['home']
-    home_name = 'home'
 
     print(service_ips)
 
@@ -137,7 +139,9 @@ def k8s_wave_scheduler(profiler_ips):
             Generate the yaml description of the required service for each task
         """
         if i != 'home':
-            body = write_wave_service_specs(name = i, label = "wave_" + i)
+            pod_name = app_name+'-'+i
+            pod_label = app_name+'-wave_'+i
+            body = write_wave_service_specs(name = pod_name, label = pod_label)
 
             # Call the Kubernetes API to create the service
     
@@ -145,7 +149,7 @@ def k8s_wave_scheduler(profiler_ips):
                 ser_resp = api.create_namespaced_service(namespace, body)
                 print("Service created. status = '%s'" % str(ser_resp.status))
                 print(i)
-                resp = api.read_namespaced_service(i, namespace)
+                resp = api.read_namespaced_service(pod_name, namespace)
             except ApiException as e:
                 print("Exception Occurred")
 
@@ -163,6 +167,7 @@ def k8s_wave_scheduler(profiler_ips):
     print("####################################")
     print(all_profiler_ips)
 
+
     for i in nodes:
 
         # print nodes[i][0]
@@ -176,9 +181,12 @@ def k8s_wave_scheduler(profiler_ips):
             """
                 Generate the yaml description of the required deployment for WAVE workers
             """
-            dep = write_wave_specs(name = i, label = "wave_" + i, image = jupiter_config.WAVE_WORKER_IMAGE,
+            pod_name = app_name+'-'+i
+            label_name = app_name+'-wave_'+i
+            dep = write_wave_specs(name = pod_name, label = label_name, image = jupiter_config.WAVE_WORKER_IMAGE,
                                              host = nodes[i][0], all_node = nexthost_names,
                                              all_node_ips = nexthost_ips,
+                                             self_name=i,
                                              home_ip = home_ip,
                                              home_name = home_name,
                                              serv_ip = service_ips[i],
@@ -194,14 +202,19 @@ def k8s_wave_scheduler(profiler_ips):
     # have to somehow make sure that the worker nodes are on and working by this time
     
     while 1:
-        if check_status_waves():
+        if check_status_waves(app_name):
             break
         time.sleep(30)
 
-    home_dep = write_wave_specs(name = 'home', label = "wave_home",
+    home_name = app_name+'-home'
+    label_name = app_name+'-wave_home'
+    print(profiler_ips)
+    print(service_ips)
+    home_dep = write_wave_specs(name = home_name, label = label_name,
                                 image = jupiter_config.WAVE_HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, all_node = nexthost_names,
                                              all_node_ips = nexthost_ips,
+                                             self_name = 'home',
                                              home_ip = home_ip,
                                              home_name = home_name,
                                              serv_ip = service_ips['home'],

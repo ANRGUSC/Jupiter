@@ -1,7 +1,7 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar,  Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.1"
+__version__ = "3.0"
 
 import sys
 sys.path.append("../")
@@ -14,7 +14,7 @@ from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
 
-def delete_all_heft():
+def delete_all_heft(app_name):
     """Tear down all HEFT deployments.
     """
     jupiter_config.set_globals()
@@ -42,7 +42,8 @@ def delete_all_heft():
             kubectl get replicaset -n "namespace name"
             kubectl get pod -n "namespace name"
     """
-    key = 'home'
+    key = app_name+'-home'
+    print(key)
 
     # We have defined the namespace for deployments in jupiter_config
     namespace = jupiter_config.MAPPER_NAMESPACE
@@ -67,8 +68,9 @@ def delete_all_heft():
 
     # Check if there is a replicaset running by using the label "app=wave_" + key e.g, "app=wave_node1"
     # The label of kubernets are used to identify replicaset associate to each task
-    label = "app=heft_" + key
-    resp = api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
+    #labelname = "app=heft_" + key
+    labelname = "app="+app_name+'-home'
+    resp = api.list_namespaced_replica_set(label_selector = labelname,namespace=namespace)
     # if a replicaset exist, delete it
     # pprint(resp)
     # print resp.items[0].metadata.namespace
@@ -80,7 +82,7 @@ def delete_all_heft():
     # Check if there is a pod still running by using the label
     resp = None
     api_2 = client.CoreV1Api()
-    resp = api_2.list_namespaced_pod(namespace, label_selector = label)
+    resp = api_2.list_namespaced_pod(namespace, label_selector = labelname)
     # if a pod is running just delete it
     if resp.items:
         del_resp_2 = api_2.delete_namespaced_pod(resp.items[0].metadata.name, namespace, body)
@@ -102,4 +104,5 @@ def delete_all_heft():
         # At this point you should not have any of the profiler related service, pod, or deployment running
 
 if __name__ == '__main__':
-    delete_all_heft()
+    app_name = 'dummy1'
+    delete_all_heft(app_name)

@@ -1,7 +1,7 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar,  Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.1"
+__version__ = "3.0"
 
 import sys
 sys.path.append("../")
@@ -14,7 +14,7 @@ import jupiter_config
 #from utilities import *
 import utilities
 
-def delete_all_waves():
+def delete_all_waves(app_name):
     """Tear down all WAVE deployments.
     """
     
@@ -43,6 +43,7 @@ def delete_all_waves():
             kubectl get replicaset -n "namespace name"
             kubectl get pod -n "namespace name"
     """
+
     for key in nodes:
 
         # We have defined the namespace for deployments in jupiter_config
@@ -54,21 +55,26 @@ def delete_all_waves():
         
         # First check if there is a exisitng profiler deployment with
         # the name = key in the respective namespace
+
+        pod_name = app_name+'-'+key 
+        #pod_name = key
         resp = None
         try:
-            resp = api.read_namespaced_deployment(key, namespace)
+            resp = api.read_namespaced_deployment(pod_name, namespace)
         except ApiException as e:
             print("Exception Occurred")
 
         # if a deployment with the name = key exists in the namespace, delete it
         if resp:
-            del_resp_0 = api.delete_namespaced_deployment(key, namespace, body)
-            print("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
+            del_resp_0 = api.delete_namespaced_deployment(pod_name, namespace, body)
+            print("Deployment '%s' Deleted. status='%s'" % (pod_name, str(del_resp_0.status)))
 
 
         # Check if there is a replicaset running by using the label "app=wave_" + key e.g, "app=wave_node1"
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=wave_" + key
+        
+        label = "app="+app_name+'-wave_'+key
+        #label = key
         resp = api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
         # if a replicaset exist, delete it
         # pprint(resp)
@@ -76,7 +82,7 @@ def delete_all_waves():
         for i in resp.items:
             if i.metadata.namespace == namespace:
                 del_resp_1 = api.delete_namespaced_replica_set(i.metadata.name, namespace, body)
-                print("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
+                print("Relicaset '%s' Deleted. status='%s'" % (pod_name, str(del_resp_1.status)))
 
         # Check if there is a pod still running by using the label
         resp = None
@@ -91,16 +97,17 @@ def delete_all_waves():
         resp = None
         api_2 = client.CoreV1Api()
         try:
-            resp = api_2.read_namespaced_service(key, namespace)
+            resp = api_2.read_namespaced_service(pod_name, namespace)
         except ApiException as e:
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = api_2.delete_namespaced_service(key, namespace)
+            del_resp_2 = api_2.delete_namespaced_service(pod_name, namespace)
             #del_resp_2 = api_2.delete_namespaced_service(key, namespace,body)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running     
 
 if __name__ == '__main__':
-    delete_all_waves()
+    app_name = 'dummy'
+    delete_all_waves(app_name)

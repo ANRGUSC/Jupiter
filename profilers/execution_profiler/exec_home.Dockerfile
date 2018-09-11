@@ -47,12 +47,12 @@ RUN mkdir -p /centralized_scheduler/profiler_files_processed
 
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
-COPY app_specific_files/network_monitoring_app/sample_input /centralized_scheduler/sample_input
+ADD app_specific_files/dummy_app/scripts/ /centralized_scheduler/
+COPY app_specific_files/dummy_app/sample_input /centralized_scheduler/sample_input
 RUN mkdir -p /home/darpa/apps/data
 
 
-ADD app_specific_files/network_monitoring_app/configuration.txt /centralized_scheduler/DAG.txt
+ADD app_specific_files/dummy_app/configuration.txt /centralized_scheduler/DAG.txt
 
 ADD profilers/execution_profiler/start_home.sh /centralized_scheduler/start.sh
 ADD scripts/keep_alive.py /centralized_scheduler/keep_alive.py
@@ -67,6 +67,6 @@ RUN chmod +x /centralized_scheduler/start.sh
 
 
 # tell the port number the container should expose
-EXPOSE 22 27017 8888 57021
+EXPOSE 22 27017 8888
 
 CMD ["./start.sh"]

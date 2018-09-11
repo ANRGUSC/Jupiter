@@ -293,7 +293,7 @@ class MyEventHandler(pyinotify.ProcessEvent):
             sched.add_job(self.measurement_job,'interval',id='measurement', minutes=1, replace_existing=True)
 
             print('Step 3: Scheduling regression job')
-            sched.add_job(self.regression_job,'interval', id='regression', minutes=15, replace_existing=True)
+            sched.add_job(self.regression_job,'interval', id='regression', minutes=10, replace_existing=True)
 
             print('Step 4: Start the schedulers')
             sched.start()

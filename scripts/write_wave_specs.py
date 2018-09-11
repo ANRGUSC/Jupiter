@@ -23,7 +23,7 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: {host}
       containers:
-      - name: wave-scheduler
+      - name: {name}
         imagePullPolicy: Always
         image: {image}
         ports:
@@ -34,7 +34,7 @@ spec:
         - name: ALL_NODES_IPS
           value: {all_node_ips}
         - name: SELF_NAME
-          value: {name}
+          value: {self_name}
         - name: SELF_IP
           value: {serv_ip}
         - name: HOME_IP

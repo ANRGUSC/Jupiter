@@ -1,7 +1,7 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar,  Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.1"
+__version__ = "3.0"
 
 import sys
 sys.path.append("../")
@@ -20,7 +20,7 @@ import jupiter_config
 import utilities
 
 
-def check_status_circe(dag):
+def check_status_circe(dag,app_name):
     """
     This function prints out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
@@ -50,7 +50,7 @@ def check_status_circe(dag):
         # First check if there is a deployment existing with
         # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=" + key
+        label = "app=" + app_name+'-'+key
 
         resp = None
 
@@ -73,7 +73,7 @@ def check_status_circe(dag):
 
 
 # if __name__ == '__main__':
-def k8s_circe_scheduler(dag_info , temp_info):
+def k8s_circe_scheduler(dag_info , temp_info,app_name):
     """
         This script deploys CIRCE in the system. 
     """
@@ -116,16 +116,18 @@ def k8s_circe_scheduler(dag_info , temp_info):
         First create the home node's service.
     """
     
-    home_body = write_circe_service_specs(name = 'home')
+    home_name =app_name+"-home"
+    home_body = write_circe_service_specs(name = home_name)
     ser_resp = api.create_namespaced_service(namespace, home_body)
     print("Home service created. status = '%s'" % str(ser_resp.status))
 
     try:
-        resp = api.read_namespaced_service('home', namespace)
+        resp = api.read_namespaced_service(home_name, namespace)
     except ApiException as e:
         print("Exception Occurred")
 
     service_ips['home'] = resp.spec.cluster_ip
+    print(resp.spec.cluster_ip)
 
     """
         Iterate through the list of tasks and run the related k8 deployment, replicaset, pod, and service on the respective node.
@@ -145,14 +147,15 @@ def k8s_circe_scheduler(dag_info , temp_info):
         """
             Generate the yaml description of the required service for each task
         """
-        body = write_circe_service_specs(name = task)
+        pod_name = app_name+"-"+task
+        body = write_circe_service_specs(name = pod_name)
 
         # Call the Kubernetes API to create the service
         ser_resp = api.create_namespaced_service(namespace, body)
         print("Service created. status = '%s'" % str(ser_resp.status))
     
         try:
-            resp = api.read_namespaced_service(task, namespace)
+            resp = api.read_namespaced_service(pod_name, namespace)
         except ApiException as e:
             print("Exception Occurred")
 
@@ -161,31 +164,14 @@ def k8s_circe_scheduler(dag_info , temp_info):
     
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
+
+    print(service_ips)
+    print(service_ips.keys())
+    print(service_ips.values())
     print(all_node)
     """
     All services have started for CIRCE and deployment is yet to begin
-    In the meantime, start dft_coded_detector services and their deployments
     """
-
-
-    # branch_number = 3 # how many aggregation points do you have?
-    # dft_coded_service_ips = []
-    # for idx in range(branch_number):
-    #     path = "nodes_dft_coded" + str(idx)+ ".txt"
-    #     dft_coded_service_ips.append(launch_dft_coding_services(path=path))
-    #     launch_dft_coding_deployments(dft_coded_service_ips[idx], path=path, masterIP=service_ips['dftdetector'+str(idx)])
-    #     all_node_ips = all_node_ips + ":" + dft_coded_service_ips[idx]
-    #     all_node = all_node + (":dftslave%d0:dftslave%d1:dftslave%d2"%(idx,idx,idx))
-    
-    """
-    Let's start the TeraSort coded detectors now!!!
-    """
-    # tera_master_ips = []
-    # for idx in range(branch_number):
-    #     path = "nodes_tera_coded" + str(idx)+ ".txt"
-    #     tera_coded_service_ips, master_ip = launch_tera_coding_services(path=path)
-    #     launch_tera_coding_deployments(tera_coded_service_ips, path=path)
-    #     tera_master_ips.append(master_ip)
 
     """
     Start circe
@@ -202,6 +188,8 @@ def k8s_circe_scheduler(dag_info , temp_info):
             For example if the child nodes are k8node1 and k8node2, we will set CHILD_NODES=k8node1:k8node2
             Note that the k8node1 and k8node2 in the example are the unique node ids of the kubernets cluster nodes.
         """
+        print(key)
+        print(value)
         inputnum = str(value[0])
         flag = str(value[1])
 
@@ -219,13 +207,13 @@ def k8s_circe_scheduler(dag_info , temp_info):
         print("NEXT SVC")
         print(next_svc)
     
-        
+        pod_name = app_name+"-"+task
         #Generate the yaml description of the required deployment for each task
-        dep = write_circe_deployment_specs(flag = str(flag), inputnum = str(inputnum), name = task, node_name = hosts.get(task)[1],
-            image = jupiter_config.WORKER_IMAGE, child = nexthosts, 
+        dep = write_circe_deployment_specs(flag = str(flag), inputnum = str(inputnum), name = pod_name, node_name = hosts.get(task)[1],
+            image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
             child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
-            home_node_ip = service_ips.get("home"),
-            own_ip = service_ips[key],
+            home_node_ip = service_ips.get('home'),
+            own_ip = service_ips[task],
             all_node = all_node,
             all_node_ips = all_node_ips)
         pprint(dep)
@@ -236,11 +224,12 @@ def k8s_circe_scheduler(dag_info , temp_info):
         print("Deployment created. status = '%s'" % str(resp.status))
 
     while 1:
-        if check_status_circe(dag):
+        if check_status_circe(dag,app_name):
             break
         time.sleep(30)
 
-    home_dep = write_circe_home_specs(image = jupiter_config.HOME_IMAGE, 
+    home_name =app_name+"-home"
+    home_dep = write_circe_home_specs(name=home_name,image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
                                 child = jupiter_config.HOME_CHILD,
                                 child_ips = service_ips.get(jupiter_config.HOME_CHILD), 

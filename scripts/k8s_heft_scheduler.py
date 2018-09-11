@@ -1,7 +1,7 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar,  Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.1"
+__version__ = "3.0"
 
 import sys
 sys.path.append("../")
@@ -21,7 +21,7 @@ from static_assignment import *
 import utilities
 
 
-def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names):
+def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
     """
         This script deploys HEFT in the system. 
     """
@@ -65,24 +65,25 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names):
             kubectl get replicaset -n "namespace name"
             kubectl get pod -n "namespace name"
     """
-    home_body = write_heft_service_specs(name = 'home', label = "heft_home")
+    home_name = app_name+'-home'
+
+    home_body = write_heft_service_specs(name = home_name, label = home_name)
     ser_resp = api.create_namespaced_service(namespace, home_body)
     print("Home service created. status = '%s'" % str(ser_resp.status))
 
     try:
-        resp = api.read_namespaced_service('home', namespace)
+        resp = api.read_namespaced_service(home_name, namespace)
     except ApiException as e:
         print("Exception Occurred")
 
-    service_ips['home'] = resp.spec.cluster_ip
-    home_ip = service_ips['home']
-    home_name = 'home'
+    service_ips[home_name] = resp.spec.cluster_ip
+    home_ip = service_ips[home_name]
 
     del profiler_ips['home']
     profiler_ips_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(profiler_ips.items()))
 
 
-    home_dep = write_heft_specs(name = 'home', label = "heft_home",
+    home_dep = write_heft_specs(name = home_name, label = home_name,
                                 image = jupiter_config.HEFT_IMAGE,
                                 host = jupiter_config.HOME_NODE,
                                 node_names = node_names, 
