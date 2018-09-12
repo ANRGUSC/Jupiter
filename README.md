@@ -123,6 +123,10 @@ to re-run the full set of commands if the `admin.conf` file has changed:
 
 For a step by step instruction for deployment of Jupiter, please refer to our [tutorial](http://jupiter.readthedocs.io/en/latest/Jdeploy.html). 
 
+## Tutorial 
+
+Step by step instructions to set up Jupiter on a private network provided by Sean Griffin (Raytheon BBN Technologies) [here](tutorial/Jupiter_setup.pdf)
+
 ## Applications:
 
  Jupiter accepts pipelined computations described in a form of a Graph where the main task flow is represented as a Directed Acyclic Graph(DAG). Thus, one should be able separate the graph into two pieces, the DAG part and non-DAG part. Jupiter requires that each task in the DAG part of the graph to be written as a Python function in a separate file under the scripts folder. On the other hand the non-DAG tasks can be either Python function or a shell script with any number of arguments, located under the scripts folder.
