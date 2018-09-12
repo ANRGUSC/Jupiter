@@ -353,22 +353,22 @@ def check_finish_evaluation(app_name,port,num_samples):
 def deploy_app_jupiter(app_name,port,log,num_runs,num_samples):
     setup_port(port)
     k8s_jupiter_deploy(port,app_name)
-    log_name = "../logs/evaluation_log_" + app_name+":"+str(port) 
-    with open(log_name,'w+') as f:
-        for i in range(0,num_runs):
-            file_log = log+'_'+str(i)
-            f.write('============================\n')
-            check_finish_evaluation(app_name,port,num_samples)
-            f.write('\nFinish one run !!!!!!!!!!!!!!!!!!!!!!')
-            t = str(datetime.datetime.now())
-            print(t)            
-            f.write(t)
-            f.write('\nExport the log for this run')
-            export_circe_log(app_name,file_log)
-            time.sleep(30)
-            f.write('\nRedeploy the system')
-            redeploy_system(app_name,port)
-        f.write('\nFinish the experiments for the current application')
+    # log_name = "../logs/evaluation_log_" + app_name+":"+str(port) 
+    # with open(log_name,'w+') as f:
+    #     for i in range(0,num_runs):
+    #         file_log = log+'_'+str(i)
+    #         f.write('============================\n')
+    #         check_finish_evaluation(app_name,port,num_samples)
+    #         f.write('\nFinish one run !!!!!!!!!!!!!!!!!!!!!!')
+    #         t = str(datetime.datetime.now())
+    #         print(t)            
+    #         f.write(t)
+    #         f.write('\nExport the log for this run')
+    #         export_circe_log(app_name,file_log)
+    #         time.sleep(30)
+    #         f.write('\nRedeploy the system')
+    #         redeploy_system(app_name,port)
+    #     f.write('\nFinish the experiments for the current application')
     
 def main():
     """ 
@@ -405,6 +405,6 @@ def main():
 
 
 
-    app.run(host='0.0.0.0', port=int(jupiter_config.FLASK_DOCKER))
+    app.run(host='0.0.0.0')
 if __name__ == '__main__':
     main()

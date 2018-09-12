@@ -156,7 +156,7 @@ def delete_all_pricing_circe(app_name):
 
     for key in nodes:
 
-        print(key)
+        
         pod_name = app_name +'-'+key
 
         # Get proper handles or pointers to the k8-python tool to call different functions.
@@ -165,6 +165,7 @@ def delete_all_pricing_circe(app_name):
         
         # First check if there is a exisitng profiler deployment with
         # the name = key in the respective namespace
+        print(pod_name)
         resp = None
         try:
             resp = api.read_namespaced_deployment(pod_name, namespace)
@@ -179,7 +180,7 @@ def delete_all_pricing_circe(app_name):
 
         # Check if there is a replicaset running by using the label "app=wave_" + key e.g, "app=wave_node1"
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=" + pod_name+'-'+ key
+        label = "app=" + app_name+'-'+ key
         resp = api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
         # if a replicaset exist, delete it
         # pprint(resp)

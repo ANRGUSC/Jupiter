@@ -182,6 +182,8 @@ def update_exec_profile_file():
             print('Error connection')
             time.sleep(60)
 
+    print(db)
+    print(conn)
     while not available_data:
         try:
             logging =db[self_name].find()
@@ -190,12 +192,13 @@ def update_exec_profile_file():
             print('Execution information for the current node is not ready!!!')
             time.sleep(60)
 
+    print(logging)
     for record in logging:
         # Node ID, Task, Execution Time, Output size
         info_to_csv=[record['Task'],record['Duration [sec]'],str(record['Output File [Kbit]'])]
         execution_info.append(info_to_csv)
     print('Execution information has already been provided')
-    # print(execution_info)
+    print(execution_info)
     with open('execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
@@ -329,16 +332,16 @@ def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
         computing_net_info,controller_net_info = get_updated_network_profile(node_name)
-        # print('--- Resource: ')
-        # print(resource_info)
-        # print('--- Network: ')
-        # print(computing_net_info)
-        # print(controller_net_info)
-        # print('--- Execution: ')
-        # print(execution_info)
+        print('--- Resource: ')
+        print(resource_info)
+        print('--- Network: ')
+        print(computing_net_info)
+        print(controller_net_info)
+        print('--- Execution: ')
+        print(execution_info)
         test_execution_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
-        # print('----Task queue: ')
-        # print(queue_mul)
+        print('----Task queue: ')
+        print(queue_mul)
         print('----- Calculating price:')
         print('--- Resource cost: ')
         mem_cost = float(resource_info[self_name]["memory"])
@@ -346,16 +349,16 @@ def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
         print(mem_cost)
         print(cpu_cost)
         print('--- Network cost: ')
-        # print(node_name)
+        print(node_name)
         if node_name in computing_net_info.keys():
             computing_params = computing_net_info[node_name].split()
             controller_params = controller_net_info[self_name].split()
             computing_params = [float(x) for x in computing_params]
             controller_params = [float(x) for x in controller_params]
-            # print(computing_params)
-            # print(controller_params)
+            print(computing_params)
+            print(controller_params)
             estimated_output = execution_info[task_name][1]* test_execution_size / file_size
-            # print(estimated_output)
+            print(estimated_output)
             network_cost = (controller_params[0] * file_size * file_size) + \
                            (controller_params[1] * file_size) + \
                            controller_params[2] + \
@@ -381,12 +384,12 @@ def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
                 size_dict = dict(size_mul)
                 queue_size =  [size_dict[k] for k in queue_dict.keys()]
                 queue_cost = 0 
-                # print(queue_task)
-                # print(queue_size)
+                print(queue_task)
+                print(queue_size)
                 for idx,task_info in enumerate(queue_task):
                     #TO_DO: sum or max
                     queue_cost = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_execution_size 
-        #print(queue_cost)
+        print(queue_cost)
 
         price = w_net * network_cost + w_cpu * cpu_cost + w_mem * mem_cost + \
                 w_queue * queue_cost

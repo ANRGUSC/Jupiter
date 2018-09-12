@@ -128,7 +128,7 @@ template_worker = """
             - name: CHILD_NODES_IPS
               value: {child_ips}
             - name: TASK
-              value: {name}
+              value: {task_name}
             - name: NODE_NAME
               value: {node_name}
             - name: HOME_NODE
@@ -203,7 +203,7 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: {host}
       containers:
-      - name: wave-scheduler
+      - name: {name}
         imagePullPolicy: Always
         image: {image}
         ports:
@@ -300,7 +300,7 @@ template_controller = """
             - name: CHILD_NODES_IPS
               value: {child_ips}
             - name: TASK
-              value: {name}
+              value: {task_name}
             - name: NODE_NAME
               value: {node_name}
             - name: NODE_ID

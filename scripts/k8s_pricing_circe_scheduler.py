@@ -295,7 +295,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
                 Generate the yaml description of the required deployment for WAVE workers
             """
             pod_name = app_name+"-"+i
-            print(execution_ips)
+            print(pod_name)
             dep = write_circe_computing_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTING_IMAGE,
                                              host = nodes[i][0], all_node = all_node,
                                              all_node_ips = all_node_ips,
@@ -307,7 +307,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
                                              all_profiler_nodes = all_profiler_nodes,
                                              execution_home_ip = execution_ips['home'],
                                              home_node_ip = service_ips.get("home"))
-            # # pprint(dep)
+            pprint(dep)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
             print("Deployment created. status ='%s'" % str(resp.status))
@@ -375,6 +375,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
             child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
             home_node_ip = service_ips.get("home"),
             node_id = dag_info[2][task], own_ip = service_ips[key],
+            task_name = task,
             all_node = all_node,
             all_node_ips = all_node_ips,
             all_computing_nodes = all_computing_nodes,
