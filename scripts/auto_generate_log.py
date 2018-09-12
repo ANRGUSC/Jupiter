@@ -111,6 +111,8 @@ def k8s_jupiter_deploy(port,app_name):
         print('*************************')
 
         #Start the task to node mapper
+        
+
         task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
         """

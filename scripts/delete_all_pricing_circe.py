@@ -104,7 +104,7 @@ def delete_all_pricing_circe(app_name):
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = core_v1_api.delete_namespaced_service(key, namespace)
+            del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the related service, pods, deployment running
