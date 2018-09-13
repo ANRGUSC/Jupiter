@@ -298,6 +298,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
             print(pod_name)
             dep = write_circe_computing_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTING_IMAGE,
                                              host = nodes[i][0], all_node = all_node,
+                                             node_name = i,
                                              all_node_ips = all_node_ips,
                                              all_computing_nodes = all_computing_nodes,
                                              all_computing_ips = all_computing_ips,

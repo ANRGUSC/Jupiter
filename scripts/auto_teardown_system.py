@@ -64,7 +64,7 @@ def main():
         Deploy num_dags of the application specified by app_name
     """
     app_name = 'dummy'
-    num_dags = 20
+    num_dags = 2
     app_list = []
     for num in range(1,num_dags+1):
         cur_app = app_name+str(num)

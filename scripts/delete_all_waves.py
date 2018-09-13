@@ -109,5 +109,5 @@ def delete_all_waves(app_name):
         # At this point you should not have any of the profiler related service, pod, or deployment running     
 
 if __name__ == '__main__':
-    app_name = 'dummy'
+    app_name = 'dummy1'
     delete_all_waves(app_name)

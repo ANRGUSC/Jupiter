@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar, Jason A Tran,  Bhaskar Krishnamachari"
+__author__ = "Quynh Nguyen, Pradipta Ghosh, Pranav Sakulkar, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
@@ -220,7 +220,7 @@ spec:
         - name: ALL_COMPUTING_IPS
           value: {all_computing_ips}
         - name: NODE_NAME
-          value: {name}
+          value: {node_name}
         - name: SELF_IP
           value: {self_ip}
         - name: PROFILERS

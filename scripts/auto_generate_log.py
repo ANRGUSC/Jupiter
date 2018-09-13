@@ -24,6 +24,7 @@ import utilities
 from k8s_get_service_ips import *
 from functools import wraps
 from delete_all_circe import *
+from delete_all_pricing_circe import *
 from delete_all_waves import *
 from delete_all_heft import *
 
@@ -238,15 +239,18 @@ def redeploy_system(app_name,port):
         Tear down all current deployments
     """
     print('Tear down all current CIRCE deployments')
-    delete_all_circe()
+    if pricing == 0:
+        delete_all_circe(app_name)
+    else:
+        delete_all_pricing_circe(app_name)
     if jupiter_config.SCHEDULER == 0: # HEFT
         print('Tear down all current HEFT deployments')
-        delete_all_heft()
+        delete_all_heft(app_name)
         task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
         exec_profiler_function = k8s_exec_scheduler
     else:# WAVE
         print('Tear down all current WAVE deployments')
-        delete_all_waves()
+        delete_all_waves(app_name)
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
         exec_profiler_function = empty_function
 
@@ -353,22 +357,22 @@ def check_finish_evaluation(app_name,port,num_samples):
 def deploy_app_jupiter(app_name,port,log,num_runs,num_samples):
     setup_port(port)
     k8s_jupiter_deploy(port,app_name)
-    # log_name = "../logs/evaluation_log_" + app_name+":"+str(port) 
-    # with open(log_name,'w+') as f:
-    #     for i in range(0,num_runs):
-    #         file_log = log+'_'+str(i)
-    #         f.write('============================\n')
-    #         check_finish_evaluation(app_name,port,num_samples)
-    #         f.write('\nFinish one run !!!!!!!!!!!!!!!!!!!!!!')
-    #         t = str(datetime.datetime.now())
-    #         print(t)            
-    #         f.write(t)
-    #         f.write('\nExport the log for this run')
-    #         export_circe_log(app_name,file_log)
-    #         time.sleep(30)
-    #         f.write('\nRedeploy the system')
-    #         redeploy_system(app_name,port)
-    #     f.write('\nFinish the experiments for the current application')
+    log_name = "../logs/evaluation_log_" + app_name+":"+str(port) 
+    with open(log_name,'w+') as f:
+        for i in range(0,num_runs):
+            file_log = log+'_'+str(i)
+            f.write('============================\n')
+            check_finish_evaluation(app_name,port,num_samples)
+            f.write('\nFinish one run !!!!!!!!!!!!!!!!!!!!!!')
+            t = str(datetime.datetime.now())
+            print(t)            
+            f.write(t)
+            f.write('\nExport the log for this run')
+            export_circe_log(app_name,file_log)
+            time.sleep(30)
+            f.write('\nRedeploy the system')
+            redeploy_system(app_name,port)
+        f.write('\nFinish the experiments for the current application')
     
 def main():
     """ 
@@ -377,7 +381,7 @@ def main():
     app_name = 'dummy'
     num_samples = 2
     num_runs = 2
-    num_dags = 1
+    num_dags = 2
     jupiter_config.set_globals()
     if jupiter_config.SCHEDULER == 0:
         alg = 'heft'
@@ -386,11 +390,15 @@ def main():
     else:
         alg = 'greedy'
     
+    if jupiter_config.PRICING == 1
+        option = 'pricing'
+    else:
+        option = 'nopricing'
     port_list = []
     app_list = []
     log_list = []
     for num in range(1,num_dags+1):
-        log_name = '../logs/%s_DAG%d_%dRUN_circehome' %(alg,num,num_runs)
+        log_name = '../logs/%s_%s_%dDAG%d_%dRUN_circehome' %(option, alg,num_dags,num,num_runs)
         port =  8080 + num-1
         cur_app = app_name+str(num)
         port_list.append(port)
