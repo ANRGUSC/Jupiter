@@ -152,6 +152,69 @@ def transfer_data(IP,user,pword,source, destination):
     msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
     print(msg)
 
+def multicast_mapping_decorator(TRANSFER=0):
+    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        TRANSFER (int, optional): TRANSFER specified from ``jupiter_config.ini``, default method is SCP
+    
+    Returns:
+        function: chosen transfer method
+    """
+    
+    def multicast_data_scp(IP_list,user_list,pword_list,source, destination):
+        """Transfer data using SCP to multiple nodes
+        
+        Args:
+            IP (str): destination IP address list
+            user (str): username list
+            pword (str): password list
+            source (str): source file path 
+            destination (str): destination file path
+        """
+        #Keep retrying in case the containers are still building/booting up on
+        #the child nodes.
+        for idx, IP in enumerate(IP_list):
+            retry = 0
+            ts = -1
+            while retry < num_retries:
+                try:
+                    cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword_list[idx], ssh_port, source, user_list[idx], IP_list[idx], destination)
+                    os.system(cmd)
+                    print('data transfer complete\n')
+                    ts = time.time()
+                    s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
+                    runtime_sender_log.write(s)
+                    runtime_sender_log.flush()
+                    break
+                except:
+                    print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+                    time.sleep(2)
+                    retry += 1
+            if retry == num_retries:
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,source,ts)
+                runtime_sender_log.write(s)
+                runtime_sender_log.flush()
+
+    if TRANSFER==0:
+        return multicast_data_scp
+    return multicast_data_scp
+
+@transfer_multicast_decorator
+def multicast_data(IP_list,user_list,pword_list,source, destination):
+    """Transfer data with given parameters
+    
+    Args:
+        IP (str): destination IP 
+        user (str): destination username
+        pword (str): destination password
+        source (str): source file path
+        destination (str): destination file path
+    """
+    for IP,idx in enumerate(IP_list):
+        msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP_list[idx],user_list[idx],pword_list[idx],source, destination)
+    print(msg)
+
 #for OUTPUT folder 
 class Watcher1():
     
