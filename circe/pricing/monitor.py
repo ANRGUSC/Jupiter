@@ -122,7 +122,17 @@ def receive_price_info():
     return "ok"
 app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info)
 
-def transfer_data_scp(IP,user,pword,source, destination):
+def transfer_mapping_decorator(TRANSFER=0):
+    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        TRANSFER (int, optional): TRANSFER specified from ``jupiter_config.ini``, default method is SCP
+    
+    Returns:
+        function: chosen transfer method
+    """
+    
+    def transfer_data_scp(IP,user,pword,source, destination):
         """Transfer data using SCP
         
         Args:
@@ -132,17 +142,47 @@ def transfer_data_scp(IP,user,pword,source, destination):
             source (str): source file path
             destination (str): destination file path
         """
+        #Keep retrying in case the containers are still building/booting up on
+        #the child nodes.
+        print(IP)
         retry = 0
+        ts = -1
         while retry < num_retries:
             try:
                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
                 os.system(cmd)
-                # print('data transfer complete\n')
+                print('data transfer complete\n')
+                ts = time.time()
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
+                runtime_sender_log.write(s)
+                runtime_sender_log.flush()
                 break
             except:
-                print('Task controller: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
                 time.sleep(2)
-            retry += 1
+                retry += 1
+        if retry == num_retries:
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,source,ts)
+            runtime_sender_log.write(s)
+            runtime_sender_log.flush()
+
+    if TRANSFER==0:
+        return transfer_data_scp
+    return transfer_data_scp
+
+@transfer_mapping_decorator
+def transfer_data(IP,user,pword,source, destination):
+    """Transfer data with given parameters
+    
+    Args:
+        IP (str): destination IP 
+        user (str): destination username
+        pword (str): destination password
+        source (str): source file path
+        destination (str): destination file path
+    """
+    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    print(msg)
 
 def setup_exec_node():
     """Setup prepared for the chosen computing node, transfer input files
@@ -191,7 +231,8 @@ def setup_exec_node():
             for idx,source in enumerate(source_list):
                 print(idx)
                 print(source)
-                transfer_data_scp(node_ip_map[best_node],username,password,source, destination_list[idx])
+                transfer_data(node_ip_map[best_node],username,password,source, destination_list[idx])
+                #transfer_data_scp(node_ip_map[best_node],username,password,source, destination_list[idx])
             del task_price_summary[file]
             del task_price_count[file]
         # just for testing
@@ -474,6 +515,10 @@ class Handler(FileSystemEventHandler):
 
             
             ts = time.time()
+            if RUNTIME == 1:
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,event.src_path,ts)
+                runtime_receiver_log.write(s)
+                runtime_receiver_log.flush()
             """
                 Save the time the input file enters the queue
             """
@@ -516,21 +561,6 @@ class Handler(FileSystemEventHandler):
                     issue_price_request(dest_node_host_port,temp_name, sum_output_data)
                 
                 
-                
-                # ts = time.time()
-                # runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-                # send_runtime_profile(runtime_info)
-                # input_path = os.path.split(event.src_path)[0]
-                # output_path = os.path.join(os.path.split(input_path)[0],'output')
-
-                
-
-                # dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
-                # dag_task.start()
-                # dag_task.join()
-                # ts = time.time()
-                # runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                # send_runtime_profile(runtime_info)
 
 
 def main():
@@ -548,6 +578,30 @@ def main():
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
+
+    # Prepare transfer-runtime file:
+    global runtime_sender_log, RUNTIME, TRANSFER, transfer_type
+    RUNTIME = int(config['CONFIG']['RUNTIME'])
+    TRANSFER = int(config['CONFIG']['TRANSFER'])
+
+    if TRANSFER == 0:
+        transfer_type = 'scp'
+
+    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
+    s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
+    runtime_sender_log.write(s)
+    runtime_sender_log.close()
+    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
+    #Node_name, Transfer_Type, Source_path , Time_stamp
+
+    if RUNTIME == 1:
+        global runtime_receiver_log
+        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
+        runtime_receiver_log.write(s)
+        runtime_receiver_log.close()
+        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
+        #Node_name, Transfer_Type, Source_path , Time_stamp
 
     global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, task_mul, count_dict,self_ip
 

@@ -298,37 +298,18 @@ class Handler(FileSystemEventHandler):
             print("Received file as input - %s." % event.src_path)
             new_file = os.path.split(event.src_path)[-1]
 
-        
-            
-            #Runtime profiler (created_time)
-            
-            # if platform.system() == 'Windows':
-            #     print(os.path.getctime(event.src_path))
-            # else:
-            #     print(event.src_path)
-            #     stat = os.stat(event.src_path)
-            #     try:
-            #         print(stat.st_birthtime)
-            #     except AttributeError:
-            #         created_time=datetime.datetime.fromtimestamp(stat.st_mtime)
-            #         print(created_time)
 
             """
                 Save the time when an input file is available. This is taken as the start time of the task.
                 The output time is stored in the file central_scheduler/runtime/droplet_runtime_input_(%node name)
             """
-            # execution_start_time = datetime.datetime.utcnow()
-            # pathrun = '/centralized_scheduler/runtime/'
-            # runtime_file = os.path.join(pathrun,'droplet_runtime_input_' + node_name)
+            
             new_file = os.path.split(event.src_path)[-1]
             if '_' in new_file:
                 temp_name = new_file.split('_')[0]
             else:
                 temp_name = new_file.split('.')[0]
 
-            # with open(runtime_file, 'a') as f:
-            #     line = 'created_input, %s, %s, %s, %s\n' %(node_name, taskname, temp_name, execution_start_time)
-            #     f.write(line)
 
             queue_mul.put(new_file)
             

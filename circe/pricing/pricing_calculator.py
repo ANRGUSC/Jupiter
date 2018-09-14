@@ -487,28 +487,67 @@ def execute_task(task_name,file_name, filenames, input_path, output_path):
     dag_task.join()
     
     
-
-def transfer_data_scp(IP,user,pword,source, destination):
-    """Transfer data using SCP
+def transfer_mapping_decorator(TRANSFER=0):
+    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
     
     Args:
-        IP (str): destination IP address
-        user (str): username
-        pword (str): password
+        TRANSFER (int, optional): TRANSFER specified from ``jupiter_config.ini``, default method is SCP
+    
+    Returns:
+        function: chosen transfer method
+    """
+    
+    def transfer_data_scp(IP,user,pword,source, destination):
+        """Transfer data using SCP
+        
+        Args:
+            IP (str): destination IP address
+            user (str): username
+            pword (str): password
+            source (str): source file path
+            destination (str): destination file path
+        """
+        #Keep retrying in case the containers are still building/booting up on
+        #the child nodes.
+        print(IP)
+        retry = 0
+        ts = -1
+        while retry < num_retries:
+            try:
+                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+                os.system(cmd)
+                print('data transfer complete\n')
+                ts = time.time()
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
+                runtime_sender_log.write(s)
+                runtime_sender_log.flush()
+                break
+            except:
+                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+                time.sleep(2)
+                retry += 1
+        if retry == num_retries:
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,source,ts)
+            runtime_sender_log.write(s)
+            runtime_sender_log.flush()
+
+    if TRANSFER==0:
+        return transfer_data_scp
+    return transfer_data_scp
+
+@transfer_mapping_decorator
+def transfer_data(IP,user,pword,source, destination):
+    """Transfer data with given parameters
+    
+    Args:
+        IP (str): destination IP 
+        user (str): destination username
+        pword (str): destination password
         source (str): source file path
         destination (str): destination file path
     """
-    retry = 0
-    while retry < num_retries:
-        try:
-            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
-            os.system(cmd)
-            # print('data transfer complete\n')
-            break
-        except:
-            print('Task controller: SSH Connection refused or File transfer failed, will retry in 2 seconds')
-            time.sleep(2)
-        retry += 1
+    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    print(msg)
 
 #for OUTPUT folder 
 class Watcher1():
@@ -550,12 +589,19 @@ class Handler1(FileSystemEventHandler):
         elif event.event_type == 'created':
              
             print("Received file as output - %s." % event.src_path)
+
+            ts = time.time()
+            if RUNTIME == 1:
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,event.src_path,ts)
+                runtime_receiver_log.write(s)
+                runtime_receiver_log.flush()
+
             task_name = event.src_path.split('/')[-2]
             # print(task_name)
             # print(task_to_ip)
             task_ip = task_to_ip[task_name]
             # print(task_ip)
-            transfer_data_scp(task_ip,username,password,event.src_path, "/centralized_scheduler/output/")
+            transfer_data(task_ip,username,password,event.src_path, "/centralized_scheduler/output/")
 
 #for INPUT folder
 class Watcher(multiprocessing.Process):
@@ -675,6 +721,30 @@ def main():
 
 
     prepare_global_info()
+
+    # Prepare transfer-runtime file:
+    global runtime_sender_log, RUNTIME, TRANSFER, transfer_type
+    RUNTIME = int(config['CONFIG']['RUNTIME'])
+    TRANSFER = int(config['CONFIG']['TRANSFER'])
+
+    if TRANSFER == 0:
+        transfer_type = 'scp'
+
+    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
+    s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
+    runtime_sender_log.write(s)
+    runtime_sender_log.close()
+    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
+    #Node_name, Transfer_Type, Source_path , Time_stamp
+
+    if RUNTIME == 1:
+        global runtime_receiver_log
+        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
+        runtime_receiver_log.write(s)
+        runtime_receiver_log.close()
+        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
+        #Node_name, Transfer_Type, Source_path , Time_stamp
 
     web_server = MonitorRecv()
     web_server.start()

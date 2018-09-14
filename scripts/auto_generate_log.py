@@ -27,6 +27,7 @@ from delete_all_circe import *
 from delete_all_pricing_circe import *
 from delete_all_waves import *
 from delete_all_heft import *
+from auto_teardown_system import *
 
 from flask import Flask, request
 from k8s_jupiter_deploy import *
@@ -69,7 +70,7 @@ def setup_port(port):
         print('Error setting up port \n')
         print(e)
 
-def k8s_jupiter_deploy(port,app_name):
+def k8s_jupiter_deploy(port,app_name,mapper_log):
     """
         Deploy all Jupiter components (WAVE, CIRCE, DRUPE) in the system.
     """
@@ -127,8 +128,8 @@ def k8s_jupiter_deploy(port,app_name):
         print(line)
         while 1:
             try:
-                # print("get the data from " + line)
-                #time.sleep(5)
+                print("get the data from " + line)
+                time.sleep(5)
                 r = requests.get(line)
                 mapping = r.json()
                 data = json.dumps(mapping)
@@ -142,6 +143,7 @@ def k8s_jupiter_deploy(port,app_name):
 
 
         pprint(mapping)
+        export_home_log(jupiter_config.MAPPER_NAMESPACE,app_name,mapper_log)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
@@ -182,6 +184,7 @@ def get_pod_logs(namespace, pod_name, log_name):
     # os.system(bash_runtime)
 
 
+
 def export_circe_log(app_name,log_name):
     """Export circe home log for evaluation, should only use when for non-static mapping
     """
@@ -201,6 +204,39 @@ def export_circe_log(app_name,log_name):
     print('******************* Circe pod to export')
     print(circe_name)
     get_pod_logs(jupiter_config.DEPLOYMENT_NAMESPACE,circe_name,log_name)
+
+
+def export_mapper_log(app_name,log_name):
+    """Export circe home log for evaluation, should only use when for non-static mapping
+    """
+    jupiter_config.set_globals()
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    core_v1_api = client.CoreV1Api()
+    resp = core_v1_api.list_namespaced_pod(jupiter_config.MAPPER_NAMESPACE)
+    home_name=app_name+'-home'
+    for i in resp.items:
+        if i.metadata.name.startswith(home_name):
+            circe_name = i.metadata.name
+            break;
+    print('******************* Mapper pod to export')
+    print(circe_name)
+    get_pod_logs(jupiter_config.DEPLOYMENT_NAMESPACE,circe_name,log_name)
+
+def export_home_log(namespace, app_name,log_name):
+    """Export circe home log for evaluation, should only use when for non-static mapping
+    """
+    jupiter_config.set_globals()
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    core_v1_api = client.CoreV1Api()
+    resp = core_v1_api.list_namespaced_pod(namespace)
+    home_name=app_name+'-home'
+    for i in resp.items:
+        if i.metadata.name.startswith(home_name):
+            home_name = i.metadata.name
+            break;
+    print('******************* Home pod to export')
+    print(home_name)
+    get_pod_logs(namespace,home_name,log_name)
 
 
 
@@ -226,7 +262,7 @@ def empty_function():
 
 
 
-def redeploy_system(app_name,port):
+def redeploy_system(app_name,port,mapper_log):
     """
         Redeploy the whole system
     """
@@ -294,7 +330,8 @@ def redeploy_system(app_name,port):
         print(line)
         while 1:
             try:
-                # print("get the data from " + line)
+                print("get the data from " + line)
+                time.sleep(5)
                 r = requests.get(line)
                 mapping = r.json()
                 data = json.dumps(mapping)
@@ -307,6 +344,8 @@ def redeploy_system(app_name,port):
                 print("Will retry to get the mapping for " + app_name)
                 time.sleep(30)
         pprint(mapping)
+
+        export_home_log(jupiter_config.MAPPER_NAMESPACE,app_name,mapper_log)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
@@ -354,13 +393,13 @@ def check_finish_evaluation(app_name,port,num_samples):
             time.sleep(60)
 
    
-def deploy_app_jupiter(app_name,port,log,num_runs,num_samples):
+def deploy_app_jupiter(app_name,port,circe_log,num_runs,num_samples,mapper_log):
     setup_port(port)
-    k8s_jupiter_deploy(port,app_name)
+    k8s_jupiter_deploy(port,app_name,mapper_log)
     log_name = "../logs/evaluation_log_" + app_name+":"+str(port) 
     with open(log_name,'w+') as f:
         for i in range(0,num_runs):
-            file_log = log+'_'+str(i)
+            file_log = circe_log+'_'+str(i)
             f.write('============================\n')
             check_finish_evaluation(app_name,port,num_samples)
             f.write('\nFinish one run !!!!!!!!!!!!!!!!!!!!!!')
@@ -371,8 +410,9 @@ def deploy_app_jupiter(app_name,port,log,num_runs,num_samples):
             export_circe_log(app_name,file_log)
             time.sleep(30)
             f.write('\nRedeploy the system')
-            redeploy_system(app_name,port)
+            redeploy_system(app_name,port,mapper_log)
         f.write('\nFinish the experiments for the current application')
+    teardown_system(app_name)
     
 def main():
     """ 
@@ -380,36 +420,44 @@ def main():
     """
     app_name = 'dummy'
     num_samples = 2
-    num_runs = 2
-    num_dags = 2
-    jupiter_config.set_globals()
-    if jupiter_config.SCHEDULER == 0:
-        alg = 'heft'
-    elif jupiter_config.SCHEDULER == 1:
-        alg = 'random'
-    else:
-        alg = 'greedy'
-    
-    if jupiter_config.PRICING == 1
-        option = 'pricing'
-    else:
-        option = 'nopricing'
-    port_list = []
-    app_list = []
-    log_list = []
-    for num in range(1,num_dags+1):
-        log_name = '../logs/%s_%s_%dDAG%d_%dRUN_circehome' %(option, alg,num_dags,num,num_runs)
-        port =  8080 + num-1
-        cur_app = app_name+str(num)
-        port_list.append(port)
-        app_list.append(cur_app)
-        log_list.append(log_name)        
-    print(port_list)
-    print(app_list)
-    print(log_list)
-   
-    for idx,app_name in enumerate(app_list):
-        _thread.start_new_thread(deploy_app_jupiter, (app_name,port_list[idx],log_list[idx],num_runs,num_samples))
+    num_runs = 5
+    num_dags_list = [10]
+    #num_dags_list = [1,2,4,6,8,10]
+    for num_dags in num_dags_list:
+        temp = app_name
+        print(num_dags)
+        jupiter_config.set_globals()
+        if jupiter_config.SCHEDULER == 0:
+            alg = 'heft'
+        elif jupiter_config.SCHEDULER == 1:
+            alg = 'random'
+        else:
+            alg = 'greedy'
+        
+        if jupiter_config.PRICING == 1:
+            option = 'pricing'
+        else:
+            option = 'nopricing'
+        port_list = []
+        app_list = []
+        log_circe_list = []
+        log_mapper_list = []
+        for num in range(1,num_dags+1):
+            log_circe = '../logs/%s_%s_%dDAG%d_%dRUN_circehome' %(option, alg,num_dags,num,num_runs)
+            log_mapper = '../logs/%s_%s_%dDAG%d_%dRUN_mapperhome' %(option, alg,num_dags,num,num_runs)
+            port =  8080 + num-1
+            cur_app = temp+str(num)
+            port_list.append(port)
+            app_list.append(cur_app)
+            log_circe_list.append(log_circe)  
+            log_mapper_list.append(log_mapper)       
+        print(port_list)
+        print(app_list)
+        print(log_circe_list)
+       
+        for idx,appname in enumerate(app_list):
+            print(appname)
+            _thread.start_new_thread(deploy_app_jupiter, (appname,port_list[idx],log_circe_list[idx],num_runs,num_samples,log_mapper_list[idx]))
 
 
 

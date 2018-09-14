@@ -160,12 +160,12 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     first_task = dag_info[0]
     dag = dag_info[1]
     hosts = temp_info[2]
-    print("hosts:")
-    pprint(hosts)
-    print(len(dag_info))
-    pprint(dag_info[0])
-    pprint(dag_info[1])
-    pprint(dag_info[2])
+    # print("hosts:")
+    # pprint(hosts)
+    # print(len(dag_info))
+    # pprint(dag_info[0])
+    # pprint(dag_info[1])
+    # pprint(dag_info[2])
     service_ips = {}; #list of all service IPs including home and task controllers
     computing_service_ips = {}
     all_profiler_ips = ''
@@ -229,8 +229,8 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
 
-    print(all_node)
-    print(all_node_ips)
+    # print(all_node)
+    # print(all_node_ips)
 
     print('-------- Create computing nodes service')
 
@@ -266,8 +266,8 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     all_computing_nodes = ':'.join(computing_service_ips.keys())
     all_profiler_ips = all_profiler_ips[1:]
     all_profiler_nodes = all_profiler_nodes[1:]
-    print(all_computing_nodes)
-    print(all_computing_ips)
+    # print(all_computing_nodes)
+    # print(all_computing_ips)
     
     
 
@@ -295,7 +295,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
                 Generate the yaml description of the required deployment for WAVE workers
             """
             pod_name = app_name+"-"+i
-            print(pod_name)
+            #print(pod_name)
             dep = write_circe_computing_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTING_IMAGE,
                                              host = nodes[i][0], all_node = all_node,
                                              node_name = i,
@@ -308,7 +308,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
                                              all_profiler_nodes = all_profiler_nodes,
                                              execution_home_ip = execution_ips['home'],
                                              home_node_ip = service_ips.get("home"))
-            pprint(dep)
+            #pprint(dep)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
             print("Deployment created. status ='%s'" % str(resp.status))
@@ -339,13 +339,13 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         inputnum = str(value[0])
         flag = str(value[1])
 
-        print('------------')
-        print(key)
-        print(value)
-        print(inputnum)
-        print(flag)
-        print(hosts)
-        print(service_ips)
+        # print('------------')
+        # print(key)
+        # print(value)
+        # print(inputnum)
+        # print(flag)
+        # print(hosts)
+        # print(service_ips)
 
 
         for i in range(2,len(value)):
@@ -357,17 +357,17 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
             if i != 2:
                 next_svc = next_svc + ':'
             next_svc = next_svc + str(service_ips.get(value[i]))
-        print("NEXT HOSTS")
-        print(nexthosts)
-        print("NEXT SVC")
-        print(next_svc)
+        # print("NEXT HOSTS")
+        # print(nexthosts)
+        # print("NEXT SVC")
+        # print(next_svc)
     
         
         #Generate the yaml description of the required deployment for each task
         
-        print('------------- Retrieve node ')
-        print(task)
-        print(dag_info[2][task])
+        # print('------------- Retrieve node ')
+        # print(task)
+        # print(dag_info[2][task])
 
         pod_name = app_name+"-"+task
 
@@ -381,7 +381,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
             all_node_ips = all_node_ips,
             all_computing_nodes = all_computing_nodes,
             all_computing_ips = all_computing_ips)
-        pprint(dep)
+        #pprint(dep)
         
 
         # # Call the Kubernetes API to create the deployment
