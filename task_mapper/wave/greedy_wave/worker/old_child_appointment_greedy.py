@@ -34,22 +34,20 @@ def prepare_global():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global network_map, FLASK_PORT, FLASK_SVC, MONGO_SVC_PORT, nodes, node_count, master_host, node_id, node_name, debug
+    global ip_to_node_name, FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host, node_id, node_name, debug
 
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
-    MONGO_SVC_PORT  = config['PORT']['MONGO_SVC']
+    MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
 
-    global my_profiler_ip, PROFILER
+    global PROFILER
     PROFILER = int(config['CONFIG']['PROFILER'])
-    my_profiler_ip = os.environ['PROFILER']
-
 
     # Get ALL node info
     node_count = 0
     nodes = {}
     tmp_nodes_for_convert={}
-    network_map = {}
+    ip_to_node_name = {}
 
     #Get nodes to self_ip mapping
     for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
@@ -65,12 +63,12 @@ def prepare_global():
         #First get mapping like {node: profiler_ip}, and later convert it to {profiler_ip: node}
         tmp_nodes_for_convert[node_name] = node_ip
 
-    # network_map is a dict that contains node names and profiler ips mapping
-    network_map = {v: k for k, v in tmp_nodes_for_convert.items()}
+    # ip_to_node_name is a dict that contains node names and profiler ips mapping
+    ip_to_node_name = {v: k for k, v in tmp_nodes_for_convert.items()}
 
     master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
     print("Nodes", nodes)
-    print(network_map)
+    print(ip_to_node_name)
 
 
 
@@ -373,49 +371,55 @@ def get_most_suitable_node(size):
     weight_memory = 1
 
     valid_nodes = []
+    all_nodes = []
 
     min_value = sys.maxsize
-
     for tmp_node_name in network_profile_data:
         data = network_profile_data[tmp_node_name]
-        delay = data['a'] * size * size + data['b'] * size + data['c']
-        network_profile_data[tmp_node_name]['delay'] = delay
-        if delay < min_value:
-            min_value = delay
+        a = data['a']
+        b = data['b']
+        c = data['c']
 
-    print(network_profile_data)
+        tmp = a * size * size + b * size + c
+        if tmp < min_value:
+            min_value = tmp
+
+        all_nodes.append({'node_name': tmp_node_name, 'delay': tmp, "node_ip": data['ip']})
+
+    # print(all_nodes)
+
     # get all the nodes that satisfy: time < tmin * threshold
-    for _, item in enumerate(network_profile_data):
-        if network_profile_data[item]['delay'] < min_value * threshold:
+    for _, item in enumerate(all_nodes):
+        if item['delay'] < min_value * threshold:
             valid_nodes.append(item)
 
-    print(valid_nodes)
     min_value = sys.maxsize
     result_node_name = ''
-    for item in valid_nodes:
-        print(item)
-        tmp_value = network_profile_data[item]['delay']
+    for _, item in enumerate(valid_nodes):
+        tmp_node_name = item['node_name']
+        tmp_value = item['delay']
 
-        tmp_cpu = 10000
-        tmp_memory = 10000
-        if item in resource_data.keys():
-            print(resource_data[item])
-            tmp_cpu = resource_data[item]['cpu']
-            tmp_memory = resource_data[item]['memory']
-
+        if (tmp_node_name not in resource_data.keys()) :
+            tmp_cpu = 10000
+            tmp_memory = 10000
+        else:
+            tmp_resource_data = resource_data[tmp_node_name]
+            tmp_cpu = tmp_resource_data['cpu']
+            tmp_memory = tmp_resource_data['memory']
 
         if weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory < min_value:
             min_value = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
-            result_node_name = item
+            result_node_name = tmp_node_name
 
     if not result_node_name:
         min_value = sys.maxsize
-        for item in resource_data:
-            tmp_cpu = resource_data[item]['cpu']
-            tmp_memory = resource_data[item]['memory']
+        for tmp_node_name in resource_data:
+            tmp_resource_data = resource_data[tmp_node_name]
+            tmp_cpu = tmp_resource_data['cpu']
+            tmp_memory = tmp_resource_data['memory']
             if weight_cpu*tmp_cpu + weight_memory*tmp_memory < min_value:
                 min_value = weight_cpu*tmp_cpu + weight_memory*tmp_memory
-                result_node_name = item
+                result_node_name = tmp_node_name
 
     if result_node_name:
         network_profile_data[result_node_name]['c'] = 100000
@@ -524,39 +528,63 @@ def get_resource_data_drupe():
     print("Resource profiles: ", json.dumps(result))
 
 
-def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
+def get_network_data_drupe():
     """Collect the network profile from local MongoDB peer
     """
-    print('Check My Network Profiler IP: '+my_profiler_ip)
-    client_mongo = MongoClient('mongodb://'+my_profiler_ip+':'+MONGO_SVC_PORT+'/')
-    db = client_mongo.droplet_network_profiler
-    collection = db.collection_names(include_system_collections=False)
-    num_nb = len(collection)-1
-    while num_nb==-1:
-        print('--- Network profiler mongoDB not yet prepared')
-        time.sleep(60)
-        collection = db.collection_names(include_system_collections=False)
-        num_nb = len(collection)-1
-    print('--- Number of neighbors: '+str(num_nb))
-    num_rows = db[my_profiler_ip].count()
-    while num_rows < num_nb:
-        print('--- Network profiler regression info not yet loaded into MongoDB!')
-        time.sleep(60)
-        num_rows = db[my_profiler_ip].count()
-    logging =db[my_profiler_ip].find().limit(num_nb)
-    for record in logging:
-        # print(record)
-        # Destination ID -> Parameters(a,b,c) , Destination IP
-        params = re.split(r'\s+', record['Parameters'])
-        network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
-                                                            'c': float(params[2]), 'ip': record['Destination[IP]']}
-    print('Network information has already been provided')
-    print(network_profile_data)
+    print('Collecting Netowrk Monitoring Data from MongoDB')
+    try_network_times = 0
+    while True:
+        try:
+            if try_network_times >= 10:
+                print("Exceeded maximum try times, break.")
+                break
+            client_mongo = MongoClient('mongodb://' + os.environ['PROFILER'] + ':' + str(MONGO_SVC) + '/')
+            db = client_mongo.droplet_network_profiler
+            table_name = os.environ['PROFILER']
+            # print(db[table_name])
+
+            #get mongoDB collections
+            collections = db.collection_names(include_system_collections=False)
+            # print(collections)
+
+            num_db = len(nodes)-1
+            num_rows = db[table_name].count()
+
+            global network_profile_data
+            network_profile_data.clear()
+
+            #wait till network data load
+            while num_rows < num_db :
+                print("Network profiler info not yet loaded into mongoDB")
+                time.sleep(360)
+                num_rows = db[table_name].count()
+            print("We got network profiler data!")
+
+            #Parse parameters metrix from network profiler
+            for item in db[table_name].find():
+                if 'Parameters' not in item or 'Destination[IP]' not in item:
+                    continue
+                destination_ip = item['Destination[IP]']
+                if destination_ip in ip_to_node_name:
+                    tmp_node_name = ip_to_node_name[destination_ip]
+                    params = item['Parameters']
+                    param_items = re.split(r'\s+', params)
+                    network_profile_data[tmp_node_name] = {'a': float(param_items[0]), 'b': float(param_items[1]),
+                                                           'c': float(param_items[2]), 'ip': destination_ip}
+            if len(network_profile_data) > 0:
+                break
+            else:
+                try_network_times += 1
+
+        except Exception as e:
+            print('Get network profile data error, details: ' + str(e))
+            try_network_times += 1
+            time.sleep(10)
+            
+
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
-
-
 
 def profilers_mapping_decorator(f):
     """General Mapping decorator function
@@ -623,7 +651,7 @@ def main():
     _thread.start_new_thread(get_resource_data, ())
 
     # Get network profile data
-    _thread.start_new_thread(get_network_data, (my_profiler_ip, MONGO_SVC_PORT,network_map))
+    _thread.start_new_thread(get_network_data, ())
 
     _thread.start_new_thread(watcher, ())
     _thread.start_new_thread(distribute, ())

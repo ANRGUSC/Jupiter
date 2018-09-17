@@ -169,6 +169,7 @@ def update_exec_profile_file():
     # print(exec_home_ip)
     # print(MONGO_SVC)
 
+    t = time.time()
     execution_info = []
     num_profilers = 0
     conn = False
@@ -182,6 +183,8 @@ def update_exec_profile_file():
             print('Error connection')
             time.sleep(60)
 
+    print('----- It takes ' + time.time()-t)
+    t = time.time()
     print(db)
     print(conn)
     while not available_data:
@@ -193,12 +196,16 @@ def update_exec_profile_file():
             time.sleep(60)
 
     print(logging)
+    print('----- It takes ' + time.time()-t)
+    t = time.time()
     for record in logging:
         # Node ID, Task, Execution Time, Output size
         info_to_csv=[record['Task'],record['Duration [sec]'],str(record['Output File [Kbit]'])]
         execution_info.append(info_to_csv)
     print('Execution information has already been provided')
     print(execution_info)
+    print('----- It takes ' + time.time()-t)
+    t = time.time()
     with open('execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
@@ -209,6 +216,8 @@ def get_updated_execution_profile():
     """Get updated execution information from text file
     """
     #print('----- Get updated execution information')
+
+    t = time.time()
     with open('execution_log.txt','r') as f:
         reader = csv.reader(f)
         execution = list(reader)
@@ -227,10 +236,13 @@ def get_updated_execution_profile():
     for row in execution:
         execution_info[row[0]] = [float(row[1]),float(row[2])]
     #print(execution_info)
+    print('----- It takes ' + time.time()-t)
+    t = time.time()
     return execution_info
 
 def get_updated_network_from_source(node_ip):
     #print("--- Get updated network profile information from "+node_ip)   
+    t = time.time()
     network_info = {}
     try:
         #print('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
@@ -251,6 +263,8 @@ def get_updated_network_from_source(node_ip):
             # info_to_csv=[ip_node_map[record['Source[IP]']],record['Source[IP]'],ip_node_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info[ip_node_map[record['Destination[IP]']]] = str(record['Parameters'])
         #print("Network information from the source node: ", network_info)
+        print('----- It takes ' + time.time()-t)
+        t = time.time()
         return network_info
     except Exception as e:
         print("Network request failed. Will try again, details: " + str(e))
@@ -266,18 +280,22 @@ def get_updated_network_profile(node_name):
         list: network information
     """
     #print('----- Get updated network information:')
+    t = time.time()
     computing_net_info = get_updated_network_from_source(self_profiler_ip)
     # print(node_ip_map)
     # print(node_name)
     task_profiler_ip = node_ip_map[node_name]
     # print(task_profiler_ip)
     controller_net_info = get_updated_network_from_source(task_profiler_ip)
+    print('----- It takes ' + time.time()-t)
+    
     return computing_net_info,controller_net_info
 
 def get_updated_resource_profile():
     """Requesting resource profiler data using flask for its corresponding profiler node
     """
-    #print("----- Get updated resource profile information")  
+    #print("----- Get updated resource profile information") 
+    t = time.time() 
     resource_info = [] 
     try:
         for c in range(0,num_retries):
@@ -293,6 +311,8 @@ def get_updated_resource_profile():
         if c == num_retries:
             print("Exceeded maximum try times.")
 
+        print('----- It takes ' + time.time()-t)
+        t = time.time()
         # print("Resource profiles: ", resource_info)
         return resource_info
 
@@ -328,6 +348,8 @@ def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
     """
 
     try:
+        
+        t = time.time()
         print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
@@ -342,6 +364,8 @@ def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
         test_execution_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         print('----Task queue: ')
         print(queue_mul)
+        print('----- It takes ' + time.time()-t)
+        t = time.time()
         print('----- Calculating price:')
         print('--- Resource cost: ')
         mem_cost = float(resource_info[self_name]["memory"])
@@ -368,10 +392,13 @@ def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
         else:
             network_cost = 0 
         print(network_cost)
+        print('----- It takes ' + time.time()-t)
+        t = time.time()
         #Temporary: linear
         print('--- Queuing cost: ')
         print(task_queue_size)
-
+        print('----- It takes ' + time.time()-t)
+        t = time.time()
         if task_queue_size == -1: #infinite tasks
             queue_cost = 0
         else:
@@ -390,12 +417,14 @@ def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
                     #TO_DO: sum or max
                     queue_cost = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_execution_size 
         print(queue_cost)
-
+        print('----- It takes ' + time.time()-t)
+        t = time.time()
         price = w_net * network_cost + w_cpu * cpu_cost + w_mem * mem_cost + \
                 w_queue * queue_cost
 
         print('--- Final price: ')
         print(price)
+        print('----- It takes ' + time.time()-t)
         return price
              
     except:

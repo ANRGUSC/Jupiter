@@ -89,7 +89,7 @@ def k8s_jupiter_deploy():
         print('*************************')
 
         #Start the task to node mapper
-        #task_mapping_function(profiler_ips,execution_ips,node_names)
+        task_mapping_function(profiler_ips,execution_ips,node_names)
 
         """
             Make sure you run kubectl proxy --port=8080 on a terminal.

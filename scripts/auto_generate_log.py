@@ -394,7 +394,7 @@ def check_finish_evaluation(app_name,port,num_samples):
 
    
 def deploy_app_jupiter(app_name,port,circe_log,num_runs,num_samples,mapper_log):
-    setup_port(port)
+    #setup_port(port)
     k8s_jupiter_deploy(port,app_name,mapper_log)
     log_name = "../logs/evaluation_log_" + app_name+":"+str(port) 
     with open(log_name,'w+') as f:
@@ -420,8 +420,8 @@ def main():
     """
     app_name = 'dummy'
     num_samples = 2
-    num_runs = 5
-    num_dags_list = [10]
+    num_runs = 1
+    num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]
     for num_dags in num_dags_list:
         temp = app_name
