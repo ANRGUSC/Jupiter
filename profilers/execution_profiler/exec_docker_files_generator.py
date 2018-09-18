@@ -57,6 +57,8 @@ ADD scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD profilers/execution_profiler/get_files.py /centralized_scheduler/get_files.py
 ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
 
+RUN chmod +x /centralized_scheduler/start.sh
+
 
 WORKDIR /centralized_scheduler/
 
@@ -109,6 +111,7 @@ RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 
 ADD profilers/execution_profiler/central_mongod /central_mongod
+RUN chmod +x /central_mongod
 
 
 RUN mkdir -p /centralized_scheduler/profiler_files

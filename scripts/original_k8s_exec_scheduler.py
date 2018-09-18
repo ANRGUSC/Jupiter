@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar,  Jason A Tran,  Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
@@ -29,7 +29,7 @@ import jupiter_config
 
 
 
-def check_status_exec_profiler(app_name):
+def check_status_exec_profiler():
     """
     This function prints out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
@@ -71,7 +71,7 @@ def check_status_exec_profiler(app_name):
         # First check if there is a deployment existing with
         # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=" + app_name + "-"+key
+        label = "app=" + key
         resp = None
         if taskmap[key][1] == False:
 
@@ -91,7 +91,7 @@ def check_status_exec_profiler(app_name):
         print("Wait before trying again!!!!!!")
     return result
 
-def check_status_exec_profiler_workers(app_name):
+def check_status_exec_profiler_workers():
     """
     This function prints out all the workers that are not running.
     If all the workers are running: return ``True``; else return ``False``.
@@ -126,7 +126,7 @@ def check_status_exec_profiler_workers(app_name):
         # First check if there is a deployment existing with
         # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=" + app_name + "-" + key + "exec_profiler"
+        label = "app=" + key + "exec_profiler"
 
         resp = None
 
@@ -148,7 +148,7 @@ def check_status_exec_profiler_workers(app_name):
     return result
 
 # if __name__ == '__main__':
-def k8s_exec_scheduler(app_name):
+def k8s_exec_scheduler():
     """
         This script deploys execution profiler in the system. 
     """
@@ -192,14 +192,13 @@ def k8s_exec_scheduler(app_name):
         First create the home node's service.
     """
 
-    home_name = app_name + '-home'
-    home_body = write_exec_service_specs_home(name = home_name)
+    home_body = write_exec_service_specs_home(name = 'home')
 
     ser_resp = api.create_namespaced_service(namespace, home_body)
     print("Home service created. status = '%s'" % str(ser_resp.status))
 
     try:
-        resp = api.read_namespaced_service(home_name, namespace)
+        resp = api.read_namespaced_service('home', namespace)
     except ApiException as e:
         print("Exception Occurred")
 
@@ -223,16 +222,15 @@ def k8s_exec_scheduler(app_name):
         """
             Generate the yaml description of the required service for each task
         """
-        pod_name = app_name+'-'+task
         if taskmap[key][1] == False:
-            body = write_exec_service_specs_home(name = pod_name)
+            body = write_exec_service_specs_home(name = task)
 
             # Call the Kubernetes API to create the service
             ser_resp = api.create_namespaced_service(namespace, body)
             print("Service created. status = '%s'" % str(ser_resp.status))
 
             try:
-                resp = api.read_namespaced_service(pod_name, namespace)
+                resp = api.read_namespaced_service(task, namespace)
             except ApiException as e:
                 print("Exception Occurred")
 
@@ -255,8 +253,7 @@ def k8s_exec_scheduler(app_name):
             Generate the yaml description of the required service for each task
         """
         if i != 'home':
-            pod_name = app_name+'-'+i
-            body = write_exec_service_specs(name = pod_name, label = pod_name + "exec_profiler")
+            body = write_exec_service_specs(name = i, label = i + "exec_profiler")
 
             # Call the Kubernetes API to create the service
 
@@ -264,7 +261,7 @@ def k8s_exec_scheduler(app_name):
                 ser_resp = api.create_namespaced_service(namespace, body)
                 print("Service created. status = '%s'" % str(ser_resp.status))
                 print(i)
-                resp = api.read_namespaced_service(pod_name, namespace)
+                resp = api.read_namespaced_service(i, namespace)
             except ApiException as e:
                 print("Exception Occurred")
 
@@ -277,6 +274,26 @@ def k8s_exec_scheduler(app_name):
     In the meantime, start dft_coded_detector services and their deployments
     """
 
+
+    # branch_number = 3 # how many aggregation points do you have?
+    # dft_coded_service_ips = []
+    # for idx in range(branch_number):
+    #     path = "nodes_dft_coded" + str(idx)+ ".txt"
+    #     dft_coded_service_ips.append(launch_dft_coding_services(path=path))
+    #     launch_dft_coding_deployments(dft_coded_service_ips[idx], path=path, masterIP=service_ips['dftdetector'+str(idx)])
+    #     all_node_ips = all_node_ips + ":" + dft_coded_service_ips[idx]
+    #     all_node = all_node + (":dftslave%d0:dftslave%d1:dftslave%d2"%(idx,idx,idx))
+
+    """
+    Let's start the TeraSort coded detectors now!!!
+    """
+    # tera_master_ips = []
+    # for idx in range(branch_number):
+    #     path = "nodes_tera_coded" + str(idx)+ ".txt"
+    #     tera_coded_service_ips, master_ip = launch_tera_coding_services(path=path)
+    #     launch_tera_coding_deployments(tera_coded_service_ips, path=path)
+    #     tera_master_ips.append(master_ip)
+
     """
     Start circe
     """
@@ -285,7 +302,6 @@ def k8s_exec_scheduler(app_name):
         task = key
         nexthosts = ''
         next_svc = ''
-        pod_name = app_name+'-'+task
 
         """
             We inject the host info for the child task via an environment variable valled CHILD_NODES to each pod/deployment.
@@ -308,10 +324,9 @@ def k8s_exec_scheduler(app_name):
 
         if taskmap[key][1] == False:
             #Generate the yaml description of the required deployment for each task
-            dep = write_exec_specs_non_dag_tasks(flag = str(flag), inputnum = str(inputnum), name = pod_name, node_name = task,
+            dep = write_exec_specs_non_dag_tasks(flag = str(flag), inputnum = str(inputnum), name = task, node_name = task,
                 image = jupiter_config.WORKER_IMAGE, child = nexthosts,
                 child_ips = next_svc,
-                task_name = task,
                 home_node_ip = service_ips.get("home"),
                 own_ip = service_ips[key],
                 all_node = all_node,
@@ -336,8 +351,7 @@ def k8s_exec_scheduler(app_name):
             """
                 Generate the yaml description of the required deployment for the profiles
             """
-            pod_name = app_name+'-'+i
-            dep = write_exec_specs(name = pod_name, label = pod_name + "exec_profiler", node_name = i, image = jupiter_config.EXEC_WORKER_IMAGE,
+            dep = write_exec_specs(name = i, label = i + "exec_profiler", node_name = i, image = jupiter_config.EXEC_WORKER_IMAGE,
                                              host = nodes[i][0], home_node_ip = service_ips['home'])
             # # pprint(dep)
             # # Call the Kubernetes API to create the deployment
@@ -348,21 +362,19 @@ def k8s_exec_scheduler(app_name):
         Check if all the tera detectors are running
     """
     while 1:
-        if check_status_exec_profiler(app_name):
+        if check_status_exec_profiler():
             break
         time.sleep(30)
 
     while 1:
-        if check_status_exec_profiler_workers(app_name):
+        if check_status_exec_profiler_workers():
             break
         time.sleep(30)
     
     task = 'home'
     key = 'home'
-    home_name = app_name+'-home'
     home_dep = write_exec_specs_home_control(flag = str(flag), inputnum = str(inputnum),
-            name = home_name, node_name = home_name,
-            task_name = task,
+            name = task, node_name = task,
             image = jupiter_config.EXEC_HOME_IMAGE, child = nexthosts,
             child_ips = next_svc, host = jupiter_config.HOME_NODE, dir = '{}',
             home_node_ip = service_ips.get("home"),
@@ -382,5 +394,4 @@ def k8s_exec_scheduler(app_name):
     return(service_ips)
 
 if __name__ == '__main__':
-    app_name = 'dummy'
-    k8s_exec_scheduler(app_name)
+    k8s_exec_scheduler()

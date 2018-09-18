@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
@@ -64,7 +64,7 @@ template_nondag = """
             - name: CHILD_NODES_IPS
               value: {child_ips}
             - name: TASK
-              value: {name}
+              value: {task_name}
             - name: NODE_NAME
               value: {node_name}
             - name: HOME_NODE
@@ -150,7 +150,7 @@ template_home = """
             - name: CHILD_NODES_IPS
               value: {child_ips}
             - name: TASK
-              value: {name}
+              value: {task_name}
             - name: NODE_NAME
               value: {node_name}
             - name: HOME_NODE

@@ -333,7 +333,10 @@ def main():
             try:
                 print('--- Add execution info from file: '+ file_path)
                 src_path = profiling_folder + '/' + file_path
+                print(src_path)
                 update_mongo(src_path)
+                print(profiling_folder_processed)
+                print(file_path)
                 shutil.move(src_path, profiling_folder_processed + file_path)
                 recv_file_count += 1
             except:
