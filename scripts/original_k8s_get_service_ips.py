@@ -73,7 +73,7 @@ def get_all_profilers():
 
         # At this point you should not have any of the profiler related service, pod, or deployment running
 
-def get_all_waves(app_name):
+def get_all_waves():
     """
         This function loads all of the service ips of WAVE deployments.
     """
@@ -116,13 +116,12 @@ def get_all_waves(app_name):
         
         # First check if there is a exisitng profiler deployment with
         # the name = key in the respective namespace
-        #label = "app=wave_" + key
-        pod_name = app_name+'-'+key
+        label = "app=wave_" + key
         
         resp = None
         api_2 = client.CoreV1Api()
         try:
-            resp = api_2.read_namespaced_service(pod_name, namespace)
+            resp = api_2.read_namespaced_service(key, namespace)
         except ApiException as e:
             print("Exception Occurred")
         # if a service is running, kill it
@@ -132,7 +131,7 @@ def get_all_waves(app_name):
     return mapping
         # At this point you should not have any of the profiler related service, pod, or deployment running
 
-def get_all_execs(app_name):
+def get_all_execs():
     """
         This load all of the service ips of execution profiler deployments.
     """
@@ -173,14 +172,12 @@ def get_all_execs(app_name):
 
     # First check if there is a exisitng profiler deployment with
     # the name = key in the respective namespace
-    key = 'home'
-    pod_name = app_name+ "-home"
+    key = "home"
 
     resp = None
     api_2 = client.CoreV1Api()
-    
     try:
-        resp = api_2.read_namespaced_service(pod_name, namespace)
+        resp = api_2.read_namespaced_service(key, namespace)
     except ApiException as e:
         print("Exception Occurred")
     # if a service is running, kill it

@@ -383,13 +383,11 @@ def get_most_suitable_node(size):
         if delay < min_value:
             min_value = delay
 
-    print(network_profile_data)
     # get all the nodes that satisfy: time < tmin * threshold
     for _, item in enumerate(network_profile_data):
         if network_profile_data[item]['delay'] < min_value * threshold:
             valid_nodes.append(item)
 
-    print(valid_nodes)
     min_value = sys.maxsize
     result_node_name = ''
     for item in valid_nodes:
@@ -403,9 +401,9 @@ def get_most_suitable_node(size):
             tmp_cpu = resource_data[item]['cpu']
             tmp_memory = resource_data[item]['memory']
 
-
-        if weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory < min_value:
-            min_value = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
+        tmp_cost = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
+        if  tmp_cost < min_value:
+            min_value = tmp_cost
             result_node_name = item
 
     if not result_node_name:
@@ -413,8 +411,9 @@ def get_most_suitable_node(size):
         for item in resource_data:
             tmp_cpu = resource_data[item]['cpu']
             tmp_memory = resource_data[item]['memory']
-            if weight_cpu*tmp_cpu + weight_memory*tmp_memory < min_value:
-                min_value = weight_cpu*tmp_cpu + weight_memory*tmp_memory
+            tmp_cost = weight_cpu*tmp_cpu + weight_memory*tmp_memory
+            if  tmp_cost < min_value:
+                min_value = tmp_cost
                 result_node_name = item
 
     if result_node_name:

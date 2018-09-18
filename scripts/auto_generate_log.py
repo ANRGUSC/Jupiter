@@ -70,7 +70,7 @@ def setup_port(port):
         print('Error setting up port \n')
         print(e)
 
-def k8s_jupiter_deploy(port,app_name,mapper_log):
+def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
     """
         Deploy all Jupiter components (WAVE, CIRCE, DRUPE) in the system.
     """
@@ -98,7 +98,7 @@ def k8s_jupiter_deploy(port,app_name,mapper_log):
 
 
         # start the execution profilers
-        execution_ips = get_all_execs()
+        execution_ips = get_all_execs(app_id)
         #execution_ips = exec_profiler_function()
 
         print('*************************')
@@ -262,7 +262,7 @@ def empty_function():
 
 
 
-def redeploy_system(app_name,port,mapper_log):
+def redeploy_system(app_id,app_name,port,mapper_log):
     """
         Redeploy the whole system
     """
@@ -301,7 +301,7 @@ def redeploy_system(app_name,port,mapper_log):
 
 
         # start the execution profilers
-        execution_ips = get_all_execs()
+        execution_ips = get_all_execs(app_id)
         # execution_ips = exec_profiler_function()
 
         print('*************************')
@@ -393,9 +393,12 @@ def check_finish_evaluation(app_name,port,num_samples):
             time.sleep(60)
 
    
-def deploy_app_jupiter(app_name,port,circe_log,num_runs,num_samples,mapper_log):
+def deploy_app_jupiter(app_id,app_name,port,circe_log,num_runs,num_samples,mapper_log):
     #setup_port(port)
-    k8s_jupiter_deploy(port,app_name,mapper_log)
+    k8s_jupiter_deploy(app_id,app_name,port,mapper_log)
+    log_folder ='../logs'
+    if not os.path.exists(log_folder):
+        os.makedirs(log_folder)
     log_name = "../logs/evaluation_log_" + app_name+":"+str(port) 
     with open(log_name,'w+') as f:
         for i in range(0,num_runs):
@@ -410,7 +413,7 @@ def deploy_app_jupiter(app_name,port,circe_log,num_runs,num_samples,mapper_log):
             export_circe_log(app_name,file_log)
             time.sleep(30)
             f.write('\nRedeploy the system')
-            redeploy_system(app_name,port,mapper_log)
+            redeploy_system(app_id,app_name,port,mapper_log)
         f.write('\nFinish the experiments for the current application')
     teardown_system(app_name)
     
@@ -457,7 +460,7 @@ def main():
        
         for idx,appname in enumerate(app_list):
             print(appname)
-            _thread.start_new_thread(deploy_app_jupiter, (appname,port_list[idx],log_circe_list[idx],num_runs,num_samples,log_mapper_list[idx]))
+            _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],log_circe_list[idx],num_runs,num_samples,log_mapper_list[idx]))
 
 
 

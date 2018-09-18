@@ -100,21 +100,24 @@ def receive_price_info():
         file_name = pricing_info[0]
         node_name = pricing_info[1]
         node_ip = pricing_info[2]
-        price = float(pricing_info[3])
-        # file_name = request.args.get('file_name')
-        # node_name = request.args.get('node_name')
-        # node_ip = request.args.get('node_ip')
-        # price = float(request.args.get('price'))
-        print("Received pricing info: ", file_name,node_name, node_ip,price)
+        print("Received pricing info")
+        #Node name, Network, CPU, Memory, Queue
+        price_info = [node_name,float(pricing_info[3]),float(pricing_info[4]),float(pricing_info[5]),float(pricing_info[6])]
+        print(price_info)
+        print(type(price_info))
+        print((file_name))
+        print(task_price_count)
+        print(type(task_price_count))
+        print(task_price_summary)
         if file_name not in task_price_summary:
             task_price_count[file_name] = 1
-            task_price_summary[file_name] = [node_name,price]
+            
+            #task_price_summary[file_name].append(price_info) 
         else:
             task_price_count[file_name] = task_price_count[file_name] +1
-            task_price_summary[file_name]=task_price_summary[file_name]+[node_name,price]
-        # print(task_price_summary)
-        # print(task_price_count)
+            #task_price_summary[file_name].append(price_info)
 
+        
     except Exception as e:
         print("Bad reception or failed processing in Flask for pricing announcement: "+ e) 
         return "not ok" 
@@ -184,6 +187,60 @@ def transfer_data(IP,user,pword,source, destination):
     msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
     print(msg)
 
+
+def pricing_mapping_decorator(PRICE_OPTION=0):
+    """Mapping the chosen price calculation method based on ``jupiter_config.PRICE_OPTION`` in ``jupiter_config.ini``
+    
+    Args:
+        PRICE_OPTION (int, optional): PRICE_OPTION specified from ``jupiter_config.ini``, default method is sum
+    
+    Returns:
+        function: chosen price calculation method
+    """
+    def select_best_node_sum(task_price_summary,file_name):
+        """Select the best node from price information of all nodes
+        
+        Args:
+            task_price_summary: price information of all nodes
+            file_name (str): Incoming file name
+        """
+        best_node = -1
+        w_net = 1 # Network
+        w_cpu = 1 # Resource
+        w_mem = 1 # Resource
+        w_queue = 1 # Execution time
+        cost_list = dict()
+        print(task_price_summary[file_name])
+        print(len(task_price_summary[file_name]))
+        print(type(task_price_summary[file_name]))
+        # for key,price in task_price_summary:
+        #     print(key)
+        #     print(price)
+        #     if file_name in key:
+        #         print(key[0])
+        #         print(key[1])
+        #         cost_list[key[1]] =  price['network']*w_net +  price['cpu']*w_cpu + price['memory']*w_memory + price['queue']*w_queue
+        
+        # print(cost_list)
+        # best_node = min(cost_list,key=cost_list.get)
+        # print(best_node)
+        return best_node
+
+    if PRICE_OPTION==0:
+        return select_best_node_sum
+    return select_best_node_sum
+
+@pricing_mapping_decorator
+def select_best_node(task_price_summary,file_name):
+    """Select the best node from price information of all nodes
+    
+    Args:
+        task_price_summary: price information of all nodes
+        file_name (str): Incoming file name
+    """
+    msg = 'Select the best node for file %s'%(file_name)
+    print(msg)
+
 def setup_exec_node():
     """Setup prepared for the chosen computing node, transfer input files
     
@@ -205,13 +262,12 @@ def setup_exec_node():
             continue
         for file in processed_files:
             print('*** Getting enough pricing announcement from all the computing nodes')
-            # print(file)
-            # print(task_price_summary[file])
-            best_idx = np.argmin(task_price_summary[file][1::2])
-            # print(task_price_summary[file][1::2][best_idx])
-            best_node = task_price_summary[file][::2][best_idx]
-            # print(task_price_summary[file][::2])
-            print('Most suitable node: ' + best_node)
+            
+            # best_idx = np.argmin(task_price_summary[file][1::2])
+            # best_node = task_price_summary[file][::2][best_idx]
+            best_node = select_best_node(task_price_summary,file)
+            
+            print('Most suitable node: ' + str(best_node))
             
             # print(source)
             # print(destination)
@@ -602,6 +658,12 @@ def main():
         runtime_receiver_log.close()
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
+
+
+    # Price calculation methods
+    global PRICE_OPTION
+    PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
+
 
     global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, task_mul, count_dict,self_ip
 

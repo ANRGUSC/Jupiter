@@ -28,7 +28,7 @@ def set_globals():
 	config = configparser.ConfigParser()
 	config.read(INI_PATH)
 	"""User input for scheduler information"""
-	global STATIC_MAPPING, SCHEDULER, TRANSFER, PROFILER, RUNTIME, PRICING 
+	global STATIC_MAPPING, SCHEDULER, TRANSFER, PROFILER, RUNTIME, PRICING, PRICE_OPTION
 
 	STATIC_MAPPING          = int(config['CONFIG']['STATIC_MAPPING'])
 	# scheduler option chosen from SCHEDULER_LIST
@@ -41,6 +41,8 @@ def set_globals():
 	RUNTIME                 = int(config['CONFIG']['RUNTIME'])
 	# Using pricing or original scheme
 	PRICING                 = int(config['CONFIG']['PRICING'])
+	# Pricing option from pricing option list
+	PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
 
 	"""Authorization information in the containers"""
 	global USERNAME, PASSWORD

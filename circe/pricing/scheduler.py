@@ -263,7 +263,7 @@ app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_p
 #         print(e)
 #         return "not ok"
 #     return "ok"
-app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
+#app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
 
 def transfer_mapping_decorator(TRANSFER=0):
     """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
