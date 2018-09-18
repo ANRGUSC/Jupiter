@@ -103,20 +103,19 @@ def receive_price_info():
         print("Received pricing info")
         #Node name, Network, CPU, Memory, Queue
         price_info = [node_name,float(pricing_info[3]),float(pricing_info[4]),float(pricing_info[5]),float(pricing_info[6])]
-        print(price_info)
-        print(type(price_info))
-        print((file_name))
-        print(task_price_count)
-        print(type(task_price_count))
-        print(task_price_summary)
         if file_name not in task_price_summary:
             task_price_count[file_name] = 1
+            task_price_summary[file_name] = [price_info]
             
-            #task_price_summary[file_name].append(price_info) 
+            
         else:
             task_price_count[file_name] = task_price_count[file_name] +1
-            #task_price_summary[file_name].append(price_info)
+            task_price_summary[file_name] = task_price_summary[file_name] + [price_info]
+    
+        print(task_price_count)
+        print(task_price_summary)
 
+        print('-------------')
         
     except Exception as e:
         print("Bad reception or failed processing in Flask for pricing announcement: "+ e) 
@@ -210,10 +209,9 @@ def pricing_mapping_decorator(PRICE_OPTION=0):
         w_mem = 1 # Resource
         w_queue = 1 # Execution time
         cost_list = dict()
-        print(task_price_summary[file_name])
-        print(len(task_price_summary[file_name]))
-        print(type(task_price_summary[file_name]))
-        # for key,price in task_price_summary:
+        for item in task_price_summary[file_name]:
+            print(item)
+            print(len(item))
         #     print(key)
         #     print(price)
         #     if file_name in key:
