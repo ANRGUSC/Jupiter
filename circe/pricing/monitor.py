@@ -210,18 +210,10 @@ def pricing_mapping_decorator(PRICE_OPTION=0):
         w_queue = 1 # Execution time
         cost_list = dict()
         for item in task_price_summary[file_name]:
-            print(item)
-            print(len(item))
-        #     print(key)
-        #     print(price)
-        #     if file_name in key:
-        #         print(key[0])
-        #         print(key[1])
-        #         cost_list[key[1]] =  price['network']*w_net +  price['cpu']*w_cpu + price['memory']*w_memory + price['queue']*w_queue
-        
-        # print(cost_list)
-        # best_node = min(cost_list,key=cost_list.get)
-        # print(best_node)
+            cost_list[item[0]] =  item[1]*w_net +  item[2]*w_cpu + item[3]*w_mem + item[4]*w_queue
+        best_node = min(cost_list,key=cost_list.get)
+        print(cost_list)
+        print(best_node)
         return best_node
 
     if PRICE_OPTION==0:
