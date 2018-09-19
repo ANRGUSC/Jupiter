@@ -187,7 +187,7 @@ def transfer_data(IP,user,pword,source, destination):
     print(msg)
 
 
-def pricing_mapping_decorator(PRICE_OPTION=0):
+def pricing_to_best_node_mapping(pricing_func):
     """Mapping the chosen price calculation method based on ``jupiter_config.PRICE_OPTION`` in ``jupiter_config.ini``
     
     Args:
@@ -195,32 +195,43 @@ def pricing_mapping_decorator(PRICE_OPTION=0):
     
     Returns:
         function: chosen price calculation method
+
     """
-    def select_best_node_sum(task_price_summary,file_name):
+    
+    def select_best_node(task_price_summary,file_name):
         """Select the best node from price information of all nodes
         
         Args:
             task_price_summary: price information of all nodes
             file_name (str): Incoming file name
         """
-        best_node = -1
-        w_net = 1 # Network
-        w_cpu = 1 # Resource
-        w_mem = 1 # Resource
-        w_queue = 1 # Execution time
-        cost_list = dict()
-        for item in task_price_summary[file_name]:
-            cost_list[item[0]] =  item[1]*w_net +  item[2]*w_cpu + item[3]*w_mem + item[4]*w_queue
+        cost_list = pricing_func(task_price_summary, file_name)
         best_node = min(cost_list,key=cost_list.get)
-        print(cost_list)
         print(best_node)
         return best_node
 
-    if PRICE_OPTION==0:
-        return select_best_node_sum
-    return select_best_node_sum
+    return select_best_node
 
-@pricing_mapping_decorator
+
+@pricing_to_best_node_mapping
+def sum_best_node(task_price_summary, file_name):
+    w_net = 1 # Network
+    w_cpu = 1 # Resource
+    w_mem = 1 # Resource
+    w_queue = 1 # Execution time=
+    cost_list = dict()
+    for item in task_price_summary[file_name]:
+        cost_list[item[0]] = item[1]*w_net +  item[2]*w_cpu + item[3]*w_mem + item[4]*w_queue
+    return cost_list
+
+
+@pricing_to_best_node_mapping
+def max_best_node(task_price_summary, file_name):
+    cost_list = dict()
+    for item in task_price_summary[file_name]:
+        cost_list[item[0]] = max(item[1:])
+    return cost_list
+
 def select_best_node(task_price_summary,file_name):
     """Select the best node from price information of all nodes
     
@@ -228,6 +239,14 @@ def select_best_node(task_price_summary,file_name):
         task_price_summary: price information of all nodes
         file_name (str): Incoming file name
     """
+
+    if PRICE_OPTION == 1:
+        return sum_best_node(task_price_summary, file_name)
+    elif PRICE_OPTION == 2:
+        return max_best_node(task_price_summary, file_name)
+    
+
+
     msg = 'Select the best node for file %s'%(file_name)
     print(msg)
 
@@ -250,12 +269,12 @@ def setup_exec_node():
         if len(processed_files) == 0:
             print('*** Not enough price information')
             continue
-        for file in processed_files:
+        for f in processed_files:
             print('*** Getting enough pricing announcement from all the computing nodes')
             
             # best_idx = np.argmin(task_price_summary[file][1::2])
             # best_node = task_price_summary[file][::2][best_idx]
-            best_node = select_best_node(task_price_summary,file)
+            best_node = select_best_node(task_price_summary,f)
             
             print('Most suitable node: ' + str(best_node))
             
@@ -263,24 +282,24 @@ def setup_exec_node():
             # print(destination)
             # print(node_ip_map)
             print(task_mul)
-            print(task_mul[file])
+            print(task_mul[f])
             # source = "/centralized_scheduler/input/"+file
             # destination = source+"#"+taskname+"#"+self_ip
-            source_list = [("/centralized_scheduler/input/"+f) for f in task_mul[file]]
+            source_list = [("/centralized_scheduler/input/"+f) for f in task_mul[f]]
             destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
             # print(source_list)
             # print(destination_list)
             # print(file)
             ts = time.time()
-            runtime_info = 'rt_exec '+ file+ ' '+str(ts)
+            runtime_info = 'rt_exec '+ f+ ' '+str(ts)
             send_runtime_profile(runtime_info)
             for idx,source in enumerate(source_list):
                 print(idx)
                 print(source)
                 transfer_data(node_ip_map[best_node],username,password,source, destination_list[idx])
                 #transfer_data_scp(node_ip_map[best_node],username,password,source, destination_list[idx])
-            del task_price_summary[file]
-            del task_price_count[file]
+            del task_price_summary[f]
+            del task_price_count[f]
         # just for testing
         # print('Send 2nd file for testing')
         # os.system("cp /centralized_scheduler/sample_input/2botnet.ipsum /centralized_scheduler/input/")
