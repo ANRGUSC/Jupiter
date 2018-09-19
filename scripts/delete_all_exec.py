@@ -124,7 +124,7 @@ def delete_all_exec(app_name):
 
     # Check if there is a replicaset running by using the label app=home
     # The label of kubernets are used to identify replicaset associate to each task
-    label = "app=home"
+    label = "app="+app_name+"-home"
     resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
     # if a replicaset exist, delete it
     

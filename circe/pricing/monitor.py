@@ -124,55 +124,41 @@ def receive_price_info():
     return "ok"
 app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info)
 
-def transfer_mapping_decorator(TRANSFER=0):
-    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+
+def transfer_data_scp(IP,user,pword,source, destination):
+    """Transfer data using SCP
     
     Args:
-        TRANSFER (int, optional): TRANSFER specified from ``jupiter_config.ini``, default method is SCP
-    
-    Returns:
-        function: chosen transfer method
+        IP (str): destination IP address
+        user (str): username
+        pword (str): password
+        source (str): source file path
+        destination (str): destination file path
     """
-    
-    def transfer_data_scp(IP,user,pword,source, destination):
-        """Transfer data using SCP
-        
-        Args:
-            IP (str): destination IP address
-            user (str): username
-            pword (str): password
-            source (str): source file path
-            destination (str): destination file path
-        """
-        #Keep retrying in case the containers are still building/booting up on
-        #the child nodes.
-        print(IP)
-        retry = 0
-        ts = -1
-        while retry < num_retries:
-            try:
-                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
-                os.system(cmd)
-                print('data transfer complete\n')
-                ts = time.time()
-                s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
-                runtime_sender_log.write(s)
-                runtime_sender_log.flush()
-                break
-            except:
-                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
-                time.sleep(2)
-                retry += 1
-        if retry == num_retries:
-            s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,source,ts)
+    #Keep retrying in case the containers are still building/booting up on
+    #the child nodes.
+    print(IP)
+    retry = 0
+    ts = -1
+    while retry < num_retries:
+        try:
+            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+            os.system(cmd)
+            print('data transfer complete\n')
+            ts = time.time()
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
+            break
+        except:
+            print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            time.sleep(2)
+            retry += 1
+    if retry == num_retries:
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,source,ts)
+        runtime_sender_log.write(s)
+        runtime_sender_log.flush()
 
-    if TRANSFER==0:
-        return transfer_data_scp
-    return transfer_data_scp
-
-@transfer_mapping_decorator
 def transfer_data(IP,user,pword,source, destination):
     """Transfer data with given parameters
     
@@ -185,6 +171,13 @@ def transfer_data(IP,user,pword,source, destination):
     """
     msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
     print(msg)
+    
+
+    if TRANSFER == 0:
+        return transfer_data_scp(IP,user,pword,source, destination)
+
+    return transfer_data_scp(IP,user,pword,source, destination) #default
+    
 
 
 def pricing_to_best_node_mapping(pricing_func):
@@ -272,24 +265,13 @@ def setup_exec_node():
         for f in processed_files:
             print('*** Getting enough pricing announcement from all the computing nodes')
             
-            # best_idx = np.argmin(task_price_summary[file][1::2])
-            # best_node = task_price_summary[file][::2][best_idx]
             best_node = select_best_node(task_price_summary,f)
             
             print('Most suitable node: ' + str(best_node))
             
-            # print(source)
-            # print(destination)
-            # print(node_ip_map)
-            print(task_mul)
-            print(task_mul[f])
-            # source = "/centralized_scheduler/input/"+file
-            # destination = source+"#"+taskname+"#"+self_ip
             source_list = [("/centralized_scheduler/input/"+f) for f in task_mul[f]]
             destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
-            # print(source_list)
-            # print(destination_list)
-            # print(file)
+            
             ts = time.time()
             runtime_info = 'rt_exec '+ f+ ' '+str(ts)
             send_runtime_profile(runtime_info)
@@ -297,12 +279,9 @@ def setup_exec_node():
                 print(idx)
                 print(source)
                 transfer_data(node_ip_map[best_node],username,password,source, destination_list[idx])
-                #transfer_data_scp(node_ip_map[best_node],username,password,source, destination_list[idx])
             del task_price_summary[f]
             del task_price_count[f]
-        # just for testing
-        # print('Send 2nd file for testing')
-        # os.system("cp /centralized_scheduler/sample_input/2botnet.ipsum /centralized_scheduler/input/")
+        
 def send_monitor_data(msg):
     """
     Sending message to flask server on home

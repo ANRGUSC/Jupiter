@@ -41,57 +41,49 @@ def file_size(file_path):
         file_info = os.stat(file_path)
         return convert_bytes(file_info.st_size)
 
-def transfer_mapping_decorator(TRANSFER=0):
-    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+def transfer_data_scp(IP,user,pword,source, destination):
+    """Transfer data using SCP
     
     Args:
-        TRANSFER (int): TRANSFER specified from ``jupiter_config.ini``
-    
-    Returns:
-        function: chosen transfer method
-    """
-    def transfer_data_scp(IP,user,pword,source, destination):
-        """Transfer data using SCP
-        
-        Args:
-            IP (str): destination IP address
-            user (str): username
-            pword (str): password
-            source (str): source file path
-            destination (str): destination file path
-        """
-        #Keep retrying in case the containers are still building/booting up on
-        #the child nodes.
-        print(IP)
-        retry = 0
-        while retry < num_retries:
-            try:
-                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
-                os.system(cmd)
-                print('data transfer complete\n')
-                break
-            except:
-                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
-                time.sleep(2)
-                retry += 1
-
-    if TRANSFER==0:
-        return transfer_data_scp
-    return transfer_data_scp
-
-@transfer_mapping_decorator
-def transfer_data(IP,user,pword,source, destination):
-    """Transfer data with given parameters
-    
-    Args:
-        IP (str): destination IP 
+        IP (str): destination IP address
         user (str): username
         pword (str): password
         source (str): source file path
         destination (str): destination file path
     """
-    msg = 'Transfer to IP: %s , username:%s, password: %s,source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    #Keep retrying in case the containers are still building/booting up on
+    #the child nodes.
+    print(IP)
+    retry = 0
+    while retry < num_retries:
+        try:
+            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+            os.system(cmd)
+            print('data transfer complete\n')
+            break
+        except:
+            print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            time.sleep(2)
+            retry += 1
+
+
+def transfer_data(IP,user,pword,source, destination):
+    """Transfer data with given parameters
+    
+    Args:
+        IP (str): destination IP 
+        user (str): destination username
+        pword (str): destination password
+        source (str): source file path
+        destination (str): destination file path
+    """
+    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
     print(msg)
+    
+    if TRANSFER == 0:
+        return transfer_data_scp(IP,user,pword,source, destination)
+
+    return transfer_data_scp(IP,user,pword,source, destination) #default
 
 def main():
     """
@@ -119,6 +111,10 @@ def main():
     INI_PATH = HERE + 'jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
+
+    global TRANSFER
+    TRANSFER = int(config['CONFIG']['TRANSFER'])
+    print(TRANSFER)
 
     ## create the task list in the order of execution
     task_order = []

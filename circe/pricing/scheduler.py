@@ -172,151 +172,62 @@ def recv_runtime_profile():
     return "ok"
 app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
 
-# def recv_runtime_profile():
-#     """
-
-#     Receiving run-time profiling information for every task (task name, start time stats, waiting time stats, end time stats)
-    
-#     Raises:
-#         Exception: failed processing in Flask
-#     """
-
-#     global rt_enter_time
-#     global rt_exec_time
-#     global rt_finish_time
-
-#     try:
-#         worker_node = request.args.get('work_node')
-#         msg = request.args.get('msg').split()
-        
-#         print(worker_node)
-#         print(msg)
-
-#         print("Received flask message:", worker_node, msg[0],msg[1], msg[2])
-
-#         if msg[0] == 'rt_enter':
-#             rt_enter_time[(worker_node,msg[1])] = float(msg[2])
-#         elif msg[0] == 'rt_exec' :
-#             rt_exec_time[(worker_node,msg[1])] = float(msg[2])
-#         else: #rt_finish
-#             rt_finish_time[(worker_node,msg[1])] = float(msg[2])
-
-#             print('********************************')
-#             print("Runtime profiling info:")
-#             print(len(rt_finish_time.keys()))
-
-
-#             if len(rt_finish_time.keys())==140: # DAG tasks
-#             #if len(rt_finish_time.keys())==200: # non-DAG tasks
-#                 for item in rt_enter_time:
-#                     print('Enter time')
-#                     print(item)
-#                 for item in rt_exec_time:
-#                     print('Exec time')
-#                     print(item)    
-#                 for item in rt_finish_time:
-#                     print('Finish time')
-#                     print(item) 
-#             print('********************************')
-#             # print('----------------------------')
-#             # print("Worker node: "+ worker_node)
-#             # print("Input file : "+ msg[1])
-#             # print(rt_finish_time[(worker_node,msg[1])])
-#             # print(rt_enter_time[(worker_node,msg[1])])
-#             # print(rt_exec_time[(worker_node,msg[1])])
-
-#             # print("Total duration time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
-#             # print("Waiting time:" + str(rt_exec_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
-#             # print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
-            
-#             # print('----------------------------')  
-#             # if worker_node == "globalfusion" and msg[1]=="10fusion":#just for evaluation results
-#             #     # Per task stats:
-#             #     print('********************************************') 
-#             #     print("Runtime profiling info:")
-#             #     """
-#             #         - Worker node: task name
-#             #         - Input file: input files
-#             #         - Enter time: time the input file enter the queue
-#             #         - Execute time: time the input file is processed
-#             #         - Finish time: time the output file is generated
-#             #         - Elapse time: total time since the input file is created till the output file is created
-#             #         - Duration time: total execution time of the task
-#             #         - Waiting time: total time since the input file is created till it is processed
-#             #     """
-                
-#             #     s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
-#             #     print(s)
-#             #     for k, v in rt_enter_time.items():
-#             #         worker, file = k
-#             #         if k in rt_finish_time:
-#             #             elapse = rt_finish_time[k]-v
-#             #             duration = rt_finish_time[k]-rt_exec_time[k]
-#             #             waiting = rt_exec_time[k]-v
-#             #             s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
-#             #             print(s)
-#             #     print('********************************************')
-
-                
-#     except Exception as e:
-#         print("Bad reception or failed processing in Flask for runtime profiling")
-#         print(e)
-#         return "not ok"
-#     return "ok"
-#app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
-
-def transfer_mapping_decorator(TRANSFER=0):
-    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+def transfer_data_scp(IP,user,pword,source, destination):
+    """Transfer data using SCP
     
     Args:
-        TRANSFER (int, optional): transfer method from ``jupiter_config.ini``, default method is SCP
-    
-    Returns:
-        function: chosen transfer method
+        IP (str): destination IP address
+        user (str): username
+        pword (str): password
+        source (str): source file path
+        destination (str): destination file path
     """
-    def data_transfer_scp(IP,user,pword,source, destination):
-        """Transfer data using SCP
-        
-        Args:
-            IP (str): destination IP address
-            user (str): username
-            pword (str): password
-            source (str): source file path
-            destination (str): destination file path
-        """
-        #Keep retrying in case the containers are still building/booting up on
-        #the child nodes.
+    #Keep retrying in case the containers are still building/booting up on
+    #the child nodes.
 
-        print(IP)
-        retry = 0
-        ts = -1
-        while retry < num_retries:
-            try:
-                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
-                os.system(cmd)
-                print('data transfer complete\n')
-                ts = time.time()
-                s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,ts)
-                runtime_sender_log.write(s)
-                runtime_sender_log.flush()
-                break
-            except:
-                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
-                time.sleep(2)
-                retry += 1
-        if retry == num_retries:
-            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,source,ts)
+    print(IP)
+    retry = 0
+    ts = -1
+    while retry < num_retries:
+        try:
+            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+            os.system(cmd)
+            print('data transfer complete\n')
+            ts = time.time()
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
+            break
+        except:
+            print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            time.sleep(2)
+            retry += 1
+    if retry == num_retries:
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,source,ts)
+        runtime_sender_log.write(s)
+        runtime_sender_log.flush()
 
-    if TRANSFER==0: 
-        return data_transfer_scp
-    return data_transfer_scp
+    
 
-@transfer_mapping_decorator
-def data_transfer(IP,user,pword,source, destination):
-    msg = 'Transfer to IP: %s , username:%s, password: %s,source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+def transfer_data(IP,user,pword,source, destination):
+    """Transfer data with given parameters
+    
+    Args:
+        IP (str): destination IP 
+        user (str): destination username
+        pword (str): destination password
+        source (str): source file path
+        destination (str): destination file path
+    """
+    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
     print(msg)
+    
+
+    if TRANSFER == 0:
+        return transfer_data_scp(IP,user,pword,source, destination)
+
+    return transfer_data_scp(IP,user,pword,source, destination) #default
+
 
 class MonitorRecv(multiprocessing.Process):
     def __init__(self):
@@ -442,7 +353,7 @@ class Handler(FileSystemEventHandler):
         
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
-            data_transfer(IP,username, password,source, destination)
+            transfer_data(IP,username, password,source, destination)
 
 
 def main():

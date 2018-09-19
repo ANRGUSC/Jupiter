@@ -399,7 +399,7 @@ def profilers_mapping_decorator(f):
       return f(*args, **kwargs)
     return profiler_mapping
 
-def get_network_data_mapping(PROFILER=0):
+def get_network_data_mapping():
     """Mapping the chosen TA2 module (network monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
     
     Args:
@@ -412,7 +412,7 @@ def get_network_data_mapping(PROFILER=0):
         return profilers_mapping_decorator(get_network_data_drupe)
     return profilers_mapping_decorator(get_network_data_drupe)
 
-def get_resource_data_mapping(PROFILER):
+def get_resource_data_mapping():
     """Mapping the chosen TA2 module (resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
     
     Args:
@@ -454,8 +454,8 @@ def main():
     print("Node name:", node_name, "and id", node_id)
     print("Starting the main thread on port", FLASK_PORT)
 
-    get_network_data = get_network_data_mapping(PROFILER)
-    get_resource_data = get_resource_data_mapping(PROFILER)
+    get_network_data = get_network_data_mapping()
+    get_resource_data = get_resource_data_mapping()
 
     while init_folder() != "ok": # Initialize the local folders
         pass

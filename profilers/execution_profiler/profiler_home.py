@@ -111,47 +111,34 @@ def file_size(file_path):
         file_info = os.stat(file_path)
         return convert_bytes(file_info.st_size)
 
-def transfer_mapping_decorator(TRANSFER=0):
-    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+def transfer_data_scp(IP,user,pword,source, destination):
+    """Transfer data using SCP
     
     Args:
-        TRANSFER (int): TRANSFER specified from ``jupiter_config.ini``
-    
-    Returns:
-        function: chosen transfer method
+        IP (str): destination IP address
+        user (str): username
+        pword (str): password
+        source (str): source file path
+        destination (str): destination file path
     """
-    def data_transfer_scp(IP,user,pword,source, destination):
-        """Transfer data using SCP
-        
-        Args:
-            IP (str): destination IP address
-            user (str): username
-            pword (str): password
-            source (str): source file path
-            destination (str): destination file path
-        """
 
-        #Keep retrying in case the containers are still building/booting up on
-        #the child nodes.
-        retry = 0
-        while retry < num_retries:
-            try:
-                print(IP)
-                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
-                os.system(cmd)
-                print('data transfer complete\n')
-                break
-            except:
-                print('profiler_home.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
-                time.sleep(2)
-                retry += 1
+    #Keep retrying in case the containers are still building/booting up on
+    #the child nodes.
+    retry = 0
+    while retry < num_retries:
+        try:
+            print(IP)
+            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+            os.system(cmd)
+            print('data transfer complete\n')
+            break
+        except:
+            print('profiler_home.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            time.sleep(2)
+            retry += 1
 
-    if TRANSFER==0:
-        return data_transfer_scp
-    return data_transfer_scp
 
-@transfer_mapping_decorator
-def data_transfer(IP,user,pword,source, destination):
+def transfer_data(IP,user,pword,source, destination):
     """Transfer data with given parameters
     
     Args:
@@ -161,8 +148,13 @@ def data_transfer(IP,user,pword,source, destination):
         source (str): source file path
         destination (str): destination file path
     """
-    msg = 'Transfer to IP: %s , username:%s, password: %s,source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
     print(msg)
+    
+    if TRANSFER == 0:
+        return transfer_data_scp(IP,user,pword,source, destination)
+
+    return transfer_data_scp(IP,user,pword,source, destination) #default
 
 def main():
     """
@@ -188,6 +180,10 @@ def main():
     configs = json.load(open('/centralized_scheduler/config.json'))
     dag_flag = configs['exec_profiler']
     task_map = configs['taskname_map']
+
+    global TRANSFER
+    TRANSFER = int(config['CONFIG']['TRANSFER'])
+
 
     nodename = 'home'
     print(nodename)
@@ -298,7 +294,7 @@ def main():
     for itr in range(1, len(profilers_ips)):
         i = profilers_ips[itr]
         print("Sending data to ", allprofiler_names[itr])
-        data_transfer(i,username,password,ptFile, ptFile1)
+        transfer_data(i,username,password,ptFile, ptFile1)
         # print(password)
         # print(ssh_port)
         # print(ptFile)
