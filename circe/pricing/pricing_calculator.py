@@ -35,6 +35,7 @@ from urllib import parse
 
 app = Flask(__name__)
 
+
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
   
@@ -421,117 +422,6 @@ def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
         
     return price
 
-# def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
-#     """Calculate price required to perform the task with given input based on network information, resource information, execution information and task queue size
-    
-#     Args:
-#         file_name (str): incoming file name
-#         task_name (str): incoming task name
-#         file_size (str): incoming file size
-    
-#     Returns:
-#         float: calculated price
-#     """
-
-#     # Default values
-#     price = 100000
-#     w_net = 1 # Network
-#     w_cpu = 1 # Resource
-#     w_mem = 1 # Resource
-#     w_queue = 1 # Execution time
-
-#     """
-#     Input information:
-#         - Resource information: resource_info
-#         - Network information: network_info
-#         - Task queue: task_mul
-#         - Execution information: execution_info
-#     """
-
-#     try:
-        
-#         t = time.time()
-#         print(' Retrieve all input information: ')
-#         execution_info = get_updated_execution_profile()
-#         resource_info = get_updated_resource_profile()
-#         computing_net_info,controller_net_info = get_updated_network_profile(node_name)
-#         print('--- Resource: ')
-#         print(resource_info)
-#         print('--- Network: ')
-#         print(computing_net_info)
-#         print(controller_net_info)
-#         print('--- Execution: ')
-#         print(execution_info)
-#         test_execution_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
-#         print('----Task queue: ')
-#         print(queue_mul)
-#         print('----- It takes ' + time.time()-t)
-#         t = time.time()
-#         print('----- Calculating price:')
-#         print('--- Resource cost: ')
-#         mem_cost = float(resource_info[self_name]["memory"])
-#         cpu_cost = float(resource_info[self_name]["cpu"])
-#         print(mem_cost)
-#         print(cpu_cost)
-#         print('--- Network cost: ')
-#         print(node_name)
-#         if node_name in computing_net_info.keys():
-#             computing_params = computing_net_info[node_name].split()
-#             controller_params = controller_net_info[self_name].split()
-#             computing_params = [float(x) for x in computing_params]
-#             controller_params = [float(x) for x in controller_params]
-#             print(computing_params)
-#             print(controller_params)
-#             estimated_output = execution_info[task_name][1]* test_execution_size / file_size
-#             print(estimated_output)
-#             network_cost = (controller_params[0] * file_size * file_size) + \
-#                            (controller_params[1] * file_size) + \
-#                            controller_params[2] + \
-#                            (computing_params[0] * estimated_output * estimated_output) + \
-#                            (computing_params[1] * estimated_output) + \
-#                            computing_params[2]
-#         else:
-#             network_cost = 0 
-#         print(network_cost)
-#         print('----- It takes ' + time.time()-t)
-#         t = time.time()
-#         #Temporary: linear
-#         print('--- Queuing cost: ')
-#         print(task_queue_size)
-#         print('----- It takes ' + time.time()-t)
-#         t = time.time()
-#         if task_queue_size == -1: #infinite tasks
-#             queue_cost = 0
-#         else:
-#             if len(queue_mul)==0:
-#                 queue_cost = 0
-#                 print('empty queue, no tasks are waiting')
-#             else:
-#                 queue_dict = dict(queue_mul)
-#                 queue_task = [k for k,v in queue_dict.items() if v == False]
-#                 size_dict = dict(size_mul)
-#                 queue_size =  [size_dict[k] for k in queue_dict.keys()]
-#                 queue_cost = 0 
-#                 print(queue_task)
-#                 print(queue_size)
-#                 for idx,task_info in enumerate(queue_task):
-#                     #TO_DO: sum or max
-#                     queue_cost = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_execution_size 
-#         print(queue_cost)
-#         print('----- It takes ' + time.time()-t)
-#         t = time.time()
-#         price = w_net * network_cost + w_cpu * cpu_cost + w_mem * mem_cost + \
-#                 w_queue * queue_cost
-
-#         print('--- Final price: ')
-#         print(price)
-#         print('----- It takes ' + time.time()-t)
-#         return price
-             
-#     except:
-#         print('Error reading input information to calculate the price')
-        
-#     return price
 
 def announce_price(task_controller_ip, file_name, price):
     try:
@@ -575,33 +465,6 @@ def receive_price_request():
     return "ok"
 app.add_url_rule('/receive_price_request', 'receive_price_request', receive_price_request)
 
-# def send_runtime_profile(msg,task_name):
-#     """
-#     Sending runtime profiling information to flask server on home
-
-#     Args:
-#         msg (str): the message to be sent
-
-#     Returns:
-#         str: the message if successful, "not ok" otherwise.
-
-#     Raises:
-#         Exception: if sending message to flask server on home is failed
-#     """
-#     try:
-#         print("Sending message", msg)
-#         url = "http://" + home_node_host_port + "/recv_runtime_profile"
-#         params = {'msg': msg, "work_node": task_name}
-#         params = parse.urlencode(params)
-#         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-#         res = urllib.request.urlopen(req)
-#         res = res.read()
-#         res = res.decode('utf-8')
-#     except Exception as e:
-#         print("Sending runtime profiling info to flask server on home FAILED!!!")
-#         print(e)
-#         return "not ok"
-#     return res
 
 def execute_task(task_name,file_name, filenames, input_path, output_path):
     """Execute the task given the input information
@@ -612,6 +475,9 @@ def execute_task(task_name,file_name, filenames, input_path, output_path):
         input_path (str): input file path
         output_path (str): output file path
     """
+    ts = time.time()
+    runtime_info = 'rt_exec '+ file_name+ ' '+str(ts)
+    send_runtime_profile(runtime_info)
     dag_task = multiprocessing.Process(target=task_module[task_name].task, args=(filenames, input_path, output_path))
     dag_task.start()
     dag_task.join()
@@ -679,6 +545,34 @@ def transfer_data(IP,user,pword,source, destination):
     msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
     print(msg)
 
+def send_runtime_profile(msg):
+    """
+    Sending runtime profiling information to flask server on home
+
+    Args:
+        msg (str): the message to be sent
+
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+
+    Raises:
+        Exception: if sending message to flask server on home is failed
+    """
+    try:
+        print("Sending message", msg)
+        url = "http://" + home_node_host_port + "/recv_runtime_profile"
+        params = {'msg': msg, "work_node": self_name}
+        params = parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print("Sending runtime profiling info to flask server on home FAILED!!!")
+        print(e)
+        return "not ok"
+    return res
+
 #for OUTPUT folder 
 class Watcher1():
     
@@ -721,6 +615,9 @@ class Handler1(FileSystemEventHandler):
             print("Received file as output - %s." % event.src_path)
 
             ts = time.time()
+            runtime_info = 'rt_finish '+ event.src_path+ ' '+str(ts)
+            send_runtime_profile(runtime_info)
+
             if RUNTIME == 1:
                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,event.src_path,ts)
                 runtime_receiver_log.write(s)

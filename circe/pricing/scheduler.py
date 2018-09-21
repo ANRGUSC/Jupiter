@@ -132,7 +132,7 @@ def recv_runtime_profile():
             print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
             
             print('----------------------------')  
-            if worker_node == "globalfusion":
+            if worker_node == "globalfusion" or "task4":
                 # Per task stats:
                 print('********************************************') 
                 print("Runtime profiling info:")

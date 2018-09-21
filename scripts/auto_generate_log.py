@@ -99,7 +99,7 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
 
         # start the execution profilers
         execution_ips = get_all_execs(app_id)
-        #execution_ips = exec_profiler_function()
+        #execution_ips = exec_profiler_function(app_id)
 
         print('*************************')
         print('Network Profiling Information:')
@@ -143,7 +143,7 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
 
 
         pprint(mapping)
-        export_home_log(jupiter_config.MAPPER_NAMESPACE,app_name,mapper_log)
+        export_mapper_log(app_name,mapper_log)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
@@ -168,20 +168,52 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
 
     print("The Jupiter Deployment is Successful!")
 
-def get_pod_logs(namespace, pod_name, log_name):
+def get_pod_logs_circe(namespace, pod_name, log_name):
     """Generate log of pod given name space and pod name
     
     Args:
         namespace (str): corresponding name space
         pod_name (str): corresponding pod name
     """
+    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+    print(namespace)
+    print(pod_name)
+    print(log_name)
     ts = int(time.time())
     log_file = "%s_%d.log" %(log_name,ts)
     bash_log = "kubectl logs %s -n %s > %s"%(pod_name,namespace,log_file)
     os.system(bash_log)
-    # log_runtime = "../logs/original_greedy_both_dummy_runtime_%d.log" %(ts)
-    # bash_runtime = "kubectl cp %s/%s:runtime_tasks.txt %s "%(namespace,pod_name,log_runtime)
-    # os.system(bash_runtime)
+
+
+    log_runtime = "../logs/%s_runtime_%d.log" %(log_name,ts)
+    bash_runtime = "kubectl cp %s/%s:runtime_tasks.txt %s "%(namespace,pod_name,log_runtime)
+    print(bash_runtime)
+    os.system(bash_runtime)
+
+    log_send = "../logs/%s_sender_%d.log" %(log_name,ts)
+    bash_send = "kubectl cp %s/%s:runtime_transfer_sender.txt %s "%(namespace,pod_name,log_send)
+    print(bash_send)
+    os.system(bash_send)
+
+    log_receive = "../logs/%s_receiver_%d.log" %(log_name,ts)
+    bash_receive = "kubectl cp %s/%s:runtime_transfer_receiver.txt %s "%(namespace,pod_name,log_receive)
+    os.system(bash_receive)
+
+def get_pod_logs_mapper(namespace, pod_name, log_name):
+    """Generate log of pod given name space and pod name
+    
+    Args:
+        namespace (str): corresponding name space
+        pod_name (str): corresponding pod name
+    """
+    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^')
+    print(namespace)
+    print(pod_name)
+    print(log_name)
+    ts = int(time.time())
+    log_file = "%s_%d.log" %(log_name,ts)
+    bash_log = "kubectl logs %s -n %s > %s"%(pod_name,namespace,log_file)
+    os.system(bash_log)
 
 
 
@@ -203,7 +235,7 @@ def export_circe_log(app_name,log_name):
             break;
     print('******************* Circe pod to export')
     print(circe_name)
-    get_pod_logs(jupiter_config.DEPLOYMENT_NAMESPACE,circe_name,log_name)
+    get_pod_logs_circe(jupiter_config.DEPLOYMENT_NAMESPACE,circe_name,log_name)
 
 
 def export_mapper_log(app_name,log_name):
@@ -220,23 +252,23 @@ def export_mapper_log(app_name,log_name):
             break;
     print('******************* Mapper pod to export')
     print(circe_name)
-    get_pod_logs(jupiter_config.DEPLOYMENT_NAMESPACE,circe_name,log_name)
+    get_pod_logs_mapper(jupiter_config.DEPLOYMENT_NAMESPACE,circe_name,log_name)
 
-def export_home_log(namespace, app_name,log_name):
-    """Export circe home log for evaluation, should only use when for non-static mapping
-    """
-    jupiter_config.set_globals()
-    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
-    core_v1_api = client.CoreV1Api()
-    resp = core_v1_api.list_namespaced_pod(namespace)
-    home_name=app_name+'-home'
-    for i in resp.items:
-        if i.metadata.name.startswith(home_name):
-            home_name = i.metadata.name
-            break;
-    print('******************* Home pod to export')
-    print(home_name)
-    get_pod_logs(namespace,home_name,log_name)
+# def export_home_log(namespace, app_name,log_name):
+#     """Export circe home log for evaluation, should only use when for non-static mapping
+#     """
+#     jupiter_config.set_globals()
+#     config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+#     core_v1_api = client.CoreV1Api()
+#     resp = core_v1_api.list_namespaced_pod(namespace)
+#     home_name=app_name+'-home'
+#     for i in resp.items:
+#         if i.metadata.name.startswith(home_name):
+#             home_name = i.metadata.name
+#             break;
+#     print('******************* Home pod to export')
+#     print(home_name)
+#     get_pod_logs(namespace,home_name,log_name)
 
 
 
@@ -345,7 +377,7 @@ def redeploy_system(app_id,app_name,port,mapper_log):
                 time.sleep(30)
         pprint(mapping)
 
-        export_home_log(jupiter_config.MAPPER_NAMESPACE,app_name,mapper_log)
+        export_mapper_log(app_name,mapper_log)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
@@ -415,7 +447,7 @@ def deploy_app_jupiter(app_id,app_name,port,circe_log,num_runs,num_samples,mappe
             f.write('\nRedeploy the system')
             redeploy_system(app_id,app_name,port,mapper_log)
         f.write('\nFinish the experiments for the current application')
-    teardown_system(app_name)
+    #teardown_system(app_name)
     
 def main():
     """ 

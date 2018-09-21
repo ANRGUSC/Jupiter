@@ -274,7 +274,8 @@ def setup_exec_node():
             
             ts = time.time()
             runtime_info = 'rt_exec '+ f+ ' '+str(ts)
-            send_runtime_profile(runtime_info)
+            print(event.src_path)
+            #send_runtime_profile(runtime_info)
             for idx,source in enumerate(source_list):
                 print(idx)
                 print(source)
@@ -310,7 +311,7 @@ def send_monitor_data(msg):
         return "not ok"
     return res
 
-def send_runtime_profile(msg):
+def send_runtime_profile(msg,taskname):
     """
     Sending runtime profiling information to flask server on home
 
@@ -413,7 +414,8 @@ class Handler1(FileSystemEventHandler):
                 
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)
+                print(event.src_path)
+                #send_runtime_profile(runtime_info)
 
                 IPaddr = sys.argv[4]
                 user = sys.argv[5]
@@ -442,7 +444,8 @@ class Handler1(FileSystemEventHandler):
 
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)
+                #send_runtime_profile(runtime_info)
+                print(event.src_path)
 
                 for i in range(3, len(sys.argv)-1,4):
                     IPaddr = sys.argv[i+1]
@@ -479,7 +482,8 @@ class Handler1(FileSystemEventHandler):
 
                     ts = time.time()
                     runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                    send_runtime_profile(runtime_info)
+                    #send_runtime_profile(runtime_info)
+                    print(event.src_path)
                         
                     for i in range(3, len(sys.argv)-1,4):
                         myfile = files_out.pop(0)
@@ -572,7 +576,8 @@ class Handler(FileSystemEventHandler):
             if temp_name not in task_mul:
                 task_mul[temp_name] = [new_file]
                 runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)
+                #send_runtime_profile(runtime_info)
+                print(event.src_path)
                 count_dict[temp_name]=int(flag1)-1
             else:
                 task_mul[temp_name] = task_mul[temp_name] + [new_file]
