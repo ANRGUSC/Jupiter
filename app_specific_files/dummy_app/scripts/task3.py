@@ -10,13 +10,14 @@ import re
 def task(filename, pathin, pathout):
  
  
-    #output3 = filename.replace('.txt','')+"_3"
-    file_name = filename.split('_')[0]
-    output3 = file_name+'_task3.txt'
-    input2 = file_name+'_task1.txt'
-     
-    input_path = os.path.join(pathin, input2)
+    print(filename)
+    input_path = os.path.join(filename.split('/')[-1],filename)
+    output3 = filename.split('_')[0] +'_task3.txt'
+    pathout = '/centralized_scheduler/output/'
     output_path = os.path.join(pathout, output3)
+
+    print(input_path)
+    print(output_path)
  
     file_output = open(output_path, 'w')
  

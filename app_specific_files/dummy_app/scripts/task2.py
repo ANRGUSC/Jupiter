@@ -12,17 +12,23 @@ def task(filename, pathin, pathout):
  
     #output2 = filename.replace('.txt','')+"_2"
 
-    file_name = filename.split('_')[0]
-    output2 = file_name+'_task2.txt'
-    input1 = file_name+'_task1.txt'
- 
-    input_path = os.path.join(pathin, input1)
-    output_path = os.path.join(pathout, output2)
+    print(filename)
+    print(filename.split('/'))
+    print(filename.split('/')[0])
+    print(filename.split('/')[1])
+    input_path = os.path.join(filename.split('/')[-1],filename)
+    output3 = filename.split('_')[0] +'_task3.txt'
+    pathout = '/centralized_scheduler/output/'
+    output_path = os.path.join(pathout, output3)
+
+    print(input_path)
+    print(output_path)
  
     file_output = open(output_path, 'w')
  
     print(input_path)
     print(file_output)
+
     data = []
     with open(input_path,'r') as file_input:
         for line in file_input:

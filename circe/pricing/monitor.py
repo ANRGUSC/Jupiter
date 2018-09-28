@@ -274,8 +274,8 @@ def setup_exec_node():
             
             ts = time.time()
             runtime_info = 'rt_exec '+ f+ ' '+str(ts)
-            print(event.src_path)
-            #send_runtime_profile(runtime_info)
+            
+            send_runtime_profile(runtime_info,taskname)
             for idx,source in enumerate(source_list):
                 print(idx)
                 print(source)
@@ -399,9 +399,6 @@ class Handler1(FileSystemEventHandler):
                 temp_name = new_file.split('.')[0]
             
 
-            
-
-            # send_runtime_profile(runtime_info)
                 
             global files_out
 
@@ -415,7 +412,7 @@ class Handler1(FileSystemEventHandler):
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 print(event.src_path)
-                #send_runtime_profile(runtime_info)
+                send_runtime_profile(runtime_info,taskname)
 
                 IPaddr = sys.argv[4]
                 user = sys.argv[5]
@@ -444,7 +441,7 @@ class Handler1(FileSystemEventHandler):
 
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                #send_runtime_profile(runtime_info)
+                send_runtime_profile(runtime_info,taskname)
                 print(event.src_path)
 
                 for i in range(3, len(sys.argv)-1,4):
@@ -482,7 +479,7 @@ class Handler1(FileSystemEventHandler):
 
                     ts = time.time()
                     runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                    #send_runtime_profile(runtime_info)
+                    send_runtime_profile(runtime_info,taskname)
                     print(event.src_path)
                         
                     for i in range(3, len(sys.argv)-1,4):
@@ -576,7 +573,7 @@ class Handler(FileSystemEventHandler):
             if temp_name not in task_mul:
                 task_mul[temp_name] = [new_file]
                 runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
-                #send_runtime_profile(runtime_info)
+                send_runtime_profile(runtime_info,taskname)
                 print(event.src_path)
                 count_dict[temp_name]=int(flag1)-1
             else:

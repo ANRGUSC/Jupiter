@@ -17,25 +17,29 @@ def task(filename, pathin, pathout):
     file_name = filename[0].split('_')[0]
     print(file_name)
     output4 = file_name+'_task4.txt'
-    input2 = file_name+'_task2.txt'
-    input3 = file_name+'_task3.txt'
+    # input2 = file_name+'_task2.txt'
+    # input3 = file_name+'_task3.txt'
  
-    path_input=os.path.join(pathin, input2)
+    # path_input=os.path.join(pathin, input2)
+    print(filename)
+    print(pathin)
+    print(pathout)
+    print(filename[0])
+    print(filename[1])
     path_output=os.path.join(pathout, output4)
  
     file_output = open(path_output, 'w')
  
-    # print(path_input)
-    # print(file_output)
+    
+    
 
-    with open(path_input, 'r') as file_input:
+    with open(filename[0], 'r') as file_input:
         for line in file_input:
             print(line)
             file_output.write(line)
             file_output.write("Task 4 has processed the file\n")
     
-    path_input=os.path.join(pathin, input3)
-    with open(path_input, 'r') as file_input:
+    with open(filename[1], 'r') as file_input:
         for line in file_input:
             print(line)
             file_output.write(line)
