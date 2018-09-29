@@ -410,6 +410,8 @@ class Handler1(FileSystemEventHandler):
             if sys.argv[3] == 'home':
                 
                 ts = time.time()
+                print('++++++++++++++++++++++++++')
+                print(temp_name)
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 print(event.src_path)
                 send_runtime_profile(runtime_info,taskname)
@@ -440,6 +442,8 @@ class Handler1(FileSystemEventHandler):
             elif flag2 == 'true':
 
                 ts = time.time()
+                print('+++++++++++++++++++++++++++++++++++++++++++')
+                print(temp_name)
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info,taskname)
                 print(event.src_path)
@@ -478,6 +482,8 @@ class Handler1(FileSystemEventHandler):
                 if (len(files_out) == num_child):
 
                     ts = time.time()
+                    print('++++++++++++++++++++++++++++++++++++')
+                    print(temp_name)
                     runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info,taskname)
                     print(event.src_path)
@@ -572,6 +578,9 @@ class Handler(FileSystemEventHandler):
             
             if temp_name not in task_mul:
                 task_mul[temp_name] = [new_file]
+                print('++++++++++++++++++++++')
+                ts = time.time()
+                print(temp_name)
                 runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info,taskname)
                 print(event.src_path)

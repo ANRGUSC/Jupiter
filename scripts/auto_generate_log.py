@@ -444,8 +444,8 @@ def deploy_app_jupiter(app_id,app_name,port,circe_log,num_runs,num_samples,mappe
             f.write('\nExport the log for this run')
             export_circe_log(app_name,file_log)
             time.sleep(30)
-            f.write('\nRedeploy the system')
-            redeploy_system(app_id,app_name,port,mapper_log)
+            # f.write('\nRedeploy the system')
+            # redeploy_system(app_id,app_name,port,mapper_log)
         f.write('\nFinish the experiments for the current application')
     #teardown_system(app_name)
     

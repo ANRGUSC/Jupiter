@@ -614,8 +614,15 @@ class Handler1(FileSystemEventHandler):
              
             print("Received file as output - %s." % event.src_path)
 
+            new_file = os.path.split(event.src_path)[-1]
+
+            if '_' in new_file:
+                temp_name = new_file.split('_')[0]
+            else:
+                temp_name = new_file.split('.')[0]
+
             ts = time.time()
-            runtime_info = 'rt_finish '+ event.src_path+ ' '+str(ts)
+            runtime_info = 'rt_finish '+ temp_name + ' '+str(ts)
             send_runtime_profile(runtime_info)
 
             if RUNTIME == 1:
@@ -675,6 +682,10 @@ class Handler(FileSystemEventHandler):
                 file_name = new_file.split('_')[0]
             else:
                 file_name = new_file.split('.')[0]
+
+            ts = time.time()
+            runtime_info = 'rt_enter '+ file_name + ' '+str(ts)
+            send_runtime_profile(runtime_info)
             
             task_name = new_file.split('#')[1]
             task_ip = new_file.split('#')[2]
