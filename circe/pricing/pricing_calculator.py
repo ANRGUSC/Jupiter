@@ -624,10 +624,10 @@ class Handler1(FileSystemEventHandler):
                 runtime_receiver_log.flush()
 
             task_name = event.src_path.split('/')[-2]
-            # print(task_name)
-            # print(task_to_ip)
+            print(task_name)
+            print(task_to_ip)
             task_ip = task_to_ip[task_name]
-            # print(task_ip)
+            print(task_ip)
             transfer_data(task_ip,username,password,event.src_path, "/centralized_scheduler/output/")
 
 #for INPUT folder

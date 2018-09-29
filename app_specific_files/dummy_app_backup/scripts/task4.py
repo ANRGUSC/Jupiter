@@ -8,31 +8,35 @@ import re
 
 def task(filename, pathin, pathout):
  
-
+ 
+    #output4 = filename.replace('.txt','')+"_4"
+    print(filename)
+    print(len(filename))
     if not isinstance(filename, (list)):
         filename = [filename]
-    print(filename)
-    print(filename[0])
     file_name = filename[0].split('_')[0]
     print(file_name)
     output4 = file_name+'_task4.txt'
-   
-    input_path1 = os.path.join(pathin,filename[0])
-    input_path2 = os.path.join(pathin,filename[1])
+    input2 = file_name+'_task2.txt'
+    input3 = file_name+'_task3.txt'
+ 
+    path_input=os.path.join(pathin, input2)
     path_output=os.path.join(pathout, output4)
  
     file_output = open(path_output, 'w')
  
-    
-    
+    print('**********************')
+    print(path_input)
+    print(file_output)
 
-    with open(input_path1, 'r') as file_input:
+    with open(path_input, 'r') as file_input:
         for line in file_input:
             print(line)
             file_output.write(line)
             file_output.write("Task 4 has processed the file\n")
     
-    with open(input_path2, 'r') as file_input:
+    path_input=os.path.join(pathin, input3)
+    with open(path_input, 'r') as file_input:
         for line in file_input:
             print(line)
             file_output.write(line)

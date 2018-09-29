@@ -4,30 +4,34 @@ __license__ = "GPL"
 __version__ = "2.1"
 
 import os
-import re
-  
- 
+
 def task(filename, pathin, pathout):
  
  
-    input_path = os.path.join(pathin,filename)
-    output3 = filename.split('_')[0] +'_task3.txt'
-    output_path = os.path.join(pathout, output3)
+ 
+ 
+    #output2 = filename.replace('.txt','')+"_2"
+
+    file_name = filename.split('_')[0]
+    output2 = file_name+'_task2.txt'
+    input1 = file_name+'_task1.txt'
+ 
+    input_path = os.path.join(pathin, input1)
+    output_path = os.path.join(pathout, output2)
  
     file_output = open(output_path, 'w')
  
+    print('**********************')
     print(input_path)
     print(file_output)
-
     data = []
     with open(input_path,'r') as file_input:
         for line in file_input:
             data = line.strip().split(' ')
-            data = sorted(data, reverse= True)
+            data = sorted(data)
             print(data)
             for num in data:
                 file_output.write(num+" ")
-    
     file_output.close()
     return [output_path]
 

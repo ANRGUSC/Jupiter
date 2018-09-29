@@ -10,12 +10,17 @@ import re
 def task(filename, pathin, pathout):
  
  
-    input_path = os.path.join(pathin,filename)
-    output3 = filename.split('_')[0] +'_task3.txt'
+    #output3 = filename.replace('.txt','')+"_3"
+    file_name = filename.split('_')[0]
+    output3 = file_name+'_task3.txt'
+    input2 = file_name+'_task1.txt'
+     
+    input_path = os.path.join(pathin, input2)
     output_path = os.path.join(pathout, output3)
  
     file_output = open(output_path, 'w')
  
+    print('**********************')
     print(input_path)
     print(file_output)
 
