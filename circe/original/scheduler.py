@@ -131,7 +131,7 @@ def recv_runtime_profile():
             print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
             
             print('----------------------------')  
-            if worker_node == "globalfusion":
+            if worker_node == "globalfusion" or "task4":
                 # Per task stats:
                 print('********************************************') 
                 print("Runtime profiling info:")
@@ -170,6 +170,9 @@ def recv_runtime_profile():
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
+
+
+
 
 class MonitorRecv(multiprocessing.Process):
     def __init__(self):
@@ -348,7 +351,7 @@ class Handler(FileSystemEventHandler):
             IP = os.environ['CHILD_NODES_IPS']
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
-            data_transfer(IP,username, password,source, destination)
+            transfer_data(IP,username, password,source, destination)
 def main():
     """
         -   Read configurations (DAG info, node info) from ``nodes.txt`` and ``configuration.txt``

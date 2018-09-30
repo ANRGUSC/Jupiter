@@ -81,6 +81,8 @@ def set_globals():
 
 	if PRICING == 0:
 		CIRCE_PATH          = HERE + 'circe/original/'	
+	if PRICING == 2:
+		CIRCE_PATH          = HERE + 'circe/pricing_modified/'
 	
 	"""Kubernetes required information"""
 	global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
