@@ -119,7 +119,7 @@ def get_taskmap():
 
 def prepare_global_info():
     """Get information of corresponding profiler (network profiler, execution profiler)"""
-    global self_profiler_ip,profiler_ip, profiler_nodes,exec_home_ip, self_name,self_ip,ip_node_map,node_ip_map
+    global self_profiler_ip,profiler_ip, profiler_nodes,exec_home_ip, self_name,self_ip,ip_node_map,node_ip_map,ip_controllers_map, controllers_ip_map 
     profiler_ip = os.environ['ALL_PROFILERS'].split(' ')
     profiler_ip = [info.split(":") for info in profiler_ip]
 
@@ -131,17 +131,26 @@ def prepare_global_info():
     self_name = os.environ['NODE_NAME']
     self_ip = os.environ['SELF_IP']
 
+    task_controllers = os.environ['ALL_NODES'].split(':')
+    task_controllers_ips = os.environ['ALL_NODES_IPS'].split(':')
+
     ip_node_map = dict(zip(profiler_ip[0], profiler_nodes[0]))
     node_ip_map = dict(zip(profiler_nodes[0], profiler_ip[0]))
 
-    global manager,task_mul, count_mul, queue_mul, size_mul,task_to_ip
+    controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
+    ip_controllers_map = dict(zip(task_controllers_ips, task_controllers))
+
+
+
+    global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul
 
     manager = Manager()
     task_mul = manager.dict() # list of incoming tasks and files
     count_mul = manager.dict() # number of input files required for each task
     queue_mul = manager.dict() # tasks which have not yet been processed
     size_mul  = manager.dict() # total input size of each incoming task and file
-    task_to_ip = manager.dict()
+    next_mul = manager.dict() # information of next node (IP,username,pass) fo the current file
+    files_mul = manager.dict()
 
     global home_node_host_port, dag
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
@@ -498,8 +507,8 @@ def transfer_mapping_decorator(TRANSFER=0):
         
         Args:
             IP (str): destination IP address
-            user (str): username
-            pword (str): password
+            user (str): destination username
+            pword (str): destination password
             source (str): source file path
             destination (str): destination file path
         """
@@ -607,13 +616,13 @@ class Handler1(FileSystemEventHandler):
         """
             Check for any event in the ``OUTPUT`` folder
         """
-        global task_to_ip
         if event.is_directory:
             return None
 
         elif event.event_type == 'created':
              
             print("Received file as output - %s." % event.src_path)
+
 
             new_file = os.path.split(event.src_path)[-1]
 
@@ -634,10 +643,47 @@ class Handler1(FileSystemEventHandler):
             runtime_info = 'rt_finish '+ temp_name + ' '+str(ts)
             send_runtime_profile_computingnode(runtime_info,task_name)
             print(task_name)
-            print(task_to_ip)
-            task_ip = task_to_ip[task_name]
+            print(controllers_ip_map)
+            print(ip_controllers_map)
+            task_ip = controllers_ip_map[task_name] 
+            key = (task_name,temp_name)
             print(task_ip)
-            transfer_data(task_ip,username,password,event.src_path, "/centralized_scheduler/output/")
+            print('!!!!!!!!!!!!!!!!')
+            print(next_mul)
+            flag = next_mul[key][0]
+            
+            print(flag)
+            if flag == 'home':
+                next_IPs = controllers_ip_map[flag]
+            else: 
+                next_IPs =  next_mul[key][1:]
+            
+            print('!!!!!!!!!!!!!!!!')
+            print(next_IPs)
+            print(next_mul)
+            print(next_mul[(task_name,temp_name)])
+
+            
+            if flag == 'home':
+                transfer_data(next_IPs,username,password,event.src_path, "/output/")    
+            elif flag == 'true':
+                for next_IP in next_IPs:
+                    transfer_data(next_IP,username,password,event.src_path, "/centralized_scheduler/input/")
+            else:
+                if key not in files_mul:
+                    files_mul[key] = [event.src_path]
+                else:
+                    files_mul[key] = files_mul[key] + [event.src_path]
+
+                print('*****************')
+                print(files_mul[key])
+                print(next_IPs)
+                if len(files_mul[key]) == len(next_IPs):
+                    for idx,ip in enumerate(next_IPs):
+                        print(idx)
+                        print(files_mul[key][idx])
+                        transfer_data(ip,username,password,files_mul[key][idx], "/centralized_scheduler/input/")
+            # copy to folder INPUT of next task
 
 #for INPUT folder
 class Watcher(multiprocessing.Process):
@@ -670,7 +716,7 @@ class Handler(FileSystemEventHandler):
 
     @staticmethod
     def on_any_event(event):
-        global task_to_ip
+        
 
         if event.is_directory:
             return None
@@ -690,29 +736,46 @@ class Handler(FileSystemEventHandler):
             
             task_name = new_file.split('#')[1]
             task_ip = new_file.split('#')[2]
+            task_flag = new_file.split('#')[3]
+            next_ips = []
+            if len(new_file.split('#'))>0:
+                next_ips = new_file.split('#')[4:]
+            print('$$$$$$$$$$$$$$$$$$$$')
+
+            print(next_ips)
+            print(new_file.split('#'))
+            
 
             runtime_info = 'rt_enter '+ file_name + ' '+str(ts)
             send_runtime_profile_computingnode(runtime_info,task_name)
 
-            if task_name not in task_to_ip: 
-                task_to_ip[task_name] = task_ip
     
             key = (task_name,file_name)
             flag = dag[task_name][0] 
+
+            print('$$$$$$$$$$$$$$$$$$$$')
+            print(next_mul)
+            print(key)
+            print(task_mul)
             if key not in task_mul:
                 task_mul[key] = [new_file]
                 count_mul[key]= int(flag)-1
                 size_mul[key] = cal_file_size(event.src_path)
+                next_mul[key] = [task_flag]
+
+                print(len(next_ips))
+                print(next_ips)
+
+                if len(next_ips) >0:
+                    next_mul[key] = next_mul[key] + next_ips
             else:
                 task_mul[key] = task_mul[key] + [new_file]
                 count_mul[key]=count_mul[key]-1
                 size_mul[key] = size_mul[key] + cal_file_size(event.src_path)
             
-            # print('Incoming files:')
+            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
             
-            # print(task_mul)
-            # print(count_mul)
-            # print(size_mul)
+            print(next_mul)
 
             if count_mul[key] == 0: # enough input files
                 incoming_file = task_mul[key]

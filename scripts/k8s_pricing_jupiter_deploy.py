@@ -135,6 +135,7 @@ def k8s_pricing_jupiter_deploy():
     #k8s_circe_scheduler(dag,schedule)
     k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips)
 
+
 if __name__ == '__main__':
     k8s_pricing_jupiter_deploy()
   

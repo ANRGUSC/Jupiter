@@ -47,6 +47,7 @@ def build_push_pricing_circe():
 
     os.chdir(jupiter_config.CIRCE_PATH)
 
+    print(jupiter_config.CIRCE_PATH)
     print(jupiter_config.USERNAME)
     print(jupiter_config.PRICING_HOME_IMAGE)
     print(jupiter_config.WORKER_CONTROLLER_IMAGE)
