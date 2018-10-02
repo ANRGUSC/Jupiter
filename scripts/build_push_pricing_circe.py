@@ -52,20 +52,24 @@ def build_push_pricing_circe():
     print(jupiter_config.PRICING_HOME_IMAGE)
     print(jupiter_config.WORKER_CONTROLLER_IMAGE)
     print(jupiter_config.WORKER_COMPUTING_IMAGE )
+    print(jupiter_config.pricing_option)
 
     dc.write_circe_home_docker(username = jupiter_config.USERNAME,
                       password = jupiter_config.PASSWORD,
                       app_file = jupiter_config.APP_NAME,
-                      ports = " ".join(port_list_home))
+                      ports = " ".join(port_list_home),
+                      pricing_option = jupiter_config.pricing_option)
 
     dc.write_circe_controller_worker_docker(username = jupiter_config.USERNAME,
                       password = jupiter_config.PASSWORD,
                       app_file = jupiter_config.APP_NAME,
-                      ports = " ".join(port_list_worker))
+                      ports = " ".join(port_list_worker),
+                      pricing_option = jupiter_config.pricing_option)
     dc.write_circe_computing_worker_docker(username = jupiter_config.USERNAME,
                       password = jupiter_config.PASSWORD,
                       app_file = jupiter_config.APP_NAME,
-                      ports = " ".join(port_list_worker))
+                      ports = " ".join(port_list_worker),
+                      pricing_option = jupiter_config.pricing_option)
 
     #--no-cache
     os.system("sudo docker build -f home_node.Dockerfile ../.. -t "

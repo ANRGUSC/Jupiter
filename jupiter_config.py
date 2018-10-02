@@ -79,11 +79,16 @@ def set_globals():
 	elif SCHEDULER == int(config['SCHEDULER_LIST']['HEFT_MODIFIED']):
 		HEFT_PATH           = HERE + 'task_mapper/heft/modified/'	
 
-	if PRICING == 0:
+	global pricing_option
+	pricing_option = 'pricing' #original pricing
+	if PRICING == 2:#modified
+		pricing_option 		= 'pricing_modified'
+	if PRICING == 3:#seperated
+		CIRCE_PATH          = HERE + 'circe/pricing_seperate/'
+		pricing_option 		= 'pricing_seperate'
+	CIRCE_PATH          	= HERE + 'circe/%s/'%(pricing_option)
+	if PRICING == 0: #non-pricing
 		CIRCE_PATH          = HERE + 'circe/original/'	
-	if PRICING == 2:
-		CIRCE_PATH          = HERE + 'circe/pricing_modified/'
-	
 	"""Kubernetes required information"""
 	global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 
@@ -105,9 +110,9 @@ def set_globals():
 	"""pricing CIRCE home and worker images"""
 	global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTING_IMAGE
 
-	PRICING_HOME_IMAGE 		= 'docker.io/anrg/pricing_circe_home:mdummy'
-	WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/pricing_circe_controller:mdummy'
-	WORKER_COMPUTING_IMAGE  = 'docker.io/anrg/pricing_circe_computing:mdummy'
+	PRICING_HOME_IMAGE 		= 'docker.io/anrg/%s_circe_home:mdummy' %(pricing_option)
+	WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:mdummy' %(pricing_option)
+	WORKER_COMPUTING_IMAGE  = 'docker.io/anrg/%s_circe_computing:mdummy' %(pricing_option)
 	
 	"""CIRCE home and worker images for execution profiler"""
 	global HOME_IMAGE, WORKER_IMAGE
