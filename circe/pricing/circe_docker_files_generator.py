@@ -54,7 +54,7 @@ ADD circe/{pricing_option}/runtime_profiler_mongodb /central_mongod
 ADD circe/{pricing_option}/readconfig.py /readconfig.py
 ADD circe/{pricing_option}/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
-ADD circe/{pricing_option}d/evaluate.py /evaluate.py
+ADD circe/{pricing_option}/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
 ADD {app_file}/configuration.txt /configuration.txt

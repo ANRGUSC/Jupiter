@@ -330,13 +330,11 @@ def get_updated_resource_profile():
         print("Resource request failed. Will try again, details: " + str(e))
         return -1
 
-def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
-    """Calculate price required to perform the task with given input based on network information, resource information, execution information and task queue size
+def pricing_calculate(task_name, next_task_name):
+    """Calculate price required to perform the task based on network information, resource information, execution information and task queue size and sample size
     
     Args:
-        file_name (str): incoming file name
-        task_name (str): incoming task name
-        file_size (str): incoming file size
+        task_name (str): task name
     
     Returns:
         float: calculated price
@@ -364,43 +362,38 @@ def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
         computing_net_info,controller_net_info = get_updated_network_profile(node_name)
-        print('--- Resource: ')
-        print(resource_info)
-        print('--- Network: ')
-        print(computing_net_info)
-        print(controller_net_info)
-        print('--- Execution: ')
-        print(execution_info)
-        test_execution_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
-        print('----Task queue: ')
-        print(queue_mul)
-        print('----- It takes ' + str(time.time()-t))
-        t = time.time()
+        # print('--- Resource: ')
+        # print(resource_info)
+        # print('--- Network: ')
+        # print(computing_net_info)
+        # print(controller_net_info)
+        # print('--- Execution: ')
+        # print(execution_info)
+        test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
+        test_output = execution_info[task_name][1]
+        # print('----Task queue: ')
+        # print(queue_mul)
         print('----- Calculating price:')
         print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
-        print(price['memory'])
-        print(price['cpu'])
+        # print(price['memory'])
+        # print(price['cpu'])
         print('--- Network cost: ')
-        print(node_name)
-        if node_name in computing_net_info.keys():
-            computing_params = computing_net_info[node_name].split()
+        if next_task_name in computing_net_info.keys():
+            computing_params = computing_net_info[next_task_name].split()
             controller_params = controller_net_info[self_name].split()
             computing_params = [float(x) for x in computing_params]
             controller_params = [float(x) for x in controller_params]
-            print(computing_params)
-            print(controller_params)
-            estimated_output = execution_info[task_name][1]* test_execution_size / file_size
-            print(estimated_output)
-            price['network'] = (controller_params[0] * file_size * file_size) + \
-                           (controller_params[1] * file_size) + \
+            # print(computing_params)
+            # print(controller_params)
+            price['network'] = (controller_params[0] * test_size * test_size) + \
+                           (controller_params[1] * test_size) + \
                            controller_params[2] + \
-                           (computing_params[0] * estimated_output * estimated_output) + \
-                           (computing_params[1] * estimated_output) + \
+                           (computing_params[0] * test_output * test_output) + \
+                           (computing_params[1] * test_output) + \
                            computing_params[2]
-        else:
-            price['network'] = 0 
+        
         print(price['network'])
         print('----- It takes ' + str(time.time()-t))
         t = time.time()
@@ -419,9 +412,11 @@ def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
                 queue_size =  [size_dict[k] for k in queue_dict.keys()] 
                 print(queue_task)
                 print(queue_size)
+                print(execution_info)
+                print(task_info[0])
                 for idx,task_info in enumerate(queue_task):
                     #TO_DO: sum or max
-                    price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_execution_size 
+                    price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
         print(price['queue'])
 
         return price
@@ -432,14 +427,13 @@ def pricing_calculate(file_name, task_name, task_ip,node_name,file_size):
     return price
 
 
-def announce_price(task_controller_ip, file_name, price):
+def announce_price(task_controller_ip, price):
     try:
 
         print("Announce my price")
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
-        pricing_info = file_name+"#"+self_name+"#"+self_ip+"#"+str(price['network'])+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
+        pricing_info = self_name+"#"+str(price['network'])+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
         params = {'pricing_info':pricing_info}
-        #params = {'file_name':file_name , "node_name": self_name, "node_ip":self_ip, "price": price}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
@@ -449,30 +443,6 @@ def announce_price(task_controller_ip, file_name, price):
         print("Sending message to flask server on controller node FAILED!!!")
         print(e)
         return "not ok"
-
-def receive_price_request():
-    """Receive price request from pricing calculator
-    """
-    price = 0
-    try:
-        file_name = request.args.get('file_name')
-        file_size = float(request.args.get('file_size'))
-        task_name = request.args.get('task_name')
-        task_ip   = request.args.get('task_ip')
-        node_name = request.args.get('node_name')
-        print('---------------------------------')
-        print("Received pricing request message:", task_name, file_size,file_name,node_name)
-        price = pricing_calculate(file_name, task_name, task_ip,node_name,file_size)
-        # print('Estimated price for the current request')
-        # print(price)
-        # print(task_ip)
-        announce_price(task_ip, file_name, price)
-
-    except Exception as e:
-        print("Bad reception or failed processing in Flask for pricing request: "+ e)
-        return "not ok"
-    return "ok"
-app.add_url_rule('/receive_price_request', 'receive_price_request', receive_price_request)
 
 
 def execute_task(task_name,file_name, filenames, input_path, output_path):
