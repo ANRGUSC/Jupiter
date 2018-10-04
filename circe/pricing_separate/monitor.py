@@ -331,7 +331,9 @@ class Handler(FileSystemEventHandler):
             
             flag1 = sys.argv[1]
             
-            if temp_name not in task_mul:
+            print(task_mul)
+            print(type(task_mul))
+            if temp_name not in task_mul.keys():
                 task_mul[temp_name] = [new_file]
                 print('++++++++++++++++++++++')
                 ts = time.time()
@@ -343,39 +345,39 @@ class Handler(FileSystemEventHandler):
             else:
                 task_mul[temp_name] = task_mul[temp_name] + [new_file]
                 count_dict[temp_name]=count_dict[temp_name]-1
-            
+            print(task_mul[temp_name])
 
-            if count_dict[temp_name] == 0: # enough input files
-                filename = task_mul[temp_name]
-                if len(filename)==1: 
-                    filenames = filename[0]
-                else:
-                    filenames = filename    
+            # if count_dict[temp_name] == 0: # enough input files
+            #     filename = task_mul[temp_name]
+            #     if len(filename)==1: 
+            #         filenames = filename[0]
+            #     else:
+            #         filenames = filename    
                
-                # When receive an input file, based on the global mapping list, select the computing node
-                # must check temp_name to ensure, for example: fusion case with multiple inputs from sample detector, astute detector, and others... 
-                # print(filename)
-                print('List of files')
-                print(filenames)
-                filepath = os.path.split(event.src_path)[0]
-                source_list = [filepath+'/'+fname for fname in filename]
+            #     # When receive an input file, based on the global mapping list, select the computing node
+            #     # must check temp_name to ensure, for example: fusion case with multiple inputs from sample detector, astute detector, and others... 
+            #     # print(filename)
+            #     print('List of files')
+            #     print(filenames)
+            #     filepath = os.path.split(event.src_path)[0]
+            #     source_list = [filepath+'/'+fname for fname in filename]
                 
-                input_size = [file_size(x) for x in source_list]
-                sum_input_size = sum(input_size)
-                best_node = task_node_summary['current_best_node']
-                #task_node_summary['input_size'][temp_name] = sum_input_size #history of input file size
-                task_node_summary['processed'][temp_name] = False 
-                destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
+            #     input_size = [file_size(x) for x in source_list]
+            #     sum_input_size = sum(input_size)
+            #     best_node = task_node_summary['current_best_node']
+            #     #task_node_summary['input_size'][temp_name] = sum_input_size #history of input file size
+            #     task_node_summary['processed'][temp_name] = False 
+            #     destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
                 
-                ts = time.time()
-                runtime_info = 'rt_exec '+ f+ ' '+str(ts)
+            #     ts = time.time()
+            #     runtime_info = 'rt_exec '+ f+ ' '+str(ts)
                 
-                send_runtime_profile(runtime_info,taskname)
+            #     send_runtime_profile(runtime_info,taskname)
                 
-                print(node_ip_mapping)
+            #     print(node_ip_mapping)
 
-                for idx,source in enumerate(source_list):
-                    transfer_data(node_ip_mapping[best_node],username,password,source, destination_list[idx])
+            #     for idx,source in enumerate(source_list):
+            #         transfer_data(node_ip_mapping[best_node],username,password,source, destination_list[idx])
 
                 
                 
