@@ -612,33 +612,38 @@ class Handler1(FileSystemEventHandler):
             task_name = event.src_path.split('/')[-2]
             runtime_info = 'rt_finish '+ temp_name + ' '+str(ts)
             send_runtime_profile_computingnode(runtime_info,task_name)
-            print(task_name)
-            print(controllers_ip_map)
-            print(ip_controllers_map)
             task_ip = controllers_ip_map[task_name] 
             key = (task_name,temp_name)
             print(task_ip)
             print('!!!!!!!!!!!!!!!!')
             print(next_mul)
             flag = next_mul[key][0]
-            
             print(flag)
             if flag == 'home':
-                next_IPs = controllers_ip_map[flag]
+                next_IPs = next_mul[key][1]
+                next_users = next_mul[key][2]
+                next_passwords = next_mul[key][3]
+
             else: 
-                next_IPs =  next_mul[key][1:]
+                next_IPs =  next_mul[key][1:][::3]
+                next_users = next_mul[key][2:][::3]
+                next_passwords = next_mul[key][3:][::3]
             
             print('!!!!!!!!!!!!!!!!')
             print(next_IPs)
+            print(next_users)
+            print(next_passwords)
             print(next_mul)
             print(next_mul[(task_name,temp_name)])
 
             
             if flag == 'home':
-                transfer_data(next_IPs,username,password,event.src_path, "/output/")    
+                transfer_data(next_IPs,next_users,next_passwords,event.src_path, "/output/")    
             elif flag == 'true':
-                for next_IP in next_IPs:
-                    transfer_data(next_IP,username,password,event.src_path, "/centralized_scheduler/input/")
+                for idx,ip in enumerate(next_IPs):
+                    print(ip)
+                    print(idx)
+                    transfer_data(ip,next_users[idx],next_passwords[idx],event.src_path, "/centralized_scheduler/input/")
             else:
                 if key not in files_mul:
                     files_mul[key] = [event.src_path]
@@ -652,7 +657,7 @@ class Handler1(FileSystemEventHandler):
                     for idx,ip in enumerate(next_IPs):
                         print(idx)
                         print(files_mul[key][idx])
-                        transfer_data(ip,username,password,files_mul[key][idx], "/centralized_scheduler/input/")
+                        transfer_data(ip,next_users[idx],next_passwords[idx],files_mul[key][idx], "/centralized_scheduler/input/")
             # copy to folder INPUT of next task
 
 #for INPUT folder
@@ -703,19 +708,12 @@ class Handler(FileSystemEventHandler):
 
             ts = time.time()
             
-            
+            print('^^^^^^^^^^^^^^^^^^^^^^^^^^')
+            print(new_file)
             task_name = new_file.split('#')[1]
             task_ip = new_file.split('#')[2]
             task_flag = new_file.split('#')[3]
-            next_ips = []
-            if len(new_file.split('#'))>0:
-                next_ips = new_file.split('#')[4:]
-            print('$$$$$$$$$$$$$$$$$$$$')
-
-            print(next_ips)
-            print(new_file.split('#'))
-            
-
+            next_info = new_file.split('#')[4:]
             runtime_info = 'rt_enter '+ file_name + ' '+str(ts)
             send_runtime_profile_computingnode(runtime_info,task_name)
 
@@ -733,11 +731,11 @@ class Handler(FileSystemEventHandler):
                 size_mul[key] = cal_file_size(event.src_path)
                 next_mul[key] = [task_flag]
 
-                print(len(next_ips))
-                print(next_ips)
+                print(len(next_info))
+                print(next_info)
 
-                if len(next_ips) >0:
-                    next_mul[key] = next_mul[key] + next_ips
+                if len(next_info) >0:
+                    next_mul[key] = next_mul[key] + next_info
             else:
                 task_mul[key] = task_mul[key] + [new_file]
                 count_mul[key]=count_mul[key]-1
@@ -825,7 +823,9 @@ def main():
     web_server = MonitorRecv()
     web_server.start()
 
+    # Update execution information file
     _thread.start_new_thread(update_exec_profile_file,())
+    # Update pricing information every interval
 
     #monitor INPUT as another process
     w=Watcher()

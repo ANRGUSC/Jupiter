@@ -347,37 +347,60 @@ class Handler(FileSystemEventHandler):
                 count_dict[temp_name]=count_dict[temp_name]-1
             print(task_mul[temp_name])
 
-            # if count_dict[temp_name] == 0: # enough input files
-            #     filename = task_mul[temp_name]
-            #     if len(filename)==1: 
-            #         filenames = filename[0]
-            #     else:
-            #         filenames = filename    
+            if count_dict[temp_name] == 0: # enough input files
+                filename = task_mul[temp_name]
+                if len(filename)==1: 
+                    filenames = filename[0]
+                else:
+                    filenames = filename    
                
-            #     # When receive an input file, based on the global mapping list, select the computing node
-            #     # must check temp_name to ensure, for example: fusion case with multiple inputs from sample detector, astute detector, and others... 
-            #     # print(filename)
-            #     print('List of files')
-            #     print(filenames)
-            #     filepath = os.path.split(event.src_path)[0]
-            #     source_list = [filepath+'/'+fname for fname in filename]
+                # When receive an input file, based on the global mapping list, select the computing node
+                # must check temp_name to ensure, for example: fusion case with multiple inputs from sample detector, astute detector, and others... 
+                # print(filename)
+                print('List of files')
+                print(filenames)
+                filepath = os.path.split(event.src_path)[0]
+                source_list = [filepath+'/'+fname for fname in filename]
                 
-            #     input_size = [file_size(x) for x in source_list]
-            #     sum_input_size = sum(input_size)
-            #     best_node = task_node_summary['current_best_node']
-            #     #task_node_summary['input_size'][temp_name] = sum_input_size #history of input file size
-            #     task_node_summary['processed'][temp_name] = False 
-            #     destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
-                
-            #     ts = time.time()
-            #     runtime_info = 'rt_exec '+ f+ ' '+str(ts)
-                
-            #     send_runtime_profile(runtime_info,taskname)
-                
-            #     print(node_ip_mapping)
+                input_size = [file_size(x) for x in source_list]
+                sum_input_size = sum(input_size)
+                best_node = task_node_summary['current_best_node']
+                print(sum_input_size)
+                print(best_node)
+                print(temp_name)
 
-            #     for idx,source in enumerate(source_list):
-            #         transfer_data(node_ip_mapping[best_node],username,password,source, destination_list[idx])
+                task_node_summary[temp_name] = (sum_input_size,0) #history of input file size, not yet processed
+                
+                destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
+                flag2 = sys.argv[2]
+                print(flag2)
+                if sys.argv[3] == 'home':
+                    destination_list = [dest+"#home#"+sys.argv[4]+"#"+sys.argv[5]+"#"+sys.argv[6] for dest in destination_list]
+                elif flag2 == 'true':
+                    destination_list = [dest+"#"+ flag2 for dest in destination_list]
+                    for i in range(3, len(sys.argv)-1,4):
+                        print(destination_list)
+                        destination_list = [dest+"#"+sys.argv[i+1]+"#"+sys.argv[i+2]+"#"+sys.argv[i+3] for dest in destination_list]
+                    
+                else: 
+                    destination_list = [dest+"#"+ flag2 for dest in destination_list]
+                    j = 0
+                    for i in range(3, len(sys.argv)-1,4):
+                        destination_list[j] = destination_list[j]+"#"+sys.argv[i+1]+"#"+sys.argv[i+2]+"#"+sys.argv[i+3]
+                        j = j +1
+                print(destination_list)
+                ts = time.time()
+                runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+                
+                send_runtime_profile(runtime_info,taskname)
+                
+                
+                for idx,source in enumerate(source_list):
+                    print(source)
+                    print(idx)
+                    print(node_ip_map[best_node])
+                    print(destination_list[idx])
+                    transfer_data(node_ip_map[best_node],username,password,source, destination_list[idx])
 
                 
                 
@@ -478,7 +501,7 @@ def main():
     task_node_summary = manager.dict()
 
     # Set up default value for task_node_summary: the task controller will perform the tasks also
-    task_node_summary['current_best_node'] = node_name
+    task_node_summary['current_best_node'] = node_id
     print(node_name)
     print(node_id)
     print(os.environ['OWN_IP'])
@@ -493,7 +516,7 @@ def main():
 
         #monitor INPUT as another process
         w=Watcher()
-        w.start()
+        w.run()
 
     else:
 
