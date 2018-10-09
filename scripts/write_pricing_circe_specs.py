@@ -217,8 +217,6 @@ spec:
           value: {all_node_ips}
         - name: ALL_NEXT_NODES
           value: {all_next_nodes}
-        - name: ALL_NEXT_HOSTS
-          value: {all_next_hosts}
         - name: ALL_COMPUTING_NODES
           value: {all_computing_nodes}
         - name: ALL_COMPUTING_IPS

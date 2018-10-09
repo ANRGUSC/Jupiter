@@ -4,7 +4,7 @@ FROM ubuntu:16.04
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
-ADD circe/pricing/requirements.txt /requirements.txt
+ADD circe/pricing_separate/requirements.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
@@ -35,12 +35,12 @@ RUN mkdir -p /output
 COPY  app_specific_files/dummy_app/sample_input /sample_input
 
 # Add the mongodb scripts
-ADD circe/pricing/runtime_profiler_mongodb /central_mongod
+ADD circe/pricing_separate/runtime_profiler_mongodb /central_mongod
 
-ADD circe/pricing/readconfig.py /readconfig.py
-ADD circe/pricing/scheduler.py /scheduler.py
+ADD circe/pricing_separate/readconfig.py /readconfig.py
+ADD circe/pricing_separate/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
-ADD circe/pricing/evaluate.py /evaluate.py
+ADD circe/pricing_separate/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
 ADD app_specific_files/dummy_app/configuration.txt /configuration.txt
@@ -48,8 +48,8 @@ ADD app_specific_files/dummy_app/configuration.txt /configuration.txt
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
 
-ADD circe/pricing/monitor.py /centralized_scheduler/monitor.py
-ADD circe/pricing/start_home.sh /start.sh
+ADD circe/pricing_separate/monitor.py /centralized_scheduler/monitor.py
+ADD circe/pricing_separate/start_home.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
 

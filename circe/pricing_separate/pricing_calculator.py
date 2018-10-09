@@ -139,18 +139,15 @@ def prepare_global_info():
     controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
     ip_controllers_map = dict(zip(task_controllers_ips, task_controllers))
 
-    global next_tasks_map, next_hosts_map
-    next_nodes_info = os.environ['ALL_NEXT_NODES'].split('!')[:-1]
-    next_hosts_info = os.environ['ALL_NEXT_HOSTS'].split('!')[:-1]
+    global next_tasks_map
+    next_tasks_info = os.environ['ALL_NEXT_NODES'].split('!')[:-1]
     next_tasks_map = dict()
-    next_hosts_map = dict()
-    for idx,next_nodes in enumerate(next_nodes_info):
-        task = next_nodes.split(':')[0]
-        next_tasks = next_nodes.split(':')[1].split('#')
-        next_tasks_map[task] = next_tasks 
-        next_hosts = next_hosts_info[idx].split(':')[1].split('#')
-        next_hosts_map[task] = next_hosts
-
+    for idx,next_tasks in enumerate(next_tasks_info):
+        task = next_tasks.split(':')[0]
+        next_task = next_tasks.split(':')[1].split('#')
+        next_tasks_map[task] = next_task
+    print('^^^^^^^^^^^^^^^^^^^')
+    print(next_tasks_map)
 
 
 
@@ -265,22 +262,19 @@ def get_updated_network_from_source(node_ip):
         print("Network request failed. Will try again, details: " + str(e))
         return -1
 
-def get_updated_network_profile(node_name):
+def get_updated_network_profile(task_name):
     """Collect the network profile information from local MONGODB database
     
     Args:
-        node_name (str): the source task controller node
+        task_name (str): task controller name
     
     Returns:
         list: network information
     """
     #print('----- Get updated network information:')
     computing_net_info = get_updated_network_from_source(self_profiler_ip)
-    # print(node_ip_map)
-    # print(node_name)
-    task_profiler_ip = node_ip_map[node_name]
-    # print(task_profiler_ip)
-    controller_net_info = get_updated_network_from_source(task_profiler_ip)
+    print(controllers_ip_map[task_name])
+    controller_net_info = get_updated_network_from_source(controllers_ip_map[task_name])
     
     return computing_net_info,controller_net_info
 
@@ -310,11 +304,13 @@ def get_updated_resource_profile():
         print("Resource request failed. Will try again, details: " + str(e))
         return -1
 
-def pricing_calculate(task_name, task_host_name):
+def pricing_calculate(task_name, next_host_name):
     """Calculate price required to perform the task based on network information, resource information, execution information and task queue size and sample size
     
     Args:
         task_name (str): task name
+        task_host_name (str) : host of the task controller
+        next_host_name (str) : host of the next task controller
     
     Returns:
         float: calculated price
@@ -340,7 +336,7 @@ def pricing_calculate(task_name, task_host_name):
         print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        computing_net_info,controller_net_info = get_updated_network_profile(next_host_name)
+        computing_net_info,controller_net_info = get_updated_network_profile(task_name)
         print('3')
         print(computing_net_info)
         print(controller_net_info)
@@ -354,6 +350,8 @@ def pricing_calculate(task_name, task_host_name):
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
         print('--- Network cost: ')
+        print(computing_net_info)
+        print(controller_net_info)
         print(self_name)
         print(next_host_name)
         if next_host_name in computing_net_info.keys():

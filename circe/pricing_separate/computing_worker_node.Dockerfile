@@ -14,7 +14,7 @@ RUN apt-get install iproute2 -y
 RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
 RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
-ADD circe/pricing/requirements.txt /requirements.txt
+ADD circe/pricing_separate/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
@@ -38,13 +38,13 @@ ADD app_specific_files/dummy_app/scripts/ /centralized_scheduler/
 ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py
 
-ADD circe/pricing/start_computing_worker.sh /start.sh
+ADD circe/pricing_separate/start_computing_worker.sh /start.sh
 ADD scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD app_specific_files/dummy_app/configuration.txt  /centralized_scheduler/dag.txt
 ADD app_specific_files/dummy_app/scripts/config.json /centralized_scheduler/config.json
 ADD app_specific_files/dummy_app/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
 
-ADD circe/pricing/pricing_calculator.py /centralized_scheduler/pricing_calculator.py
+ADD circe/pricing_separate/pricing_calculator.py /centralized_scheduler/pricing_calculator.py
 
 RUN chmod +x /start.sh
 
