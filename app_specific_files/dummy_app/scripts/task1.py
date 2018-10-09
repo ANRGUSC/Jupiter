@@ -20,17 +20,13 @@ def task(filename, pathin, pathout):
 
     file_output = open(output_path, 'w')
 
-    print(input_path)
-    print(file_output)
     with open(input_path, 'r') as file_input:
         for line in file_input:
             for n in line.strip().split(" "):
                 num=int(n) 
-                print(num)
                 if num%2==0:
 
                     line = re.sub(re.compile(n+" *"),"", line)+ "\n"
-                    print(line)
                     file_output.write(line)
 
     file_output.close()

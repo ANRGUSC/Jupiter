@@ -11,10 +11,7 @@ def task(filename, pathin, pathout):
 
     if not isinstance(filename, (list)):
         filename = [filename]
-    print(filename)
-    print(filename[0])
     file_name = filename[0].split('_')[0]
-    print(file_name)
     output4 = file_name+'_task4.txt'
    
     input_path1 = os.path.join(pathin,filename[0])
@@ -28,13 +25,11 @@ def task(filename, pathin, pathout):
 
     with open(input_path1, 'r') as file_input:
         for line in file_input:
-            print(line)
             file_output.write(line)
             file_output.write("Task 4 has processed the file\n")
     
     with open(input_path2, 'r') as file_input:
         for line in file_input:
-            print(line)
             file_output.write(line)
             file_output.write("Task 4 has processed the file\n")
 

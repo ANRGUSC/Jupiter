@@ -98,7 +98,6 @@ def transfer_data_scp(IP,user,pword,source, destination):
     """
     #Keep retrying in case the containers are still building/booting up on
     #the child nodes.
-    print(IP)
     retry = 0
     ts = -1
     while retry < num_retries:
@@ -162,7 +161,6 @@ def pricing_to_best_node_mapping(pricing_func):
         """
         cost_list = pricing_func(task_price_summary, task_node_summary)
         best_node = min(cost_list,key=cost_list.get)
-        print(best_node)
         return best_node
 
     return select_best_node
@@ -331,21 +329,16 @@ class Handler(FileSystemEventHandler):
             
             flag1 = sys.argv[1]
             
-            print(task_mul)
-            print(type(task_mul))
+    
             if temp_name not in task_mul.keys():
                 task_mul[temp_name] = [new_file]
-                print('++++++++++++++++++++++')
                 ts = time.time()
-                print(temp_name)
                 runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info,taskname)
-                print(event.src_path)
                 count_dict[temp_name]=int(flag1)-1
             else:
                 task_mul[temp_name] = task_mul[temp_name] + [new_file]
                 count_dict[temp_name]=count_dict[temp_name]-1
-            print(task_mul[temp_name])
 
             if count_dict[temp_name] == 0: # enough input files
                 filename = task_mul[temp_name]
@@ -357,29 +350,23 @@ class Handler(FileSystemEventHandler):
                 # When receive an input file, based on the global mapping list, select the computing node
                 # must check temp_name to ensure, for example: fusion case with multiple inputs from sample detector, astute detector, and others... 
                 # print(filename)
-                print('List of files')
-                print(filenames)
                 filepath = os.path.split(event.src_path)[0]
                 source_list = [filepath+'/'+fname for fname in filename]
                 
                 input_size = [file_size(x) for x in source_list]
                 sum_input_size = sum(input_size)
                 best_node = task_node_summary['current_best_node']
-                print(sum_input_size)
-                print(best_node)
-                print(temp_name)
-
+        
                 task_node_summary[temp_name] = (sum_input_size,0) #history of input file size, not yet processed
                 
                 destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
                 flag2 = sys.argv[2]
-                print(flag2)
+                
                 if sys.argv[3] == 'home':
                     destination_list = [dest+"#home#"+sys.argv[4]+"#"+sys.argv[5]+"#"+sys.argv[6] for dest in destination_list]
                 elif flag2 == 'true':
                     destination_list = [dest+"#"+ flag2 for dest in destination_list]
                     for i in range(3, len(sys.argv)-1,4):
-                        print(destination_list)
                         destination_list = [dest+"#"+sys.argv[i+1]+"#"+sys.argv[i+2]+"#"+sys.argv[i+3] for dest in destination_list]
                     
                 else: 
@@ -388,7 +375,6 @@ class Handler(FileSystemEventHandler):
                     for i in range(3, len(sys.argv)-1,4):
                         destination_list[j] = destination_list[j]+"#"+sys.argv[i+1]+"#"+sys.argv[i+2]+"#"+sys.argv[i+3]
                         j = j +1
-                print(destination_list)
                 ts = time.time()
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                 
@@ -396,10 +382,6 @@ class Handler(FileSystemEventHandler):
                 
                 
                 for idx,source in enumerate(source_list):
-                    print(source)
-                    print(idx)
-                    print(node_ip_map[best_node])
-                    print(destination_list[idx])
                     transfer_data(node_ip_map[best_node],username,password,source, destination_list[idx])
 
                 
@@ -487,10 +469,6 @@ def main():
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
     num_computing_nodes = len(all_computing_nodes)
     node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
-    print('Node IP mapping')
-    print(node_ip_map)
-
-    print('Number of computing nodes : '+ str(num_computing_nodes))
 
     global dest_node_host_port_list
     dest_node_host_port_list = [ip + ":" + str(FLASK_SVC) for ip in all_computing_ips]
@@ -502,10 +480,6 @@ def main():
 
     # Set up default value for task_node_summary: the task controller will perform the tasks also
     task_node_summary['current_best_node'] = node_id
-    print(node_name)
-    print(node_id)
-    print(os.environ['OWN_IP'])
-    print(node_ip_map)
     web_server = MonitorRecv()
     web_server.start()
 
@@ -520,7 +494,6 @@ def main():
 
     else:
 
-        print(taskmap[2:])
         path_src = "/centralized_scheduler/" + taskname
         args = ' '.join(str(x) for x in taskmap[2:])
 
@@ -528,7 +501,6 @@ def main():
             cmd = "python3 -u " + path_src + ".py " + args          
         else:
             cmd = "sh " + path_src + ".sh " + args
-        print(cmd)
         os.system(cmd)
 
 if __name__ == '__main__':

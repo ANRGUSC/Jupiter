@@ -269,7 +269,6 @@ def transfer_data_scp(IP,user,pword,source, destination):
     #Keep retrying in case the containers are still building/booting up on
     #the child nodes.
 
-    print(IP)
     retry = 0
     ts = -1
     while retry < num_retries:
@@ -352,10 +351,8 @@ class MyHandler(PatternMatchingEventHandler):
         """
         # the file will be processed there
         if event.event_type == 'created':
-            print(event.src_path, event.event_type)  # print now only for degug
             end_times.append(time.time())
             print("ending time is: ", end_times)
-            print(count)
             print("starting time is: ", start_times)
             exec_times.append(end_times[count] - start_times[count])
 

@@ -31,6 +31,7 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import urllib.request
 from urllib import parse
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 app = Flask(__name__)
@@ -112,14 +113,11 @@ def get_taskmap():
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].append(data[i])
-    # print("tasks: ", tasks)
-    # print("task order", task_order) #task_list
-    # print("super tasks", super_tasks)
     return tasks, task_order, super_tasks
 
 def prepare_global_info():
     """Get information of corresponding profiler (network profiler, execution profiler)"""
-    global self_profiler_ip,profiler_ip, profiler_nodes,exec_home_ip, self_name,self_ip,ip_node_map,node_ip_map,ip_controllers_map, controllers_ip_map 
+    global self_profiler_ip,profiler_ip, profiler_nodes,exec_home_ip, self_name,self_ip, task_controllers, task_controllers_ips
     profiler_ip = os.environ['ALL_PROFILERS'].split(' ')
     profiler_ip = [info.split(":") for info in profiler_ip]
 
@@ -134,11 +132,25 @@ def prepare_global_info():
     task_controllers = os.environ['ALL_NODES'].split(':')
     task_controllers_ips = os.environ['ALL_NODES_IPS'].split(':')
 
+    global ip_node_map,node_ip_map,ip_controllers_map, controllers_ip_map 
     ip_node_map = dict(zip(profiler_ip[0], profiler_nodes[0]))
     node_ip_map = dict(zip(profiler_nodes[0], profiler_ip[0]))
 
     controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
     ip_controllers_map = dict(zip(task_controllers_ips, task_controllers))
+
+    global next_tasks_map, next_hosts_map
+    next_nodes_info = os.environ['ALL_NEXT_NODES'].split('!')[:-1]
+    next_hosts_info = os.environ['ALL_NEXT_HOSTS'].split('!')[:-1]
+    next_tasks_map = dict()
+    next_hosts_map = dict()
+    for idx,next_nodes in enumerate(next_nodes_info):
+        task = next_nodes.split(':')[0]
+        next_tasks = next_nodes.split(':')[1].split('#')
+        next_tasks_map[task] = next_tasks 
+        next_hosts = next_hosts_info[idx].split(':')[1].split('#')
+        next_hosts_map[task] = next_hosts
+
 
 
 
@@ -160,26 +172,17 @@ def prepare_global_info():
     dag = dag_info[1]
     
     global task_module
-    # print('Task modules')
-    # print(dag)
-    # print(dag.keys())
     task_module = {}
     for task in dag:
-        print(task)
         task_module[task] = __import__(task)
         cmd = "mkdir centralized_scheduler/output/" + task 
         os.system(cmd)
-    # print(task_module)
 
 
 def update_exec_profile_file():
     """Update the execution profile from the home execution profiler's MongoDB and store it in text file.
     """
-    # print('Update execution profile information in execution.txt')
-    # print(exec_home_ip)
-    # print(MONGO_SVC)
 
-    t = time.time()
     execution_info = []
     num_profilers = 0
     conn = False
@@ -193,10 +196,6 @@ def update_exec_profile_file():
             print('Error connection')
             time.sleep(60)
 
-    print('----- It takes ' + str(time.time()-t))
-    t = time.time()
-    print(db)
-    print(conn)
     while not available_data:
         try:
             logging =db[self_name].find()
@@ -205,17 +204,11 @@ def update_exec_profile_file():
             print('Execution information for the current node is not ready!!!')
             time.sleep(60)
 
-    print(logging)
-    print('----- It takes ' + str(time.time()-t))
-    t = time.time()
     for record in logging:
         # Node ID, Task, Execution Time, Output size
         info_to_csv=[record['Task'],record['Duration [sec]'],str(record['Output File [Kbit]'])]
         execution_info.append(info_to_csv)
     print('Execution information has already been provided')
-    print(execution_info)
-    print('----- It takes ' + str(time.time()-t))
-    t = time.time()
     with open('execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
@@ -227,7 +220,6 @@ def get_updated_execution_profile():
     """
     #print('----- Get updated execution information')
 
-    t = time.time()
     with open('execution_log.txt','r') as f:
         reader = csv.reader(f)
         execution = list(reader)
@@ -245,14 +237,10 @@ def get_updated_execution_profile():
     execution_info = {}
     for row in execution:
         execution_info[row[0]] = [float(row[1]),float(row[2])]
-    #print(execution_info)
-    print('----- It takes ' + str(time.time()-t))
-    t = time.time()
     return execution_info
 
 def get_updated_network_from_source(node_ip):
     #print("--- Get updated network profile information from "+node_ip)   
-    t = time.time()
     network_info = {}
     try:
         #print('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
@@ -272,9 +260,6 @@ def get_updated_network_from_source(node_ip):
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             # info_to_csv=[ip_node_map[record['Source[IP]']],record['Source[IP]'],ip_node_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info[ip_node_map[record['Destination[IP]']]] = str(record['Parameters'])
-        #print("Network information from the source node: ", network_info)
-        print('----- It takes ' + str(time.time()-t))
-        t = time.time()
         return network_info
     except Exception as e:
         print("Network request failed. Will try again, details: " + str(e))
@@ -284,20 +269,18 @@ def get_updated_network_profile(node_name):
     """Collect the network profile information from local MONGODB database
     
     Args:
-        node_name (str): the source node of the requesting task
+        node_name (str): the source task controller node
     
     Returns:
         list: network information
     """
     #print('----- Get updated network information:')
-    t = time.time()
     computing_net_info = get_updated_network_from_source(self_profiler_ip)
     # print(node_ip_map)
     # print(node_name)
     task_profiler_ip = node_ip_map[node_name]
     # print(task_profiler_ip)
     controller_net_info = get_updated_network_from_source(task_profiler_ip)
-    print('----- It takes ' + str(time.time()-t))
     
     return computing_net_info,controller_net_info
 
@@ -305,7 +288,6 @@ def get_updated_resource_profile():
     """Requesting resource profiler data using flask for its corresponding profiler node
     """
     #print("----- Get updated resource profile information") 
-    t = time.time() 
     resource_info = [] 
     try:
         for c in range(0,num_retries):
@@ -321,8 +303,6 @@ def get_updated_resource_profile():
         if c == num_retries:
             print("Exceeded maximum try times.")
 
-        print('----- It takes ' + str(time.time()-t))
-        t = time.time()
         # print("Resource profiles: ", resource_info)
         return resource_info
 
@@ -330,7 +310,7 @@ def get_updated_resource_profile():
         print("Resource request failed. Will try again, details: " + str(e))
         return -1
 
-def pricing_calculate(task_name, next_task_name):
+def pricing_calculate(task_name, task_host_name):
     """Calculate price required to perform the task based on network information, resource information, execution information and task queue size and sample size
     
     Args:
@@ -344,7 +324,7 @@ def pricing_calculate(task_name, next_task_name):
     price = dict()
     price['network'] = 100000
     price['cpu'] = 100000
-    price['mem'] = 100000
+    price['memory'] = 100000
     price['queue'] = 0
 
     """
@@ -357,36 +337,32 @@ def pricing_calculate(task_name, next_task_name):
 
     try:
         
-        t = time.time()
         print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        computing_net_info,controller_net_info = get_updated_network_profile(node_name)
-        # print('--- Resource: ')
-        # print(resource_info)
-        # print('--- Network: ')
-        # print(computing_net_info)
-        # print(controller_net_info)
-        # print('--- Execution: ')
-        # print(execution_info)
+        computing_net_info,controller_net_info = get_updated_network_profile(next_host_name)
+        print('3')
+        print(computing_net_info)
+        print(controller_net_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
+        print('4')
+        print(test_size)
         test_output = execution_info[task_name][1]
-        # print('----Task queue: ')
-        # print(queue_mul)
+        print(test_output)
         print('----- Calculating price:')
         print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
-        # print(price['memory'])
-        # print(price['cpu'])
         print('--- Network cost: ')
-        if next_task_name in computing_net_info.keys():
-            computing_params = computing_net_info[next_task_name].split()
+        print(self_name)
+        print(next_host_name)
+        if next_host_name in computing_net_info.keys():
             controller_params = controller_net_info[self_name].split()
+            print(controller_params)
+            computing_params = computing_net_info[next_host_name].split()
+            print(computing_params)
             computing_params = [float(x) for x in computing_params]
             controller_params = [float(x) for x in controller_params]
-            # print(computing_params)
-            # print(controller_params)
             price['network'] = (controller_params[0] * test_size * test_size) + \
                            (controller_params[1] * test_size) + \
                            controller_params[2] + \
@@ -395,13 +371,9 @@ def pricing_calculate(task_name, next_task_name):
                            computing_params[2]
         
         print(price['network'])
-        print('----- It takes ' + str(time.time()-t))
-        t = time.time()
         #Temporary: linear
         print('--- Queuing cost: ')
         print(task_queue_size)
-        print('----- It takes ' + str(time.time()-t))
-        t = time.time()
         if task_queue_size > 0: #not infinity 
             if len(queue_mul)==0:
                 print('empty queue, no tasks are waiting')
@@ -410,10 +382,6 @@ def pricing_calculate(task_name, next_task_name):
                 queue_task = [k for k,v in queue_dict.items() if v == False]
                 size_dict = dict(size_mul)
                 queue_size =  [size_dict[k] for k in queue_dict.keys()] 
-                print(queue_task)
-                print(queue_size)
-                print(execution_info)
-                print(task_info[0])
                 for idx,task_info in enumerate(queue_task):
                     #TO_DO: sum or max
                     price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
@@ -444,6 +412,27 @@ def announce_price(task_controller_ip, price):
         print(e)
         return "not ok"
 
+def push_updated_price():
+    for idx,task in enumerate(task_controllers):
+        if task=='home': continue
+        print('#############################')
+        for idx,next_task in enumerate(next_tasks_map[task]):
+            price = pricing_calculate(task, next_hosts_map[task])
+            print(task)
+            print(next_task)
+            print(next_hosts_map[task])
+            print(price)
+            
+            
+            announce_price(controllers_ip_map[next_task], price)
+        print('#############################')
+
+    
+def schedule_update_price(interval):
+    # scheduling updated price
+    sched = BackgroundScheduler()
+    sched.add_job(push_updated_price,'interval',id='push_price', minutes=interval, replace_existing=True)
+    sched.start()
 
 def execute_task(task_name,file_name, filenames, input_path, output_path):
     """Execute the task given the input information
@@ -484,7 +473,6 @@ def transfer_mapping_decorator(TRANSFER=0):
         """
         #Keep retrying in case the containers are still building/booting up on
         #the child nodes.
-        print(IP)
         retry = 0
         ts = -1
         while retry < num_retries:
@@ -614,11 +602,7 @@ class Handler1(FileSystemEventHandler):
             send_runtime_profile_computingnode(runtime_info,task_name)
             task_ip = controllers_ip_map[task_name] 
             key = (task_name,temp_name)
-            print(task_ip)
-            print('!!!!!!!!!!!!!!!!')
-            print(next_mul)
             flag = next_mul[key][0]
-            print(flag)
             if flag == 'home':
                 next_IPs = next_mul[key][1]
                 next_users = next_mul[key][2]
@@ -629,20 +613,10 @@ class Handler1(FileSystemEventHandler):
                 next_users = next_mul[key][2:][::3]
                 next_passwords = next_mul[key][3:][::3]
             
-            print('!!!!!!!!!!!!!!!!')
-            print(next_IPs)
-            print(next_users)
-            print(next_passwords)
-            print(next_mul)
-            print(next_mul[(task_name,temp_name)])
-
-            
             if flag == 'home':
                 transfer_data(next_IPs,next_users,next_passwords,event.src_path, "/output/")    
             elif flag == 'true':
                 for idx,ip in enumerate(next_IPs):
-                    print(ip)
-                    print(idx)
                     transfer_data(ip,next_users[idx],next_passwords[idx],event.src_path, "/centralized_scheduler/input/")
             else:
                 if key not in files_mul:
@@ -650,13 +624,8 @@ class Handler1(FileSystemEventHandler):
                 else:
                     files_mul[key] = files_mul[key] + [event.src_path]
 
-                print('*****************')
-                print(files_mul[key])
-                print(next_IPs)
                 if len(files_mul[key]) == len(next_IPs):
                     for idx,ip in enumerate(next_IPs):
-                        print(idx)
-                        print(files_mul[key][idx])
                         transfer_data(ip,next_users[idx],next_passwords[idx],files_mul[key][idx], "/centralized_scheduler/input/")
             # copy to folder INPUT of next task
 
@@ -708,8 +677,6 @@ class Handler(FileSystemEventHandler):
 
             ts = time.time()
             
-            print('^^^^^^^^^^^^^^^^^^^^^^^^^^')
-            print(new_file)
             task_name = new_file.split('#')[1]
             task_ip = new_file.split('#')[2]
             task_flag = new_file.split('#')[3]
@@ -721,18 +688,11 @@ class Handler(FileSystemEventHandler):
             key = (task_name,file_name)
             flag = dag[task_name][0] 
 
-            print('$$$$$$$$$$$$$$$$$$$$')
-            print(next_mul)
-            print(key)
-            print(task_mul)
             if key not in task_mul:
                 task_mul[key] = [new_file]
                 count_mul[key]= int(flag)-1
                 size_mul[key] = cal_file_size(event.src_path)
                 next_mul[key] = [task_flag]
-
-                print(len(next_info))
-                print(next_info)
 
                 if len(next_info) >0:
                     next_mul[key] = next_mul[key] + next_info
@@ -740,10 +700,6 @@ class Handler(FileSystemEventHandler):
                 task_mul[key] = task_mul[key] + [new_file]
                 count_mul[key]=count_mul[key]-1
                 size_mul[key] = size_mul[key] + cal_file_size(event.src_path)
-            
-            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-            
-            print(next_mul)
 
             if count_mul[key] == 0: # enough input files
                 incoming_file = task_mul[key]
@@ -757,10 +713,7 @@ class Handler(FileSystemEventHandler):
 
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
-                # print(output_path)
                 output_path = os.path.join(output_path,task_name)
-                # print(output_path)
-
                 execute_task(task_name,file_name, filenames, input_path, output_path)
                 queue_mul[key] = True
                 
@@ -793,6 +746,7 @@ def main():
     FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 
+    update_interval = 2
 
     prepare_global_info()
 
@@ -825,6 +779,9 @@ def main():
 
     # Update execution information file
     _thread.start_new_thread(update_exec_profile_file,())
+
+
+    _thread.start_new_thread(schedule_update_price,(update_interval,))
     # Update pricing information every interval
 
     #monitor INPUT as another process
@@ -834,6 +791,8 @@ def main():
     #monitor OUTPUT in this process
     w1=Watcher1()
     w1.run()
+
+    
     
 
 if __name__ == '__main__':

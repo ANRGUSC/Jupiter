@@ -17,16 +17,12 @@ def task(filename, pathin, pathout):
     output_path = os.path.join(pathout, output3)
  
     file_output = open(output_path, 'w')
- 
-    print(input_path)
-    print(file_output)
 
     data = []
     with open(input_path,'r') as file_input:
         for line in file_input:
             data = line.strip().split(' ')
             data = sorted(data)
-            print(data)
             for num in data:
                 file_output.write(num+" ")
     file_output.close()
