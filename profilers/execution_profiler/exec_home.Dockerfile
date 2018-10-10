@@ -38,6 +38,7 @@ RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 
 ADD profilers/execution_profiler/central_mongod /central_mongod
+RUN chmod +x /central_mongod
 
 
 RUN mkdir -p /centralized_scheduler/profiler_files

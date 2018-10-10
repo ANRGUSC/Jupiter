@@ -39,7 +39,7 @@ def task(filename, pathin, pathout):
 
 def main():
 
-    filelist = '25botnet'
+    filelist = ['25botnet_task2.txt','25botnet_task3.txt']
     outpath = os.path.join(os.path.dirname(__file__), "generated_files/")
     outfile = task(filelist, outpath, outpath)
     return outfile

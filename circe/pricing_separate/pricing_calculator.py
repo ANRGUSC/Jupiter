@@ -146,8 +146,6 @@ def prepare_global_info():
         task = next_tasks.split(':')[0]
         next_task = next_tasks.split(':')[1].split('#')
         next_tasks_map[task] = next_task
-    print('^^^^^^^^^^^^^^^^^^^')
-    print(next_tasks_map)
 
 
 
@@ -262,19 +260,19 @@ def get_updated_network_from_source(node_ip):
         print("Network request failed. Will try again, details: " + str(e))
         return -1
 
-def get_updated_network_profile(task_name):
+def get_updated_network_profile(task_host_name):
     """Collect the network profile information from local MONGODB database
     
     Args:
-        task_name (str): task controller name
+        task_host_name (str): task controller name
     
     Returns:
         list: network information
     """
     #print('----- Get updated network information:')
     computing_net_info = get_updated_network_from_source(self_profiler_ip)
-    print(controllers_ip_map[task_name])
-    controller_net_info = get_updated_network_from_source(controllers_ip_map[task_name])
+    task_profiler_ip = node_ip_map[task_host_name] 
+    controller_net_info = get_updated_network_from_source(task_profiler_ip)
     
     return computing_net_info,controller_net_info
 
@@ -415,14 +413,13 @@ def push_updated_price():
         if task=='home': continue
         print('#############################')
         for idx,next_task in enumerate(next_tasks_map[task]):
-            price = pricing_calculate(task, next_hosts_map[task])
+            price = pricing_calculate(task, next_task)
             print(task)
             print(next_task)
-            print(next_hosts_map[task])
             print(price)
             
-            
-            announce_price(controllers_ip_map[next_task], price)
+            print(controllers_ip_map)
+            announce_price(controllers_ip_map[task], price)
         print('#############################')
 
     
