@@ -132,15 +132,18 @@ def prepare_global_info():
     task_controllers = os.environ['ALL_NODES'].split(':')
     task_controllers_ips = os.environ['ALL_NODES_IPS'].split(':')
 
-    global ip_node_map,node_ip_map,ip_controllers_map, controllers_ip_map 
-    ip_node_map = dict(zip(profiler_ip[0], profiler_nodes[0]))
-    node_ip_map = dict(zip(profiler_nodes[0], profiler_ip[0]))
+    global ip_profilers_map,profilers_ip_map,ip_controllers_map, controllers_ip_map 
+    ip_profilers_map = dict(zip(profiler_ip[0], profiler_nodes[0]))
+    profilers_ip_map = dict(zip(profiler_nodes[0], profiler_ip[0]))
 
     controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
     ip_controllers_map = dict(zip(task_controllers_ips, task_controllers))
 
+    global controllers_id_map
+    controllers_id_map = {key: None for key in task_controllers.keys()}
+
     global next_tasks_map
-    next_tasks_info = os.environ['ALL_NEXT_NODES'].split('!')[:-1]
+    next_tasks_info = os.environ['ALL_NEXT_TASKS'].split('!')[:-1]
     next_tasks_map = dict()
     for idx,next_tasks in enumerate(next_tasks_info):
         task = next_tasks.split(':')[0]
@@ -173,6 +176,24 @@ def prepare_global_info():
         cmd = "mkdir centralized_scheduler/output/" + task 
         os.system(cmd)
 
+def update_controller_map():
+    """
+        Update matching between task controllers and node, in case task controllers are crashed and redeployded
+    """
+    try:
+        info = request.args.get('controller_id_map').split(':')
+        print("Received matching info")
+        #Task, Node
+        controllers_id_map[info[0]] = info[1]
+        print('controllers_id_map')
+        print(controllers_id_map)
+
+    except Exception as e:
+        print("Bad reception or failed processing in Flask for controllers matching announcement: "+ e) 
+        return "not ok" 
+
+    return "ok"
+app.add_url_rule('/update_controller_matching', 'update_controller_matching', update_controller_matching)
 
 def update_exec_profile_file():
     """Update the execution profile from the home execution profiler's MongoDB and store it in text file.
@@ -253,8 +274,8 @@ def get_updated_network_from_source(node_ip):
         logging =db[node_ip].find().limit(num_nb)  
         for record in logging:
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
-            # info_to_csv=[ip_node_map[record['Source[IP]']],record['Source[IP]'],ip_node_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
-            network_info[ip_node_map[record['Destination[IP]']]] = str(record['Parameters'])
+            # info_to_csv=[ip_profilers_map[record['Source[IP]']],record['Source[IP]'],ip_profilers_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
+            network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
         return network_info
     except Exception as e:
         print("Network request failed. Will try again, details: " + str(e))
@@ -269,10 +290,15 @@ def get_updated_network_profile(task_host_name):
     Returns:
         list: network information
     """
-    #print('----- Get updated network information:')
+    print('----- Get updated network information:')
     computing_net_info = get_updated_network_from_source(self_profiler_ip)
-    task_profiler_ip = node_ip_map[task_host_name] 
+    print(computing_net_info)
+    print(task_host_name)
+    print(profilers_ip_map)
+    task_profiler_ip = profilers_ip_map[task_host_name] 
+    print(task_profiler_ip)
     controller_net_info = get_updated_network_from_source(task_profiler_ip)
+    print(controller_net_info)
     
     return computing_net_info,controller_net_info
 
@@ -302,7 +328,7 @@ def get_updated_resource_profile():
         print("Resource request failed. Will try again, details: " + str(e))
         return -1
 
-def pricing_calculate(task_name, next_host_name):
+def price_aggregate(task_name, next_host_name):
     """Calculate price required to perform the task based on network information, resource information, execution information and task queue size and sample size
     
     Args:
@@ -413,7 +439,7 @@ def push_updated_price():
         if task=='home': continue
         print('#############################')
         for idx,next_task in enumerate(next_tasks_map[task]):
-            price = pricing_calculate(task, next_task)
+            price = price_aggregate(task, next_task)
             print(task)
             print(next_task)
             print(price)

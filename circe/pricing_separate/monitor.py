@@ -33,6 +33,7 @@ from flask import Flask, request
 import _thread
 import threading
 import numpy as np
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 
@@ -203,6 +204,29 @@ def update_best_node(task_price_summary,task_node_summary):
     msg = 'Select the best node for file %s'%(file_name)
     print(msg)
 
+def send_controller_map():
+    for computing_ip in all_computing_ips:
+        try:
+            print("Announce my current node")
+            url = "http://" + computing_ip + ":" + str(FLASK_SVC) + "/update_controller_matching"
+            params = {'controller_id_map':controller_id_map}
+            params = parse.urlencode(params)
+            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+            res = urllib.request.urlopen(req)
+            res = res.read()
+            res = res.decode('utf-8')
+        except Exception as e:
+            print("Sending message to flask server on computing node FAILED!!!")
+            print(e)
+            return "not ok"
+
+def schedule_update_controller(interval):
+    """
+        Send controller id node mapping to all the computing nodes
+    """
+    sched = BackgroundScheduler()
+    sched.add_job(send_controller_map,'interval',id='push_id', minutes=interval, replace_existing=True)
+    sched.start()
         
 def send_monitor_data(msg):
     """
@@ -362,6 +386,9 @@ class Handler(FileSystemEventHandler):
                 destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
                 flag2 = sys.argv[2]
                 
+                print(sys.argv[4])
+                print(sys.argv[5])
+                print(sys.argv[6])
                 if sys.argv[3] == 'home':
                     destination_list = [dest+"#home#"+sys.argv[4]+"#"+sys.argv[5]+"#"+sys.argv[6] for dest in destination_list]
                 elif flag2 == 'true':
@@ -446,9 +473,10 @@ def main():
     self_ip     = os.environ['OWN_IP']
 
 
+
     global taskmap, taskname, taskmodule, filenames,files_out, home_node_host_port
     global all_nodes, all_nodes_ips, node_id, node_name
-    global all_computing_nodes,all_computing_ips, num_computing_nodes, node_ip_map
+    global all_computing_nodes,all_computing_ips, num_computing_nodes, node_ip_map, controller_id_map
 
     configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
@@ -461,14 +489,20 @@ def main():
     #target port for SSHing into a container
     filenames=[]
     files_out=[]
-    node_name = os.environ['NODE_NAME']
-    node_id = os.environ['NODE_ID']
+    node_name= os.environ['NODE_NAME']
+    node_id  = os.environ['NODE_ID']
+    self_task= os.environ['TASK']
+    controller_id_map = self_task + ":" + node_id
+    update_interval = 10 #minutes
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
     num_computing_nodes = len(all_computing_nodes)
     node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
+
+
+    _thread.start_new_thread(schedule_update_controller,(update_interval,))
 
     global dest_node_host_port_list
     dest_node_host_port_list = [ip + ":" + str(FLASK_SVC) for ip in all_computing_ips]

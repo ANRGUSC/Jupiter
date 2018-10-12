@@ -124,7 +124,7 @@ ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py
 
 #ADD circe/{pricing_option}/monitor.py /centralized_scheduler/monitor.py
-ADD circe/{pricing_option}/start_worker.sh /start.sh
+ADD circe/{pricing_option}/start_controller_worker.sh /start.sh
 
 ADD circe/{pricing_option}/monitor.py /centralized_scheduler/monitor.py
 

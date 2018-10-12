@@ -37,6 +37,8 @@ def build_push_profiler():
 
     os.chdir(jupiter_config.NETR_PROFILER_PATH)
 
+    print(jupiter_config.USERNAME)
+    print(jupiter_config.PASSWORD)
     dc.write_profiler_home_docker(username = jupiter_config.USERNAME,
                      password = jupiter_config.PASSWORD,
                      ports = " ".join(port_list))

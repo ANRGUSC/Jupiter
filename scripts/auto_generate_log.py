@@ -426,7 +426,7 @@ def check_finish_evaluation(app_name,port,num_samples):
 
    
 def deploy_app_jupiter(app_id,app_name,port,circe_log,num_runs,num_samples,mapper_log):
-    #setup_port(port)
+    setup_port(port)
     k8s_jupiter_deploy(app_id,app_name,port,mapper_log)
     log_folder ='../logs'
     if not os.path.exists(log_folder):
@@ -480,7 +480,7 @@ def main():
         for num in range(1,num_dags+1):
             log_circe = '../logs/%s_%s_%dDAG%d_%dRUN_circehome' %(option, alg,num_dags,num,num_runs)
             log_mapper = '../logs/%s_%s_%dDAG%d_%dRUN_mapperhome' %(option, alg,num_dags,num,num_runs)
-            port =  8080 + num-1
+            port =  8088 + num-1
             cur_app = temp+str(num)
             port_list.append(port)
             app_list.append(cur_app)

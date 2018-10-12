@@ -98,7 +98,7 @@ def k8s_pricing_jupiter_deploy():
             Then this is link to get the task to node mapping
         """
 
-        line = "http://localhost:8089/api/v1/namespaces/"
+        line = "http://localhost:8088/api/v1/namespaces/"
         line = line + jupiter_config.MAPPER_NAMESPACE + "/services/home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
         time.sleep(5)
         print(line)

@@ -159,13 +159,9 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     #get DAG and home machine info
     first_task = dag_info[0]
     dag = dag_info[1]
-    hosts = temp_info[2]
-    # print("hosts:")
-    # pprint(hosts)
-    # print(len(dag_info))
-    # pprint(dag_info[0])
-    # pprint(dag_info[1])
-    # pprint(dag_info[2])
+    hosts = temp_info[2] 
+    # mapping = [task+":"+dag_info[2][task] for task in dag_info[2].keys()]
+    # mapping_str = "#".join(mapping)
     service_ips = {}; #list of all service IPs including home and task controllers
     computing_service_ips = {}
     all_profiler_ips = ''
@@ -205,7 +201,8 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     for key, value in dag.items():
 
         task = key
- 
+        
+        # all_current_nodes = all_current_nodes + task + ":" + currentnodes + "!"
         """
             Generate the yaml description of the required service for each task
         """
@@ -223,38 +220,27 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
         # print resp.spec.cluster_ip
         service_ips[task] = resp.spec.cluster_ip
-
-
-        print(value)
-        print(hosts)
-        print(service_ips)
     
     
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
 
-    print(service_ips)
-    print(service_ips.values())
-    print(service_ips.keys())
-    # print(all_node)
-    # print(all_node_ips)
 
-
-    all_next_nodes = ""
+    all_next_tasks = ""
     for key, value in dag.items():
 
         task = key
-        nextnodes = ''
+        nexttasks = ''
 
         for i in range(2,len(value)):
             if i != 2:
-                nextnodes = nextnodes + '#'
+                nexttasks = nexttasks + '#'
                 
-            nextnodes = nextnodes + str(hosts.get(value[i])[0])
+            nexttasks = nexttasks + str(hosts.get(value[i])[0])
 
-        all_next_nodes = all_next_nodes + task + ":" + nextnodes + "!"
+        all_next_tasks = all_next_tasks + task + ":" + nexttasks + "!"
 
-    print(all_next_nodes)
+    print(all_next_tasks)
     print('-------- Create computing nodes service')
 
     """
@@ -289,6 +275,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     all_computing_nodes = ':'.join(computing_service_ips.keys())
     all_profiler_ips = all_profiler_ips[1:]
     all_profiler_nodes = all_profiler_nodes[1:]
+
     # print(all_computing_nodes)
     # print(all_computing_ips)
     
@@ -323,7 +310,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
                                              host = nodes[i][0], all_node = all_node,
                                              node_name = i,
                                              all_node_ips = all_node_ips,
-                                             all_next_nodes = all_next_nodes,
+                                             all_next_tasks = all_next_tasks,
                                              all_computing_nodes = all_computing_nodes,
                                              all_computing_ips = all_computing_ips,
                                              self_ip = computing_service_ips[i],

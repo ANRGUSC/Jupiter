@@ -189,7 +189,7 @@ def write_circe_deployment_specs(**kwargs):
     return dep
 
 
-template_computing = """
+template_computing_worker = """
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -215,8 +215,8 @@ spec:
           value: {all_node}
         - name: ALL_NODES_IPS
           value: {all_node_ips}
-        - name: ALL_NEXT_NODES
-          value: {all_next_nodes}
+        - name: ALL_NEXT_TASKS
+          value: {all_next_tasks}
         - name: ALL_COMPUTING_NODES
           value: {all_computing_nodes}
         - name: ALL_COMPUTING_IPS
@@ -264,13 +264,13 @@ def write_circe_computing_specs(**kwargs):
     """
     jupiter_config.set_globals()
     
-    specific_yaml = template_computing.format(flask_port = jupiter_config.FLASK_DOCKER,
+    specific_yaml = template_computing_worker.format(flask_port = jupiter_config.FLASK_DOCKER,
                                               ssh_port = jupiter_config.SSH_DOCKER,
                                     **kwargs)
     dep = yaml.load(specific_yaml)
     return dep
 
-template_controller = """
+template_controller_worker = """
     apiVersion: extensions/v1beta1
     kind: Deployment    
     metadata:
@@ -354,7 +354,7 @@ def write_circe_controller_specs(**kwargs):
 
     # insert your values
 
-    specific_yaml = template_controller.format(ssh_port = jupiter_config.SSH_DOCKER, 
+    specific_yaml = template_controller_worker.format(ssh_port = jupiter_config.SSH_DOCKER, 
                                     flask_port = jupiter_config.FLASK_DOCKER,
                                     mongo_port = jupiter_config.MONGO_DOCKER,
                                     **kwargs)

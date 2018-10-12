@@ -20,6 +20,6 @@ fi
 
 # Run python with '-u' for unbuffered prints so the Kubernetes log system gets
 # all the print statements.
-python3 -u centralized_scheduler/pricing_calculator.py &
+python3 -u centralized_scheduler/compute.py &
 
 python3 -u centralized_scheduler/keep_alive.py
