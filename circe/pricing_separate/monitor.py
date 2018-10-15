@@ -207,8 +207,8 @@ def update_best_node(task_price_summary,task_node_summary):
 def send_controller_map():
     for computing_ip in all_computing_ips:
         try:
-            print("Announce my current node")
-            url = "http://" + computing_ip + ":" + str(FLASK_SVC) + "/update_controller_matching"
+            print("Announce my current node mapping")
+            url = "http://" + computing_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
             params = {'controller_id_map':controller_id_map}
             params = parse.urlencode(params)
             req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -220,13 +220,13 @@ def send_controller_map():
             print(e)
             return "not ok"
 
-def schedule_update_controller(interval):
-    """
-        Send controller id node mapping to all the computing nodes
-    """
-    sched = BackgroundScheduler()
-    sched.add_job(send_controller_map,'interval',id='push_id', minutes=interval, replace_existing=True)
-    sched.start()
+# def schedule_update_controller(interval):
+#     """
+#         Send controller id node mapping to all the computing nodes
+#     """
+#     sched = BackgroundScheduler()
+#     sched.add_job(send_controller_map,'interval',id='push_id', minutes=interval, replace_existing=True)
+#     sched.start()
         
 def send_monitor_data(msg):
     """
@@ -493,7 +493,7 @@ def main():
     node_id  = os.environ['NODE_ID']
     self_task= os.environ['TASK']
     controller_id_map = self_task + ":" + node_id
-    update_interval = 10 #minutes
+    #update_interval = 10 #minutes
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
@@ -502,7 +502,7 @@ def main():
     node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
 
 
-    _thread.start_new_thread(schedule_update_controller,(update_interval,))
+    _thread.start_new_thread(send_controller_map,())
 
     global dest_node_host_port_list
     dest_node_host_port_list = [ip + ":" + str(FLASK_SVC) for ip in all_computing_ips]

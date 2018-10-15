@@ -140,7 +140,7 @@ def prepare_global_info():
     ip_controllers_map = dict(zip(task_controllers_ips, task_controllers))
 
     global controllers_id_map
-    controllers_id_map = {key: None for key in task_controllers.keys()}
+    controllers_id_map = {key: None for key in task_controllers}
 
     global next_tasks_map
     next_tasks_info = os.environ['ALL_NEXT_TASKS'].split('!')[:-1]
@@ -193,7 +193,7 @@ def update_controller_map():
         return "not ok" 
 
     return "ok"
-app.add_url_rule('/update_controller_matching', 'update_controller_matching', update_controller_matching)
+app.add_url_rule('/update_controller_map', 'update_controller_map', update_controller_map)
 
 def update_exec_profile_file():
     """Update the execution profile from the home execution profiler's MongoDB and store it in text file.

@@ -189,7 +189,7 @@ ADD {app_file}/configuration.txt  /centralized_scheduler/dag.txt
 ADD {app_file}/scripts/config.json /centralized_scheduler/config.json
 ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
 
-ADD circe/{pricing_option}/pricing_calculator.py /centralized_scheduler/pricing_calculator.py
+ADD circe/{pricing_option}/compute.py /centralized_scheduler/compute.py
 
 RUN chmod +x /start.sh
 
