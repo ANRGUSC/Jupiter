@@ -139,8 +139,6 @@ def prepare_global_info():
     controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
     ip_controllers_map = dict(zip(task_controllers_ips, task_controllers))
 
-    global controllers_id_map
-    controllers_id_map = {key: None for key in task_controllers}
 
     global next_tasks_map
     next_tasks_info = os.environ['ALL_NEXT_TASKS'].split('!')[:-1]
@@ -152,7 +150,7 @@ def prepare_global_info():
 
 
 
-    global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul
+    global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map
 
     manager = Manager()
     task_mul = manager.dict() # list of incoming tasks and files
@@ -161,6 +159,7 @@ def prepare_global_info():
     size_mul  = manager.dict() # total input size of each incoming task and file
     next_mul = manager.dict() # information of next node (IP,username,pass) fo the current file
     files_mul = manager.dict()
+    controllers_id_map = manager.dict()
 
     global home_node_host_port, dag
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
@@ -182,11 +181,9 @@ def update_controller_map():
     """
     try:
         info = request.args.get('controller_id_map').split(':')
-        print("Received matching info")
+        print("--- Received matching info")
         #Task, Node
         controllers_id_map[info[0]] = info[1]
-        print('controllers_id_map')
-        print(controllers_id_map)
 
     except Exception as e:
         print("Bad reception or failed processing in Flask for controllers matching announcement: "+ e) 
@@ -292,10 +289,7 @@ def get_updated_network_profile(task_host_name):
     """
     print('----- Get updated network information:')
     computing_net_info = get_updated_network_from_source(self_profiler_ip)
-    print(computing_net_info)
-    print(task_host_name)
-    print(profilers_ip_map)
-    task_profiler_ip = profilers_ip_map[task_host_name] 
+    task_profiler_ip = profilers_ip_map[controllers_id_map[task_host_name]] 
     print(task_profiler_ip)
     controller_net_info = get_updated_network_from_source(task_profiler_ip)
     print(controller_net_info)
@@ -328,7 +322,7 @@ def get_updated_resource_profile():
         print("Resource request failed. Will try again, details: " + str(e))
         return -1
 
-def price_aggregate(task_name, next_host_name):
+def price_aggregate(task_name, next_task_name):
     """Calculate price required to perform the task based on network information, resource information, execution information and task queue size and sample size
     
     Args:
@@ -361,37 +355,41 @@ def price_aggregate(task_name, next_host_name):
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
         computing_net_info,controller_net_info = get_updated_network_profile(task_name)
-        print('3')
-        print(computing_net_info)
-        print(controller_net_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
-        print('4')
-        print(test_size)
         test_output = execution_info[task_name][1]
-        print(test_output)
         print('----- Calculating price:')
         print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
         print('--- Network cost: ')
-        print(computing_net_info)
-        print(controller_net_info)
-        print(self_name)
+        print(controllers_id_map)
+        print(next_task_name)
+        next_host_name = controllers_id_map[next_task_name]
+        last_host_name = controllers_id_map[task_name]
         print(next_host_name)
-        if next_host_name in computing_net_info.keys():
-            controller_params = controller_net_info[self_name].split()
-            print(controller_params)
-            computing_params = computing_net_info[next_host_name].split()
-            print(computing_params)
-            computing_params = [float(x) for x in computing_params]
+        print(last_host_name)
+        print(controller_net_info.keys())
+        print(computing_net_info.keys())
+        if last_host_name == self_name or 'home':
+            controller_params  = [0]*3
+        if self_name == next_host_name:
+            computing_params   = [0]*3
+        if self_name in controller_net_info.keys():
+            controller_params = controller_net_info[self_name].split() 
             controller_params = [float(x) for x in controller_params]
+        if next_host_name in computing_net_info.keys():  
+            computing_params = computing_net_info[next_host_name].split()
+            computing_params = [float(x) for x in computing_params]
+        try:
             price['network'] = (controller_params[0] * test_size * test_size) + \
                            (controller_params[1] * test_size) + \
                            controller_params[2] + \
                            (computing_params[0] * test_output * test_output) + \
                            (computing_params[1] * test_output) + \
                            computing_params[2]
-        
+        except:
+            price['network'] =  10000
+
         print(price['network'])
         #Temporary: linear
         print('--- Queuing cost: ')
@@ -437,16 +435,9 @@ def announce_price(task_controller_ip, price):
 def push_updated_price():
     for idx,task in enumerate(task_controllers):
         if task=='home': continue
-        print('#############################')
         for idx,next_task in enumerate(next_tasks_map[task]):
             price = price_aggregate(task, next_task)
-            print(task)
-            print(next_task)
-            print(price)
-            
-            print(controllers_ip_map)
             announce_price(controllers_ip_map[task], price)
-        print('#############################')
 
     
 def schedule_update_price(interval):
@@ -767,7 +758,7 @@ def main():
     FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 
-    update_interval = 2
+    update_interval = 3
 
     prepare_global_info()
 

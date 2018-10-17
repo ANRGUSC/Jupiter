@@ -74,10 +74,8 @@ def receive_price_info():
         #Network, CPU, Memory, Queue
         node_name = pricing_info[0]
         price_info = [float(pricing_info[1]),float(pricing_info[2]),float(pricing_info[3]),float(pricing_info[4])]
-        if node_name not in task_price_summary:
-            task_price_summary[node_name] = [price_info]
-        else:
-            task_price_summary[node_name] = task_price_summary[node_name] + [price_info]
+        task_price_summary[node_name] = price_info
+        print(task_price_summary)
 
     except Exception as e:
         print("Bad reception or failed processing in Flask for pricing announcement: "+ e) 
@@ -87,40 +85,54 @@ def receive_price_info():
 app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info)
 
 
-def transfer_data_scp(IP,user,pword,source, destination):
-    """Transfer data using SCP
+def transfer_mapping_decorator(TRANSFER=0):
+    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
     
     Args:
-        IP (str): destination IP address
-        user (str): username
-        pword (str): password
-        source (str): source file path
-        destination (str): destination file path
+        TRANSFER (int, optional): TRANSFER specified from ``jupiter_config.ini``, default method is SCP
+    
+    Returns:
+        function: chosen transfer method
     """
-    #Keep retrying in case the containers are still building/booting up on
-    #the child nodes.
-    retry = 0
-    ts = -1
-    while retry < num_retries:
-        try:
-            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
-            os.system(cmd)
-            print('data transfer complete\n')
-            ts = time.time()
-            s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
+    
+    def transfer_data_scp(IP,user,pword,source, destination):
+        """Transfer data using SCP
+        
+        Args:
+            IP (str): destination IP address
+            user (str): destination username
+            pword (str): destination password
+            source (str): source file path
+            destination (str): destination file path
+        """
+        #Keep retrying in case the containers are still building/booting up on
+        #the child nodes.
+        retry = 0
+        ts = -1
+        while retry < num_retries:
+            try:
+                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+                os.system(cmd)
+                print('data transfer complete\n')
+                ts = time.time()
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
+                runtime_sender_log.write(s)
+                runtime_sender_log.flush()
+                break
+            except:
+                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+                time.sleep(2)
+                retry += 1
+        if retry == num_retries:
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
-            break
-        except:
-            print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
-            time.sleep(2)
-            retry += 1
-    if retry == num_retries:
-        s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,source,ts)
-        runtime_sender_log.write(s)
-        runtime_sender_log.flush()
- 
 
+    if TRANSFER==0:
+        return transfer_data_scp
+    return transfer_data_scp
+
+@transfer_mapping_decorator
 def transfer_data(IP,user,pword,source, destination):
     """Transfer data with given parameters
     
@@ -135,79 +147,49 @@ def transfer_data(IP,user,pword,source, destination):
     print(msg)
     
 
-    if TRANSFER == 0:
-        return transfer_data_scp(IP,user,pword,source, destination)
-
-    return transfer_data_scp(IP,user,pword,source, destination) #default
-    
 
 
-def pricing_to_best_node_mapping(pricing_func):
-    """Mapping the chosen price calculation method based on ``jupiter_config.PRICE_OPTION`` in ``jupiter_config.ini``
-    
-    Args:
-        PRICE_OPTION (int, optional): PRICE_OPTION specified from ``jupiter_config.ini``, default method is sum
-    
-    Returns:
-        function: chosen price calculation method
-
-    """
-    
-    def select_best_node(task_price_summary,task_node_summary):
-        """Select the best node from price information of all nodes
-        
-        Args:
-            task_price_summary: price information of all nodes
-            task_node_summary: current task and node mapping
-        """
-        cost_list = pricing_func(task_price_summary, task_node_summary)
-        best_node = min(cost_list,key=cost_list.get)
-        return best_node
-
-    return select_best_node
-
-
-@pricing_to_best_node_mapping
-def sum_best_node(task_price_summary,task_node_summary):
-    w_net = 1 # Network
-    w_cpu = 1 # Resource
-    w_mem = 1 # Resource
-    w_queue = 1 # Execution time=
+def default_best_node():
+    print('-------- Updating current best node')
+    print(task_price_summary)
+    w_net = 1 # Network profiling
+    w_cpu = 1 # Resource profiling
+    w_mem = 1 # Resource profiling
+    w_queue = 1 # Execution time profiling
     cost_list = dict()
-    # for item in task_price_summary[file_name]:
-    #     cost_list[item[0]] = item[1]*w_net +  item[2]*w_cpu + item[3]*w_mem + item[4]*w_queue
-    # return cost_list
+    print(type(task_price_summary))
+    print(task_price_summary.keys())
+    for item in task_price_summary.keys():
+        print(item)
+        print(task_price_summary[item])
+        print(task_price_summary[item][0])
+        print(task_price_summary[item][1])
+        cost_list[task_price_summary[item][0]] = task_price_summary[item][1]*w_net +  task_price_summary[item][2]*w_cpu + task_price_summary[item][3]*w_mem + task_price_summary[item][4]*w_queue
+    best_node = min(cost_list,key=cost_list.get)
+    task_node_summary['current_best_node'] = best_node
+    print(task_node_summary)
+    print('updated successfully')
 
-
-@pricing_to_best_node_mapping
-def max_best_node(task_price_summary, task_node_summary):
-    cost_list = dict()
-    for item in task_price_summary[file_name]:
-        cost_list[item[0]] = max(item[1:])
-    return cost_list
-
-def update_best_node(task_price_summary,task_node_summary):
-    """Select the best node from price information of all nodes
-    
-    Args:
-        task_price_summary: price information of all nodes
-        file_name (str): Incoming file name
+def update_best_node():
+    """Select the best node from price information of all nodes, either default or customized from user price file
     """
+    if PRICE_OPTION ==0: #default
+        default_best_node()
+    else:
+        customized_parameters_best_node()
 
-    if PRICE_OPTION == 1:
-        return sum_best_node(task_price_summary, file_name)
-    elif PRICE_OPTION == 2:
-        return max_best_node(task_price_summary, file_name)
-    
-
-
-    msg = 'Select the best node for file %s'%(file_name)
-    print(msg)
+def schedule_update_price(interval):
+    """
+        Send controller id node mapping to all the computing nodes
+    """
+    sched = BackgroundScheduler()
+    sched.add_job(update_best_node,'interval',id='push_id', minutes=interval, replace_existing=True)
+    sched.start()
 
 def send_controller_map():
     for computing_ip in all_computing_ips:
         try:
-            print("Announce my current node mapping")
+            print("Announce my current node mapping to " + computing_ip)
             url = "http://" + computing_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
             params = {'controller_id_map':controller_id_map}
             params = parse.urlencode(params)
@@ -220,13 +202,7 @@ def send_controller_map():
             print(e)
             return "not ok"
 
-# def schedule_update_controller(interval):
-#     """
-#         Send controller id node mapping to all the computing nodes
-#     """
-#     sched = BackgroundScheduler()
-#     sched.add_job(send_controller_map,'interval',id='push_id', minutes=interval, replace_existing=True)
-#     sched.start()
+
         
 def send_monitor_data(msg):
     """
@@ -344,7 +320,7 @@ class Handler(FileSystemEventHandler):
             
             ts = time.time()
             if RUNTIME == 1:
-                s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,event.src_path,ts)
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,event.src_path,ts)
                 runtime_receiver_log.write(s)
                 runtime_receiver_log.flush()
             """
@@ -386,9 +362,9 @@ class Handler(FileSystemEventHandler):
                 destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
                 flag2 = sys.argv[2]
                 
-                print(sys.argv[4])
-                print(sys.argv[5])
-                print(sys.argv[6])
+                # print(sys.argv[4])
+                # print(sys.argv[5])
+                # print(sys.argv[6])
                 if sys.argv[3] == 'home':
                     destination_list = [dest+"#home#"+sys.argv[4]+"#"+sys.argv[5]+"#"+sys.argv[6] for dest in destination_list]
                 elif flag2 == 'true':
@@ -475,7 +451,7 @@ def main():
 
 
     global taskmap, taskname, taskmodule, filenames,files_out, home_node_host_port
-    global all_nodes, all_nodes_ips, node_id, node_name
+    global all_nodes, all_nodes_ips, self_id, self_name
     global all_computing_nodes,all_computing_ips, num_computing_nodes, node_ip_map, controller_id_map
 
     configs = json.load(open('/centralized_scheduler/config.json'))
@@ -489,10 +465,10 @@ def main():
     #target port for SSHing into a container
     filenames=[]
     files_out=[]
-    node_name= os.environ['NODE_NAME']
-    node_id  = os.environ['NODE_ID']
+    self_name= os.environ['NODE_NAME']
+    self_id  = os.environ['NODE_ID']
     self_task= os.environ['TASK']
-    controller_id_map = self_task + ":" + node_id
+    controller_id_map = self_task + ":" + self_id
     #update_interval = 10 #minutes
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
 
@@ -501,8 +477,10 @@ def main():
     num_computing_nodes = len(all_computing_nodes)
     node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
 
+    update_interval = 3 
 
     _thread.start_new_thread(send_controller_map,())
+    _thread.start_new_thread(schedule_update_price,(update_interval,))
 
     global dest_node_host_port_list
     dest_node_host_port_list = [ip + ":" + str(FLASK_SVC) for ip in all_computing_ips]
@@ -513,7 +491,7 @@ def main():
     task_node_summary = manager.dict()
 
     # Set up default value for task_node_summary: the task controller will perform the tasks also
-    task_node_summary['current_best_node'] = node_id
+    task_node_summary['current_best_node'] = self_id
     web_server = MonitorRecv()
     web_server.start()
 
