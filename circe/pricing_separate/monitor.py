@@ -151,20 +151,14 @@ def transfer_data(IP,user,pword,source, destination):
 
 def default_best_node():
     print('-------- Updating current best node')
-    print(task_price_summary)
     w_net = 1 # Network profiling
     w_cpu = 1 # Resource profiling
     w_mem = 1 # Resource profiling
     w_queue = 1 # Execution time profiling
     cost_list = dict()
-    print(type(task_price_summary))
-    print(task_price_summary.keys())
     for item in task_price_summary.keys():
-        print(item)
-        print(task_price_summary[item])
-        print(task_price_summary[item][0])
-        print(task_price_summary[item][1])
-        cost_list[task_price_summary[item][0]] = task_price_summary[item][1]*w_net +  task_price_summary[item][2]*w_cpu + task_price_summary[item][3]*w_mem + task_price_summary[item][4]*w_queue
+        cost_list[item] = task_price_summary[item][0]*w_net +  task_price_summary[item][1]*w_cpu + task_price_summary[item][2]*w_mem + task_price_summary[item][3]*w_queue
+    print(cost_list)
     best_node = min(cost_list,key=cost_list.get)
     task_node_summary['current_best_node'] = best_node
     print(task_node_summary)
@@ -356,15 +350,10 @@ class Handler(FileSystemEventHandler):
                 input_size = [file_size(x) for x in source_list]
                 sum_input_size = sum(input_size)
                 best_node = task_node_summary['current_best_node']
-        
-                task_node_summary[temp_name] = (sum_input_size,0) #history of input file size, not yet processed
                 
                 destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
                 flag2 = sys.argv[2]
                 
-                # print(sys.argv[4])
-                # print(sys.argv[5])
-                # print(sys.argv[6])
                 if sys.argv[3] == 'home':
                     destination_list = [dest+"#home#"+sys.argv[4]+"#"+sys.argv[5]+"#"+sys.argv[6] for dest in destination_list]
                 elif flag2 == 'true':
