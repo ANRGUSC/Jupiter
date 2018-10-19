@@ -150,7 +150,7 @@ def prepare_global_info():
 
 
 
-    global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map
+    global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map, task_node_summary
 
     manager = Manager()
     task_mul = manager.dict() # list of incoming tasks and files
@@ -160,6 +160,7 @@ def prepare_global_info():
     next_mul = manager.dict() # information of next node (IP,username,pass) fo the current file
     files_mul = manager.dict()
     controllers_id_map = manager.dict()
+    task_node_summary = manager.dict()
 
     global home_node_host_port, dag
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
@@ -191,6 +192,23 @@ def update_controller_map():
 
     return "ok"
 app.add_url_rule('/update_controller_map', 'update_controller_map', update_controller_map)
+
+def receive_assignment_info():
+    """
+        Receive corresponding best nodes from the corresponding computing node
+    """
+    try:
+        assignment_info = request.args.get('assignment_info').split('#')
+        print("Received assignment info")
+        task_node_summary[assignment_info[0]] = assignment_info[1]
+        print(task_node_summary)
+
+    except Exception as e:
+        print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
+        return "not ok" 
+
+    return "ok"
+app.add_url_rule('/receive_assignment_info', 'receive_assignment_info', receive_assignment_info)
 
 def update_exec_profile_file():
     """Update the execution profile from the home execution profiler's MongoDB and store it in text file.
@@ -785,6 +803,9 @@ def main():
         runtime_receiver_log.close()
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
+
+    
+    
 
     web_server = MonitorRecv()
     web_server.start()

@@ -85,66 +85,66 @@ def receive_price_info():
 app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info)
 
 
-def transfer_mapping_decorator(TRANSFER=0):
-    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+# def transfer_mapping_decorator(TRANSFER=0):
+#     """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
     
-    Args:
-        TRANSFER (int, optional): TRANSFER specified from ``jupiter_config.ini``, default method is SCP
+#     Args:
+#         TRANSFER (int, optional): TRANSFER specified from ``jupiter_config.ini``, default method is SCP
     
-    Returns:
-        function: chosen transfer method
-    """
+#     Returns:
+#         function: chosen transfer method
+#     """
     
-    def transfer_data_scp(IP,user,pword,source, destination):
-        """Transfer data using SCP
+#     def transfer_data_scp(IP,user,pword,source, destination):
+#         """Transfer data using SCP
         
-        Args:
-            IP (str): destination IP address
-            user (str): destination username
-            pword (str): destination password
-            source (str): source file path
-            destination (str): destination file path
-        """
-        #Keep retrying in case the containers are still building/booting up on
-        #the child nodes.
-        retry = 0
-        ts = -1
-        while retry < num_retries:
-            try:
-                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
-                os.system(cmd)
-                print('data transfer complete\n')
-                ts = time.time()
-                s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
-                runtime_sender_log.write(s)
-                runtime_sender_log.flush()
-                break
-            except:
-                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
-                time.sleep(2)
-                retry += 1
-        if retry == num_retries:
-            s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,source,ts)
-            runtime_sender_log.write(s)
-            runtime_sender_log.flush()
+#         Args:
+#             IP (str): destination IP address
+#             user (str): destination username
+#             pword (str): destination password
+#             source (str): source file path
+#             destination (str): destination file path
+#         """
+#         #Keep retrying in case the containers are still building/booting up on
+#         #the child nodes.
+#         retry = 0
+#         ts = -1
+#         while retry < num_retries:
+#             try:
+#                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+#                 os.system(cmd)
+#                 print('data transfer complete\n')
+#                 ts = time.time()
+#                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
+#                 runtime_sender_log.write(s)
+#                 runtime_sender_log.flush()
+#                 break
+#             except:
+#                 print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+#                 time.sleep(2)
+#                 retry += 1
+#         if retry == num_retries:
+#             s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,source,ts)
+#             runtime_sender_log.write(s)
+#             runtime_sender_log.flush()
 
-    if TRANSFER==0:
-        return transfer_data_scp
-    return transfer_data_scp
+#     if TRANSFER==0:
+#         return transfer_data_scp
+#     return transfer_data_scp
 
-@transfer_mapping_decorator
-def transfer_data(IP,user,pword,source, destination):
-    """Transfer data with given parameters
+# @transfer_mapping_decorator
+# def transfer_data(IP,user,pword,source, destination):
+#     """Transfer data with given parameters
     
-    Args:
-        IP (str): destination IP 
-        user (str): destination username
-        pword (str): destination password
-        source (str): source file path
-        destination (str): destination file path
-    """
-    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
-    print(msg)
+#     Args:
+#         IP (str): destination IP 
+#         user (str): destination username
+#         pword (str): destination password
+#         source (str): source file path
+#         destination (str): destination file path
+#     """
+#     msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+#     print(msg)
     
 
 
@@ -181,10 +181,37 @@ def schedule_update_price(interval):
     sched.start()
 
 def send_controller_info(node_ip):
+    retry = 0
+    print(num_retries)
+    while retry < num_retries:
+        try:
+            print("Announce my current node mapping to " + node_ip)
+            url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
+            params = {'controller_id_map':controller_id_map}
+            params = parse.urlencode(params)
+            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+            res = urllib.request.urlopen(req)
+            res = res.read()
+            res = res.decode('utf-8')
+            break
+        except Exception as e:
+            print("Sending message to flask server on computing node FAILED!!!")
+            time.sleep(2)
+            retry += 1
+            return "not ok"
+
+def push_controller_map():
+    time.sleep(120)
+    for computing_ip in all_computing_ips:
+        send_controller_info(computing_ip)
+    send_controller_info(home_ip)
+
+def send_assignment_info(node_ip):
     try:
-        print("Announce my current node mapping to " + node_ip)
-        url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
-        params = {'controller_id_map':controller_id_map}
+        print("Announce my current best computing node " + node_ip)
+        url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/receive_assignment_info"
+        assignment_info = self_task+"#"+task_node_summary['current_best_node']
+        params = {'assignment_info': assignment_info}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
@@ -195,11 +222,13 @@ def send_controller_info(node_ip):
         print(e)
         return "not ok"
 
-def send_controller_map():
-    send_controller_info(home_ip)
+def push_assignment_map():
+    time.sleep(120)
     for computing_ip in all_computing_ips:
-        send_controller_info(computing_ip)
-        
+        send_assignment_info(computing_ip)
+    send_assignment_info(home_ip)
+
+
 def send_monitor_data(msg):
     """
     Sending message to flask server on home
@@ -269,114 +298,114 @@ class MonitorRecv(multiprocessing.Process):
 
 
 
-#for INPUT folder
-class Watcher(multiprocessing.Process):
+# #for INPUT folder
+# class Watcher(multiprocessing.Process):
 
-    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
+#     DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
     
-    def __init__(self):
-        multiprocessing.Process.__init__(self)
-        self.observer = Observer()
+#     def __init__(self):
+#         multiprocessing.Process.__init__(self)
+#         self.observer = Observer()
 
-    def run(self):
-        """
-            Continuously watching the ``INPUT`` folder.
-            When file in the input folder is received, based on the DAG info imported previously, it either waits for more input files, or issue pricing request to all the computing nodes in the system.
-        """
+#     def run(self):
+#         """
+#             Continuously watching the ``INPUT`` folder.
+#             When file in the input folder is received, based on the DAG info imported previously, it either waits for more input files, or issue pricing request to all the computing nodes in the system.
+#         """
         
-        event_handler = Handler()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
-        self.observer.start()
-        try:
-            while True:
-                time.sleep(5)
-        except:
-            self.observer.stop()
-            print("Error")
+#         event_handler = Handler()
+#         self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
+#         self.observer.start()
+#         try:
+#             while True:
+#                 time.sleep(5)
+#         except:
+#             self.observer.stop()
+#             print("Error")
 
-        self.observer.join()
+#         self.observer.join()
 
-class Handler(FileSystemEventHandler):
+# class Handler(FileSystemEventHandler):
 
-    @staticmethod
-    def on_any_event(event):
-        if event.is_directory:
-            return None
+#     @staticmethod
+#     def on_any_event(event):
+#         if event.is_directory:
+#             return None
 
-        elif event.event_type == 'created':
+#         elif event.event_type == 'created':
 
-            print("Received file as input - %s." % event.src_path)
+#             print("Received file as input - %s." % event.src_path)
 
-            new_file = os.path.split(event.src_path)[-1]
-            if '_' in new_file:
-                temp_name = new_file.split('_')[0]
-            else:
-                temp_name = new_file.split('.')[0]
+#             new_file = os.path.split(event.src_path)[-1]
+#             if '_' in new_file:
+#                 temp_name = new_file.split('_')[0]
+#             else:
+#                 temp_name = new_file.split('.')[0]
 
             
-            ts = time.time()
-            if RUNTIME == 1:
-                s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,event.src_path,ts)
-                runtime_receiver_log.write(s)
-                runtime_receiver_log.flush()
-            """
-                Save the time the input file enters the queue
-            """
+#             ts = time.time()
+#             if RUNTIME == 1:
+#                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,event.src_path,ts)
+#                 runtime_receiver_log.write(s)
+#                 runtime_receiver_log.flush()
+#             """
+#                 Save the time the input file enters the queue
+#             """
             
-            flag1 = sys.argv[1]
+#             flag1 = sys.argv[1]
             
     
-            if temp_name not in task_mul.keys():
-                task_mul[temp_name] = [new_file]
-                ts = time.time()
-                runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info,taskname)
-                count_dict[temp_name]=int(flag1)-1
-            else:
-                task_mul[temp_name] = task_mul[temp_name] + [new_file]
-                count_dict[temp_name]=count_dict[temp_name]-1
+#             if temp_name not in task_mul.keys():
+#                 task_mul[temp_name] = [new_file]
+#                 ts = time.time()
+#                 runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
+#                 send_runtime_profile(runtime_info,taskname)
+#                 count_dict[temp_name]=int(flag1)-1
+#             else:
+#                 task_mul[temp_name] = task_mul[temp_name] + [new_file]
+#                 count_dict[temp_name]=count_dict[temp_name]-1
 
-            if count_dict[temp_name] == 0: # enough input files
-                filename = task_mul[temp_name]
-                if len(filename)==1: 
-                    filenames = filename[0]
-                else:
-                    filenames = filename    
+#             if count_dict[temp_name] == 0: # enough input files
+#                 filename = task_mul[temp_name]
+#                 if len(filename)==1: 
+#                     filenames = filename[0]
+#                 else:
+#                     filenames = filename    
                
-                # When receive an input file, based on the global mapping list, select the computing node
-                # must check temp_name to ensure, for example: fusion case with multiple inputs from sample detector, astute detector, and others... 
-                # print(filename)
-                filepath = os.path.split(event.src_path)[0]
-                source_list = [filepath+'/'+fname for fname in filename]
+#                 # When receive an input file, based on the global mapping list, select the computing node
+#                 # must check temp_name to ensure, for example: fusion case with multiple inputs from sample detector, astute detector, and others... 
+#                 # print(filename)
+#                 filepath = os.path.split(event.src_path)[0]
+#                 source_list = [filepath+'/'+fname for fname in filename]
                 
-                input_size = [file_size(x) for x in source_list]
-                sum_input_size = sum(input_size)
-                best_node = task_node_summary['current_best_node']
+#                 input_size = [file_size(x) for x in source_list]
+#                 sum_input_size = sum(input_size)
+#                 best_node = task_node_summary['current_best_node']
                 
-                destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
-                flag2 = sys.argv[2]
+#                 destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
+#                 flag2 = sys.argv[2]
                 
-                if sys.argv[3] == 'home':
-                    destination_list = [dest+"#home#"+sys.argv[4]+"#"+sys.argv[5]+"#"+sys.argv[6] for dest in destination_list]
-                elif flag2 == 'true':
-                    destination_list = [dest+"#"+ flag2 for dest in destination_list]
-                    for i in range(3, len(sys.argv)-1,4):
-                        destination_list = [dest+"#"+sys.argv[i+1]+"#"+sys.argv[i+2]+"#"+sys.argv[i+3] for dest in destination_list]
+#                 if sys.argv[3] == 'home':
+#                     destination_list = [dest+"#home#"+sys.argv[4]+"#"+sys.argv[5]+"#"+sys.argv[6] for dest in destination_list]
+#                 elif flag2 == 'true':
+#                     destination_list = [dest+"#"+ flag2 for dest in destination_list]
+#                     for i in range(3, len(sys.argv)-1,4):
+#                         destination_list = [dest+"#"+sys.argv[i+1]+"#"+sys.argv[i+2]+"#"+sys.argv[i+3] for dest in destination_list]
                     
-                else: 
-                    destination_list = [dest+"#"+ flag2 for dest in destination_list]
-                    j = 0
-                    for i in range(3, len(sys.argv)-1,4):
-                        destination_list[j] = destination_list[j]+"#"+sys.argv[i+1]+"#"+sys.argv[i+2]+"#"+sys.argv[i+3]
-                        j = j +1
-                ts = time.time()
-                runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+#                 else: 
+#                     destination_list = [dest+"#"+ flag2 for dest in destination_list]
+#                     j = 0
+#                     for i in range(3, len(sys.argv)-1,4):
+#                         destination_list[j] = destination_list[j]+"#"+sys.argv[i+1]+"#"+sys.argv[i+2]+"#"+sys.argv[i+3]
+#                         j = j +1
+#                 ts = time.time()
+#                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                 
-                send_runtime_profile(runtime_info,taskname)
+#                 send_runtime_profile(runtime_info,taskname)
                 
                 
-                for idx,source in enumerate(source_list):
-                    transfer_data(node_ip_map[best_node],username,password,source, destination_list[idx])
+#                 for idx,source in enumerate(source_list):
+#                     transfer_data(node_ip_map[best_node],username,password,source, destination_list[idx])
 
                 
                 
@@ -442,7 +471,7 @@ def main():
 
 
     global taskmap, taskname, taskmodule, filenames,files_out, home_node_host_port
-    global all_nodes, all_nodes_ips, self_id, self_name
+    global all_nodes, all_nodes_ips, self_id, self_name, self_task
     global all_computing_nodes,all_computing_ips, num_computing_nodes, node_ip_map, controller_id_map
 
     configs = json.load(open('/centralized_scheduler/config.json'))
@@ -470,9 +499,6 @@ def main():
 
     update_interval = 3 
 
-    _thread.start_new_thread(send_controller_map,())
-    _thread.start_new_thread(schedule_update_price,(update_interval,))
-
     global dest_node_host_port_list
     dest_node_host_port_list = [ip + ":" + str(FLASK_SVC) for ip in all_computing_ips]
 
@@ -483,17 +509,23 @@ def main():
 
     # Set up default value for task_node_summary: the task controller will perform the tasks also
     task_node_summary['current_best_node'] = self_id
+
+    _thread.start_new_thread(push_controller_map,())
+    _thread.start_new_thread(schedule_update_price,(update_interval,))
+    _thread.start_new_thread(push_assignment_map,())
+
     web_server = MonitorRecv()
-    web_server.start()
+    web_server.run()
+    #web_server.start()
 
     if taskmap[1] == True:
         task_mul = manager.dict()
         count_dict = manager.dict()
         
 
-        #monitor INPUT as another process
-        w=Watcher()
-        w.run()
+        # #monitor INPUT as another process
+        # w=Watcher()
+        # w.run()
 
     else:
 

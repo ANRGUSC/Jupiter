@@ -89,6 +89,7 @@ def recv_mapping():
     return "ok"
 app.add_url_rule('/recv_monitor_data', 'recv_mapping', recv_mapping)
 
+
 def return_output_files():
     """
     Return number of output files
@@ -100,6 +101,42 @@ def return_output_files():
     print("Recieved request for number of output files. Current done:", num_files)
     return json.dumps(num_files)
 app.add_url_rule('/', 'return_output_files', return_output_files)
+
+
+def receive_assignment_info():
+    """
+        Receive corresponding best nodes from the corresponding computing node
+    """
+    try:
+        assignment_info = request.args.get('assignment_info').split('#')
+        print("-----------Received assignment info")
+        task_node_summary[assignment_info[0]] = assignment_info[1]
+        print(task_node_summary)
+
+    except Exception as e:
+        print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
+        return "not ok" 
+
+    return "ok"
+app.add_url_rule('/receive_assignment_info', 'receive_assignment_info', receive_assignment_info)
+
+def update_controller_map():
+    """
+        Update matching between task controllers and node, in case task controllers are crashed and redeployded
+    """
+    try:
+        info = request.args.get('controller_id_map').split(':')
+        print("------ Received matching info")
+        #Task, Node
+        controllers_id_map[info[0]] = info[1]
+        print(controllers_id_map)
+
+    except Exception as e:
+        print("Bad reception or failed processing in Flask for controllers matching announcement: "+ e) 
+        return "not ok" 
+
+    return "ok"
+app.add_url_rule('/update_controller_map', 'update_controller_map', update_controller_map)
 
 def recv_runtime_profile():
     """
@@ -312,22 +349,7 @@ def transfer_data(IP,user,pword,source, destination):
     return transfer_data_scp(IP,user,pword,source, destination) #default
 
 
-def update_controller_map():
-    """
-        Update matching between task controllers and node, in case task controllers are crashed and redeployded
-    """
-    try:
-        info = request.args.get('controller_id_map').split(':')
-        print("--- Received matching info")
-        #Task, Node
-        controllers_id_map[info[0]] = info[1]
 
-    except Exception as e:
-        print("Bad reception or failed processing in Flask for controllers matching announcement: "+ e) 
-        return "not ok" 
-
-    return "ok"
-app.add_url_rule('/update_controller_map', 'update_controller_map', update_controller_map)
 
 
 
@@ -447,7 +469,12 @@ class Handler(FileSystemEventHandler):
             new_file_name = os.path.split(event.src_path)[-1]
 
 
-            IP = os.environ['CHILD_NODES_IPS']
+            #IP = os.environ['CHILD_NODES_IPS']
+            print(os.environ['CHILD_NODES'])
+            print(task_node_summary)
+            print(node_ip_map)
+            IP = node_ip_map[task_node_summary[os.environ['CHILD_NODES']]]
+
         
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
@@ -505,6 +532,13 @@ def main():
     manager = Manager()
     task_node_summary = manager.dict()
     controllers_id_map = manager.dict()
+
+    global all_computing_nodes,all_computing_ips, node_ip_map
+
+    all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
+    all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
+    num_computing_nodes = len(all_computing_nodes)
+    node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
     
 
     path1 = 'configuration.txt'

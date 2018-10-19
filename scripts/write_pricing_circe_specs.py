@@ -56,6 +56,10 @@ spec:
           value: {child_ips}
         - name: TASK
           value: home
+        - name: ALL_COMPUTING_NODES
+          value: {all_computing_nodes}
+        - name: ALL_COMPUTING_IPS
+          value: {all_computing_ips}
       nodeSelector:
         kubernetes.io/hostname: {host}        
       restartPolicy: Always
