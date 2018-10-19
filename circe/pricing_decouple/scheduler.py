@@ -111,7 +111,6 @@ def receive_assignment_info():
         assignment_info = request.args.get('assignment_info').split('#')
         print("-----------Received assignment info")
         task_node_summary[assignment_info[0]] = assignment_info[1]
-        print(task_node_summary)
 
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
@@ -469,13 +468,14 @@ class Handler(FileSystemEventHandler):
             new_file_name = os.path.split(event.src_path)[-1]
 
 
-            #IP = os.environ['CHILD_NODES_IPS']
-            print(os.environ['CHILD_NODES'])
+            print(first_task)
             print(task_node_summary)
             print(node_ip_map)
-            IP = node_ip_map[task_node_summary[os.environ['CHILD_NODES']]]
+            IP = node_ip_map[task_node_summary[first_task]]
 
-        
+            print(new_file_name)
+            new_file_name = new_file_name+"#"+first_task+"#"+first_flag
+            print(new_file_name)
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
             transfer_data(IP,username, password,source, destination)
@@ -520,20 +520,21 @@ def main():
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    global FLASK_DOCKER, username, password, ssh_port, num_retries
+    global FLASK_DOCKER, username, password, ssh_port, num_retries, first_task
 
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+    first_task  = os.environ['CHILD_NODES']
 
     global task_node_summary, controllers_id_map
     manager = Manager()
     task_node_summary = manager.dict()
     controllers_id_map = manager.dict()
 
-    global all_computing_nodes,all_computing_ips, node_ip_map
+    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
@@ -546,13 +547,15 @@ def main():
     dag_info = read_config(path1,path2)
 
     #get DAG and home machine info
-    first_task = dag_info[0]
+    # first_task = dag_info[0]
     dag = dag_info[1]
     hosts=dag_info[2]
+    first_flag = dag_info[1][first_task][1]
 
-    print("TASK1: ", dag_info[0])
+    print("TASK: ", dag_info[0])
     print("DAG: ", dag_info[1])
     print("HOSTS: ", dag_info[2])
+
 
     #monitor INPUT folder for the incoming files
     w = Watcher()
