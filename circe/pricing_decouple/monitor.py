@@ -163,6 +163,10 @@ def default_best_node():
     task_node_summary['current_best_node'] = best_node
     print(task_node_summary)
     print('updated successfully')
+    print('update at remote computing nodes')
+
+
+
 
 def update_best_node():
     """Select the best node from price information of all nodes, either default or customized from user price file
@@ -171,6 +175,9 @@ def update_best_node():
         default_best_node()
     else:
         customized_parameters_best_node()
+    for computing_ip in all_computing_ips:
+        send_controller_info(computing_ip)
+    send_controller_info(home_ip)
 
 def schedule_update_price(interval):
     """
@@ -223,7 +230,7 @@ def send_assignment_info(node_ip):
         return "not ok"
 
 def push_assignment_map():
-    time.sleep(120)
+    time.sleep(20)
     for computing_ip in all_computing_ips:
         send_assignment_info(computing_ip)
     send_assignment_info(home_ip)
