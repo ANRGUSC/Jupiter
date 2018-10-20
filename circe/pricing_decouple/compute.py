@@ -32,6 +32,7 @@ from watchdog.events import FileSystemEventHandler
 import urllib.request
 from urllib import parse
 from apscheduler.schedulers.background import BackgroundScheduler
+from readconfig import read_config
 
 
 app = Flask(__name__)
@@ -134,7 +135,7 @@ def prepare_global_info():
     task_controllers_ips = os.environ['ALL_NODES_IPS'].split(':')
 
     computing_nodes = os.environ['ALL_COMPUTING_NODES'].split(':')
-    computing_ips = os.environ['ALL_COMPUTING_NODES'].split(':')
+    computing_ips = os.environ['ALL_COMPUTING_IPS'].split(':')
 
 
     global ip_profilers_map,profilers_ip_map,ip_controllers_map, controllers_ip_map, computing_ip_map
@@ -643,32 +644,24 @@ class Handler1(FileSystemEventHandler):
             task_ip = controllers_ip_map[task_name] 
             key = (task_name,temp_name)
             flag = next_mul[key][0]
-            if flag == 'home':
-                next_IPs = home_ip
+            if next_tasks_map[task_name][0]=='home': 
+                transfer_data(home_ip,username,password,event.src_path, "/output/"+new_file)    
             else: 
-                print(task_name)
-                print(next_tasks_map[task_name])
-                print(task_node_map)
                 next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
-                print('****')
-                print(next_hosts)
-                print(computing_ip_map)
                 next_IPs   = [computing_ip_map[x] for x in next_hosts]
-                print(next_IPs)
-            if flag == 'home':
-                transfer_data(next_IPs,username,password,event.src_path, "/output/")    
-            elif flag == 'true':
-                for idx,ip in enumerate(next_IPs):
-                    transfer_data(ip,username,password,event.src_path, "/centralized_scheduler/input/")
-            else:
-                if key not in files_mul:
-                    files_mul[key] = [event.src_path]
-                else:
-                    files_mul[key] = files_mul[key] + [event.src_path]
-
-                if len(files_mul[key]) == len(next_IPs):
+                destinations = ["/centralized_scheduler/input/" +new_file +"#"+x+"#"+dag_info[1][task_name][1] for x in next_tasks_map[task_name]]
+                if flag == 'true':
                     for idx,ip in enumerate(next_IPs):
-                        transfer_data(ip,username,password,files_mul[key][idx], "/centralized_scheduler/input/")
+                        transfer_data(ip,username,password,event.src_path, destinations[idx])
+                else:
+                    if key not in files_mul:
+                        files_mul[key] = [event.src_path]
+                    else:
+                        files_mul[key] = files_mul[key] + [event.src_path]
+
+                    if len(files_mul[key]) == len(next_IPs):
+                        for idx,ip in enumerate(next_IPs):
+                            transfer_data(ip,username,password,files_mul[key][idx], destinations[idx])
             
 
 #for INPUT folder
@@ -720,9 +713,7 @@ class Handler(FileSystemEventHandler):
             ts = time.time()
             
             task_name = new_file.split('#')[1]
-            # task_ip = new_file.split('#')[2]
             task_flag = new_file.split('#')[2]
-            # next_info = new_file.split('#')[4:]
             runtime_info = 'rt_enter '+ file_name + ' '+str(ts)
             send_runtime_profile_computingnode(runtime_info,task_name)
 
@@ -730,14 +721,17 @@ class Handler(FileSystemEventHandler):
             key = (task_name,file_name)
             flag = dag[task_name][0] 
 
+            print('^^^^^^^')
+            print(task_name)
+            print(file_name)
+            print(dag[task_name])
+            print(flag)
+
             if key not in task_mul:
                 task_mul[key] = [new_file]
                 count_mul[key]= int(flag)-1
                 size_mul[key] = cal_file_size(event.src_path)
                 next_mul[key] = [task_flag]
-
-                # if len(next_info) >0:
-                #     next_mul[key] = next_mul[key] + next_info
             else:
                 task_mul[key] = task_mul[key] + [new_file]
                 count_mul[key]=count_mul[key]-1
@@ -751,7 +745,7 @@ class Handler(FileSystemEventHandler):
                     filenames = incoming_file
                 print('Add task to the processing queue')
                 queue_mul[key] = False 
-                # print(queue_mul)
+                
 
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
@@ -772,7 +766,12 @@ class MonitorRecv(multiprocessing.Process):
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
 def main():
-    ## Load all the configuration
+    global dag_info
+    path1 = 'centralized_scheduler/dag.txt'
+    path2 = 'centralized_scheduler/nodes.txt'
+    dag_info = read_config(path1,path2)
+    # print("DAG: ", dag_info[1])
+
     global username, password, ssh_port,num_retries, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER,task_queue_size
     # Load all the confuguration
     INI_PATH = '/jupiter_config.ini'

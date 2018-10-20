@@ -188,8 +188,10 @@ ADD scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD {app_file}/configuration.txt  /centralized_scheduler/dag.txt
 ADD {app_file}/scripts/config.json /centralized_scheduler/config.json
 ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD nodes.txt /centralized_scheduler/nodes.txt
 
 ADD circe/{pricing_option}/compute.py /centralized_scheduler/compute.py
+ADD circe/{pricing_option}/readconfig.py /readconfig.py
 
 RUN chmod +x /start.sh
 
