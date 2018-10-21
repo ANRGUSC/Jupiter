@@ -82,6 +82,6 @@ def evaluate_sequential():
 
 if __name__ == '__main__':
     #evaluate_random()
-    time.sleep(120)
+    time.sleep(150)
     print('Start copying sample files for evaluation')
     evaluate_sequential()

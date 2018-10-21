@@ -208,7 +208,7 @@ def send_controller_info(node_ip):
             return "not ok"
 
 def push_controller_map():
-    time.sleep(120)
+    time.sleep(90)
     for computing_ip in all_computing_ips:
         send_controller_info(computing_ip)
     send_controller_info(home_ip)
@@ -230,7 +230,7 @@ def send_assignment_info(node_ip):
         return "not ok"
 
 def push_assignment_map():
-    time.sleep(20)
+    time.sleep(120)
     for computing_ip in all_computing_ips:
         send_assignment_info(computing_ip)
     send_assignment_info(home_ip)
