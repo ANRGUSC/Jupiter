@@ -26,6 +26,7 @@ from flask import Flask, Response, request, jsonify
 import csv
 import random
 import datetime
+import numpy as np
 
 app = Flask(__name__)
 
@@ -185,9 +186,8 @@ class droplet_regression():
         self.my_region    = None
         self.hosts        = []
         self.regions      = []
-        self.parameters_file = 'parameters_%s'%(sys.argv[1])
-        self.dir_remote      = dir_remote_central
-        self.scheduling_file = dir_scheduler
+        self.parameters_file = 'parameters_%s'%(self_ip)
+        self.scheduling_file = "scheduling/%s/scheduling.txt"%(self_ip)
         self.client_mongo    = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
         self.db = self.client_mongo.central_network_profiler
        
