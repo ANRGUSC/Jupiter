@@ -137,8 +137,7 @@ def k8s_profiler_scheduler():
         print("Exception Occurred")
     
     service_ips['home'] = resp.spec.cluster_ip
-    # nexthost_ips = service_ips['home']
-    # nexthost_names = 'home'
+    
 
     print(service_ips)
 

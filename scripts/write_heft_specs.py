@@ -37,6 +37,8 @@ spec:
           value: {execution_home_ip}
         - name: HOME_IP
           value: {home_ip}
+        - name: HOME_PROFILER_IP
+          value: {home_profiler_ip}
 """
 
 def write_heft_specs(**kwargs):

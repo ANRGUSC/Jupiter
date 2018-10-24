@@ -82,11 +82,12 @@ def do_update_quadratic():
     This function updates the estimated quadratic parameters in the mongodb server, database ``central_network_profiler``, collection ``quadratic_parameters``. It checks for any received files 
     from each of the worker droplets in the ``parameters/`` folder. If any a file exists, it updates the mongodb.
     """
-
+    print('Update quadratic parameters from other nodes')
     client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/') 
     db = client_mongo.central_network_profiler
     parameters_folder = os.path.join(os.getcwd(),'parameters')
     logging = db['quadratic_parameters']
+    print(logging)
     try:
         for subdir, dirs, files in os.walk(parameters_folder):
             for file in files:
@@ -118,7 +119,7 @@ class droplet_measurement():
         self.scheduling_file    = "scheduling/%s/scheduling.txt"%(self_ip)
         self.measurement_script = os.path.join(os.getcwd(),'droplet_scp_time_transfer')
         self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
-        self.db = self.client_mongo.central_network_profiler
+        self.db = self.client_mongo.droplet_network_profiler
         
     def do_add_host(self, file_hosts):
         """This function reads the ``scheduler.txt`` file to add other droplets info 
@@ -189,7 +190,7 @@ class droplet_regression():
         self.parameters_file = 'parameters_%s'%(self_ip)
         self.scheduling_file = "scheduling/%s/scheduling.txt"%(self_ip)
         self.client_mongo    = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
-        self.db = self.client_mongo.central_network_profiler
+        self.db = self.client_mongo.droplet_network_profiler
        
         # Read the info regarding the central profiler
         with open('central.txt','r') as f:
@@ -373,7 +374,8 @@ def main():
         scheduler_file = os.path.join(cur_schedule, output_file)
         schedule_info.to_csv(scheduler_file, header = False, index = False)
 
-    
+    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+    db = client_mongo['droplet_network_profiler']
     filename = "scheduling/%s/scheduling.txt"%(self_ip)
     c = 0
     with open(filename, 'r') as f:

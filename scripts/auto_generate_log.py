@@ -114,7 +114,6 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
 
         #Start the task to node mapper
         
-
         task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
         """
@@ -152,13 +151,13 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
         print("Printing schedule")
         pprint(schedule)
         print("End print")
-
+        
     
     else:
         import static_assignment1 as st
         dag = st.dag
         schedule = st.schedule
-
+        
     # Start CIRCE
     if pricing == 0:
     	k8s_circe_scheduler(dag,schedule,app_name)
@@ -248,27 +247,11 @@ def export_mapper_log(app_name,log_name):
     home_name=app_name+'-home'
     for i in resp.items:
         if i.metadata.name.startswith(home_name):
-            circe_name = i.metadata.name
+            mapper_name = i.metadata.name
             break;
     print('******************* Mapper pod to export')
-    print(circe_name)
-    get_pod_logs_mapper(jupiter_config.DEPLOYMENT_NAMESPACE,circe_name,log_name)
-
-# def export_home_log(namespace, app_name,log_name):
-#     """Export circe home log for evaluation, should only use when for non-static mapping
-#     """
-#     jupiter_config.set_globals()
-#     config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
-#     core_v1_api = client.CoreV1Api()
-#     resp = core_v1_api.list_namespaced_pod(namespace)
-#     home_name=app_name+'-home'
-#     for i in resp.items:
-#         if i.metadata.name.startswith(home_name):
-#             home_name = i.metadata.name
-#             break;
-#     print('******************* Home pod to export')
-#     print(home_name)
-#     get_pod_logs(namespace,home_name,log_name)
+    print(mapper_name)
+    get_pod_logs_mapper(jupiter_config.MAPPER_NAMESPACE,mapper_name,log_name)
 
 
 
@@ -337,7 +320,7 @@ def redeploy_system(app_id,app_name,port,mapper_log):
         # execution_ips = exec_profiler_function()
 
         print('*************************')
-        print('Network Profiling Information:')
+        print('Network Profiling Information2222:')
         print(profiler_ips)
         print('Execution Profiling Information:')
         print(execution_ips)
@@ -393,6 +376,8 @@ def redeploy_system(app_id,app_name,port,mapper_log):
         # dag = static_assignment.dag
         # schedule = static_assignment.schedule
 
+    print('Network Profiling Information2222:')
+    print(profiler_ips)
     # Start CIRCE
     if pricing == 0:
     	k8s_circe_scheduler(dag,schedule,app_name)

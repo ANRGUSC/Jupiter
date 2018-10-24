@@ -44,6 +44,7 @@ def get_global_info():
         -   dict: network_map - mapping of node IPs and node names
         -   dict: node_list - node list
     """
+    global profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list, home_profiler_ip
     profiler_ip = os.environ['PROFILERS'].split(' ')
     profiler_ip = [info.split(":") for info in profiler_ip]
     exec_home_ip = os.environ['EXECUTION_HOME_IP']
@@ -52,7 +53,7 @@ def get_global_info():
     node_list = [info[0] for info in profiler_ip]
     node_IP = [info[1] for info in profiler_ip]
     network_map = dict(zip(node_IP, node_list))
-    return profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list
+    home_profiler_ip = os.environ['HOME_PROFILER_IP']
 
 def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
     """Collect the execution profile from the home execution profiler's MongoDB
@@ -102,7 +103,7 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
 
 
 def profilers_mapping_decorator(f):
-    """General Mapping decorator function
+    """General Profilers Mapping function
     """
     @wraps(f)
     def profiler_mapping(*args, **kwargs):
@@ -152,6 +153,7 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
         for record in logging:
             # print(record)
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
+            if record['Destination[IP]'] == home_profiler_ip: continue
             info_to_csv=[network_map[record['Source[IP]']],record['Source[IP]'],network_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info.append(info_to_csv)
     print('Network information has already been provided')
@@ -189,7 +191,8 @@ if __name__ == '__main__':
     print('\n Step 1: Read task list from DAG file and global information \n')
 
     configuration_path='/heft/dag.txt'
-    profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list = get_global_info()
+    global profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list, home_profiler_ip
+    get_global_info()
     print(profiler_ip)
     print(exec_home_ip)
     print("Num nodes :" + str(num_nodes))

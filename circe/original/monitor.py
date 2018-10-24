@@ -261,6 +261,7 @@ class Handler1(FileSystemEventHandler):
             flag2 = sys.argv[2]
 
             #if you are sending the final output back to scheduler
+            
             if sys.argv[3] == 'home':
                 
                 IPaddr = sys.argv[4]

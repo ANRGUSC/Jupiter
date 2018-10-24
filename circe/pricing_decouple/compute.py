@@ -124,6 +124,10 @@ def prepare_global_info():
 
     profiler_nodes = os.environ['ALL_PROFILERS_NODES'].split(' ')
     profiler_nodes = [info.split(":") for info in profiler_nodes]
+
+    print('**************')
+    print(profiler_ip)
+    print(profiler_nodes)
    
     self_profiler_ip = os.environ['PROFILERS']
     exec_home_ip = os.environ['EXECUTION_HOME_IP']
@@ -296,6 +300,12 @@ def get_updated_network_from_source(node_ip):
             return network_info
         logging =db[node_ip].find().limit(num_nb)  
         for record in logging:
+            print('*****')
+            print(ip_profilers_map)
+            print(profilers_ip_map)
+            print(profilers_ip_map['home'])
+            print(ip_profilers_map['home'])
+            if record['Destination[IP]'] == ip_profilers_map['home']: continue
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             # info_to_csv=[ip_profilers_map[record['Source[IP]']],record['Source[IP]'],ip_profilers_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
@@ -313,7 +323,8 @@ def get_updated_network_profile(task_host_name):
     Returns:
         list: network information
     """
-    print('----- Get updated network information:')
+    print('----- Get updated network information------------------------------------------:')
+    print(task_host_name)
     computing_net_info = get_updated_network_from_source(self_profiler_ip)
     task_profiler_ip = profilers_ip_map[controllers_id_map[task_host_name]] 
     print(task_profiler_ip)

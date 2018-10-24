@@ -130,7 +130,8 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     """
         This script deploys CIRCE in the system. 
     """
-
+    print('INPUT PROFILERS')
+    print(profiler_ips)
     jupiter_config.set_globals()
     
     sys.path.append(jupiter_config.CIRCE_PATH)
@@ -164,8 +165,8 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     # mapping_str = "#".join(mapping)
     service_ips = {}; #list of all service IPs including home and task controllers
     computing_service_ips = {}
-    all_profiler_ips = ''
-    all_profiler_nodes = ''
+    all_profiler_ips = ""
+    all_profiler_nodes = ""
 
     print('-------- First create the home node service')
     """
@@ -273,8 +274,9 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
     all_computing_ips = ':'.join(computing_service_ips.values())
     all_computing_nodes = ':'.join(computing_service_ips.keys())
-    all_profiler_ips = all_profiler_ips[1:]
-    all_profiler_nodes = all_profiler_nodes[1:]
+
+    # all_profiler_ips = all_profiler_ips[1:]
+    # all_profiler_nodes = all_profiler_nodes[1:]
 
     # print(all_computing_nodes)
     # print(all_computing_ips)
