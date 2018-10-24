@@ -157,7 +157,7 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
         import static_assignment1 as st
         dag = st.dag
         schedule = st.schedule
-        
+
     # Start CIRCE
     if pricing == 0:
     	k8s_circe_scheduler(dag,schedule,app_name)

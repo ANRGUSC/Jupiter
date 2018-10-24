@@ -33,7 +33,7 @@ import urllib.request
 from urllib import parse
 from apscheduler.schedulers.background import BackgroundScheduler
 from readconfig import read_config
-
+from collections import defaultdict
 
 app = Flask(__name__)
 
@@ -124,10 +124,6 @@ def prepare_global_info():
 
     profiler_nodes = os.environ['ALL_PROFILERS_NODES'].split(' ')
     profiler_nodes = [info.split(":") for info in profiler_nodes]
-
-    print('**************')
-    print(profiler_ip)
-    print(profiler_nodes)
    
     self_profiler_ip = os.environ['PROFILERS']
     exec_home_ip = os.environ['EXECUTION_HOME_IP']
@@ -142,25 +138,12 @@ def prepare_global_info():
     computing_ips = os.environ['ALL_COMPUTING_IPS'].split(':')
 
 
-    global ip_profilers_map,profilers_ip_map,ip_controllers_map, controllers_ip_map, computing_ip_map
+    global ip_profilers_map,profilers_ip_map, controllers_ip_map, computing_ip_map
     ip_profilers_map = dict(zip(profiler_ip[0], profiler_nodes[0]))
     profilers_ip_map = dict(zip(profiler_nodes[0], profiler_ip[0]))
 
     controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
-    ip_controllers_map = dict(zip(task_controllers_ips, task_controllers))
-
     computing_ip_map = dict(zip(computing_nodes, computing_ips))
-
-
-    global next_tasks_map
-    next_tasks_info = os.environ['ALL_NEXT_TASKS'].split('!')[:-1]
-    next_tasks_map = dict()
-    for idx,next_tasks in enumerate(next_tasks_info):
-        task = next_tasks.split(':')[0]
-        next_task = next_tasks.split(':')[1].split('#')
-        next_tasks_map[task] = next_task
-
-
 
     global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map, task_node_map
 
@@ -180,7 +163,21 @@ def prepare_global_info():
     dag_file = '/centralized_scheduler/dag.txt'
     dag_info = k8s_read_dag(dag_file)
     dag = dag_info[1]
-    
+
+    global next_tasks_map,last_tasks_map
+    next_tasks_map = defaultdict(lambda: [])
+    last_tasks_map = defaultdict(lambda: [])
+
+    for task in dag:
+        next_tasks_map[task] = dag[task][2:]
+        for last_task in dag[task][2:]:
+            if last_task not in last_tasks_map:
+                last_tasks_map[last_task] = [task]
+            else:    
+                last_tasks_map[last_task].append(task)
+    first_task = last_tasks_map.keys()[last_tasks_map.values().index([])]
+    last_tasks_map[first_task] = 'home' 
+
     global task_module
     task_module = {}
     for task in dag:
@@ -282,56 +279,54 @@ def get_updated_execution_profile():
         execution_info[row[0]] = [float(row[1]),float(row[2])]
     return execution_info
 
-def get_updated_network_from_source(node_ip):
+def get_updated_network_from_source(node_ips):
     #print("--- Get updated network profile information from "+node_ip)   
     network_info = {}
-    try:
-        #print('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
-        client_mongo = MongoClient('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
-        db = client_mongo.droplet_network_profiler
-        collection = db.collection_names(include_system_collections=False)
-        num_nb = len(collection)-1
-        if num_nb == -1:
-            print('--- Network profiler mongoDB not yet prepared')
-            return network_info
-        num_rows = db[node_ip].count() 
-        if num_rows < num_nb:
-            print('--- Network profiler regression info not yet loaded into MongoDB!')
-            return network_info
-        logging =db[node_ip].find().limit(num_nb)  
-        for record in logging:
-            print('*****')
-            print(ip_profilers_map)
-            print(profilers_ip_map)
-            print(profilers_ip_map['home'])
-            print(ip_profilers_map['home'])
-            if record['Destination[IP]'] == ip_profilers_map['home']: continue
-            # Source ID, Source IP, Destination ID, Destination IP, Parameters
-            # info_to_csv=[ip_profilers_map[record['Source[IP]']],record['Source[IP]'],ip_profilers_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
-            network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
-        return network_info
-    except Exception as e:
-        print("Network request failed. Will try again, details: " + str(e))
-        return -1
-
-def get_updated_network_profile(task_host_name):
+    print(node_ips)
+    for node_ip in node_ips:
+        print(node_ip)
+        try:
+            #print('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
+            client_mongo = MongoClient('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
+            db = client_mongo.droplet_network_profiler
+            collection = db.collection_names(include_system_collections=False)
+            num_nb = len(collection)-1
+            if num_nb == -1:
+                print('--- Network profiler mongoDB not yet prepared')
+                return network_info
+            num_rows = db[node_ip].count() 
+            if num_rows < num_nb:
+                print('--- Network profiler regression info not yet loaded into MongoDB!')
+                return network_info
+            logging =db[node_ip].find().limit(num_nb)  
+            for record in logging:
+                if record['Destination[IP]'] == profilers_ip_map['home']: continue
+                # Source ID, Source IP, Destination ID, Destination IP, Parameters
+                network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
+        except Exception as e:
+            print("Network request failed. Will try again, details: " + str(e))
+            return -1
+    print(network_info)
+    return network_info
+def get_updated_network_profile(current_task):
     """Collect the network profile information from local MONGODB database
     
     Args:
-        task_host_name (str): task controller name
+        current_task (str): current processing task
     
     Returns:
         list: network information
     """
-    print('----- Get updated network information------------------------------------------:')
-    print(task_host_name)
-    computing_net_info = get_updated_network_from_source(self_profiler_ip)
-    task_profiler_ip = profilers_ip_map[controllers_id_map[task_host_name]] 
-    print(task_profiler_ip)
-    controller_net_info = get_updated_network_from_source(task_profiler_ip)
-    print(controller_net_info)
+    print('----- Get updated network information-----')
     
-    return computing_net_info,controller_net_info
+    to_net_info = get_updated_network_from_source([self_profiler_ip])
+    last_profiler_ips = last_tasks_map[current_task]
+    print('$$$$$$$')
+    print(last_tasks_map)
+    print(current_task)
+    print(last_profiler_ips)
+    from_net_info = get_updated_network_from_source(last_profiler_ips)
+    return from_net_info, to_net_info
 
 def get_updated_resource_profile():
     """Requesting resource profiler data using flask for its corresponding profiler node
@@ -391,7 +386,7 @@ def price_aggregate(task_name, next_task_name):
         print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        computing_net_info,controller_net_info = get_updated_network_profile(task_name)
+        computing_net_info = get_updated_network_profile(task_name)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         test_output = execution_info[task_name][1]
         print('----- Calculating price:')
@@ -399,21 +394,19 @@ def price_aggregate(task_name, next_task_name):
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
         print('--- Network cost: ')
-        print(controllers_id_map)
-        print(next_task_name)
-        print(controllers_id_map)
-
-        next_host_name = controllers_id_map[next_task_name]
-        last_host_name = controllers_id_map[task_name]
+        print(task_node_map)
+        next_host_name = task_node_map[next_task_name]
+        last_host_name = task_node_map[task_name]
         print(next_host_name)
         print(last_host_name)
-        print(controller_net_info.keys())
         print(computing_net_info.keys())
-        if last_host_name == self_name or next_task_name == 'home': #need to fix 
-            controller_params  = [0]*3
+        controller_params  = [10000]*3 # out of range
+        computing_params   = [10000]*3 # out of range
+        if last_host_name == self_name:
+            from_net_params  = [0]*3
         if self_name == next_host_name:
-            computing_params   = [0]*3
-        if self_name in controller_net_info.keys():
+            to_net_params   = [0]*3
+        if self_name in computing_net_info.keys():
             controller_params = controller_net_info[self_name].split() 
             controller_params = [float(x) for x in controller_params]
         if next_host_name in computing_net_info.keys():  

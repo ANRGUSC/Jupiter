@@ -288,7 +288,7 @@ def get_updated_network_profile(task_host_name):
         list: network information
     """
     print('----- Get updated network information:')
-    computing_net_info = get_updated_network_from_source(self_profiler_ip)
+    to_net_info = get_updated_network_from_source(self_profiler_ip)
     task_profiler_ip = profilers_ip_map[controllers_id_map[task_host_name]] 
     print(task_profiler_ip)
     controller_net_info = get_updated_network_from_source(task_profiler_ip)

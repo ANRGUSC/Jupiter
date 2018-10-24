@@ -165,8 +165,8 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     # mapping_str = "#".join(mapping)
     service_ips = {}; #list of all service IPs including home and task controllers
     computing_service_ips = {}
-    all_profiler_ips = ""
-    all_profiler_nodes = ""
+    all_profiler_ips = profiler_ips['home']
+    all_profiler_nodes = "home"
 
     print('-------- First create the home node service')
     """
@@ -226,22 +226,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
 
-
-    all_next_tasks = ""
-    for key, value in dag.items():
-
-        task = key
-        nexttasks = ''
-
-        for i in range(2,len(value)):
-            if i != 2:
-                nexttasks = nexttasks + '#'
-                
-            nexttasks = nexttasks + str(hosts.get(value[i])[0])
-
-        all_next_tasks = all_next_tasks + task + ":" + nexttasks + "!"
-
-    print(all_next_tasks)
     print('-------- Create computing nodes service')
 
     """
@@ -312,7 +296,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
                                              host = nodes[i][0], all_node = all_node,
                                              node_name = i,
                                              all_node_ips = all_node_ips,
-                                             all_next_tasks = all_next_tasks,
                                              all_computing_nodes = all_computing_nodes,
                                              all_computing_ips = all_computing_ips,
                                              self_ip = computing_service_ips[i],
@@ -352,15 +335,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
         inputnum = str(value[0])
         flag = str(value[1])
-
-        # print('------------')
-        # print(key)
-        # print(value)
-        # print(inputnum)
-        # print(flag)
-        # print(hosts)
-        # print(service_ips)
-
 
         for i in range(2,len(value)):
             if i != 2:
