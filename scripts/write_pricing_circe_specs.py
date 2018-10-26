@@ -237,6 +237,9 @@ spec:
           value: {execution_home_ip} 
         - name: HOME_NODE
           value: {home_node_ip}
+        - name: CHILD_NODES
+          value: {child}
+
 """
 
 def write_circe_computing_specs(**kwargs):

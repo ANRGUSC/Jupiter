@@ -303,7 +303,8 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
                                              all_profiler_ips = all_profiler_ips,
                                              all_profiler_nodes = all_profiler_nodes,
                                              execution_home_ip = execution_ips['home'],
-                                             home_node_ip = service_ips.get("home"))
+                                             home_node_ip = service_ips.get("home"),
+                                             child = jupiter_config.HOME_CHILD)
             #pprint(dep)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)

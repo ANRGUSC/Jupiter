@@ -82,71 +82,7 @@ def receive_price_info():
         return "not ok" 
 
     return "ok"
-app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info)
-
-
-# def transfer_mapping_decorator(TRANSFER=0):
-#     """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
-    
-#     Args:
-#         TRANSFER (int, optional): TRANSFER specified from ``jupiter_config.ini``, default method is SCP
-    
-#     Returns:
-#         function: chosen transfer method
-#     """
-    
-#     def transfer_data_scp(IP,user,pword,source, destination):
-#         """Transfer data using SCP
-        
-#         Args:
-#             IP (str): destination IP address
-#             user (str): destination username
-#             pword (str): destination password
-#             source (str): source file path
-#             destination (str): destination file path
-#         """
-#         #Keep retrying in case the containers are still building/booting up on
-#         #the child nodes.
-#         retry = 0
-#         ts = -1
-#         while retry < num_retries:
-#             try:
-#                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
-#                 os.system(cmd)
-#                 print('data transfer complete\n')
-#                 ts = time.time()
-#                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
-#                 runtime_sender_log.write(s)
-#                 runtime_sender_log.flush()
-#                 break
-#             except:
-#                 print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
-#                 time.sleep(2)
-#                 retry += 1
-#         if retry == num_retries:
-#             s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,source,ts)
-#             runtime_sender_log.write(s)
-#             runtime_sender_log.flush()
-
-#     if TRANSFER==0:
-#         return transfer_data_scp
-#     return transfer_data_scp
-
-# @transfer_mapping_decorator
-# def transfer_data(IP,user,pword,source, destination):
-#     """Transfer data with given parameters
-    
-#     Args:
-#         IP (str): destination IP 
-#         user (str): destination username
-#         pword (str): destination password
-#         source (str): source file path
-#         destination (str): destination file path
-#     """
-#     msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
-#     print(msg)
-    
-
+app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info)    
 
 
 def default_best_node():
@@ -189,12 +125,12 @@ def schedule_update_price(interval):
 
 def send_controller_info(node_ip):
     retry = 0
-    print(num_retries)
     while retry < num_retries:
         try:
             print("Announce my current node mapping to " + node_ip)
             url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
             params = {'controller_id_map':controller_id_map}
+            print(controller_id_map)
             params = parse.urlencode(params)
             req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
             res = urllib.request.urlopen(req)

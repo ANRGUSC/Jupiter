@@ -33,7 +33,6 @@ import urllib.request
 from urllib import parse
 from apscheduler.schedulers.background import BackgroundScheduler
 from readconfig import read_config
-from collections import defaultdict
 
 app = Flask(__name__)
 
@@ -156,6 +155,7 @@ def prepare_global_info():
     files_mul = manager.dict()
     controllers_id_map = manager.dict()
     task_node_map = manager.dict()
+    task_node_map['home'] = 'home'
 
     global home_node_host_port, dag
     home_node_host_port = home_ip+ ":" + str(FLASK_SVC)
@@ -165,9 +165,10 @@ def prepare_global_info():
     dag = dag_info[1]
 
     global next_tasks_map,last_tasks_map
-    next_tasks_map = defaultdict(lambda: [])
-    last_tasks_map = defaultdict(lambda: [])
+    next_tasks_map = dict()
+    last_tasks_map = dict()
 
+    
     for task in dag:
         next_tasks_map[task] = dag[task][2:]
         for last_task in dag[task][2:]:
@@ -175,9 +176,9 @@ def prepare_global_info():
                 last_tasks_map[last_task] = [task]
             else:    
                 last_tasks_map[last_task].append(task)
-    first_task = last_tasks_map.keys()[last_tasks_map.values().index([])]
-    last_tasks_map[first_task] = 'home' 
-
+    next_tasks_map['home'] = os.environ['CHILD_NODES']
+    last_tasks_map[os.environ['CHILD_NODES']] = ['home']
+    print(last_tasks_map)
     global task_module
     task_module = {}
     for task in dag:
@@ -291,15 +292,21 @@ def get_updated_network_from_source(node_ips):
             db = client_mongo.droplet_network_profiler
             collection = db.collection_names(include_system_collections=False)
             num_nb = len(collection)-1
+            print(db)
+            print(collection)
+            print(num_nb)
             if num_nb == -1:
                 print('--- Network profiler mongoDB not yet prepared')
                 return network_info
             num_rows = db[node_ip].count() 
+            print(num_rows)
             if num_rows < num_nb:
                 print('--- Network profiler regression info not yet loaded into MongoDB!')
                 return network_info
             logging =db[node_ip].find().limit(num_nb)  
             for record in logging:
+                print(record)
+                print(profilers_ip_map['home'])
                 if record['Destination[IP]'] == profilers_ip_map['home']: continue
                 # Source ID, Source IP, Destination ID, Destination IP, Parameters
                 network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
@@ -320,12 +327,16 @@ def get_updated_network_profile(current_task):
     print('----- Get updated network information-----')
     
     to_net_info = get_updated_network_from_source([self_profiler_ip])
-    last_profiler_ips = last_tasks_map[current_task]
-    print('$$$$$$$')
-    print(last_tasks_map)
+    print('##########')
     print(current_task)
+    print(last_tasks_map[current_task])
+    print(task_node_map)
+    last_nodes = [task_node_map[task] for task in last_tasks_map[current_task]]
+    print(last_nodes)
+    last_profiler_ips = [profilers_ip_map[node] for node in last_nodes]
     print(last_profiler_ips)
     from_net_info = get_updated_network_from_source(last_profiler_ips)
+    print('#############2')
     return from_net_info, to_net_info
 
 def get_updated_resource_profile():
@@ -386,7 +397,10 @@ def price_aggregate(task_name, next_task_name):
         print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        computing_net_info = get_updated_network_profile(task_name)
+        from_net_info, to_net_info = get_updated_network_profile(task_name)
+        print(task_name)
+        print(from_net_info)
+        print(to_net_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         test_output = execution_info[task_name][1]
         print('----- Calculating price:')
@@ -395,22 +409,23 @@ def price_aggregate(task_name, next_task_name):
         price['cpu'] = float(resource_info[self_name]["cpu"])
         print('--- Network cost: ')
         print(task_node_map)
+        print(next_task_name)
+        print(task_name)
         next_host_name = task_node_map[next_task_name]
         last_host_name = task_node_map[task_name]
         print(next_host_name)
         print(last_host_name)
-        print(computing_net_info.keys())
         controller_params  = [10000]*3 # out of range
         computing_params   = [10000]*3 # out of range
         if last_host_name == self_name:
             from_net_params  = [0]*3
         if self_name == next_host_name:
             to_net_params   = [0]*3
-        if self_name in computing_net_info.keys():
-            controller_params = controller_net_info[self_name].split() 
+        if self_name in from_net_info.keys():
+            controller_params = from_net_info[self_name].split() 
             controller_params = [float(x) for x in controller_params]
-        if next_host_name in computing_net_info.keys():  
-            computing_params = computing_net_info[next_host_name].split()
+        if next_host_name in to_net_info.keys():  
+            computing_params = to_net_info[next_host_name].split()
             computing_params = [float(x) for x in computing_params]
         try:
             price['network'] = (controller_params[0] * test_size * test_size) + \
