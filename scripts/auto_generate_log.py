@@ -348,8 +348,11 @@ def redeploy_system(app_id,app_name,port,mapper_log):
                 print("get the data from " + line)
                 time.sleep(5)
                 r = requests.get(line)
+                print(r)
                 mapping = r.json()
+                print(mapping)
                 data = json.dumps(mapping)
+                print(data)
                 # print(mapping)
                 # print(len(mapping))
                 if len(mapping) != 0:

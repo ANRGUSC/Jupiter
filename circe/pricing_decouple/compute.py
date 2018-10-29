@@ -178,7 +178,6 @@ def prepare_global_info():
                 last_tasks_map[last_task].append(task)
     next_tasks_map['home'] = os.environ['CHILD_NODES']
     last_tasks_map[os.environ['CHILD_NODES']] = ['home']
-    print(last_tasks_map)
     global task_module
     task_module = {}
     for task in dag:
@@ -211,7 +210,6 @@ def receive_assignment_info():
         assignment_info = request.args.get('assignment_info').split('#')
         print("Received assignment info")
         task_node_map[assignment_info[0]] = assignment_info[1]
-        print(task_node_map)
 
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
@@ -283,37 +281,28 @@ def get_updated_execution_profile():
 def get_updated_network_from_source(node_ips):
     #print("--- Get updated network profile information from "+node_ip)   
     network_info = {}
-    print(node_ips)
     for node_ip in node_ips:
-        print(node_ip)
         try:
             #print('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
             client_mongo = MongoClient('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.droplet_network_profiler
             collection = db.collection_names(include_system_collections=False)
             num_nb = len(collection)-1
-            print(db)
-            print(collection)
-            print(num_nb)
             if num_nb == -1:
                 print('--- Network profiler mongoDB not yet prepared')
                 return network_info
             num_rows = db[node_ip].count() 
-            print(num_rows)
             if num_rows < num_nb:
                 print('--- Network profiler regression info not yet loaded into MongoDB!')
                 return network_info
             logging =db[node_ip].find().limit(num_nb)  
             for record in logging:
-                print(record)
-                print(profilers_ip_map['home'])
                 if record['Destination[IP]'] == profilers_ip_map['home']: continue
                 # Source ID, Source IP, Destination ID, Destination IP, Parameters
                 network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
         except Exception as e:
             print("Network request failed. Will try again, details: " + str(e))
             return -1
-    print(network_info)
     return network_info
 def get_updated_network_profile(current_task):
     """Collect the network profile information from local MONGODB database
@@ -327,16 +316,9 @@ def get_updated_network_profile(current_task):
     print('----- Get updated network information-----')
     
     to_net_info = get_updated_network_from_source([self_profiler_ip])
-    print('##########')
-    print(current_task)
-    print(last_tasks_map[current_task])
-    print(task_node_map)
     last_nodes = [task_node_map[task] for task in last_tasks_map[current_task]]
-    print(last_nodes)
     last_profiler_ips = [profilers_ip_map[node] for node in last_nodes]
-    print(last_profiler_ips)
     from_net_info = get_updated_network_from_source(last_profiler_ips)
-    print('#############2')
     return from_net_info, to_net_info
 
 def get_updated_resource_profile():
@@ -398,9 +380,6 @@ def price_aggregate(task_name, next_task_name):
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
         from_net_info, to_net_info = get_updated_network_profile(task_name)
-        print(task_name)
-        print(from_net_info)
-        print(to_net_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         test_output = execution_info[task_name][1]
         print('----- Calculating price:')
@@ -408,13 +387,8 @@ def price_aggregate(task_name, next_task_name):
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
         print('--- Network cost: ')
-        print(task_node_map)
-        print(next_task_name)
-        print(task_name)
         next_host_name = task_node_map[next_task_name]
         last_host_name = task_node_map[task_name]
-        print(next_host_name)
-        print(last_host_name)
         controller_params  = [10000]*3 # out of range
         computing_params   = [10000]*3 # out of range
         if last_host_name == self_name:
@@ -437,10 +411,7 @@ def price_aggregate(task_name, next_task_name):
         except:
             price['network'] =  10000
 
-        print(price['network'])
-        #Temporary: linear
         print('--- Queuing cost: ')
-        print(task_queue_size)
         if task_queue_size > 0: #not infinity 
             if len(queue_mul)==0:
                 print('empty queue, no tasks are waiting')
@@ -452,7 +423,6 @@ def price_aggregate(task_name, next_task_name):
                 for idx,task_info in enumerate(queue_task):
                     #TO_DO: sum or max
                     price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
-        print(price['queue'])
 
         return price
              
@@ -660,27 +630,38 @@ class Handler1(FileSystemEventHandler):
             runtime_info = 'rt_finish '+ temp_name + ' '+str(ts)
             send_runtime_profile_computingnode(runtime_info,task_name)
 
-            task_ip = controllers_ip_map[task_name] 
             key = (task_name,temp_name)
+            print(next_mul)
             flag = next_mul[key][0]
+            print(next_tasks_map[task_name])
             if next_tasks_map[task_name][0]=='home': 
                 transfer_data(home_ip,username,password,event.src_path, "/output/"+new_file)    
             else: 
                 next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
                 next_IPs   = [computing_ip_map[x] for x in next_hosts]
                 destinations = ["/centralized_scheduler/input/" +new_file +"#"+x+"#"+dag_info[1][task_name][1] for x in next_tasks_map[task_name]]
+                print(next_hosts)
+                print(next_IPs)
+                print(destinations)
+                print(flag)
+                print(username)
+                print(password)
+
                 if flag == 'true':
                     for idx,ip in enumerate(next_IPs):
-                        transfer_data(ip,username,password,event.src_path, destinations[idx])
+                        #transfer_data(ip,username,password,event.src_path, destinations[idx])
+                        transfer_data(ip,'apac','apac20!7',event.src_path, destinations[idx])
                 else:
                     if key not in files_mul:
                         files_mul[key] = [event.src_path]
                     else:
                         files_mul[key] = files_mul[key] + [event.src_path]
+                    print(files_mul)
 
                     if len(files_mul[key]) == len(next_IPs):
                         for idx,ip in enumerate(next_IPs):
-                            transfer_data(ip,username,password,files_mul[key][idx], destinations[idx])
+                            transfer_data(ip,'apac','apac20!7',files_mul[key][idx], destinations[idx])
+                            #transfer_data(ip,username,password,files_mul[key][idx], destinations[idx])
             
 
 #for INPUT folder
@@ -739,12 +720,6 @@ class Handler(FileSystemEventHandler):
     
             key = (task_name,file_name)
             flag = dag[task_name][0] 
-
-            print('^^^^^^^')
-            print(task_name)
-            print(file_name)
-            print(dag[task_name])
-            print(flag)
 
             if key not in task_mul:
                 task_mul[key] = [new_file]

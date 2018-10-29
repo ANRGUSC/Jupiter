@@ -1,0 +1,133 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+-------------------------------------
+Automatically generating HEFT input
+-------------------------------------
+Perform HEFT scheduling
+read_input_heft.py:194: SyntaxWarning: name 'MONGO_SVC_PORT' is assigned to before global declaration
+  global profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list, home_profiler_ip
+('tasks: ', {'task1': ['task2', 'task3'], 'task2': ['task4'], 'task3': ['task4'], 'task4': []})
+('task order', ['task1', 'task2', 'task3', 'task4'])
+('super tasks', [])
+('non tasks', [])
+No input TGFF file found!
+---------------------------------------------
+
+ Read task list from DAG file, Non-DAG info and global information 
+
+tasks:  {'task4': [], 'task3': ['task4'], 'task1': ['task2', 'task3'], 'task2': ['task4']}
+task order ['task1', 'task2', 'task3', 'task4']
+super tasks []
+---------------------------------------------
+
+ Create input HEFT file 
+
+No available profiling information
+---------------------------------------------
+
+ Step 1: Read task list from DAG file and global information 
+
+4
+[['node2', '10.97.176.208'], ['node3', '10.102.78.225'], ['node4', '10.105.210.91'], ['node5', '10.106.174.223']]
+10.102.75.53
+Num nodes :4
+{'10.105.210.91': 'node4', '10.102.78.225': 'node3', '10.97.176.208': 'node2', '10.106.174.223': 'node5'}
+['node2', 'node3', 'node4', 'node5']
+------------------------------------------------------------
+
+ Step 2: Read network profiler information : 
+
+------------------------------------------------------------
+
+ Step 3: Read execution Profiler Information : 
+
+[['node2', '10.97.176.208'], ['node3', '10.102.78.225'], ['node4', '10.105.210.91'], ['node5', '10.106.174.223']]
+Check Network Profiler IP: node2-10.97.176.208
+Database(MongoClient(host=['10.102.75.53:6200'], document_class=dict, tz_aware=False, connect=True), 'execution_profiler')
+Current number of updated execution profilers:
+5
+--- Check execution profiler ID : home
+--- Check execution profiler ID : node5
+--- Number of neighbors: 4
+--- Check execution profiler ID : node3
+--- Check execution profiler ID : node4
+Check Network Profiler IP: node3-10.102.78.225
+--- Check execution profiler ID : node2
+Execution information has already been provided
+--- Number of neighbors: 4
+Check Network Profiler IP: node4-10.105.210.91
+--- Number of neighbors: 4
+Check Network Profiler IP: node5-10.106.174.223
+--- Number of neighbors: 4
+Network information has already been provided
+['home', 'task1', '0', '0.096']
+['home', 'task2', '0', '0.088']
+['home', 'task3', '0', '0.088']
+['home', 'task4', '0', '0.656']
+['task1', 'task2', 'task3', 'task4']
+{'task4': 't0_3', 'task3': 't0_2', 'task1': 't0_0', 'task2': 't0_1'}
+{'task4': 3, 'task3': 2, 'task1': 0, 'task2': 1}
+{'task4': '0.656', 'task3': '0.088', 'task1': '0.096', 'task2': '0.088'}
+[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+	TASK task1	TYPE 0 
+
+	TASK task2	TYPE 1 
+
+	TASK task3	TYPE 2 
+
+	TASK task4	TYPE 3 
+
+task_names: ['task1', 'task2', 'task3', 'task4']
+==================
+Checking the written information
+4
+[<map object at 0x7f8112dff8d0>, <map object at 0x7f8112dff828>, <map object at 0x7f8112dff7f0>, <map object at 0x7f8112dff940>]
+[[0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 0, 1], [1, 1, 1, 0]]
+[[-1, 0, 0, -1], [-1, -1, -1, 0], [-1, -1, -1, 0], [-1, -1, -1, -1]]
+[[(0, 0, 0), (-6.563017361913563e-08, 0.006309643532939127, 131.76128247881414), (-1.658182831823789e-08, 0.0023513189045390927, 142.01472891765638), (-9.774433159973068e-08, 0.009370621849844328, 136.91400137721533)], [(-6.851175255857965e-07, 0.009823863399991726, 144.75869581611934), (0, 0, 0), (-1.1313540906582085e-06, 0.011006168683319047, 139.35758955232544), (2.6459516059578027e-09, 0.0011702233756222139, 140.94824391150624)], [(-5.115829040155315e-08, 0.0050674848792994, 142.01426505841593), (1.016348057723571e-09, 0.0009723891277018244, 134.20400533065308), (0, 0, 0), (-1.4469567585007061e-08, 0.0023403602588069547, 136.37185285042293)], [(1.521389695695191e-08, -0.000170911581222978, 143.30486457404427), (1.119747088567996e-09, 0.0007739554114369634, 148.42319566894523), (1.334228609201548e-07, 0.0026485256197516173, 140.27293780854475), (0, 0, 0)]]
+	TASK task1	TYPE 0 
+
+	TASK task2	TYPE 1 
+
+	TASK task3	TYPE 2 
+
+	TASK task4	TYPE 3 
+
+('task_names:', ['task1', 'task2', 'task3', 'task4'])
+==================
+(0, 1)
+(1, 1)
+(2, 1)
+(3, 1)
+(0, 2)
+(1, 2)
+(2, 2)
+(3, 2)
+(0, 3)
+(1, 3)
+(2, 3)
+(3, 3)
+Assign random master and slaves
+task 0 : up_rank = 280.057611, down_rank = 0.000000
+task 1 : up_rank = 140.028805, down_rank = 140.028805
+task 2 : up_rank = 140.028805, down_rank = 140.028805
+task 3 : up_rank = 0.000000, down_rank = 280.057611
+node2:
+task 1 : ast = 0, aft = 0
+task 2 : ast = 0, aft = 0
+task 3 : ast = 0, aft = 0
+task 4 : ast = 0, aft = 0
+node3:
+node4:
+node5:
+makespan = 0
+{'task1': 'node2', 'task2': 'node2', 'task3': 'node2', 'task4': 'node2'}
+ * Serving Flask app "master" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:8888/ (Press CTRL+C to quit)
+('Recieved request for current mapping. Current mappings done:', 4)
+{'task1': 'node2', 'task2': 'node2', 'task3': 'node2', 'task4': 'node2'}
+10.244.0.0 - - [27/Oct/2018 06:11:27] "GET / HTTP/1.1" 200 -

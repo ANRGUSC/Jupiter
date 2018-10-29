@@ -31,6 +31,7 @@ RUN mkdir -p /mongodb/log
 RUN mkdir -p /network_profiling
 
 ADD profilers/network_resource_profiler/home/central_mongod /network_profiling/central_mongod
+RUN chmod +x /network_profiling/central_mongod
 
 # Prepare network profiling code
 ADD profilers/network_resource_profiler/home/central_input /network_profiling/central_input
@@ -42,11 +43,19 @@ ADD scripts/keep_alive.py /network_profiling/keep_alive.py
 
 RUN mkdir -p /network_profiling/scheduling
 RUN mkdir -p /network_profiling/parameters
+RUN mkdir -p /network_profiling/generated_test
+RUN mkdir -p /network_profiling/received_test
 
 # Prepare resource profiling code
 RUN mkdir -p /resource_profiling
 ADD profilers/network_resource_profiler/home/resource_profiling_files/ /resource_profiling/
 
+
+# Prepare network profiling code
+ADD profilers/network_resource_profiler/worker/droplet_generate_random_files /network_profiling/droplet_generate_random_files
+ADD profilers/network_resource_profiler/worker/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
+RUN chmod +x /network_profiling/droplet_scp_time_transfer
+RUN chmod +x /network_profiling/droplet_generate_random_files
 
 # Running docker
 ADD profilers/network_resource_profiler/home/start.sh /network_profiling/start.sh
