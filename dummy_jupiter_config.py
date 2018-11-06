@@ -105,56 +105,56 @@ def set_globals():
 	global HOME_NODE, HOME_CHILD
 
 	HOME_NODE               = get_home_node(HERE + 'nodes.txt')
-	#HOME_CHILD              = 'task1'
-	HOME_CHILD              = 'localpro'
+	HOME_CHILD              = 'task1'
+	#HOME_CHILD              = 'localpro'
 
 	"""pricing CIRCE home and worker images"""
 	global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTING_IMAGE
 
-	PRICING_HOME_IMAGE 		= 'docker.io/anrg/%s_circe_home:coded' %(pricing_option)
-	WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:coded' %(pricing_option)
-	WORKER_COMPUTING_IMAGE  = 'docker.io/anrg/%s_circe_computing:coded' %(pricing_option)
+	PRICING_HOME_IMAGE 		= 'docker.io/anrg/%s_circe_home:mdummy' %(pricing_option)
+	WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:mdummy' %(pricing_option)
+	WORKER_COMPUTING_IMAGE  = 'docker.io/anrg/%s_circe_computing:mdummy' %(pricing_option)
 	
 	"""CIRCE home and worker images for execution profiler"""
 	global HOME_IMAGE, WORKER_IMAGE
 
-	HOME_IMAGE              = 'docker.io/anrg/circe_home:coded'
-	WORKER_IMAGE            = 'docker.io/anrg/circe_worker:coded'
+	HOME_IMAGE              = 'docker.io/anrg/circe_home:mdummy'
+	WORKER_IMAGE            = 'docker.io/anrg/circe_worker:mdummy'
 
 	"""DRUPE home and worker images"""
 	global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
 	
-	PROFILER_HOME_IMAGE     = 'docker.io/anrg/profiler_home:coded'
-	PROFILER_WORKER_IMAGE   = 'docker.io/anrg/profiler_worker:coded'
+	PROFILER_HOME_IMAGE     = 'docker.io/anrg/profiler_home:mdummy'
+	PROFILER_WORKER_IMAGE   = 'docker.io/anrg/profiler_worker:mdummy'
 
 	"""WAVE home and worker images"""
 	global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
 
-	#coded: random, v1: greedy
+	#mdummy: random, v1: greedy
 
-	WAVE_HOME_IMAGE         = 'docker.io/anrg/wave_home:coded'
-	WAVE_WORKER_IMAGE       = 'docker.io/anrg/wave_worker:coded'
+	WAVE_HOME_IMAGE         = 'docker.io/anrg/wave_home:mdummy'
+	WAVE_WORKER_IMAGE       = 'docker.io/anrg/wave_worker:mdummy'
 
 	"""Execution profiler home and worker images"""
 	global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-	EXEC_HOME_IMAGE         = 'docker.io/anrg/exec_home:coded'
-	EXEC_WORKER_IMAGE       = 'docker.io/anrg/exec_worker:coded'
+	EXEC_HOME_IMAGE         = 'docker.io/anrg/exec_home:mdummy'
+	EXEC_WORKER_IMAGE       = 'docker.io/anrg/exec_worker:mdummy'
 
 	"""HEFT docker image"""
 	global HEFT_IMAGE
 
-	HEFT_IMAGE              = 'docker.io/anrg/heft:coded'
+	HEFT_IMAGE              = 'docker.io/anrg/heft:mdummy'
 
 	"""Application Information"""
 	global APP_PATH, APP_NAME
 
-	APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app_dag/'
-	APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
+	# APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app_dag/'
+	# APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
 
-	# APP_PATH                = HERE  + 'app_specific_files/dummy_app/'
-	# APP_NAME                = 'app_specific_files/dummy_app'
+	APP_PATH                = HERE  + 'app_specific_files/dummy_app/'
+	APP_NAME                = 'app_specific_files/dummy_app'
 
 if __name__ == '__main__':
 	set_globals()

@@ -649,8 +649,7 @@ class Handler1(FileSystemEventHandler):
 
                 if flag == 'true':
                     for idx,ip in enumerate(next_IPs):
-                        #transfer_data(ip,username,password,event.src_path, destinations[idx])
-                        transfer_data(ip,'apac','apac20!7',event.src_path, destinations[idx])
+                        transfer_data(ip,username,password,event.src_path, destinations[idx])
                 else:
                     if key not in files_mul:
                         files_mul[key] = [event.src_path]
@@ -660,8 +659,8 @@ class Handler1(FileSystemEventHandler):
 
                     if len(files_mul[key]) == len(next_IPs):
                         for idx,ip in enumerate(next_IPs):
-                            transfer_data(ip,'apac','apac20!7',files_mul[key][idx], destinations[idx])
-                            #transfer_data(ip,username,password,files_mul[key][idx], destinations[idx])
+                            
+                            transfer_data(ip,username,password,files_mul[key][idx], destinations[idx])
             
 
 #for INPUT folder

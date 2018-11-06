@@ -140,13 +140,19 @@ def prepare_global_info():
     ip_controllers_map = dict(zip(task_controllers_ips, task_controllers))
 
 
-    global next_tasks_map
-    next_tasks_info = os.environ['ALL_NEXT_TASKS'].split('!')[:-1]
+    global dag
+
+    dag_file = '/centralized_scheduler/dag.txt'
+    dag_info = k8s_read_dag(dag_file)
+    dag = dag_info[1]
+
+    global next_tasks_map,last_tasks_map
     next_tasks_map = dict()
-    for idx,next_tasks in enumerate(next_tasks_info):
-        task = next_tasks.split(':')[0]
-        next_task = next_tasks.split(':')[1].split('#')
-        next_tasks_map[task] = next_task
+
+    
+    for task in dag:
+        next_tasks_map[task] = dag[task][2:]
+    next_tasks_map['home'] = os.environ['CHILD_NODES']
 
 
 
@@ -160,6 +166,7 @@ def prepare_global_info():
     next_mul = manager.dict() # information of next node (IP,username,pass) fo the current file
     files_mul = manager.dict()
     controllers_id_map = manager.dict()
+    controllers_id_map['home'] = 'home'
 
     global home_node_host_port, dag
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
@@ -256,6 +263,7 @@ def get_updated_network_from_source(node_ip):
     #print("--- Get updated network profile information from "+node_ip)   
     network_info = {}
     try:
+        print(node_ip)
         #print('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
         client_mongo = MongoClient('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
         db = client_mongo.droplet_network_profiler
@@ -270,13 +278,13 @@ def get_updated_network_from_source(node_ip):
             return network_info
         logging =db[node_ip].find().limit(num_nb)  
         for record in logging:
+            if record['Destination[IP]'] == profilers_ip_map['home']: continue
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
-            # info_to_csv=[ip_profilers_map[record['Source[IP]']],record['Source[IP]'],ip_profilers_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
-        return network_info
     except Exception as e:
         print("Network request failed. Will try again, details: " + str(e))
         return -1
+    return network_info
 
 def get_updated_network_profile(task_host_name):
     """Collect the network profile information from local MONGODB database
@@ -287,14 +295,14 @@ def get_updated_network_profile(task_host_name):
     Returns:
         list: network information
     """
-    print('----- Get updated network information:')
+    print('----- Get updated network information-----')
     to_net_info = get_updated_network_from_source(self_profiler_ip)
     task_profiler_ip = profilers_ip_map[controllers_id_map[task_host_name]] 
     print(task_profiler_ip)
-    controller_net_info = get_updated_network_from_source(task_profiler_ip)
-    print(controller_net_info)
+    from_net_info = get_updated_network_from_source(task_profiler_ip)
+    print(from_net_info)
     
-    return computing_net_info,controller_net_info
+    return from_net_info, to_net_info
 
 def get_updated_resource_profile():
     """Requesting resource profiler data using flask for its corresponding profiler node
@@ -354,7 +362,7 @@ def price_aggregate(task_name, next_task_name):
         print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        computing_net_info,controller_net_info = get_updated_network_profile(task_name)
+        from_net_info, to_net_info = get_updated_network_profile(task_name)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         test_output = execution_info[task_name][1]
         print('----- Calculating price:')
@@ -366,19 +374,18 @@ def price_aggregate(task_name, next_task_name):
         print(next_task_name)
         next_host_name = controllers_id_map[next_task_name]
         last_host_name = controllers_id_map[task_name]
-        print(next_host_name)
-        print(last_host_name)
-        print(controller_net_info.keys())
-        print(computing_net_info.keys())
-        if last_host_name == self_name or 'home':
-            controller_params  = [0]*3
+
+        controller_params  = [10000]*3 # out of range
+        computing_params   = [10000]*3 # out of range
+        if last_host_name == self_name:
+            from_net_params  = [0]*3
         if self_name == next_host_name:
-            computing_params   = [0]*3
-        if self_name in controller_net_info.keys():
-            controller_params = controller_net_info[self_name].split() 
+            to_net_params   = [0]*3
+        if self_name in from_net_info.keys():
+            controller_params = from_net_info[self_name].split() 
             controller_params = [float(x) for x in controller_params]
-        if next_host_name in computing_net_info.keys():  
-            computing_params = computing_net_info[next_host_name].split()
+        if next_host_name in to_net_info.keys():  
+            computing_params = to_net_info[next_host_name].split()
             computing_params = [float(x) for x in computing_params]
         try:
             price['network'] = (controller_params[0] * test_size * test_size) + \
@@ -552,6 +559,19 @@ def send_runtime_profile_computingnode(msg,task_name):
         return "not ok"
     return res
 
+def retrieve_input_name(task_name, file_name):
+    """Retrieve the corresponding input name based on the name conversion provided by the user and the output file name 
+    
+    Args:
+        task_name (str): task name
+        file_name (str): output file name
+    """
+    suffix = name_convert_map[task_name]
+    prefix = file_name.split(suffix)
+    print(prefix)
+    input_name = prefix[0]+name_convert_map['input']
+    print(input_name)
+    return input_name
 
 #for OUTPUT folder 
 class Watcher1():
@@ -612,33 +632,40 @@ class Handler1(FileSystemEventHandler):
             task_name = event.src_path.split('/')[-2]
             runtime_info = 'rt_finish '+ temp_name + ' '+str(ts)
             send_runtime_profile_computingnode(runtime_info,task_name)
-            task_ip = controllers_ip_map[task_name] 
-            key = (task_name,temp_name)
+            input_name = retrieve_input_name(task_name, temp_name)
+            key = (task_name,input_name)
+            print(key)
+            print(next_mul)
             flag = next_mul[key][0]
-            if flag == 'home':
-                next_IPs = next_mul[key][1]
-                next_users = next_mul[key][2]
-                next_passwords = next_mul[key][3]
-
+            print(next_tasks_map[task_name])
+            if next_tasks_map[task_name][0]=='home': 
+                transfer_data(home_ip,username,password,event.src_path, "/output/"+new_file)    
             else: 
-                next_IPs =  next_mul[key][1:][::3]
-                next_users = next_mul[key][2:][::3]
-                next_passwords = next_mul[key][3:][::3]
-            
-            if flag == 'home':
-                transfer_data(next_IPs,next_users,next_passwords,event.src_path, "/output/")    
-            elif flag == 'true':
-                for idx,ip in enumerate(next_IPs):
-                    transfer_data(ip,next_users[idx],next_passwords[idx],event.src_path, "/centralized_scheduler/input/")
-            else:
-                if key not in files_mul:
-                    files_mul[key] = [event.src_path]
-                else:
-                    files_mul[key] = files_mul[key] + [event.src_path]
+                print(next_tasks_map[task_name][0])
+                next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
+                next_IPs   = [computing_ip_map[x] for x in next_hosts]
+                destinations = ["/centralized_scheduler/input/" +new_file +"#"+x+"#"+dag_info[1][task_name][1] for x in next_tasks_map[task_name]]
+                print(next_hosts)
+                print(next_IPs)
+                print(destinations)
+                print(flag)
+                print(username)
+                print(password)
 
-                if len(files_mul[key]) == len(next_IPs):
+                if flag == 'true':
                     for idx,ip in enumerate(next_IPs):
-                        transfer_data(ip,next_users[idx],next_passwords[idx],files_mul[key][idx], "/centralized_scheduler/input/")
+                        transfer_data(ip,username,password,event.src_path, destinations[idx])
+                else:
+                    if key not in files_mul:
+                        files_mul[key] = [event.src_path]
+                    else:
+                        files_mul[key] = files_mul[key] + [event.src_path]
+                    print(files_mul)
+
+                    if len(files_mul[key]) == len(next_IPs):
+                        for idx,ip in enumerate(next_IPs):
+                            
+                            transfer_data(ip,username,password,files_mul[key][idx], destinations[idx])
             # copy to folder INPUT of next task
 
 #for INPUT folder
@@ -690,15 +717,16 @@ class Handler(FileSystemEventHandler):
             ts = time.time()
             
             task_name = new_file.split('#')[1]
-            task_ip = new_file.split('#')[2]
-            task_flag = new_file.split('#')[3]
-            next_info = new_file.split('#')[4:]
+            task_flag = new_file.split('#')[2]
+            next_info = new_file.split('#')[3:]
             runtime_info = 'rt_enter '+ file_name + ' '+str(ts)
             send_runtime_profile_computingnode(runtime_info,task_name)
 
-    
+            print('**************')
             key = (task_name,file_name)
             flag = dag[task_name][0] 
+            print(key)
+            print(flag)
 
             if key not in task_mul:
                 task_mul[key] = [new_file]
@@ -712,6 +740,11 @@ class Handler(FileSystemEventHandler):
                 task_mul[key] = task_mul[key] + [new_file]
                 count_mul[key]=count_mul[key]-1
                 size_mul[key] = size_mul[key] + cal_file_size(event.src_path)
+
+            print(task_mul)
+            print(count_mul)
+            print(size_mul)
+            print(next_mul)
 
             if count_mul[key] == 0: # enough input files
                 incoming_file = task_mul[key]
@@ -763,28 +796,42 @@ def main():
     prepare_global_info()
 
     # Prepare transfer-runtime file:
-    global runtime_sender_log, RUNTIME, TRANSFER, transfer_type
+    global RUNTIME, TRANSFER, transfer_type
     RUNTIME = int(config['CONFIG']['RUNTIME'])
     TRANSFER = int(config['CONFIG']['TRANSFER'])
 
     if TRANSFER == 0:
         transfer_type = 'scp'
 
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
-    s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
-    runtime_sender_log.write(s)
-    runtime_sender_log.close()
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
-    #Node_name, Transfer_Type, Source_path , Time_stamp
+    
 
     if RUNTIME == 1:
-        global runtime_receiver_log
+        global runtime_receiver_log, runtime_sender_log
+
+        runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
+        runtime_sender_log.write(s)
+        runtime_sender_log.close()
+        runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
+        #Node_name, Transfer_Type, Source_path , Time_stamp
+
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
         s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
         runtime_receiver_log.write(s)
         runtime_receiver_log.close()
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
+
+        global name_convert_map
+        name_convert_map = dict()
+        convert_name_file = '/centralized_scheduler/name_convert.txt'
+        with open(convert_name_file) as f:
+            lines = f.readlines()
+            for line in lines:
+                info = line.rstrip().split(' ')
+                name_convert_map[info[0]] = info[1]
+        print(name_convert_map)
+
 
     web_server = MonitorRecv()
     web_server.start()

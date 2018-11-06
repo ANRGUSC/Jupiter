@@ -176,6 +176,18 @@ def recv_runtime_profile():
     return "ok"
 app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
 
+def retrieve_input_name(task_name, file_name):
+    """Retrieve the corresponding input name based on the name conversion provided by the user and the output file name 
+    
+    Args:
+        task_name (str): task name
+        file_name (str): output file name
+    """
+    suffix = name_convert_map[task_name]
+    prefix = file_name.split(suffix)
+    input_name = prefix[0]+name_convert_map['input']
+    return input_name
+
 
 def recv_runtime_profile_computingnode():
     """
@@ -210,9 +222,13 @@ def recv_runtime_profile_computingnode():
             print("Worker node: "+ worker_node)
             print("Input file : "+ msg[1])
             print("Task name: " + task_name)
-            print("Total duration time:" + str(rt_finish_time_computingnode[(worker_node,task_name, msg[1])] - rt_enter_time_computingnode[(worker_node,task_name, msg[1])]))
-            print("Waiting time:" + str(rt_exec_time_computingnode[(worker_node,task_name,msg[1])] - rt_enter_time_computingnode[(worker_node,task_name,msg[1])]))
-            print(worker_node + " execution time:" + str(rt_finish_time_computingnode[(worker_node,task_name,msg[1])] - rt_exec_time_computingnode[(worker_node,task_name,msg[1])]))
+            print(rt_finish_time_computingnode)
+            print(rt_enter_time_computingnode)
+            print(rt_exec_time_computingnode)
+            input_name = retrieve_input_name(task_name, msg[1])
+            print("Total duration time:" + str(rt_finish_time_computingnode[(worker_node,task_name, input_name)] - rt_enter_time_computingnode[(worker_node,task_name, input_name)]))
+            print("Waiting time:" + str(rt_exec_time_computingnode[(worker_node,task_name,input_name)] - rt_enter_time_computingnode[(worker_node,task_name,input_name)]))
+            print(worker_node + " execution time:" + str(rt_finish_time_computingnode[(worker_node,task_name,input_name)] - rt_exec_time_computingnode[(worker_node,task_name,input_name)]))
             
             print('----------------------------')  
 
@@ -255,6 +271,7 @@ def recv_runtime_profile_computingnode():
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_runtime_profile_computingnode', 'recv_runtime_profile_computingnode', recv_runtime_profile_computingnode)
+
 
 def transfer_data_scp(IP,user,pword,source, destination):
     """Transfer data using SCP
@@ -453,28 +470,40 @@ def main():
     config.read(INI_PATH)
 
     # Prepare transfer-runtime file:
-    global runtime_sender_log, RUNTIME,TRANSFER, transfer_type
+    global RUNTIME,TRANSFER, transfer_type
     RUNTIME = int(config['CONFIG']['RUNTIME'])
     TRANSFER = int(config['CONFIG']['TRANSFER'])
 
     if TRANSFER == 0:
         transfer_type = 'scp'
 
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
-    s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
-    runtime_sender_log.write(s)
-    runtime_sender_log.close()
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
-    #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    if RUNTIME == 1:
-        global runtime_receiver_log
+    if RUNTIME == 1: #Use runtime profiling information
+        global runtime_receiver_log, runtime_sender_log
+
+        runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
+        runtime_sender_log.write(s)
+        runtime_sender_log.close()
+        runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
+        #Node_name, Transfer_Type, Source_path , Time_stamp
+
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
         s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
         runtime_receiver_log.write(s)
         runtime_receiver_log.close()
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
+
+        global name_convert_map
+        name_convert_map = dict()
+        convert_name_file = '/centralized_scheduler/name_convert.txt'
+        with open(convert_name_file) as f:
+            lines = f.readlines()
+            for line in lines:
+                info = line.rstrip().split(' ')
+                name_convert_map[info[0]] = info[1]
+        print(name_convert_map)
 
     global FLASK_DOCKER, username, password, ssh_port, num_retries
 
@@ -484,7 +513,6 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 
-
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
     dag_info = read_config(path1,path2)
@@ -493,10 +521,21 @@ def main():
     first_task = dag_info[0]
     dag = dag_info[1]
     hosts=dag_info[2]
-
     print("TASK1: ", dag_info[0])
     print("DAG: ", dag_info[1])
     print("HOSTS: ", dag_info[2])
+
+    global all_computing_nodes,all_computing_ips, controller_id_map
+    all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
+    all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
+
+
+    
+
+
+    
+
+    
 
     #monitor INPUT folder for the incoming files
     w = Watcher()

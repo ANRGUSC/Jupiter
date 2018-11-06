@@ -44,7 +44,7 @@ ADD app_specific_files/dummy_app/configuration.txt  /centralized_scheduler/dag.t
 ADD app_specific_files/dummy_app/scripts/config.json /centralized_scheduler/config.json
 ADD app_specific_files/dummy_app/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
 
-ADD circe/pricing_separate/pricing_calculator.py /centralized_scheduler/pricing_calculator.py
+ADD circe/pricing_separate/compute.py /centralized_scheduler/compute.py
 
 RUN chmod +x /start.sh
 

@@ -115,15 +115,16 @@ def transfer_mapping_decorator(TRANSFER=0):
                 os.system(cmd)
                 print('data transfer complete\n')
                 ts = time.time()
-                s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
-                runtime_sender_log.write(s)
-                runtime_sender_log.flush()
+                if RUNTIME == 1:
+                    s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
+                    runtime_sender_log.write(s)
+                    runtime_sender_log.flush()
                 break
             except:
                 print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
                 time.sleep(2)
                 retry += 1
-        if retry == num_retries:
+        if retry == num_retries and RUNTIME==1:
             s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
@@ -158,6 +159,8 @@ def default_best_node():
     cost_list = dict()
     for item in task_price_summary.keys():
         cost_list[item] = task_price_summary[item][0]*w_net +  task_price_summary[item][1]*w_cpu + task_price_summary[item][2]*w_mem + task_price_summary[item][3]*w_queue
+    print('****')
+    print(task_price_summary)
     print(cost_list)
     best_node = min(cost_list,key=cost_list.get)
     task_node_summary['current_best_node'] = best_node
@@ -351,30 +354,49 @@ class Handler(FileSystemEventHandler):
                 sum_input_size = sum(input_size)
                 best_node = task_node_summary['current_best_node']
                 
-                destination_list = [(s+"#"+taskname+"#"+self_ip) for s in source_list]
+                temp_list = [(s+"#"+taskname) for s in source_list]
                 flag2 = sys.argv[2]
                 
+                print(source_list)
+                print(temp_list)
+                print(sys.argv[3:])
+                destination_list = []
                 if sys.argv[3] == 'home':
-                    destination_list = [dest+"#home#"+sys.argv[4]+"#"+sys.argv[5]+"#"+sys.argv[6] for dest in destination_list]
-                elif flag2 == 'true':
-                    destination_list = [dest+"#"+ flag2 for dest in destination_list]
-                    for i in range(3, len(sys.argv)-1,4):
-                        destination_list = [dest+"#"+sys.argv[i+1]+"#"+sys.argv[i+2]+"#"+sys.argv[i+3] for dest in destination_list]
-                    
+                    print('home')
+                    destination_list = [dest+"#home" for dest in destination_list]
                 else: 
-                    destination_list = [dest+"#"+ flag2 for dest in destination_list]
                     j = 0
                     for i in range(3, len(sys.argv)-1,4):
-                        destination_list[j] = destination_list[j]+"#"+sys.argv[i+1]+"#"+sys.argv[i+2]+"#"+sys.argv[i+3]
-                        j = j +1
+                        for k in range(0,len(temp_list)):
+                            temp  = temp_list[k]+"#"+ flag2 + "#" +  sys.argv[i] + "#"+sys.argv[i+1] 
+                            destination_list.append(temp)
+                    
+                # elif flag2 == 'true':
+                #     print('true')
+                #     for i in range(3, len(sys.argv)-1,4):
+                #         for k in range(0,len(temp_list)):
+                #             destination_list = temp_list[k]+"#"+ flag2+"#"+sys.argv[i+1]
+                    
+                # else: 
+                #     print('false')
+                #     j = 0
+                #     for i in range(3, len(sys.argv)-1,4):
+                #         for k in range(0,len(temp_list)):
+                #             destination_list[j] = temp_list[k]+"#"+ flag2+"#"+sys.argv[i+1]
+                #             j = j +1
+
+                print(temp_list)
+                print(destination_list)
                 ts = time.time()
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                 
                 send_runtime_profile(runtime_info,taskname)
                 
                 
-                for idx,source in enumerate(source_list):
-                    transfer_data(node_ip_map[best_node],username,password,source, destination_list[idx])
+                for idx, dest in enumerate(destination_list):
+                    print(dest)
+                    source = dest.split("#")[0]
+                    transfer_data(node_ip_map[best_node],username,password,source, dest)
 
                 
                 
@@ -397,22 +419,25 @@ def main():
     config.read(INI_PATH)
 
     # Prepare transfer-runtime file:
-    global runtime_sender_log, RUNTIME, TRANSFER, transfer_type
+    global RUNTIME, TRANSFER, transfer_type
     RUNTIME = int(config['CONFIG']['RUNTIME'])
     TRANSFER = int(config['CONFIG']['TRANSFER'])
 
     if TRANSFER == 0:
         transfer_type = 'scp'
 
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
-    s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
-    runtime_sender_log.write(s)
-    runtime_sender_log.close()
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
-    #Node_name, Transfer_Type, Source_path , Time_stamp
+    
 
     if RUNTIME == 1:
-        global runtime_receiver_log
+        global runtime_receiver_log,runtime_sender_log
+
+        runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
+        runtime_sender_log.write(s)
+        runtime_sender_log.close()
+        runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
+        #Node_name, Transfer_Type, Source_path , Time_stamp
+
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
         s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
         runtime_receiver_log.write(s)
@@ -466,7 +491,7 @@ def main():
     num_computing_nodes = len(all_computing_nodes)
     node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
 
-    update_interval = 3 
+    update_interval = 5 
 
     _thread.start_new_thread(send_controller_map,())
     _thread.start_new_thread(schedule_update_price,(update_interval,))

@@ -41,7 +41,7 @@ ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py
 
 #ADD circe/pricing_separate/monitor.py /centralized_scheduler/monitor.py
-ADD circe/pricing_separate/start_worker.sh /start.sh
+ADD circe/pricing_separate/start_controller_worker.sh /start.sh
 
 ADD circe/pricing_separate/monitor.py /centralized_scheduler/monitor.py
 

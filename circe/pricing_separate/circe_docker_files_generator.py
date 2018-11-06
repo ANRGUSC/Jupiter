@@ -58,6 +58,7 @@ ADD circe/{pricing_option}/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
 ADD {app_file}/configuration.txt /configuration.txt
+ADD {app_file}/name_convert.txt /centralized_scheduler/name_convert.txt
 
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
@@ -188,6 +189,7 @@ ADD scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD {app_file}/configuration.txt  /centralized_scheduler/dag.txt
 ADD {app_file}/scripts/config.json /centralized_scheduler/config.json
 ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD {app_file}/name_convert.txt /centralized_scheduler/name_convert.txt
 
 ADD circe/{pricing_option}/compute.py /centralized_scheduler/compute.py
 
