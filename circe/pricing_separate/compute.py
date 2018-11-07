@@ -634,39 +634,39 @@ class Handler1(FileSystemEventHandler):
             send_runtime_profile_computingnode(runtime_info,task_name)
             input_name = retrieve_input_name(task_name, temp_name)
             key = (task_name,input_name)
-            print(key)
-            print(next_mul)
+            
             flag = next_mul[key][0]
-            print(next_tasks_map[task_name])
-            if next_tasks_map[task_name][0]=='home': 
-                transfer_data(home_ip,username,password,event.src_path, "/output/"+new_file)    
-            else: 
-                print(next_tasks_map[task_name][0])
-                next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
-                next_IPs   = [computing_ip_map[x] for x in next_hosts]
-                destinations = ["/centralized_scheduler/input/" +new_file +"#"+x+"#"+dag_info[1][task_name][1] for x in next_tasks_map[task_name]]
-                print(next_hosts)
-                print(next_IPs)
-                print(destinations)
-                print(flag)
-                print(username)
-                print(password)
+            
+            print(next_mul[key])
 
-                if flag == 'true':
-                    for idx,ip in enumerate(next_IPs):
-                        transfer_data(ip,username,password,event.src_path, destinations[idx])
-                else:
-                    if key not in files_mul:
-                        files_mul[key] = [event.src_path]
-                    else:
-                        files_mul[key] = files_mul[key] + [event.src_path]
-                    print(files_mul)
+            # if next_tasks_map[task_name][0]=='home': 
+            #     transfer_data(home_ip,username,password,event.src_path, "/output/"+new_file)    
+            # elif flag == 'true': 
+            #     next_IPs   = next_mul[key][2::2]
+            #     print(next_IPs)
+            #     for next_IP in next_IPs:
+            #         transfer_data(next_IP,username,password,event.src_path, "/centralized_scheduler/input/"+new_file)    
+            # else:    
+            # destinations = ["/centralized_scheduler/input/" +new_file +"#"+x+"#"+dag_info[1][task_name][1] for x in next_tasks_map[task_name]]
+                # print(next_hosts)
+                # print(next_IPs)
+                # print(destinations)
 
-                    if len(files_mul[key]) == len(next_IPs):
-                        for idx,ip in enumerate(next_IPs):
+            #     if flag == 'true':
+            #         for idx,ip in enumerate(next_IPs):
+            #             transfer_data(ip,username,password,event.src_path, destinations[idx])
+            #     else:
+            #         if key not in files_mul:
+            #             files_mul[key] = [event.src_path]
+            #         else:
+            #             files_mul[key] = files_mul[key] + [event.src_path]
+            #         print(files_mul)
+
+            #         if len(files_mul[key]) == len(next_IPs):
+            #             for idx,ip in enumerate(next_IPs):
                             
-                            transfer_data(ip,username,password,files_mul[key][idx], destinations[idx])
-            # copy to folder INPUT of next task
+            #                 transfer_data(ip,username,password,files_mul[key][idx], destinations[idx])
+            
 
 #for INPUT folder
 class Watcher(multiprocessing.Process):
@@ -724,6 +724,7 @@ class Handler(FileSystemEventHandler):
 
             print('**************')
             key = (task_name,file_name)
+            print(dag[task_name])
             flag = dag[task_name][0] 
             print(key)
             print(flag)

@@ -363,13 +363,18 @@ class Handler(FileSystemEventHandler):
                 destination_list = []
                 if sys.argv[3] == 'home':
                     print('home')
-                    destination_list = [dest+"#home" for dest in destination_list]
-                else: 
+                    destination_list = [dest+"#home#"+ home_ip for dest in destination_list]
+                elif flag2 == 'true': 
                     j = 0
-                    for i in range(3, len(sys.argv)-1,4):
-                        for k in range(0,len(temp_list)):
-                            temp  = temp_list[k]+"#"+ flag2 + "#" +  sys.argv[i] + "#"+sys.argv[i+1] 
-                            destination_list.append(temp)
+                    for k in range(0,len(temp_list)):
+                        for i in range(3, len(sys.argv)-1,4):
+                            temp  = temp_list[k]+"#"+ flag2 + "#" +  sys.argv[i] + "#"+sys.argv[i+1]     
+
+                    # j = 0
+                    # for i in range(3, len(sys.argv)-1,4):
+                    #     for k in range(0,len(temp_list)):
+                    #         temp  = temp_list[k]+"#"+ flag2 + "#" +  sys.argv[i] + "#"+sys.argv[i+1] 
+                    #         destination_list.append(temp)
                     
                 # elif flag2 == 'true':
                 #     print('true')
@@ -464,7 +469,7 @@ def main():
 
 
 
-    global taskmap, taskname, taskmodule, filenames,files_out, home_node_host_port
+    global taskmap, taskname, taskmodule, filenames,files_out, home_ip, home_node_host_port
     global all_nodes, all_nodes_ips, self_id, self_name
     global all_computing_nodes,all_computing_ips, num_computing_nodes, node_ip_map, controller_id_map
 
@@ -484,7 +489,8 @@ def main():
     self_task= os.environ['TASK']
     controller_id_map = self_task + ":" + self_id
     #update_interval = 10 #minutes
-    home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
+    home_ip =  os.environ['HOME_NODE']
+    home_node_host_port = home_ip+ ":" + str(FLASK_SVC)
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")

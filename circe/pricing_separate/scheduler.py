@@ -206,16 +206,17 @@ def recv_runtime_profile_computingnode():
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg').split()
         task_name = request.args.get('task_name')
+        input_name = retrieve_input_name(task_name, msg[1])
         
 
         print("Received flask message:", worker_node, msg[0],msg[1], msg[2],task_name)
 
         if msg[0] == 'rt_enter':
-            rt_enter_time_computingnode[(worker_node,task_name,msg[1])] = float(msg[2])
+            rt_enter_time_computingnode[(worker_node,task_name,input_name)] = float(msg[2])
         elif msg[0] == 'rt_exec' :
-            rt_exec_time_computingnode[(worker_node,task_name,msg[1])] = float(msg[2])
+            rt_exec_time_computingnode[(worker_node,task_name,input_name)] = float(msg[2])
         else: #rt_finish
-            rt_finish_time_computingnode[(worker_node,task_name,msg[1])] = float(msg[2])
+            rt_finish_time_computingnode[(worker_node,task_name,input_name)] = float(msg[2])
 
             print('----------------------------')
             print('Runtime info at each computing node')
@@ -225,7 +226,6 @@ def recv_runtime_profile_computingnode():
             print(rt_finish_time_computingnode)
             print(rt_enter_time_computingnode)
             print(rt_exec_time_computingnode)
-            input_name = retrieve_input_name(task_name, msg[1])
             print("Total duration time:" + str(rt_finish_time_computingnode[(worker_node,task_name, input_name)] - rt_enter_time_computingnode[(worker_node,task_name, input_name)]))
             print("Waiting time:" + str(rt_exec_time_computingnode[(worker_node,task_name,input_name)] - rt_enter_time_computingnode[(worker_node,task_name,input_name)]))
             print(worker_node + " execution time:" + str(rt_finish_time_computingnode[(worker_node,task_name,input_name)] - rt_exec_time_computingnode[(worker_node,task_name,input_name)]))
