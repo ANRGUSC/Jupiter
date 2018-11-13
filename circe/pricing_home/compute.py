@@ -144,15 +144,17 @@ def prepare_global_info():
     controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
     computing_ip_map = dict(zip(computing_nodes, computing_ips))
 
-    global name_convert_map
+    global name_convert_out, name_convert_in
     name_convert_map = dict()
     convert_name_file = '/centralized_scheduler/name_convert.txt'
     with open(convert_name_file) as f:
         lines = f.readlines()
         for line in lines:
             info = line.rstrip().split(' ')
-            name_convert_map[info[0]] = info[1]
-    print(name_convert_map)
+            name_convert_out[info[0]] = info[1]
+            name_convert_in[info[0]] = info[2:]
+    print(name_convert_out)
+    print(name_convert_in)
 
     global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map, task_node_map
 
@@ -590,17 +592,37 @@ def send_runtime_profile_computingnode(msg,task_name):
         return "not ok"
     return res
 
-def retrieve_input_name(task_name, file_name):
+def retrieve_input_enter_name(task_name, file_name):
     """Retrieve the corresponding input name based on the name conversion provided by the user and the output file name 
     
     Args:
         task_name (str): task name
-        file_name (str): output file name
+        file_name (str): name of the file enter at the INPUT folder
     """
-    suffix = name_convert_map[task_name]
+    suffix = name_convert_in[task_name]
     prefix = file_name.split(suffix)
+    print('$$$$$$')
+    print(file_name)
+    print(suffix)
     print(prefix)
-    input_name = prefix[0]+name_convert_map['input']
+    input_name = prefix[0]+name_convert_int['input']
+    print(input_name)
+    return input_name
+
+def retrieve_input_finish_name(task_name, file_name):
+    """Retrieve the corresponding input name based on the name conversion provided by the user and the output file name 
+    
+    Args:
+        task_name (str): task name
+        file_name (str): name of the file output at the OUTPUT folder
+    """
+    suffix = name_convert_out[task_name]
+    prefix = file_name.split(suffix)
+    print('$$$$$$')
+    print(file_name)
+    print(suffix)
+    print(prefix)
+    input_name = prefix[0]+name_convert_out['input']
     print(input_name)
     return input_name
 
@@ -663,6 +685,7 @@ class Handler1(FileSystemEventHandler):
             task_name = event.src_path.split('/')[-2]
             input_name = retrieve_input_name(task_name, temp_name)
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
+            print(input_name)
             send_runtime_profile_computingnode(runtime_info,task_name)
             key = (task_name,input_name)
             print('#############')
@@ -762,7 +785,8 @@ class Handler(FileSystemEventHandler):
             
             task_name = new_file.split('#')[1]
             task_flag = new_file.split('#')[2]
-            runtime_info = 'rt_enter '+ file_name + ' '+str(ts)
+            input_name = retrieve_input_name(task_name, file_name)
+            runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
             send_runtime_profile_computingnode(runtime_info,task_name)
 
     
