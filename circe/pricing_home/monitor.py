@@ -133,12 +133,16 @@ def send_controller_info(node_ip):
             print(controller_id_map)
             params = parse.urlencode(params)
             req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+            print(req)
             res = urllib.request.urlopen(req)
+            print(res)
             res = res.read()
             res = res.decode('utf-8')
+            print(res)
             break
         except Exception as e:
             print("Sending controller message to flask server on computing node FAILED!!!")
+            print(e)
             time.sleep(2)
             retry += 1
             return "not ok"

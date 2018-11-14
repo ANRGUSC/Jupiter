@@ -145,14 +145,16 @@ def prepare_global_info():
     computing_ip_map = dict(zip(computing_nodes, computing_ips))
 
     global name_convert_out, name_convert_in
-    name_convert_map = dict()
+    name_convert_in = dict()
+    name_convert_out = dict()
     convert_name_file = '/centralized_scheduler/name_convert.txt'
     with open(convert_name_file) as f:
         lines = f.readlines()
         for line in lines:
             info = line.rstrip().split(' ')
             name_convert_out[info[0]] = info[1]
-            name_convert_in[info[0]] = info[2:]
+            name_convert_in[info[0]] = info[2]
+    print('@@@@@@@@@@@@@@@@@@@@@@@@')
     print(name_convert_out)
     print(name_convert_in)
 
@@ -203,7 +205,8 @@ def update_controller_map():
     """
     try:
         info = request.args.get('controller_id_map').split(':')
-        print("--- Received matching info")
+        print("--- Received controller info")
+        print(info)
         #Task, Node
         controllers_id_map[info[0]] = info[1]
 
@@ -221,6 +224,7 @@ def receive_assignment_info():
     try:
         assignment_info = request.args.get('assignment_info').split('#')
         print("Received assignment info")
+        print(assignment_info)
         task_node_map[assignment_info[0]] = assignment_info[1]
 
     except Exception as e:
@@ -392,15 +396,22 @@ def price_aggregate(task_name, next_task_name):
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
         from_net_info, to_net_info = get_updated_network_profile(task_name)
+        print(from_net_info)
+        print(to_net_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         test_output = execution_info[task_name][1]
+        print(test_size)
+        print(test_output)
         print('----- Calculating price:')
         print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
         print('--- Network cost: ')
+        print(task_node_map)
         next_host_name = task_node_map[next_task_name]
         last_host_name = task_node_map[task_name]
+        print(next_host_name)
+        print(last_host_name)
         controller_params  = [10000]*3 # out of range
         computing_params   = [10000]*3 # out of range
         if last_host_name == self_name:
@@ -592,7 +603,7 @@ def send_runtime_profile_computingnode(msg,task_name):
         return "not ok"
     return res
 
-def retrieve_input_enter_name(task_name, file_name):
+def retrieve_input_enter(task_name, file_name):
     """Retrieve the corresponding input name based on the name conversion provided by the user and the output file name 
     
     Args:
@@ -600,16 +611,18 @@ def retrieve_input_enter_name(task_name, file_name):
         file_name (str): name of the file enter at the INPUT folder
     """
     suffix = name_convert_in[task_name]
+    print(suffix)
+    print(type(suffix))
     prefix = file_name.split(suffix)
     print('$$$$$$')
     print(file_name)
     print(suffix)
     print(prefix)
-    input_name = prefix[0]+name_convert_int['input']
+    input_name = prefix[0]+name_convert_in['input']
     print(input_name)
     return input_name
 
-def retrieve_input_finish_name(task_name, file_name):
+def retrieve_input_finish(task_name, file_name):
     """Retrieve the corresponding input name based on the name conversion provided by the user and the output file name 
     
     Args:
@@ -622,7 +635,7 @@ def retrieve_input_finish_name(task_name, file_name):
     print(file_name)
     print(suffix)
     print(prefix)
-    input_name = prefix[0]+name_convert_out['input']
+    input_name = prefix[0]+name_convert_in['input']
     print(input_name)
     return input_name
 
@@ -683,7 +696,7 @@ class Handler1(FileSystemEventHandler):
                 runtime_receiver_log.flush()
 
             task_name = event.src_path.split('/')[-2]
-            input_name = retrieve_input_name(task_name, temp_name)
+            input_name = retrieve_input_finish(task_name, temp_name)
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
             print(input_name)
             send_runtime_profile_computingnode(runtime_info,task_name)
@@ -785,12 +798,13 @@ class Handler(FileSystemEventHandler):
             
             task_name = new_file.split('#')[1]
             task_flag = new_file.split('#')[2]
-            input_name = retrieve_input_name(task_name, file_name)
+            input_name = retrieve_input_enter(task_name, file_name)
             runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
+            key = (task_name,input_name)
             send_runtime_profile_computingnode(runtime_info,task_name)
 
     
-            key = (task_name,file_name)
+            
             flag = dag[task_name][0] 
 
             if key not in task_mul:
@@ -816,6 +830,11 @@ class Handler(FileSystemEventHandler):
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
                 output_path = os.path.join(output_path,task_name)
+                print('!!!!!!!!!')
+                print(file_name)
+                print(filenames)
+                input_name = retrieve_input_enter(file_name)
+                print(input_name)
                 execute_task(task_name,file_name, filenames, input_path, output_path)
                 queue_mul[key] = True
                 
