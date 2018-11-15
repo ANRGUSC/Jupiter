@@ -30,25 +30,21 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 RUN mkdir -p /centralized_scheduler/input
 RUN mkdir -p /centralized_scheduler/output
+RUN mkdir -p /centralized_scheduler/sample_input
 RUN mkdir -p /home/darpa/apps/data
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
 ADD app_specific_files/network_monitoring_app_dag/scripts/ /centralized_scheduler/
+ADD app_specific_files/network_monitoring_app_dag/sample_input/ /centralized_scheduler/sample_input/
 
 ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py
 
-ADD circe/pricing_home/start_computing_worker.sh /start.sh
-ADD scripts/keep_alive.py /centralized_scheduler/keep_alive.py
-ADD app_specific_files/network_monitoring_app_dag/configuration.txt  /centralized_scheduler/dag.txt
-ADD app_specific_files/network_monitoring_app_dag/scripts/config.json /centralized_scheduler/config.json
-ADD app_specific_files/network_monitoring_app_dag/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
-ADD nodes.txt /centralized_scheduler/nodes.txt
+#ADD circe/pricing_home/monitor.py /centralized_scheduler/monitor.py
+ADD circe/pricing_home/start_controller_worker.sh /start.sh
 
-ADD circe/pricing_home/compute.py /centralized_scheduler/compute.py
-ADD circe/pricing_home/readconfig.py /readconfig.py
-ADD app_specific_files/network_monitoring_app_dag/name_convert.txt /centralized_scheduler/name_convert.txt
-ADD app_specific_files/network_monitoring_app_dag/input_home.txt /input_home.txt
+ADD circe/pricing_home/monitor.py /centralized_scheduler/monitor.py
+
 
 RUN chmod +x /start.sh
 

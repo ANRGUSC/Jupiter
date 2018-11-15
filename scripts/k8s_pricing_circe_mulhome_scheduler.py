@@ -125,8 +125,7 @@ def check_status_circe_computing(app_name):
 
     return result
 
-# if __name__ == '__main__':
-def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ips,app_name):
+def k8s_pricing_circe_mulhome_scheduler(dag_info , temp_info, profiler_ips, execution_ips,app_name, home_list_file):
     """
         This script deploys CIRCE in the system. 
     """
@@ -145,6 +144,12 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         You should set the config file path in the jupiter_config.py file.
     """
     config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+
+
+    """
+        This loads the information of home location nodes
+    """
+
     
     """
         We have defined the namespace for deployments in jupiter_config

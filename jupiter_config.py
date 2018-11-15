@@ -85,7 +85,9 @@ def set_globals():
 		pricing_option 		= 'pricing_separate'
 	if PRICING == 3:#decoupled
 		pricing_option 		= 'pricing_decouple'
-	if PRICING == 4:#multiple home
+	if PRICING == 4:#decoupled
+		pricing_option 		= 'pricing_decouple_coded'
+	if PRICING == 5:#multiple home
 		pricing_option 		= 'pricing_home'
 	CIRCE_PATH          	= HERE + 'circe/%s/'%(pricing_option)
 	if PRICING == 0: #non-pricing

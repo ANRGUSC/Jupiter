@@ -58,7 +58,6 @@ ADD circe/{pricing_option}/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
 ADD {app_file}/configuration.txt /configuration.txt
-ADD {app_file}/input_home.txt /input_home.txt
 
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
@@ -121,7 +120,6 @@ RUN mkdir -p /home/darpa/apps/data
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
 ADD {app_file}/scripts/ /centralized_scheduler/
 ADD {app_file}/sample_input/ /centralized_scheduler/sample_input/
-ADD {app_file}/input_home.txt /input_home.txt
 
 ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py
@@ -197,7 +195,6 @@ ADD nodes.txt /centralized_scheduler/nodes.txt
 ADD circe/{pricing_option}/compute.py /centralized_scheduler/compute.py
 ADD circe/{pricing_option}/readconfig.py /readconfig.py
 ADD {app_file}/name_convert.txt /centralized_scheduler/name_convert.txt
-ADD {app_file}/input_home.txt /input_home.txt
 
 RUN chmod +x /start.sh
 
