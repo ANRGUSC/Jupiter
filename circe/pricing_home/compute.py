@@ -415,20 +415,28 @@ def price_aggregate(task_name, next_task_name):
         controller_params  = [10000]*3 # out of range
         computing_params   = [10000]*3 # out of range
         if last_host_name == self_name:
-            from_net_params  = [0]*3
+            controller_params  = [0]*3
         if self_name == next_host_name:
-            to_net_params   = [0]*3
+            computing_params   = [0]*3
+
         if self_name in from_net_info.keys():
             controller_params = from_net_info[self_name].split() 
             controller_params = [float(x) for x in controller_params]
         if next_host_name in to_net_info.keys():  
             computing_params = to_net_info[next_host_name].split()
             computing_params = [float(x) for x in computing_params]
-            print(from_net_info)
-            print(to_net_info)
-            print(computing_params)
-            print(test_size)
-            print(test_output)
+        print('#######')
+        print(self_name)
+        print(next_host_name)
+        print(last_host_name)
+        print(from_net_info.keys())
+        print(to_net_info.keys())
+        print(controller_params)
+        print(computing_params)
+        print(from_net_info)
+        print(to_net_info)
+        print(test_size)
+        print(test_output)
         try:
             price['network'] = (controller_params[0] * test_size * test_size) + \
                            (controller_params[1] * test_size) + \
@@ -713,21 +721,27 @@ class Handler1(FileSystemEventHandler):
             else: 
                 next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
                 next_IPs   = [computing_ip_map[x] for x in next_hosts]
-                destinations = ["/centralized_scheduler/input/" +new_file +"#"+x+"#"+dag_info[1][task_name][1] for x in next_tasks_map[task_name]]
+
                 
-                print('***********')
+                
+                print('**************')
                 print(next_hosts)
                 print(next_IPs)
-                print(destinations)
+                print(next_tasks_map[task_name])
                 print(flag)
-                print(computing_ip_map)
 
                 if flag == 'true':
+                    destinations = ["/centralized_scheduler/input/" +new_file +"#"+x for x in next_tasks_map[task_name]]
                     for idx,ip in enumerate(next_IPs):
                         print('----')
                         print(ip)
                         print(destinations[idx])
-                        transfer_data(ip,username,password,event.src_path, destinations[idx])
+                        if self_ip!=ip:
+                            transfer_data(ip,username,password,event.src_path, destinations[idx])
+                        else:
+                            cmd = "cp %s %s"%(event.src_path,destinations[idx])
+                            print(cmd)
+                            os.system(cmd)
                 else:
                     if key not in files_mul:
                         files_mul[key] = [event.src_path]
@@ -740,10 +754,16 @@ class Handler1(FileSystemEventHandler):
                     print(self_ip)
                     if len(files_mul[key]) == len(next_IPs):
                         for idx,ip in enumerate(next_IPs):
+                            print(files_mul[key][idx])
+                            print(next_tasks_map[task_name][idx])
+                            current_file = files_mul[key][idx].split('/')[-1]
+                            print(current_file)
+                            destinations = "/centralized_scheduler/input/" +current_file +"#"+next_tasks_map[task_name][idx]
+                            print(destinations)
                             if self_ip!=ip:
-                                transfer_data(ip,username,password,files_mul[key][idx], destinations[idx])
+                                transfer_data(ip,username,password,files_mul[key][idx], destinations)
                             else: 
-                                cmd = "cp %s %s"%(files_mul[key][idx],destinations[idx])
+                                cmd = "cp %s %s"%(files_mul[key][idx],destinations)
                                 print(cmd)
                                 os.system(cmd)
             
@@ -797,7 +817,6 @@ class Handler(FileSystemEventHandler):
             ts = time.time()
             
             task_name = new_file.split('#')[1]
-            task_flag = new_file.split('#')[2]
             input_name = retrieve_input_enter(task_name, file_name)
             runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
             key = (task_name,input_name)
@@ -806,6 +825,10 @@ class Handler(FileSystemEventHandler):
     
             
             flag = dag[task_name][0] 
+            task_flag = dag[task_name][1] 
+            print('&&&&&&&&&&&&&&&&&&&&')
+            print(dag[task_name])
+            print(flag)
 
             if key not in task_mul:
                 task_mul[key] = [new_file]
@@ -831,11 +854,9 @@ class Handler(FileSystemEventHandler):
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
                 output_path = os.path.join(output_path,task_name)
                 print('!!!!!!!!!')
-                print(file_name)
-                print(filenames)
-                input_name = retrieve_input_enter(file_name)
                 print(input_name)
-                execute_task(task_name,file_name, filenames, input_path, output_path)
+                execute_task(task_name,input_name, filenames, input_path, output_path)
+                #execute_task(task_name,file_name, filenames, input_path, output_path)
                 queue_mul[key] = True
                 
 

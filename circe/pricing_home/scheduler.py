@@ -119,21 +119,23 @@ def receive_assignment_info():
     return "ok"
 app.add_url_rule('/receive_assignment_info', 'receive_assignment_info', receive_assignment_info)
 
-def send_controller_map():
-    for computing_ip in all_computing_ips:
-        try:
-            print("Announce my current node mapping to " + computing_ip)
-            url = "http://" + computing_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
-            params = {'controller_id_map':controller_id_map}
-            params = parse.urlencode(params)
-            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-            res = urllib.request.urlopen(req)
-            res = res.read()
-            res = res.decode('utf-8')
-        except Exception as e:
-            print("Sending message to flask server on computing node FAILED!!!")
-            print(e)
-            return "not ok"
+def update_controller_map():
+    """
+        Update matching between task controllers and node, in case task controllers are crashed and redeployded
+    """
+    try:
+        info = request.args.get('controller_id_map').split(':')
+        print("--- Received controller info")
+        print(info)
+        #Task, Node
+        controllers_id_map[info[0]] = info[1]
+
+    except Exception as e:
+        print("Bad reception or failed processing in Flask for controllers matching announcement: "+ e) 
+        return "not ok" 
+
+    return "ok"
+app.add_url_rule('/update_controller_map', 'update_controller_map', update_controller_map)
 
 def recv_runtime_profile():
     """

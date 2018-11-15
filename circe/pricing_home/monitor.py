@@ -124,41 +124,31 @@ def schedule_update_price(interval):
     sched.start()
 
 def send_controller_info(node_ip):
-    retry = 0
-    while retry < num_retries:
-        try:
-            print("Announce my current node mapping to " + node_ip)
-            url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
-            params = {'controller_id_map':controller_id_map}
-            print(controller_id_map)
-            params = parse.urlencode(params)
-            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-            print(req)
-            res = urllib.request.urlopen(req)
-            print(res)
-            res = res.read()
-            res = res.decode('utf-8')
-            print(res)
-            break
-        except Exception as e:
-            print("Sending controller message to flask server on computing node FAILED!!!")
-            print(e)
-            time.sleep(2)
-            retry += 1
-            return "not ok"
+    try:
+        print("Announce my current node mapping to " + node_ip)
+        url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
+        params = {'controller_id_map':controller_id_map}
+        params = parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print("Sending controller message to flask server on computing node FAILED!!!")
+        print(e)
+        return "not ok"
 
 def push_controller_map():
     time.sleep(90)
     for computing_ip in all_computing_ips:
         send_controller_info(computing_ip)
-    send_controller_info(home_ip)
+    
 
 def send_assignment_info(node_ip):
     try:
         print("Announce my current best computing node " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/receive_assignment_info"
         assignment_info = self_task+"#"+task_node_summary['current_best_node']
-        print(assignment_info)
         params = {'assignment_info': assignment_info}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))

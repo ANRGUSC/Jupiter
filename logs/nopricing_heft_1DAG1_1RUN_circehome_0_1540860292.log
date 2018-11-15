@@ -1,0 +1,261 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+Installing and starting mongodb
+Start MongoDB.
+about to fork child process, waiting until server is ready for connections.
+forked process: 32
+child process started successfully, parent exiting
+Starting the scheduler
+TASK1:  task1
+DAG:  {'task2': ['1', 'true', 'task4'], 'task4': ['2', 'true', 'home'], 'task1': ['1', 'true', 'task2', 'task3'], 'task3': ['1', 'true', 'task4']}
+HOSTS:  {'home': ['home', 'ubuntu2gbams203-2018-05-10-s-2vcpu-4gb-nyc1-01', 'root', 'PASSWORD']}
+Starting the output monitoring system:
+Flask server started
+ * Serving Flask app "scheduler" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:8888/ (Press CTRL+C to quit)
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [30/Oct/2018 00:43:51] "GET / HTTP/1.1" 200 -
+Start copying sample files for evaluation
+---- Generate random input files
+Received file as input - /input/1botnet.ipsum.
+start time is:  [1540860233.0119169]
+Transfer to IP: 10.110.68.162 , username: root , password: PASSWORD, source path: /input/1botnet.ipsum , destination path: /centralized_scheduler/input/1botnet.ipsum
+10.110.68.162
+Warning: Permanently added '[10.110.68.162]:5000' (ECDSA) to the list of known hosts.
+data transfer complete
+
+Received flask message: task1 rt_enter 1botnet 1540860233.654878
+10.244.2.113 - - [30/Oct/2018 00:43:53] "GET /recv_runtime_profile?msg=rt_enter+1botnet+1540860233.654878&work_node=task1 HTTP/1.1" 200 -
+Received flask message: task1 rt_exec 1botnet 1540860233.6642551
+10.244.2.113 - - [30/Oct/2018 00:43:53] "GET /recv_runtime_profile?msg=rt_exec+1botnet+1540860233.6642551&work_node=task1 HTTP/1.1" 200 -
+10.244.2.113 - - [30/Oct/2018 00:43:53] "GET /recv_runtime_profile?msg=rt_finish+1botnet+1540860233.6715584&work_node=task1 HTTP/1.1" 200 -
+Received flask message: task1 rt_finish 1botnet 1540860233.6715584
+----------------------------
+Worker node: task1
+Input file : 1botnet
+Total duration time:0.016680479049682617
+Waiting time:0.009377241134643555
+task1 execution time:0.0073032379150390625
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+task1      1botnet    1540860233.654878 1540860233.6642551 1540860233.6715584 0.016680479049682617 0.0073032379150390625 0.009377241134643555
+
+********************************************
+Received flask message: task2 rt_enter 1botnet 1540860234.7997139
+10.244.2.111 - - [30/Oct/2018 00:43:54] "GET /recv_runtime_profile?work_node=task2&msg=rt_enter+1botnet+1540860234.7997139 HTTP/1.1" 200 -
+10.244.2.111 - - [30/Oct/2018 00:43:54] "GET /recv_runtime_profile?work_node=task2&msg=rt_exec+1botnet+1540860234.8096461 HTTP/1.1" 200 -
+Received flask message: task2 rt_exec 1botnet 1540860234.8096461
+Received flask message: task2 rt_finish 1botnet 1540860234.8191981
+----------------------------
+Worker node: task2
+Input file : 1botnet
+Total duration time:0.019484281539916992
+Waiting time:0.009932279586791992
+task2 execution time:0.009552001953125
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+task2      1botnet    1540860234.7997139 1540860234.8096461 1540860234.8191981 0.019484281539916992 0.009552001953125 0.009932279586791992
+
+task1      1botnet    1540860233.654878 1540860233.6642551 1540860233.6715584 0.016680479049682617 0.0073032379150390625 0.009377241134643555
+
+********************************************
+10.244.2.111 - - [30/Oct/2018 00:43:54] "GET /recv_runtime_profile?work_node=task2&msg=rt_finish+1botnet+1540860234.8191981 HTTP/1.1" 200 -
+Received flask message: task3 rt_enter 1botnet 1540860234.9391181
+10.244.2.112 - - [30/Oct/2018 00:43:54] "GET /recv_runtime_profile?msg=rt_enter+1botnet+1540860234.9391181&work_node=task3 HTTP/1.1" 200 -
+10.244.2.112 - - [30/Oct/2018 00:43:54] "GET /recv_runtime_profile?msg=rt_exec+1botnet+1540860234.9460855&work_node=task3 HTTP/1.1" 200 -
+Received flask message: task3 rt_exec 1botnet 1540860234.9460855
+10.244.2.112 - - [30/Oct/2018 00:43:54] "GET /recv_runtime_profile?msg=rt_finish+1botnet+1540860234.9525979&work_node=task3 HTTP/1.1" 200 -
+Received flask message: task3 rt_finish 1botnet 1540860234.9525979
+----------------------------
+Worker node: task3
+Input file : 1botnet
+Total duration time:0.01347970962524414
+Waiting time:0.006967306137084961
+task3 execution time:0.00651240348815918
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+task2      1botnet    1540860234.7997139 1540860234.8096461 1540860234.8191981 0.019484281539916992 0.009552001953125 0.009932279586791992
+
+task3      1botnet    1540860234.9391181 1540860234.9460855 1540860234.9525979 0.01347970962524414 0.00651240348815918 0.006967306137084961
+
+task1      1botnet    1540860233.654878 1540860233.6642551 1540860233.6715584 0.016680479049682617 0.0073032379150390625 0.009377241134643555
+
+********************************************
+Received flask message: task4 rt_enter 1botnet 1540860235.9513865
+10.244.2.110 - - [30/Oct/2018 00:43:55] "GET /recv_runtime_profile?msg=rt_enter+1botnet+1540860235.9513865&work_node=task4 HTTP/1.1" 200 -
+10.244.2.110 - - [30/Oct/2018 00:43:56] "GET /recv_runtime_profile?msg=rt_exec+1botnet+1540860236.0784822&work_node=task4 HTTP/1.1" 200 -
+Received flask message: task4 rt_exec 1botnet 1540860236.0784822
+Received flask message: task4 rt_finish 1botnet 1540860236.0878167
+----------------------------
+Worker node: task4
+Input file : 1botnet
+Total duration time:0.1364302635192871
+Waiting time:0.12709569931030273
+task4 execution time:0.009334564208984375
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+task4      1botnet    1540860235.9513865 1540860236.0784822 1540860236.0878167 0.1364302635192871 0.009334564208984375 0.12709569931030273
+
+task2      1botnet    1540860234.7997139 1540860234.8096461 1540860234.8191981 0.019484281539916992 0.009552001953125 0.009932279586791992
+
+task3      1botnet    1540860234.9391181 1540860234.9460855 1540860234.9525979 0.01347970962524414 0.00651240348815918 0.006967306137084961
+
+task1      1botnet    1540860233.654878 1540860233.6642551 1540860233.6715584 0.016680479049682617 0.0073032379150390625 0.009377241134643555
+
+********************************************
+10.244.2.110 - - [30/Oct/2018 00:43:56] "GET /recv_runtime_profile?msg=rt_finish+1botnet+1540860236.0878167&work_node=task4 HTTP/1.1" 200 -
+/output/1botnet_task4.txt created
+ending time is:  [1540860237.225226]
+execution time is:  [4.213309049606323]
+---- Generate random input files
+Received file as input - /input/2botnet.ipsum.
+start time is:  [1540860233.0119169, 1540860268.042387]
+Transfer to IP: 10.110.68.162 , username: root , password: PASSWORD, source path: /input/2botnet.ipsum , destination path: /centralized_scheduler/input/2botnet.ipsum
+10.110.68.162
+data transfer complete
+
+Received flask message: task1 rt_enter 2botnet 1540860268.7223747
+10.244.2.113 - - [30/Oct/2018 00:44:28] "GET /recv_runtime_profile?msg=rt_enter+2botnet+1540860268.7223747&work_node=task1 HTTP/1.1" 200 -
+Received flask message: task1 rt_exec 2botnet 1540860268.726652
+10.244.2.113 - - [30/Oct/2018 00:44:28] "GET /recv_runtime_profile?msg=rt_exec+2botnet+1540860268.726652&work_node=task1 HTTP/1.1" 200 -
+Received flask message: task1 rt_finish 2botnet 1540860268.7354798
+----------------------------
+Worker node: task1
+Input file : 2botnet
+Total duration time:0.013105154037475586
+Waiting time:0.004277229309082031
+task1 execution time:0.008827924728393555
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+task4      1botnet    1540860235.9513865 1540860236.0784822 1540860236.0878167 0.1364302635192871 0.009334564208984375 0.12709569931030273
+
+task2      1botnet    1540860234.7997139 1540860234.8096461 1540860234.8191981 0.019484281539916992 0.009552001953125 0.009932279586791992
+
+task1      2botnet    1540860268.7223747 1540860268.726652 1540860268.7354798 0.013105154037475586 0.008827924728393555 0.004277229309082031
+
+task3      1botnet    1540860234.9391181 1540860234.9460855 1540860234.9525979 0.01347970962524414 0.00651240348815918 0.006967306137084961
+
+task1      1botnet    1540860233.654878 1540860233.6642551 1540860233.6715584 0.016680479049682617 0.0073032379150390625 0.009377241134643555
+
+********************************************
+10.244.2.113 - - [30/Oct/2018 00:44:28] "GET /recv_runtime_profile?msg=rt_finish+2botnet+1540860268.7354798&work_node=task1 HTTP/1.1" 200 -
+Received flask message: task2 rt_enter 2botnet 1540860269.9027798
+10.244.2.111 - - [30/Oct/2018 00:44:29] "GET /recv_runtime_profile?work_node=task2&msg=rt_enter+2botnet+1540860269.9027798 HTTP/1.1" 200 -
+Received flask message: task2 rt_exec 2botnet 1540860269.9070835
+10.244.2.111 - - [30/Oct/2018 00:44:29] "GET /recv_runtime_profile?work_node=task2&msg=rt_exec+2botnet+1540860269.9070835 HTTP/1.1" 200 -
+10.244.2.111 - - [30/Oct/2018 00:44:29] "GET /recv_runtime_profile?work_node=task2&msg=rt_finish+2botnet+1540860269.915694 HTTP/1.1" 200 -
+Received flask message: task2 rt_finish 2botnet 1540860269.915694
+----------------------------
+Worker node: task2
+Input file : 2botnet
+Total duration time:0.012914180755615234
+Waiting time:0.004303693771362305
+task2 execution time:0.00861048698425293
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+task2      1botnet    1540860234.7997139 1540860234.8096461 1540860234.8191981 0.019484281539916992 0.009552001953125 0.009932279586791992
+
+task1      2botnet    1540860268.7223747 1540860268.726652 1540860268.7354798 0.013105154037475586 0.008827924728393555 0.004277229309082031
+
+task4      1botnet    1540860235.9513865 1540860236.0784822 1540860236.0878167 0.1364302635192871 0.009334564208984375 0.12709569931030273
+
+task1      1botnet    1540860233.654878 1540860233.6642551 1540860233.6715584 0.016680479049682617 0.0073032379150390625 0.009377241134643555
+
+task3      1botnet    1540860234.9391181 1540860234.9460855 1540860234.9525979 0.01347970962524414 0.00651240348815918 0.006967306137084961
+
+task2      2botnet    1540860269.9027798 1540860269.9070835 1540860269.915694 0.012914180755615234 0.00861048698425293 0.004303693771362305
+
+********************************************
+Received flask message: task3 rt_enter 2botnet 1540860270.0305948
+10.244.2.112 - - [30/Oct/2018 00:44:30] "GET /recv_runtime_profile?msg=rt_enter+2botnet+1540860270.0305948&work_node=task3 HTTP/1.1" 200 -
+Received flask message: task3 rt_exec 2botnet 1540860270.0351632
+10.244.2.112 - - [30/Oct/2018 00:44:30] "GET /recv_runtime_profile?msg=rt_exec+2botnet+1540860270.0351632&work_node=task3 HTTP/1.1" 200 -
+Received flask message: task3 rt_finish 2botnet 1540860270.0431702
+----------------------------
+Worker node: task3
+Input file : 2botnet
+Total duration time:0.012575387954711914
+Waiting time:0.004568338394165039
+task3 execution time:0.008007049560546875
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+task2      1botnet    1540860234.7997139 1540860234.8096461 1540860234.8191981 0.019484281539916992 0.009552001953125 0.009932279586791992
+
+task1      2botnet    1540860268.7223747 1540860268.726652 1540860268.7354798 0.013105154037475586 0.008827924728393555 0.004277229309082031
+
+task4      1botnet    1540860235.9513865 1540860236.0784822 1540860236.0878167 0.1364302635192871 0.009334564208984375 0.12709569931030273
+
+task1      1botnet    1540860233.654878 1540860233.6642551 1540860233.6715584 0.016680479049682617 0.0073032379150390625 0.009377241134643555
+
+task3      1botnet    1540860234.9391181 1540860234.9460855 1540860234.9525979 0.01347970962524414 0.00651240348815918 0.006967306137084961
+
+task2      2botnet    1540860269.9027798 1540860269.9070835 1540860269.915694 0.012914180755615234 0.00861048698425293 0.004303693771362305
+
+task3      2botnet    1540860270.0305948 1540860270.0351632 1540860270.0431702 0.012575387954711914 0.008007049560546875 0.004568338394165039
+
+********************************************
+10.244.2.112 - - [30/Oct/2018 00:44:30] "GET /recv_runtime_profile?msg=rt_finish+2botnet+1540860270.0431702&work_node=task3 HTTP/1.1" 200 -
+Received flask message: task4 rt_enter 2botnet 1540860271.0523505
+10.244.2.110 - - [30/Oct/2018 00:44:31] "GET /recv_runtime_profile?msg=rt_enter+2botnet+1540860271.0523505&work_node=task4 HTTP/1.1" 200 -
+Received flask message: task4 rt_exec 2botnet 1540860271.1750052
+10.244.2.110 - - [30/Oct/2018 00:44:31] "GET /recv_runtime_profile?msg=rt_exec+2botnet+1540860271.1750052&work_node=task4 HTTP/1.1" 200 -
+10.244.2.110 - - [30/Oct/2018 00:44:31] "GET /recv_runtime_profile?msg=rt_finish+2botnet+1540860271.1836464&work_node=task4 HTTP/1.1" 200 -
+Received flask message: task4 rt_finish 2botnet 1540860271.1836464
+----------------------------
+Worker node: task4
+Input file : 2botnet
+Total duration time:0.13129591941833496
+Waiting time:0.12265467643737793
+task4 execution time:0.008641242980957031
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+task2      1botnet    1540860234.7997139 1540860234.8096461 1540860234.8191981 0.019484281539916992 0.009552001953125 0.009932279586791992
+
+task1      2botnet    1540860268.7223747 1540860268.726652 1540860268.7354798 0.013105154037475586 0.008827924728393555 0.004277229309082031
+
+task4      1botnet    1540860235.9513865 1540860236.0784822 1540860236.0878167 0.1364302635192871 0.009334564208984375 0.12709569931030273
+
+task1      1botnet    1540860233.654878 1540860233.6642551 1540860233.6715584 0.016680479049682617 0.0073032379150390625 0.009377241134643555
+
+task4      2botnet    1540860271.0523505 1540860271.1750052 1540860271.1836464 0.13129591941833496 0.008641242980957031 0.12265467643737793
+
+task3      1botnet    1540860234.9391181 1540860234.9460855 1540860234.9525979 0.01347970962524414 0.00651240348815918 0.006967306137084961
+
+task2      2botnet    1540860269.9027798 1540860269.9070835 1540860269.915694 0.012914180755615234 0.00861048698425293 0.004303693771362305
+
+task3      2botnet    1540860270.0305948 1540860270.0351632 1540860270.0431702 0.012575387954711914 0.008007049560546875 0.004568338394165039
+
+********************************************
+/output/2botnet_task4.txt created
+ending time is:  [1540860237.225226, 1540860272.3284376]
+execution time is:  [4.213309049606323, 4.28605055809021]
+10.244.0.0 - - [30/Oct/2018 00:44:52] "GET / HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 2

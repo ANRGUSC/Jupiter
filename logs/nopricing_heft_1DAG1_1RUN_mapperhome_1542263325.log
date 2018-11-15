@@ -1,0 +1,260 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+-------------------------------------
+Automatically generating HEFT input
+-------------------------------------
+Perform HEFT scheduling
+read_input_heft.py:194: SyntaxWarning: name 'MONGO_SVC_PORT' is assigned to before global declaration
+  global profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list, home_profiler_ip
+('tasks: ', {'simpledetector2': ['fusioncenter2'], 'simpledetector1': ['fusioncenter1'], 'simpledetector0': ['fusioncenter0'], 'globalfusion': [], 'aggregate1': ['simpledetector1', 'astutedetector1'], 'aggregate0': ['simpledetector0', 'astutedetector0'], 'aggregate2': ['simpledetector2', 'astutedetector2'], 'localpro': ['aggregate0', 'aggregate1', 'aggregate2'], 'astutedetector1': ['fusioncenter1'], 'astutedetector0': ['fusioncenter0'], 'astutedetector2': ['fusioncenter2'], 'fusioncenter0': ['globalfusion'], 'fusioncenter1': ['globalfusion'], 'fusioncenter2': ['globalfusion']})
+('task order', ['localpro', 'aggregate0', 'aggregate1', 'aggregate2', 'simpledetector0', 'simpledetector1', 'simpledetector2', 'astutedetector0', 'astutedetector1', 'astutedetector2', 'fusioncenter0', 'fusioncenter1', 'fusioncenter2', 'globalfusion'])
+('super tasks', [])
+('non tasks', [])
+No input TGFF file found!
+---------------------------------------------
+
+ Read task list from DAG file, Non-DAG info and global information 
+
+tasks:  {'aggregate1': ['simpledetector1', 'astutedetector1'], 'astutedetector0': ['fusioncenter0'], 'fusioncenter1': ['globalfusion'], 'simpledetector0': ['fusioncenter0'], 'aggregate2': ['simpledetector2', 'astutedetector2'], 'astutedetector1': ['fusioncenter1'], 'aggregate0': ['simpledetector0', 'astutedetector0'], 'fusioncenter0': ['globalfusion'], 'fusioncenter2': ['globalfusion'], 'localpro': ['aggregate0', 'aggregate1', 'aggregate2'], 'astutedetector2': ['fusioncenter2'], 'simpledetector2': ['fusioncenter2'], 'globalfusion': [], 'simpledetector1': ['fusioncenter1']}
+task order ['localpro', 'aggregate0', 'aggregate1', 'aggregate2', 'simpledetector0', 'simpledetector1', 'simpledetector2', 'astutedetector0', 'astutedetector1', 'astutedetector2', 'fusioncenter0', 'fusioncenter1', 'fusioncenter2', 'globalfusion']
+super tasks []
+---------------------------------------------
+
+ Create input HEFT file 
+
+No available profiling information
+---------------------------------------------
+
+ Step 1: Read task list from DAG file and global information 
+
+5
+[['node2', '10.110.22.125'], ['node3', '10.100.135.138'], ['node4', '10.105.17.239'], ['node5', '10.108.202.177'], ['node6', '10.101.235.45']]
+10.105.80.122
+Num nodes :5
+{'10.100.135.138': 'node3', '10.105.17.239': 'node4', '10.101.235.45': 'node6', '10.108.202.177': 'node5', '10.110.22.125': 'node2'}
+['node2', 'node3', 'node4', 'node5', 'node6']
+------------------------------------------------------------
+
+ Step 2: Read network profiler information : 
+
+------------------------------------------------------------
+
+ Step 3: Read execution Profiler Information : 
+
+[['node2', '10.110.22.125'], ['node3', '10.100.135.138'], ['node4', '10.105.17.239'], ['node5', '10.108.202.177'], ['node6', '10.101.235.45']]
+Check Network Profiler IP: node2-10.110.22.125
+Database(MongoClient(host=['10.105.80.122:6200'], document_class=dict, tz_aware=False, connect=True), 'execution_profiler')
+--- Number of neighbors: 5
+Current number of updated execution profilers:
+6
+--- Check execution profiler ID : home
+Check Network Profiler IP: node3-10.100.135.138
+--- Check execution profiler ID : node3
+--- Check execution profiler ID : node5
+--- Check execution profiler ID : node2
+--- Check execution profiler ID : node4
+--- Check execution profiler ID : node6
+--- Number of neighbors: 5
+Execution information has already been provided
+Check Network Profiler IP: node4-10.105.17.239
+--- Number of neighbors: 5
+Check Network Profiler IP: node5-10.108.202.177
+--- Number of neighbors: 5
+Check Network Profiler IP: node6-10.101.235.45
+--- Number of neighbors: 5
+Network information has already been provided
+['home', 'localpro', '15', '986.736']
+['home', 'aggregate0', '15', '701.92']
+['home', 'aggregate1', '15', '127.048']
+['home', 'aggregate2', '15', '157.768']
+['home', 'simpledetector0', '15', '7.616']
+['home', 'simpledetector1', '15', '7.616']
+['home', 'simpledetector2', '15', '7.168']
+['home', 'astutedetector0', '15', '4.152']
+['home', 'astutedetector1', '15', '3.48']
+['home', 'astutedetector2', '15', '4.728']
+['home', 'fusioncenter0', '10', '0.984']
+['home', 'fusioncenter1', '10', '0.44']
+['home', 'fusioncenter2', '10', '0.792']
+['home', 'globalfusion', '10', '1.336']
+['localpro', 'aggregate0', 'aggregate1', 'aggregate2', 'simpledetector0', 'simpledetector1', 'simpledetector2', 'astutedetector0', 'astutedetector1', 'astutedetector2', 'fusioncenter0', 'fusioncenter1', 'fusioncenter2', 'globalfusion']
+{'aggregate1': 't0_2', 'astutedetector0': 't0_7', 'fusioncenter1': 't0_11', 'simpledetector0': 't0_4', 'aggregate2': 't0_3', 'astutedetector1': 't0_8', 'aggregate0': 't0_1', 'fusioncenter0': 't0_10', 'fusioncenter2': 't0_12', 'localpro': 't0_0', 'astutedetector2': 't0_9', 'simpledetector2': 't0_6', 'globalfusion': 't0_13', 'simpledetector1': 't0_5'}
+{'aggregate1': 2, 'astutedetector0': 7, 'fusioncenter1': 11, 'simpledetector0': 4, 'aggregate2': 3, 'astutedetector1': 8, 'aggregate0': 1, 'fusioncenter0': 10, 'fusioncenter2': 12, 'localpro': 0, 'astutedetector2': 9, 'simpledetector2': 6, 'globalfusion': 13, 'simpledetector1': 5}
+{'aggregate1': '127.048', 'astutedetector0': '4.152', 'fusioncenter1': '0.44', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'astutedetector1': '3.48', 'aggregate0': '701.92', 'fusioncenter0': '0.984', 'fusioncenter2': '0.768', 'localpro': '986.736', 'astutedetector2': '4.704', 'simpledetector2': '7.168', 'globalfusion': '1.312', 'simpledetector1': '7.616'}
+[[150, 150, 150, 150, 150], [150, 150, 150, 150, 150], [150, 150, 150, 150, 150], [150, 150, 150, 150, 150], [150, 150, 150, 150, 150], [150, 150, 150, 150, 150], [150, 150, 150, 150, 150], [150, 150, 150, 150, 150], [150, 150, 150, 150, 150], [150, 150, 150, 150, 150], [100, 100, 100, 100, 100], [100, 100, 100, 100, 100], [100, 100, 100, 100, 100], [100, 100, 100, 100, 100]]
+	TASK localpro	TYPE 0 
+
+	TASK aggregate0	TYPE 1 
+
+	TASK aggregate1	TYPE 2 
+
+	TASK aggregate2	TYPE 3 
+
+	TASK simpledetector0	TYPE 4 
+
+	TASK simpledetector1	TYPE 5 
+
+	TASK simpledetector2	TYPE 6 
+
+	TASK astutedetector0	TYPE 7 
+
+	TASK astutedetector1	TYPE 8 
+
+	TASK astutedetector2	TYPE 9 
+
+	TASK fusioncenter0	TYPE 10 
+
+	TASK fusioncenter1	TYPE 11 
+
+	TASK fusioncenter2	TYPE 12 
+
+	TASK globalfusion	TYPE 13 
+
+task_names: ['localpro', 'aggregate0', 'aggregate1', 'aggregate2', 'simpledetector0', 'simpledetector1', 'simpledetector2', 'astutedetector0', 'astutedetector1', 'astutedetector2', 'fusioncenter0', 'fusioncenter1', 'fusioncenter2', 'globalfusion']
+==================
+Checking the written information
+14
+[<map object at 0x7ff4d9a367b8>, <map object at 0x7ff4d9a36908>, <map object at 0x7ff4d9a36a90>, <map object at 0x7ff4d9a36c18>, <map object at 0x7ff4d9a36da0>, <map object at 0x7ff4d9a36f28>, <map object at 0x7ff4d9a390f0>, <map object at 0x7ff4d9a39278>, <map object at 0x7ff4d9a39400>, <map object at 0x7ff4d9a39588>, <map object at 0x7ff4d9a39748>, <map object at 0x7ff4d9a39908>, <map object at 0x7ff4d9a39ac8>, <map object at 0x7ff4d9a39c88>]
+[[0, 1, 1, 1, 1], [1, 0, 1, 1, 1], [1, 1, 0, 1, 1], [1, 1, 1, 0, 1], [1, 1, 1, 1, 0]]
+[[-1, 986, 986, 986, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, 701, -1, -1, 701, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, 127, -1, -1, 127, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, 157, -1, -1, 157, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 4, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]]
+[[(0, 0, 0), (-8.380557441085756e-07, 0.10015179507841476, 2406.6304383375536), (-0.00013526268349023702, 1.192464588905369, 2657.669630750923), (-1.0147111013977774e-06, 0.11382371801030733, 2083.254091659533), (-5.358714850147249e-07, 0.05742114456364709, 1394.5119962921542)], [(-8.621879289547539e-07, 0.10118709809767343, 2399.7534312671164), (0, 0, 0), (-5.020508660731866e-05, 0.5040907323508999, 2502.8457464316125), (-3.89161057172833e-08, 0.005493928085092409, 286.5133260255963), (-5.918074614790256e-07, 0.060136787230564294, 1561.2681527820175)], [(-0.005281051253273471, 4.915658436213992, 2493.346053123832), (-7.724125441230805e-07, 0.09504452003918352, 2649.0608627549123), (0, 0, 0), (-1.0814253099568948e-06, 0.12174107139015068, 2319.6894282208386), (-1.3457093429040193e-06, 0.1666180766665141, 3754.7048921999553)], [(-1.0486610008081366e-06, 0.10936350857535301, 2133.2182983991565), (-3.306156280535909e-08, 0.005057445267244045, 289.66499039317966), (-6.761909430299872e-07, 0.09243262890981123, 2679.229483075482), (0, 0, 0), (-5.307889509999193e-07, 0.06126189924505567, 1317.9422775460214)], [(-5.597685601111101e-07, 0.06386295555177539, 1335.416996927865), (-7.688114910120139e-07, 0.07329472053962634, 1530.4026967691034), (-1.0915363082731367e-05, 0.9250577288663665, 3809.693020431443), (-6.103630795488525e-07, 0.06017116360403839, 1355.414128954442), (0, 0, 0)]]
+	TASK localpro	TYPE 0 
+
+	TASK aggregate0	TYPE 1 
+
+	TASK aggregate1	TYPE 2 
+
+	TASK aggregate2	TYPE 3 
+
+	TASK simpledetector0	TYPE 4 
+
+	TASK simpledetector1	TYPE 5 
+
+	TASK simpledetector2	TYPE 6 
+
+	TASK astutedetector0	TYPE 7 
+
+	TASK astutedetector1	TYPE 8 
+
+	TASK astutedetector2	TYPE 9 
+
+	TASK fusioncenter0	TYPE 10 
+
+	TASK fusioncenter1	TYPE 11 
+
+	TASK fusioncenter2	TYPE 12 
+
+	TASK globalfusion	TYPE 13 
+
+('task_names:', ['localpro', 'aggregate0', 'aggregate1', 'aggregate2', 'simpledetector0', 'simpledetector1', 'simpledetector2', 'astutedetector0', 'astutedetector1', 'astutedetector2', 'fusioncenter0', 'fusioncenter1', 'fusioncenter2', 'globalfusion'])
+==================
+(0, 1)
+(1, 1)
+(2, 1)
+(3, 1)
+(4, 1)
+(0, 3)
+(1, 3)
+(2, 3)
+(3, 3)
+(4, 3)
+(0, 2)
+(1, 2)
+(2, 2)
+(3, 2)
+(4, 2)
+(0, 4)
+(1, 4)
+(2, 4)
+(3, 4)
+(4, 4)
+(0, 5)
+(1, 5)
+(2, 5)
+(3, 5)
+(4, 5)
+(0, 6)
+(1, 6)
+(2, 6)
+(3, 6)
+(4, 6)
+(0, 7)
+(1, 7)
+(2, 7)
+(3, 7)
+(4, 7)
+(0, 9)
+(1, 9)
+(2, 9)
+(3, 9)
+(4, 9)
+(0, 8)
+(1, 8)
+(2, 8)
+(3, 8)
+(4, 8)
+(0, 10)
+(1, 10)
+(2, 10)
+(3, 10)
+(4, 10)
+(0, 11)
+(1, 11)
+(2, 11)
+(3, 11)
+(4, 11)
+(0, 12)
+(1, 12)
+(2, 12)
+(3, 12)
+(4, 12)
+(0, 13)
+(1, 13)
+(2, 13)
+(3, 13)
+(4, 13)
+Assign random master and slaves
+task 0 : up_rank = 9187.788228, down_rank = 0.000000
+task 1 : up_rank = 6821.543773, down_rank = 2366.244455
+task 3 : up_rank = 6709.615981, down_rank = 2366.244455
+task 2 : up_rank = 6698.717684, down_rank = 2366.244455
+task 4 : up_rank = 4449.098064, down_rank = 4738.690164
+task 5 : up_rank = 4449.098064, down_rank = 4615.864076
+task 6 : up_rank = 4449.098064, down_rank = 4626.762372
+task 7 : up_rank = 4447.783470, down_rank = 4738.690164
+task 9 : up_rank = 4447.783470, down_rank = 4626.762372
+task 8 : up_rank = 4447.344174, down_rank = 4615.864076
+task 10 : up_rank = 2248.011497, down_rank = 6939.776730
+task 11 : up_rank = 2248.011497, down_rank = 6816.950642
+task 12 : up_rank = 2248.011497, down_rank = 6827.848939
+task 13 : up_rank = 100.000000, down_rank = 9087.788228
+node2:
+task 1 : ast = 0, aft = 150
+task 2 : ast = 150, aft = 300
+task 4 : ast = 300, aft = 450
+task 3 : ast = 450, aft = 600
+task 5 : ast = 600, aft = 750
+task 6 : ast = 750, aft = 900
+task 7 : ast = 900, aft = 1050
+task 8 : ast = 1050, aft = 1200
+task 10 : ast = 1200, aft = 1350
+task 9 : ast = 1350, aft = 1500
+task 11 : ast = 1500, aft = 1600
+task 12 : ast = 1600, aft = 1700
+task 13 : ast = 1700, aft = 1800
+task 14 : ast = 1800, aft = 1900
+node3:
+node4:
+node5:
+node6:
+makespan = 1900
+{'simpledetector2': 'node2', 'simpledetector1': 'node2', 'simpledetector0': 'node2', 'globalfusion': 'node2', 'aggregate1': 'node2', 'aggregate0': 'node2', 'aggregate2': 'node2', 'localpro': 'node2', 'astutedetector1': 'node2', 'astutedetector0': 'node2', 'astutedetector2': 'node2', 'fusioncenter0': 'node2', 'fusioncenter1': 'node2', 'fusioncenter2': 'node2'}
+ * Serving Flask app "master" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:8888/ (Press CTRL+C to quit)
+10.244.0.0 - - [15/Nov/2018 06:28:44] "GET / HTTP/1.1" 200 -
+('Recieved request for current mapping. Current mappings done:', 14)
+{'simpledetector2': 'node2', 'simpledetector1': 'node2', 'simpledetector0': 'node2', 'globalfusion': 'node2', 'aggregate1': 'node2', 'aggregate0': 'node2', 'aggregate2': 'node2', 'localpro': 'node2', 'astutedetector1': 'node2', 'astutedetector0': 'node2', 'astutedetector2': 'node2', 'fusioncenter0': 'node2', 'fusioncenter1': 'node2', 'fusioncenter2': 'node2'}
