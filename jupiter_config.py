@@ -72,12 +72,18 @@ def set_globals():
 	WAVE_PATH               = HERE + 'task_mapper/wave/random_wave/'
 	SCRIPT_PATH             = HERE + 'scripts/'
 
+	global mapper_option
+	
+
 	if SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_RANDOM']):
 	    WAVE_PATH           = HERE + 'task_mapper/wave/random_wave/'
+	    mapper_option 		= 'random'
 	elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY']):
 	    WAVE_PATH           = HERE + 'task_mapper/wave/greedy_wave/'
+	    mapper_option 		= 'greedy'
 	elif SCHEDULER == int(config['SCHEDULER_LIST']['HEFT_MODIFIED']):
 		HEFT_PATH           = HERE + 'task_mapper/heft/modified/'	
+		mapper_option 		= 'modified'
 
 	global pricing_option
 	pricing_option = 'pricing' #original pricing
@@ -134,8 +140,8 @@ def set_globals():
 
 	#coded: random, v1: greedy
 
-	WAVE_HOME_IMAGE         = 'docker.io/anrg/wave_home:coded'
-	WAVE_WORKER_IMAGE       = 'docker.io/anrg/wave_worker:coded'
+	WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_wave_home:coded' %(mapper_option)
+	WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_wave_worker:coded' %(mapper_option)
 
 	"""Execution profiler home and worker images"""
 	global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE

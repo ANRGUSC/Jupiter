@@ -109,7 +109,10 @@ def assign_task():
         Exception: ``ok`` if successful, ``not ok`` if either the request or the writing is failed
     """
     try:
+
         task_name = request.args.get('task_name')
+        print('Assigned task -------------------')
+        print(task_name)
         write_file(local_responsibility + "/" + task_name, [], "w+")
         return "ok"
     except Exception:
@@ -120,6 +123,8 @@ def kill_thread():
     """assign kill thread as True
     """
     global kill_flag
+    print('-------------- kill flag')
+    print(kill_flag)
     kill_flag = True
     return "ok"
 app.add_url_rule('/kill_thread', 'kill_thread', kill_thread)
@@ -157,20 +162,29 @@ def recv_control():
         Exception: ``ok`` if successful, ``not ok`` otherwise
     """
     try:
+        print('Get assigned control function -----------------------')
         control = request.args.get('control')
         items = re.split(r'#', control)
+        print(items)
 
         to_be_write = []
         for _, item in enumerate(items):
+            print(item)
             to_be_write.append(item.replace("__", "\t"))
+            print(to_be_write)
             tmp = re.split(r"__", item)
+            print(tmp)
             key = tmp[0]
             del tmp[0]
             control_relation[key] = tmp
+            print(control_relation)
 
         if not os.path.exists("./DAG"):
+            print('No folder DAG')
             os.mkdir("./DAG")
 
+        print(to_be_write)
+        print('DAG/parent_controller.txt')
         write_file("DAG/parent_controller.txt", to_be_write, "a+")
     except Exception:
         return "not ok"
@@ -234,6 +248,7 @@ def watcher():
 
     tmp_mapping = ""
     while True:
+        print(kill_flag)
         if kill_flag:
             break
 
@@ -305,8 +320,11 @@ def distribute():
             continue
 
         lines = read_file(local_children)
+        print('**********')
+        print(lines)
         for line in lines:
             line = line.strip()
+            print(line)
             if "TODO" in line:
                 output("Find todo item: " + line)
 
@@ -451,12 +469,18 @@ def write_file(file_name, content, mode):
         - content (str): content to be written
         - mode (str): write mode 
     """
+    print('Wrting file process ------------------')
+    print(file_name)
+    print(content)
+    print(mode)
+    print(lock)
     lock.acquire()
     file = open(file_name, mode)
     for line in content:
         file.write(line + "\n")
     file.close()
     lock.release()
+    print('Ending Wrting file process ------------------')
 
 
 def read_file(file_name):
@@ -478,6 +502,8 @@ def read_file(file_name):
         line = file.readline()
     file.close()
     lock.release()
+    print('@@@@@@@@@@@')
+    print(file_contents)
     return file_contents
 
 
@@ -530,6 +556,7 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     client_mongo = MongoClient('mongodb://'+my_profiler_ip+':'+MONGO_SVC_PORT+'/')
     db = client_mongo.droplet_network_profiler
     collection = db.collection_names(include_system_collections=False)
+    print(collection)
     num_nb = len(collection)-1
     while num_nb==-1:
         print('--- Network profiler mongoDB not yet prepared')
@@ -538,15 +565,24 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
         num_nb = len(collection)-1
     print('--- Number of neighbors: '+str(num_nb))
     num_rows = db[my_profiler_ip].count()
+    print(num_rows)
     while num_rows < num_nb:
         print('--- Network profiler regression info not yet loaded into MongoDB!')
         time.sleep(60)
         num_rows = db[my_profiler_ip].count()
     logging =db[my_profiler_ip].find().limit(num_nb)
+    print(logging)
+    print('^^^^^^^^^^^^^^^')
+    print(network_map)
     for record in logging:
-        # print(record)
+        print('&&&&&&&&&&&&')
+        print(record)
         # Destination ID -> Parameters(a,b,c) , Destination IP
+        print(home_profiler_ip)
+        print(record['Destination[IP]'])
+        if record['Destination[IP]'] == home_profiler_ip: continue
         params = re.split(r'\s+', record['Parameters'])
+        print(params)
         network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
                                                             'c': float(params[2]), 'ip': record['Destination[IP]']}
     print('Network information has already been provided')
@@ -604,10 +640,11 @@ def main():
     
     prepare_global()
 
-    global node_name, node_id, FLASK_PORT
+    global node_name, node_id, FLASK_PORT, home_profiler_ip
 
     node_name = os.environ['SELF_NAME']
     node_id = int(node_name.split("e")[-1])
+    home_profiler_ip = os.environ['HOME_PROFILER_IP']
 
     print("Node name:", node_name, "and id", node_id)
     print("Starting the main thread on port", FLASK_PORT)

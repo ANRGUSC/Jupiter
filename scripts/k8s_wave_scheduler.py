@@ -131,8 +131,6 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     service_ips['home'] = resp.spec.cluster_ip
     home_ip = service_ips['home']
 
-    print(service_ips)
-
     for i in nodes:
 
         """
@@ -191,7 +189,8 @@ def k8s_wave_scheduler(profiler_ips,app_name):
                                              home_name = home_name,
                                              serv_ip = service_ips[i],
                                              profiler_ip = profiler_ips[i],
-                                             all_profiler_ips = all_profiler_ips)
+                                             all_profiler_ips = all_profiler_ips,
+                                             home_profiler_ip = profiler_ips['home'])
             # # pprint(dep)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
@@ -219,7 +218,8 @@ def k8s_wave_scheduler(profiler_ips,app_name):
                                              home_name = home_name,
                                              serv_ip = service_ips['home'],
                                              profiler_ip = profiler_ips['home'],
-                                             all_profiler_ips = all_profiler_ips)
+                                             all_profiler_ips = all_profiler_ips,
+                                             home_profiler_ip = profiler_ips['home'])
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 

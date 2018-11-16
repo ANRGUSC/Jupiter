@@ -155,7 +155,8 @@ def recv_mapping():
             os.mkdir("./local")
 
         write_file("local/input_to_CIRCE.txt", to_be_write, "a+")
-    except Exception:
+    except Exception as e:
+        print(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_mapping', 'recv_mapping', recv_mapping)
@@ -189,12 +190,15 @@ def assign_task_to_remote(assigned_node, task_name):
     try:
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
+        print('&&&&&&&&&&&&&&&')
+        print(params)
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-    except Exception:
+    except Exception as e:
+        print(e)
         return "not ok"
     return res
 
@@ -211,15 +215,22 @@ def call_recv_control(assigned_node, control):
         str: request if sucessful, ``not ok`` otherwise
     """
     try:
+        print('-----------------')
+        print(nodes)
+        print(assigned_node)
+        print(nodes[assigned_node])
         url = "http://" + nodes[assigned_node] + "/recv_control"
         print(url)
         params = {'control': control}
+        print(params)
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-    except Exception:
+        print('-----------------')
+    except Exception as e:
+        print(e)
         return "not ok"
     return res
 
@@ -240,7 +251,8 @@ def call_kill_thread(node):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-    except Exception:
+    except Exception as e:
+        print(e)
         return "not ok"
     return res
 
@@ -261,7 +273,12 @@ def init_thread():
         line = line + key
         for _, item in enumerate(controlled):
             line = line + "__" + item
+
+    print('**********')
+    print(line)
+    print(nodes)
     for node in nodes:
+        print(node)
         res = call_recv_control(node, line)
         if res != "ok":
             output("Send control info to node %s failed" % node)
@@ -281,7 +298,9 @@ def monitor_task_status():
     """
 
     killed = 0
+    print(MAX_TASK_NUMBER)
     while True:
+        print(assigned_tasks)
         if len(assigned_tasks) == MAX_TASK_NUMBER:
             print("All task allocations are done! Great News!")
             for node in nodes:
