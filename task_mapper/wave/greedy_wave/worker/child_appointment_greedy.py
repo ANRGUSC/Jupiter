@@ -114,6 +114,7 @@ def assign_task():
         print('Assigned task -------------------')
         print(task_name)
         write_file(local_responsibility + "/" + task_name, [], "w+")
+        print('Done assign task ----------------------------------')
         return "ok"
     except Exception:
         return "not ok"
@@ -247,20 +248,23 @@ def watcher():
     pre_time = time.time()
 
     tmp_mapping = ""
+    print('$$$$$$$$$$$$$$$$$$$$$$$$$$')
+    print(kill_flag)
     while True:
-        print(kill_flag)
         if kill_flag:
             break
-
+        print('$$$$$$$$$$$$$$$$$$$$$$$$$$3')
         if not os.path.exists(local_responsibility):
             time.sleep(1)
             continue
-
+        print('$$$$$$$$$$$$$$$$$$$$$$$$$$4')
         tasks = scan_dir(local_responsibility)
         output("Find tasks under task_responsibility: " + json.dumps(tasks))
         for _, task in enumerate(tasks):
             if task in control_relation.keys():
+                print(task)
                 controlled = control_relation[task]
+                print(controlled)
                 for _, t in enumerate(controlled):
                     todo_task = t + "\tTODO"
                     write_file(local_children, [todo_task], "a+")
@@ -311,6 +315,7 @@ def distribute():
             print("Waiting for the profiler data")
             time.sleep(100)
 
+    print(kill_flag)
     while True:
         if kill_flag:
             break

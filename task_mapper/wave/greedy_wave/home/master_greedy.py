@@ -194,9 +194,12 @@ def assign_task_to_remote(assigned_node, task_name):
         print(params)
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        print(req)
         res = urllib.request.urlopen(req)
+        print(res)
         res = res.read()
         res = res.decode('utf-8')
+        print(res)
     except Exception as e:
         print(e)
         return "not ok"
