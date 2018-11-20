@@ -154,3 +154,22 @@ def k8s_get_nodes_string(node_info_file):
         continue
       nodes = nodes + ":" + str(node_line[0])
   return nodes
+
+def k8s_get_nodes_homes_string(node_info_file):
+  """read the node info and the home info from the file input
+  
+  Args:
+      node_info_file (str): path of ``node.txt``
+  
+  Returns:
+      str: node information/ home information in string format
+  """
+  nodes = ""
+  homes = ""
+  node_file = open(node_info_file, "r")
+  for line in node_file:
+      node_line = line.strip().split(" ")
+      if node_line[0].startwith("home"):
+        homes = homes + ":" + str(node_line[0])
+      nodes = nodes + ":" + str(node_line[0])
+  return nodes,homes

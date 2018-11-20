@@ -38,13 +38,13 @@ ADD app_specific_files/network_monitoring_app_dag/scripts/ /centralized_schedule
 ADD app_specific_files/network_monitoring_app_dag/sample_input/ /centralized_scheduler/sample_input/
 ADD app_specific_files/network_monitoring_app_dag/input_home.txt /input_home.txt
 
-ADD jupiter_config.ini /jupiter_config.ini
-ADD jupiter_config.py /jupiter_config.py
-
 #ADD circe/pricing_home/monitor.py /centralized_scheduler/monitor.py
 ADD circe/pricing_home/start_controller_worker.sh /start.sh
 
 ADD circe/pricing_home/monitor.py /centralized_scheduler/monitor.py
+
+ADD jupiter_config.ini /jupiter_config.ini
+ADD jupiter_config.py /jupiter_config.py
 
 
 RUN chmod +x /start.sh

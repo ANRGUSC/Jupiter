@@ -35,9 +35,6 @@ RUN mkdir -p /home/darpa/apps/data
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
 ADD app_specific_files/network_monitoring_app_dag/scripts/ /centralized_scheduler/
 
-ADD jupiter_config.ini /jupiter_config.ini
-ADD jupiter_config.py /jupiter_config.py
-
 ADD circe/pricing_home/start_computing_worker.sh /start.sh
 ADD scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD app_specific_files/network_monitoring_app_dag/configuration.txt  /centralized_scheduler/dag.txt
@@ -49,6 +46,9 @@ ADD circe/pricing_home/compute.py /centralized_scheduler/compute.py
 ADD circe/pricing_home/readconfig.py /readconfig.py
 ADD app_specific_files/network_monitoring_app_dag/name_convert.txt /centralized_scheduler/name_convert.txt
 ADD app_specific_files/network_monitoring_app_dag/input_home.txt /input_home.txt
+
+ADD jupiter_config.ini /jupiter_config.ini
+ADD jupiter_config.py /jupiter_config.py
 
 RUN chmod +x /start.sh
 

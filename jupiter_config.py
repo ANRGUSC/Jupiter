@@ -91,10 +91,12 @@ def set_globals():
 		pricing_option 		= 'pricing_separate'
 	if PRICING == 3:#decoupled
 		pricing_option 		= 'pricing_decouple'
-	if PRICING == 4:#decoupled
-		pricing_option 		= 'pricing_decouple_coded'
-	if PRICING == 5:#multiple home
+	if PRICING == 4:#home
 		pricing_option 		= 'pricing_home'
+	if PRICING == 5:#multiple home
+		pricing_option 		= 'pricing_multiple_home'
+		profiler_option     = 'multiple_home'
+		NETR_PROFILER_PATH      = HERE + 'profilers/network_resource_profiler_mulhome/'
 	CIRCE_PATH          	= HERE + 'circe/%s/'%(pricing_option)
 	if PRICING == 0: #non-pricing
 		CIRCE_PATH          = HERE + 'circe/original/'	
@@ -132,8 +134,8 @@ def set_globals():
 	"""DRUPE home and worker images"""
 	global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
 	
-	PROFILER_HOME_IMAGE     = 'docker.io/anrg/profiler_home:coded'
-	PROFILER_WORKER_IMAGE   = 'docker.io/anrg/profiler_worker:coded'
+	PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded' %(profiler_option)
+	PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded' %(profiler_option)
 
 	"""WAVE home and worker images"""
 	global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
