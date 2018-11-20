@@ -5,8 +5,8 @@ __version__ = "2.1"
 
 import sys
 sys.path.append("../")
-
 import os
+import configparser
 import jupiter_config
 
 
@@ -14,29 +14,25 @@ def build_push_wave():
     """Build WAVE home and worker image from Docker files and push them to the Dockerhub.
     """
     jupiter_config.set_globals()
-    
-    os.system("cp " + jupiter_config.APP_PATH + "configuration.txt " 
-                    + jupiter_config.WAVE_PATH + "DAG.txt")
+    INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+    sys.path.append(jupiter_config.WAVE_PATH)
 
-    os.system("cp " + jupiter_config.APP_PATH + "input_node.txt " 
-                    + jupiter_config.WAVE_PATH + "input_node.txt")
-
-    os.system("cp " + jupiter_config.HERE + "jupiter_config.ini " 
-                    + jupiter_config.WAVE_PATH + "jupiter_config.ini")
-
+    import wave_docker_files_generator as dc 
     os.chdir(jupiter_config.WAVE_PATH)
 
-    os.system("sudo docker build --build-arg port_expose=%s -f home.Dockerfile . -t %s" %
-                                 (jupiter_config.FLASK_DOCKER, jupiter_config.WAVE_HOME_IMAGE))
+    dc.write_wave_home_docker(app_file = jupiter_config.APP_NAME, ports = jupiter_config.FLASK_DOCKER)
+    dc.write_wave_worker_docker(app_file = jupiter_config.APP_NAME, ports = jupiter_config.FLASK_DOCKER)
+
+
+
+    os.system("sudo docker build -f home.Dockerfile ../../../ -t " +jupiter_config.WAVE_HOME_IMAGE)
     os.system("sudo docker push " + jupiter_config.WAVE_HOME_IMAGE)
     
-    os.system("sudo docker build --build-arg port_expose=%s -f worker.Dockerfile . -t %s" %
-                                 (jupiter_config.FLASK_DOCKER, jupiter_config.WAVE_WORKER_IMAGE))
+    os.system("sudo docker build -f worker.Dockerfile ../../../ -t " +jupiter_config.WAVE_WORKER_IMAGE)
     os.system("sudo docker push " + jupiter_config.WAVE_WORKER_IMAGE)
 
-    os.system("rm DAG.txt")
-    os.system("rm input_node.txt")
-    os.system("rm jupiter_config.ini")
 
 
 if __name__ == '__main__':

@@ -57,6 +57,7 @@ ADD jupiter_config.py /jupiter_config.py
 ADD circe/{pricing_option}/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
+RUN echo {app_file}/configuration.txt
 ADD {app_file}/configuration.txt /configuration.txt
 ADD {app_file}/input_home.txt /input_home.txt
 

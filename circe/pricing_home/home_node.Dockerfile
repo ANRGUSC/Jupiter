@@ -43,6 +43,7 @@ ADD jupiter_config.py /jupiter_config.py
 ADD circe/pricing_home/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
+RUN echo app_specific_files/network_monitoring_app_dag/configuration.txt
 ADD app_specific_files/network_monitoring_app_dag/configuration.txt /configuration.txt
 ADD app_specific_files/network_monitoring_app_dag/input_home.txt /input_home.txt
 

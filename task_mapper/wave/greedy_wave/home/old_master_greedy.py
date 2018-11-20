@@ -1,10 +1,10 @@
 """
 .. note:: This is the main script to run in home node for greedy WAVE.
 """
-__author__ = "Quynh Nguyen, Pranav Sakulkar, Jiatong Wang, Pradipta Ghosh, Bhaskar Krishnamachari"
+__author__ = "Pranav Sakulkar, Jiatong Wang, Pradipta Ghosh, Quynh Nguyen, Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "3.0"
+__version__ = "2.1"
 
 import re
 import threading
@@ -17,8 +17,6 @@ import time
 from flask import Flask, request
 import configparser
 from os import path
-import multiprocessing
-from multiprocessing import Process, Manager
 
 
 
@@ -35,7 +33,7 @@ def read_file(file_name):
         str: file_contents - all lines in a file
     """
     
-    #lock.acquire()
+    lock.acquire()
     file_contents = []
     file = open(file_name)
     line = file.readline()
@@ -43,7 +41,7 @@ def read_file(file_name):
         file_contents.append(line)
         line = file.readline()
     file.close()
-    #lock.release()
+    lock.release()
     return file_contents
 
 def prepare_global():
@@ -101,10 +99,14 @@ def prepare_global():
     local_mapping = "local/local_mapping.txt"
     local_responsibility = "local/task_responsibility"
 
-    global lock, assigned_tasks, application, MAX_TASK_NUMBER,assignments, manager
-    manager = Manager()
-    assignments = manager.dict()
-    assigned_tasks = manager.dict()
+    global lock, assigned_tasks, application, MAX_TASK_NUMBER,assignments
+    
+    # lock for sync file operation
+    lock = threading.Lock()
+    
+
+
+    assigned_tasks = {}
 
     application = read_file("DAG/DAG_application.txt")
     MAX_TASK_NUMBER = int(application[0])  # Total number of tasks in the DAG 
@@ -138,7 +140,6 @@ def recv_mapping():
     """
 
     try:
-        print('Receive mapping from the workers')
         node = request.args.get('node')
         mapping = request.args.get("mapping")
 
@@ -150,9 +151,6 @@ def recv_mapping():
             assignments[p] = node
             to_be_write.append(p + '\t' + node)
 
-        print('-------------------')
-        print(assignments)
-        print('-------------------')
         if not os.path.exists("./local"):
             os.mkdir("./local")
 
@@ -190,13 +188,69 @@ def assign_task_to_remote(assigned_node, task_name):
         str: request if sucessful, ``not ok`` otherwise
     """
     try:
-        print('Assign the first task based on the input file')
         url = "http://" + nodes[assigned_node] + "/assign_task"
-        print(url)
-        print(task_name)
         params = {'task_name': task_name}
+        print('&&&&&&&&&&&&&&&')
+        print(params)
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        print(req)
+        res = urllib.request.urlopen(req)
+        print(res)
+        res = res.read()
+        res = res.decode('utf-8')
+        print(res)
+    except Exception as e:
+        print(e)
+        return "not ok"
+    return res
+
+
+def call_recv_control(assigned_node, control):
+    """
+    A function that used for intermediate data transfer. Receive initial return control value ( ``ok`` or ``not ok``), used in ``init_thread()``
+    
+    Args:
+        - assigned_node (str): node which is assigned the control task
+        - control (bool): True if assigned control function, False other wise
+    
+    Returns:
+        str: request if sucessful, ``not ok`` otherwise
+    """
+    try:
+        print('-----------------')
+        print(nodes)
+        print(assigned_node)
+        print(nodes[assigned_node])
+        url = "http://" + nodes[assigned_node] + "/recv_control"
+        print(url)
+        params = {'control': control}
+        print(params)
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+        print('-----------------')
+    except Exception as e:
+        print(e)
+        return "not ok"
+    return res
+
+
+def call_kill_thread(node):
+    """
+    When all the assignments are done, kill all running thread
+    
+    Args:
+        node (str): information of the node to be killed
+    
+    Returns:
+        str: request if sucessful, ``not ok`` otherwise
+    """
+    try:
+        url = "http://" + nodes[node] + "/kill_thread"
+        req = urllib.request.Request(url=url)
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
@@ -206,42 +260,39 @@ def assign_task_to_remote(assigned_node, task_name):
     return res
 
 
-# def call_kill_thread(node):
-#     """
-#     When all the assignments are done, kill all running thread
-    
-#     Args:
-#         node (str): information of the node to be killed
-    
-#     Returns:
-#         str: request if sucessful, ``not ok`` otherwise
-#     """
-#     try:
-#         url = "http://" + nodes[node] + "/kill_thread"
-#         req = urllib.request.Request(url=url)
-#         res = urllib.request.urlopen(req)
-#         res = res.read()
-#         res = res.decode('utf-8')
-#     except Exception as e:
-#         print(e)
-#         return "not ok"
-#     return res
-
-
 
 def init_thread():
     """
-    Assign the first task
+    Create initial folders and files under ``local/task_responsibility`` for all nodes
     """
-    time.sleep(60)
+
+    # init folder and file under local for all nodes
+    # send control info to all nodes
+    line = ""
+    for key in control_relation:
+        controlled = control_relation[key]
+        if line != "":
+            line = line + "#"
+        line = line + key
+        for _, item in enumerate(controlled):
+            line = line + "__" + item
+
+    print('**********')
+    print(line)
+    print(nodes)
+    for node in nodes:
+        print(node)
+        res = call_recv_control(node, line)
+        if res != "ok":
+            output("Send control info to node %s failed" % node)
+
+    # assign task init task to nodes
     for key in init_tasks:
         tasks = init_tasks[key]
         for _, task in enumerate(tasks):
             res = assign_task_to_remote(key, task)
-            if res == "ok":
-                output("Assign task %s to node %s" % (task, key))
-            else:
-                output("Assign task %s to node %s failed" % (task, key))
+            if res != "ok":
+                output("Assign task %s to node %s failed" % (task, node))
 
 
 def monitor_task_status():
@@ -250,20 +301,43 @@ def monitor_task_status():
     """
 
     killed = 0
+    print(MAX_TASK_NUMBER)
     while True:
+        print(assigned_tasks)
         if len(assigned_tasks) == MAX_TASK_NUMBER:
             print("All task allocations are done! Great News!")
+            for node in nodes:
+                res = call_kill_thread(node)
+                if res != "ok":
+                    output("Kill node thread failed: " + str(node))
+                else:
+                    killed += 1
+        if killed == MAX_TASK_NUMBER:
             break
-        #     for node in nodes:
-        #         res = call_kill_thread(node)
-        #         if res != "ok":
-        #             output("Kill node thread failed: " + str(node))
-        #         else:
-        #             killed += 1
-        # if killed == MAX_TASK_NUMBER:
-        #     break
-        time.sleep(60)
+        time.sleep(10)
 
+
+def scan_dir(directory):
+    """
+    Scan the directory, append all file names to list ``tasks``
+    
+    Args:
+        directory (str): directory path
+    
+    Returns:
+        list: tasks - List of all file names in the directory
+    """
+    tasks = []
+    for file_name in os.listdir(directory):
+        tasks.append(file_name)
+    return tasks
+
+
+def create_file():
+    """
+    Do nothing/ pass
+    """
+    pass
 
 
 def write_file(file_name, content, mode):
@@ -276,12 +350,12 @@ def write_file(file_name, content, mode):
         - mode (str): write mode 
     """
 
-    #lock.acquire()
+    lock.acquire()
     file = open(file_name, mode)
     for line in content:
         file.write(line + "\n")
     file.close()
-    #lock.release()
+    lock.release()
 
 
 def init_task_topology():
@@ -316,11 +390,17 @@ def init_task_topology():
             continue
 
         children[parent] = items[3:]
+
+        print(parent)
+        print(items[3:])
+
         for child in items[3:]:
             if child in parents.keys():
                 parents[child].append(parent)
             else:
                 parents[child] = [parent]
+
+    print("parents" ,parents)
 
     for key in parents:
         parent = parents[key]
@@ -338,7 +418,17 @@ def init_task_topology():
                     break
             if not flag:
                 control_relation[parent[0]] = [key]
+
+    to_be_write = []
+    for key in control_relation:
+        controlled = control_relation[key]
+        line = key
+        for child in controlled:
+            line = line + '\t' + child
+        to_be_write.append(line)
+
     print("control_relation" ,control_relation)
+    write_file("DAG/parent_controller.txt", to_be_write, "a+")
 
 
 
