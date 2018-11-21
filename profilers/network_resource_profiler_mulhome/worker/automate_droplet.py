@@ -133,13 +133,17 @@ class droplet_regression():
         self.scheduling_file = dir_scheduler
         self.client_mongo    = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
         self.db = self.client_mongo.droplet_network_profiler
+        self.username = username
+        self.password = password
+        self.central_IPs = HOME_IP.split(':')
+        self.central_IPs = self.central_IPs[1:]
        
         # Read the info regarding the central profiler
-        with open('central.txt','r') as f:
-            line = f.read().split(' ')
-            self.central_IP = line[0]
-            self.username   = line[1]
-            self.password   = line[2]
+        # with open('central.txt','r') as f:
+        #     line = f.read().split(' ')
+        #     self.central_IP = line[0]
+        #     self.username   = line[1]
+        #     self.password   = line[2]
 
     def do_add_host(self, file_hosts):
         """This function reads the ``scheduler.txt`` file to add other droplets info 
@@ -213,15 +217,18 @@ class droplet_regression():
     def do_send_parameters(self):
         """This function sends the local regression data to the central profiler
         """
-        client = paramiko.SSHClient()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        client.connect(self.central_IP, username = self.username,
-                            password = self.password, port = ssh_port)
-        local_path  = os.path.join(os.getcwd(),self.parameters_file)
-        remote_path = '%s'%(self.dir_remote)
-        scp = SCPClient(client.get_transport())
-        scp.put(local_path, remote_path)
-        scp.close()
+        print('Send to central nodes')
+        print(self.central_IPs)
+        for central_IP in self.central_IPs:
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            client.connect(central_IP, username = self.username,
+                                password = self.password, port = ssh_port)
+            local_path  = os.path.join(os.getcwd(),self.parameters_file)
+            remote_path = '%s'%(self.dir_remote)
+            scp = SCPClient(client.get_transport())
+            scp.put(local_path, remote_path)
+            scp.close()
 
 
 class MyEventHandler(pyinotify.ProcessEvent):

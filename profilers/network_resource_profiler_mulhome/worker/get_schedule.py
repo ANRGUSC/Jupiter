@@ -45,16 +45,20 @@ def main():
     HOME_IP = os.environ["HOME_IP"]
 
     flag_schedule = "False"
+    home_ips = HOME_IP.split(':')
+    home_ips = home_ips[1:]
+    print(home_ips)
     while flag_schedule == "False":
         time.sleep(10)
         try:
-            print("get the schedule from http://"+ HOME_IP + ":" + str(FLASK_SVC))
-            line = "http://"+HOME_IP+":" + str(FLASK_SVC) + "/schedule/" + SELF_IP
-            r = requests.get(line).json()
-            print(r)
-            if len(r):
-                flag_schedule = r["status"]
-            print(flag_schedule)
+            for home_ip in home_ips:
+                print("get the schedule from http://"+ home_ip + ":" + str(FLASK_SVC))
+                line = "http://"+home_ip+":" + str(FLASK_SVC) + "/schedule/" + SELF_IP
+                r = requests.get(line).json()
+                print(r)
+                if len(r):
+                    flag_schedule = r["status"]
+                print(flag_schedule)
         except Exception as e:
             print("Scheduler request failed. Will try again, details: " + str(e))
 

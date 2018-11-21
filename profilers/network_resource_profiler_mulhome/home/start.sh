@@ -41,6 +41,11 @@ if [ ${#nodes[@]} -ne ${#nodes_ips[@]} ]; then
     echo "Something is wrong with the environment variables!"
 fi
 
+echo $nodes
+echo $nodes_ips
+echo $home_ids
+echo $home_ips
+
 
 # ALL_NODES lists the host names and ALL_NODES_IPS lists the ip address of the
 # nodes ':'. Since we are using Kubernetes, we use customized hostnames

@@ -45,7 +45,8 @@ def send_schedule(ip):
     scheduler_file = os.path.join(cur_schedule, output_file)
     retry = 1
     success_flag = False
-    if path.isfile(scheduler_file) and path.isfile(source_central_file):
+    # if path.isfile(scheduler_file) and path.isfile(source_central_file):
+    if path.isfile(scheduler_file):
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         while retry < num_retries:
@@ -54,7 +55,7 @@ def send_schedule(ip):
                         port = ssh_port)
                 scp = SCPClient(client.get_transport())
                 scp.put(scheduler_file, dir_remote)
-                scp.put(source_central_file, dir_remote_profiler)
+                #scp.put(source_central_file, dir_remote_profiler)
                 scp.close() 
                 print('File transfer complete to ' + ip + '\n')
                 success_flag = True
@@ -318,11 +319,11 @@ def main():
     FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 
-    global source_central_file, dir_remote, dir_remote_profiler,self_ip, filename
+    global dir_remote, self_ip, filename
     dir_remote   = '/network_profiling/scheduling/'
-    dir_remote_profiler  =  '/network_profiling/'
-    source_central_file  = '/network_profiling/central.txt'
+    #dir_remote_profiler  =  '/network_profiling/'
     self_ip = os.environ['SELF_IP']
+    #source_central_file  = '/network_profiling/central_%s.txt'%(self_ip)
 
     nodes_file = 'central_input/nodes.txt'
     homes_list = dict()
@@ -332,28 +333,26 @@ def main():
         lines = f.readlines()
         for line in lines:
             info = line.rstrip().split(',')
+            node_list[info[0]] = [info[1],info[2]]
             if info[0].startswith('home'):
                 homes_list[info[0]] = [info[1],info[2]]
-            else:
-                node_list[info[0]] = [info[1],info[2]]
+                
     
     df_homes = pd.DataFrame.from_dict(homes_list, orient='index')  
-    df_nodes = pd.DataFrame.from_dict(node_list, orient='index')  
-    df_homes.columns = ['Tag', 'Region']
-    df_nodes.columns = ['Tag', 'Region']
+    df_nodes = pd.DataFrame.from_dict(node_list, orient='index')
+    df_homes.index.name = 'Tag'  
+    df_nodes.index.name = 'Tag'
+    df_homes.columns = ['Node', 'Region']
+    df_nodes.columns = ['Node', 'Region']
     
-    print('--------------------')
     print(df_homes)
     print(df_nodes)
-    print('--------------------')
-    print(node_list)
-    print(homes_list)
-    print('--------------------')
 
     # load the list of links from the csv file
     links_info = 'central_input/link_list.txt'
     df_links   = pd.read_csv(links_info, header = 0)
     df_links.replace('(^\s+|\s+$)', '', regex = True, inplace = True)
+    print(df_links)
 
     # check the folder for putting output files
     global scheduling_folder, output_file
@@ -363,9 +362,9 @@ def main():
         os.makedirs(scheduling_folder)
 
     # write central profiler info where each node should send their data
-    with open(source_central_file, 'w') as f:
-        line = self_ip+ " " + username + " " + password
-        f.write(line)
+    # with open(source_central_file, 'w') as f:
+    #     line = self_ip+ " " + username + " " + password
+    #     f.write(line)
     
     print('Step 1: Create the central database ')
     client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
@@ -377,9 +376,6 @@ def main():
     print('Step 2: Preparing the scheduling text files')
     for cur_node, row in df_nodes.iterrows():
         # create separate scheduling folders for separate nodes
-        print(cur_node)
-        print(row)
-        print(node_list.get(cur_node)[0])
         cur_schedule = os.path.join(scheduling_folder, node_list.get(cur_node)[0])
         print(cur_schedule)
         if not os.path.exists(cur_schedule):
@@ -413,15 +409,18 @@ def main():
     db = client_mongo['droplet_network_profiler']
     filename = "scheduling/%s/scheduling.txt"%(self_ip)
     c = 0
+    print(filename)
     with open(filename, 'r') as f:
         next(f)
         for line in f:
+            print(line)
             c =c+1
             ip, region = line.split(',')
             db.create_collection(ip, capped=True, size=10000, max=10)
     with open(filename, 'r') as f:
         first_line = f.readline()
         ip, region = first_line.split(',')
+        print(ip)
         db.create_collection(ip, capped=True, size=100000, max=c*100)
         
     print('Step 3: Scheduling updating the central database')

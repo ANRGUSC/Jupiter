@@ -361,6 +361,7 @@ def main():
     for cur_node, row in df_nodes.iterrows():
         # create separate scheduling folders for separate nodes
         cur_schedule = os.path.join(scheduling_folder, node_list.get(cur_node)[0])
+        print(cur_schedule)
         if not os.path.exists(cur_schedule):
             os.makedirs(cur_schedule)
 
@@ -387,15 +388,18 @@ def main():
     db = client_mongo['droplet_network_profiler']
     filename = "scheduling/%s/scheduling.txt"%(self_ip)
     c = 0
+    print(filename)
     with open(filename, 'r') as f:
         next(f)
         for line in f:
+            print(line)
             c =c+1
             ip, region = line.split(',')
             db.create_collection(ip, capped=True, size=10000, max=10)
     with open(filename, 'r') as f:
         first_line = f.readline()
         ip, region = first_line.split(',')
+        print(ip)
         db.create_collection(ip, capped=True, size=100000, max=c*100)
         
     print('Step 3: Scheduling updating the central database')
