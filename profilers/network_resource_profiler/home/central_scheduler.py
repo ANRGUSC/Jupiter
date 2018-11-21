@@ -328,10 +328,15 @@ def main():
     df_nodes   = pd.read_csv(nodes_info, header = 0, delimiter = ',',index_col = 0)
     node_list  = df_nodes.T.to_dict('list')
 
+    print(df_nodes)
+    print(node_list)
+
     # load the list of links from the csv file
     links_info = 'central_input/link_list.txt'
     df_links   = pd.read_csv(links_info, header = 0)
     df_links.replace('(^\s+|\s+$)', '', regex = True, inplace = True)
+
+    print(df_links)
 
     # check the folder for putting output files
     global scheduling_folder, output_file
@@ -362,14 +367,18 @@ def main():
         outgoing_links_info = df_links.loc[df_links['Source'] == cur_node]
         outgoing_links_info = pd.merge(outgoing_links_info, df_nodes, left_on = 'Destination', right_index = True, how = 'inner')
 
+        print(outgoing_links_info)
         # prepare the output schedule. it has two clumns Node and Region (location)
         schedule_info = pd.DataFrame(columns = ['Node','Region'])
         # Append the self ip address and the self region
         schedule_info = schedule_info.append({'Node':node_list.get(cur_node)[0],
                                     'Region':row['Region']}, ignore_index = True)
+        print(schedule_info)
         # append all destination address and their region
         schedule_info = schedule_info.append(outgoing_links_info[['Node','Region']], ignore_index = False)
         # write the schedule to the output csv file
+
+        print(schedule_info)
 
         scheduler_file = os.path.join(cur_schedule, output_file)
         schedule_info.to_csv(scheduler_file, header = False, index = False)

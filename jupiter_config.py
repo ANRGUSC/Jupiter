@@ -85,8 +85,11 @@ def set_globals():
 		HEFT_PATH           = HERE + 'task_mapper/heft/modified/'	
 		mapper_option 		= 'modified'
 
-	global pricing_option
-	pricing_option = 'pricing' #original pricing
+	global pricing_option, profiler_option
+
+	pricing_option 			= 'pricing' #original pricing
+	profiler_option     	= 'onehome'
+
 	if PRICING == 2:#separated
 		pricing_option 		= 'pricing_separate'
 	if PRICING == 3:#decoupled

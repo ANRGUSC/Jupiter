@@ -325,117 +325,125 @@ def main():
     self_ip = os.environ['SELF_IP']
 
     nodes_file = 'central_input/nodes.txt'
-    df_nodes   = pd.read_csv(nodes_file, header = 0, delimiter = ',',index_col = 0)
-    print(df_nodes)
-    node_list  = df_nodes.T.to_dict('list')
-    print(type(node_list))
-    homes_info = dict()
-    nodes_info = dict()
+    homes_list = dict()
+    node_list = dict()
     with open(nodes_file, 'r') as f:
+        first_line = f.readline()
         lines = f.readlines()
         for line in lines:
-            info = line.rstrip().split(' ')
-            print(info)
-            print(len(info))
+            info = line.rstrip().split(',')
             if info[0].startswith('home'):
-                homes_info[info[0]] = [info[1],info[2]]
+                homes_list[info[0]] = [info[1],info[2]]
             else:
-                nodes_info[info[0]] = [info[1],info[2]]
-
-    df_homes = pd.DataFrame(homes_info, columns=['Tag', 'IP', 'Region'])  
-    df_homes = df_homes.set_index('Tag')
-
-    df_nodes = pd.DataFrame(nodes_info, columns=['Tag', 'IP', 'Region'])  
-    df_nodes = df_nodes.set_index('Tag')
-
+                node_list[info[0]] = [info[1],info[2]]
+    
+    df_homes = pd.DataFrame.from_dict(homes_list, orient='index')  
+    df_nodes = pd.DataFrame.from_dict(node_list, orient='index')  
+    df_homes.columns = ['Tag', 'Region']
+    df_nodes.columns = ['Tag', 'Region']
     
     print('--------------------')
-    
-    print(nodes_info)
-    print(homes_info)
-
+    print(df_homes)
+    print(df_nodes)
+    print('--------------------')
+    print(node_list)
+    print(homes_list)
+    print('--------------------')
 
     # load the list of links from the csv file
     links_info = 'central_input/link_list.txt'
     df_links   = pd.read_csv(links_info, header = 0)
     df_links.replace('(^\s+|\s+$)', '', regex = True, inplace = True)
 
-    # # check the folder for putting output files
-    # global scheduling_folder, output_file
-    # scheduling_folder = 'scheduling'
-    # output_file = 'scheduling.txt'
-    # if not os.path.exists(scheduling_folder):
-    #     os.makedirs(scheduling_folder)
+    # check the folder for putting output files
+    global scheduling_folder, output_file
+    scheduling_folder = 'scheduling'
+    output_file = 'scheduling.txt'
+    if not os.path.exists(scheduling_folder):
+        os.makedirs(scheduling_folder)
 
-    # # write central profiler info where each node should send their data
-    # with open(source_central_file, 'w') as f:
-    #     line = self_ip+ " " + username + " " + password
-    #     f.write(line)
+    # write central profiler info where each node should send their data
+    with open(source_central_file, 'w') as f:
+        line = self_ip+ " " + username + " " + password
+        f.write(line)
     
-    # print('Step 1: Create the central database ')
-    # client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
-    # db = client_mongo['central_network_profiler']
-    # buffer_size = len(df_links.index) * 100
-    # db.create_collection('quadratic_parameters', capped = True, size = 100000, max = buffer_size)
+    print('Step 1: Create the central database ')
+    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+    db = client_mongo['central_network_profiler']
+    buffer_size = len(df_links.index) * 100
+    db.create_collection('quadratic_parameters', capped = True, size = 100000, max = buffer_size)
     
 
-    # print('Step 2: Preparing the scheduling text files')
-    # for cur_node, row in df_nodes.iterrows():
-    #     # create separate scheduling folders for separate nodes
-    #     cur_schedule = os.path.join(scheduling_folder, node_list.get(cur_node)[0])
-    #     if not os.path.exists(cur_schedule):
-    #         os.makedirs(cur_schedule)
+    print('Step 2: Preparing the scheduling text files')
+    for cur_node, row in df_nodes.iterrows():
+        # create separate scheduling folders for separate nodes
+        print(cur_node)
+        print(row)
+        print(node_list.get(cur_node)[0])
+        cur_schedule = os.path.join(scheduling_folder, node_list.get(cur_node)[0])
+        print(cur_schedule)
+        if not os.path.exists(cur_schedule):
+            os.makedirs(cur_schedule)
 
-    #     outgoing_links_info = df_links.loc[df_links['Source'] == cur_node]
-    #     outgoing_links_info = pd.merge(outgoing_links_info, df_nodes, left_on = 'Destination', right_index = True, how = 'inner')
+        outgoing_links_info = df_links.loc[df_links['Source'] == cur_node]
+        outgoing_links_info = pd.merge(outgoing_links_info, df_nodes, left_on = 'Destination', right_index = True, how = 'inner')
 
-    #     # prepare the output schedule. it has two clumns Node and Region (location)
-    #     schedule_info = pd.DataFrame(columns = ['Node','Region'])
-    #     # Append the self ip address and the self region
-    #     schedule_info = schedule_info.append({'Node':node_list.get(cur_node)[0],
-    #                                 'Region':row['Region']}, ignore_index = True)
-    #     # append all destination address and their region
-    #     schedule_info = schedule_info.append(outgoing_links_info[['Node','Region']], ignore_index = False)
-    #     # write the schedule to the output csv file
+        print(outgoing_links_info)
+        # prepare the output schedule. it has two clumns Node and Region (location)
+        schedule_info = pd.DataFrame(columns = ['Node','Region'])
 
-    #     scheduler_file = os.path.join(cur_schedule, output_file)
-    #     schedule_info.to_csv(scheduler_file, header = False, index = False)
+        print(schedule_info)
+        # Append the self ip address and the self region
+        schedule_info = schedule_info.append({'Node':node_list.get(cur_node)[0],
+                                    'Region':row['Region']}, ignore_index = True)
+        print(schedule_info)
+        # append all destination address and their region
+        schedule_info = schedule_info.append(outgoing_links_info[['Node','Region']], ignore_index = False)
+        print(schedule_info)
+        # write the schedule to the output csv file
 
-    # client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
-    # db = client_mongo['droplet_network_profiler']
-    # filename = "scheduling/%s/scheduling.txt"%(self_ip)
-    # c = 0
-    # with open(filename, 'r') as f:
-    #     next(f)
-    #     for line in f:
-    #         c =c+1
-    #         ip, region = line.split(',')
-    #         db.create_collection(ip, capped=True, size=10000, max=10)
-    # with open(filename, 'r') as f:
-    #     first_line = f.readline()
-    #     ip, region = first_line.split(',')
-    #     db.create_collection(ip, capped=True, size=100000, max=c*100)
+        scheduler_file = os.path.join(cur_schedule, output_file)
+
+        print(schedule_info)
+        schedule_info.to_csv(scheduler_file, header = False, index = False)
+
+
+
+    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+    db = client_mongo['droplet_network_profiler']
+    filename = "scheduling/%s/scheduling.txt"%(self_ip)
+    c = 0
+    with open(filename, 'r') as f:
+        next(f)
+        for line in f:
+            c =c+1
+            ip, region = line.split(',')
+            db.create_collection(ip, capped=True, size=10000, max=10)
+    with open(filename, 'r') as f:
+        first_line = f.readline()
+        ip, region = first_line.split(',')
+        db.create_collection(ip, capped=True, size=100000, max=c*100)
         
-    # print('Step 3: Scheduling updating the central database')
-    # # create the folder for each droplet/node to report the local data to
-    # parameters_folder = 'parameters'
-    # if not os.path.exists(parameters_folder):
-    #     os.makedirs(parameters_folder)
+    print('Step 3: Scheduling updating the central database')
+    # create the folder for each droplet/node to report the local data to
+    parameters_folder = 'parameters'
+    if not os.path.exists(parameters_folder):
+        os.makedirs(parameters_folder)
 
-    # # create a background job to update the mongodb with the received parameters
-    # sched = BackgroundScheduler()
-    # sched.add_job(do_update_quadratic,'interval', id = 'update',
-    #                            minutes = 10,replace_existing = True)
+    # create a background job to update the mongodb with the received parameters
+    sched = BackgroundScheduler()
+    sched.add_job(do_update_quadratic,'interval', id = 'update',
+                               minutes = 10,replace_existing = True)
     
 
-    # print('Step 4: Scheduling measurement job')
-    # sched.add_job(measurement_job,'interval',id='measurement', minutes=1, replace_existing=True)
+    print('Step 4: Scheduling measurement job')
+    sched.add_job(measurement_job,'interval',id='measurement', minutes=1, replace_existing=True)
 
-    # print('Step 5: Scheduling regression job')
-    # sched.add_job(regression_job,'interval', id='regression', minutes=10, replace_existing=True)
+    print('Step 5: Scheduling regression job')
+    sched.add_job(regression_job,'interval', id='regression', minutes=10, replace_existing=True)
 
-    # print('Step 6: Start the schedulers')
-    # sched.start()
+    print('Step 6: Start the schedulers')
+    sched.start()
 
     app.run(host='0.0.0.0', port=FLASK_DOCKER) #run this web application on 0.0.0.0 and default port is 5000
 
