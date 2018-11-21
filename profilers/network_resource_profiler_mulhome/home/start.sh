@@ -23,12 +23,18 @@ echo "their IPs are:"
 echo $ALL_NODES_IPS
 echo "my node is:"
 echo $SELF_NAME
-echo "home is:"
+echo "my IP is:"
+echo $SELF_IP
+echo "all home list IP is:"
 echo $HOME_IP
+echo "all home list ID is:"
+echo $HOME_ID
 
 # Read env vars into arrays
 read -a nodes <<<${ALL_NODES//:/ }
 read -a nodes_ips <<<${ALL_NODES_IPS//:/ }
+read -a home_ids <<<${HOME_ID//:/ }
+read -a home_ips <<<${HOME_IP//:/ }
 
 # Check if lengths are equal
 if [ ${#nodes[@]} -ne ${#nodes_ips[@]} ]; then
@@ -40,8 +46,15 @@ fi
 # nodes ':'. Since we are using Kubernetes, we use customized hostnames
 # (managed by the k8s dns) to address pods in the cluster.
 # The hostnames correspond to the node name the profiler will run on.
-INPUT_ARGS="home,$HOME_IP,PASSWORD"
-echo $INPUT_ARGS >> /network_profiling/central_input/nodes.txt
+
+for ((i = 0; i < ${#home_ids[@]}; i++)); do
+    INPUT_ARGS="${home_ids[i]},${home_ips[i]},PASSWORD"
+    echo $INPUT_ARGS >> /network_profiling/central_input/nodes.txt
+    INPUT_ARGS_2="${home_ips[i]}"
+    echo $INPUT_ARGS_2 >> /resource_profiling/ip_path
+done
+
+
 for ((i = 0; i < ${#nodes[@]}; i++)); do
     INPUT_ARGS="${nodes[i]},${nodes_ips[i]},PASSWORD"
     echo $INPUT_ARGS >> /network_profiling/central_input/nodes.txt

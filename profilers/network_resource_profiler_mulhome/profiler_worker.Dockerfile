@@ -13,7 +13,7 @@ RUN pip3 install --upgrade pip
 RUN apt-get install -y openssh-server mongodb net-tools sshpass nano virtualenv supervisor
 
 # Install required python libraries
-ADD profilers/network_resource_profiler/worker/requirements.txt /requirements.txt
+ADD profilers/network_resource_profiler_mulhome/worker/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
 
@@ -29,19 +29,19 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 RUN mkdir -p /network_profiling
-ADD profilers/network_resource_profiler/worker/droplet_mongod /network_profiling/droplet_mongod
+ADD profilers/network_resource_profiler_mulhome/worker/droplet_mongod /network_profiling/droplet_mongod
 RUN chmod +x /network_profiling/droplet_mongod
 
 # Prepare network profiling code
-ADD profilers/network_resource_profiler/worker/droplet_generate_random_files /network_profiling/droplet_generate_random_files
-ADD profilers/network_resource_profiler/worker/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
+ADD profilers/network_resource_profiler_mulhome/worker/droplet_generate_random_files /network_profiling/droplet_generate_random_files
+ADD profilers/network_resource_profiler_mulhome/worker/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
 RUN chmod +x /network_profiling/droplet_scp_time_transfer
 RUN chmod +x /network_profiling/droplet_generate_random_files
 
-ADD profilers/network_resource_profiler/worker/automate_droplet.py /network_profiling/automate_droplet.py
-ADD profilers/network_resource_profiler/worker/get_schedule.py /network_profiling/get_schedule.py
+ADD profilers/network_resource_profiler_mulhome/worker/automate_droplet.py /network_profiling/automate_droplet.py
+ADD profilers/network_resource_profiler_mulhome/worker/get_schedule.py /network_profiling/get_schedule.py
 
-ADD scripts/keep_alive.py /network_profiling/keep_alive.py
+ADD mulhome_scripts/keep_alive.py /network_profiling/keep_alive.py
 
 RUN mkdir -p /network_profiling/generated_test
 RUN mkdir -p /network_profiling/received_test
@@ -50,10 +50,10 @@ RUN mkdir -p /network_profiling/scheduling
 
 # Prepare resource profiling code
 RUN mkdir -p /resource_profiler
-ADD profilers/network_resource_profiler/worker/resource_profiler.py /resource_profiler/resource_profiler.py
+ADD profilers/network_resource_profiler_mulhome/worker/resource_profiler.py /resource_profiler/resource_profiler.py
 
 #Running docker
-ADD profilers/network_resource_profiler/worker/start.sh /network_profiling/start.sh
+ADD profilers/network_resource_profiler_mulhome/worker/start.sh /network_profiling/start.sh
 RUN chmod +x /network_profiling/start.sh
 
 ADD jupiter_config.ini /network_profiling/jupiter_config.ini

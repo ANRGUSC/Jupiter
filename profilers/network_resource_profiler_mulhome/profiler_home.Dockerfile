@@ -13,7 +13,7 @@ RUN pip3 install --upgrade pip
 RUN apt-get install -y openssh-server mongodb sshpass nano virtualenv supervisor
 
 # Install required python libraries
-ADD profilers/network_resource_profiler/home/requirements.txt /requirements.txt
+ADD profilers/network_resource_profiler_mulhome/home/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
 
@@ -30,15 +30,15 @@ RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 RUN mkdir -p /network_profiling
 
-ADD profilers/network_resource_profiler/home/central_mongod /network_profiling/central_mongod
+ADD profilers/network_resource_profiler_mulhome/home/central_mongod /network_profiling/central_mongod
 RUN chmod +x /network_profiling/central_mongod
 
 # Prepare network profiling code
-ADD profilers/network_resource_profiler/home/central_input /network_profiling/central_input
-ADD profilers/network_resource_profiler/home/central_query_statistics.py /network_profiling/central_query_statistics.py
-ADD profilers/network_resource_profiler/home/central_scheduler.py /network_profiling/central_scheduler.py
-ADD profilers/network_resource_profiler/home/generate_link_list.py /network_profiling/generate_link_list.py
-ADD scripts/keep_alive.py /network_profiling/keep_alive.py
+ADD profilers/network_resource_profiler_mulhome/home/central_input /network_profiling/central_input
+ADD profilers/network_resource_profiler_mulhome/home/central_query_statistics.py /network_profiling/central_query_statistics.py
+ADD profilers/network_resource_profiler_mulhome/home/central_scheduler.py /network_profiling/central_scheduler.py
+ADD profilers/network_resource_profiler_mulhome/home/generate_link_list.py /network_profiling/generate_link_list.py
+ADD mulhome_scripts/keep_alive.py /network_profiling/keep_alive.py
 
 
 RUN mkdir -p /network_profiling/scheduling
@@ -48,17 +48,17 @@ RUN mkdir -p /network_profiling/received_test
 
 # Prepare resource profiling code
 RUN mkdir -p /resource_profiling
-ADD profilers/network_resource_profiler/home/resource_profiling_files/ /resource_profiling/
+ADD profilers/network_resource_profiler_mulhome/home/resource_profiling_files/ /resource_profiling/
 
 
 # Prepare network profiling code
-ADD profilers/network_resource_profiler/worker/droplet_generate_random_files /network_profiling/droplet_generate_random_files
-ADD profilers/network_resource_profiler/worker/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
+ADD profilers/network_resource_profiler_mulhome/worker/droplet_generate_random_files /network_profiling/droplet_generate_random_files
+ADD profilers/network_resource_profiler_mulhome/worker/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
 RUN chmod +x /network_profiling/droplet_scp_time_transfer
 RUN chmod +x /network_profiling/droplet_generate_random_files
 
 # Running docker
-ADD profilers/network_resource_profiler/home/start.sh /network_profiling/start.sh
+ADD profilers/network_resource_profiler_mulhome/home/start.sh /network_profiling/start.sh
 RUN chmod +x /network_profiling/start.sh
 
 ADD jupiter_config.ini /network_profiling/jupiter_config.ini

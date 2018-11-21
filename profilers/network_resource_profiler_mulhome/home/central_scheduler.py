@@ -324,16 +324,41 @@ def main():
     source_central_file  = '/network_profiling/central.txt'
     self_ip = os.environ['SELF_IP']
 
-    nodes_info = 'central_input/nodes.txt'
-    df_nodes   = pd.read_csv(nodes_info, header = 0, delimiter = ',',index_col = 0)
-
+    nodes_file = 'central_input/nodes.txt'
+    df_nodes   = pd.read_csv(nodes_file, header = 0, delimiter = ',',index_col = 0)
     print(df_nodes)
     node_list  = df_nodes.T.to_dict('list')
+    print(type(node_list))
+    homes_info = dict()
+    nodes_info = dict()
+    with open(nodes_file, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            info = line.rstrip().split(' ')
+            print(info)
+            print(len(info))
+            if info[0].startswith('home'):
+                homes_info[info[0]] = [info[1],info[2]]
+            else:
+                nodes_info[info[0]] = [info[1],info[2]]
 
-    # # load the list of links from the csv file
-    # links_info = 'central_input/link_list.txt'
-    # df_links   = pd.read_csv(links_info, header = 0)
-    # df_links.replace('(^\s+|\s+$)', '', regex = True, inplace = True)
+    df_homes = pd.DataFrame(homes_info, columns=['Tag', 'IP', 'Region'])  
+    df_homes = df_homes.set_index('Tag')
+
+    df_nodes = pd.DataFrame(nodes_info, columns=['Tag', 'IP', 'Region'])  
+    df_nodes = df_nodes.set_index('Tag')
+
+    
+    print('--------------------')
+    
+    print(nodes_info)
+    print(homes_info)
+
+
+    # load the list of links from the csv file
+    links_info = 'central_input/link_list.txt'
+    df_links   = pd.read_csv(links_info, header = 0)
+    df_links.replace('(^\s+|\s+$)', '', regex = True, inplace = True)
 
     # # check the folder for putting output files
     # global scheduling_folder, output_file
