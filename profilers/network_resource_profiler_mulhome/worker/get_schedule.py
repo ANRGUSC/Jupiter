@@ -47,7 +47,8 @@ def main():
     flag_schedule = "False"
     home_ips = HOME_IP.split(':')
     home_ips = home_ips[1:]
-    print(home_ips)
+    # print('-------------------#')
+    # print(home_ips)
     while flag_schedule == "False":
         time.sleep(10)
         try:

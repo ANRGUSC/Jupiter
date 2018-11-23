@@ -88,14 +88,14 @@ def do_update_quadratic():
     db = client_mongo.central_network_profiler
     parameters_folder = os.path.join(os.getcwd(),'parameters')
     logging = db['quadratic_parameters']
-    print(logging)
+    #print(logging)
     try:
         for subdir, dirs, files in os.walk(parameters_folder):
             for file in files:
                 if file.startswith("."): 
                     continue
                 
-                print(file)
+                #print(file)
                 measurement_file = os.path.join(subdir, file)
                 df = pd.read_csv(measurement_file, delimiter = ',', header = 0)
                 data_json = json.loads(df.to_json(orient = 'records'))
@@ -153,11 +153,11 @@ class droplet_measurement():
             bash_script = self.measurement_script + " " +self.username + "@" + self.hosts[idx]
             bash_script = bash_script + " " + str(random_size)
 
-            print(bash_script)
+            #print(bash_script)
             proc = subprocess.Popen(bash_script, shell = True, stdout = subprocess.PIPE)
             tmp = proc.stdout.read().strip().decode("utf-8")
             results = tmp.split(" ")[1]
-            print(results)
+            #print(results)
 
             mins = float(results.split("m")[0])      # Get the minute part of the elapsed time
             secs = float(results.split("m")[1][:-1]) # Get the second potion of the elapsed time
@@ -192,13 +192,18 @@ class droplet_regression():
         self.scheduling_file = "scheduling/%s/scheduling.txt"%(self_ip)
         self.client_mongo    = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
         self.db = self.client_mongo.droplet_network_profiler
+        self.username = username
+        self.password = password
+        self.central_IPs = HOME_IP.split(':')
+        self.central_IPs = self.central_IPs[1:]
+
        
         # Read the info regarding the central profiler
-        with open('central.txt','r') as f:
-            line = f.read().split(' ')
-            self.central_IP = line[0]
-            self.username   = line[1]
-            self.password   = line[2]
+        # with open('central.txt','r') as f:
+        #     line = f.read().split(' ')
+        #     self.central_IP = line[0]
+        #     self.username   = line[1]
+        #     self.password   = line[2]
 
     def do_add_host(self, file_hosts):
         """This function reads the ``scheduler.txt`` file to add other droplets info 
@@ -245,7 +250,7 @@ class droplet_regression():
             quadratic  = np.polyfit(df['X'],df['Y'],2)
             parameters = " ".join(str(x) for x in quadratic)
             cur_time   = datetime.datetime.utcnow()
-            print(parameters)
+            #print(parameters)
             
             new_reg = { "Source[IP]"       : self.my_host,
                         "Source[Reg]"      : self.my_region,
@@ -305,7 +310,7 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global MONGO_DOCKER, FLASK_SVC, FLASK_DOCKER, num_retries, username, password, ssh_port
+    global MONGO_DOCKER, FLASK_SVC, FLASK_DOCKER, num_retries, username, password, ssh_port, HOME_IP
 
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
@@ -318,6 +323,8 @@ def main():
     MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
     FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+
+    HOME_IP = os.environ["HOME_IP"]
 
     global dir_remote, self_ip, filename
     dir_remote   = '/network_profiling/scheduling/'
@@ -345,14 +352,14 @@ def main():
     df_homes.columns = ['Node', 'Region']
     df_nodes.columns = ['Node', 'Region']
     
-    print(df_homes)
-    print(df_nodes)
+    # print(df_homes)
+    # print(df_nodes)
 
     # load the list of links from the csv file
     links_info = 'central_input/link_list.txt'
     df_links   = pd.read_csv(links_info, header = 0)
     df_links.replace('(^\s+|\s+$)', '', regex = True, inplace = True)
-    print(df_links)
+    #print(df_links)
 
     # check the folder for putting output files
     global scheduling_folder, output_file
@@ -377,30 +384,30 @@ def main():
     for cur_node, row in df_nodes.iterrows():
         # create separate scheduling folders for separate nodes
         cur_schedule = os.path.join(scheduling_folder, node_list.get(cur_node)[0])
-        print(cur_schedule)
+        #print(cur_schedule)
         if not os.path.exists(cur_schedule):
             os.makedirs(cur_schedule)
 
         outgoing_links_info = df_links.loc[df_links['Source'] == cur_node]
         outgoing_links_info = pd.merge(outgoing_links_info, df_nodes, left_on = 'Destination', right_index = True, how = 'inner')
 
-        print(outgoing_links_info)
+        #print(outgoing_links_info)
         # prepare the output schedule. it has two clumns Node and Region (location)
         schedule_info = pd.DataFrame(columns = ['Node','Region'])
 
-        print(schedule_info)
+        #print(schedule_info)
         # Append the self ip address and the self region
         schedule_info = schedule_info.append({'Node':node_list.get(cur_node)[0],
                                     'Region':row['Region']}, ignore_index = True)
-        print(schedule_info)
+        #print(schedule_info)
         # append all destination address and their region
         schedule_info = schedule_info.append(outgoing_links_info[['Node','Region']], ignore_index = False)
-        print(schedule_info)
+        #print(schedule_info)
         # write the schedule to the output csv file
 
         scheduler_file = os.path.join(cur_schedule, output_file)
 
-        print(schedule_info)
+        #print(schedule_info)
         schedule_info.to_csv(scheduler_file, header = False, index = False)
 
 
@@ -409,18 +416,18 @@ def main():
     db = client_mongo['droplet_network_profiler']
     filename = "scheduling/%s/scheduling.txt"%(self_ip)
     c = 0
-    print(filename)
+    #print(filename)
     with open(filename, 'r') as f:
         next(f)
         for line in f:
-            print(line)
+            #print(line)
             c =c+1
             ip, region = line.split(',')
             db.create_collection(ip, capped=True, size=10000, max=10)
     with open(filename, 'r') as f:
         first_line = f.readline()
         ip, region = first_line.split(',')
-        print(ip)
+        #print(ip)
         db.create_collection(ip, capped=True, size=100000, max=c*100)
         
     print('Step 3: Scheduling updating the central database')

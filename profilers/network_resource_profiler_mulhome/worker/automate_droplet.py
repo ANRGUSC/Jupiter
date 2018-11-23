@@ -1,3 +1,4 @@
+
 """
 .. note:: This is the main script to run in every node in the system for network profiling procedure.
 """
@@ -317,7 +318,7 @@ def main():
     """Start watching process for ``scheduling`` folder.
     """
 
-    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER
+    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER, HOME_IP
 
     # Load all the confuguration
     INI_PATH = '/network_profiling/jupiter_config.ini'

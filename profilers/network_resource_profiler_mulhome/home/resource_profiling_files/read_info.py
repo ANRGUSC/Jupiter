@@ -34,15 +34,21 @@ def open_file():
 
 	node_ip = os.environ['SELF_IP']  
 
+	home_ips = os.environ['HOME_IP']
+	home_ips = home_ips.split(':')[1:]  
+
 	list=[]
 	ip_path = sys.argv[1]
 
+	print(node_ip)
+	print(ip_path)
+	print(home_ips)
+
 	with open(ip_path, "r") as ins:
 		for line in ins:
-			if node_ip == line:
-				continue
-
 			line = line.strip('\n')
+			if line in home_ips:
+				continue
 			print("get the data from http://"+line+ ":" + str(FLASK_SVC))
 			try:
 				r = requests.get("http://"+line+":" + str(FLASK_SVC))
@@ -50,7 +56,6 @@ def open_file():
 				result['ip']=line
 				result['last_update']=datetime.datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')
 				data=json.dumps(result)
-				print(result)
 				list.append(data)
 			except Exception as e:
 				print("resource request failed. details: " + str(e))
