@@ -131,6 +131,7 @@ def prepare_global_info():
     home_nodes = os.environ['HOME_NODE'].split(' ')
     home_ids = [x.split(':')[0] for x in home_nodes]
     home_ips = [x.split(':')[1] for x in home_nodes]
+    
 
     task_controllers = os.environ['ALL_NODES'].split(':')
     task_controllers_ips = os.environ['ALL_NODES_IPS'].split(':')
@@ -139,9 +140,14 @@ def prepare_global_info():
     computing_ips = os.environ['ALL_COMPUTING_IPS'].split(':')
 
 
-    global ip_profilers_map,profilers_ip_map, controllers_ip_map, computing_ip_map
+    global ip_profilers_map,profilers_ip_map, controllers_ip_map, computing_ip_map, profilers_ip_homes
     ip_profilers_map = dict(zip(profiler_ip[0], profiler_nodes[0]))
     profilers_ip_map = dict(zip(profiler_nodes[0], profiler_ip[0]))
+
+    print(home_nodes)
+    print(home_ids)
+    print(home_ips)
+    profilers_ip_homes = [profilers_ip_map[x] for x in home_ids]
 
     controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
     computing_ip_map = dict(zip(computing_nodes, computing_ips))
@@ -301,21 +307,28 @@ def get_updated_network_from_source(node_ips):
     network_info = {}
     for node_ip in node_ips:
         try:
-            #print('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
+            print('-------------')
+            print(node_ip)
             client_mongo = MongoClient('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.droplet_network_profiler
             collection = db.collection_names(include_system_collections=False)
+            print(collection)
             num_nb = len(collection)-1
+            print(num_nb)
             if num_nb == -1:
                 print('--- Network profiler mongoDB not yet prepared')
                 return network_info
             num_rows = db[node_ip].count() 
+            print(num_rows)
             if num_rows < num_nb:
                 print('--- Network profiler regression info not yet loaded into MongoDB!')
                 return network_info
             logging =db[node_ip].find().limit(num_nb)  
+            print(logging)
+
             for record in logging:
-                if record['Destination[IP]'] == profilers_ip_map['home']: continue
+                print(record)
+                if record['Destination[IP]'] in profilers_ip_homes: continue
                 # Source ID, Source IP, Destination ID, Destination IP, Parameters
                 network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
         except Exception as e:
