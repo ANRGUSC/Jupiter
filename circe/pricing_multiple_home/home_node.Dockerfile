@@ -43,8 +43,8 @@ ADD jupiter_config.py /jupiter_config.py
 ADD circe/pricing_multiple_home/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
+RUN echo app_specific_files/network_monitoring_app_dag/configuration.txt
 ADD app_specific_files/network_monitoring_app_dag/configuration.txt /configuration.txt
-
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
 
@@ -52,6 +52,7 @@ ADD circe/pricing_multiple_home/monitor.py /centralized_scheduler/monitor.py
 ADD circe/pricing_multiple_home/start_home.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
+ADD app_specific_files/network_monitoring_app_dag/name_convert.txt /centralized_scheduler/name_convert.txt
 
 WORKDIR /
 

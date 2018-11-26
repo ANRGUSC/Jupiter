@@ -60,8 +60,8 @@ def teardown_system(app_name):
         print('Tear down all current WAVE deployments')
         delete_all_waves(app_name)
 
-    delete_all_exec(app_name)
-    delete_all_profilers()
+    # delete_all_exec(app_name)
+    # delete_all_profilers()
 
 
 def main():

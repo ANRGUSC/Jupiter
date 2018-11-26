@@ -47,6 +47,7 @@ ADD nodes.txt /centralized_scheduler/nodes.txt
 
 ADD circe/pricing_multiple_home/compute.py /centralized_scheduler/compute.py
 ADD circe/pricing_multiple_home/readconfig.py /readconfig.py
+ADD app_specific_files/network_monitoring_app_dag/name_convert.txt /centralized_scheduler/name_convert.txt
 
 RUN chmod +x /start.sh
 

@@ -45,6 +45,7 @@ ADD circe/pricing_multiple_home/start_controller_worker.sh /start.sh
 
 ADD circe/pricing_multiple_home/monitor.py /centralized_scheduler/monitor.py
 
+
 RUN chmod +x /start.sh
 
 WORKDIR /

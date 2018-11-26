@@ -33,7 +33,6 @@ from flask import Flask, request
 from k8s_jupiter_deploy import *
 import datetime
 
-from k8s_get_service_ips import *
 from functools import wraps
 import _thread
 
@@ -81,9 +80,11 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
 
 
     if jupiter_config.SCHEDULER == 0: # HEFT
+        print('Deploy HEFT mapper')
         task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
         exec_profiler_function = k8s_exec_scheduler
     else:# WAVE
+        print('Deploy WAVE mapper')
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
         exec_profiler_function = empty_function
 
@@ -158,7 +159,7 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
         dag = st.dag
         schedule = st.schedule
 
-    # Start CIRCE
+    #Start CIRCE
     if pricing == 0:
     	k8s_circe_scheduler(dag,schedule,app_name)
     else:

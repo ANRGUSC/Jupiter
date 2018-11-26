@@ -40,10 +40,6 @@ def open_file():
 	list=[]
 	ip_path = sys.argv[1]
 
-	print(node_ip)
-	print(ip_path)
-	print(home_ips)
-
 	with open(ip_path, "r") as ins:
 		for line in ins:
 			line = line.strip('\n')

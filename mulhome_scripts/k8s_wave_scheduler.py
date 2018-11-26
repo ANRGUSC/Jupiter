@@ -29,7 +29,8 @@ def check_status_waves(app_name):
         This loads the node lists in use
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = utilities.k8s_get_nodes(path1)
+    nodes, homes = utilities.k8s_get_nodes_worker(path1)
+    pprint(nodes)
 
     """
         This loads the kubernetes instance configuration.
@@ -85,7 +86,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = utilities.k8s_get_nodes(path2)
+    nodes, homes = utilities.k8s_get_nodes_worker(path2)
     pprint(nodes)
 
     """
@@ -165,6 +166,11 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     print("####################################")
     print(all_profiler_ips)
 
+    home_profiler_ips = {}
+    for key in homes:
+        home_profiler_ips[key] = profiler_ips[key]
+
+    home_profiler_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(home_profiler_ips.items()))
 
     for i in nodes:
 
@@ -190,7 +196,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
                                              serv_ip = service_ips[i],
                                              profiler_ip = profiler_ips[i],
                                              all_profiler_ips = all_profiler_ips,
-                                             home_profiler_ip = profiler_ips['home'])
+                                             home_profiler_ip = home_profiler_str)
             # # pprint(dep)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
@@ -219,7 +225,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
                                              serv_ip = service_ips['home'],
                                              profiler_ip = profiler_ips['home'],
                                              all_profiler_ips = all_profiler_ips,
-                                             home_profiler_ip = profiler_ips['home'])
+                                             home_profiler_ip = home_profiler_str)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 

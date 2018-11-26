@@ -21,6 +21,7 @@ def prepare_global_info():
     INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
+    print(jupiter_config.CIRCE_PATH)
     sys.path.append(jupiter_config.CIRCE_PATH)
     port_list_home = []
     port_list_home.append(jupiter_config.SSH_DOCKER)

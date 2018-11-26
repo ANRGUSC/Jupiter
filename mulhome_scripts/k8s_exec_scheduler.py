@@ -99,7 +99,8 @@ def check_status_exec_profiler_workers(app_name):
     jupiter_config.set_globals()
     
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = utilities.k8s_get_nodes(path1)
+    #nodes = utilities.k8s_get_nodes(path1)
+    nodes, homes = utilities.k8s_get_nodes_worker(path1)
 
     """
         This loads the kubernetes instance configuration.
@@ -119,9 +120,6 @@ def check_status_exec_profiler_workers(app_name):
 
     result = True
     for key in nodes:
-
-        if key == "home":
-            continue
 
         # First check if there is a deployment existing with
         # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
@@ -245,7 +243,8 @@ def k8s_exec_scheduler(app_name):
     all_node = ':'.join(service_ips.keys())
     print(all_node)
 
-    nodes = utilities.k8s_get_nodes(path2)
+    #nodes = utilities.k8s_get_nodes(path2)
+    nodes, homes = utilities.k8s_get_nodes_worker(path2)
     allprofiler_ips =''
     allprofiler_names = ''
 
@@ -254,23 +253,22 @@ def k8s_exec_scheduler(app_name):
         """
             Generate the yaml description of the required service for each task
         """
-        if i != 'home':
-            pod_name = app_name+'-'+i
-            body = write_exec_service_specs(name = pod_name, label = pod_name + "exec_profiler")
+        pod_name = app_name+'-'+i
+        body = write_exec_service_specs(name = pod_name, label = pod_name + "exec_profiler")
 
-            # Call the Kubernetes API to create the service
+        # Call the Kubernetes API to create the service
 
-            try:
-                ser_resp = api.create_namespaced_service(namespace, body)
-                print("Service created. status = '%s'" % str(ser_resp.status))
-                print(i)
-                resp = api.read_namespaced_service(pod_name, namespace)
-            except ApiException as e:
-                print("Exception Occurred")
+        try:
+            ser_resp = api.create_namespaced_service(namespace, body)
+            print("Service created. status = '%s'" % str(ser_resp.status))
+            print(i)
+            resp = api.read_namespaced_service(pod_name, namespace)
+        except ApiException as e:
+            print("Exception Occurred")
 
-            # print resp.spec.cluster_ip
-            allprofiler_ips = allprofiler_ips + ':' + resp.spec.cluster_ip
-            allprofiler_names = allprofiler_names + ':' + i
+        # print resp.spec.cluster_ip
+        allprofiler_ips = allprofiler_ips + ':' + resp.spec.cluster_ip
+        allprofiler_names = allprofiler_names + ':' + i
 
     """
     All services have started for CIRCE and deployment is yet to begin
@@ -331,18 +329,18 @@ def k8s_exec_scheduler(app_name):
             We check whether the node is a scheduler.
             Since we do not run any task on the scheduler, we donot run any profiler on it as well.
         """
-        if i != 'home':
+        #if i != 'home':
 
-            """
-                Generate the yaml description of the required deployment for the profiles
-            """
-            pod_name = app_name+'-'+i
-            dep = write_exec_specs(name = pod_name, label = pod_name + "exec_profiler", node_name = i, image = jupiter_config.EXEC_WORKER_IMAGE,
-                                             host = nodes[i][0], home_node_ip = service_ips['home'])
-            # # pprint(dep)
-            # # Call the Kubernetes API to create the deployment
-            resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
-            print("Deployment created. status ='%s'" % str(resp.status))
+        """
+            Generate the yaml description of the required deployment for the profiles
+        """
+        pod_name = app_name+'-'+i
+        dep = write_exec_specs(name = pod_name, label = pod_name + "exec_profiler", node_name = i, image = jupiter_config.EXEC_WORKER_IMAGE,
+                                         host = nodes[i][0], home_node_ip = service_ips['home'])
+        # # pprint(dep)
+        # # Call the Kubernetes API to create the deployment
+        resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
+        print("Deployment created. status ='%s'" % str(resp.status))
 
     """
         Check if all the tera detectors are running

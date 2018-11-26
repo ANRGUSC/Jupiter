@@ -94,13 +94,16 @@ def set_globals():
 	if PRICING == 2:#separated
 		pricing_option 		= 'pricing_separate'
 	if PRICING == 3:#decoupled
-		pricing_option 		= 'pricing_decouple'
+		pricing_option 		= 'pricing_coded'
 	if PRICING == 4:#home
 		pricing_option 		= 'pricing_home'
 	if PRICING == 5:#multiple home
 		pricing_option 		= 'pricing_multiple_home'
 		profiler_option     = 'multiple_home'
-		NETR_PROFILER_PATH      = HERE + 'profilers/network_resource_profiler_mulhome/'
+		NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
+		EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
+		HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
+		WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
 
 	CIRCE_PATH          	= HERE + 'circe/%s/'%(pricing_option)
 	if PRICING == 0: #non-pricing
@@ -147,20 +150,20 @@ def set_globals():
 
 	#coded: random, v1: greedy
 
-	WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_wave_home:coded' %(mapper_option)
-	WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_wave_worker:coded' %(mapper_option)
+	WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:coded' %(mapper_option,profiler_option)
+	WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:coded' %(mapper_option,profiler_option)
 
 	"""Execution profiler home and worker images"""
 	global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-	EXEC_HOME_IMAGE         = 'docker.io/anrg/exec_home:coded'
-	EXEC_WORKER_IMAGE       = 'docker.io/anrg/exec_worker:coded'
+	EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:coded'%(profiler_option)
+	EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:coded'%(profiler_option)
 
 	"""HEFT docker image"""
 	global HEFT_IMAGE
 
-	HEFT_IMAGE              = 'docker.io/anrg/heft:coded'
+	HEFT_IMAGE              = 'docker.io/anrg/%s_heft:coded'%(profiler_option)
 
 	"""Application Information"""
 	global APP_PATH, APP_NAME

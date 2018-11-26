@@ -94,6 +94,7 @@ def default_best_node():
     cost_list = dict()
     for item in task_price_summary.keys():
         cost_list[item] = task_price_summary[item][0]*w_net +  task_price_summary[item][1]*w_cpu + task_price_summary[item][2]*w_mem + task_price_summary[item][3]*w_queue
+    print(task_price_summary)
     print(cost_list)
     best_node = min(cost_list,key=cost_list.get)
     task_node_summary['current_best_node'] = best_node
@@ -113,7 +114,8 @@ def update_best_node():
         customized_parameters_best_node()
     for computing_ip in all_computing_ips:
         send_controller_info(computing_ip)
-    send_controller_info(home_ip)
+    for home_ip in home_ips:
+        send_controller_info(home_ip)
 
 def schedule_update_price(interval):
     """
@@ -124,30 +126,25 @@ def schedule_update_price(interval):
     sched.start()
 
 def send_controller_info(node_ip):
-    retry = 0
-    while retry < num_retries:
-        try:
-            print("Announce my current node mapping to " + node_ip)
-            url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
-            params = {'controller_id_map':controller_id_map}
-            print(controller_id_map)
-            params = parse.urlencode(params)
-            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-            res = urllib.request.urlopen(req)
-            res = res.read()
-            res = res.decode('utf-8')
-            break
-        except Exception as e:
-            print("Sending message to flask server on computing node FAILED!!!")
-            time.sleep(2)
-            retry += 1
-            return "not ok"
+    try:
+        print("Announce my current node mapping to " + node_ip)
+        url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
+        params = {'controller_id_map':controller_id_map}
+        params = parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print("Sending controller message to flask server on computing node FAILED!!!")
+        print(e)
+        return "not ok"
 
 def push_controller_map():
     time.sleep(90)
     for computing_ip in all_computing_ips:
         send_controller_info(computing_ip)
-    send_controller_info(home_ip)
+    
 
 def send_assignment_info(node_ip):
     try:
@@ -161,7 +158,7 @@ def send_assignment_info(node_ip):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        print("Sending message to flask server on computing node FAILED!!!")
+        print("Sending assignment message to flask server on computing node FAILED!!!")
         print(e)
         return "not ok"
 
@@ -169,7 +166,8 @@ def push_assignment_map():
     time.sleep(120)
     for computing_ip in all_computing_ips:
         send_assignment_info(computing_ip)
-    send_assignment_info(home_ip)
+    for home_ip in home_ips:
+        send_assignment_info(home_ip)
 
 
 def send_monitor_data(msg):
@@ -187,13 +185,14 @@ def send_monitor_data(msg):
     """
     try:
         print("Sending message", msg)
-        url = "http://" + home_node_host_port + "/recv_monitor_data"
-        params = {'msg': msg, "work_node": taskname}
-        params = parse.urlencode(params)
-        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        res = urllib.request.urlopen(req)
-        res = res.read()
-        res = res.decode('utf-8')
+        for home_node_host_port in home_node_host_ports:
+            url = "http://" + home_node_host_port + "/recv_monitor_data"
+            params = {'msg': msg, "work_node": taskname}
+            params = parse.urlencode(params)
+            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+            res = urllib.request.urlopen(req)
+            res = res.read()
+            res = res.decode('utf-8')
     except Exception as e:
         print("Sending message to flask server on home FAILED!!!")
         print(e)
@@ -215,13 +214,14 @@ def send_runtime_profile(msg,taskname):
     """
     try:
         print("Sending message", msg)
-        url = "http://" + home_node_host_port + "/recv_runtime_profile"
-        params = {'msg': msg, "work_node": taskname}
-        params = parse.urlencode(params)
-        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        res = urllib.request.urlopen(req)
-        res = res.read()
-        res = res.decode('utf-8')
+        for home_node_host_port in home_node_host_ports:
+            url = "http://" + home_node_host_port + "/recv_runtime_profile"
+            params = {'msg': msg, "work_node": taskname}
+            params = parse.urlencode(params)
+            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+            res = urllib.request.urlopen(req)
+            res = res.read()
+            res = res.decode('utf-8')
     except Exception as e:
         print("Sending runtime profiling info to flask server on home FAILED!!!")
         print(e)
@@ -287,7 +287,8 @@ def main():
     PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
 
 
-    global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, task_mul, count_dict,self_ip, home_ip
+    global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, task_mul, count_dict,self_ip, home_ips, home_ids
+
 
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
@@ -297,10 +298,12 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     self_ip     = os.environ['OWN_IP']
-    home_ip     = os.environ['HOME_NODE']
+    home_nodes = os.environ['HOME_NODE'].split(' ')
+    home_ids = [x.split(':')[0] for x in home_nodes]
+    home_ips = [x.split(':')[1] for x in home_nodes]
 
 
-    global taskmap, taskname, taskmodule, filenames,files_out, home_node_host_port
+    global taskmap, taskname, taskmodule, filenames,files_out, home_node_host_ports
     global all_nodes, all_nodes_ips, self_id, self_name, self_task
     global all_computing_nodes,all_computing_ips, num_computing_nodes, node_ip_map, controller_id_map
 
@@ -320,7 +323,7 @@ def main():
     self_task= os.environ['TASK']
     controller_id_map = self_task + ":" + self_id
     #update_interval = 10 #minutes
-    home_node_host_port =  home_ip + ":" + str(FLASK_SVC)
+    home_node_host_ports =  [x + ":" + str(FLASK_SVC) for x in home_ips]
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")

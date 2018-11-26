@@ -57,8 +57,8 @@ ADD jupiter_config.py /jupiter_config.py
 ADD circe/{pricing_option}/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
+RUN echo {app_file}/configuration.txt
 ADD {app_file}/configuration.txt /configuration.txt
-
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
 
@@ -66,6 +66,7 @@ ADD circe/{pricing_option}/monitor.py /centralized_scheduler/monitor.py
 ADD circe/{pricing_option}/start_home.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
+ADD {app_file}/name_convert.txt /centralized_scheduler/name_convert.txt
 
 WORKDIR /
 
@@ -127,6 +128,7 @@ ADD jupiter_config.py /jupiter_config.py
 ADD circe/{pricing_option}/start_controller_worker.sh /start.sh
 
 ADD circe/{pricing_option}/monitor.py /centralized_scheduler/monitor.py
+
 
 RUN chmod +x /start.sh
 
@@ -192,6 +194,7 @@ ADD nodes.txt /centralized_scheduler/nodes.txt
 
 ADD circe/{pricing_option}/compute.py /centralized_scheduler/compute.py
 ADD circe/{pricing_option}/readconfig.py /readconfig.py
+ADD {app_file}/name_convert.txt /centralized_scheduler/name_convert.txt
 
 RUN chmod +x /start.sh
 

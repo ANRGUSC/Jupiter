@@ -55,7 +55,7 @@ spec:
         - name: CHILD_NODES_IPS
           value: {child_ips}
         - name: TASK
-          value: home
+          value: {name}
         - name: ALL_COMPUTING_NODES
           value: {all_computing_nodes}
         - name: ALL_COMPUTING_IPS

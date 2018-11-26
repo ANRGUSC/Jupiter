@@ -1,0 +1,969 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+-------------------------------------
+Automatically generating HEFT input
+-------------------------------------
+Perform HEFT scheduling
+('tasks: ', {'simpledetector2': ['fusioncenter2'], 'simpledetector1': ['fusioncenter1'], 'simpledetector0': ['fusioncenter0'], 'globalfusion': [], 'aggregate1': ['simpledetector1', 'astutedetector1'], 'aggregate0': ['simpledetector0', 'astutedetector0'], 'aggregate2': ['simpledetector2', 'astutedetector2'], 'localpro': ['aggregate0', 'aggregate1', 'aggregate2'], 'astutedetector1': ['fusioncenter1'], 'astutedetector0': ['fusioncenter0'], 'astutedetector2': ['fusioncenter2'], 'fusioncenter0': ['globalfusion'], 'fusioncenter1': ['globalfusion'], 'fusioncenter2': ['globalfusion']})
+('task order', ['localpro', 'aggregate0', 'aggregate1', 'aggregate2', 'simpledetector0', 'simpledetector1', 'simpledetector2', 'astutedetector0', 'astutedetector1', 'astutedetector2', 'fusioncenter0', 'fusioncenter1', 'fusioncenter2', 'globalfusion'])
+('super tasks', [])
+('non tasks', [])
+No input TGFF file found!
+---------------------------------------------
+
+ Read task list from DAG file, Non-DAG info and global information 
+
+tasks:  {'fusioncenter2': ['globalfusion'], 'fusioncenter0': ['globalfusion'], 'globalfusion': [], 'localpro': ['aggregate0', 'aggregate1', 'aggregate2'], 'astutedetector1': ['fusioncenter1'], 'simpledetector0': ['fusioncenter0'], 'aggregate2': ['simpledetector2', 'astutedetector2'], 'fusioncenter1': ['globalfusion'], 'astutedetector2': ['fusioncenter2'], 'aggregate1': ['simpledetector1', 'astutedetector1'], 'simpledetector2': ['fusioncenter2'], 'simpledetector1': ['fusioncenter1'], 'astutedetector0': ['fusioncenter0'], 'aggregate0': ['simpledetector0', 'astutedetector0']}
+task order ['localpro', 'aggregate0', 'aggregate1', 'aggregate2', 'simpledetector0', 'simpledetector1', 'simpledetector2', 'astutedetector0', 'astutedetector1', 'astutedetector2', 'fusioncenter0', 'fusioncenter1', 'fusioncenter2', 'globalfusion']
+super tasks []
+---------------------------------------------
+
+ Create input HEFT file 
+
+No available profiling information
+---------------------------------------------
+
+ Step 1: Read task list from DAG file and global information 
+
+----------------- ^^^^^^^^^^^
+['home:10.106.242.63', 'home2:10.104.135.203']
+['home', 'home2']
+['10.106.242.63', '10.104.135.203']
+[['node3', '10.102.37.233'], ['node4', '10.103.199.135'], ['node5', '10.103.241.206'], ['node6', '10.97.133.127']]
+10.108.72.47
+Num nodes :4
+{'10.97.133.127': 'node6', '10.103.199.135': 'node4', '10.102.37.233': 'node3', '10.103.241.206': 'node5'}
+['node3', 'node4', 'node5', 'node6']
+------------------------------------------------------------
+
+ Step 2: Read network profiler information : 
+
+------------------------------------------------------------
+
+ Step 3: Read execution Profiler Information : 
+
+[['node3', '10.102.37.233'], ['node4', '10.103.199.135'], ['node5', '10.103.241.206'], ['node6', '10.97.133.127']]
+Check Network Profiler IP: node3-10.102.37.233
+Database(MongoClient(host=['10.108.72.47:6200'], document_class=dict, tz_aware=False, connect=True), 'execution_profiler')
+--- Number of neighbors: 5
+Current number of updated execution profilers:
+6
+*********&&&&&&&&&&&&&&&&
+['home', 'home2']
+--- Check execution profiler ID : home
+home
+['home', 'home2']
+hoho
+--- Check execution profiler ID : home2
+home2
+['home', 'home2']
+hoho
+--- Check execution profiler ID : node3
+node3
+['home', 'home2']
+--- Check execution profiler ID : node4
+node4
+['home', 'home2']
+['10.106.242.63', '10.104.135.203']
+['10.106.242.63', '10.104.135.203']
+['10.106.242.63', '10.104.135.203']
+['10.106.242.63', '10.104.135.203']
+hoho
+['10.106.242.63', '10.104.135.203']
+hoho
+Check Network Profiler IP: node4-10.103.199.135
+--- Check execution profiler ID : node6
+node6
+['home', 'home2']
+--- Check execution profiler ID : node5
+node5
+['home', 'home2']
+--------------------------------------------
+Execution information has already been provided
+[['node3', 'localpro', 15, '986.736'], ['node3', 'aggregate0', 15, '701.92'], ['node3', 'aggregate1', 15, '127.048'], ['node3', 'aggregate2', 15, '157.768'], ['node3', 'simpledetector0', 15, '7.616'], ['node3', 'simpledetector1', 15, '7.616'], ['node3', 'simpledetector2', 15, '7.168'], ['node3', 'astutedetector0', 15, '4.152'], ['node3', 'astutedetector1', 15, '3.48'], ['node3', 'astutedetector2', 15, '4.728'], ['node3', 'fusioncenter0', 10, '0.984'], ['node3', 'fusioncenter1', 10, '0.44'], ['node3', 'fusioncenter2', 10, '0.792'], ['node3', 'globalfusion', 10, '1.336'], ['node4', 'localpro', 15, '986.736'], ['node4', 'aggregate0', 15, '701.92'], ['node4', 'aggregate1', 15, '127.048'], ['node4', 'aggregate2', 15, '157.768'], ['node4', 'simpledetector0', 15, '7.616'], ['node4', 'simpledetector1', 15, '7.616'], ['node4', 'simpledetector2', 15, '7.168'], ['node4', 'astutedetector0', 15, '4.152'], ['node4', 'astutedetector1', 15, '3.48'], ['node4', 'astutedetector2', 15, '4.728'], ['node4', 'fusioncenter0', 10, '0.984'], ['node4', 'fusioncenter1', 10, '0.44'], ['node4', 'fusioncenter2', 10, '0.792'], ['node4', 'globalfusion', 10, '1.336'], ['node6', 'localpro', 15, '986.736'], ['node6', 'aggregate0', 15, '701.92'], ['node6', 'aggregate1', 15, '127.048'], ['node6', 'aggregate2', 15, '157.768'], ['node6', 'simpledetector0', 15, '7.616'], ['node6', 'simpledetector1', 15, '7.616'], ['node6', 'simpledetector2', 15, '7.168'], ['node6', 'astutedetector0', 15, '4.152'], ['node6', 'astutedetector1', 15, '3.48'], ['node6', 'astutedetector2', 15, '4.728'], ['node6', 'fusioncenter0', 10, '0.984'], ['node6', 'fusioncenter1', 10, '0.44'], ['node6', 'fusioncenter2', 10, '0.792'], ['node6', 'globalfusion', 10, '1.336'], ['node5', 'localpro', 15, '986.736'], ['node5', 'aggregate0', 15, '701.92'], ['node5', 'aggregate1', 15, '127.048'], ['node5', 'aggregate2', 15, '157.768'], ['node5', 'simpledetector0', 15, '7.616'], ['node5', 'simpledetector1', 15, '7.616'], ['node5', 'simpledetector2', 15, '7.168'], ['node5', 'astutedetector0', 15, '4.152'], ['node5', 'astutedetector1', 15, '3.48'], ['node5', 'astutedetector2', 15, '4.728'], ['node5', 'fusioncenter0', 10, '0.984'], ['node5', 'fusioncenter1', 10, '0.44'], ['node5', 'fusioncenter2', 10, '0.792'], ['node5', 'globalfusion', 10, '1.336']]
+56
+4
+--- Number of neighbors: 5
+['10.106.242.63', '10.104.135.203']
+['10.106.242.63', '10.104.135.203']
+hoho
+['10.106.242.63', '10.104.135.203']
+hoho
+['10.106.242.63', '10.104.135.203']
+['10.106.242.63', '10.104.135.203']
+Check Network Profiler IP: node5-10.103.241.206
+--- Number of neighbors: 5
+['10.106.242.63', '10.104.135.203']
+hoho
+['10.106.242.63', '10.104.135.203']
+hoho
+['10.106.242.63', '10.104.135.203']
+['10.106.242.63', '10.104.135.203']
+['10.106.242.63', '10.104.135.203']
+Check Network Profiler IP: node6-10.97.133.127
+--- Number of neighbors: 5
+['10.106.242.63', '10.104.135.203']
+['10.106.242.63', '10.104.135.203']
+['10.106.242.63', '10.104.135.203']
+hoho
+['10.106.242.63', '10.104.135.203']
+hoho
+['10.106.242.63', '10.104.135.203']
+Network information has already been provided
+[['node3', '10.102.37.233', 'node4', '10.103.199.135', '-1.3540860999710896e-06 0.1305087975296243 2420.3129064088735'], ['node3', '10.102.37.233', 'node6', '10.97.133.127', '-4.335738919100286e-05 0.4229134844938275 1419.0728056042622'], ['node3', '10.102.37.233', 'node5', '10.103.241.206', '3.259694713215217e-06 -0.2586201864681085 278.0687528712808'], ['node4', '10.103.199.135', 'node5', '10.103.241.206', '-9.475886481364546e-07 0.11022663459963822 2375.193132818792'], ['node4', '10.103.199.135', 'node3', '10.102.37.233', '-1.3547403697824316e-06 0.1307468994685689 2346.2544657768935'], ['node4', '10.103.199.135', 'node6', '10.97.133.127', '-1.7643732518611873e-06 0.17276995528941497 3584.265444793084'], ['node5', '10.103.241.206', 'node3', '10.102.37.233', '-2.9061730134653187e-08 0.004340240583292295 283.74126521261707'], ['node5', '10.103.241.206', 'node4', '10.103.199.135', '-6.581363544191336e-05 0.6423627955658927 2253.689068117706'], ['node5', '10.103.241.206', 'node6', '10.97.133.127', '-6.620466911000772e-07 0.0640328467589085 1315.374980791622'], ['node6', '10.97.133.127', 'node4', '10.103.199.135', '-1.1571043464813853e-06 0.14255015027195364 3844.5634045712404'], ['node6', '10.97.133.127', 'node5', '10.103.241.206', '-3.77744698897442e-05 0.3614452519335159 1290.5018843889866'], ['node6', '10.97.133.127', 'node3', '10.102.37.233', '-6.919953240855274e-07 0.0673493242858603 1536.694863242616']]
+---------------
+/heft/input.tgff
+4
+[['node3', '10.102.37.233', 'node4', '10.103.199.135', '-1.3540860999710896e-06 0.1305087975296243 2420.3129064088735'], ['node3', '10.102.37.233', 'node6', '10.97.133.127', '-4.335738919100286e-05 0.4229134844938275 1419.0728056042622'], ['node3', '10.102.37.233', 'node5', '10.103.241.206', '3.259694713215217e-06 -0.2586201864681085 278.0687528712808'], ['node4', '10.103.199.135', 'node5', '10.103.241.206', '-9.475886481364546e-07 0.11022663459963822 2375.193132818792'], ['node4', '10.103.199.135', 'node3', '10.102.37.233', '-1.3547403697824316e-06 0.1307468994685689 2346.2544657768935'], ['node4', '10.103.199.135', 'node6', '10.97.133.127', '-1.7643732518611873e-06 0.17276995528941497 3584.265444793084'], ['node5', '10.103.241.206', 'node3', '10.102.37.233', '-2.9061730134653187e-08 0.004340240583292295 283.74126521261707'], ['node5', '10.103.241.206', 'node4', '10.103.199.135', '-6.581363544191336e-05 0.6423627955658927 2253.689068117706'], ['node5', '10.103.241.206', 'node6', '10.97.133.127', '-6.620466911000772e-07 0.0640328467589085 1315.374980791622'], ['node6', '10.97.133.127', 'node4', '10.103.199.135', '-1.1571043464813853e-06 0.14255015027195364 3844.5634045712404'], ['node6', '10.97.133.127', 'node5', '10.103.241.206', '-3.77744698897442e-05 0.3614452519335159 1290.5018843889866'], ['node6', '10.97.133.127', 'node3', '10.102.37.233', '-6.919953240855274e-07 0.0673493242858603 1536.694863242616']]
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+['node3', 'node4', 'node5', 'node6']
+['localpro', 'aggregate0', 'aggregate1', 'aggregate2', 'simpledetector0', 'simpledetector1', 'simpledetector2', 'astutedetector0', 'astutedetector1', 'astutedetector2', 'fusioncenter0', 'fusioncenter1', 'fusioncenter2', 'globalfusion']
+{'fusioncenter2': ['globalfusion'], 'fusioncenter0': ['globalfusion'], 'globalfusion': [], 'localpro': ['aggregate0', 'aggregate1', 'aggregate2'], 'astutedetector1': ['fusioncenter1'], 'simpledetector0': ['fusioncenter0'], 'aggregate2': ['simpledetector2', 'astutedetector2'], 'fusioncenter1': ['globalfusion'], 'astutedetector2': ['fusioncenter2'], 'aggregate1': ['simpledetector1', 'astutedetector1'], 'simpledetector2': ['fusioncenter2'], 'simpledetector1': ['fusioncenter1'], 'astutedetector0': ['fusioncenter0'], 'aggregate0': ['simpledetector0', 'astutedetector0']}
+---------------2
+['localpro', 'aggregate0', 'aggregate1', 'aggregate2', 'simpledetector0', 'simpledetector1', 'simpledetector2', 'astutedetector0', 'astutedetector1', 'astutedetector2', 'fusioncenter0', 'fusioncenter1', 'fusioncenter2', 'globalfusion']
+{'fusioncenter2': 't0_12', 'fusioncenter0': 't0_10', 'globalfusion': 't0_13', 'localpro': 't0_0', 'astutedetector1': 't0_8', 'simpledetector0': 't0_4', 'aggregate2': 't0_3', 'fusioncenter1': 't0_11', 'astutedetector2': 't0_9', 'aggregate1': 't0_2', 'simpledetector2': 't0_6', 'simpledetector1': 't0_5', 'astutedetector0': 't0_7', 'aggregate0': 't0_1'}
+{'fusioncenter2': 12, 'fusioncenter0': 10, 'globalfusion': 13, 'localpro': 0, 'astutedetector1': 8, 'simpledetector0': 4, 'aggregate2': 3, 'fusioncenter1': 11, 'astutedetector2': 9, 'aggregate1': 2, 'simpledetector2': 6, 'simpledetector1': 5, 'astutedetector0': 7, 'aggregate0': 1}
+DEBUG
+[[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]]
+14
+4
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+^^^^^^^^^^^^
+['node3', 'localpro', '15', '986.736']
+15
+986.736
+{}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+0
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'aggregate0', '15', '701.92']
+15
+701.92
+{'localpro': '986.736'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+1
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'aggregate1', '15', '127.048']
+15
+127.048
+{'aggregate0': '701.92', 'localpro': '986.736'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+2
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'aggregate2', '15', '157.768']
+15
+157.768
+{'aggregate0': '701.92', 'localpro': '986.736', 'aggregate1': '127.048'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+3
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'simpledetector0', '15', '7.616']
+15
+7.616
+{'aggregate0': '701.92', 'localpro': '986.736', 'aggregate1': '127.048', 'aggregate2': '157.768'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+4
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'simpledetector1', '15', '7.616']
+15
+7.616
+{'aggregate0': '701.92', 'localpro': '986.736', 'simpledetector0': '7.616', 'aggregate1': '127.048', 'aggregate2': '157.768'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+5
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'simpledetector2', '15', '7.168']
+15
+7.168
+{'simpledetector0': '7.616', 'aggregate2': '157.768', 'simpledetector1': '7.616', 'aggregate0': '701.92', 'localpro': '986.736', 'aggregate1': '127.048'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+6
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'astutedetector0', '15', '4.152']
+15
+4.152
+{'simpledetector0': '7.616', 'aggregate2': '157.768', 'simpledetector1': '7.616', 'simpledetector2': '7.168', 'aggregate0': '701.92', 'localpro': '986.736', 'aggregate1': '127.048'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+7
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'astutedetector1', '15', '3.48']
+15
+3.48
+{'simpledetector0': '7.616', 'aggregate2': '157.768', 'simpledetector1': '7.616', 'simpledetector2': '7.168', 'aggregate0': '701.92', 'localpro': '986.736', 'astutedetector0': '4.152', 'aggregate1': '127.048'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+8
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'astutedetector2', '15', '4.728']
+15
+4.728
+{'simpledetector0': '7.616', 'aggregate2': '157.768', 'simpledetector1': '7.616', 'astutedetector1': '3.48', 'simpledetector2': '7.168', 'aggregate0': '701.92', 'localpro': '986.736', 'astutedetector0': '4.152', 'aggregate1': '127.048'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+9
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'fusioncenter0', '10', '0.984']
+10
+0.984
+{'simpledetector0': '7.616', 'aggregate2': '157.768', 'astutedetector2': '4.728', 'simpledetector1': '7.616', 'astutedetector1': '3.48', 'simpledetector2': '7.168', 'aggregate0': '701.92', 'localpro': '986.736', 'astutedetector0': '4.152', 'aggregate1': '127.048'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+10
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'fusioncenter1', '10', '0.44']
+10
+0.44
+{'simpledetector0': '7.616', 'aggregate2': '157.768', 'astutedetector2': '4.728', 'simpledetector1': '7.616', 'astutedetector1': '3.48', 'fusioncenter0': '0.984', 'simpledetector2': '7.168', 'aggregate0': '701.92', 'localpro': '986.736', 'astutedetector0': '4.152', 'aggregate1': '127.048'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+11
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'fusioncenter2', '10', '0.792']
+10
+0.792
+{'fusioncenter0': '0.984', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+12
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node3', 'globalfusion', '10', '1.336']
+10
+1.336
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+13
+1
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'localpro', '15', '986.736']
+15
+986.736
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+0
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'aggregate0', '15', '701.92']
+15
+701.92
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+1
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'aggregate1', '15', '127.048']
+15
+127.048
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+2
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'aggregate2', '15', '157.768']
+15
+157.768
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+3
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'simpledetector0', '15', '7.616']
+15
+7.616
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+4
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'simpledetector1', '15', '7.616']
+15
+7.616
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+5
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'simpledetector2', '15', '7.168']
+15
+7.168
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+6
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'astutedetector0', '15', '4.152']
+15
+4.152
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+7
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'astutedetector1', '15', '3.48']
+15
+3.48
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+8
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'astutedetector2', '15', '4.728']
+15
+4.728
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+9
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'fusioncenter0', '10', '0.984']
+10
+0.984
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+10
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'fusioncenter1', '10', '0.44']
+10
+0.44
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+11
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'fusioncenter2', '10', '0.792']
+10
+0.792
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+12
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node4', 'globalfusion', '10', '1.336']
+10
+1.336
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+13
+2
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'localpro', '15', '986.736']
+15
+986.736
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+0
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'aggregate0', '15', '701.92']
+15
+701.92
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+1
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'aggregate1', '15', '127.048']
+15
+127.048
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+2
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'aggregate2', '15', '157.768']
+15
+157.768
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+3
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'simpledetector0', '15', '7.616']
+15
+7.616
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+4
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'simpledetector1', '15', '7.616']
+15
+7.616
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+5
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'simpledetector2', '15', '7.168']
+15
+7.168
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+6
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'astutedetector0', '15', '4.152']
+15
+4.152
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+7
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'astutedetector1', '15', '3.48']
+15
+3.48
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+8
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'astutedetector2', '15', '4.728']
+15
+4.728
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+9
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'fusioncenter0', '10', '0.984']
+10
+0.984
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+10
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'fusioncenter1', '10', '0.44']
+10
+0.44
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+11
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'fusioncenter2', '10', '0.792']
+10
+0.792
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+12
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node6', 'globalfusion', '10', '1.336']
+10
+1.336
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+13
+4
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'localpro', '15', '986.736']
+15
+986.736
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+0
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'aggregate0', '15', '701.92']
+15
+701.92
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+1
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'aggregate1', '15', '127.048']
+15
+127.048
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+2
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'aggregate2', '15', '157.768']
+15
+157.768
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+3
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'simpledetector0', '15', '7.616']
+15
+7.616
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+4
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'simpledetector1', '15', '7.616']
+15
+7.616
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+5
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'simpledetector2', '15', '7.168']
+15
+7.168
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+6
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'astutedetector0', '15', '4.152']
+15
+4.152
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+7
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'astutedetector1', '15', '3.48']
+15
+3.48
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+8
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'astutedetector2', '15', '4.728']
+15
+4.728
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+9
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'fusioncenter0', '10', '0.984']
+10
+0.984
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+10
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'fusioncenter1', '10', '0.44']
+10
+0.44
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+11
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'fusioncenter2', '10', '0.792']
+10
+0.792
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+12
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+^^^^^^^^^^^^
+['node5', 'globalfusion', '10', '1.336']
+10
+1.336
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+^^^^^^^^^^^^
+[['node3', 'localpro', '15', '986.736'], ['node3', 'aggregate0', '15', '701.92'], ['node3', 'aggregate1', '15', '127.048'], ['node3', 'aggregate2', '15', '157.768'], ['node3', 'simpledetector0', '15', '7.616'], ['node3', 'simpledetector1', '15', '7.616'], ['node3', 'simpledetector2', '15', '7.168'], ['node3', 'astutedetector0', '15', '4.152'], ['node3', 'astutedetector1', '15', '3.48'], ['node3', 'astutedetector2', '15', '4.728'], ['node3', 'fusioncenter0', '10', '0.984'], ['node3', 'fusioncenter1', '10', '0.44'], ['node3', 'fusioncenter2', '10', '0.792'], ['node3', 'globalfusion', '10', '1.336'], ['node4', 'localpro', '15', '986.736'], ['node4', 'aggregate0', '15', '701.92'], ['node4', 'aggregate1', '15', '127.048'], ['node4', 'aggregate2', '15', '157.768'], ['node4', 'simpledetector0', '15', '7.616'], ['node4', 'simpledetector1', '15', '7.616'], ['node4', 'simpledetector2', '15', '7.168'], ['node4', 'astutedetector0', '15', '4.152'], ['node4', 'astutedetector1', '15', '3.48'], ['node4', 'astutedetector2', '15', '4.728'], ['node4', 'fusioncenter0', '10', '0.984'], ['node4', 'fusioncenter1', '10', '0.44'], ['node4', 'fusioncenter2', '10', '0.792'], ['node4', 'globalfusion', '10', '1.336'], ['node6', 'localpro', '15', '986.736'], ['node6', 'aggregate0', '15', '701.92'], ['node6', 'aggregate1', '15', '127.048'], ['node6', 'aggregate2', '15', '157.768'], ['node6', 'simpledetector0', '15', '7.616'], ['node6', 'simpledetector1', '15', '7.616'], ['node6', 'simpledetector2', '15', '7.168'], ['node6', 'astutedetector0', '15', '4.152'], ['node6', 'astutedetector1', '15', '3.48'], ['node6', 'astutedetector2', '15', '4.728'], ['node6', 'fusioncenter0', '10', '0.984'], ['node6', 'fusioncenter1', '10', '0.44'], ['node6', 'fusioncenter2', '10', '0.792'], ['node6', 'globalfusion', '10', '1.336'], ['node5', 'localpro', '15', '986.736'], ['node5', 'aggregate0', '15', '701.92'], ['node5', 'aggregate1', '15', '127.048'], ['node5', 'aggregate2', '15', '157.768'], ['node5', 'simpledetector0', '15', '7.616'], ['node5', 'simpledetector1', '15', '7.616'], ['node5', 'simpledetector2', '15', '7.168'], ['node5', 'astutedetector0', '15', '4.152'], ['node5', 'astutedetector1', '15', '3.48'], ['node5', 'astutedetector2', '15', '4.728'], ['node5', 'fusioncenter0', '10', '0.984'], ['node5', 'fusioncenter1', '10', '0.44'], ['node5', 'fusioncenter2', '10', '0.792'], ['node5', 'globalfusion', '10', '1.336']]
+13
+3
+{'': 0, 'node5': 3, 'node4': 2, 'node6': 4, 'node3': 1}
+['', 'node3', 'node4', 'node5', 'node6']
+^^^^^^^^^^^^2
+>>>>>>>>>>>>>>>>>>>>
+{'fusioncenter2': '0.792', 'fusioncenter0': '0.984', 'globalfusion': '1.336', 'localpro': '986.736', 'astutedetector1': '3.48', 'simpledetector0': '7.616', 'aggregate2': '157.768', 'fusioncenter1': '0.44', 'astutedetector2': '4.728', 'aggregate1': '127.048', 'simpledetector2': '7.168', 'simpledetector1': '7.616', 'astutedetector0': '4.152', 'aggregate0': '701.92'}
+[[150, 150, 150, 150], [150, 150, 150, 150], [150, 150, 150, 150], [150, 150, 150, 150], [150, 150, 150, 150], [150, 150, 150, 150], [150, 150, 150, 150], [150, 150, 150, 150], [150, 150, 150, 150], [150, 150, 150, 150], [100, 100, 100, 100], [100, 100, 100, 100], [100, 100, 100, 100], [100, 100, 100, 100]]
+	TASK localpro	TYPE 0 
+
+	TASK aggregate0	TYPE 1 
+
+	TASK aggregate1	TYPE 2 
+
+	TASK aggregate2	TYPE 3 
+
+	TASK simpledetector0	TYPE 4 
+
+	TASK simpledetector1	TYPE 5 
+
+	TASK simpledetector2	TYPE 6 
+
+	TASK astutedetector0	TYPE 7 
+
+	TASK astutedetector1	TYPE 8 
+
+	TASK astutedetector2	TYPE 9 
+
+	TASK fusioncenter0	TYPE 10 
+
+	TASK fusioncenter1	TYPE 11 
+
+	TASK fusioncenter2	TYPE 12 
+
+	TASK globalfusion	TYPE 13 
+
+task_names: ['localpro', 'aggregate0', 'aggregate1', 'aggregate2', 'simpledetector0', 'simpledetector1', 'simpledetector2', 'astutedetector0', 'astutedetector1', 'astutedetector2', 'fusioncenter0', 'fusioncenter1', 'fusioncenter2', 'globalfusion']
+==================
+Checking the written information
+14
+[<map object at 0x7f00d567cf60>, <map object at 0x7f00d567e080>, <map object at 0x7f00d567e1d0>, <map object at 0x7f00d567e320>, <map object at 0x7f00d567e470>, <map object at 0x7f00d567e5c0>, <map object at 0x7f00d567e710>, <map object at 0x7f00d567e860>, <map object at 0x7f00d567e9b0>, <map object at 0x7f00d567eb00>, <map object at 0x7f00d567ec88>, <map object at 0x7f00d567ee10>, <map object at 0x7f00d567ef98>, <map object at 0x7f00d5680160>]
+[[0, 1, 1, 1], [1, 0, 1, 1], [1, 1, 0, 1], [1, 1, 1, 0]]
+[[-1, 986, 986, 986, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, 701, -1, -1, 701, -1, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, 127, -1, -1, 127, -1, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, 157, -1, -1, 157, -1, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 7, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 4, -1, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 3, -1, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 4, -1], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 0], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]]
+[[(0, 0, 0), (-1.3540860999710896e-06, 0.1305087975296243, 2420.3129064088735), (3.259694713215217e-06, -0.2586201864681085, 278.0687528712808), (-4.335738919100286e-05, 0.4229134844938275, 1419.0728056042622)], [(-1.3547403697824316e-06, 0.1307468994685689, 2346.2544657768935), (0, 0, 0), (-9.475886481364546e-07, 0.11022663459963822, 2375.193132818792), (-1.7643732518611873e-06, 0.17276995528941497, 3584.265444793084)], [(-2.9061730134653187e-08, 0.004340240583292295, 283.74126521261707), (-6.581363544191336e-05, 0.6423627955658927, 2253.689068117706), (0, 0, 0), (-6.620466911000772e-07, 0.0640328467589085, 1315.374980791622)], [(-6.919953240855274e-07, 0.0673493242858603, 1536.694863242616), (-1.1571043464813853e-06, 0.14255015027195364, 3844.5634045712404), (-3.77744698897442e-05, 0.3614452519335159, 1290.5018843889866), (0, 0, 0)]]
+	TASK localpro	TYPE 0 
+
+	TASK aggregate0	TYPE 1 
+
+	TASK aggregate1	TYPE 2 
+
+	TASK aggregate2	TYPE 3 
+
+	TASK simpledetector0	TYPE 4 
+
+	TASK simpledetector1	TYPE 5 
+
+	TASK simpledetector2	TYPE 6 
+
+	TASK astutedetector0	TYPE 7 
+
+	TASK astutedetector1	TYPE 8 
+
+	TASK astutedetector2	TYPE 9 
+
+	TASK fusioncenter0	TYPE 10 
+
+	TASK fusioncenter1	TYPE 11 
+
+	TASK fusioncenter2	TYPE 12 
+
+	TASK globalfusion	TYPE 13 
+
+('task_names:', ['localpro', 'aggregate0', 'aggregate1', 'aggregate2', 'simpledetector0', 'simpledetector1', 'simpledetector2', 'astutedetector0', 'astutedetector1', 'astutedetector2', 'fusioncenter0', 'fusioncenter1', 'fusioncenter2', 'globalfusion'])
+==================
+(0, 1)
+(1, 1)
+(2, 1)
+(3, 1)
+(0, 3)
+(1, 3)
+(2, 3)
+(3, 3)
+(0, 2)
+(1, 2)
+(2, 2)
+(3, 2)
+(0, 4)
+(1, 4)
+(2, 4)
+(3, 4)
+(0, 5)
+(1, 5)
+(2, 5)
+(3, 5)
+(0, 6)
+(1, 6)
+(2, 6)
+(3, 6)
+(0, 7)
+(1, 7)
+(2, 7)
+(3, 7)
+(0, 9)
+(1, 9)
+(2, 9)
+(3, 9)
+(0, 8)
+(1, 8)
+(2, 8)
+(3, 8)
+(0, 10)
+(1, 10)
+(2, 10)
+(3, 10)
+(0, 11)
+(1, 11)
+(2, 11)
+(3, 11)
+(0, 12)
+(1, 12)
+(2, 12)
+(3, 12)
+(0, 13)
+(1, 13)
+(2, 13)
+(3, 13)
+task 0 dup on node4
+Assign random master and slaves
+task 0 : up_rank = 8561.757954, down_rank = 0.000000
+task 1 : up_rank = 6348.169621, down_rank = 2213.588333
+task 3 : up_rank = 6263.826354, down_rank = 2213.588333
+task 2 : up_rank = 6258.957458, down_rank = 2213.588333
+task 4 : up_rank = 4175.782742, down_rank = 4385.975212
+task 5 : up_rank = 4175.782742, down_rank = 4296.763049
+task 6 : up_rank = 4175.782742, down_rank = 4301.631945
+task 7 : up_rank = 4175.285502, down_rank = 4385.975212
+task 9 : up_rank = 4175.285502, down_rank = 4301.631945
+task 8 : up_rank = 4175.119705, down_rank = 4296.763049
+task 10 : up_rank = 2112.311081, down_rank = 6449.446873
+task 11 : up_rank = 2112.311081, down_rank = 6360.234709
+task 12 : up_rank = 2112.311081, down_rank = 6365.103605
+task 13 : up_rank = 100.000000, down_rank = 8461.757954
+node3:
+task 1 : ast = 0, aft = 150
+task 2 : ast = 150, aft = 300
+task 3 : ast = 300, aft = 450
+task 6 : ast = 450, aft = 600
+task 8 : ast = 600, aft = 750
+task 9 : ast = 750, aft = 900
+task 11 : ast = 900, aft = 1000
+task 12 : ast = 1000, aft = 1100
+task 14 : ast = 1232, aft = 1332
+node4:
+node5:
+task 4 : ast = 150, aft = 300
+task 5 : ast = 398, aft = 548
+task 7 : ast = 548, aft = 698
+task 10 : ast = 698, aft = 848
+task 13 : ast = 848, aft = 948
+node6:
+redundant task 1 on node5
+makespan = 1332
+{'globalfusion': 'node3', 'simpledetector1': 'node3', 'simpledetector0': 'node5', 'simpledetector2': 'node5', 'aggregate1': 'node3', 'aggregate0': 'node3', 'aggregate2': 'node5', 'localpro': 'node3', 'astutedetector1': 'node3', 'astutedetector0': 'node3', 'astutedetector2': 'node5', 'fusioncenter0': 'node3', 'fusioncenter1': 'node3', 'fusioncenter2': 'node5'}
+ * Serving Flask app "master" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:8888/ (Press CTRL+C to quit)
+10.244.0.0 - - [25/Nov/2018 00:57:27] "GET / HTTP/1.1" 200 -
+('Recieved request for current mapping. Current mappings done:', 14)
+{'globalfusion': 'node3', 'simpledetector1': 'node3', 'simpledetector0': 'node5', 'simpledetector2': 'node5', 'aggregate1': 'node3', 'aggregate0': 'node3', 'aggregate2': 'node5', 'localpro': 'node3', 'astutedetector1': 'node3', 'astutedetector0': 'node3', 'astutedetector2': 'node5', 'fusioncenter0': 'node3', 'fusioncenter1': 'node3', 'fusioncenter2': 'node5'}

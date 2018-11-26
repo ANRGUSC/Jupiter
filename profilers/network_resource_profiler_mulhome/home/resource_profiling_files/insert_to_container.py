@@ -55,11 +55,8 @@ def main():
         print("Usage:python3 insert_to_container.py ip_file")
         sys.exit(2)
 
-    print('**********************************2')
     ip_path = sys.argv[1]
-    print(ip_path)
     res=read_info.open_file()
-    print(res)
     insert_data(res)
 
 if __name__ == '__main__':

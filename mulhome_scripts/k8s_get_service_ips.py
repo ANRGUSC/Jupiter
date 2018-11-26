@@ -70,21 +70,10 @@ def get_all_profilers():
             # print(resp.spec.cluster_ip)
             mapping[key] = resp.spec.cluster_ip
 
-    label = "homeprofiler"
-        
-    resp = None
-    api_2 = client.CoreV1Api()
-    try:
-        resp = api_2.read_namespaced_service(key, namespace)
-    except ApiException as e:
-        print("Exception Occurred")
-    # if a service is running, kill it
-    if resp:
-        # print(resp.spec.cluster_ip)
-        mapping[key] = resp.spec.cluster_ip
     return mapping
 
         # At this point you should not have any of the profiler related service, pod, or deployment running
+
 
 def get_all_waves(app_name):
     """
@@ -206,4 +195,4 @@ def get_all_execs(app_name):
 
 
 if __name__ == '__main__':
-    print(get_all_execs())
+    print(get_all_profilers())

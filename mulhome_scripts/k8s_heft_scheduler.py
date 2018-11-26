@@ -33,8 +33,7 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = utilities.k8s_get_nodes(path2)
-    pprint(nodes)
+    nodes, homes = utilities.k8s_get_nodes_worker(path2)
 
     """
         This loads the kubernetes instance configuration.
@@ -76,13 +75,19 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
     except ApiException as e:
         print("Exception Occurred")
 
+
     service_ips[home_name] = resp.spec.cluster_ip
     home_ip = service_ips[home_name]
     node_profiler_ips = profiler_ips.copy()
-    del node_profiler_ips['home']
+    home_profiler_ips = {}
+    for key in homes:
+        print(key)
+        home_profiler_ips[key] = profiler_ips[key]
+        del node_profiler_ips[key]
 
     profiler_ips_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(node_profiler_ips.items()))
-
+    home_profiler_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(home_profiler_ips.items()))
+    
     home_dep = write_heft_specs(name = home_name, label = home_name,
                                 image = jupiter_config.HEFT_IMAGE,
                                 host = jupiter_config.HOME_NODE,
@@ -90,7 +95,7 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
                                 home_ip = home_ip,
                                 profiler_ips = profiler_ips_str,
                                 execution_home_ip = ex_profiler_ips['home'],
-                                home_profiler_ip = profiler_ips['home'])
+                                home_profiler_ip = home_profiler_str)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 

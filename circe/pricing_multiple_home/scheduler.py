@@ -119,21 +119,23 @@ def receive_assignment_info():
     return "ok"
 app.add_url_rule('/receive_assignment_info', 'receive_assignment_info', receive_assignment_info)
 
-def send_controller_map():
-    for computing_ip in all_computing_ips:
-        try:
-            print("Announce my current node mapping to " + computing_ip)
-            url = "http://" + computing_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
-            params = {'controller_id_map':controller_id_map}
-            params = parse.urlencode(params)
-            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-            res = urllib.request.urlopen(req)
-            res = res.read()
-            res = res.decode('utf-8')
-        except Exception as e:
-            print("Sending message to flask server on computing node FAILED!!!")
-            print(e)
-            return "not ok"
+def update_controller_map():
+    """
+        Update matching between task controllers and node, in case task controllers are crashed and redeployded
+    """
+    try:
+        info = request.args.get('controller_id_map').split(':')
+        print("--- Received controller info")
+        print(info)
+        #Task, Node
+        controllers_id_map[info[0]] = info[1]
+
+    except Exception as e:
+        print("Bad reception or failed processing in Flask for controllers matching announcement: "+ e) 
+        return "not ok" 
+
+    return "ok"
+app.add_url_rule('/update_controller_map', 'update_controller_map', update_controller_map)
 
 def recv_runtime_profile():
     """
@@ -472,7 +474,7 @@ class Handler(FileSystemEventHandler):
             IP = node_ip_map[task_node_summary[first_task]]
 
             print(new_file_name)
-            new_file_name = new_file_name+"#"+first_task+"#"+first_flag
+            new_file_name = new_file_name+"#"+my_id+"#"+first_task+"#"+first_flag
             print(new_file_name)
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
@@ -532,12 +534,16 @@ def main():
     task_node_summary = manager.dict()
     controllers_id_map = manager.dict()
 
-    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag
+    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag,my_id
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
     num_computing_nodes = len(all_computing_nodes)
     node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
+
+    my_id = os.environ['TASK']
+    print('***********')
+    print(my_id)
     
 
     path1 = 'configuration.txt'
