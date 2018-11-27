@@ -178,8 +178,8 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
     for key in homes:
         print(key)
-        all_profiler_ips = all_profiler_ips + profiler_ips[key]
-        all_profiler_nodes = all_profiler_nodes + key
+        all_profiler_ips = all_profiler_ips + ':'+ profiler_ips[key]
+        all_profiler_nodes = all_profiler_nodes +':'+ key
         home_name =app_name+"-"+key
         home_body = write_circe_service_specs(name = home_name)
         ser_resp = api.create_namespaced_service(namespace, home_body)

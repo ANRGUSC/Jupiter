@@ -117,12 +117,14 @@ def get_taskmap():
 
 def prepare_global_info():
     """Get information of corresponding profiler (network profiler, execution profiler)"""
-    global self_profiler_ip,profiler_ip, profiler_nodes,exec_home_ip, self_name,self_ip, task_controllers, task_controllers_ips, home_ips,home_ids
+    global self_profiler_ip,profiler_ip, profiler_nodes,exec_home_ip, self_name,self_ip, task_controllers, task_controllers_ips, home_ips,home_ids, home_ip_map
     profiler_ip = os.environ['ALL_PROFILERS'].split(' ')
     profiler_ip = [info.split(":") for info in profiler_ip]
+    profiler_ip = profiler_ip[0][1:]
 
     profiler_nodes = os.environ['ALL_PROFILERS_NODES'].split(' ')
     profiler_nodes = [info.split(":") for info in profiler_nodes]
+    profiler_nodes = profiler_nodes[0][1:]
    
     self_profiler_ip = os.environ['PROFILERS']
     exec_home_ip = os.environ['EXECUTION_HOME_IP']
@@ -131,6 +133,7 @@ def prepare_global_info():
     home_nodes = os.environ['HOME_NODE'].split(' ')
     home_ids = [x.split(':')[0] for x in home_nodes]
     home_ips = [x.split(':')[1] for x in home_nodes]
+    home_ip_map = dict(zip(home_ids, home_ips))
     
 
     task_controllers = os.environ['ALL_NODES'].split(':')
@@ -141,12 +144,19 @@ def prepare_global_info():
 
 
     global ip_profilers_map,profilers_ip_map, controllers_ip_map, computing_ip_map, profilers_ip_homes
-    ip_profilers_map = dict(zip(profiler_ip[0], profiler_nodes[0]))
-    profilers_ip_map = dict(zip(profiler_nodes[0], profiler_ip[0]))
+    print('DEBUG')
+    print(profiler_nodes)
+    print(profiler_ip)
+    
+
+    ip_profilers_map = dict(zip(profiler_ip, profiler_nodes))
+    profilers_ip_map = dict(zip(profiler_nodes, profiler_ip))
 
     print(home_nodes)
     print(home_ids)
     print(home_ips)
+    print(profilers_ip_map)
+    print(ip_profilers_map)
     profilers_ip_homes = [profilers_ip_map[x] for x in home_ids]
 
     controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
@@ -177,7 +187,7 @@ def prepare_global_info():
     files_mul = manager.dict()
     controllers_id_map = manager.dict()
     task_node_map = manager.dict()
-    task_node_map['home'] = 'home'
+    
 
     global home_node_host_port, dag
     home_node_host_ports = [x+ ":" + str(FLASK_SVC) for x in home_ips]
@@ -198,14 +208,24 @@ def prepare_global_info():
                 last_tasks_map[last_task] = [task]
             else:    
                 last_tasks_map[last_task].append(task)
-    next_tasks_map['home'] = os.environ['CHILD_NODES']
-    last_tasks_map[os.environ['CHILD_NODES']] = ['home']
+
+    for home_id in home_ids:
+        task_node_map[home_id] = 'home'
+        next_tasks_map[home_id] = os.environ['CHILD_NODES']
+        last_tasks_map[os.environ['CHILD_NODES']] = [home_id]
+
+    print('DEBUG-----------')
+    print(next_tasks_map)
+    print(last_tasks_map)
     global task_module
     task_module = {}
-    for task in dag:
-        task_module[task] = __import__(task)
-        cmd = "mkdir centralized_scheduler/output/" + task 
+    for home_id in home_ids:
+        cmd = "mkdir centralized_scheduler/output/"+home_id
         os.system(cmd)
+        for task in dag:
+            task_module[task] = __import__(task)
+            cmd = "mkdir centralized_scheduler/output/"+home_id+"/" + task 
+            os.system(cmd)
 
 def update_controller_map():
     """
@@ -307,28 +327,26 @@ def get_updated_network_from_source(node_ips):
     network_info = {}
     for node_ip in node_ips:
         try:
-            print('-------------')
-            print(node_ip)
             client_mongo = MongoClient('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.droplet_network_profiler
             collection = db.collection_names(include_system_collections=False)
-            print(collection)
             num_nb = len(collection)-1
-            print(num_nb)
             if num_nb == -1:
                 print('--- Network profiler mongoDB not yet prepared')
                 return network_info
             num_rows = db[node_ip].count() 
-            print(num_rows)
             if num_rows < num_nb:
                 print('--- Network profiler regression info not yet loaded into MongoDB!')
                 return network_info
             logging =db[node_ip].find().limit(num_nb)  
-            print(logging)
 
+            print('DEBUG2')
+            print(num_nb)
             for record in logging:
                 print(record)
-                if record['Destination[IP]'] in profilers_ip_homes: continue
+                # if record['Destination[IP]'] in profilers_ip_homes: 
+                #     print('hohoho')
+                #     continue
                 # Source ID, Source IP, Destination ID, Destination IP, Parameters
                 network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
         except Exception as e:
@@ -350,6 +368,11 @@ def get_updated_network_profile(current_task):
     last_nodes = [task_node_map[task] for task in last_tasks_map[current_task]]
     last_profiler_ips = [profilers_ip_map[node] for node in last_nodes]
     from_net_info = get_updated_network_from_source(last_profiler_ips)
+    print('###########!!!!!!!!!!!!!!1')
+    print(self_profiler_ip)
+    print(last_profiler_ips)
+    print(to_net_info)
+    print(from_net_info)
     return from_net_info, to_net_info
 
 def get_updated_resource_profile():
@@ -430,9 +453,11 @@ def price_aggregate(task_name, next_task_name):
         controller_params  = [10000]*3 # out of range
         computing_params   = [10000]*3 # out of range
         if last_host_name == self_name:
+            print('last = self')
             controller_params  = [0]*3
         if self_name == next_host_name:
             computing_params   = [0]*3
+            print('self = next')
 
         if self_name in from_net_info.keys():
             controller_params = from_net_info[self_name].split() 
@@ -440,19 +465,29 @@ def price_aggregate(task_name, next_task_name):
         if next_host_name in to_net_info.keys():  
             computing_params = to_net_info[next_host_name].split()
             computing_params = [float(x) for x in computing_params]
-        print('#######')
+        print('################################')
+        print(last_host_name)
         print(self_name)
         print(next_host_name)
-        print(last_host_name)
+        print('----')
+        print(self_name)
         print(from_net_info.keys())
-        print(to_net_info.keys())
         print(controller_params)
+        print('----')
+        print(next_host_name)
+        print(to_net_info.keys())
         print(computing_params)
-        print(from_net_info)
-        print(to_net_info)
-        print(test_size)
-        print(test_output)
+
         try:
+            print('DEBUG-----------------')
+            print(controller_params[0])
+            print(controller_params[1])
+            print(controller_params[2])
+            print(computing_params[0])
+            print(computing_params[1])
+            print(computing_params[2])
+            print(test_size)
+            print(test_output)
             price['network'] = (controller_params[0] * test_size * test_size) + \
                            (controller_params[1] * test_size) + \
                            controller_params[2] + \
@@ -461,6 +496,9 @@ def price_aggregate(task_name, next_task_name):
                            computing_params[2]
         except:
             price['network'] =  10000
+
+        print(price)
+        print('################################')
 
         print('--- Queuing cost: ')
         if task_queue_size > 0: #not infinity 
@@ -490,6 +528,7 @@ def announce_price(task_controller_ip, price):
         print("Announce my price")
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
         pricing_info = self_name+"#"+str(price['network'])+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
+        print(task_controller_ip)
         print(pricing_info)
         print(task_controller_ip)
         params = {'pricing_info':pricing_info}
@@ -508,7 +547,7 @@ def push_updated_price():
     print(task_controllers)
     print(controllers_ip_map)
     for idx,task in enumerate(task_controllers):
-        if task=='home': continue
+        if task in home_ids: continue
         for idx,next_task in enumerate(next_tasks_map[task]):
             price = price_aggregate(task, next_task)
             announce_price(controllers_ip_map[task], price)
@@ -719,6 +758,10 @@ class Handler1(FileSystemEventHandler):
                 runtime_receiver_log.flush()
 
             task_name = event.src_path.split('/')[-2]
+            home_id = event.src_path.split('/')[-3]
+            print('!!!!!!!!!!!!!!!!!')
+            print(home_id)
+            print(task_name)
             input_name = retrieve_input_finish(task_name, temp_name)
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
             print(input_name)
@@ -731,8 +774,8 @@ class Handler1(FileSystemEventHandler):
             print(next_tasks_map[task_name])
             print(flag)
 
-            if next_tasks_map[task_name][0]=='home': 
-                transfer_data(home_ip,username,password,event.src_path, "/output/"+new_file)    
+            if next_tasks_map[task_name][0] in home_ids: 
+                transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)    
             else: 
                 next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
                 next_IPs   = [computing_ip_map[x] for x in next_hosts]
@@ -868,7 +911,7 @@ class Handler(FileSystemEventHandler):
 
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
-                output_path = os.path.join(output_path,task_name)
+                output_path = os.path.join(output_path,home_id,task_name)
                 print('!!!!!!!!!')
                 print(input_name)
                 execute_task(task_name,input_name, filenames, input_path, output_path)
