@@ -344,10 +344,10 @@ def get_updated_network_from_source(node_ips):
                 return network_info
             logging =db[node_ip].find().limit(num_nb)  
 
-            print('DEBUG2')
-            print(num_nb)
+            # print('DEBUG2')
+            # print(num_nb)
             for record in logging:
-                print(record)
+                #print(record)
                 # if record['Destination[IP]'] in profilers_ip_homes: 
                 #     print('hohoho')
                 #     continue
@@ -369,20 +369,31 @@ def get_updated_network_profile(current_task):
     print('----- Get updated network information-----')
     
     to_net_info = get_updated_network_from_source([self_profiler_ip])
-    last_nodes = [task_node_map[task] for task in last_tasks_map[current_task]]
-    last_profiler_ips = [profilers_ip_map[node] for node in last_nodes]
-    from_net_info = get_updated_network_from_source(last_profiler_ips)
-    print('###########!!!!!!!!!!!!!!1')
-    print(last_tasks_map)
-    print(current_task)
-    print(task_node_map)
-    print(last_tasks_map[current_task])
-    print('!!!!!1')
-    print(last_nodes)
-    print(self_profiler_ip)
-    print(last_profiler_ips)
+    print('1')
     print(to_net_info)
+    last_nodes = [task_node_map[task] for task in last_tasks_map[current_task]]
+    print('2')
+    print(current_task)
+    print(last_tasks_map[current_task])
+    print(task_node_map)
+    print(last_nodes)
+    last_profiler_ips = [profilers_ip_map[node] for node in last_nodes]
+    print('3')
+    print(last_profiler_ips)
+    from_net_info = get_updated_network_from_source(last_profiler_ips)
+    print('4')
     print(from_net_info)
+    # print('###########!!!!!!!!!!!!!!1')
+    # print(last_tasks_map)
+    # print(current_task)
+    # print(task_node_map)
+    # print(last_tasks_map[current_task])
+    # print('!!!!!1')
+    # print(last_nodes)
+    # print(self_profiler_ip)
+    # print(last_profiler_ips)
+    # print(to_net_info)
+    # print(from_net_info)
     return from_net_info, to_net_info
 
 def get_updated_resource_profile():
@@ -444,24 +455,28 @@ def price_aggregate(task_name, next_task_name):
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
         from_net_info, to_net_info = get_updated_network_profile(task_name)
-        print(from_net_info)
-        print(to_net_info)
+        # print(from_net_info)
+        # print(to_net_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         test_output = execution_info[task_name][1]
-        print(test_size)
-        print(test_output)
+        # print(test_size)
+        # print(test_output)
         print('----- Calculating price:')
         print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
-        print('--- Network cost: ')
+        print('--- Network cost:----------- ')
         print(next_task_name)
         print(task_name)
+        print(last_tasks_map[task_name][0]) # may be a list
         print(task_node_map)
+        print(task_node_map[next_task_name])
+        print(task_node_map[last_tasks_map[task_name][0]])
         next_host_name = task_node_map[next_task_name]
-        last_host_name = task_node_map[task_name]
-        print(next_host_name)
-        print(last_host_name)
+        last_host_name = task_node_map[last_tasks_map[task_name][0]] # the 1st last task????
+
+        #print(next_host_name)
+        # print(last_host_name)
         controller_params  = [10000]*3 # out of range
         computing_params   = [10000]*3 # out of range
         if last_host_name == self_name:
@@ -471,28 +486,28 @@ def price_aggregate(task_name, next_task_name):
             computing_params   = [0]*3
             print('self = next')
 
-        print('----------- DEBUG')
+        # print('----------- DEBUG')
         if self_name in from_net_info.keys():
-            print(self_name)
+            # print(self_name)
             controller_params = from_net_info[self_name].split() 
             controller_params = [float(x) for x in controller_params]
-            print(controller_params)
+            # print(controller_params)
         if next_host_name in to_net_info.keys():  
-            print(next_host_name)
+            # print(next_host_name)
             computing_params = to_net_info[next_host_name].split()
             computing_params = [float(x) for x in computing_params]
-            print(computing_params)
+            # print(computing_params)
         print('################################')
-        print(last_host_name)
-        print(self_name)
-        print(next_host_name)
-        print('----')
-        print(self_name)
-        print(from_net_info.keys())
+        # print(last_host_name)
+        # print(self_name)
+        # print(next_host_name)
+        # print('----')
+        # print(self_name)
+        # print(from_net_info.keys())
         print(controller_params)
-        print('----')
-        print(next_host_name)
-        print(to_net_info.keys())
+        # print('----')
+        # print(next_host_name)
+        # print(to_net_info.keys())
         print(computing_params)
 
         try:
@@ -503,8 +518,8 @@ def price_aggregate(task_name, next_task_name):
             print(computing_params[0])
             print(computing_params[1])
             print(computing_params[2])
-            print(test_size)
-            print(test_output)
+            # print(test_size)
+            # print(test_output)
             price['network'] = (controller_params[0] * test_size * test_size) + \
                            (controller_params[1] * test_size) + \
                            controller_params[2] + \
@@ -514,8 +529,8 @@ def price_aggregate(task_name, next_task_name):
         except:
             price['network'] =  10000
 
-        print(price)
-        print('################################')
+        # print(price)
+        # print('################################')
 
         print('--- Queuing cost: ')
         if task_queue_size > 0: #not infinity 
@@ -545,9 +560,9 @@ def announce_price(task_controller_ip, price):
         print("Announce my price")
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
         pricing_info = self_name+"#"+str(price['network'])+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
-        print(task_controller_ip)
-        print(pricing_info)
-        print(task_controller_ip)
+        # print(task_controller_ip)
+        # print(pricing_info)
+        # print(task_controller_ip)
         params = {'pricing_info':pricing_info}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -560,9 +575,9 @@ def announce_price(task_controller_ip, price):
         return "not ok"
 
 def push_updated_price():
-    print('***********')
-    print(task_controllers)
-    print(controllers_ip_map)
+    # print('***********')
+    # print(task_controllers)
+    # print(controllers_ip_map)
     for idx,task in enumerate(task_controllers):
         if task in home_ids: continue
         for idx,next_task in enumerate(next_tasks_map[task]):
