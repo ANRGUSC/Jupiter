@@ -210,10 +210,9 @@ def prepare_global_info():
                 last_tasks_map[last_task].append(task)
 
     last_tasks_map[os.environ['CHILD_NODES']] = []
-    task_node_map['home'] = []
     for home_id in home_ids:
         last_tasks_map[home_id] = last_tasks_map['home'] 
-        task_node_map['home'].append(home_id)
+        task_node_map[home_id]  = home_id
         next_tasks_map[home_id] = [os.environ['CHILD_NODES']]
         last_tasks_map[os.environ['CHILD_NODES']].append(home_id)
 
@@ -256,9 +255,8 @@ def receive_assignment_info():
     try:
         assignment_info = request.args.get('assignment_info').split('#')
         print("Received assignment info")
-        print(assignment_info)
         task_node_map[assignment_info[0]] = assignment_info[1]
-
+        print(task_node_map)
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
         return "not ok" 
@@ -330,6 +328,8 @@ def get_updated_network_from_source(node_ips):
     #print("--- Get updated network profile information from "+node_ip)   
     network_info = {}
     for node_ip in node_ips:
+        print('T____T')
+        print(node_ip)
         try:
             client_mongo = MongoClient('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.droplet_network_profiler
@@ -347,15 +347,16 @@ def get_updated_network_from_source(node_ips):
             print('DEBUG2')
             print(num_nb)
             for record in logging:
-                print(record)
                 # if record['Destination[IP]'] in profilers_ip_homes: 
                 #     print('hohoho')
                 #     continue
                 # Source ID, Source IP, Destination ID, Destination IP, Parameters
                 network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
+            print(network_info)
         except Exception as e:
             print("Network request failed. Will try again, details: " + str(e))
             return -1
+
     return network_info
 def get_updated_network_profile(current_task):
     """Collect the network profile information from local MONGODB database
@@ -369,20 +370,19 @@ def get_updated_network_profile(current_task):
     print('----- Get updated network information-----')
     
     to_net_info = get_updated_network_from_source([self_profiler_ip])
-    last_nodes = [task_node_map[task] for task in last_tasks_map[current_task]]
-    last_profiler_ips = [profilers_ip_map[node] for node in last_nodes]
-    from_net_info = get_updated_network_from_source(last_profiler_ips)
     print('###########!!!!!!!!!!!!!!1')
-    print(last_tasks_map)
     print(current_task)
-    print(task_node_map)
     print(last_tasks_map[current_task])
-    print('!!!!!1')
+    print(task_node_map)
+    last_nodes = [task_node_map[task] for task in last_tasks_map[current_task]]
     print(last_nodes)
-    print(self_profiler_ip)
+    print('###########!!!!!!!!!!!!!!2')
+    last_profiler_ips = [profilers_ip_map[node] for node in last_nodes]
     print(last_profiler_ips)
-    print(to_net_info)
+    print('###########!!!!!!!!!!!!!!3')
+    from_net_info = get_updated_network_from_source(last_profiler_ips)
     print(from_net_info)
+    print('###########!!!!!!!!!!!!!!4')
     return from_net_info, to_net_info
 
 def get_updated_resource_profile():
@@ -447,6 +447,7 @@ def price_aggregate(task_name, next_task_name):
         print(from_net_info)
         print(to_net_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
+        print(execution_info)
         test_output = execution_info[task_name][1]
         print(test_size)
         print(test_output)
@@ -459,52 +460,56 @@ def price_aggregate(task_name, next_task_name):
         print(task_name)
         print(task_node_map)
         next_host_name = task_node_map[next_task_name]
-        last_host_name = task_node_map[task_name]
-        print(next_host_name)
+        last_host_name = task_node_map[last_tasks_map[task_name][0]] #temp: 1st task
+        print('################################')
+        print(task_name)
+        print(last_tasks_map[task_name])
+        print(last_tasks_map[task_name][0])
+        print(task_node_map)
         print(last_host_name)
-        controller_params  = [10000]*3 # out of range
-        computing_params   = [10000]*3 # out of range
+
+        
+        
+        
+        
+        print('----------- DEBUG')
         if last_host_name == self_name:
             print('last = self')
             controller_params  = [0]*3
+        elif self_name in from_net_info.keys():
+            print('----------- DEBUG1')
+            print(self_name)
+            print(from_net_info[self_name])
+            controller_params = from_net_info[self_name].split(' ') 
+            print(controller_params)
+            controller_params = list(map(float, controller_params))
+            print(controller_params)
+            controller_params = [float(x) for x in controller_params]
+        else:
+            controller_params  = [10000]*3 # out of range
+            
         if self_name == next_host_name:
             computing_params   = [0]*3
             print('self = next')
-
-        print('----------- DEBUG')
-        if self_name in from_net_info.keys():
-            print(self_name)
-            controller_params = from_net_info[self_name].split() 
-            controller_params = [float(x) for x in controller_params]
-            print(controller_params)
-        if next_host_name in to_net_info.keys():  
+        elif next_host_name in to_net_info.keys():  
+            print('----------- DEBUG2')
             print(next_host_name)
-            computing_params = to_net_info[next_host_name].split()
-            computing_params = [float(x) for x in computing_params]
+            computing_params = to_net_info[next_host_name].split(' ')
             print(computing_params)
-        print('################################')
-        print(last_host_name)
-        print(self_name)
-        print(next_host_name)
-        print('----')
-        print(self_name)
-        print(from_net_info.keys())
+            controller_params = list(map(float, computing_params))
+            print(computing_params)
+            computing_params = [float(x) for x in computing_params]
+        else:
+            computing_params   = [10000]*3 # out of range
+
         print(controller_params)
-        print('----')
-        print(next_host_name)
-        print(to_net_info.keys())
         print(computing_params)
+        print('DEBUG-----------------3')
+        print(test_size)
+        print(test_output)
 
         try:
-            print('DEBUG-----------------')
-            print(controller_params[0])
-            print(controller_params[1])
-            print(controller_params[2])
-            print(computing_params[0])
-            print(computing_params[1])
-            print(computing_params[2])
-            print(test_size)
-            print(test_output)
+            
             price['network'] = (controller_params[0] * test_size * test_size) + \
                            (controller_params[1] * test_size) + \
                            controller_params[2] + \
