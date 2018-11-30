@@ -104,6 +104,13 @@ def set_globals():
 		EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
 		HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
 		WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
+	if PRICING == 6:#multiple home
+		pricing_option 		= 'pricing_final'
+		profiler_option     = 'multiple_home'
+		NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
+		EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
+		HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
+		WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
 
 	CIRCE_PATH          	= HERE + 'circe/%s/'%(pricing_option)
 	if PRICING == 0: #non-pricing
