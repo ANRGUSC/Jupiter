@@ -64,6 +64,8 @@ spec:
           value: {all_node}
         - name: ALL_NODES_IPS
           value: {all_node_ips}
+        - name: SELF_PROFILER_IP
+          value: {profiler_ip}
       nodeSelector:
         kubernetes.io/hostname: {host}        
       restartPolicy: Always

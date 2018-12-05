@@ -91,7 +91,7 @@ def receive_price_info():
 app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info)    
 
 
-def default_best_node():
+def default_best_node(source_node):
     print('Select the current best node')
     w_net = 1 # Network profiling
     w_cpu = 1 # Resource profiling
@@ -103,41 +103,47 @@ def default_best_node():
     print(task_price_mem)
     print(task_price_queue)
     print(task_price_net)
-    # for item in task_price_summary.keys():
-    #     cost_list[item] = task_price_summary[item][0]*w_net +  task_price_summary[item][1]*w_cpu + task_price_summary[item][2]*w_mem + task_price_summary[item][3]*w_queue
-    # print(task_price_summary)
-    # print(cost_list)
-    # best_node = min(cost_list,key=cost_list.get)
-    # task_node_summary['current_best_node'] = best_node
-    # print(task_node_summary)
+    task_price_network= dict()
+    for (source, dest), price in task_price_net.items():
+        print(source)
+        if source == source_node:
+            task_price_network[dest]= price
+    print(task_price_network)
+    task_price_summary = dict()
+    for item in task_price_cpu:
+        task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
+    print(task_price_summary)
+    best_node = min(task_price_summary,key=cost_list.get)
+    print(best_node)
     return best_node
 
 def predict_best_node(source_node):
     """Select the best node from price information of all nodes, either default or customized from user price file
     """
     if PRICE_OPTION ==0: #default
-        best_node = default_best_node()
+        best_node = default_best_node(source_node)
     return best_node
 
 def receive_best_assignment_request():
     try:
-        print("Receive request ofr best assignment ")
+        print("------ Receive request of best assignment")
         source_node = request.args.get('node_name')
         print(source_node)
         best_node = predict_best_node(source_node)
         print(best_node)
+        announce_best_assignment(best_node, source_node)
         
     except Exception as e:
         print("Sending assignment message to flask server on computing node FAILED!!!")
         print(e)
         return "not ok"
+    return "ok"
 app.add_url_rule('/receive_best_assignment_request', 'receive_best_assignment_request', receive_best_assignment_request)
 
 def announce_best_assignment(best_node, source_node):
     try:
         print("Announce the best computing node for my task:" + self_task)
         url = "http://" + node_ip_map[source_node] + ":" + str(FLASK_SVC) + "/receive_best_assignment"
-        print(url)
         params = {'task_name':self_task,'best_computing_node':best_node}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -307,7 +313,7 @@ def main():
 
     global taskmap, taskname, taskmodule, filenames,files_out, home_node_host_ports
     global all_nodes, all_nodes_ips, self_id, self_name, self_task
-    global all_computing_nodes,all_computing_ips, num_computing_nodes, node_ip_map, controller_id_map
+    global all_computing_nodes,all_computing_ips, node_ip_map, controller_id_map
 
     configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
@@ -329,9 +335,9 @@ def main():
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
-    num_computing_nodes = len(all_computing_nodes)
-    node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
-
+    all_nodes = all_computing_nodes + home_ids
+    all_nodes_ips = all_computing_ips + home_ips
+    node_ip_map = dict(zip(all_nodes, all_nodes_ips))
     
 
     global dest_node_host_port_list

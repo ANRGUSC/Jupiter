@@ -10,6 +10,8 @@ __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rig
 __license__ = "GPL"
 __version__ = "2.0"
 
+import sys
+sys.path.append("../")
 import paramiko
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -27,6 +29,11 @@ from collections import defaultdict
 
 from os import path
 import configparser
+import urllib.request
+from urllib import parse
+import _thread
+from apscheduler.schedulers.background import BackgroundScheduler
+from pymongo import MongoClient
 
 
 
@@ -110,8 +117,8 @@ def request_best_assignment(task_name):
         print("Request the best computing node for the task" + task_name)
         url = "http://" + controller_ip_map[task_name] + ":" + str(FLASK_SVC) + "/receive_best_assignment_request"
         print(url)
-        print(my_id)
-        params = {'node_name':my_id}
+        print(my_task)
+        params = {'node_name':my_task}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
@@ -126,6 +133,7 @@ def receive_best_assignment():
     """
         Receive the best computing node for the task
     """
+    
     try:
         print("Received best assignment")
         task_name = request.args.get('task_name')
@@ -134,8 +142,11 @@ def receive_best_assignment():
         print(task_name)
         print(best_computing_node)
         print(task_node_summary)
+        update_best[task_name] = True
+
 
     except Exception as e:
+        update_best[task_name] = False
         print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
         return "not ok" 
 
@@ -143,21 +154,6 @@ def receive_best_assignment():
 app.add_url_rule('/receive_best_assignment', 'receive_best_assignment', receive_best_assignment)
 
 
-# def receive_assignment_info():
-#     """
-#         Receive corresponding best nodes from the corresponding computing node
-#     """
-#     try:
-#         assignment_info = request.args.get('assignment_info').split('#')
-#         print("-----------Received assignment info")
-#         task_node_summary[assignment_info[0]] = assignment_info[1]
-
-#     except Exception as e:
-#         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
-#         return "not ok" 
-
-#     return "ok"
-# app.add_url_rule('/receive_assignment_info', 'receive_assignment_info', receive_assignment_info)
 
 def update_controller_map():
     """
@@ -389,8 +385,129 @@ def transfer_data(IP,user,pword,source, destination):
 
 
 
+def get_updated_network_profile():
+    
+    #print('Retrieve network information info')
+    network_info = dict()        
+    try:
+        client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
+        db = client_mongo.droplet_network_profiler
+        collection = db.collection_names(include_system_collections=False)
+        num_nb = len(collection)-1
+        # print(collection)
+        # print(num_nb)
+        # print(self_profiler_ip)
+        if num_nb == -1:
+            print('--- Network profiler mongoDB not yet prepared')
+            return network_info
+        num_rows = db[self_profiler_ip].count() 
+        # print(num_rows)
+        if num_rows < num_nb:
+            print('--- Network profiler regression info not yet loaded into MongoDB!')
+            return network_info
+        logging =db[self_profiler_ip].find().limit(num_nb)  
+        # print(logging)
+        for record in logging:
+            # print(record)
+            # print(ip_profilers_map)
+            # print(record['Destination[IP]'])
+            # Source ID, Source IP, Destination ID, Destination IP, Parameters
+            network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
+        
+        return network_info
+    except Exception as e:
+        print("Network request failed. Will try again, details: " + str(e))
+        return -1
+
+def price_estimate():
+    """Calculate corresponding price (network) for home node only 
+
+    Returns:
+        float: calculated price
+    
+    Args:
+        task_name (str): Name of current task
+    """
+
+    # Default values
+    price = dict()
+    price['network'] = sys.maxsize
+    price['cpu'] = -1
+    price['memory'] = -1 
+    price['queue'] = -1
+
+    """
+    Input information:
+        - Resource information: resource_info
+        - Network information: network_info
+        - Task queue: task_mul
+        - Execution information: execution_info
+    """
+
+    try:
+        
+        print(' Retrieve all input information: ')
+        network_info = get_updated_network_profile()
+        print(network_info)
+        test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
+        print('--- Network cost:----------- ')
+        price['network'] = dict()
+        for node in network_info:
+            print(network_info[node])
+            computing_params = network_info[node].split(' ')
+            print(computing_params)
+            computing_params = [float(x) for x in computing_params]
+            print(computing_params)
+            p = (computing_params[0] * test_size * test_size) + (computing_params[1] * test_size) + computing_params[2]
+            print(p)
+            print(node)
+            price['network'][node] = p
+            
+        print(price['network'])
+        print('-----------------')
+        print('Overall price:')
+        print(price)
+        return price
+             
+    except:
+        print('Error reading input information to calculate the price')
+        
+    return price
 
 
+
+def announce_price(task_controller_ip, price):
+    try:
+
+        print("Announce my price")
+        url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
+        pricing_info = self_name+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
+        for node in price['network']:
+            print(node)
+            print(price['network'][node])
+            pricing_info = pricing_info + "$"+node+"-"+str(price['network'][node])
+        
+        print(pricing_info)
+        params = {'pricing_info':pricing_info}
+        params = parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print("Sending price message to flask server on controller node FAILED!!!")
+        print(e)
+        return "not ok"
+
+def push_updated_price():
+    price = price_estimate() #to the first task only
+    announce_price(controller_ip_map[first_task], price)
+
+def schedule_update_price(interval):
+    # scheduling updated price
+    sched = BackgroundScheduler()
+    sched.add_job(push_updated_price,'interval',id='push_price', minutes=interval, replace_existing=True)
+    sched.start()
 
 class MonitorRecv(multiprocessing.Process):
     def __init__(self):
@@ -509,11 +626,15 @@ class Handler(FileSystemEventHandler):
 
 
             print(first_task)
-            request_best_assignment(first_task)
-            print('----------- waiting')
+            while not update_best[first_task]:
+                request_best_assignment(first_task)
+                print('----------- waiting')
+                time.sleep(10)
+                
             print(task_node_summary)
             print(node_ip_map)
             IP = node_ip_map[task_node_summary[first_task]]
+            update_best[first_task] = False
 
             print(new_file_name)
             new_file_name = new_file_name+"#"+my_id+"#"+first_task+"#"+first_flag
@@ -562,21 +683,27 @@ def main():
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    global FLASK_DOCKER, username, password, ssh_port, num_retries, first_task
+    global FLASK_DOCKER, FLASK_SVC, username, password, ssh_port, num_retries, first_task
 
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
+    FLASK_SVC      = int(config['PORT']['FLASK_SVC'])
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     first_task  = os.environ['CHILD_NODES']
 
-    global task_node_summary, controllers_id_map
+    update_interval = 3
+
+    global task_node_summary, controllers_id_map, update_best
     manager = Manager()
     task_node_summary = manager.dict() #storing the updated task - computing node mapping
     controllers_id_map = manager.dict()
+    update_best = manager.dict()
 
-    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag,my_id, controller_ip_map, all_controller_nodes, all_controller_ips
+
+
+    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag,my_id, controller_ip_map, all_controller_nodes, all_controller_ips, my_task, self_profiler_ip
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
@@ -588,9 +715,11 @@ def main():
     controller_ip_map = dict(zip(all_controller_nodes, all_controller_ips))
 
     my_id = os.environ['TASK']
-    print('***********')
-    print(my_id)
-    
+    my_task = my_id.split('-')[1]
+    for task in all_controller_nodes:
+        update_best[task] = False
+
+    self_profiler_ip = os.environ['SELF_PROFILER_IP']
 
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
@@ -613,6 +742,8 @@ def main():
 
     web_server = MonitorRecv()
     web_server.start()
+
+    _thread.start_new_thread(schedule_update_price,(update_interval,))
 
     print("Starting the output monitoring system:")
     observer = Observer()
