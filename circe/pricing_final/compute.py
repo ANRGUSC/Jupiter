@@ -267,7 +267,7 @@ app.add_url_rule('/receive_assignment_info', 'receive_assignment_info', receive_
 def update_exec_profile_file():
     """Update the execution profile from the home execution profiler's MongoDB and store it in text file.
     """
-
+    #print('Retrieve execution information info')
     execution_info = []
     num_profilers = 0
     conn = False
@@ -324,63 +324,39 @@ def get_updated_execution_profile():
         execution_info[row[0]] = [float(row[1]),float(row[2])]
     return execution_info
 
-def get_updated_network_from_source(node_ips):
-    #print("--- Get updated network profile information from "+node_ip)   
-    network_info = {}
-    for node_ip in node_ips:
-        print('T____T')
-        print(node_ip)
-        try:
-            client_mongo = MongoClient('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
-            db = client_mongo.droplet_network_profiler
-            collection = db.collection_names(include_system_collections=False)
-            num_nb = len(collection)-1
-            if num_nb == -1:
-                print('--- Network profiler mongoDB not yet prepared')
-                return network_info
-            num_rows = db[node_ip].count() 
-            if num_rows < num_nb:
-                print('--- Network profiler regression info not yet loaded into MongoDB!')
-                return network_info
-            logging =db[node_ip].find().limit(num_nb)  
-
-            # print('DEBUG2')
-            # print(num_nb)
-            for record in logging:
-                # Source ID, Source IP, Destination ID, Destination IP, Parameters
-                network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
-            print(network_info)
-        except Exception as e:
-            print("Network request failed. Will try again, details: " + str(e))
-            return -1
-
-    return network_info
-def get_updated_network_profile(current_task):
-    """Collect the network profile information from local MONGODB database
+def get_updated_network_profile():
     
-    Args:
-        current_task (str): current processing task
-    
-    Returns:
-        list: network information
-    """
-    print('----- Get updated network information-----')
-    
-    to_net_info = get_updated_network_from_source([self_profiler_ip])
-    print('###########!!!!!!!!!!!!!!1')
-    print(current_task)
-    print(last_tasks_map[current_task])
-    print(task_node_map)
-    last_nodes = [task_node_map[task] for task in last_tasks_map[current_task]]
-    print(last_nodes)
-    print('###########!!!!!!!!!!!!!!2')
-    last_profiler_ips = [profilers_ip_map[node] for node in last_nodes]
-    print(last_profiler_ips)
-    print('###########!!!!!!!!!!!!!!3')
-    from_net_info = get_updated_network_from_source(last_profiler_ips)
-    print(from_net_info)
-    print('###########!!!!!!!!!!!!!!4')
-    return from_net_info, to_net_info
+    #print('Retrieve network information info')
+    network_info = dict()        
+    try:
+        client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
+        db = client_mongo.droplet_network_profiler
+        collection = db.collection_names(include_system_collections=False)
+        num_nb = len(collection)-1
+        # print(collection)
+        # print(num_nb)
+        # print(self_profiler_ip)
+        if num_nb == -1:
+            print('--- Network profiler mongoDB not yet prepared')
+            return network_info
+        num_rows = db[self_profiler_ip].count() 
+        # print(num_rows)
+        if num_rows < num_nb:
+            print('--- Network profiler regression info not yet loaded into MongoDB!')
+            return network_info
+        logging =db[self_profiler_ip].find().limit(num_nb)  
+        # print(logging)
+        for record in logging:
+            # print(record)
+            # print(ip_profilers_map)
+            # print(record['Destination[IP]'])
+            # Source ID, Source IP, Destination ID, Destination IP, Parameters
+            network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
+        
+        return network_info
+    except Exception as e:
+        print("Network request failed. Will try again, details: " + str(e))
+        return -1
 
 def get_updated_resource_profile():
     """Requesting resource profiler data using flask for its corresponding profiler node
@@ -408,24 +384,23 @@ def get_updated_resource_profile():
         print("Resource request failed. Will try again, details: " + str(e))
         return -1
 
-def price_aggregate(task_name, next_task_name):
+def price_aggregate(task_name):
     """Calculate price required to perform the task based on network information, resource information, execution information and task queue size and sample size
-    
-    Args:
-        task_name (str): task name
-        task_host_name (str) : host of the task controller
-        next_host_name (str) : host of the next task controller
     
     Returns:
         float: calculated price
+    
+    Args:
+        task_name (str): Name of current task
     """
 
     # Default values
     price = dict()
-    price['network'] = 100000
-    price['cpu'] = 100000
-    price['memory'] = 100000
+    price['network'] = sys.maxsize
+    price['cpu'] = sys.maxsize
+    price['memory'] = sys.maxsize
     price['queue'] = 0
+    print(sys.maxsize)
 
     """
     Input information:
@@ -440,72 +415,18 @@ def price_aggregate(task_name, next_task_name):
         print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        from_net_info, to_net_info = get_updated_network_profile(task_name)
-        # print(from_net_info)
-        # print(to_net_info)
+        print(resource_info)
+        network_info = get_updated_network_profile()
+        print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
-        print(execution_info)
-        test_output = execution_info[task_name][1]
-        # print(test_size)
-        # print(test_output)
+        
+        
         print('----- Calculating price:')
         print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
-        print('--- Network cost:----------- ')
-        print(next_task_name)
-        print(task_name)
-        print(last_tasks_map[task_name][0]) # may be a list
-        print(task_node_map)
-        print(task_node_map[next_task_name])
-        print(task_node_map[last_tasks_map[task_name][0]])
-        next_host_name = task_node_map[next_task_name]
-        last_host_name = task_node_map[last_tasks_map[task_name][0]] # the 1st last task????
-
-        #print(next_host_name)
-        # print(last_host_name)
-        controller_params  = [10000]*3 # out of range
-        computing_params   = [10000]*3 # out of range
-        if last_host_name == self_name:
-            print('last = self')
-            controller_params  = [0]*3
-        elif self_name in from_net_info.keys():
-            print('----------- DEBUG1')
-            print(self_name)
-            print(from_net_info[self_name])
-            controller_params = from_net_info[self_name].split(' ') 
-            print(controller_params)
-            controller_params = list(map(float, controller_params))
-            print(controller_params)
-            controller_params = [float(x) for x in controller_params]
-        else:
-            controller_params  = [10000]*3 # out of range
-            
-        if self_name == next_host_name:
-            computing_params   = [0]*3
-            print('self = next')
-        elif next_host_name in to_net_info.keys():  
-            print('----------- DEBUG2')
-            print(next_host_name)
-            computing_params = to_net_info[next_host_name].split(' ')
-            print(computing_params)
-            controller_params = list(map(float, computing_params))
-            print(computing_params)
-            computing_params = [float(x) for x in computing_params]
-        else:
-            computing_params   = [10000]*3 # out of range
-        try:
-            price['network'] = (controller_params[0] * test_size * test_size) + \
-                           (controller_params[1] * test_size) + \
-                           controller_params[2] + \
-                           (computing_params[0] * test_output * test_output) + \
-                           (computing_params[1] * test_output) + \
-                           computing_params[2]
-        except:
-            price['network'] =  10000
-
-        # print(price)
-        # print('################################')
+        print(price['memory'])
+        print(price['cpu'])
 
         print('--- Queuing cost: ')
         if task_queue_size > 0: #not infinity 
@@ -519,7 +440,28 @@ def price_aggregate(task_name, next_task_name):
                 for idx,task_info in enumerate(queue_task):
                     #TO_DO: sum or max
                     price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
+        print(price['queue'])
 
+        print('--- Network cost:----------- ')
+        test_output = execution_info[task_name][1]
+        print(test_output)
+        print(network_info)
+        print(type(network_info))
+        price['network'] = dict()
+        for node in network_info:
+            print(network_info[node])
+            computing_params = network_info[node].split(' ')
+            print(computing_params)
+            computing_params = [float(x) for x in computing_params]
+            print(computing_params)
+            p = (computing_params[0] * test_output * test_output) + (computing_params[1] * test_output) + computing_params[2]
+            print(p)
+            print(node)
+            price['network'][node] = p
+            
+        print(price['network'])
+        print('-----------------')
+        print('Overall price:')
         print(price)
         return price
              
@@ -534,10 +476,13 @@ def announce_price(task_controller_ip, price):
 
         print("Announce my price")
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
-        pricing_info = self_name+"#"+str(price['network'])+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
-        # print(task_controller_ip)
-        # print(pricing_info)
-        # print(task_controller_ip)
+        pricing_info = self_name+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
+        for node in price['network']:
+            print(node)
+            print(price['network'][node])
+            pricing_info = pricing_info + "$"+node+"-"+str(price['network'][node])
+        
+        print(pricing_info)
         params = {'pricing_info':pricing_info}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -555,9 +500,8 @@ def push_updated_price():
     # print(controllers_ip_map)
     for idx,task in enumerate(task_controllers):
         if task in home_ids: continue
-        for idx,next_task in enumerate(next_tasks_map[task]):
-            price = price_aggregate(task, next_task)
-            announce_price(controllers_ip_map[task], price)
+        price = price_aggregate(task)
+        announce_price(controllers_ip_map[task], price)
 
     
 def schedule_update_price(interval):

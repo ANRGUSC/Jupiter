@@ -103,21 +103,61 @@ def return_output_files():
 app.add_url_rule('/', 'return_output_files', return_output_files)
 
 
-def receive_assignment_info():
-    """
-        Receive corresponding best nodes from the corresponding computing node
+def request_best_assignment(task_name):
+    """Request the best computing node for the task
     """
     try:
-        assignment_info = request.args.get('assignment_info').split('#')
-        print("-----------Received assignment info")
-        task_node_summary[assignment_info[0]] = assignment_info[1]
+        print("Request the best computing node for the task" + task_name)
+        url = "http://" + controller_ip_map[task_name] + ":" + str(FLASK_SVC) + "/receive_best_assignment_request"
+        print(url)
+        print(my_id)
+        params = {'node_name':my_id}
+        params = parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print("Sending assignment request to flask server on controller node FAILED!!!")
+        print(e)
+        return "not ok"
+
+def receive_best_assignment():
+    """
+        Receive the best computing node for the task
+    """
+    try:
+        print("Received best assignment")
+        task_name = request.args.get('task_name')
+        best_computing_node = request.args.get('best_computing_node')
+        task_node_summary[task_name] = best_computing_node
+        print(task_name)
+        print(best_computing_node)
+        print(task_node_summary)
 
     except Exception as e:
-        print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
+        print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
         return "not ok" 
 
     return "ok"
-app.add_url_rule('/receive_assignment_info', 'receive_assignment_info', receive_assignment_info)
+app.add_url_rule('/receive_best_assignment', 'receive_best_assignment', receive_best_assignment)
+
+
+# def receive_assignment_info():
+#     """
+#         Receive corresponding best nodes from the corresponding computing node
+#     """
+#     try:
+#         assignment_info = request.args.get('assignment_info').split('#')
+#         print("-----------Received assignment info")
+#         task_node_summary[assignment_info[0]] = assignment_info[1]
+
+#     except Exception as e:
+#         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
+#         return "not ok" 
+
+#     return "ok"
+# app.add_url_rule('/receive_assignment_info', 'receive_assignment_info', receive_assignment_info)
 
 def update_controller_map():
     """
@@ -469,6 +509,8 @@ class Handler(FileSystemEventHandler):
 
 
             print(first_task)
+            request_best_assignment(first_task)
+            print('----------- waiting')
             print(task_node_summary)
             print(node_ip_map)
             IP = node_ip_map[task_node_summary[first_task]]
@@ -531,15 +573,19 @@ def main():
 
     global task_node_summary, controllers_id_map
     manager = Manager()
-    task_node_summary = manager.dict()
+    task_node_summary = manager.dict() #storing the updated task - computing node mapping
     controllers_id_map = manager.dict()
 
-    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag,my_id
+    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag,my_id, controller_ip_map, all_controller_nodes, all_controller_ips
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
     num_computing_nodes = len(all_computing_nodes)
     node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
+
+    all_controller_nodes = os.environ["ALL_NODES"].split(":")
+    all_controller_ips = os.environ["ALL_NODES_IPS"].split(":")
+    controller_ip_map = dict(zip(all_controller_nodes, all_controller_ips))
 
     my_id = os.environ['TASK']
     print('***********')

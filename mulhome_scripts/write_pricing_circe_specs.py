@@ -60,6 +60,10 @@ spec:
           value: {all_computing_nodes}
         - name: ALL_COMPUTING_IPS
           value: {all_computing_ips}
+        - name: ALL_NODES
+          value: {all_node}
+        - name: ALL_NODES_IPS
+          value: {all_node_ips}
       nodeSelector:
         kubernetes.io/hostname: {host}        
       restartPolicy: Always
