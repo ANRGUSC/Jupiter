@@ -409,6 +409,8 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
                                     all_node = all_node,
                                     all_node_ips = all_node_ips,
                                     profiler_ip= profiler_ips[key],
+                                    all_profiler_ips = all_profiler_ips,
+                                    all_profiler_nodes = all_profiler_nodes,
                                     dir = '{}')
         resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
         print("Home deployment created. status = '%s'" % str(resp.status))

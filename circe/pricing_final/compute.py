@@ -176,7 +176,7 @@ def prepare_global_info():
     print(name_convert_out)
     print(name_convert_in)
 
-    global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map, task_node_map
+    global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map, task_node_map, update_best,task_node_summary
 
     manager = Manager()
     task_mul = manager.dict() # list of incoming tasks and files
@@ -187,10 +187,16 @@ def prepare_global_info():
     files_mul = manager.dict()
     controllers_id_map = manager.dict()
     task_node_map = manager.dict()
-    
+    update_best = manager.dict()
+    task_node_summary = manager.dict()
 
-    global home_node_host_port, dag
-    home_node_host_ports = [x+ ":" + str(FLASK_SVC) for x in home_ips]
+    global home_node_host_ports, dag
+    home_node_host_ports = dict()
+    print('--------- CHECK')
+    for home_id in home_ids:
+        print(home_id)
+        home_node_host_ports[home_id] = home_ip_map[home_id] + ":" + str(FLASK_SVC)
+        print(home_node_host_ports)
 
     dag_file = '/centralized_scheduler/dag.txt'
     dag_info = k8s_read_dag(dag_file)
@@ -222,12 +228,12 @@ def prepare_global_info():
     print(task_node_map)
     global task_module
     task_module = {}
-    for home_id in home_ids:
-        cmd = "mkdir centralized_scheduler/output/"+home_id
+    for task in dag:
+        cmd = "mkdir centralized_scheduler/output/"+task 
         os.system(cmd)
-        for task in dag:
-            task_module[task] = __import__(task)
-            cmd = "mkdir centralized_scheduler/output/"+home_id+"/" + task 
+        task_module[task] = __import__(task)
+        for home_id in home_ids:
+            cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
             os.system(cmd)
 
 def update_controller_map():
@@ -248,21 +254,6 @@ def update_controller_map():
     return "ok"
 app.add_url_rule('/update_controller_map', 'update_controller_map', update_controller_map)
 
-def receive_assignment_info():
-    """
-        Receive corresponding best nodes from the corresponding computing node
-    """
-    try:
-        assignment_info = request.args.get('assignment_info').split('#')
-        print("Received assignment info")
-        task_node_map[assignment_info[0]] = assignment_info[1]
-        print(task_node_map)
-    except Exception as e:
-        print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
-        return "not ok" 
-
-    return "ok"
-app.add_url_rule('/receive_assignment_info', 'receive_assignment_info', receive_assignment_info)
 
 def update_exec_profile_file():
     """Update the execution profile from the home execution profiler's MongoDB and store it in text file.
@@ -510,7 +501,7 @@ def schedule_update_price(interval):
     sched.add_job(push_updated_price,'interval',id='push_price', minutes=interval, replace_existing=True)
     sched.start()
 
-def execute_task(task_name,file_name, filenames, input_path, output_path):
+def execute_task(home_id,task_name,file_name, filenames, input_path, output_path):
     """Execute the task given the input information
     
     Args:
@@ -521,7 +512,7 @@ def execute_task(task_name,file_name, filenames, input_path, output_path):
     """
     ts = time.time()
     runtime_info = 'rt_exec '+ file_name+ ' '+str(ts)
-    send_runtime_profile_computingnode(runtime_info,task_name)
+    send_runtime_profile_computingnode(runtime_info,task_name,home_id)
     dag_task = multiprocessing.Process(target=task_module[task_name].task, args=(filenames, input_path, output_path))
     dag_task.start()
     dag_task.join()
@@ -588,7 +579,7 @@ def transfer_data(IP,user,pword,source, destination):
     msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
     print(msg)
 
-def send_runtime_profile_computingnode(msg,task_name):
+def send_runtime_profile_computingnode(msg,task_name,home_id):
     """
     Sending runtime profiling information to flask server on home
 
@@ -603,7 +594,7 @@ def send_runtime_profile_computingnode(msg,task_name):
     """
     try:
         print("Sending message", msg)
-        url = "http://" + home_node_host_port + "/recv_runtime_profile_computingnode"
+        url = "http://" + home_node_host_ports[home_id] + "/recv_runtime_profile_computingnode"
         params = {'msg': msg, "work_node": self_name, "task_name": task_name}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -651,6 +642,49 @@ def retrieve_input_finish(task_name, file_name):
     input_name = prefix[0]+name_convert_in['input']
     print(input_name)
     return input_name
+
+def request_best_assignment(home_id,task_name,file_name):
+    """Request the best computing node for the task
+    """
+    try:
+        print("Request the best computing node for the task" + task_name)
+        url = "http://" + controllers_ip_map[task_name] + ":" + str(FLASK_SVC) + "/receive_best_assignment_request"
+        params = {'home_id':home_id,'node_name':self_name,'file_name':file_name}
+        params = parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print("Sending assignment request to flask server on controller node FAILED!!!")
+        print(e)
+        return "not ok"
+
+def receive_best_assignment():
+    """
+        Receive the best computing node for the task
+    """
+    
+    try:
+        print("Received best assignment")
+        home_id = request.args.get('home_id')
+        task_name = request.args.get('task_name')
+        file_name = request.args.get('file_name')
+        best_computing_node = request.args.get('best_computing_node')
+        task_node_summary[home_id,task_name,file_name] = best_computing_node
+        print(task_name)
+        print(best_computing_node)
+        print(task_node_summary)
+        update_best[home_id,task_name,file_name] = True
+
+
+    except Exception as e:
+        update_best[home_id,task_name,file_name] = False
+        print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
+        return "not ok" 
+
+    return "ok"
+app.add_url_rule('/receive_best_assignment', 'receive_best_assignment', receive_best_assignment)
 
 #for OUTPUT folder 
 class Watcher1():
@@ -708,16 +742,12 @@ class Handler1(FileSystemEventHandler):
                 runtime_receiver_log.write(s)
                 runtime_receiver_log.flush()
 
-            task_name = event.src_path.split('/')[-2]
-            home_id = event.src_path.split('/')[-3]
-            print('!!!!!!!!!!!!!!!!!')
-            print(home_id)
-            print(task_name)
+            task_name = event.src_path.split('/')[-3]
+            home_id = event.src_path.split('/')[-2]
             input_name = retrieve_input_finish(task_name, temp_name)
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
-            print(input_name)
-            send_runtime_profile_computingnode(runtime_info,task_name)
-            key = (task_name,input_name)
+            send_runtime_profile_computingnode(runtime_info,task_name,home_id)
+            key = (home_id,task_name,input_name)
             print('#############')
             print(next_mul)
             flag = next_mul[key][0]
@@ -728,19 +758,19 @@ class Handler1(FileSystemEventHandler):
             if next_tasks_map[task_name][0] in home_ids: 
                 transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)    
             else: 
-                next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
-                next_IPs   = [computing_ip_map[x] for x in next_hosts]
-
-                
-                
-                print('**************')
+                while not update_best[home_id,task_name,input_name]:
+                    request_best_assignment(home_id,task_name,input_name)
+                    print('--- waiting for computing node assignment')
+                    time.sleep(10)
+                print('---------- Now what')
+                print(computing_ip_map)
+                print(task_node_summary[home_id,task_name,input_name])
+                next_hosts =  [task_node_summary[x] for x in next_tasks_map[task_name]]
                 print(next_hosts)
+                next_IPs   = [computing_ip_map[x] for x in next_hosts]
                 print(next_IPs)
-                print(next_tasks_map[task_name])
-                print(flag)
-
-                if flag == 'true':
-                    destinations = ["/centralized_scheduler/input/" +new_file +"#"+x for x in next_tasks_map[task_name]]
+                if flag == 'true': # same output to all of the children task
+                    destinations = ["/centralized_scheduler/input/" +new_file+"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
                     for idx,ip in enumerate(next_IPs):
                         print('----')
                         print(ip)
@@ -751,23 +781,20 @@ class Handler1(FileSystemEventHandler):
                             cmd = "cp %s %s"%(event.src_path,destinations[idx])
                             print(cmd)
                             os.system(cmd)
-                else:
+                else: #each output file to each of the next children task
                     if key not in files_mul:
                         files_mul[key] = [event.src_path]
                     else:
                         files_mul[key] = files_mul[key] + [event.src_path]
-                    print('-------------')
                     print(files_mul[key])
-                    print(next_IPs)
-                    print(self_name)
-                    print(self_ip)
+
                     if len(files_mul[key]) == len(next_IPs):
                         for idx,ip in enumerate(next_IPs):
                             print(files_mul[key][idx])
                             print(next_tasks_map[task_name][idx])
                             current_file = files_mul[key][idx].split('/')[-1]
                             print(current_file)
-                            destinations = "/centralized_scheduler/input/" +current_file +"#"+next_tasks_map[task_name][idx]
+                            destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
                             print(destinations)
                             if self_ip!=ip:
                                 transfer_data(ip,username,password,files_mul[key][idx], destinations)
@@ -775,7 +802,8 @@ class Handler1(FileSystemEventHandler):
                                 cmd = "cp %s %s"%(files_mul[key][idx],destinations)
                                 print(cmd)
                                 os.system(cmd)
-            
+             
+
 
 #for INPUT folder
 class Watcher(multiprocessing.Process):
@@ -824,21 +852,23 @@ class Handler(FileSystemEventHandler):
                 file_name = new_file.split('.')[0]
 
             ts = time.time()
-            
+
+            print('***************************************^^^^^^^^^^^')
+            print(new_file)
+            print(file_name)
             home_id = new_file.split('#')[1]
             task_name = new_file.split('#')[2]
             input_name = retrieve_input_enter(task_name, file_name)
             runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
-            key = (task_name,input_name)
-            send_runtime_profile_computingnode(runtime_info,task_name)
-
-    
-            
+            key = (home_id,task_name,input_name)
+            send_runtime_profile_computingnode(runtime_info,task_name,home_id)
+            update_best[home_id,task_name,input_name]= False
             flag = dag[task_name][0] 
             task_flag = dag[task_name][1] 
             print('&&&&&&&&&&&&&&&&&&&&')
             print(dag[task_name])
             print(flag)
+            print(new_file.split('#')[3])
 
             if key not in task_mul:
                 task_mul[key] = [new_file]
@@ -862,11 +892,10 @@ class Handler(FileSystemEventHandler):
 
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
-                output_path = os.path.join(output_path,home_id,task_name)
+                output_path = os.path.join(output_path,task_name,home_id)
                 print('!!!!!!!!!')
                 print(input_name)
-                execute_task(task_name,input_name, filenames, input_path, output_path)
-                #execute_task(task_name,file_name, filenames, input_path, output_path)
+                execute_task(home_id,task_name,input_name, filenames, input_path, output_path)
                 queue_mul[key] = True
                 
 
@@ -908,7 +937,7 @@ def main():
     prepare_global_info()
 
     # Prepare transfer-runtime file:
-    global runtime_sender_log, RUNTIME, TRANSFER, transfer_type
+    global runtime_sender_log, RUNTIME, TRANSFER, transfer_type, node_ip_map
     RUNTIME = int(config['CONFIG']['RUNTIME'])
     TRANSFER = int(config['CONFIG']['TRANSFER'])
 
@@ -933,6 +962,7 @@ def main():
 
     
     
+
 
     web_server = MonitorRecv()
     web_server.start()

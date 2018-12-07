@@ -67,6 +67,7 @@ ADD circe/{pricing_option}/start_home.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
 ADD {app_file}/name_convert.txt /centralized_scheduler/name_convert.txt
+ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
 
 WORKDIR /
 

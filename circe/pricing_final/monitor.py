@@ -93,27 +93,42 @@ app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info
 
 def default_best_node(source_node):
     print('Select the current best node')
-    w_net = 1 # Network profiling
-    w_cpu = 1 # Resource profiling
-    w_mem = 1 # Resource profiling
-    w_queue = 1 # Execution time profiling
+    w_net = 1 # Network profiling: longer time, higher price
+    w_cpu = -1 # Resource profiling : larger cpu resource, lower price
+    w_mem = -1 # Resource profiling : larger mem resource, lower price
+    w_queue = 1 # Queue : currently 0
     best_node = -1
-    cost_list = dict()
+    task_price_network= dict()
+    print('----------')
     print(task_price_cpu)
     print(task_price_mem)
     print(task_price_queue)
     print(task_price_net)
-    task_price_network= dict()
+    print(len(task_price_net))
+    
+    print(source_node)
     for (source, dest), price in task_price_net.items():
-        print(source)
         if source == source_node:
             task_price_network[dest]= price
-    print(task_price_network)
+        task_price_network[source] = 0 #the same node
+    print('------------2')
     task_price_summary = dict()
-    for item in task_price_cpu:
+    print(task_price_cpu.items())
+    print(task_price_network)
+    for item, p in task_price_cpu.items():
+        print('---')
+        print(item)
+        print(p)
+        if item in home_ids: continue
+        print(task_price_cpu[item])
+        print(task_price_mem[item])
+        print(task_price_queue[item])
+        print(task_price_network[item])
         task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
+    
+    print('------------3')
     print(task_price_summary)
-    best_node = min(task_price_summary,key=cost_list.get)
+    best_node = min(task_price_summary,key=task_price_summary.get)
     print(best_node)
     return best_node
 
@@ -127,11 +142,18 @@ def predict_best_node(source_node):
 def receive_best_assignment_request():
     try:
         print("------ Receive request of best assignment")
+        home_id = request.args.get('home_id')
         source_node = request.args.get('node_name')
+        file_name = request.args.get('file_name')
+        print('***')
+        print(home_id)
         print(source_node)
+        print(file_name)
         best_node = predict_best_node(source_node)
         print(best_node)
-        announce_best_assignment(best_node, source_node)
+        print('******')
+        
+        announce_best_assignment(home_id,best_node, source_node, file_name)
         
     except Exception as e:
         print("Sending assignment message to flask server on computing node FAILED!!!")
@@ -140,11 +162,18 @@ def receive_best_assignment_request():
     return "ok"
 app.add_url_rule('/receive_best_assignment_request', 'receive_best_assignment_request', receive_best_assignment_request)
 
-def announce_best_assignment(best_node, source_node):
+def announce_best_assignment(home_id,best_node, source_node, file_name):
     try:
         print("Announce the best computing node for my task:" + self_task)
+        print(node_ip_map)
+        print(source_node)
+        print(self_task)
+        print(best_node)
+        print(file_name)
+        print(node_ip_map[source_node])
         url = "http://" + node_ip_map[source_node] + ":" + str(FLASK_SVC) + "/receive_best_assignment"
-        params = {'task_name':self_task,'best_computing_node':best_node}
+        print(url)
+        params = {'home_id':home_id,'task_name':self_task,'file_name':file_name,'best_computing_node':best_node}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)

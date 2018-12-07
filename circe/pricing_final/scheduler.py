@@ -110,15 +110,13 @@ def return_output_files():
 app.add_url_rule('/', 'return_output_files', return_output_files)
 
 
-def request_best_assignment(task_name):
+def request_best_assignment(home_id,task_name,file_name):
     """Request the best computing node for the task
     """
     try:
         print("Request the best computing node for the task" + task_name)
         url = "http://" + controller_ip_map[task_name] + ":" + str(FLASK_SVC) + "/receive_best_assignment_request"
-        print(url)
-        print(my_task)
-        params = {'node_name':my_task}
+        params = {'home_id':home_id,'node_name':home_id,'file_name':file_name}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
@@ -136,17 +134,19 @@ def receive_best_assignment():
     
     try:
         print("Received best assignment")
+        home_id = request.args.get('home_id')
         task_name = request.args.get('task_name')
+        file_name = request.args.get('file_name')
         best_computing_node = request.args.get('best_computing_node')
-        task_node_summary[task_name] = best_computing_node
+        task_node_summary[task_name,file_name] = best_computing_node
         print(task_name)
         print(best_computing_node)
         print(task_node_summary)
-        update_best[task_name] = True
+        update_best[task_name,file_name] = True
 
 
     except Exception as e:
-        update_best[task_name] = False
+        update_best[task_name,file_name] = False
         print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
         return "not ok" 
 
@@ -419,14 +419,24 @@ def get_updated_network_profile():
         print("Network request failed. Will try again, details: " + str(e))
         return -1
 
+def cal_file_size(file_path):
+    """Return the file size in bytes
+    
+    Args:
+        file_path (str): The file path
+    
+    Returns:
+        float: file size in bytes
+    """
+    if os.path.isfile(file_path):
+        file_info = os.stat(file_path)
+        return file_info.st_size * 0.008
+
 def price_estimate():
     """Calculate corresponding price (network) for home node only 
 
     Returns:
         float: calculated price
-    
-    Args:
-        task_name (str): Name of current task
     """
 
     # Default values
@@ -450,6 +460,7 @@ def price_estimate():
         network_info = get_updated_network_profile()
         print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
+        print(test_size)
         print('--- Network cost:----------- ')
         price['network'] = dict()
         for node in network_info:
@@ -481,7 +492,7 @@ def announce_price(task_controller_ip, price):
 
         print("Announce my price")
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
-        pricing_info = self_name+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
+        pricing_info = my_task+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
         for node in price['network']:
             print(node)
             print(price['network'][node])
@@ -624,20 +635,21 @@ class Handler(FileSystemEventHandler):
             print("start time is: ", start_times)
             new_file_name = os.path.split(event.src_path)[-1]
 
-
+            update_best[first_task,new_file_name]= False
             print(first_task)
-            while not update_best[first_task]:
-                request_best_assignment(first_task)
-                print('----------- waiting')
+            print(new_file_name)
+            while not update_best[first_task,new_file_name]:
+                request_best_assignment(my_task,first_task,new_file_name)
+                print('--- waiting for computing node assignment')
                 time.sleep(10)
                 
+            print('---------- Now what')
             print(task_node_summary)
             print(node_ip_map)
-            IP = node_ip_map[task_node_summary[first_task]]
-            update_best[first_task] = False
+            IP = node_ip_map[task_node_summary[first_task,new_file_name]]
+            # update_best[first_task] = False
 
-            print(new_file_name)
-            new_file_name = new_file_name+"#"+my_id+"#"+first_task+"#"+first_flag
+            new_file_name = new_file_name+"#"+my_task+"#"+first_task+"#"+first_flag
             print(new_file_name)
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
@@ -683,10 +695,11 @@ def main():
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    global FLASK_DOCKER, FLASK_SVC, username, password, ssh_port, num_retries, first_task
+    global FLASK_DOCKER, FLASK_SVC, MONGO_SVC, username, password, ssh_port, num_retries, first_task
 
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC      = int(config['PORT']['FLASK_SVC'])
+    MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
     ssh_port    = int(config['PORT']['SSH_SVC'])
@@ -703,7 +716,7 @@ def main():
 
 
 
-    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag,my_id, controller_ip_map, all_controller_nodes, all_controller_ips, my_task, self_profiler_ip
+    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag,my_id, controller_ip_map, all_controller_nodes, all_controller_ips, my_task, self_profiler_ip, ip_profilers_map
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
@@ -714,10 +727,19 @@ def main():
     all_controller_ips = os.environ["ALL_NODES_IPS"].split(":")
     controller_ip_map = dict(zip(all_controller_nodes, all_controller_ips))
 
+    profiler_ip = os.environ['ALL_PROFILERS'].split(' ')
+    profiler_ip = [info.split(":") for info in profiler_ip]
+    profiler_ip = profiler_ip[0][1:]
+
+    profiler_nodes = os.environ['ALL_PROFILERS_NODES'].split(' ')
+    profiler_nodes = [info.split(":") for info in profiler_nodes]
+    profiler_nodes = profiler_nodes[0][1:]
+    ip_profilers_map = dict(zip(profiler_ip, profiler_nodes))
+    print('############')
+    print(ip_profilers_map)
+
     my_id = os.environ['TASK']
     my_task = my_id.split('-')[1]
-    for task in all_controller_nodes:
-        update_best[task] = False
 
     self_profiler_ip = os.environ['SELF_PROFILER_IP']
 
