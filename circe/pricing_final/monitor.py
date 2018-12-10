@@ -79,7 +79,12 @@ def receive_price_info():
         task_price_mem[node_name] = float(pricing_info[2])
         task_price_queue[node_name] = float(pricing_info[3].split('$')[0])
         price_net_info = pricing_info[3].split('$')[1:]
+        print(price_net_info)
         for price in price_net_info:
+            print(price)
+            print(node_name)
+            print(price.split('-')[0])
+            print(price.split('-')[1])
             task_price_net[node_name,price.split('-')[0]] = float(price.split('-')[1])
 
 
@@ -99,34 +104,33 @@ def default_best_node(source_node):
     w_queue = 1 # Queue : currently 0
     best_node = -1
     task_price_network= dict()
-    print('----------')
-    print(task_price_cpu)
-    print(task_price_mem)
-    print(task_price_queue)
-    print(task_price_net)
-    print(len(task_price_net))
-    
-    print(source_node)
+    # print('----------')
+    # print(task_price_cpu)
+    # print(task_price_mem)
+    # print(task_price_queue)
+    # print(task_price_net)
+    # print(len(task_price_net))
+    # print(source_node)
     for (source, dest), price in task_price_net.items():
         if source == source_node:
             task_price_network[dest]= price
         task_price_network[source] = 0 #the same node
-    print('------------2')
+    #print('------------2')
     task_price_summary = dict()
-    print(task_price_cpu.items())
-    print(task_price_network)
+    # print(task_price_cpu.items())
+    # print(task_price_network)
     for item, p in task_price_cpu.items():
-        print('---')
-        print(item)
-        print(p)
+        # print('---')
+        # print(item)
+        # print(p)
         if item in home_ids: continue
-        print(task_price_cpu[item])
-        print(task_price_mem[item])
-        print(task_price_queue[item])
-        print(task_price_network[item])
+        # print(task_price_cpu[item])
+        # print(task_price_mem[item])
+        # print(task_price_queue[item])
+        # print(task_price_network[item])
         task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
     
-    print('------------3')
+    # print('------------3')
     print(task_price_summary)
     best_node = min(task_price_summary,key=task_price_summary.get)
     print(best_node)
@@ -145,13 +149,13 @@ def receive_best_assignment_request():
         home_id = request.args.get('home_id')
         source_node = request.args.get('node_name')
         file_name = request.args.get('file_name')
-        print('***')
-        print(home_id)
-        print(source_node)
-        print(file_name)
+        # print('***')
+        # print(home_id)
+        # print(source_node)
+        # print(file_name)
         best_node = predict_best_node(source_node)
-        print(best_node)
-        print('******')
+        # print(best_node)
+        # print('******')
         
         announce_best_assignment(home_id,best_node, source_node, file_name)
         
@@ -165,14 +169,14 @@ app.add_url_rule('/receive_best_assignment_request', 'receive_best_assignment_re
 def announce_best_assignment(home_id,best_node, source_node, file_name):
     try:
         print("Announce the best computing node for my task:" + self_task)
-        print(node_ip_map)
-        print(source_node)
-        print(self_task)
-        print(best_node)
-        print(file_name)
-        print(node_ip_map[source_node])
+        # print(node_ip_map)
+        # print(source_node)
+        # print(self_task)
+        # print(best_node)
+        # print(file_name)
+        # print(node_ip_map[source_node])
         url = "http://" + node_ip_map[source_node] + ":" + str(FLASK_SVC) + "/receive_best_assignment"
-        print(url)
+        # print(url)
         params = {'home_id':home_id,'task_name':self_task,'file_name':file_name,'best_computing_node':best_node}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))

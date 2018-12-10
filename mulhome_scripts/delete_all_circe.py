@@ -56,10 +56,11 @@ def delete_all_circe(app_name):
     """
     for key, value in dag.items():
 
+        print(key)
+        pod_name = app_name+"-"+key
+
         # First check if there is a deployment existing with
         # the name = key in the respective namespace
-        
-        pod_name = app_name+"-"+key
         resp = None
         try:
             resp = extensions_v1_beta1_api.read_namespaced_deployment(pod_name, namespace)
@@ -69,13 +70,13 @@ def delete_all_circe(app_name):
         # if a deployment with the name = key exists in the namespace, delete it
         if resp:
             del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(pod_name, namespace, v1_delete_options)
-            print("Deployment '%s' Deleted. status='%s'" % (pod_name, str(del_resp_0.status)))
+            print("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
         # Check if there is a replicaset running by using the label app={key}
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=" + app_name+'-'+key
-        resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label, namespace = namespace)
+        label = "app="+app_name+'-' + key
+        resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
         # if a replicaset exist, delete it
         
         # print resp.items[0].metadata.namespace
@@ -101,8 +102,8 @@ def delete_all_circe(app_name):
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace)
-            #del_resp_2 = core_v1_api.delete_namespaced_service(key, namespace,v1_delete_options)
+            del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace, v1_delete_options)
+            #del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the related service, pods, deployment running
@@ -145,17 +146,16 @@ def delete_all_circe(app_name):
         print("Home pod Deleted. status='%s'" % str(del_resp_2.status))
 
     # Check if there is a service running by name = task#
-    home_name =app_name+"-home"
     resp = None
     try:
-        resp = core_v1_api.read_namespaced_service(home_name, namespace)
+        resp = core_v1_api.read_namespaced_service(home_name, namespace=namespace)
     except ApiException as e:
         print("Exception Occurred")
     # if a service is running, kill it
     if resp:
-        del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace)
-        #del_resp_2 = core_v1_api.delete_namespaced_service('home', namespace,v1_delete_options)
-        print("Service Deleted. status='%s'" % str(del_resp_2.status))    
+        del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace, v1_delete_options)
+        #del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace=namespace)
+        print("Service Deleted. status='%s'" % str(del_resp_2.status))     
 
 if __name__ == '__main__':
     app_name = 'dummy1'

@@ -73,7 +73,7 @@ def set_globals():
 	SCRIPT_PATH             = HERE + 'scripts/'
 
 	global mapper_option
-	
+	mapper_option           = 'heft'	
 
 	if SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_RANDOM']):
 	    WAVE_PATH           = HERE + 'task_mapper/wave/random_wave/'
@@ -85,11 +85,11 @@ def set_globals():
 		HEFT_PATH           = HERE + 'task_mapper/heft/modified/'	
 		mapper_option 		= 'modified'
 
+
 	global pricing_option, profiler_option
 
 	pricing_option 			= 'pricing' #original pricing
 	profiler_option     	= 'onehome'
-	mapper_option           = 'heft'
 
 	if PRICING == 2:#separated
 		pricing_option 		= 'pricing_separate'
@@ -97,14 +97,14 @@ def set_globals():
 		pricing_option 		= 'pricing_coded'
 	if PRICING == 4:#home
 		pricing_option 		= 'pricing_home'
-	if PRICING == 5:#multiple home
+	if PRICING == 5:#multiple home (push circe)
 		pricing_option 		= 'pricing_multiple_home'
 		profiler_option     = 'multiple_home'
 		NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
 		EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
 		HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
 		WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
-	if PRICING == 6:#multiple home
+	if PRICING == 6:#multiple home, pricing (event-driven circe)
 		pricing_option 		= 'pricing_final'
 		profiler_option     = 'multiple_home'
 		NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
@@ -115,6 +115,10 @@ def set_globals():
 	CIRCE_PATH          	= HERE + 'circe/%s/'%(pricing_option)
 	if PRICING == 0: #non-pricing
 		CIRCE_PATH          = HERE + 'circe/original/'	
+		NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
+		EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
+		HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
+		WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
 	"""Kubernetes required information"""
 	global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 

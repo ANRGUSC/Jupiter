@@ -334,6 +334,7 @@ def k8s_exec_scheduler(app_name):
         """
             Generate the yaml description of the required deployment for the profiles
         """
+        #print(i)
         pod_name = app_name+'-'+i
         dep = write_exec_specs(name = pod_name, label = pod_name + "exec_profiler", node_name = i, image = jupiter_config.EXEC_WORKER_IMAGE,
                                          host = nodes[i][0], home_node_ip = service_ips['home'])

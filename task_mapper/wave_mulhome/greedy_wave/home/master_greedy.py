@@ -80,10 +80,11 @@ def prepare_global():
     master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
     print("Nodes", nodes)
 
-    global node_id, node_name, debug
-
+    global node_id, debug
+    # global node_name
+    # node_name = ""
     node_id = -1
-    node_name = ""
+    
     debug = True
 
     global control_relation, children, parents, init_tasks, local_children, local_mapping, local_responsibility

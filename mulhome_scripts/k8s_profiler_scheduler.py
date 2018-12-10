@@ -189,6 +189,8 @@ def k8s_profiler_scheduler():
         if i.startswith('home'):
             continue
 
+        #print(i)
+
         """
             Generate the yaml description of the required deployment for the profiles
         """

@@ -139,9 +139,9 @@ def receive_best_assignment():
         file_name = request.args.get('file_name')
         best_computing_node = request.args.get('best_computing_node')
         task_node_summary[task_name,file_name] = best_computing_node
-        print(task_name)
-        print(best_computing_node)
-        print(task_node_summary)
+        # print(task_name)
+        # print(best_computing_node)
+        # print(task_node_summary)
         update_best[task_name,file_name] = True
 
 
@@ -458,20 +458,20 @@ def price_estimate():
         
         print(' Retrieve all input information: ')
         network_info = get_updated_network_profile()
-        print(network_info)
+        # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
-        print(test_size)
+        # print(test_size)
         print('--- Network cost:----------- ')
         price['network'] = dict()
         for node in network_info:
-            print(network_info[node])
+            # print(network_info[node])
             computing_params = network_info[node].split(' ')
-            print(computing_params)
+            # print(computing_params)
             computing_params = [float(x) for x in computing_params]
-            print(computing_params)
+            # print(computing_params)
             p = (computing_params[0] * test_size * test_size) + (computing_params[1] * test_size) + computing_params[2]
-            print(p)
-            print(node)
+            # print(p)
+            # print(node)
             price['network'][node] = p
             
         print(price['network'])
@@ -494,8 +494,8 @@ def announce_price(task_controller_ip, price):
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
         pricing_info = my_task+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
         for node in price['network']:
-            print(node)
-            print(price['network'][node])
+            # print(node)
+            # print(price['network'][node])
             pricing_info = pricing_info + "$"+node+"-"+str(price['network'][node])
         
         print(pricing_info)
@@ -636,8 +636,8 @@ class Handler(FileSystemEventHandler):
             new_file_name = os.path.split(event.src_path)[-1]
 
             update_best[first_task,new_file_name]= False
-            print(first_task)
-            print(new_file_name)
+            # print(first_task)
+            # print(new_file_name)
             while not update_best[first_task,new_file_name]:
                 request_best_assignment(my_task,first_task,new_file_name)
                 print('--- waiting for computing node assignment')

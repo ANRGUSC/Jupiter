@@ -37,7 +37,7 @@ RUN mkdir -p /home/darpa/apps/data
 #ADD circe/original/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/dummy_app/scripts/ /centralized_scheduler/
+ADD app_specific_files/network_monitoring_app_dag/scripts/ /centralized_scheduler/
 
 ADD jupiter_config.ini /jupiter_config.ini
 
@@ -48,7 +48,7 @@ RUN chmod +x /start.sh
 WORKDIR /
 
 # tell the port number the container should expose
-EXPOSE 22
+EXPOSE 22 57021
 
 # run the command
 CMD ["./start.sh"]

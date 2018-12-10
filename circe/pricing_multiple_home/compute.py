@@ -408,24 +408,23 @@ def get_updated_resource_profile():
         print("Resource request failed. Will try again, details: " + str(e))
         return -1
 
-def price_aggregate(task_name, next_task_name):
+def price_aggregate(task_name):
     """Calculate price required to perform the task based on network information, resource information, execution information and task queue size and sample size
-    
-    Args:
-        task_name (str): task name
-        task_host_name (str) : host of the task controller
-        next_host_name (str) : host of the next task controller
     
     Returns:
         float: calculated price
+    
+    Args:
+        task_name (str): Name of current task
     """
 
     # Default values
     price = dict()
-    price['network'] = 100000
-    price['cpu'] = 100000
-    price['memory'] = 100000
+    price['network'] = sys.maxsize
+    price['cpu'] = sys.maxsize
+    price['memory'] = sys.maxsize
     price['queue'] = 0
+    # print(sys.maxsize)
 
     """
     Input information:
@@ -437,77 +436,23 @@ def price_aggregate(task_name, next_task_name):
 
     try:
         
-        print(' Retrieve all input information: ')
+        # print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        from_net_info, to_net_info = get_updated_network_profile(task_name)
-        # print(from_net_info)
-        # print(to_net_info)
+        # print(resource_info)
+        network_info = get_updated_network_profile()
+        # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
-        print(execution_info)
-        test_output = execution_info[task_name][1]
-        # print(test_size)
-        # print(test_output)
-        print('----- Calculating price:')
-        print('--- Resource cost: ')
+        
+        
+        # print('----- Calculating price:')
+        # print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
-        print('--- Network cost:----------- ')
-        print(next_task_name)
-        print(task_name)
-        print(last_tasks_map[task_name][0]) # may be a list
-        print(task_node_map)
-        print(task_node_map[next_task_name])
-        print(task_node_map[last_tasks_map[task_name][0]])
-        next_host_name = task_node_map[next_task_name]
-        last_host_name = task_node_map[last_tasks_map[task_name][0]] # the 1st last task????
+        # print(price['memory'])
+        # print(price['cpu'])
 
-        #print(next_host_name)
-        # print(last_host_name)
-        controller_params  = [10000]*3 # out of range
-        computing_params   = [10000]*3 # out of range
-        if last_host_name == self_name:
-            print('last = self')
-            controller_params  = [0]*3
-        elif self_name in from_net_info.keys():
-            print('----------- DEBUG1')
-            print(self_name)
-            print(from_net_info[self_name])
-            controller_params = from_net_info[self_name].split(' ') 
-            print(controller_params)
-            controller_params = list(map(float, controller_params))
-            print(controller_params)
-            controller_params = [float(x) for x in controller_params]
-        else:
-            controller_params  = [10000]*3 # out of range
-            
-        if self_name == next_host_name:
-            computing_params   = [0]*3
-            print('self = next')
-        elif next_host_name in to_net_info.keys():  
-            print('----------- DEBUG2')
-            print(next_host_name)
-            computing_params = to_net_info[next_host_name].split(' ')
-            print(computing_params)
-            controller_params = list(map(float, computing_params))
-            print(computing_params)
-            computing_params = [float(x) for x in computing_params]
-        else:
-            computing_params   = [10000]*3 # out of range
-        try:
-            price['network'] = (controller_params[0] * test_size * test_size) + \
-                           (controller_params[1] * test_size) + \
-                           controller_params[2] + \
-                           (computing_params[0] * test_output * test_output) + \
-                           (computing_params[1] * test_output) + \
-                           computing_params[2]
-        except:
-            price['network'] =  10000
-
-        # print(price)
-        # print('################################')
-
-        print('--- Queuing cost: ')
+        # print('--- Queuing cost: ')
         if task_queue_size > 0: #not infinity 
             if len(queue_mul)==0:
                 print('empty queue, no tasks are waiting')
@@ -519,8 +464,29 @@ def price_aggregate(task_name, next_task_name):
                 for idx,task_info in enumerate(queue_task):
                     #TO_DO: sum or max
                     price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
+        print(price['queue'])
 
-        print(price)
+        # print('--- Network cost:----------- ')
+        test_output = execution_info[task_name][1]
+        # print(test_output)
+        # print(network_info)
+        # print(type(network_info))
+        price['network'] = dict()
+        for node in network_info:
+            # print(network_info[node])
+            computing_params = network_info[node].split(' ')
+            # print(computing_params)
+            computing_params = [float(x) for x in computing_params]
+            # print(computing_params)
+            p = (computing_params[0] * test_output * test_output) + (computing_params[1] * test_output) + computing_params[2]
+            # print(p)
+            # print(node)
+            price['network'][node] = p
+            
+        # print(price['network'])
+        # print('-----------------')
+        # print('Overall price:')
+        # print(price)
         return price
              
     except:
@@ -528,16 +494,159 @@ def price_aggregate(task_name, next_task_name):
         
     return price
 
+# def price_aggregate(task_name, next_task_name):
+#     """Calculate price required to perform the task based on network information, resource information, execution information and task queue size and sample size
+    
+#     Args:
+#         task_name (str): task name
+#         task_host_name (str) : host of the task controller
+#         next_host_name (str) : host of the next task controller
+    
+#     Returns:
+#         float: calculated price
+#     """
+
+#     # Default values
+#     price = dict()
+#     price['network'] = 100000
+#     price['cpu'] = 100000
+#     price['memory'] = 100000
+#     price['queue'] = 0
+
+#     """
+#     Input information:
+#         - Resource information: resource_info
+#         - Network information: network_info
+#         - Task queue: task_mul
+#         - Execution information: execution_info
+#     """
+
+#     try:
+        
+#         print(' Retrieve all input information: ')
+#         execution_info = get_updated_execution_profile()
+#         resource_info = get_updated_resource_profile()
+#         from_net_info, to_net_info = get_updated_network_profile(task_name)
+#         # print(from_net_info)
+#         # print(to_net_info)
+#         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
+#         print(execution_info)
+#         test_output = execution_info[task_name][1]
+#         # print(test_size)
+#         # print(test_output)
+#         print('----- Calculating price:')
+#         print('--- Resource cost: ')
+#         price['memory'] = float(resource_info[self_name]["memory"])
+#         price['cpu'] = float(resource_info[self_name]["cpu"])
+#         print('--- Network cost:----------- ')
+#         print(next_task_name)
+#         print(task_name)
+#         print(last_tasks_map[task_name][0]) # may be a list
+#         print(task_node_map)
+#         print(task_node_map[next_task_name])
+#         print(task_node_map[last_tasks_map[task_name][0]])
+#         next_host_name = task_node_map[next_task_name]
+#         last_host_name = task_node_map[last_tasks_map[task_name][0]] # the 1st last task????
+
+#         #print(next_host_name)
+#         # print(last_host_name)
+#         controller_params  = [10000]*3 # out of range
+#         computing_params   = [10000]*3 # out of range
+#         if last_host_name == self_name:
+#             print('last = self')
+#             controller_params  = [0]*3
+#         elif self_name in from_net_info.keys():
+#             print('----------- DEBUG1')
+#             print(self_name)
+#             print(from_net_info[self_name])
+#             controller_params = from_net_info[self_name].split(' ') 
+#             print(controller_params)
+#             controller_params = list(map(float, controller_params))
+#             print(controller_params)
+#             controller_params = [float(x) for x in controller_params]
+#         else:
+#             controller_params  = [10000]*3 # out of range
+            
+#         if self_name == next_host_name:
+#             computing_params   = [0]*3
+#             print('self = next')
+#         elif next_host_name in to_net_info.keys():  
+#             print('----------- DEBUG2')
+#             print(next_host_name)
+#             computing_params = to_net_info[next_host_name].split(' ')
+#             print(computing_params)
+#             controller_params = list(map(float, computing_params))
+#             print(computing_params)
+#             computing_params = [float(x) for x in computing_params]
+#         else:
+#             computing_params   = [10000]*3 # out of range
+#         try:
+#             price['network'] = (controller_params[0] * test_size * test_size) + \
+#                            (controller_params[1] * test_size) + \
+#                            controller_params[2] + \
+#                            (computing_params[0] * test_output * test_output) + \
+#                            (computing_params[1] * test_output) + \
+#                            computing_params[2]
+#         except:
+#             price['network'] =  10000
+
+#         # print(price)
+#         # print('################################')
+
+#         print('--- Queuing cost: ')
+#         if task_queue_size > 0: #not infinity 
+#             if len(queue_mul)==0:
+#                 print('empty queue, no tasks are waiting')
+#             else:
+#                 queue_dict = dict(queue_mul)
+#                 queue_task = [k for k,v in queue_dict.items() if v == False]
+#                 size_dict = dict(size_mul)
+#                 queue_size =  [size_dict[k] for k in queue_dict.keys()] 
+#                 for idx,task_info in enumerate(queue_task):
+#                     #TO_DO: sum or max
+#                     price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
+
+#         print(price)
+#         return price
+             
+#     except:
+#         print('Error reading input information to calculate the price')
+        
+#     return price
+
+
+# def announce_price(task_controller_ip, price):
+#     try:
+
+#         print("Announce my price")
+#         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
+#         pricing_info = self_name+"#"+str(price['network'])+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
+#         # print(task_controller_ip)
+#         # print(pricing_info)
+#         # print(task_controller_ip)
+#         params = {'pricing_info':pricing_info}
+#         params = parse.urlencode(params)
+#         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+#         res = urllib.request.urlopen(req)
+#         res = res.read()
+#         res = res.decode('utf-8')
+#     except Exception as e:
+#         print("Sending price message to flask server on controller node FAILED!!!")
+#         print(e)
+#         return "not ok"
 
 def announce_price(task_controller_ip, price):
     try:
 
         print("Announce my price")
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
-        pricing_info = self_name+"#"+str(price['network'])+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
-        # print(task_controller_ip)
-        # print(pricing_info)
-        # print(task_controller_ip)
+        pricing_info = self_name+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
+        for node in price['network']:
+            # print(node)
+            # print(price['network'][node])
+            pricing_info = pricing_info + "$"+node+"-"+str(price['network'][node])
+        
+        print(pricing_info)
         params = {'pricing_info':pricing_info}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -548,16 +657,25 @@ def announce_price(task_controller_ip, price):
         print("Sending price message to flask server on controller node FAILED!!!")
         print(e)
         return "not ok"
-
+        
 def push_updated_price():
     # print('***********')
     # print(task_controllers)
     # print(controllers_ip_map)
     for idx,task in enumerate(task_controllers):
         if task in home_ids: continue
-        for idx,next_task in enumerate(next_tasks_map[task]):
-            price = price_aggregate(task, next_task)
-            announce_price(controllers_ip_map[task], price)
+        price = price_aggregate(task)
+        announce_price(controllers_ip_map[task], price)
+
+# def push_updated_price():
+#     # print('***********')
+#     # print(task_controllers)
+#     # print(controllers_ip_map)
+#     for idx,task in enumerate(task_controllers):
+#         if task in home_ids: continue
+#         for idx,next_task in enumerate(next_tasks_map[task]):
+#             price = price_aggregate(task, next_task)
+#             announce_price(controllers_ip_map[task], price)
 
     
 def schedule_update_price(interval):

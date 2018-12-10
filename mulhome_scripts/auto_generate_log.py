@@ -115,7 +115,7 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
 
         #Start the task to node mapper
         
-        #task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
+        task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
         """
             Make sure you run kubectl proxy --port=8080 on a terminal.
@@ -161,9 +161,12 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
 
     #Start CIRCE
     if pricing == 0:
-    	k8s_circe_scheduler(dag,schedule,app_name)
+        print('Non pricing evaluation')
+        k8s_circe_scheduler(dag,schedule,app_name)
     else:
-    	k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
+        print('Pricing evaluation')
+        print(pricing)
+        k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
 
 
     print("The Jupiter Deployment is Successful!")
@@ -340,7 +343,7 @@ def redeploy_system(app_id,app_name,port,mapper_log):
             Then this is link to get the task to node mapping
         """
 
-       	line = "http://localhost:%d/api/v1/namespaces/"%(port)
+        line = "http://localhost:%d/api/v1/namespaces/"%(port)
         line = line + jupiter_config.MAPPER_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
         time.sleep(5)
         print(line)
@@ -384,9 +387,9 @@ def redeploy_system(app_id,app_name,port,mapper_log):
     print(profiler_ips)
     # Start CIRCE
     if pricing == 0:
-    	k8s_circe_scheduler(dag,schedule,app_name)
+        k8s_circe_scheduler(dag,schedule,app_name)
     else:
-    	k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
+        k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
 
 
 
@@ -415,7 +418,7 @@ def check_finish_evaluation(app_name,port,num_samples):
 
    
 def deploy_app_jupiter(app_id,app_name,port,circe_log,num_runs,num_samples,mapper_log):
-    setup_port(port)
+    #setup_port(port)
     k8s_jupiter_deploy(app_id,app_name,port,mapper_log)
     log_folder ='../logs'
     if not os.path.exists(log_folder):

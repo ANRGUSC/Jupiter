@@ -144,19 +144,19 @@ def prepare_global_info():
 
 
     global ip_profilers_map,profilers_ip_map, controllers_ip_map, computing_ip_map, profilers_ip_homes
-    print('DEBUG')
-    print(profiler_nodes)
-    print(profiler_ip)
+    # print('DEBUG')
+    # print(profiler_nodes)
+    # print(profiler_ip)
     
 
     ip_profilers_map = dict(zip(profiler_ip, profiler_nodes))
     profilers_ip_map = dict(zip(profiler_nodes, profiler_ip))
 
-    print(home_nodes)
-    print(home_ids)
-    print(home_ips)
-    print(profilers_ip_map)
-    print(ip_profilers_map)
+    # print(home_nodes)
+    # print(home_ids)
+    # print(home_ips)
+    # print(profilers_ip_map)
+    # print(ip_profilers_map)
     profilers_ip_homes = [profilers_ip_map[x] for x in home_ids]
 
     controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
@@ -172,9 +172,9 @@ def prepare_global_info():
             info = line.rstrip().split(' ')
             name_convert_out[info[0]] = info[1]
             name_convert_in[info[0]] = info[2]
-    print('@@@@@@@@@@@@@@@@@@@@@@@@')
-    print(name_convert_out)
-    print(name_convert_in)
+    # print('@@@@@@@@@@@@@@@@@@@@@@@@')
+    # print(name_convert_out)
+    # print(name_convert_in)
 
     global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map, task_node_map, update_best,task_node_summary
 
@@ -192,11 +192,11 @@ def prepare_global_info():
 
     global home_node_host_ports, dag
     home_node_host_ports = dict()
-    print('--------- CHECK')
+    # print('--------- CHECK')
     for home_id in home_ids:
-        print(home_id)
+        # print(home_id)
         home_node_host_ports[home_id] = home_ip_map[home_id] + ":" + str(FLASK_SVC)
-        print(home_node_host_ports)
+        # print(home_node_host_ports)
 
     dag_file = '/centralized_scheduler/dag.txt'
     dag_info = k8s_read_dag(dag_file)
@@ -222,10 +222,10 @@ def prepare_global_info():
         next_tasks_map[home_id] = [os.environ['CHILD_NODES']]
         last_tasks_map[os.environ['CHILD_NODES']].append(home_id)
 
-    print('DEBUG NEXT LAST-----------')
-    print(next_tasks_map)
-    print(last_tasks_map)
-    print(task_node_map)
+    # print('DEBUG NEXT LAST-----------')
+    # print(next_tasks_map)
+    # print(last_tasks_map)
+    # print(task_node_map)
     global task_module
     task_module = {}
     for task in dag:
@@ -391,7 +391,7 @@ def price_aggregate(task_name):
     price['cpu'] = sys.maxsize
     price['memory'] = sys.maxsize
     price['queue'] = 0
-    print(sys.maxsize)
+    # print(sys.maxsize)
 
     """
     Input information:
@@ -403,23 +403,23 @@ def price_aggregate(task_name):
 
     try:
         
-        print(' Retrieve all input information: ')
+        # print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        print(resource_info)
+        # print(resource_info)
         network_info = get_updated_network_profile()
-        print(network_info)
+        # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         
         
-        print('----- Calculating price:')
-        print('--- Resource cost: ')
+        # print('----- Calculating price:')
+        # print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
-        print(price['memory'])
-        print(price['cpu'])
+        # print(price['memory'])
+        # print(price['cpu'])
 
-        print('--- Queuing cost: ')
+        # print('--- Queuing cost: ')
         if task_queue_size > 0: #not infinity 
             if len(queue_mul)==0:
                 print('empty queue, no tasks are waiting')
@@ -433,27 +433,27 @@ def price_aggregate(task_name):
                     price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
         print(price['queue'])
 
-        print('--- Network cost:----------- ')
+        # print('--- Network cost:----------- ')
         test_output = execution_info[task_name][1]
-        print(test_output)
-        print(network_info)
-        print(type(network_info))
+        # print(test_output)
+        # print(network_info)
+        # print(type(network_info))
         price['network'] = dict()
         for node in network_info:
-            print(network_info[node])
+            # print(network_info[node])
             computing_params = network_info[node].split(' ')
-            print(computing_params)
+            # print(computing_params)
             computing_params = [float(x) for x in computing_params]
-            print(computing_params)
+            # print(computing_params)
             p = (computing_params[0] * test_output * test_output) + (computing_params[1] * test_output) + computing_params[2]
-            print(p)
-            print(node)
+            # print(p)
+            # print(node)
             price['network'][node] = p
             
-        print(price['network'])
-        print('-----------------')
-        print('Overall price:')
-        print(price)
+        # print(price['network'])
+        # print('-----------------')
+        # print('Overall price:')
+        # print(price)
         return price
              
     except:
@@ -469,8 +469,8 @@ def announce_price(task_controller_ip, price):
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
         pricing_info = self_name+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
         for node in price['network']:
-            print(node)
-            print(price['network'][node])
+            # print(node)
+            # print(price['network'][node])
             pricing_info = pricing_info + "$"+node+"-"+str(price['network'][node])
         
         print(pricing_info)
@@ -615,15 +615,15 @@ def retrieve_input_enter(task_name, file_name):
         file_name (str): name of the file enter at the INPUT folder
     """
     suffix = name_convert_in[task_name]
-    print(suffix)
-    print(type(suffix))
+    # print(suffix)
+    # print(type(suffix))
     prefix = file_name.split(suffix)
-    print('$$$$$$')
-    print(file_name)
-    print(suffix)
-    print(prefix)
+    # print('$$$$$$')
+    # print(file_name)
+    # print(suffix)
+    # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    print(input_name)
+    # print(input_name)
     return input_name
 
 def retrieve_input_finish(task_name, file_name):
@@ -635,12 +635,12 @@ def retrieve_input_finish(task_name, file_name):
     """
     suffix = name_convert_out[task_name]
     prefix = file_name.split(suffix)
-    print('$$$$$$')
-    print(file_name)
-    print(suffix)
-    print(prefix)
+    # print('$$$$$$')
+    # print(file_name)
+    # print(suffix)
+    # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    print(input_name)
+    # print(input_name)
     return input_name
 
 def request_best_assignment(home_id,task_name,file_name):
@@ -672,9 +672,9 @@ def receive_best_assignment():
         file_name = request.args.get('file_name')
         best_computing_node = request.args.get('best_computing_node')
         task_node_summary[home_id,task_name,file_name] = best_computing_node
-        print(task_name)
-        print(best_computing_node)
-        print(task_node_summary)
+        # print(task_name)
+        # print(best_computing_node)
+        # print(task_node_summary)
         update_best[home_id,task_name,file_name] = True
 
 
@@ -758,17 +758,25 @@ class Handler1(FileSystemEventHandler):
             if next_tasks_map[task_name][0] in home_ids: 
                 transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)    
             else: 
-                while not update_best[home_id,task_name,input_name]:
-                    request_best_assignment(home_id,task_name,input_name)
-                    print('--- waiting for computing node assignment')
-                    time.sleep(10)
+                print(next_tasks_map[task_name])
+                print(len(next_tasks_map[task_name]))
+                for next_task in next_tasks_map[task_name]:
+                    while not update_best[home_id,next_task,input_name]:
+                        request_best_assignment(home_id,next_task,input_name)
+                        print('--- waiting for computing node assignment')
+                        time.sleep(10)
                 print('---------- Now what')
                 print(computing_ip_map)
-                print(task_node_summary[home_id,task_name,input_name])
-                next_hosts =  [task_node_summary[x] for x in next_tasks_map[task_name]]
-                print(next_hosts)
+                print(task_node_summary[home_id,next_task,input_name])
+                next_hosts =  [task_node_summary[home_id,x,input_name] for x in next_tasks_map[task_name]]
                 next_IPs   = [computing_ip_map[x] for x in next_hosts]
+
+                print('**************')
+                print(next_hosts)
                 print(next_IPs)
+                print(next_tasks_map[task_name])
+                print(flag)
+
                 if flag == 'true': # same output to all of the children task
                     destinations = ["/centralized_scheduler/input/" +new_file+"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
                     for idx,ip in enumerate(next_IPs):
@@ -862,13 +870,15 @@ class Handler(FileSystemEventHandler):
             runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
             key = (home_id,task_name,input_name)
             send_runtime_profile_computingnode(runtime_info,task_name,home_id)
-            update_best[home_id,task_name,input_name]= False
+            print(next_tasks_map)
+            print(next_tasks_map[task_name])
+            for next_task in next_tasks_map[task_name]:
+                update_best[home_id,next_task,input_name]= False
             flag = dag[task_name][0] 
             task_flag = dag[task_name][1] 
             print('&&&&&&&&&&&&&&&&&&&&')
             print(dag[task_name])
             print(flag)
-            print(new_file.split('#')[3])
 
             if key not in task_mul:
                 task_mul[key] = [new_file]

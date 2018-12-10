@@ -53,12 +53,12 @@ def teardown_system(app_name):
     	delete_all_circe(app_name)
     else:
     	delete_all_pricing_circe(app_name)
-    # if jupiter_config.SCHEDULER == 0: # HEFT
-    #     print('Tear down all current HEFT deployments')
-    #     delete_all_heft(app_name)
-    # else:# WAVE
-    #     print('Tear down all current WAVE deployments')
-    #     delete_all_waves(app_name)
+    if jupiter_config.SCHEDULER == 0: # HEFT
+        print('Tear down all current HEFT deployments')
+        delete_all_heft(app_name)
+    else:# WAVE
+        print('Tear down all current WAVE deployments')
+        delete_all_waves(app_name)
 
     # delete_all_exec(app_name)
     # delete_all_profilers()
