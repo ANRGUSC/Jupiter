@@ -67,6 +67,7 @@ ADD circe/{pricing_option}/start_home.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
 ADD {app_file}/name_convert.txt /centralized_scheduler/name_convert.txt
+ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
 
 WORKDIR /
 
@@ -120,6 +121,7 @@ RUN mkdir -p /home/darpa/apps/data
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
 ADD {app_file}/scripts/ /centralized_scheduler/
 ADD {app_file}/sample_input/ /centralized_scheduler/sample_input/
+ADD {app_file}/configuration.txt  /centralized_scheduler/dag.txt
 
 ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py
@@ -128,6 +130,7 @@ ADD jupiter_config.py /jupiter_config.py
 ADD circe/{pricing_option}/start_controller_worker.sh /start.sh
 
 ADD circe/{pricing_option}/monitor.py /centralized_scheduler/monitor.py
+
 
 
 RUN chmod +x /start.sh

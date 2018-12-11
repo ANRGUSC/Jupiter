@@ -4,7 +4,7 @@
     .. note:: This script runs on every node of the system.
 """
 
-__author__ = "Quynh Nguyen, Pradipta Ghosh, Aleksandra Knezevic, Pranav Sakulkar, Jason A Tran and Bhaskar Krishnamachari"
+__author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "3.0"

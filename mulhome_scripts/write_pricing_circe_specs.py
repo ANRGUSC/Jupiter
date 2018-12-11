@@ -334,6 +334,8 @@ template_controller_worker = """
               value: {all_computing_nodes}
             - name: ALL_COMPUTING_IPS
               value: {all_computing_ips}
+            - name: FIRST_TASK
+              value: {first_task}
           nodeSelector:
             kubernetes.io/hostname: {host}
           restartPolicy: Always

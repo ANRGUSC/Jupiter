@@ -144,19 +144,19 @@ def prepare_global_info():
 
 
     global ip_profilers_map,profilers_ip_map, controllers_ip_map, computing_ip_map, profilers_ip_homes
-    print('DEBUG')
-    print(profiler_nodes)
-    print(profiler_ip)
+    # print('DEBUG')
+    # print(profiler_nodes)
+    # print(profiler_ip)
     
 
     ip_profilers_map = dict(zip(profiler_ip, profiler_nodes))
     profilers_ip_map = dict(zip(profiler_nodes, profiler_ip))
 
-    print(home_nodes)
-    print(home_ids)
-    print(home_ips)
-    print(profilers_ip_map)
-    print(ip_profilers_map)
+    # print(home_nodes)
+    # print(home_ids)
+    # print(home_ips)
+    # print(profilers_ip_map)
+    # print(ip_profilers_map)
     profilers_ip_homes = [profilers_ip_map[x] for x in home_ids]
 
     controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
@@ -172,9 +172,9 @@ def prepare_global_info():
             info = line.rstrip().split(' ')
             name_convert_out[info[0]] = info[1]
             name_convert_in[info[0]] = info[2]
-    print('@@@@@@@@@@@@@@@@@@@@@@@@')
-    print(name_convert_out)
-    print(name_convert_in)
+    # print('@@@@@@@@@@@@@@@@@@@@@@@@')
+    # print(name_convert_out)
+    # print(name_convert_in)
 
     global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map, task_node_map
 
@@ -216,10 +216,10 @@ def prepare_global_info():
         next_tasks_map[home_id] = [os.environ['CHILD_NODES']]
         last_tasks_map[os.environ['CHILD_NODES']].append(home_id)
 
-    print('DEBUG NEXT LAST-----------')
-    print(next_tasks_map)
-    print(last_tasks_map)
-    print(task_node_map)
+    # print('DEBUG NEXT LAST-----------')
+    # print(next_tasks_map)
+    # print(last_tasks_map)
+    # print(task_node_map)
     global task_module
     task_module = {}
     for home_id in home_ids:
@@ -324,64 +324,71 @@ def get_updated_execution_profile():
         execution_info[row[0]] = [float(row[1]),float(row[2])]
     return execution_info
 
-def get_updated_network_from_source(node_ips):
-    #print("--- Get updated network profile information from "+node_ip)   
-    network_info = {}
-    for node_ip in node_ips:
-        print('T____T')
-        print(node_ip)
-        try:
-            client_mongo = MongoClient('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
-            db = client_mongo.droplet_network_profiler
-            collection = db.collection_names(include_system_collections=False)
-            num_nb = len(collection)-1
-            if num_nb == -1:
-                print('--- Network profiler mongoDB not yet prepared')
-                return network_info
-            num_rows = db[node_ip].count() 
-            if num_rows < num_nb:
-                print('--- Network profiler regression info not yet loaded into MongoDB!')
-                return network_info
-            logging =db[node_ip].find().limit(num_nb)  
+# def get_updated_network_from_source(node_ips):
+#     #print("--- Get updated network profile information from "+node_ip)   
+#     network_info = {}
+#     for node_ip in node_ips:
+#         print('T____T')
+#         print(node_ip)
+#         try:
+#             client_mongo = MongoClient('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
+#             db = client_mongo.droplet_network_profiler
+#             collection = db.collection_names(include_system_collections=False)
+#             num_nb = len(collection)-1
+#             if num_nb == -1:
+#                 print('--- Network profiler mongoDB not yet prepared')
+#                 return network_info
+#             num_rows = db[node_ip].count() 
+#             if num_rows < num_nb:
+#                 print('--- Network profiler regression info not yet loaded into MongoDB!')
+#                 return network_info
+#             logging =db[node_ip].find().limit(num_nb)  
 
-            # print('DEBUG2')
-            # print(num_nb)
-            for record in logging:
-                # Source ID, Source IP, Destination ID, Destination IP, Parameters
-                network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
-            print(network_info)
-        except Exception as e:
-            print("Network request failed. Will try again, details: " + str(e))
-            return -1
+#             # print('DEBUG2')
+#             # print(num_nb)
+#             for record in logging:
+#                 # Source ID, Source IP, Destination ID, Destination IP, Parameters
+#                 network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
+#             print(network_info)
+#         except Exception as e:
+#             print("Network request failed. Will try again, details: " + str(e))
+#             return -1
 
-    return network_info
-def get_updated_network_profile(current_task):
-    """Collect the network profile information from local MONGODB database
+#     return network_info
+def get_updated_network_profile():
     
-    Args:
-        current_task (str): current processing task
-    
-    Returns:
-        list: network information
-    """
-    print('----- Get updated network information-----')
-    
-    to_net_info = get_updated_network_from_source([self_profiler_ip])
-    print('###########!!!!!!!!!!!!!!1')
-    print(current_task)
-    print(last_tasks_map[current_task])
-    print(task_node_map)
-    last_nodes = [task_node_map[task] for task in last_tasks_map[current_task]]
-    print(last_nodes)
-    print('###########!!!!!!!!!!!!!!2')
-    last_profiler_ips = [profilers_ip_map[node] for node in last_nodes]
-    print(last_profiler_ips)
-    print('###########!!!!!!!!!!!!!!3')
-    from_net_info = get_updated_network_from_source(last_profiler_ips)
-    print(from_net_info)
-    print('###########!!!!!!!!!!!!!!4')
-    return from_net_info, to_net_info
-
+    #print('Retrieve network information info')
+    network_info = dict()        
+    try:
+        client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
+        db = client_mongo.droplet_network_profiler
+        collection = db.collection_names(include_system_collections=False)
+        num_nb = len(collection)-1
+        # print(collection)
+        # print(num_nb)
+        # print(self_profiler_ip)
+        if num_nb == -1:
+            print('--- Network profiler mongoDB not yet prepared')
+            return network_info
+        num_rows = db[self_profiler_ip].count() 
+        # print(num_rows)
+        if num_rows < num_nb:
+            print('--- Network profiler regression info not yet loaded into MongoDB!')
+            return network_info
+        logging =db[self_profiler_ip].find().limit(num_nb)  
+        # print(logging)
+        for record in logging:
+            # print(record)
+            # print(ip_profilers_map)
+            # print(record['Destination[IP]'])
+            # Source ID, Source IP, Destination ID, Destination IP, Parameters
+            network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
+        
+        return network_info
+    except Exception as e:
+        print("Network request failed. Will try again, details: " + str(e))
+        return -1
+        
 def get_updated_resource_profile():
     """Requesting resource profiler data using flask for its corresponding profiler node
     """
@@ -436,23 +443,24 @@ def price_aggregate(task_name):
 
     try:
         
-        # print(' Retrieve all input information: ')
+        print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
         # print(resource_info)
+        # print(execution_info)
         network_info = get_updated_network_profile()
         # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         
         
-        # print('----- Calculating price:')
-        # print('--- Resource cost: ')
+        print('----- Calculating price:')
+        print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
         # print(price['memory'])
         # print(price['cpu'])
 
-        # print('--- Queuing cost: ')
+        print('--- Queuing cost: ')
         if task_queue_size > 0: #not infinity 
             if len(queue_mul)==0:
                 print('empty queue, no tasks are waiting')
@@ -466,7 +474,7 @@ def price_aggregate(task_name):
                     price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
         print(price['queue'])
 
-        # print('--- Network cost:----------- ')
+        print('--- Network cost:----------- ')
         test_output = execution_info[task_name][1]
         # print(test_output)
         # print(network_info)
@@ -484,9 +492,9 @@ def price_aggregate(task_name):
             price['network'][node] = p
             
         # print(price['network'])
-        # print('-----------------')
-        # print('Overall price:')
-        # print(price)
+        print('-----------------')
+        print('Overall price:')
+        print(price)
         return price
              
     except:
@@ -647,6 +655,8 @@ def announce_price(task_controller_ip, price):
             pricing_info = pricing_info + "$"+node+"-"+str(price['network'][node])
         
         print(pricing_info)
+        print(url)
+        print(task_controller_ip)
         params = {'pricing_info':pricing_info}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -657,7 +667,7 @@ def announce_price(task_controller_ip, price):
         print("Sending price message to flask server on controller node FAILED!!!")
         print(e)
         return "not ok"
-        
+
 def push_updated_price():
     # print('***********')
     # print(task_controllers)
@@ -665,6 +675,11 @@ def push_updated_price():
     for idx,task in enumerate(task_controllers):
         if task in home_ids: continue
         price = price_aggregate(task)
+        print('Uhmmmm')
+        print(task)
+        print(controllers_ip_map)
+        print(controllers_ip_map[task])
+        print(price)
         announce_price(controllers_ip_map[task], price)
 
 # def push_updated_price():
@@ -825,6 +840,32 @@ def retrieve_input_finish(task_name, file_name):
     input_name = prefix[0]+name_convert_in['input']
     print(input_name)
     return input_name
+
+def receive_best_assignment():
+    """
+        Receive the best computing node for the task
+    """
+    
+    try:
+        print("Received best assignment")
+        home_id = request.args.get('home_id')
+        task_name = request.args.get('task_name')
+        file_name = request.args.get('file_name')
+        best_computing_node = request.args.get('best_computing_node')
+        task_node_map[home_id,task_name,file_name] = best_computing_node
+        # print(task_name)
+        # print(best_computing_node)
+        # print(task_node_summary)
+        update_best[home_id,task_name,file_name] = True
+
+
+    except Exception as e:
+        update_best[home_id,task_name,file_name] = False
+        print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
+        return "not ok" 
+
+    return "ok"
+app.add_url_rule('/receive_best_assignment', 'receive_best_assignment', receive_best_assignment)
 
 #for OUTPUT folder 
 class Watcher1():

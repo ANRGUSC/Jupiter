@@ -418,7 +418,7 @@ def check_finish_evaluation(app_name,port,num_samples):
 
    
 def deploy_app_jupiter(app_id,app_name,port,circe_log,num_runs,num_samples,mapper_log):
-    #setup_port(port)
+    setup_port(port)
     k8s_jupiter_deploy(app_id,app_name,port,mapper_log)
     log_folder ='../logs'
     if not os.path.exists(log_folder):

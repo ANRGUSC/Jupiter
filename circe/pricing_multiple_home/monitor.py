@@ -4,7 +4,7 @@
     .. note:: This script runs on every node of the system.
 """
 
-__author__ = "Quynh Nguyen, Pradipta Ghosh, Aleksandra Knezevic, Pranav Sakulkar, Jason A Tran and Bhaskar Krishnamachari"
+__author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "3.0"
@@ -39,6 +39,33 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 
+def k8s_read_dag(dag_info_file):
+  """read the dag from the file input
+  
+  Args:
+      dag_info_file (str): path of DAG file
+  
+  Returns:
+      dict: DAG information 
+  """
+  dag_info=[]
+  config_file = open(dag_info_file,'r')
+  dag_size = int(config_file.readline())
+
+  dag={}
+  for i, line in enumerate(config_file, 1):
+      dag_line = line.strip().split(" ")
+      if i == 1:
+          dag_info.append(dag_line[0])
+      dag.setdefault(dag_line[0], [])
+      for j in range(1,len(dag_line)):
+          dag[dag_line[0]].append(dag_line[j])
+      if i == dag_size:
+          break
+
+  dag_info.append(dag)
+  return dag_info
+
 def convert_bytes(num):
     """Convert bytes to Kbit as required by HEFT
     
@@ -63,7 +90,6 @@ def file_size(file_path):
         file_info = os.stat(file_path)
         return convert_bytes(file_info.st_size)
 
-
 def receive_price_info():
     """
         Receive price from every computing node, choose the most suitable computing node 
@@ -71,51 +97,141 @@ def receive_price_info():
     try:
         pricing_info = request.args.get('pricing_info').split('#')
         print("Received pricing info")
+        print(pricing_info)
         #Network, CPU, Memory, Queue
         node_name = pricing_info[0]
-        price_info = [float(pricing_info[1]),float(pricing_info[2]),float(pricing_info[3]),float(pricing_info[4])]
-        task_price_summary[node_name] = price_info
-        print(task_price_summary)
+
+        task_price_cpu[node_name] = float(pricing_info[1])
+        task_price_mem[node_name] = float(pricing_info[2])
+        task_price_queue[node_name] = float(pricing_info[3].split('$')[0])
+        price_net_info = pricing_info[3].split('$')[1:]
+        print(price_net_info)
+        for price in price_net_info:
+            print(price)
+            print(node_name)
+            print(price.split('-')[0])
+            print(price.split('-')[1])
+            task_price_net[node_name,price.split('-')[0]] = float(price.split('-')[1])
+
 
     except Exception as e:
         print("Bad reception or failed processing in Flask for pricing announcement: "+ e) 
         return "not ok" 
 
     return "ok"
-app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info)    
+app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info) 
 
+# def receive_price_info():
+#     """
+#         Receive price from every computing node, choose the most suitable computing node 
+#     """
+#     try:
+#         pricing_info = request.args.get('pricing_info').split('#')
+#         print("Received pricing info")
+#         #Network, CPU, Memory, Queue
+#         node_name = pricing_info[0]
+#         price_info = [float(pricing_info[1]),float(pricing_info[2]),float(pricing_info[3]),float(pricing_info[4])]
+#         task_price_summary[node_name] = price_info
+#         print(task_price_summary)
+
+#     except Exception as e:
+#         print("Bad reception or failed processing in Flask for pricing announcement: "+ e) 
+#         return "not ok" 
+
+#     return "ok"
+# app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info)    
+
+
+# def default_best_node():
+#     print('-------- Updating current best node')
+#     w_net = 1 # Network profiling
+#     w_cpu = 1 # Resource profiling
+#     w_mem = 1 # Resource profiling
+#     w_queue = 1 # Execution time profiling
+#     cost_list = dict()
+#     for item in task_price_summary.keys():
+#         cost_list[item] = task_price_summary[item][0]*w_net +  task_price_summary[item][1]*w_cpu + task_price_summary[item][2]*w_mem + task_price_summary[item][3]*w_queue
+#     print(task_price_summary)
+#     print(cost_list)
+#     best_node = min(cost_list,key=cost_list.get)
+#     task_node_map['current_best_node'] = best_node
+#     print(task_node_map)
+#     print('updated successfully')
+#     print('update at remote computing nodes')
 
 def default_best_node():
-    print('-------- Updating current best node')
-    w_net = 1 # Network profiling
-    w_cpu = 1 # Resource profiling
-    w_mem = 1 # Resource profiling
-    w_queue = 1 # Execution time profiling
-    cost_list = dict()
-    for item in task_price_summary.keys():
-        cost_list[item] = task_price_summary[item][0]*w_net +  task_price_summary[item][1]*w_cpu + task_price_summary[item][2]*w_mem + task_price_summary[item][3]*w_queue
+    print('Select the current best node')
+    w_net = 1 # Network profiling: longer time, higher price
+    w_cpu = -1 # Resource profiling : larger cpu resource, lower price
+    w_mem = -1 # Resource profiling : larger mem resource, lower price
+    w_queue = 1 # Queue : currently 0
+    best_node = -1
+    task_price_network= dict()
+    # print('----------')
+    # print(task_price_cpu)
+    # print(task_price_mem)
+    # print(task_price_queue)
+    # print(task_price_net)
+    # print(len(task_price_net))
+    # print(source_node)
+    print('----------------------------??????')
+    print(last_tasks_map)
+    print(self_task)
+    print(last_tasks_map[self_task][0])
+    print(task_node_map)
+    print(task_node_map[last_tasks_map[self_task][0]])
+    source_node = task_node_map[last_tasks_map[self_task][0]]# case that have multiple parents: temporarily choose the lowest index???
+    print(source_node)
+    print(task_price_net)
+    for (source, dest), price in task_price_net.items():
+        if source == source_node:
+            task_price_network[dest]= price
+        task_price_network[source] = 0 #the same node
+    print('------------2')
+    print(task_price_network)
+    task_price_summary = dict()
+    print(task_price_cpu.items())
+    print(task_price_network)
+    print(home_ids)
+    for item, p in task_price_cpu.items():
+        # print('---')
+        # print(item)
+        # print(p)
+        if item in home_ids: continue
+        print(task_price_cpu[item])
+        print(task_price_mem[item])
+        print(task_price_queue[item])
+        print(task_price_network[item])
+        task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
+    
+    print('------------3')
     print(task_price_summary)
-    print(cost_list)
-    best_node = min(cost_list,key=cost_list.get)
-    task_node_summary['current_best_node'] = best_node
-    print(task_node_summary)
-    print('updated successfully')
-    print('update at remote computing nodes')
-
+    if task_price_summary:
+        print(task_price_summary)
+        best_node = min(task_price_summary,key=task_price_summary.get)
+        print(best_node)
+        task_node_map[self_task] = best_node   
+    else:
+        print('Task price summary is not ready yet.....') 
+    # while not(task_price_summary):
+    #     time.sleep(10)
+    
+    
 
 
 
 def update_best_node():
     """Select the best node from price information of all nodes, either default or customized from user price file
     """
-    if PRICE_OPTION ==0: #default
-        default_best_node()
-    else:
-        customized_parameters_best_node()
+    # if PRICE_OPTION ==0: #default
+    #     # default_best_node()
+    #     default_best_node()
+    # else:
+    #     customized_parameters_best_node()
     for computing_ip in all_computing_ips:
-        send_controller_info(computing_ip)
+        send_assignment_info(computing_ip)
     for home_ip in home_ips:
-        send_controller_info(home_ip)
+        send_assignment_info(home_ip)
 
 def schedule_update_price(interval):
     """
@@ -144,13 +260,50 @@ def push_controller_map():
     time.sleep(90)
     for computing_ip in all_computing_ips:
         send_controller_info(computing_ip)
+
+def push_first_assignment_map():
+    print('Is this okieeeeee?--------------------------------------')
+    print(self_task)
+    print(first_task)
+    if self_task == first_task:
+        print('hahaahah')
     
+    print(task_node_map)
+    while self_task not in task_node_map:
+        print(task_node_map)
+        push_assignment_map()
+        print('Waiting for first best assignment for my task' + self_task)
+        time.sleep(10) 
+    
+    print(task_node_map)
+    update_best_node()
+    
+def update_assignment_info_child():
+    """
+        Receive the best computing node for the task
+    """
+    
+    try:
+        print("Update best assignment info from parents")
+        task_name = request.args.get('task_name')
+        best_computing_node = request.args.get('best_computing_node')
+        task_node_map[task_name] = best_computing_node
+        print(task_name)
+        print(best_computing_node)
+        print(task_node_map)
+
+    except Exception as e:
+        print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
+        return "not ok" 
+
+    return "ok"
+app.add_url_rule('//update_assignment_info_child', '/update_assignment_info_child', update_assignment_info_child)
 
 def send_assignment_info(node_ip):
     try:
         print("Announce my current best computing node " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/receive_assignment_info"
-        assignment_info = self_task+"#"+task_node_summary['current_best_node']
+        assignment_info = self_task + "#"+task_node_map[self_task]
         params = {'assignment_info': assignment_info}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -162,12 +315,41 @@ def send_assignment_info(node_ip):
         print(e)
         return "not ok"
 
+def update_assignment_info_to_child(node_ip):
+    try:
+        print("Announce my current best computing node " + node_ip)
+        url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_assignment_info_child"
+        assignment_info = self_task + "#"+task_node_map[self_task]
+        params = {'assignment_info': assignment_info}
+        params = parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print("Sending assignment message to flask server on child controller nodes FAILED!!!")
+        print(e)
+        return "not ok"
+
+def announce_best_assignment_to_child(child_ip):
+    for child_ip in child_nodes_ip:
+        update_assignment_info_to_child(child_ip)   
+
 def push_assignment_map():
-    time.sleep(120)
-    for computing_ip in all_computing_ips:
-        send_assignment_info(computing_ip)
-    for home_ip in home_ips:
-        send_assignment_info(home_ip)
+    print(self_task)
+    print(first_task)
+    if self_task == first_task:
+        print('I am the first task node...................')
+        print('Select the default best node for the first task..')
+        default_best_node()
+    else:
+        print('I am not the first task node...................')
+    print(task_node_map)
+    if self_task in task_node_map:
+        for computing_ip in all_computing_ips:
+            send_assignment_info(computing_ip)
+        for home_ip in home_ips:
+            send_assignment_info(home_ip)
 
 
 def send_monitor_data(msg):
@@ -257,6 +439,47 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
+    global dag
+    dag_file = '/centralized_scheduler/dag.txt'
+    dag_info = k8s_read_dag(dag_file)
+    dag = dag_info[1]
+
+    global next_tasks_map,last_tasks_map, child_nodes, child_nodes_ip, home_ips,home_ids, home_ip_map
+    next_tasks_map = dict()
+    last_tasks_map = dict()
+
+    
+    for task in dag:
+        next_tasks_map[task] = dag[task][2:]
+        for last_task in dag[task][2:]:
+            if last_task not in last_tasks_map:
+                last_tasks_map[last_task] = [task]
+            else:    
+                last_tasks_map[last_task].append(task)
+
+
+
+
+    child_nodes = os.environ['CHILD_NODES']
+    child_nodes_ip = os.environ['CHILD_NODES_IPS']
+    
+    print('CHECKING....')
+    print(child_nodes)
+
+
+
+    home_nodes = os.environ['HOME_NODE'].split(' ')
+    home_ids = [x.split(':')[0] for x in home_nodes]
+    home_ips = [x.split(':')[1] for x in home_nodes]
+    home_ip_map = dict(zip(home_ids, home_ips))
+
+    print(home_ids)
+    print(home_ips)
+    print(home_ip_map)
+
+    
+    
+
     # Prepare transfer-runtime file:
     global runtime_sender_log, RUNTIME, TRANSFER, transfer_type
     RUNTIME = int(config['CONFIG']['RUNTIME'])
@@ -287,7 +510,7 @@ def main():
     PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
 
 
-    global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, task_mul, count_dict,self_ip, home_ips, home_ids
+    global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, task_mul, count_dict,self_ip
 
 
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
@@ -304,7 +527,7 @@ def main():
 
 
     global taskmap, taskname, taskmodule, filenames,files_out, home_node_host_ports
-    global all_nodes, all_nodes_ips, self_id, self_name, self_task
+    global all_nodes, all_nodes_ips, self_id, self_name, self_task, first_task
     global all_computing_nodes,all_computing_ips, num_computing_nodes, node_ip_map, controller_id_map
 
     configs = json.load(open('/centralized_scheduler/config.json'))
@@ -321,6 +544,9 @@ def main():
     self_name= os.environ['NODE_NAME']
     self_id  = os.environ['NODE_ID']
     self_task= os.environ['TASK']
+
+    first_task = os.environ['FIRST_TASK']
+    print(first_task)
     controller_id_map = self_task + ":" + self_id
     #update_interval = 10 #minutes
     home_node_host_ports =  [x + ":" + str(FLASK_SVC) for x in home_ips]
@@ -330,22 +556,49 @@ def main():
     num_computing_nodes = len(all_computing_nodes)
     node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
 
+
+
     update_interval = 3 
 
     global dest_node_host_port_list
     dest_node_host_port_list = [ip + ":" + str(FLASK_SVC) for ip in all_computing_ips]
 
-    global task_price_summary, task_node_summary
-    manager = Manager()
-    task_price_summary = manager.dict()
-    task_node_summary = manager.dict()
+    # global task_price_summary, task_node_map
+    # manager = Manager()
+    # task_price_summary = manager.dict()
+    # task_node_map = manager.dict()
 
-    # Set up default value for task_node_summary: the task controller will perform the tasks also
-    task_node_summary['current_best_node'] = self_id
+    global task_price_cpu, task_node_map, task_price_mem, task_price_queue, task_price_net
+    manager = Manager()
+    task_price_cpu = manager.dict()
+    task_price_mem = manager.dict()
+    task_price_queue = manager.dict()
+    task_price_net = manager.dict()
+    task_node_map = manager.dict()
+    
+
+
+    last_tasks_map[first_task] = []
+    for home_id in home_ids:
+        last_tasks_map[home_id] = last_tasks_map['home'] 
+        task_node_map[home_id]  = home_id
+        next_tasks_map[home_id] = [first_task]
+        last_tasks_map[first_task].append(home_id)
+
+    print('DEBUG NEXT LAST-----------')
+    print(next_tasks_map)
+    print(last_tasks_map)
+
+    
+
+    # # Set up default value for task_node_map: the task controller will perform the tasks also
+    # print('hahahha')
+    # task_node_map[self_task] = self_id
 
     _thread.start_new_thread(push_controller_map,())
+    _thread.start_new_thread(push_first_assignment_map,())
     _thread.start_new_thread(schedule_update_price,(update_interval,))
-    _thread.start_new_thread(push_assignment_map,())
+    
 
     web_server = MonitorRecv()
     web_server.run()

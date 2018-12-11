@@ -381,6 +381,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
             task_name = task,
             all_node = all_node,
             all_node_ips = all_node_ips,
+            first_task = jupiter_config.HOME_CHILD,
             all_computing_nodes = all_computing_nodes,
             all_computing_ips = all_computing_ips)
         #pprint(dep)
