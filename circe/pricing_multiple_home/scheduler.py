@@ -119,6 +119,7 @@ def receive_assignment_info():
         assignment_info = request.args.get('assignment_info').split('#')
         print("-----------Received assignment info")
         task_node_summary[assignment_info[0]] = assignment_info[1]
+        print(task_node_summary)
 
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
@@ -366,25 +367,25 @@ def get_updated_network_profile():
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
-        print(collection)
-        print(num_nb)
-        print(self_profiler_ip)
+        # print(collection)
+        # print(num_nb)
+        # print(self_profiler_ip)
         if num_nb == -1:
             print('--- Network profiler mongoDB not yet prepared')
             return network_info
         num_rows = db[self_profiler_ip].count() 
-        print(num_rows)
+        # print(num_rows)
         if num_rows < num_nb:
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
         logging =db[self_profiler_ip].find().limit(num_nb)  
-        print(logging)
-        print('---------------------')
+        # print(logging)
+        # print('---------------------')
         for record in logging:
-            print('---')
-            print(record)
-            print(ip_profilers_map)
-            print(record['Destination[IP]'])
+            # print('---')
+            # print(record)
+            # print(ip_profilers_map)
+            # print(record['Destination[IP]'])
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
         
@@ -432,23 +433,23 @@ def price_estimate():
         
         print(' Retrieve all input information: ')
         network_info = get_updated_network_profile()
-        print(network_info)
+        # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
-        print(test_size)
+        # print(test_size)
         print('--- Network cost:----------- ')
         price['network'] = dict()
         for node in network_info:
-            print(network_info[node])
+            # print(network_info[node])
             computing_params = network_info[node].split(' ')
-            print(computing_params)
+            # print(computing_params)
             computing_params = [float(x) for x in computing_params]
-            print(computing_params)
+            # print(computing_params)
             p = (computing_params[0] * test_size * test_size) + (computing_params[1] * test_size) + computing_params[2]
-            print(p)
-            print(node)
+            # print(p)
+            # print(node)
             price['network'][node] = p
             
-        print(price['network'])
+        # print(price['network'])
         print('-----------------')
         print('Overall price:')
         print(price)
@@ -653,14 +654,14 @@ class Handler(FileSystemEventHandler):
             new_file_name = os.path.split(event.src_path)[-1]
 
 
-            print(first_task)
-            print(task_node_summary)
-            print(node_ip_map)
+            # print(first_task)
+            # print(task_node_summary)
+            # print(node_ip_map)
             IP = node_ip_map[task_node_summary[first_task]]
 
-            print(new_file_name)
-            new_file_name = new_file_name+"#"+my_id+"#"+first_task+"#"+first_flag
-            print(new_file_name)
+            # print(new_file_name)
+            new_file_name = new_file_name+"#"+my_task+"#"+first_task+"#"+first_flag
+            # print(new_file_name)
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
             transfer_data(IP,username, password,source, destination)
@@ -740,16 +741,16 @@ def main():
     profiler_nodes = [info.split(":") for info in profiler_nodes]
     profiler_nodes = profiler_nodes[0][1:]
     ip_profilers_map = dict(zip(profiler_ip, profiler_nodes))
-    print('############')
-    print(ip_profilers_map)
+    # print('############')
+    # print(ip_profilers_map)
 
     my_id = os.environ['TASK']
     my_task = my_id.split('-')[1]
 
     self_profiler_ip = os.environ['SELF_PROFILER_IP']
 
-    print('***********')
-    print(my_id)
+    # print('***********')
+    # print(my_id)
     
 
     path1 = 'configuration.txt'

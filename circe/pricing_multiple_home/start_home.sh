@@ -15,7 +15,7 @@ service ssh start
 echo 'Installing and starting mongodb'
 ./central_mongod start
 
-echo 'Starting the evaluation'
+# echo 'Starting the evaluation'
 python3 -u evaluate.py &
 
 

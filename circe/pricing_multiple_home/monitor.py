@@ -121,43 +121,6 @@ def receive_price_info():
     return "ok"
 app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info) 
 
-# def receive_price_info():
-#     """
-#         Receive price from every computing node, choose the most suitable computing node 
-#     """
-#     try:
-#         pricing_info = request.args.get('pricing_info').split('#')
-#         print("Received pricing info")
-#         #Network, CPU, Memory, Queue
-#         node_name = pricing_info[0]
-#         price_info = [float(pricing_info[1]),float(pricing_info[2]),float(pricing_info[3]),float(pricing_info[4])]
-#         task_price_summary[node_name] = price_info
-#         print(task_price_summary)
-
-#     except Exception as e:
-#         print("Bad reception or failed processing in Flask for pricing announcement: "+ e) 
-#         return "not ok" 
-
-#     return "ok"
-# app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info)    
-
-
-# def default_best_node():
-#     print('-------- Updating current best node')
-#     w_net = 1 # Network profiling
-#     w_cpu = 1 # Resource profiling
-#     w_mem = 1 # Resource profiling
-#     w_queue = 1 # Execution time profiling
-#     cost_list = dict()
-#     for item in task_price_summary.keys():
-#         cost_list[item] = task_price_summary[item][0]*w_net +  task_price_summary[item][1]*w_cpu + task_price_summary[item][2]*w_mem + task_price_summary[item][3]*w_queue
-#     print(task_price_summary)
-#     print(cost_list)
-#     best_node = min(cost_list,key=cost_list.get)
-#     task_node_map['current_best_node'] = best_node
-#     print(task_node_map)
-#     print('updated successfully')
-#     print('update at remote computing nodes')
 
 def default_best_node():
     print('Select the current best node')
@@ -174,47 +137,56 @@ def default_best_node():
     # print(task_price_net)
     # print(len(task_price_net))
     # print(source_node)
-    print('----------------------------??????')
-    print(last_tasks_map)
-    print(self_task)
-    print(last_tasks_map[self_task][0])
-    print(task_node_map)
-    print(task_node_map[last_tasks_map[self_task][0]])
-    source_node = task_node_map[last_tasks_map[self_task][0]]# case that have multiple parents: temporarily choose the lowest index???
-    print(source_node)
-    print(task_price_net)
-    for (source, dest), price in task_price_net.items():
-        if source == source_node:
-            task_price_network[dest]= price
-        task_price_network[source] = 0 #the same node
-    print('------------2')
-    print(task_price_network)
-    task_price_summary = dict()
-    print(task_price_cpu.items())
-    print(task_price_network)
-    print(home_ids)
-    for item, p in task_price_cpu.items():
-        # print('---')
-        # print(item)
-        # print(p)
-        if item in home_ids: continue
-        print(task_price_cpu[item])
-        print(task_price_mem[item])
-        print(task_price_queue[item])
-        print(task_price_network[item])
-        task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
-    
-    print('------------3')
-    print(task_price_summary)
-    if task_price_summary:
-        print(task_price_summary)
-        best_node = min(task_price_summary,key=task_price_summary.get)
-        print(best_node)
-        task_node_map[self_task] = best_node   
+
+    # print('----------------------------??????')
+    # print(last_tasks_map)
+    # print(self_task)
+    # print(last_tasks_map[self_task][0])
+    # print(task_node_map)
+    # print(task_node_map[last_tasks_map[self_task][0]])
+    if last_tasks_map[self_task][0] not in task_node_map:
+        print('Parent tasks not available yet!!!!')
     else:
-        print('Task price summary is not ready yet.....') 
-    # while not(task_price_summary):
-    #     time.sleep(10)
+        print(last_tasks_map)
+        print(last_tasks_map[self_task])
+        print(task_node_map)
+        source_node = task_node_map[last_tasks_map[self_task][0]]# case that have multiple parents: temporarily choose the lowest index???
+        print(source_node)
+        # print(source_node)
+        # print(task_price_net)
+        for (source, dest), price in task_price_net.items():
+            if source == source_node:
+                task_price_network[dest]= price
+            task_price_network[source] = 0 #the same node
+        
+        # print('------------2')
+        # print(task_price_network)
+        task_price_summary = dict()
+        # print(task_price_cpu.items())
+        # print(task_price_network)
+        # print(home_ids)
+        print(task_price_cpu)
+        print(task_price_mem)
+        print(task_price_queue)
+        print(task_price_network)
+        for item, p in task_price_cpu.items():
+            # print('---')
+            # print(item)
+            # print(p)
+            if item in home_ids: continue
+            task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
+        
+        # print('------------3')
+        # print(task_price_summary)
+        if task_price_summary:
+            print(task_price_summary)
+            best_node = min(task_price_summary,key=task_price_summary.get)
+            print(best_node)
+            task_node_map[self_task] = best_node   
+        else:
+            print('Task price summary is not ready yet.....') 
+        # while not(task_price_summary):
+        #     time.sleep(10)
     
     
 
@@ -228,6 +200,7 @@ def update_best_node():
     #     default_best_node()
     # else:
     #     customized_parameters_best_node()
+    print('Update best assignment node to all computing nodes and home nodes')
     for computing_ip in all_computing_ips:
         send_assignment_info(computing_ip)
     for home_ip in home_ips:
@@ -261,22 +234,7 @@ def push_controller_map():
     for computing_ip in all_computing_ips:
         send_controller_info(computing_ip)
 
-def push_first_assignment_map():
-    print('Is this okieeeeee?--------------------------------------')
-    print(self_task)
-    print(first_task)
-    if self_task == first_task:
-        print('hahaahah')
-    
-    print(task_node_map)
-    while self_task not in task_node_map:
-        print(task_node_map)
-        push_assignment_map()
-        print('Waiting for first best assignment for my task' + self_task)
-        time.sleep(10) 
-    
-    print(task_node_map)
-    update_best_node()
+
     
 def update_assignment_info_child():
     """
@@ -285,11 +243,9 @@ def update_assignment_info_child():
     
     try:
         print("Update best assignment info from parents")
-        task_name = request.args.get('task_name')
-        best_computing_node = request.args.get('best_computing_node')
-        task_node_map[task_name] = best_computing_node
-        print(task_name)
-        print(best_computing_node)
+        assignment_info = request.args.get('assignment_info').split('#')
+        print("Received assignment info")
+        task_node_map[assignment_info[0]] = assignment_info[1]
         print(task_node_map)
 
     except Exception as e:
@@ -297,7 +253,7 @@ def update_assignment_info_child():
         return "not ok" 
 
     return "ok"
-app.add_url_rule('//update_assignment_info_child', '/update_assignment_info_child', update_assignment_info_child)
+app.add_url_rule('/update_assignment_info_child', '/update_assignment_info_child', update_assignment_info_child)
 
 def send_assignment_info(node_ip):
     try:
@@ -317,9 +273,10 @@ def send_assignment_info(node_ip):
 
 def update_assignment_info_to_child(node_ip):
     try:
-        print("Announce my current best computing node " + node_ip)
+        print("Announce my current best computing node to children " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_assignment_info_child"
         assignment_info = self_task + "#"+task_node_map[self_task]
+        print(assignment_info)
         params = {'assignment_info': assignment_info}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -331,25 +288,58 @@ def update_assignment_info_to_child(node_ip):
         print(e)
         return "not ok"
 
-def announce_best_assignment_to_child(child_ip):
+def announce_best_assignment_to_child():
+    print('Announce best assignment to my children')
+    print(child_nodes_ip)
     for child_ip in child_nodes_ip:
+        print(child_ip)
         update_assignment_info_to_child(child_ip)   
 
-def push_assignment_map():
-    print(self_task)
-    print(first_task)
+def push_first_assignment_map():
+    print('Waiting for the first assignment')
     if self_task == first_task:
-        print('I am the first task node...................')
-        print('Select the default best node for the first task..')
+        print('hahaahah')
+    
+    # print(task_node_map)
+    while self_task not in task_node_map:
+        print(task_node_map)
         default_best_node()
-    else:
-        print('I am not the first task node...................')
+        # push_assignment_map()
+        print('Waiting for first best assignment for my task' + self_task)
+        time.sleep(10) 
+    
+    print('Sucessfully assign the first best computing node')
+    print(task_node_map)
+    update_best_node()
+    announce_best_assignment_to_child()
+
+def push_assignment_map():
+    print('Updated assignment periodically')
+    default_best_node()
+    # if self_task == first_task:
+    #     print('I am the first task node...................')
+    #     print('Select the default best node for the first task..')
+        
+    # else:
+    #     print('I am not the first task node...................')
+    #     default_best_node()
     print(task_node_map)
     if self_task in task_node_map:
         for computing_ip in all_computing_ips:
             send_assignment_info(computing_ip)
         for home_ip in home_ips:
             send_assignment_info(home_ip)
+        announce_best_assignment_to_child()
+    else:
+        print('Current best computing node not yet assigned!')
+
+def schedule_update_assignment(interval):
+    """
+        Send controller id node mapping to all the computing nodes
+    """
+    sched = BackgroundScheduler()
+    sched.add_job(push_assignment_map,'interval',id='assign_id', minutes=interval, replace_existing=True)
+    sched.start()
 
 
 def send_monitor_data(msg):
@@ -460,11 +450,11 @@ def main():
 
 
 
-    child_nodes = os.environ['CHILD_NODES']
-    child_nodes_ip = os.environ['CHILD_NODES_IPS']
+    child_nodes = os.environ['CHILD_NODES'].split(':')
+    child_nodes_ip = os.environ['CHILD_NODES_IPS'].split(':')
     
-    print('CHECKING....')
-    print(child_nodes)
+    # print('CHECKING....')
+    # print(child_nodes)
 
 
 
@@ -473,9 +463,9 @@ def main():
     home_ips = [x.split(':')[1] for x in home_nodes]
     home_ip_map = dict(zip(home_ids, home_ips))
 
-    print(home_ids)
-    print(home_ips)
-    print(home_ip_map)
+    # print(home_ids)
+    # print(home_ips)
+    # print(home_ip_map)
 
     
     
@@ -546,7 +536,7 @@ def main():
     self_task= os.environ['TASK']
 
     first_task = os.environ['FIRST_TASK']
-    print(first_task)
+    # print(first_task)
     controller_id_map = self_task + ":" + self_id
     #update_interval = 10 #minutes
     home_node_host_ports =  [x + ":" + str(FLASK_SVC) for x in home_ips]
@@ -585,9 +575,9 @@ def main():
         next_tasks_map[home_id] = [first_task]
         last_tasks_map[first_task].append(home_id)
 
-    print('DEBUG NEXT LAST-----------')
-    print(next_tasks_map)
-    print(last_tasks_map)
+    # print('DEBUG NEXT LAST-----------')
+    # print(next_tasks_map)
+    # print(last_tasks_map)
 
     
 
@@ -598,7 +588,7 @@ def main():
     _thread.start_new_thread(push_controller_map,())
     _thread.start_new_thread(push_first_assignment_map,())
     _thread.start_new_thread(schedule_update_price,(update_interval,))
-    
+    _thread.start_new_thread(schedule_update_assignment,(update_interval,))
 
     web_server = MonitorRecv()
     web_server.run()

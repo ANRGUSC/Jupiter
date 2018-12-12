@@ -446,7 +446,7 @@ def main():
         Deploy num_dags of the application specified by app_name
     """
     app_name = 'dummy'
-    num_samples = 2
+    num_samples = 10
     num_runs = 1
     num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]

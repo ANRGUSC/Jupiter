@@ -189,8 +189,13 @@ def prepare_global_info():
     task_node_map = manager.dict()
     
 
-    global home_node_host_port, dag
-    home_node_host_ports = [x+ ":" + str(FLASK_SVC) for x in home_ips]
+    global home_node_host_ports, dag
+    home_node_host_ports = dict()
+    # print('--------- CHECK')
+    for home_id in home_ids:
+        # print(home_id)
+        home_node_host_ports[home_id] = home_ip_map[home_id] + ":" + str(FLASK_SVC)
+        # print(home_node_host_ports)
 
     dag_file = '/centralized_scheduler/dag.txt'
     dag_info = k8s_read_dag(dag_file)
@@ -222,12 +227,12 @@ def prepare_global_info():
     # print(task_node_map)
     global task_module
     task_module = {}
-    for home_id in home_ids:
-        cmd = "mkdir centralized_scheduler/output/"+home_id
+    for task in dag:
+        cmd = "mkdir centralized_scheduler/output/"+task 
         os.system(cmd)
-        for task in dag:
-            task_module[task] = __import__(task)
-            cmd = "mkdir centralized_scheduler/output/"+home_id+"/" + task 
+        task_module[task] = __import__(task)
+        for home_id in home_ids:
+            cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
             os.system(cmd)
 
 def update_controller_map():
@@ -324,37 +329,6 @@ def get_updated_execution_profile():
         execution_info[row[0]] = [float(row[1]),float(row[2])]
     return execution_info
 
-# def get_updated_network_from_source(node_ips):
-#     #print("--- Get updated network profile information from "+node_ip)   
-#     network_info = {}
-#     for node_ip in node_ips:
-#         print('T____T')
-#         print(node_ip)
-#         try:
-#             client_mongo = MongoClient('mongodb://'+node_ip+':'+str(MONGO_SVC)+'/')
-#             db = client_mongo.droplet_network_profiler
-#             collection = db.collection_names(include_system_collections=False)
-#             num_nb = len(collection)-1
-#             if num_nb == -1:
-#                 print('--- Network profiler mongoDB not yet prepared')
-#                 return network_info
-#             num_rows = db[node_ip].count() 
-#             if num_rows < num_nb:
-#                 print('--- Network profiler regression info not yet loaded into MongoDB!')
-#                 return network_info
-#             logging =db[node_ip].find().limit(num_nb)  
-
-#             # print('DEBUG2')
-#             # print(num_nb)
-#             for record in logging:
-#                 # Source ID, Source IP, Destination ID, Destination IP, Parameters
-#                 network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
-#             print(network_info)
-#         except Exception as e:
-#             print("Network request failed. Will try again, details: " + str(e))
-#             return -1
-
-#     return network_info
 def get_updated_network_profile():
     
     #print('Retrieve network information info')
@@ -443,7 +417,7 @@ def price_aggregate(task_name):
 
     try:
         
-        print(' Retrieve all input information: ')
+        #print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
         # print(resource_info)
@@ -453,14 +427,14 @@ def price_aggregate(task_name):
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         
         
-        print('----- Calculating price:')
-        print('--- Resource cost: ')
+        # print('----- Calculating price:')
+        # print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
         # print(price['memory'])
         # print(price['cpu'])
 
-        print('--- Queuing cost: ')
+        # print('--- Queuing cost: ')
         if task_queue_size > 0: #not infinity 
             if len(queue_mul)==0:
                 print('empty queue, no tasks are waiting')
@@ -472,9 +446,9 @@ def price_aggregate(task_name):
                 for idx,task_info in enumerate(queue_task):
                     #TO_DO: sum or max
                     price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
-        print(price['queue'])
+        # print(price['queue'])
 
-        print('--- Network cost:----------- ')
+        # print('--- Network cost:----------- ')
         test_output = execution_info[task_name][1]
         # print(test_output)
         # print(network_info)
@@ -492,7 +466,7 @@ def price_aggregate(task_name):
             price['network'][node] = p
             
         # print(price['network'])
-        print('-----------------')
+        # print('-----------------')
         print('Overall price:')
         print(price)
         return price
@@ -502,146 +476,6 @@ def price_aggregate(task_name):
         
     return price
 
-# def price_aggregate(task_name, next_task_name):
-#     """Calculate price required to perform the task based on network information, resource information, execution information and task queue size and sample size
-    
-#     Args:
-#         task_name (str): task name
-#         task_host_name (str) : host of the task controller
-#         next_host_name (str) : host of the next task controller
-    
-#     Returns:
-#         float: calculated price
-#     """
-
-#     # Default values
-#     price = dict()
-#     price['network'] = 100000
-#     price['cpu'] = 100000
-#     price['memory'] = 100000
-#     price['queue'] = 0
-
-#     """
-#     Input information:
-#         - Resource information: resource_info
-#         - Network information: network_info
-#         - Task queue: task_mul
-#         - Execution information: execution_info
-#     """
-
-#     try:
-        
-#         print(' Retrieve all input information: ')
-#         execution_info = get_updated_execution_profile()
-#         resource_info = get_updated_resource_profile()
-#         from_net_info, to_net_info = get_updated_network_profile(task_name)
-#         # print(from_net_info)
-#         # print(to_net_info)
-#         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
-#         print(execution_info)
-#         test_output = execution_info[task_name][1]
-#         # print(test_size)
-#         # print(test_output)
-#         print('----- Calculating price:')
-#         print('--- Resource cost: ')
-#         price['memory'] = float(resource_info[self_name]["memory"])
-#         price['cpu'] = float(resource_info[self_name]["cpu"])
-#         print('--- Network cost:----------- ')
-#         print(next_task_name)
-#         print(task_name)
-#         print(last_tasks_map[task_name][0]) # may be a list
-#         print(task_node_map)
-#         print(task_node_map[next_task_name])
-#         print(task_node_map[last_tasks_map[task_name][0]])
-#         next_host_name = task_node_map[next_task_name]
-#         last_host_name = task_node_map[last_tasks_map[task_name][0]] # the 1st last task????
-
-#         #print(next_host_name)
-#         # print(last_host_name)
-#         controller_params  = [10000]*3 # out of range
-#         computing_params   = [10000]*3 # out of range
-#         if last_host_name == self_name:
-#             print('last = self')
-#             controller_params  = [0]*3
-#         elif self_name in from_net_info.keys():
-#             print('----------- DEBUG1')
-#             print(self_name)
-#             print(from_net_info[self_name])
-#             controller_params = from_net_info[self_name].split(' ') 
-#             print(controller_params)
-#             controller_params = list(map(float, controller_params))
-#             print(controller_params)
-#             controller_params = [float(x) for x in controller_params]
-#         else:
-#             controller_params  = [10000]*3 # out of range
-            
-#         if self_name == next_host_name:
-#             computing_params   = [0]*3
-#             print('self = next')
-#         elif next_host_name in to_net_info.keys():  
-#             print('----------- DEBUG2')
-#             print(next_host_name)
-#             computing_params = to_net_info[next_host_name].split(' ')
-#             print(computing_params)
-#             controller_params = list(map(float, computing_params))
-#             print(computing_params)
-#             computing_params = [float(x) for x in computing_params]
-#         else:
-#             computing_params   = [10000]*3 # out of range
-#         try:
-#             price['network'] = (controller_params[0] * test_size * test_size) + \
-#                            (controller_params[1] * test_size) + \
-#                            controller_params[2] + \
-#                            (computing_params[0] * test_output * test_output) + \
-#                            (computing_params[1] * test_output) + \
-#                            computing_params[2]
-#         except:
-#             price['network'] =  10000
-
-#         # print(price)
-#         # print('################################')
-
-#         print('--- Queuing cost: ')
-#         if task_queue_size > 0: #not infinity 
-#             if len(queue_mul)==0:
-#                 print('empty queue, no tasks are waiting')
-#             else:
-#                 queue_dict = dict(queue_mul)
-#                 queue_task = [k for k,v in queue_dict.items() if v == False]
-#                 size_dict = dict(size_mul)
-#                 queue_size =  [size_dict[k] for k in queue_dict.keys()] 
-#                 for idx,task_info in enumerate(queue_task):
-#                     #TO_DO: sum or max
-#                     price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
-
-#         print(price)
-#         return price
-             
-#     except:
-#         print('Error reading input information to calculate the price')
-        
-#     return price
-
-
-# def announce_price(task_controller_ip, price):
-#     try:
-
-#         print("Announce my price")
-#         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
-#         pricing_info = self_name+"#"+str(price['network'])+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
-#         # print(task_controller_ip)
-#         # print(pricing_info)
-#         # print(task_controller_ip)
-#         params = {'pricing_info':pricing_info}
-#         params = parse.urlencode(params)
-#         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-#         res = urllib.request.urlopen(req)
-#         res = res.read()
-#         res = res.decode('utf-8')
-#     except Exception as e:
-#         print("Sending price message to flask server on controller node FAILED!!!")
-#         print(e)
-#         return "not ok"
 
 def announce_price(task_controller_ip, price):
     try:
@@ -655,8 +489,8 @@ def announce_price(task_controller_ip, price):
             pricing_info = pricing_info + "$"+node+"-"+str(price['network'][node])
         
         print(pricing_info)
-        print(url)
-        print(task_controller_ip)
+        # print(url)
+        # print(task_controller_ip)
         params = {'pricing_info':pricing_info}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -675,22 +509,12 @@ def push_updated_price():
     for idx,task in enumerate(task_controllers):
         if task in home_ids: continue
         price = price_aggregate(task)
-        print('Uhmmmm')
-        print(task)
-        print(controllers_ip_map)
-        print(controllers_ip_map[task])
-        print(price)
+        # print('Uhmmmm')
+        # print(task)
+        # print(controllers_ip_map)
+        # print(controllers_ip_map[task])
+        # print(price)
         announce_price(controllers_ip_map[task], price)
-
-# def push_updated_price():
-#     # print('***********')
-#     # print(task_controllers)
-#     # print(controllers_ip_map)
-#     for idx,task in enumerate(task_controllers):
-#         if task in home_ids: continue
-#         for idx,next_task in enumerate(next_tasks_map[task]):
-#             price = price_aggregate(task, next_task)
-#             announce_price(controllers_ip_map[task], price)
 
     
 def schedule_update_price(interval):
@@ -699,7 +523,7 @@ def schedule_update_price(interval):
     sched.add_job(push_updated_price,'interval',id='push_price', minutes=interval, replace_existing=True)
     sched.start()
 
-def execute_task(task_name,file_name, filenames, input_path, output_path):
+def execute_task(home_id,task_name,file_name, filenames, input_path, output_path):
     """Execute the task given the input information
     
     Args:
@@ -710,7 +534,7 @@ def execute_task(task_name,file_name, filenames, input_path, output_path):
     """
     ts = time.time()
     runtime_info = 'rt_exec '+ file_name+ ' '+str(ts)
-    send_runtime_profile_computingnode(runtime_info,task_name)
+    send_runtime_profile_computingnode(runtime_info,task_name,home_id)
     dag_task = multiprocessing.Process(target=task_module[task_name].task, args=(filenames, input_path, output_path))
     dag_task.start()
     dag_task.join()
@@ -777,7 +601,7 @@ def transfer_data(IP,user,pword,source, destination):
     msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
     print(msg)
 
-def send_runtime_profile_computingnode(msg,task_name):
+def send_runtime_profile_computingnode(msg,task_name,home_id):
     """
     Sending runtime profiling information to flask server on home
 
@@ -792,7 +616,7 @@ def send_runtime_profile_computingnode(msg,task_name):
     """
     try:
         print("Sending message", msg)
-        url = "http://" + home_node_host_port + "/recv_runtime_profile_computingnode"
+        url = "http://" + home_node_host_ports[home_id] + "/recv_runtime_profile_computingnode"
         params = {'msg': msg, "work_node": self_name, "task_name": task_name}
         params = parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -813,15 +637,15 @@ def retrieve_input_enter(task_name, file_name):
         file_name (str): name of the file enter at the INPUT folder
     """
     suffix = name_convert_in[task_name]
-    print(suffix)
-    print(type(suffix))
+    # print(suffix)
+    # print(type(suffix))
     prefix = file_name.split(suffix)
-    print('$$$$$$')
-    print(file_name)
-    print(suffix)
-    print(prefix)
+    # print('$$$$$$')
+    # print(file_name)
+    # print(suffix)
+    # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    print(input_name)
+    # print(input_name)
     return input_name
 
 def retrieve_input_finish(task_name, file_name):
@@ -833,12 +657,12 @@ def retrieve_input_finish(task_name, file_name):
     """
     suffix = name_convert_out[task_name]
     prefix = file_name.split(suffix)
-    print('$$$$$$')
-    print(file_name)
-    print(suffix)
-    print(prefix)
+    # print('$$$$$$')
+    # print(file_name)
+    # print(suffix)
+    # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    print(input_name)
+    # print(input_name)
     return input_name
 
 def receive_best_assignment():
@@ -923,43 +747,51 @@ class Handler1(FileSystemEventHandler):
                 runtime_receiver_log.write(s)
                 runtime_receiver_log.flush()
 
-            task_name = event.src_path.split('/')[-2]
-            home_id = event.src_path.split('/')[-3]
-            print('!!!!!!!!!!!!!!!!!')
-            print(home_id)
-            print(task_name)
+            task_name = event.src_path.split('/')[-3]
+            home_id = event.src_path.split('/')[-2]
+            # print('!!!!!!!!!!!!!!!!!')
+            # print(home_id)
+            # print(task_name)
             input_name = retrieve_input_finish(task_name, temp_name)
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
-            print(input_name)
-            send_runtime_profile_computingnode(runtime_info,task_name)
-            key = (task_name,input_name)
+            # print(input_name)
+            send_runtime_profile_computingnode(runtime_info,task_name,home_id)
+            key = (home_id,task_name,input_name)
             print('#############')
             print(next_mul)
             flag = next_mul[key][0]
             print(next_tasks_map)
             print(next_tasks_map[task_name])
             print(flag)
+            # print('#############')
+            # print(next_mul)
+            #flag = next_mul[key][0]
+            # print(next_tasks_map)
+            # print(next_tasks_map[task_name])
+            # print(flag)
 
             if next_tasks_map[task_name][0] in home_ids: 
                 transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)    
             else: 
+                print(task_node_map)
+                print(computing_ip_map)
                 next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
                 next_IPs   = [computing_ip_map[x] for x in next_hosts]
 
                 
                 
-                print('**************')
-                print(next_hosts)
-                print(next_IPs)
-                print(next_tasks_map[task_name])
-                print(flag)
+                # print('**************')
+                # print(next_hosts)
+                # print(next_IPs)
+                # print(next_tasks_map[task_name])
+                # print(flag)
 
                 if flag == 'true':
-                    destinations = ["/centralized_scheduler/input/" +new_file +"#"+x for x in next_tasks_map[task_name]]
+                    destinations = ["/centralized_scheduler/input/" +new_file +"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
                     for idx,ip in enumerate(next_IPs):
-                        print('----')
-                        print(ip)
-                        print(destinations[idx])
+                        # print('----')
+                        # print(ip)
+                        # print(destinations[idx])
                         if self_ip!=ip:
                             transfer_data(ip,username,password,event.src_path, destinations[idx])
                         else:
@@ -971,24 +803,24 @@ class Handler1(FileSystemEventHandler):
                         files_mul[key] = [event.src_path]
                     else:
                         files_mul[key] = files_mul[key] + [event.src_path]
-                    print('-------------')
-                    print(files_mul[key])
-                    print(next_IPs)
-                    print(self_name)
-                    print(self_ip)
+                    # print('-------------')
+                    # print(files_mul[key])
+                    # print(next_IPs)
+                    # print(self_name)
+                    # print(self_ip)
                     if len(files_mul[key]) == len(next_IPs):
                         for idx,ip in enumerate(next_IPs):
-                            print(files_mul[key][idx])
-                            print(next_tasks_map[task_name][idx])
+                            # print(files_mul[key][idx])
+                            # print(next_tasks_map[task_name][idx])
                             current_file = files_mul[key][idx].split('/')[-1]
-                            print(current_file)
-                            destinations = "/centralized_scheduler/input/" +current_file +"#"+next_tasks_map[task_name][idx]
-                            print(destinations)
+                            # print(current_file)
+                            destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
+                            # print(destinations)
                             if self_ip!=ip:
                                 transfer_data(ip,username,password,files_mul[key][idx], destinations)
                             else: 
                                 cmd = "cp %s %s"%(files_mul[key][idx],destinations)
-                                print(cmd)
+                                # print(cmd)
                                 os.system(cmd)
             
 
@@ -1039,21 +871,20 @@ class Handler(FileSystemEventHandler):
                 file_name = new_file.split('.')[0]
 
             ts = time.time()
-            
-            home_id = new_file.split('#')[1]
             task_name = new_file.split('#')[2]
+            home_id = new_file.split('#')[1]
             input_name = retrieve_input_enter(task_name, file_name)
             runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
-            key = (task_name,input_name)
-            send_runtime_profile_computingnode(runtime_info,task_name)
+            key = (home_id,task_name,input_name)
+            send_runtime_profile_computingnode(runtime_info,task_name,home_id)
 
     
             
             flag = dag[task_name][0] 
             task_flag = dag[task_name][1] 
-            print('&&&&&&&&&&&&&&&&&&&&')
-            print(dag[task_name])
-            print(flag)
+            # print('&&&&&&&&&&&&&&&&&&&&')
+            # print(dag[task_name])
+            # print(flag)
 
             if key not in task_mul:
                 task_mul[key] = [new_file]
@@ -1077,11 +908,13 @@ class Handler(FileSystemEventHandler):
 
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
-                output_path = os.path.join(output_path,home_id,task_name)
+                output_path = os.path.join(output_path,task_name,home_id)
                 print('!!!!!!!!!')
                 print(input_name)
-                execute_task(task_name,input_name, filenames, input_path, output_path)
-                #execute_task(task_name,file_name, filenames, input_path, output_path)
+                print(input_path)
+                print(output_path)
+                print(home_id)
+                execute_task(home_id,task_name,input_name, filenames, input_path, output_path)
                 queue_mul[key] = True
                 
 
