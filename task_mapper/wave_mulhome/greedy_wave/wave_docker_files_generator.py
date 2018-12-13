@@ -24,11 +24,10 @@ RUN mkdir -p DAG
 
 COPY task_mapper/wave_mulhome/greedy_wave/home/start.sh /
 
-
-ADD jupiter_config.ini /jupiter_config.ini
-
 ADD {app_file}/configuration.txt DAG/DAG_application.txt
 ADD {app_file}/input_node.txt DAG
+
+ADD jupiter_config.ini /jupiter_config.ini
 
 EXPOSE {ports}
 
@@ -56,13 +55,14 @@ RUN pip3 install -r requirements.txt
 COPY task_mapper/wave_mulhome/greedy_wave/worker/child_appointment_greedy.py /child_appointment.py
 
 RUN mkdir -p DAG
-ADD jupiter_config.ini /jupiter_config.ini
 
 COPY task_mapper/wave_mulhome/greedy_wave/worker/start.sh /
 
 ADD {app_file}/configuration.txt DAG/DAG_application.txt
 ADD {app_file}/input_node.txt DAG
 ADD {app_file}/sample_input/1botnet.ipsum /1botnet.ipsum
+
+ADD jupiter_config.ini /jupiter_config.ini
 
 
 EXPOSE {ports}

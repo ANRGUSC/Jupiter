@@ -328,6 +328,7 @@ def get_most_suitable_node(file_size):
     Returns:
         str: result_node_name - assigned node for the current task
     """
+    print('Trying to get the most suitable node')
     weight_network = 1
     weight_cpu = 1
     weight_memory = 1
@@ -342,6 +343,9 @@ def get_most_suitable_node(file_size):
         network_profile_data[tmp_node_name]['delay'] = delay
         if delay < min_value:
             min_value = delay
+
+    print('-------------- Network')
+    print(network_profile_data)
 
     # get all the nodes that satisfy: time < tmin * threshold
     for _, item in enumerate(network_profile_data):
@@ -367,6 +371,10 @@ def get_most_suitable_node(file_size):
         if  tmp_cost < min_value:
             min_value = tmp_cost
             result_node_name = item
+
+    print('------------- Resource')
+    print(resource_data)
+    
 
     if not result_node_name:
         min_value = sys.maxsize

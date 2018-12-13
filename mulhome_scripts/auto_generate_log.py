@@ -446,7 +446,7 @@ def main():
         Deploy num_dags of the application specified by app_name
     """
     app_name = 'dummy'
-    num_samples = 10
+    num_samples = 2
     num_runs = 1
     num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]
@@ -461,10 +461,15 @@ def main():
         else:
             alg = 'greedy'
         
-        if jupiter_config.PRICING == 1:
-            option = 'pricing'
-        else:
+        if jupiter_config.PRICING == 0:
             option = 'nopricing'
+        elif jupiter_config.PRICING == 5:
+            option = 'pricing_push'
+        elif jupiter_config.PRICING == 6:
+            option = 'pricing_driven'
+        else: 
+            option = 'pricing'
+
         port_list = []
         app_list = []
         log_circe_list = []

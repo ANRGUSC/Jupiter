@@ -62,8 +62,8 @@ def evaluate_sequential():
     file_count_out = len(os.listdir("output/"))
     # src = "sample_input/1botnet.ipsum"
     # dest = "input/1botnet.ipsum"
-    print('---- Generate random input files')
     file_count = 2
+    print('---- Generate random input files')
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i

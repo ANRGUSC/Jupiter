@@ -112,6 +112,7 @@ def receive_price_info():
             print(price.split('-')[0])
             print(price.split('-')[1])
             task_price_net[node_name,price.split('-')[0]] = float(price.split('-')[1])
+        print(task_price_net)
 
 
     except Exception as e:
@@ -125,8 +126,8 @@ app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info
 def default_best_node():
     print('Select the current best node')
     w_net = 1 # Network profiling: longer time, higher price
-    w_cpu = -1 # Resource profiling : larger cpu resource, lower price
-    w_mem = -1 # Resource profiling : larger mem resource, lower price
+    w_cpu = 1 # Resource profiling : larger cpu resource, lower price
+    w_mem = 1 # Resource profiling : larger mem resource, lower price
     w_queue = 1 # Queue : currently 0
     best_node = -1
     task_price_network= dict()
@@ -147,42 +148,58 @@ def default_best_node():
     if last_tasks_map[self_task][0] not in task_node_map:
         print('Parent tasks not available yet!!!!')
     else:
-        print(last_tasks_map)
+        print('Parent tasks')
         print(last_tasks_map[self_task])
-        print(task_node_map)
         source_node = task_node_map[last_tasks_map[self_task][0]]# case that have multiple parents: temporarily choose the lowest index???
+        print('Current best compute node of parent tasks')
         print(source_node)
         # print(source_node)
-        # print(task_price_net)
+        print('DEBUG')
+        print(task_price_net)
         for (source, dest), price in task_price_net.items():
             if source == source_node:
+                print('hehehhehheheh')
+                print(source_node)
                 task_price_network[dest]= price
-            task_price_network[source] = 0 #the same node
-        
-        # print('------------2')
-        # print(task_price_network)
-        task_price_summary = dict()
-        # print(task_price_cpu.items())
-        # print(task_price_network)
-        # print(home_ids)
-        print(task_price_cpu)
-        print(task_price_mem)
-        print(task_price_queue)
+        print('uhmmmmmmm')
         print(task_price_network)
-        for item, p in task_price_cpu.items():
-            # print('---')
-            # print(item)
-            # print(p)
-            if item in home_ids: continue
-            task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
-        
-        # print('------------3')
-        # print(task_price_summary)
-        if task_price_summary:
+        print(task_price_cpu
+        print(self_id)
+        print(self_task)
+        print(self_name)
+        task_price_network[self_id] = 0 #the same node
+        print(task_price_network)
+        if len(task_price_network.keys()) == len(task_price_cpu.keys()):
+            
+            # print('------------2')
+            # print(task_price_network)
+            task_price_summary = dict()
+            # print(task_price_cpu.items())
+            # print(task_price_network)
+            # print(home_ids)
+            for item, p in task_price_cpu.items():
+                # print('---')
+                # print(item)
+                # print(p)
+                if item in home_ids: continue
+                task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
+            
+            # print('------------3')
+            print('CPU utilization')
+            print(task_price_cpu)
+            print('Memory utilization')
+            print(task_price_mem)
+            print('Queue cost')
+            print(task_price_queue)
+            print('Network cost')
+            print(task_price_network)
+            print('Summary cost')
             print(task_price_summary)
-            best_node = min(task_price_summary,key=task_price_summary.get)
-            print(best_node)
-            task_node_map[self_task] = best_node   
+            if task_price_summary:
+                print(task_price_summary)
+                best_node = min(task_price_summary,key=task_price_summary.get)
+                print(best_node)
+                task_node_map[self_task] = best_node   
         else:
             print('Task price summary is not ready yet.....') 
         # while not(task_price_summary):

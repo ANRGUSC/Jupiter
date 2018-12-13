@@ -1,0 +1,1370 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+Installing and starting mongodb
+Start MongoDB.
+about to fork child process, waiting until server is ready for connections.
+forked process: 32
+child process started successfully, parent exiting
+Starting the scheduler
+TASK1:  localpro
+DAG:  {'astutedetector2': ['1', 'true', 'fusioncenter2'], 'fusioncenter2': ['2', 'true', 'globalfusion'], 'simpledetector1': ['1', 'true', 'fusioncenter1'], 'astutedetector0': ['1', 'true', 'fusioncenter0'], 'simpledetector2': ['1', 'true', 'fusioncenter2'], 'aggregate1': ['1', 'true', 'simpledetector1', 'astutedetector1'], 'aggregate2': ['1', 'true', 'simpledetector2', 'astutedetector2'], 'localpro': ['1', 'false', 'aggregate0', 'aggregate1', 'aggregate2'], 'aggregate0': ['1', 'true', 'simpledetector0', 'astutedetector0'], 'simpledetector0': ['1', 'true', 'fusioncenter0'], 'astutedetector1': ['1', 'true', 'fusioncenter1'], 'fusioncenter1': ['2', 'true', 'globalfusion'], 'fusioncenter0': ['2', 'true', 'globalfusion'], 'globalfusion': ['3', 'true', 'home']}
+HOSTS:  {'home': ['home', 'ubuntu-2gb-nyc2-01-fra1', 'root', 'PASSWORD']}
+Starting the output monitoring system:
+Flask server started
+ * Serving Flask app "scheduler" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:8888/ (Press CTRL+C to quit)
+10.244.0.0 - - [12/Dec/2018 22:35:07] "GET / HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+Start copying sample files for evaluation
+---- Generate random input files
+---- Generate random input files
+Received file as input - /input/1botnet.ipsum.
+start time is:  [1544654152.1490822]
+Transfer to IP: 10.96.227.2 , username: root , password: PASSWORD, source path: /input/1botnet.ipsum , destination path: /centralized_scheduler/input/1botnet.ipsum
+10.96.227.2
+Warning: Permanently added '[10.96.227.2]:5000' (ECDSA) to the list of known hosts.
+data transfer complete
+
+Received flask message: localpro rt_enter 1botnet 1544654153.0861242
+10.244.4.61 - - [12/Dec/2018 22:35:53] "GET /recv_runtime_profile?msg=rt_enter+1botnet+1544654153.0861242&work_node=localpro HTTP/1.1" 200 -
+Received flask message: localpro rt_exec 1botnet 1544654153.1010973
+10.244.4.61 - - [12/Dec/2018 22:35:53] "GET /recv_runtime_profile?msg=rt_exec+1botnet+1544654153.1010973&work_node=localpro HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [12/Dec/2018 22:36:07] "GET / HTTP/1.1" 200 -
+Received flask message: localpro rt_finish 1botnet 1544654168.1411176
+----------------------------
+Worker node: localpro
+Input file : 1botnet
+Total duration time:15.054993391036987
+Waiting time:0.014973163604736328
+localpro execution time:15.040020227432251
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+********************************************
+10.244.4.61 - - [12/Dec/2018 22:36:08] "GET /recv_runtime_profile?msg=rt_finish+1botnet+1544654168.1411176&work_node=localpro HTTP/1.1" 200 -
+Received flask message: aggregate0 rt_enter 1split 1544654169.4019287
+10.244.6.222 - - [12/Dec/2018 22:36:09] "GET /recv_runtime_profile?msg=rt_enter+1split+1544654169.4019287&work_node=aggregate0 HTTP/1.1" 200 -
+Received flask message: aggregate0 rt_exec 1split 1544654169.4323258
+10.244.6.222 - - [12/Dec/2018 22:36:09] "GET /recv_runtime_profile?msg=rt_exec+1split+1544654169.4323258&work_node=aggregate0 HTTP/1.1" 200 -
+10.244.11.83 - - [12/Dec/2018 22:36:09] "GET /recv_runtime_profile?work_node=aggregate1&msg=rt_enter+1split+1544654169.6336405 HTTP/1.1" 200 -
+Received flask message: aggregate1 rt_enter 1split 1544654169.6336405
+Received flask message: aggregate1 rt_exec 1split 1544654169.6436694
+10.244.11.83 - - [12/Dec/2018 22:36:09] "GET /recv_runtime_profile?work_node=aggregate1&msg=rt_exec+1split+1544654169.6436694 HTTP/1.1" 200 -
+Received flask message: aggregate2 rt_enter 1split 1544654169.9420602
+10.244.6.223 - - [12/Dec/2018 22:36:09] "GET /recv_runtime_profile?msg=rt_enter+1split+1544654169.9420602&work_node=aggregate2 HTTP/1.1" 200 -
+Received flask message: aggregate2 rt_exec 1split 1544654169.9655833
+10.244.6.223 - - [12/Dec/2018 22:36:09] "GET /recv_runtime_profile?msg=rt_exec+1split+1544654169.9655833&work_node=aggregate2 HTTP/1.1" 200 -
+Received flask message: aggregate0 rt_finish 1split 1544654184.4745474
+----------------------------
+Worker node: aggregate0
+Input file : 1split
+Total duration time:15.07261872291565
+Waiting time:0.03039717674255371
+aggregate0 execution time:15.042221546173096
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+********************************************
+10.244.6.222 - - [12/Dec/2018 22:36:24] "GET /recv_runtime_profile?msg=rt_finish+1split+1544654184.4745474&work_node=aggregate0 HTTP/1.1" 200 -
+Received flask message: aggregate1 rt_finish 1split 1544654184.6666079
+----------------------------
+Worker node: aggregate1
+Input file : 1split
+Total duration time:15.032967329025269
+Waiting time:0.010028839111328125
+aggregate1 execution time:15.02293848991394
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+********************************************
+10.244.11.83 - - [12/Dec/2018 22:36:24] "GET /recv_runtime_profile?work_node=aggregate1&msg=rt_finish+1split+1544654184.6666079 HTTP/1.1" 200 -
+Received flask message: aggregate2 rt_finish 1split 1544654185.0156925
+----------------------------
+Worker node: aggregate2
+Input file : 1split
+Total duration time:15.07363224029541
+Waiting time:0.02352309226989746
+aggregate2 execution time:15.050109148025513
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+********************************************
+10.244.6.223 - - [12/Dec/2018 22:36:25] "GET /recv_runtime_profile?msg=rt_finish+1split+1544654185.0156925&work_node=aggregate2 HTTP/1.1" 200 -
+Received flask message: simpledetector0 rt_enter 1merged 1544654185.7922902
+10.244.14.43 - - [12/Dec/2018 22:36:25] "GET /recv_runtime_profile?msg=rt_enter+1merged+1544654185.7922902&work_node=simpledetector0 HTTP/1.1" 200 -
+10.244.14.43 - - [12/Dec/2018 22:36:25] "GET /recv_runtime_profile?msg=rt_exec+1merged+1544654185.8305726&work_node=simpledetector0 HTTP/1.1" 200 -
+Received flask message: simpledetector0 rt_exec 1merged 1544654185.8305726
+10.244.19.89 - - [12/Dec/2018 22:36:25] "GET /recv_runtime_profile?msg=rt_enter+1merged+1544654185.8709884&work_node=simpledetector1 HTTP/1.1" 200 -
+Received flask message: simpledetector1 rt_enter 1merged 1544654185.8709884
+10.244.19.89 - - [12/Dec/2018 22:36:25] "GET /recv_runtime_profile?msg=rt_exec+1merged+1544654185.881331&work_node=simpledetector1 HTTP/1.1" 200 -
+Received flask message: simpledetector1 rt_exec 1merged 1544654185.881331
+Received flask message: astutedetector1 rt_enter 1merged 1544654186.0346215
+10.244.18.83 - - [12/Dec/2018 22:36:26] "GET /recv_runtime_profile?work_node=astutedetector1&msg=rt_enter+1merged+1544654186.0346215 HTTP/1.1" 200 -
+Received flask message: astutedetector1 rt_exec 1merged 1544654186.048661
+10.244.18.83 - - [12/Dec/2018 22:36:26] "GET /recv_runtime_profile?work_node=astutedetector1&msg=rt_exec+1merged+1544654186.048661 HTTP/1.1" 200 -
+Received flask message: astutedetector0 rt_enter 1merged 1544654186.1294465
+10.244.14.42 - - [12/Dec/2018 22:36:26] "GET /recv_runtime_profile?msg=rt_enter+1merged+1544654186.1294465&work_node=astutedetector0 HTTP/1.1" 200 -
+Received flask message: astutedetector0 rt_exec 1merged 1544654186.1689076
+10.244.14.42 - - [12/Dec/2018 22:36:26] "GET /recv_runtime_profile?msg=rt_exec+1merged+1544654186.1689076&work_node=astutedetector0 HTTP/1.1" 200 -
+Received flask message: simpledetector2 rt_enter 1merged 1544654186.1782968
+10.244.21.52 - - [12/Dec/2018 22:36:26] "GET /recv_runtime_profile?work_node=simpledetector2&msg=rt_enter+1merged+1544654186.1782968 HTTP/1.1" 200 -
+Received flask message: simpledetector2 rt_exec 1merged 1544654186.2152307
+10.244.21.52 - - [12/Dec/2018 22:36:26] "GET /recv_runtime_profile?work_node=simpledetector2&msg=rt_exec+1merged+1544654186.2152307 HTTP/1.1" 200 -
+Received flask message: astutedetector2 rt_enter 1merged 1544654186.4056463
+10.244.13.57 - - [12/Dec/2018 22:36:26] "GET /recv_runtime_profile?msg=rt_enter+1merged+1544654186.4056463&work_node=astutedetector2 HTTP/1.1" 200 -
+Received flask message: astutedetector2 rt_exec 1merged 1544654186.4329274
+10.244.13.57 - - [12/Dec/2018 22:36:26] "GET /recv_runtime_profile?msg=rt_exec+1merged+1544654186.4329274&work_node=astutedetector2 HTTP/1.1" 200 -
+10.244.19.89 - - [12/Dec/2018 22:36:40] "GET /recv_runtime_profile?msg=rt_finish+1merged+1544654200.8975494&work_node=simpledetector1 HTTP/1.1" 200 -
+Received flask message: simpledetector1 rt_finish 1merged 1544654200.8975494
+----------------------------
+Worker node: simpledetector1
+Input file : 1merged
+Total duration time:15.02656102180481
+Waiting time:0.010342597961425781
+simpledetector1 execution time:15.016218423843384
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+********************************************
+Received flask message: simpledetector0 rt_finish 1merged 1544654200.896152
+----------------------------
+Worker node: simpledetector0
+Input file : 1merged
+Total duration time:15.103861808776855
+Waiting time:0.03828239440917969
+simpledetector0 execution time:15.065579414367676
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+********************************************
+10.244.14.43 - - [12/Dec/2018 22:36:40] "GET /recv_runtime_profile?msg=rt_finish+1merged+1544654200.896152&work_node=simpledetector0 HTTP/1.1" 200 -
+Received flask message: astutedetector1 rt_finish 1merged 1544654201.173304
+----------------------------
+Worker node: astutedetector1
+Input file : 1merged
+Total duration time:15.13868260383606
+Waiting time:0.01403951644897461
+astutedetector1 execution time:15.124643087387085
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+********************************************
+10.244.18.83 - - [12/Dec/2018 22:36:41] "GET /recv_runtime_profile?work_node=astutedetector1&msg=rt_finish+1merged+1544654201.173304 HTTP/1.1" 200 -
+Received flask message: simpledetector2 rt_finish 1merged 1544654201.2574282
+----------------------------
+Worker node: simpledetector2
+Input file : 1merged
+Total duration time:15.079131364822388
+Waiting time:0.03693389892578125
+simpledetector2 execution time:15.042197465896606
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+********************************************
+10.244.21.52 - - [12/Dec/2018 22:36:41] "GET /recv_runtime_profile?work_node=simpledetector2&msg=rt_finish+1merged+1544654201.2574282 HTTP/1.1" 200 -
+Received flask message: astutedetector0 rt_finish 1merged 1544654201.348322
+----------------------------
+Worker node: astutedetector0
+Input file : 1merged
+Total duration time:15.218875408172607
+Waiting time:0.03946113586425781
+astutedetector0 execution time:15.17941427230835
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+********************************************
+10.244.14.42 - - [12/Dec/2018 22:36:41] "GET /recv_runtime_profile?msg=rt_finish+1merged+1544654201.348322&work_node=astutedetector0 HTTP/1.1" 200 -
+Received flask message: astutedetector2 rt_finish 1merged 1544654201.552181
+----------------------------
+Worker node: astutedetector2
+Input file : 1merged
+Total duration time:15.14653468132019
+Waiting time:0.02728104591369629
+astutedetector2 execution time:15.119253635406494
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+********************************************
+10.244.13.57 - - [12/Dec/2018 22:36:41] "GET /recv_runtime_profile?msg=rt_finish+1merged+1544654201.552181&work_node=astutedetector2 HTTP/1.1" 200 -
+Received flask message: fusioncenter1 rt_enter 1anomalies 1544654202.0447893
+10.244.11.82 - - [12/Dec/2018 22:36:42] "GET /recv_runtime_profile?msg=rt_enter+1anomalies+1544654202.0447893&work_node=fusioncenter1 HTTP/1.1" 200 -
+Received flask message: fusioncenter0 rt_enter 1anomalies 1544654202.252362
+10.244.4.62 - - [12/Dec/2018 22:36:42] "GET /recv_runtime_profile?msg=rt_enter+1anomalies+1544654202.252362&work_node=fusioncenter0 HTTP/1.1" 200 -
+Received flask message: fusioncenter1 rt_exec 1anomalies 1544654202.3159266
+10.244.11.82 - - [12/Dec/2018 22:36:42] "GET /recv_runtime_profile?msg=rt_exec+1anomalies+1544654202.3159266&work_node=fusioncenter1 HTTP/1.1" 200 -
+Received flask message: fusioncenter2 rt_enter 1anomalies 1544654202.455829
+10.244.13.56 - - [12/Dec/2018 22:36:42] "GET /recv_runtime_profile?work_node=fusioncenter2&msg=rt_enter+1anomalies+1544654202.455829 HTTP/1.1" 200 -
+10.244.4.62 - - [12/Dec/2018 22:36:42] "GET /recv_runtime_profile?msg=rt_exec+1anomalies+1544654202.6698983&work_node=fusioncenter0 HTTP/1.1" 200 -
+Received flask message: fusioncenter0 rt_exec 1anomalies 1544654202.6698983
+Received flask message: fusioncenter2 rt_exec 1anomalies 1544654202.703298
+10.244.13.56 - - [12/Dec/2018 22:36:42] "GET /recv_runtime_profile?work_node=fusioncenter2&msg=rt_exec+1anomalies+1544654202.703298 HTTP/1.1" 200 -
+Received flask message: fusioncenter1 rt_finish 1anomalies 1544654212.3338675
+----------------------------
+Worker node: fusioncenter1
+Input file : 1anomalies
+Total duration time:10.28907823562622
+Waiting time:0.2711372375488281
+fusioncenter1 execution time:10.017940998077393
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+********************************************
+10.244.11.82 - - [12/Dec/2018 22:36:52] "GET /recv_runtime_profile?msg=rt_finish+1anomalies+1544654212.3338675&work_node=fusioncenter1 HTTP/1.1" 200 -
+Received flask message: fusioncenter0 rt_finish 1anomalies 1544654212.6904953
+----------------------------
+Worker node: fusioncenter0
+Input file : 1anomalies
+Total duration time:10.438133239746094
+Waiting time:0.41753625869750977
+fusioncenter0 execution time:10.020596981048584
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+********************************************
+10.244.4.62 - - [12/Dec/2018 22:36:52] "GET /recv_runtime_profile?msg=rt_finish+1anomalies+1544654212.6904953&work_node=fusioncenter0 HTTP/1.1" 200 -
+10.244.13.56 - - [12/Dec/2018 22:36:52] "GET /recv_runtime_profile?work_node=fusioncenter2&msg=rt_finish+1anomalies+1544654212.7352667 HTTP/1.1" 200 -
+Received flask message: fusioncenter2 rt_finish 1anomalies 1544654212.7352667
+----------------------------
+Worker node: fusioncenter2
+Input file : 1anomalies
+Total duration time:10.279437780380249
+Waiting time:0.24746918678283691
+fusioncenter2 execution time:10.031968593597412
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+********************************************
+Received flask message: globalfusion rt_enter 1fusion 1544654213.4681988
+10.244.19.90 - - [12/Dec/2018 22:36:53] "GET /recv_runtime_profile?work_node=globalfusion&msg=rt_enter+1fusion+1544654213.4681988 HTTP/1.1" 200 -
+Received flask message: globalfusion rt_exec 1fusion 1544654213.975598
+10.244.19.90 - - [12/Dec/2018 22:36:53] "GET /recv_runtime_profile?work_node=globalfusion&msg=rt_exec+1fusion+1544654213.975598 HTTP/1.1" 200 -
+Received flask message: globalfusion rt_finish 1fusion 1544654223.9932768
+----------------------------
+Worker node: globalfusion
+Input file : 1fusion
+Total duration time:10.525078058242798
+Waiting time:0.507399320602417
+globalfusion execution time:10.01767873764038
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+********************************************
+10.244.19.90 - - [12/Dec/2018 22:37:03] "GET /recv_runtime_profile?work_node=globalfusion&msg=rt_finish+1fusion+1544654223.9932768 HTTP/1.1" 200 -
+/output/1global_anomalies.log created
+ending time is:  [1544654225.137131]
+execution time is:  [72.98804879188538]
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [12/Dec/2018 22:37:08] "GET / HTTP/1.1" 200 -
+---- Generate random input files
+Received file as input - /input/2botnet.ipsum.
+start time is:  [1544654152.1490822, 1544654257.225182]
+Transfer to IP: 10.96.227.2 , username: root , password: PASSWORD, source path: /input/2botnet.ipsum , destination path: /centralized_scheduler/input/2botnet.ipsum
+10.96.227.2
+data transfer complete
+
+Received flask message: localpro rt_enter 2botnet 1544654257.8637617
+10.244.4.61 - - [12/Dec/2018 22:37:37] "GET /recv_runtime_profile?msg=rt_enter+2botnet+1544654257.8637617&work_node=localpro HTTP/1.1" 200 -
+Received flask message: localpro rt_exec 2botnet 1544654257.8719175
+10.244.4.61 - - [12/Dec/2018 22:37:37] "GET /recv_runtime_profile?msg=rt_exec+2botnet+1544654257.8719175&work_node=localpro HTTP/1.1" 200 -
+Received flask message: localpro rt_finish 2botnet 1544654272.901405
+----------------------------
+Worker node: localpro
+Input file : 2botnet
+Total duration time:15.037643432617188
+Waiting time:0.00815582275390625
+localpro execution time:15.029487609863281
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+********************************************
+10.244.4.61 - - [12/Dec/2018 22:37:52] "GET /recv_runtime_profile?msg=rt_finish+2botnet+1544654272.901405&work_node=localpro HTTP/1.1" 200 -
+Received flask message: aggregate0 rt_enter 2split 1544654274.1391773
+10.244.6.222 - - [12/Dec/2018 22:37:54] "GET /recv_runtime_profile?msg=rt_enter+2split+1544654274.1391773&work_node=aggregate0 HTTP/1.1" 200 -
+Received flask message: aggregate0 rt_exec 2split 1544654274.16881
+10.244.6.222 - - [12/Dec/2018 22:37:54] "GET /recv_runtime_profile?msg=rt_exec+2split+1544654274.16881&work_node=aggregate0 HTTP/1.1" 200 -
+10.244.11.83 - - [12/Dec/2018 22:37:54] "GET /recv_runtime_profile?work_node=aggregate1&msg=rt_enter+2split+1544654274.3651857 HTTP/1.1" 200 -
+10.244.11.83 - - [12/Dec/2018 22:37:54] "GET /recv_runtime_profile?work_node=aggregate1&msg=rt_exec+2split+1544654274.3692682 HTTP/1.1" 200 -
+Received flask message: aggregate1 rt_enter 2split 1544654274.3651857
+Received flask message: aggregate1 rt_exec 2split 1544654274.3692682
+Received flask message: aggregate2 rt_enter 2split 1544654274.620288
+10.244.6.223 - - [12/Dec/2018 22:37:54] "GET /recv_runtime_profile?msg=rt_enter+2split+1544654274.620288&work_node=aggregate2 HTTP/1.1" 200 -
+Received flask message: aggregate2 rt_exec 2split 1544654274.637071
+10.244.6.223 - - [12/Dec/2018 22:37:54] "GET /recv_runtime_profile?msg=rt_exec+2split+1544654274.637071&work_node=aggregate2 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [12/Dec/2018 22:38:08] "GET / HTTP/1.1" 200 -
+Received flask message: aggregate0 rt_finish 2split 1544654289.2166793
+----------------------------
+Worker node: aggregate0
+Input file : 2split
+Total duration time:15.077502012252808
+Waiting time:0.029632568359375
+aggregate0 execution time:15.047869443893433
+----------------------------
+10.244.6.222 - - [12/Dec/2018 22:38:09] "GET /recv_runtime_profile?msg=rt_finish+2split+1544654289.2166793&work_node=aggregate0 HTTP/1.1" 200 -
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+********************************************
+Received flask message: aggregate1 rt_finish 2split 1544654289.3938427
+----------------------------
+Worker node: aggregate1
+Input file : 2split
+Total duration time:15.028656959533691
+Waiting time:0.004082441329956055
+aggregate1 execution time:15.024574518203735
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+********************************************
+10.244.11.83 - - [12/Dec/2018 22:38:09] "GET /recv_runtime_profile?work_node=aggregate1&msg=rt_finish+2split+1544654289.3938427 HTTP/1.1" 200 -
+Received flask message: aggregate2 rt_finish 2split 1544654289.6739473
+----------------------------
+Worker node: aggregate2
+Input file : 2split
+Total duration time:15.053659439086914
+Waiting time:0.01678299903869629
+aggregate2 execution time:15.036876440048218
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+aggregate2 2split     1544654274.620288 1544654274.637071 1544654289.6739473 15.053659439086914 15.036876440048218 0.01678299903869629
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+********************************************
+10.244.6.223 - - [12/Dec/2018 22:38:09] "GET /recv_runtime_profile?msg=rt_finish+2split+1544654289.6739473&work_node=aggregate2 HTTP/1.1" 200 -
+Received flask message: simpledetector0 rt_enter 2merged 1544654290.4861665
+10.244.14.43 - - [12/Dec/2018 22:38:10] "GET /recv_runtime_profile?msg=rt_enter+2merged+1544654290.4861665&work_node=simpledetector0 HTTP/1.1" 200 -
+Received flask message: simpledetector0 rt_exec 2merged 1544654290.5180264
+10.244.14.43 - - [12/Dec/2018 22:38:10] "GET /recv_runtime_profile?msg=rt_exec+2merged+1544654290.5180264&work_node=simpledetector0 HTTP/1.1" 200 -
+Received flask message: simpledetector1 rt_enter 2merged 1544654290.5669534
+10.244.19.89 - - [12/Dec/2018 22:38:10] "GET /recv_runtime_profile?msg=rt_enter+2merged+1544654290.5669534&work_node=simpledetector1 HTTP/1.1" 200 -
+Received flask message: simpledetector1 rt_exec 2merged 1544654290.5716274
+10.244.19.89 - - [12/Dec/2018 22:38:10] "GET /recv_runtime_profile?msg=rt_exec+2merged+1544654290.5716274&work_node=simpledetector1 HTTP/1.1" 200 -
+Received flask message: astutedetector1 rt_enter 2merged 1544654290.7145336
+10.244.18.83 - - [12/Dec/2018 22:38:10] "GET /recv_runtime_profile?work_node=astutedetector1&msg=rt_enter+2merged+1544654290.7145336 HTTP/1.1" 200 -
+Received flask message: astutedetector1 rt_exec 2merged 1544654290.7201574
+10.244.18.83 - - [12/Dec/2018 22:38:10] "GET /recv_runtime_profile?work_node=astutedetector1&msg=rt_exec+2merged+1544654290.7201574 HTTP/1.1" 200 -
+Received flask message: astutedetector0 rt_enter 2merged 1544654290.7611902
+10.244.14.42 - - [12/Dec/2018 22:38:10] "GET /recv_runtime_profile?msg=rt_enter+2merged+1544654290.7611902&work_node=astutedetector0 HTTP/1.1" 200 -
+Received flask message: astutedetector0 rt_exec 2merged 1544654290.7927122
+10.244.14.42 - - [12/Dec/2018 22:38:10] "GET /recv_runtime_profile?msg=rt_exec+2merged+1544654290.7927122&work_node=astutedetector0 HTTP/1.1" 200 -
+10.244.21.52 - - [12/Dec/2018 22:38:10] "GET /recv_runtime_profile?work_node=simpledetector2&msg=rt_enter+2merged+1544654290.845958 HTTP/1.1" 200 -
+Received flask message: simpledetector2 rt_enter 2merged 1544654290.845958
+Received flask message: simpledetector2 rt_exec 2merged 1544654290.8621671
+10.244.21.52 - - [12/Dec/2018 22:38:10] "GET /recv_runtime_profile?work_node=simpledetector2&msg=rt_exec+2merged+1544654290.8621671 HTTP/1.1" 200 -
+10.244.13.57 - - [12/Dec/2018 22:38:11] "GET /recv_runtime_profile?msg=rt_enter+2merged+1544654291.030866&work_node=astutedetector2 HTTP/1.1" 200 -
+Received flask message: astutedetector2 rt_enter 2merged 1544654291.030866
+Received flask message: astutedetector2 rt_exec 2merged 1544654291.0468252
+10.244.13.57 - - [12/Dec/2018 22:38:11] "GET /recv_runtime_profile?msg=rt_exec+2merged+1544654291.0468252&work_node=astutedetector2 HTTP/1.1" 200 -
+Received flask message: simpledetector1 rt_finish 2merged 1544654305.5972123
+----------------------------
+Worker node: simpledetector1
+Input file : 2merged
+Total duration time:15.030258893966675
+Waiting time:0.004673957824707031
+simpledetector1 execution time:15.025584936141968
+----------------------------
+********************************************
+Runtime profiling info:
+Received flask message: simpledetector0 rt_finish 2merged 1544654305.5770047
+----------------------------
+Worker node: simpledetector0
+Input file : 2merged
+Total duration time:15.090838193893433
+Waiting time:0.0318598747253418
+simpledetector0 execution time:15.05897831916809
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 2merged    1544654290.4861665 1544654290.5180264 1544654305.5770047 15.090838193893433 15.05897831916809 0.0318598747253418
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector1 2merged    1544654290.5669534 1544654290.5716274 1544654305.5972123 15.030258893966675 15.025584936141968 0.004673957824707031
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate2 2split     1544654274.620288 1544654274.637071 1544654289.6739473 15.053659439086914 15.036876440048218 0.01678299903869629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+********************************************
+10.244.19.89 - - [12/Dec/2018 22:38:25] "GET /recv_runtime_profile?msg=rt_finish+2merged+1544654305.5972123&work_node=simpledetector1 HTTP/1.1" 200 -
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 2merged    1544654290.4861665 1544654290.5180264 1544654305.5770047 15.090838193893433 15.05897831916809 0.0318598747253418
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector1 2merged    1544654290.5669534 1544654290.5716274 1544654305.5972123 15.030258893966675 15.025584936141968 0.004673957824707031
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate2 2split     1544654274.620288 1544654274.637071 1544654289.6739473 15.053659439086914 15.036876440048218 0.01678299903869629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+********************************************
+10.244.14.43 - - [12/Dec/2018 22:38:25] "GET /recv_runtime_profile?msg=rt_finish+2merged+1544654305.5770047&work_node=simpledetector0 HTTP/1.1" 200 -
+10.244.18.83 - - [12/Dec/2018 22:38:25] "GET /recv_runtime_profile?work_node=astutedetector1&msg=rt_finish+2merged+1544654305.8164847 HTTP/1.1" 200 -
+Received flask message: astutedetector1 rt_finish 2merged 1544654305.8164847
+----------------------------
+Worker node: astutedetector1
+Input file : 2merged
+Total duration time:15.101951122283936
+Waiting time:0.005623817443847656
+astutedetector1 execution time:15.096327304840088
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 2merged    1544654290.4861665 1544654290.5180264 1544654305.5770047 15.090838193893433 15.05897831916809 0.0318598747253418
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+astutedetector1 2merged    1544654290.7145336 1544654290.7201574 1544654305.8164847 15.101951122283936 15.096327304840088 0.005623817443847656
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector1 2merged    1544654290.5669534 1544654290.5716274 1544654305.5972123 15.030258893966675 15.025584936141968 0.004673957824707031
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate2 2split     1544654274.620288 1544654274.637071 1544654289.6739473 15.053659439086914 15.036876440048218 0.01678299903869629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+********************************************
+Received flask message: simpledetector2 rt_finish 2merged 1544654305.9028728
+----------------------------
+Worker node: simpledetector2
+Input file : 2merged
+Total duration time:15.056914806365967
+Waiting time:0.016209125518798828
+simpledetector2 execution time:15.040705680847168
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 2merged    1544654290.4861665 1544654290.5180264 1544654305.5770047 15.090838193893433 15.05897831916809 0.0318598747253418
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+astutedetector1 2merged    1544654290.7145336 1544654290.7201574 1544654305.8164847 15.101951122283936 15.096327304840088 0.005623817443847656
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+simpledetector2 2merged    1544654290.845958 1544654290.8621671 1544654305.9028728 15.056914806365967 15.040705680847168 0.016209125518798828
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector1 2merged    1544654290.5669534 1544654290.5716274 1544654305.5972123 15.030258893966675 15.025584936141968 0.004673957824707031
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate2 2split     1544654274.620288 1544654274.637071 1544654289.6739473 15.053659439086914 15.036876440048218 0.01678299903869629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+********************************************
+10.244.21.52 - - [12/Dec/2018 22:38:25] "GET /recv_runtime_profile?work_node=simpledetector2&msg=rt_finish+2merged+1544654305.9028728 HTTP/1.1" 200 -
+Received flask message: astutedetector0 rt_finish 2merged 1544654305.9501846
+----------------------------
+Worker node: astutedetector0
+Input file : 2merged
+Total duration time:15.188994407653809
+Waiting time:0.03152203559875488
+astutedetector0 execution time:15.157472372055054
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 2merged    1544654290.4861665 1544654290.5180264 1544654305.5770047 15.090838193893433 15.05897831916809 0.0318598747253418
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+astutedetector1 2merged    1544654290.7145336 1544654290.7201574 1544654305.8164847 15.101951122283936 15.096327304840088 0.005623817443847656
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+simpledetector2 2merged    1544654290.845958 1544654290.8621671 1544654305.9028728 15.056914806365967 15.040705680847168 0.016209125518798828
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+astutedetector0 2merged    1544654290.7611902 1544654290.7927122 1544654305.9501846 15.188994407653809 15.157472372055054 0.03152203559875488
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector1 2merged    1544654290.5669534 1544654290.5716274 1544654305.5972123 15.030258893966675 15.025584936141968 0.004673957824707031
+
+10.244.14.42 - - [12/Dec/2018 22:38:25] "GET /recv_runtime_profile?msg=rt_finish+2merged+1544654305.9501846&work_node=astutedetector0 HTTP/1.1" 200 -
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate2 2split     1544654274.620288 1544654274.637071 1544654289.6739473 15.053659439086914 15.036876440048218 0.01678299903869629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+********************************************
+Received flask message: astutedetector2 rt_finish 2merged 1544654306.1687727
+----------------------------
+Worker node: astutedetector2
+Input file : 2merged
+Total duration time:15.137906789779663
+Waiting time:0.01595926284790039
+astutedetector2 execution time:15.121947526931763
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 2merged    1544654290.4861665 1544654290.5180264 1544654305.5770047 15.090838193893433 15.05897831916809 0.0318598747253418
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+astutedetector1 2merged    1544654290.7145336 1544654290.7201574 1544654305.8164847 15.101951122283936 15.096327304840088 0.005623817443847656
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+simpledetector2 2merged    1544654290.845958 1544654290.8621671 1544654305.9028728 15.056914806365967 15.040705680847168 0.016209125518798828
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+astutedetector2 2merged    1544654291.030866 1544654291.0468252 1544654306.1687727 15.137906789779663 15.121947526931763 0.01595926284790039
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+astutedetector0 2merged    1544654290.7611902 1544654290.7927122 1544654305.9501846 15.188994407653809 15.157472372055054 0.03152203559875488
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector1 2merged    1544654290.5669534 1544654290.5716274 1544654305.5972123 15.030258893966675 15.025584936141968 0.004673957824707031
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate2 2split     1544654274.620288 1544654274.637071 1544654289.6739473 15.053659439086914 15.036876440048218 0.01678299903869629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+********************************************
+10.244.13.57 - - [12/Dec/2018 22:38:26] "GET /recv_runtime_profile?msg=rt_finish+2merged+1544654306.1687727&work_node=astutedetector2 HTTP/1.1" 200 -
+Received flask message: fusioncenter1 rt_enter 2anomalies 1544654306.7718081
+10.244.11.82 - - [12/Dec/2018 22:38:26] "GET /recv_runtime_profile?msg=rt_enter+2anomalies+1544654306.7718081&work_node=fusioncenter1 HTTP/1.1" 200 -
+10.244.4.62 - - [12/Dec/2018 22:38:26] "GET /recv_runtime_profile?msg=rt_enter+2anomalies+1544654306.904014&work_node=fusioncenter0 HTTP/1.1" 200 -
+Received flask message: fusioncenter0 rt_enter 2anomalies 1544654306.904014
+Received flask message: fusioncenter1 rt_exec 2anomalies 1544654306.9520779
+10.244.11.82 - - [12/Dec/2018 22:38:26] "GET /recv_runtime_profile?msg=rt_exec+2anomalies+1544654306.9520779&work_node=fusioncenter1 HTTP/1.1" 200 -
+Received flask message: fusioncenter2 rt_enter 2anomalies 1544654307.0471754
+10.244.13.56 - - [12/Dec/2018 22:38:27] "GET /recv_runtime_profile?work_node=fusioncenter2&msg=rt_enter+2anomalies+1544654307.0471754 HTTP/1.1" 200 -
+Received flask message: fusioncenter0 rt_exec 2anomalies 1544654307.2995293
+10.244.4.62 - - [12/Dec/2018 22:38:27] "GET /recv_runtime_profile?msg=rt_exec+2anomalies+1544654307.2995293&work_node=fusioncenter0 HTTP/1.1" 200 -
+Received flask message: fusioncenter2 rt_exec 2anomalies 1544654307.2989192
+10.244.13.56 - - [12/Dec/2018 22:38:27] "GET /recv_runtime_profile?work_node=fusioncenter2&msg=rt_exec+2anomalies+1544654307.2989192 HTTP/1.1" 200 -
+Received flask message: fusioncenter1 rt_finish 2anomalies 1544654316.9653
+----------------------------
+Worker node: fusioncenter1
+Input file : 2anomalies
+Total duration time:10.19349193572998
+Waiting time:0.18026971817016602
+fusioncenter1 execution time:10.013222217559814
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 2merged    1544654290.4861665 1544654290.5180264 1544654305.5770047 15.090838193893433 15.05897831916809 0.0318598747253418
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+astutedetector1 2merged    1544654290.7145336 1544654290.7201574 1544654305.8164847 15.101951122283936 15.096327304840088 0.005623817443847656
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+simpledetector2 2merged    1544654290.845958 1544654290.8621671 1544654305.9028728 15.056914806365967 15.040705680847168 0.016209125518798828
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+astutedetector2 2merged    1544654291.030866 1544654291.0468252 1544654306.1687727 15.137906789779663 15.121947526931763 0.01595926284790039
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter1 2anomalies 1544654306.7718081 1544654306.9520779 1544654316.9653 10.19349193572998 10.013222217559814 0.18026971817016602
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+astutedetector0 2merged    1544654290.7611902 1544654290.7927122 1544654305.9501846 15.188994407653809 15.157472372055054 0.03152203559875488
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector1 2merged    1544654290.5669534 1544654290.5716274 1544654305.5972123 15.030258893966675 15.025584936141968 0.004673957824707031
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate2 2split     1544654274.620288 1544654274.637071 1544654289.6739473 15.053659439086914 15.036876440048218 0.01678299903869629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+********************************************
+10.244.11.82 - - [12/Dec/2018 22:38:36] "GET /recv_runtime_profile?msg=rt_finish+2anomalies+1544654316.9653&work_node=fusioncenter1 HTTP/1.1" 200 -
+Received flask message: fusioncenter0 rt_finish 2anomalies 1544654317.325415
+----------------------------
+Worker node: fusioncenter0
+Input file : 2anomalies
+Total duration time:10.421400785446167
+Waiting time:0.39551520347595215
+fusioncenter0 execution time:10.025885581970215
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+fusioncenter0 2anomalies 1544654306.904014 1544654307.2995293 1544654317.325415 10.421400785446167 10.025885581970215 0.39551520347595215
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 2merged    1544654290.4861665 1544654290.5180264 1544654305.5770047 15.090838193893433 15.05897831916809 0.0318598747253418
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+astutedetector1 2merged    1544654290.7145336 1544654290.7201574 1544654305.8164847 15.101951122283936 15.096327304840088 0.005623817443847656
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+simpledetector2 2merged    1544654290.845958 1544654290.8621671 1544654305.9028728 15.056914806365967 15.040705680847168 0.016209125518798828
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+astutedetector2 2merged    1544654291.030866 1544654291.0468252 1544654306.1687727 15.137906789779663 15.121947526931763 0.01595926284790039
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter1 2anomalies 1544654306.7718081 1544654306.9520779 1544654316.9653 10.19349193572998 10.013222217559814 0.18026971817016602
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+astutedetector0 2merged    1544654290.7611902 1544654290.7927122 1544654305.9501846 15.188994407653809 15.157472372055054 0.03152203559875488
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector1 2merged    1544654290.5669534 1544654290.5716274 1544654305.5972123 15.030258893966675 15.025584936141968 0.004673957824707031
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate2 2split     1544654274.620288 1544654274.637071 1544654289.6739473 15.053659439086914 15.036876440048218 0.01678299903869629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+********************************************
+10.244.4.62 - - [12/Dec/2018 22:38:37] "GET /recv_runtime_profile?msg=rt_finish+2anomalies+1544654317.325415&work_node=fusioncenter0 HTTP/1.1" 200 -
+Received flask message: fusioncenter2 rt_finish 2anomalies 1544654317.342351
+----------------------------
+Worker node: fusioncenter2
+Input file : 2anomalies
+Total duration time:10.295175552368164
+Waiting time:0.25174379348754883
+fusioncenter2 execution time:10.043431758880615
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+fusioncenter0 2anomalies 1544654306.904014 1544654307.2995293 1544654317.325415 10.421400785446167 10.025885581970215 0.39551520347595215
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 2merged    1544654290.4861665 1544654290.5180264 1544654305.5770047 15.090838193893433 15.05897831916809 0.0318598747253418
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+astutedetector1 2merged    1544654290.7145336 1544654290.7201574 1544654305.8164847 15.101951122283936 15.096327304840088 0.005623817443847656
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+simpledetector2 2merged    1544654290.845958 1544654290.8621671 1544654305.9028728 15.056914806365967 15.040705680847168 0.016209125518798828
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+astutedetector2 2merged    1544654291.030866 1544654291.0468252 1544654306.1687727 15.137906789779663 15.121947526931763 0.01595926284790039
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter1 2anomalies 1544654306.7718081 1544654306.9520779 1544654316.9653 10.19349193572998 10.013222217559814 0.18026971817016602
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+astutedetector0 2merged    1544654290.7611902 1544654290.7927122 1544654305.9501846 15.188994407653809 15.157472372055054 0.03152203559875488
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector1 2merged    1544654290.5669534 1544654290.5716274 1544654305.5972123 15.030258893966675 15.025584936141968 0.004673957824707031
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate2 2split     1544654274.620288 1544654274.637071 1544654289.6739473 15.053659439086914 15.036876440048218 0.01678299903869629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+fusioncenter2 2anomalies 1544654307.0471754 1544654307.2989192 1544654317.342351 10.295175552368164 10.043431758880615 0.25174379348754883
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+********************************************
+10.244.13.56 - - [12/Dec/2018 22:38:37] "GET /recv_runtime_profile?work_node=fusioncenter2&msg=rt_finish+2anomalies+1544654317.342351 HTTP/1.1" 200 -
+Received flask message: globalfusion rt_enter 2fusion 1544654318.139013
+10.244.19.90 - - [12/Dec/2018 22:38:38] "GET /recv_runtime_profile?work_node=globalfusion&msg=rt_enter+2fusion+1544654318.139013 HTTP/1.1" 200 -
+Received flask message: globalfusion rt_exec 2fusion 1544654318.655756
+10.244.19.90 - - [12/Dec/2018 22:38:38] "GET /recv_runtime_profile?work_node=globalfusion&msg=rt_exec+2fusion+1544654318.655756 HTTP/1.1" 200 -
+Received flask message: globalfusion rt_finish 2fusion 1544654328.6759136
+----------------------------
+Worker node: globalfusion
+Input file : 2fusion
+Total duration time:10.536900520324707
+Waiting time:0.5167429447174072
+globalfusion execution time:10.0201575756073
+----------------------------
+********************************************
+Runtime profiling info:
+Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+fusioncenter0 2anomalies 1544654306.904014 1544654307.2995293 1544654317.325415 10.421400785446167 10.025885581970215 0.39551520347595215
+
+localpro   1botnet    1544654153.0861242 1544654153.1010973 1544654168.1411176 15.054993391036987 15.040020227432251 0.014973163604736328
+
+simpledetector0 2merged    1544654290.4861665 1544654290.5180264 1544654305.5770047 15.090838193893433 15.05897831916809 0.0318598747253418
+
+aggregate1 1split     1544654169.6336405 1544654169.6436694 1544654184.6666079 15.032967329025269 15.02293848991394 0.010028839111328125
+
+aggregate2 1split     1544654169.9420602 1544654169.9655833 1544654185.0156925 15.07363224029541 15.050109148025513 0.02352309226989746
+
+astutedetector0 1merged    1544654186.1294465 1544654186.1689076 1544654201.348322 15.218875408172607 15.17941427230835 0.03946113586425781
+
+astutedetector1 2merged    1544654290.7145336 1544654290.7201574 1544654305.8164847 15.101951122283936 15.096327304840088 0.005623817443847656
+
+simpledetector2 1merged    1544654186.1782968 1544654186.2152307 1544654201.2574282 15.079131364822388 15.042197465896606 0.03693389892578125
+
+simpledetector2 2merged    1544654290.845958 1544654290.8621671 1544654305.9028728 15.056914806365967 15.040705680847168 0.016209125518798828
+
+fusioncenter1 1anomalies 1544654202.0447893 1544654202.3159266 1544654212.3338675 10.28907823562622 10.017940998077393 0.2711372375488281
+
+astutedetector2 2merged    1544654291.030866 1544654291.0468252 1544654306.1687727 15.137906789779663 15.121947526931763 0.01595926284790039
+
+aggregate0 2split     1544654274.1391773 1544654274.16881 1544654289.2166793 15.077502012252808 15.047869443893433 0.029632568359375
+
+globalfusion 1fusion    1544654213.4681988 1544654213.975598 1544654223.9932768 10.525078058242798 10.01767873764038 0.507399320602417
+
+globalfusion 2fusion    1544654318.139013 1544654318.655756 1544654328.6759136 10.536900520324707 10.0201575756073 0.5167429447174072
+
+astutedetector1 1merged    1544654186.0346215 1544654186.048661 1544654201.173304 15.13868260383606 15.124643087387085 0.01403951644897461
+
+fusioncenter1 2anomalies 1544654306.7718081 1544654306.9520779 1544654316.9653 10.19349193572998 10.013222217559814 0.18026971817016602
+
+aggregate1 2split     1544654274.3651857 1544654274.3692682 1544654289.3938427 15.028656959533691 15.024574518203735 0.004082441329956055
+
+astutedetector2 1merged    1544654186.4056463 1544654186.4329274 1544654201.552181 15.14653468132019 15.119253635406494 0.02728104591369629
+
+astutedetector0 2merged    1544654290.7611902 1544654290.7927122 1544654305.9501846 15.188994407653809 15.157472372055054 0.03152203559875488
+
+fusioncenter2 1anomalies 1544654202.455829 1544654202.703298 1544654212.7352667 10.279437780380249 10.031968593597412 0.24746918678283691
+
+fusioncenter0 1anomalies 1544654202.252362 1544654202.6698983 1544654212.6904953 10.438133239746094 10.020596981048584 0.41753625869750977
+
+simpledetector1 2merged    1544654290.5669534 1544654290.5716274 1544654305.5972123 15.030258893966675 15.025584936141968 0.004673957824707031
+
+simpledetector1 1merged    1544654185.8709884 1544654185.881331 1544654200.8975494 15.02656102180481 15.016218423843384 0.010342597961425781
+
+aggregate2 2split     1544654274.620288 1544654274.637071 1544654289.6739473 15.053659439086914 15.036876440048218 0.01678299903869629
+
+localpro   2botnet    1544654257.8637617 1544654257.8719175 1544654272.901405 15.037643432617188 15.029487609863281 0.00815582275390625
+
+aggregate0 1split     1544654169.4019287 1544654169.4323258 1544654184.4745474 15.07261872291565 15.042221546173096 0.03039717674255371
+
+fusioncenter2 2anomalies 1544654307.0471754 1544654307.2989192 1544654317.342351 10.295175552368164 10.043431758880615 0.25174379348754883
+
+simpledetector0 1merged    1544654185.7922902 1544654185.8305726 1544654200.896152 15.103861808776855 15.065579414367676 0.03828239440917969
+
+********************************************
+10.244.19.90 - - [12/Dec/2018 22:38:48] "GET /recv_runtime_profile?work_node=globalfusion&msg=rt_finish+2fusion+1544654328.6759136 HTTP/1.1" 200 -
+/output/2global_anomalies.log created
+ending time is:  [1544654225.137131, 1544654329.8167033]
+execution time is:  [72.98804879188538, 72.59152126312256]
+Recieved request for number of output files. Current done: 2
+10.244.0.0 - - [12/Dec/2018 22:39:09] "GET / HTTP/1.1" 200 -
