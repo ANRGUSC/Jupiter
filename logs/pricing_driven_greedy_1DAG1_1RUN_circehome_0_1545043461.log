@@ -1,0 +1,1731 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+Installing and starting mongodb
+Start MongoDB.
+about to fork child process, waiting until server is ready for connections.
+forked process: 32
+child process started successfully, parent exiting
+Starting the evaluation
+Starting the scheduler
+############
+{'10.102.156.97': 'node4', '10.96.48.111': 'node3', '10.111.102.155': 'node6', '10.108.157.250': 'node2', '10.98.73.20': 'home', '10.111.148.61': 'node5'}
+TASK:  localpro
+DAG:  {'astutedetector1': ['1', 'true', 'fusioncenter1'], 'simpledetector2': ['1', 'true', 'fusioncenter2'], 'fusioncenter2': ['2', 'true', 'globalfusion'], 'simpledetector0': ['1', 'true', 'fusioncenter0'], 'astutedetector2': ['1', 'true', 'fusioncenter2'], 'localpro': ['1', 'false', 'aggregate0', 'aggregate1', 'aggregate2'], 'aggregate2': ['1', 'true', 'simpledetector2', 'astutedetector2'], 'globalfusion': ['3', 'true', 'home'], 'astutedetector0': ['1', 'true', 'fusioncenter0'], 'fusioncenter1': ['2', 'true', 'globalfusion'], 'aggregate0': ['1', 'true', 'simpledetector0', 'astutedetector0'], 'simpledetector1': ['1', 'true', 'fusioncenter1'], 'aggregate1': ['1', 'true', 'simpledetector1', 'astutedetector1'], 'fusioncenter0': ['2', 'true', 'globalfusion']}
+HOSTS:  {'home': ['home', 'ubuntu-2gb-nyc2-01-fra1', 'root', 'PASSWORD']}
+Starting the output monitoring system:
+Flask server started
+ * Serving Flask app "scheduler" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:8888/ (Press CTRL+C to quit)
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [17/Dec/2018 10:33:15] "GET / HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [17/Dec/2018 10:34:16] "GET / HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [17/Dec/2018 10:35:16] "GET / HTTP/1.1" 200 -
+estimate price
+***************************************************
+ Retrieve all input information: 
+Retrieve network information info
+***************************************************
+Execution time is:0.006616353988647461
+0.006616353988647461
+***************************************************
+--- Network cost:----------- 
+{'node6': 286.6642557198794, 'node3': 1493.2257406775052, 'node5': 2685.116254440044, 'node2': 2406.0159834416327, 'node4': 145.3496537401546}
+-----------------
+Overall price:
+{'cpu': -1, 'memory': -1, 'queue': -1, 'network': {'node6': 286.6642557198794, 'node3': 1493.2257406775052, 'node5': 2685.116254440044, 'node2': 2406.0159834416327, 'node4': 145.3496537401546}}
+Execution time is:0.00725865364074707
+0.00725865364074707
+***************************************************
+***************************************************
+Announce my price
+home#-1#-1#-1$node6%286.6642557198794$node3%1493.2257406775052$node5%2685.116254440044$node2%2406.0159834416327$node4%145.3496537401546
+Execution time is:0.013411998748779297
+0.013411998748779297
+***************************************************
+Start copying sample files for evaluation
+---- Generate random input files
+---- Generate random input files
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [17/Dec/2018 10:36:17] "GET / HTTP/1.1" 200 -
+***************************************************
+Received file as input - /input/1botnet.ipsum.
+start time is:  [1545042977.3411922]
+***************************************************
+Request the best computing node for the tasklocalpro
+***************************************************
+Received best assignment
+Execution time is:0.0014338493347167969
+0.0014338493347167969
+***************************************************
+10.244.4.62 - - [17/Dec/2018 10:36:17] "GET /receive_best_assignment?home_id=home&best_computing_node=node2&file_name=1botnet.ipsum&task_name=localpro HTTP/1.1" 200 -
+Execution time is:0.01941227912902832
+0.01941227912902832
+***************************************************
+--- waiting for computing node assignment
+1.0209693908691406
+---------- Now what
+{('localpro', '1botnet.ipsum'): 'node2'}
+{'node6': '10.97.131.201', 'node3': '10.97.93.212', 'node4': '10.98.207.254', 'node2': '10.104.17.55', 'node5': '10.99.18.114'}
+1botnet.ipsum#home#localpro#false
+0.0007607936859130859
+Transfer to IP: 10.104.17.55 , username: root , password: PASSWORD, source path: /input/1botnet.ipsum , destination path: /centralized_scheduler/input/1botnet.ipsum#home#localpro#false
+***************************************************
+transfer data scp
+Warning: Permanently added '[10.104.17.55]:5000' (ECDSA) to the list of known hosts.
+data transfer complete
+
+Execution time is:2.6080989837646484
+2.6080989837646484
+***************************************************
+2.608522891998291
+Execution time is:3.631704330444336
+3.631704330444336
+***************************************************
+Received flask message: node2 rt_enter 1botnet 1545042980.8017998 localpro
+10.244.2.17 - - [17/Dec/2018 10:36:21] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=localpro&msg=rt_enter+1botnet+1545042980.8017998 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545042981.1292682 localpro
+10.244.2.17 - - [17/Dec/2018 10:36:21] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=localpro&msg=rt_exec+1botnet+1545042981.1292682 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545042996.9956038 localpro
+----------------------------
+10.244.2.17 - - [17/Dec/2018 10:36:37] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=localpro&msg=rt_finish+1botnet+1545042996.9956038 HTTP/1.1" 200 -
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: localpro
+Total duration time:16.193804025650024
+Waiting time:0.3274683952331543
+node2 execution time:15.86633563041687
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545042996.9956038 16.193804025650024 15.86633563041687 0.3274683952331543
+
+********************************************
+Received flask message: node2 rt_finish 1botnet 1545043001.7592268 localpro
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: localpro
+Total duration time:20.95742702484131
+Waiting time:0.3274683952331543
+node2 execution time:20.629958629608154
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043001.7592268 20.95742702484131 20.629958629608154 0.3274683952331543
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:36:41] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=localpro&msg=rt_finish+1botnet+1545043001.7592268 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043002.078298 localpro
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: localpro
+Total duration time:21.276498317718506
+Waiting time:0.3274683952331543
+node2 execution time:20.94902992248535
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:36:42] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=localpro&msg=rt_finish+1botnet+1545043002.078298 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043002.8949606 aggregate0
+10.244.2.17 - - [17/Dec/2018 10:36:43] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate0&msg=rt_enter+1botnet+1545043002.8949606 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545043003.1828861 aggregate0
+10.244.2.17 - - [17/Dec/2018 10:36:43] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate0&msg=rt_exec+1botnet+1545043003.1828861 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043018.5269804 aggregate1
+10.244.2.17 - - [17/Dec/2018 10:36:58] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate1&msg=rt_enter+1botnet+1545043018.5269804 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545043018.8381 aggregate1
+10.244.2.17 - - [17/Dec/2018 10:36:59] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate1&msg=rt_exec+1botnet+1545043018.8381 HTTP/1.1" 200 -
+10.244.2.17 - - [17/Dec/2018 10:36:59] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate0&msg=rt_finish+1botnet+1545043019.0115588 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043019.0115588 aggregate0
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: aggregate0
+Total duration time:16.11659812927246
+Waiting time:0.28792548179626465
+node2 execution time:15.828672647476196
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+********************************************
+Received flask message: node2 rt_enter 1botnet 1545043034.1652834 aggregate2
+10.244.2.17 - - [17/Dec/2018 10:37:14] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate2&msg=rt_enter+1botnet+1545043034.1652834 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545043034.4801476 aggregate2
+10.244.2.17 - - [17/Dec/2018 10:37:14] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate2&msg=rt_exec+1botnet+1545043034.4801476 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043034.6517818 aggregate1
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: aggregate1
+Total duration time:16.12480139732361
+Waiting time:0.31111955642700195
+node2 execution time:15.813681840896606
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:37:14] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate1&msg=rt_finish+1botnet+1545043034.6517818 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [17/Dec/2018 10:37:17] "GET / HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043049.8432488 simpledetector0
+10.244.2.17 - - [17/Dec/2018 10:37:30] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector0&msg=rt_enter+1botnet+1545043049.8432488 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545043050.1628673 simpledetector0
+10.244.2.17 - - [17/Dec/2018 10:37:30] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector0&msg=rt_exec+1botnet+1545043050.1628673 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043050.3192956 aggregate2
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: aggregate2
+Total duration time:16.154012203216553
+Waiting time:0.3148641586303711
+node2 execution time:15.839148044586182
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:37:30] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate2&msg=rt_finish+1botnet+1545043050.3192956 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043065.5555418 astutedetector0
+10.244.2.17 - - [17/Dec/2018 10:37:45] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector0&msg=rt_enter+1botnet+1545043065.5555418 HTTP/1.1" 200 -
+10.244.2.17 - - [17/Dec/2018 10:37:46] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector0&msg=rt_exec+1botnet+1545043065.865485 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545043065.865485 astutedetector0
+Received flask message: node2 rt_finish 1botnet 1545043066.042122 simpledetector0
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: simpledetector0
+Total duration time:16.198873043060303
+Waiting time:0.31961846351623535
+node2 execution time:15.879254579544067
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:37:46] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector0&msg=rt_finish+1botnet+1545043066.042122 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043081.3522022 simpledetector1
+10.244.2.17 - - [17/Dec/2018 10:38:01] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector1&msg=rt_enter+1botnet+1545043081.3522022 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545043081.6626475 simpledetector1
+10.244.2.17 - - [17/Dec/2018 10:38:01] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector1&msg=rt_exec+1botnet+1545043081.6626475 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043081.833513 astutedetector0
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: astutedetector0
+Total duration time:16.277971267700195
+Waiting time:0.30994319915771484
+node2 execution time:15.96802806854248
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:38:02] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector0&msg=rt_finish+1botnet+1545043081.833513 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043097.0939345 astutedetector1
+10.244.2.17 - - [17/Dec/2018 10:38:17] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector1&msg=rt_enter+1botnet+1545043097.0939345 HTTP/1.1" 200 -
+estimate price
+***************************************************
+ Retrieve all input information: 
+Retrieve network information info
+***************************************************
+Execution time is:0.006646633148193359
+0.00663149356842041
+***************************************************
+--- Network cost:----------- 
+{'node6': 286.6642557198794, 'node3': 1493.2257406775052, 'node5': 2685.116254440044, 'node2': 2406.0159834416327, 'node4': 145.3496537401546}
+-----------------
+Overall price:
+{'cpu': -1, 'memory': -1, 'queue': -1, 'network': {'node6': 286.6642557198794, 'node3': 1493.2257406775052, 'node5': 2685.116254440044, 'node2': 2406.0159834416327, 'node4': 145.3496537401546}}
+Execution time is:0.007227182388305664
+0.007242918014526367
+***************************************************
+***************************************************
+Announce my price
+home#-1#-1#-1$node6%286.6642557198794$node3%1493.2257406775052$node5%2685.116254440044$node2%2406.0159834416327$node4%145.3496537401546
+Execution time is:0.007211208343505859
+0.010311603546142578
+***************************************************
+Received flask message: node2 rt_exec 1botnet 1545043097.4110384 astutedetector1
+10.244.2.17 - - [17/Dec/2018 10:38:17] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector1&msg=rt_exec+1botnet+1545043097.4110384 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043097.5767345 simpledetector1
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: simpledetector1
+Total duration time:16.22453236579895
+Waiting time:0.31044530868530273
+node2 execution time:15.914087057113647
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:38:17] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector1&msg=rt_finish+1botnet+1545043097.5767345 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [17/Dec/2018 10:38:17] "GET / HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043112.8624585 simpledetector2
+10.244.2.17 - - [17/Dec/2018 10:38:33] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector2&msg=rt_enter+1botnet+1545043112.8624585 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545043113.1820571 simpledetector2
+10.244.2.17 - - [17/Dec/2018 10:38:33] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector2&msg=rt_exec+1botnet+1545043113.1820571 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043113.3441565 astutedetector1
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: astutedetector1
+Total duration time:16.250221967697144
+Waiting time:0.31710386276245117
+node2 execution time:15.933118104934692
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:38:33] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector1&msg=rt_finish+1botnet+1545043113.3441565 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043128.5522666 astutedetector2
+10.244.2.17 - - [17/Dec/2018 10:38:48] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector2&msg=rt_enter+1botnet+1545043128.5522666 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545043128.8491204 astutedetector2
+10.244.2.17 - - [17/Dec/2018 10:38:49] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector2&msg=rt_exec+1botnet+1545043128.8491204 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043129.037464 simpledetector2
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: simpledetector2
+Total duration time:16.175005435943604
+Waiting time:0.3195986747741699
+node2 execution time:15.855406761169434
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:38:49] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector2&msg=rt_finish+1botnet+1545043129.037464 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043144.2863014 fusioncenter0
+10.244.2.17 - - [17/Dec/2018 10:39:04] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter0&msg=rt_enter+1botnet+1545043144.2863014 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043144.6049767 fusioncenter0
+10.244.2.17 - - [17/Dec/2018 10:39:04] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter0&msg=rt_enter+1botnet+1545043144.6049767 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043144.7652209 astutedetector2
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: astutedetector2
+Total duration time:16.21295428276062
+Waiting time:0.29685378074645996
+node2 execution time:15.91610050201416
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:39:04] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector2&msg=rt_finish+1botnet+1545043144.7652209 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545043144.9230702 fusioncenter0
+10.244.2.17 - - [17/Dec/2018 10:39:05] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter0&msg=rt_exec+1botnet+1545043144.9230702 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043155.2556772 fusioncenter1
+10.244.2.17 - - [17/Dec/2018 10:39:15] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter1&msg=rt_enter+1botnet+1545043155.2556772 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043155.5690072 fusioncenter1
+10.244.2.17 - - [17/Dec/2018 10:39:15] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter1&msg=rt_enter+1botnet+1545043155.5690072 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043155.7401755 fusioncenter0
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: fusioncenter0
+Total duration time:11.135198831558228
+Waiting time:0.31809353828430176
+node2 execution time:10.817105293273926
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+10.244.2.17 - - [17/Dec/2018 10:39:15] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter0&msg=rt_finish+1botnet+1545043155.7401755 HTTP/1.1" 200 -
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+Received flask message: node2 rt_exec 1botnet 1545043155.8668327 fusioncenter1
+10.244.2.17 - - [17/Dec/2018 10:39:16] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter1&msg=rt_exec+1botnet+1545043155.8668327 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [17/Dec/2018 10:39:18] "GET / HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043166.2050734 fusioncenter2
+10.244.2.17 - - [17/Dec/2018 10:39:26] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter2&msg=rt_enter+1botnet+1545043166.2050734 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043166.5131497 fusioncenter2
+10.244.2.17 - - [17/Dec/2018 10:39:26] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter2&msg=rt_enter+1botnet+1545043166.5131497 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043166.692074 fusioncenter1
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: fusioncenter1
+Total duration time:11.123066902160645
+Waiting time:0.29782557487487793
+node2 execution time:10.825241327285767
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:39:26] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter1&msg=rt_finish+1botnet+1545043166.692074 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545043166.8275826 fusioncenter2
+10.244.2.17 - - [17/Dec/2018 10:39:27] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter2&msg=rt_exec+1botnet+1545043166.8275826 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043177.1749563 globalfusion
+10.244.2.17 - - [17/Dec/2018 10:39:37] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=globalfusion&msg=rt_enter+1botnet+1545043177.1749563 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043177.4860978 globalfusion
+10.244.2.17 - - [17/Dec/2018 10:39:37] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=globalfusion&msg=rt_enter+1botnet+1545043177.4860978 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 1botnet 1545043177.6525412 fusioncenter2
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: fusioncenter2
+Total duration time:11.139391422271729
+Waiting time:0.31443285942077637
+node2 execution time:10.824958562850952
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:39:37] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter2&msg=rt_finish+1botnet+1545043177.6525412 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 1botnet 1545043178.4608977 globalfusion
+10.244.2.17 - - [17/Dec/2018 10:39:38] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=globalfusion&msg=rt_enter+1botnet+1545043178.4608977 HTTP/1.1" 200 -
+10.244.2.17 - - [17/Dec/2018 10:39:38] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=globalfusion&msg=rt_exec+1botnet+1545043178.7474036 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 1botnet 1545043178.7474036 globalfusion
+Received flask message: node2 rt_finish 1botnet 1545043189.57749 globalfusion
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 1botnet
+Task name: globalfusion
+Total duration time:11.116592407226562
+Waiting time:0.28650593757629395
+node2 execution time:10.830086469650269
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:39:49] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=globalfusion&msg=rt_finish+1botnet+1545043189.57749 HTTP/1.1" 200 -
+ending time is:  [1545043192.3389976]
+starting time is:  [1545042977.3411922]
+execution time is:  [214.99780535697937]
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [17/Dec/2018 10:40:18] "GET / HTTP/1.1" 200 -
+---- Generate random input files
+***************************************************
+Received file as input - /input/2botnet.ipsum.
+start time is:  [1545042977.3411922, 1545043222.5150833]
+***************************************************
+Request the best computing node for the tasklocalpro
+***************************************************
+Received best assignment
+Execution time is:0.001850128173828125
+0.001641988754272461
+***************************************************
+10.244.4.62 - - [17/Dec/2018 10:40:22] "GET /receive_best_assignment?home_id=home&best_computing_node=node2&file_name=2botnet.ipsum&task_name=localpro HTTP/1.1" 200 -
+Execution time is:0.019594669342041016
+0.019503474235534668
+***************************************************
+--- waiting for computing node assignment
+1.021481990814209
+---------- Now what
+{('localpro', '1botnet.ipsum'): 'node2', ('localpro', '2botnet.ipsum'): 'node2'}
+{'node6': '10.97.131.201', 'node3': '10.97.93.212', 'node4': '10.98.207.254', 'node2': '10.104.17.55', 'node5': '10.99.18.114'}
+2botnet.ipsum#home#localpro#false
+0.0009448528289794922
+Transfer to IP: 10.104.17.55 , username: root , password: PASSWORD, source path: /input/2botnet.ipsum , destination path: /centralized_scheduler/input/2botnet.ipsum#home#localpro#false
+***************************************************
+transfer data scp
+data transfer complete
+
+Execution time is:2.6296586990356445
+2.6188788414001465
+***************************************************
+2.6300995349884033
+Execution time is:3.6533312797546387
+3.6425178050994873
+***************************************************
+Received flask message: node2 rt_enter 2botnet 1545043225.996627 localpro
+10.244.2.17 - - [17/Dec/2018 10:40:26] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=localpro&msg=rt_enter+2botnet+1545043225.996627 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043226.3264973 localpro
+10.244.2.17 - - [17/Dec/2018 10:40:26] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=localpro&msg=rt_exec+2botnet+1545043226.3264973 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043242.2054114 localpro
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: localpro
+Total duration time:16.208784341812134
+Waiting time:0.32987022399902344
+node2 execution time:15.87891411781311
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043242.2054114 16.208784341812134 15.87891411781311 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:40:42] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=localpro&msg=rt_finish+2botnet+1545043242.2054114 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043246.9694784 localpro
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: localpro
+Total duration time:20.972851276397705
+Waiting time:0.32987022399902344
+node2 execution time:20.64298105239868
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043246.9694784 20.972851276397705 20.64298105239868 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:40:47] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=localpro&msg=rt_finish+2botnet+1545043246.9694784 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043247.3150754 localpro
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: localpro
+Total duration time:21.318448305130005
+Waiting time:0.32987022399902344
+node2 execution time:20.98857808113098
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:40:47] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=localpro&msg=rt_finish+2botnet+1545043247.3150754 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043248.1686187 aggregate0
+10.244.2.17 - - [17/Dec/2018 10:40:48] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate0&msg=rt_enter+2botnet+1545043248.1686187 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043248.481091 aggregate0
+10.244.2.17 - - [17/Dec/2018 10:40:48] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate0&msg=rt_exec+2botnet+1545043248.481091 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043263.8455076 aggregate1
+10.244.2.17 - - [17/Dec/2018 10:41:04] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate1&msg=rt_enter+2botnet+1545043263.8455076 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043264.2013154 aggregate1
+10.244.2.17 - - [17/Dec/2018 10:41:04] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate1&msg=rt_exec+2botnet+1545043264.2013154 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043264.327395 aggregate0
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: aggregate0
+Total duration time:16.15877628326416
+Waiting time:0.3124723434448242
+node2 execution time:15.846303939819336
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+10.244.2.17 - - [17/Dec/2018 10:41:04] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate0&msg=rt_finish+2botnet+1545043264.327395 HTTP/1.1" 200 -
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+estimate price
+***************************************************
+ Retrieve all input information: 
+Retrieve network information info
+***************************************************
+Execution time is:0.005887031555175781
+0.006383339564005534
+***************************************************
+--- Network cost:----------- 
+{'node6': 286.6642557198794, 'node3': 1493.2257406775052, 'node5': 2685.116254440044, 'node2': 2406.0159834416327, 'node4': 145.3496537401546}
+-----------------
+Overall price:
+{'cpu': -1, 'memory': -1, 'queue': -1, 'network': {'node6': 286.6642557198794, 'node3': 1493.2257406775052, 'node5': 2685.116254440044, 'node2': 2406.0159834416327, 'node4': 145.3496537401546}}
+Execution time is:0.006330251693725586
+0.0069386959075927734
+***************************************************
+***************************************************
+Announce my price
+home#-1#-1#-1$node6%286.6642557198794$node3%1493.2257406775052$node5%2685.116254440044$node2%2406.0159834416327$node4%145.3496537401546
+Execution time is:0.01047658920288086
+0.010366598765055338
+***************************************************
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [17/Dec/2018 10:41:19] "GET / HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043279.5955617 aggregate2
+10.244.2.17 - - [17/Dec/2018 10:41:19] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate2&msg=rt_enter+2botnet+1545043279.5955617 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043279.8967156 aggregate2
+10.244.2.17 - - [17/Dec/2018 10:41:20] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate2&msg=rt_exec+2botnet+1545043279.8967156 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043280.0851665 aggregate1
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: aggregate1
+Total duration time:16.23965883255005
+Waiting time:0.3558077812194824
+node2 execution time:15.883851051330566
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:41:20] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate1&msg=rt_finish+2botnet+1545043280.0851665 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043295.2363105 simpledetector0
+10.244.2.17 - - [17/Dec/2018 10:41:35] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector0&msg=rt_enter+2botnet+1545043295.2363105 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043295.5535834 simpledetector0
+10.244.2.17 - - [17/Dec/2018 10:41:35] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector0&msg=rt_exec+2botnet+1545043295.5535834 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043295.719121 aggregate2
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: aggregate2
+Total duration time:16.12355923652649
+Waiting time:0.30115389823913574
+node2 execution time:15.822405338287354
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      aggregate2 2botnet    1545043279.5955617 1545043279.8967156 1545043295.719121 16.12355923652649 15.822405338287354 0.30115389823913574
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:41:35] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=aggregate2&msg=rt_finish+2botnet+1545043295.719121 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043310.900375 astutedetector0
+10.244.2.17 - - [17/Dec/2018 10:41:51] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector0&msg=rt_enter+2botnet+1545043310.900375 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043311.2098718 astutedetector0
+10.244.2.17 - - [17/Dec/2018 10:41:51] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector0&msg=rt_exec+2botnet+1545043311.2098718 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043311.3875198 simpledetector0
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: simpledetector0
+Total duration time:16.151209354400635
+Waiting time:0.3172729015350342
+node2 execution time:15.8339364528656
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector0 2botnet    1545043295.2363105 1545043295.5535834 1545043311.3875198 16.151209354400635 15.8339364528656 0.3172729015350342
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      aggregate2 2botnet    1545043279.5955617 1545043279.8967156 1545043295.719121 16.12355923652649 15.822405338287354 0.30115389823913574
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:41:51] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector0&msg=rt_finish+2botnet+1545043311.3875198 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043326.68717 simpledetector1
+10.244.2.17 - - [17/Dec/2018 10:42:06] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector1&msg=rt_enter+2botnet+1545043326.68717 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043326.983934 simpledetector1
+10.244.2.17 - - [17/Dec/2018 10:42:07] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector1&msg=rt_exec+2botnet+1545043326.983934 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043327.1742659 astutedetector0
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: astutedetector0
+Total duration time:16.27389097213745
+Waiting time:0.3094968795776367
+node2 execution time:15.964394092559814
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 2botnet    1545043310.900375 1545043311.2098718 1545043327.1742659 16.27389097213745 15.964394092559814 0.3094968795776367
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      simpledetector0 2botnet    1545043295.2363105 1545043295.5535834 1545043311.3875198 16.151209354400635 15.8339364528656 0.3172729015350342
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      aggregate2 2botnet    1545043279.5955617 1545043279.8967156 1545043295.719121 16.12355923652649 15.822405338287354 0.30115389823913574
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:42:07] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector0&msg=rt_finish+2botnet+1545043327.1742659 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [17/Dec/2018 10:42:19] "GET / HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043342.3469076 astutedetector1
+10.244.2.17 - - [17/Dec/2018 10:42:22] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector1&msg=rt_enter+2botnet+1545043342.3469076 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043342.6663291 astutedetector1
+10.244.2.17 - - [17/Dec/2018 10:42:22] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector1&msg=rt_exec+2botnet+1545043342.6663291 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043342.8270078 simpledetector1
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: simpledetector1
+Total duration time:16.139837741851807
+Waiting time:0.29676389694213867
+node2 execution time:15.843073844909668
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      simpledetector0 2botnet    1545043295.2363105 1545043295.5535834 1545043311.3875198 16.151209354400635 15.8339364528656 0.3172729015350342
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector1 2botnet    1545043326.68717 1545043326.983934 1545043342.8270078 16.139837741851807 15.843073844909668 0.29676389694213867
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      aggregate2 2botnet    1545043279.5955617 1545043279.8967156 1545043295.719121 16.12355923652649 15.822405338287354 0.30115389823913574
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 2botnet    1545043310.900375 1545043311.2098718 1545043327.1742659 16.27389097213745 15.964394092559814 0.3094968795776367
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:42:23] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector1&msg=rt_finish+2botnet+1545043342.8270078 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043358.1213727 simpledetector2
+10.244.2.17 - - [17/Dec/2018 10:42:38] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector2&msg=rt_enter+2botnet+1545043358.1213727 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043358.414997 simpledetector2
+10.244.2.17 - - [17/Dec/2018 10:42:38] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector2&msg=rt_exec+2botnet+1545043358.414997 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043358.6070027 astutedetector1
+----------------------------
+Runtime info at each computing node
+10.244.2.17 - - [17/Dec/2018 10:42:38] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector1&msg=rt_finish+2botnet+1545043358.6070027 HTTP/1.1" 200 -
+Worker node: node2
+Input file : 2botnet
+Task name: astutedetector1
+Total duration time:16.26009511947632
+Waiting time:0.31942152976989746
+node2 execution time:15.940673589706421
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      astutedetector1 2botnet    1545043342.3469076 1545043342.6663291 1545043358.6070027 16.26009511947632 15.940673589706421 0.31942152976989746
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      simpledetector0 2botnet    1545043295.2363105 1545043295.5535834 1545043311.3875198 16.151209354400635 15.8339364528656 0.3172729015350342
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector1 2botnet    1545043326.68717 1545043326.983934 1545043342.8270078 16.139837741851807 15.843073844909668 0.29676389694213867
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      aggregate2 2botnet    1545043279.5955617 1545043279.8967156 1545043295.719121 16.12355923652649 15.822405338287354 0.30115389823913574
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 2botnet    1545043310.900375 1545043311.2098718 1545043327.1742659 16.27389097213745 15.964394092559814 0.3094968795776367
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+********************************************
+Received flask message: node2 rt_enter 2botnet 1545043373.8023372 astutedetector2
+10.244.2.17 - - [17/Dec/2018 10:42:54] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector2&msg=rt_enter+2botnet+1545043373.8023372 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043374.110788 astutedetector2
+10.244.2.17 - - [17/Dec/2018 10:42:54] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector2&msg=rt_exec+2botnet+1545043374.110788 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043374.284766 simpledetector2
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: simpledetector2
+Total duration time:16.163393259048462
+Waiting time:0.2936244010925293
+node2 execution time:15.869768857955933
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      astutedetector1 2botnet    1545043342.3469076 1545043342.6663291 1545043358.6070027 16.26009511947632 15.940673589706421 0.31942152976989746
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      simpledetector0 2botnet    1545043295.2363105 1545043295.5535834 1545043311.3875198 16.151209354400635 15.8339364528656 0.3172729015350342
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector1 2botnet    1545043326.68717 1545043326.983934 1545043342.8270078 16.139837741851807 15.843073844909668 0.29676389694213867
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      aggregate2 2botnet    1545043279.5955617 1545043279.8967156 1545043295.719121 16.12355923652649 15.822405338287354 0.30115389823913574
+
+node2      simpledetector2 2botnet    1545043358.1213727 1545043358.414997 1545043374.284766 16.163393259048462 15.869768857955933 0.2936244010925293
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 2botnet    1545043310.900375 1545043311.2098718 1545043327.1742659 16.27389097213745 15.964394092559814 0.3094968795776367
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:42:54] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=simpledetector2&msg=rt_finish+2botnet+1545043374.284766 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043389.5508237 fusioncenter0
+10.244.2.17 - - [17/Dec/2018 10:43:09] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter0&msg=rt_enter+2botnet+1545043389.5508237 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043389.8655157 fusioncenter0
+10.244.2.17 - - [17/Dec/2018 10:43:10] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter0&msg=rt_enter+2botnet+1545043389.8655157 HTTP/1.1" 200 -
+10.244.2.17 - - [17/Dec/2018 10:43:10] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=astutedetector2&msg=rt_finish+2botnet+1545043390.0342243 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043390.0342243 astutedetector2
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: astutedetector2
+Total duration time:16.231887102127075
+Waiting time:0.30845093727111816
+node2 execution time:15.923436164855957
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      astutedetector1 2botnet    1545043342.3469076 1545043342.6663291 1545043358.6070027 16.26009511947632 15.940673589706421 0.31942152976989746
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      simpledetector0 2botnet    1545043295.2363105 1545043295.5535834 1545043311.3875198 16.151209354400635 15.8339364528656 0.3172729015350342
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector1 2botnet    1545043326.68717 1545043326.983934 1545043342.8270078 16.139837741851807 15.843073844909668 0.29676389694213867
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      astutedetector2 2botnet    1545043373.8023372 1545043374.110788 1545043390.0342243 16.231887102127075 15.923436164855957 0.30845093727111816
+
+node2      aggregate2 2botnet    1545043279.5955617 1545043279.8967156 1545043295.719121 16.12355923652649 15.822405338287354 0.30115389823913574
+
+node2      simpledetector2 2botnet    1545043358.1213727 1545043358.414997 1545043374.284766 16.163393259048462 15.869768857955933 0.2936244010925293
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 2botnet    1545043310.900375 1545043311.2098718 1545043327.1742659 16.27389097213745 15.964394092559814 0.3094968795776367
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+********************************************
+Received flask message: node2 rt_exec 2botnet 1545043390.1769068 fusioncenter0
+10.244.2.17 - - [17/Dec/2018 10:43:10] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter0&msg=rt_exec+2botnet+1545043390.1769068 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [17/Dec/2018 10:43:19] "GET / HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043400.5444396 fusioncenter1
+10.244.2.17 - - [17/Dec/2018 10:43:20] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter1&msg=rt_enter+2botnet+1545043400.5444396 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043400.8774383 fusioncenter1
+10.244.2.17 - - [17/Dec/2018 10:43:21] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter1&msg=rt_enter+2botnet+1545043400.8774383 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043401.0307565 fusioncenter0
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: fusioncenter0
+Total duration time:11.16524076461792
+Waiting time:0.31139111518859863
+node2 execution time:10.853849649429321
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      astutedetector1 2botnet    1545043342.3469076 1545043342.6663291 1545043358.6070027 16.26009511947632 15.940673589706421 0.31942152976989746
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      simpledetector0 2botnet    1545043295.2363105 1545043295.5535834 1545043311.3875198 16.151209354400635 15.8339364528656 0.3172729015350342
+
+node2      fusioncenter0 2botnet    1545043389.8655157 1545043390.1769068 1545043401.0307565 11.16524076461792 10.853849649429321 0.31139111518859863
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector1 2botnet    1545043326.68717 1545043326.983934 1545043342.8270078 16.139837741851807 15.843073844909668 0.29676389694213867
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      astutedetector2 2botnet    1545043373.8023372 1545043374.110788 1545043390.0342243 16.231887102127075 15.923436164855957 0.30845093727111816
+
+node2      aggregate2 2botnet    1545043279.5955617 1545043279.8967156 1545043295.719121 16.12355923652649 15.822405338287354 0.30115389823913574
+
+node2      simpledetector2 2botnet    1545043358.1213727 1545043358.414997 1545043374.284766 16.163393259048462 15.869768857955933 0.2936244010925293
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 2botnet    1545043310.900375 1545043311.2098718 1545043327.1742659 16.27389097213745 15.964394092559814 0.3094968795776367
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:43:21] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter0&msg=rt_finish+2botnet+1545043401.0307565 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043401.1913726 fusioncenter1
+10.244.2.17 - - [17/Dec/2018 10:43:21] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter1&msg=rt_exec+2botnet+1545043401.1913726 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043411.575481 fusioncenter2
+10.244.2.17 - - [17/Dec/2018 10:43:31] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter2&msg=rt_enter+2botnet+1545043411.575481 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043411.8804011 fusioncenter2
+10.244.2.17 - - [17/Dec/2018 10:43:32] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter2&msg=rt_enter+2botnet+1545043411.8804011 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043412.0586517 fusioncenter1
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: fusioncenter1
+Total duration time:11.18121337890625
+Waiting time:0.313934326171875
+node2 execution time:10.867279052734375
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      astutedetector1 2botnet    1545043342.3469076 1545043342.6663291 1545043358.6070027 16.26009511947632 15.940673589706421 0.31942152976989746
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      simpledetector0 2botnet    1545043295.2363105 1545043295.5535834 1545043311.3875198 16.151209354400635 15.8339364528656 0.3172729015350342
+
+node2      fusioncenter0 2botnet    1545043389.8655157 1545043390.1769068 1545043401.0307565 11.16524076461792 10.853849649429321 0.31139111518859863
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      fusioncenter1 2botnet    1545043400.8774383 1545043401.1913726 1545043412.0586517 11.18121337890625 10.867279052734375 0.313934326171875
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector1 2botnet    1545043326.68717 1545043326.983934 1545043342.8270078 16.139837741851807 15.843073844909668 0.29676389694213867
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      astutedetector2 2botnet    1545043373.8023372 1545043374.110788 1545043390.0342243 16.231887102127075 15.923436164855957 0.30845093727111816
+
+node2      aggregate2 2botnet    1545043279.5955617 1545043279.8967156 1545043295.719121 16.12355923652649 15.822405338287354 0.30115389823913574
+
+node2      simpledetector2 2botnet    1545043358.1213727 1545043358.414997 1545043374.284766 16.163393259048462 15.869768857955933 0.2936244010925293
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 2botnet    1545043310.900375 1545043311.2098718 1545043327.1742659 16.27389097213745 15.964394092559814 0.3094968795776367
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:43:32] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter1&msg=rt_finish+2botnet+1545043412.0586517 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043412.1738658 fusioncenter2
+10.244.2.17 - - [17/Dec/2018 10:43:32] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter2&msg=rt_exec+2botnet+1545043412.1738658 HTTP/1.1" 200 -
+10.244.2.17 - - [17/Dec/2018 10:43:42] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=globalfusion&msg=rt_enter+2botnet+1545043422.5217853 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043422.5217853 globalfusion
+10.244.2.17 - - [17/Dec/2018 10:43:43] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=globalfusion&msg=rt_enter+2botnet+1545043422.8368998 HTTP/1.1" 200 -
+Received flask message: node2 rt_enter 2botnet 1545043422.8368998 globalfusion
+Received flask message: node2 rt_finish 2botnet 1545043423.009478 fusioncenter2
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: fusioncenter2
+Total duration time:11.129076957702637
+Waiting time:0.29346466064453125
+node2 execution time:10.835612297058105
+----------------------------
+********************************************
+Runtime profiling computing node info:
+10.244.2.17 - - [17/Dec/2018 10:43:43] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=fusioncenter2&msg=rt_finish+2botnet+1545043423.009478 HTTP/1.1" 200 -
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      astutedetector1 2botnet    1545043342.3469076 1545043342.6663291 1545043358.6070027 16.26009511947632 15.940673589706421 0.31942152976989746
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      simpledetector0 2botnet    1545043295.2363105 1545043295.5535834 1545043311.3875198 16.151209354400635 15.8339364528656 0.3172729015350342
+
+node2      fusioncenter0 2botnet    1545043389.8655157 1545043390.1769068 1545043401.0307565 11.16524076461792 10.853849649429321 0.31139111518859863
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      fusioncenter1 2botnet    1545043400.8774383 1545043401.1913726 1545043412.0586517 11.18121337890625 10.867279052734375 0.313934326171875
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector1 2botnet    1545043326.68717 1545043326.983934 1545043342.8270078 16.139837741851807 15.843073844909668 0.29676389694213867
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      astutedetector2 2botnet    1545043373.8023372 1545043374.110788 1545043390.0342243 16.231887102127075 15.923436164855957 0.30845093727111816
+
+node2      aggregate2 2botnet    1545043279.5955617 1545043279.8967156 1545043295.719121 16.12355923652649 15.822405338287354 0.30115389823913574
+
+node2      simpledetector2 2botnet    1545043358.1213727 1545043358.414997 1545043374.284766 16.163393259048462 15.869768857955933 0.2936244010925293
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 2botnet    1545043310.900375 1545043311.2098718 1545043327.1742659 16.27389097213745 15.964394092559814 0.3094968795776367
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+node2      fusioncenter2 2botnet    1545043411.8804011 1545043412.1738658 1545043423.009478 11.129076957702637 10.835612297058105 0.29346466064453125
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+********************************************
+Received flask message: node2 rt_enter 2botnet 1545043423.8176048 globalfusion
+10.244.2.17 - - [17/Dec/2018 10:43:44] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=globalfusion&msg=rt_enter+2botnet+1545043423.8176048 HTTP/1.1" 200 -
+Received flask message: node2 rt_exec 2botnet 1545043424.1066027 globalfusion
+10.244.2.17 - - [17/Dec/2018 10:43:44] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=globalfusion&msg=rt_exec+2botnet+1545043424.1066027 HTTP/1.1" 200 -
+Received flask message: node2 rt_finish 2botnet 1545043434.9290047 globalfusion
+----------------------------
+Runtime info at each computing node
+Worker node: node2
+Input file : 2botnet
+Task name: globalfusion
+Total duration time:11.11139988899231
+Waiting time:0.2889978885650635
+node2 execution time:10.822402000427246
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node2      astutedetector1 2botnet    1545043342.3469076 1545043342.6663291 1545043358.6070027 16.26009511947632 15.940673589706421 0.31942152976989746
+
+node2      astutedetector2 1botnet    1545043128.5522666 1545043128.8491204 1545043144.7652209 16.21295428276062 15.91610050201416 0.29685378074645996
+
+node2      simpledetector0 2botnet    1545043295.2363105 1545043295.5535834 1545043311.3875198 16.151209354400635 15.8339364528656 0.3172729015350342
+
+node2      fusioncenter0 2botnet    1545043389.8655157 1545043390.1769068 1545043401.0307565 11.16524076461792 10.853849649429321 0.31139111518859863
+
+node2      localpro   2botnet    1545043225.996627 1545043226.3264973 1545043247.3150754 21.318448305130005 20.98857808113098 0.32987022399902344
+
+node2      fusioncenter1 2botnet    1545043400.8774383 1545043401.1913726 1545043412.0586517 11.18121337890625 10.867279052734375 0.313934326171875
+
+node2      astutedetector0 1botnet    1545043065.5555418 1545043065.865485 1545043081.833513 16.277971267700195 15.96802806854248 0.30994319915771484
+
+node2      simpledetector1 2botnet    1545043326.68717 1545043326.983934 1545043342.8270078 16.139837741851807 15.843073844909668 0.29676389694213867
+
+node2      fusioncenter2 1botnet    1545043166.5131497 1545043166.8275826 1545043177.6525412 11.139391422271729 10.824958562850952 0.31443285942077637
+
+node2      aggregate0 2botnet    1545043248.1686187 1545043248.481091 1545043264.327395 16.15877628326416 15.846303939819336 0.3124723434448242
+
+node2      astutedetector2 2botnet    1545043373.8023372 1545043374.110788 1545043390.0342243 16.231887102127075 15.923436164855957 0.30845093727111816
+
+node2      aggregate2 2botnet    1545043279.5955617 1545043279.8967156 1545043295.719121 16.12355923652649 15.822405338287354 0.30115389823913574
+
+node2      simpledetector2 2botnet    1545043358.1213727 1545043358.414997 1545043374.284766 16.163393259048462 15.869768857955933 0.2936244010925293
+
+node2      aggregate1 2botnet    1545043263.8455076 1545043264.2013154 1545043280.0851665 16.23965883255005 15.883851051330566 0.3558077812194824
+
+node2      aggregate0 1botnet    1545043002.8949606 1545043003.1828861 1545043019.0115588 16.11659812927246 15.828672647476196 0.28792548179626465
+
+node2      astutedetector1 1botnet    1545043097.0939345 1545043097.4110384 1545043113.3441565 16.250221967697144 15.933118104934692 0.31710386276245117
+
+node2      aggregate1 1botnet    1545043018.5269804 1545043018.8381 1545043034.6517818 16.12480139732361 15.813681840896606 0.31111955642700195
+
+node2      astutedetector0 2botnet    1545043310.900375 1545043311.2098718 1545043327.1742659 16.27389097213745 15.964394092559814 0.3094968795776367
+
+node2      simpledetector2 1botnet    1545043112.8624585 1545043113.1820571 1545043129.037464 16.175005435943604 15.855406761169434 0.3195986747741699
+
+node2      localpro   1botnet    1545042980.8017998 1545042981.1292682 1545043002.078298 21.276498317718506 20.94902992248535 0.3274683952331543
+
+node2      simpledetector0 1botnet    1545043049.8432488 1545043050.1628673 1545043066.042122 16.198873043060303 15.879254579544067 0.31961846351623535
+
+node2      globalfusion 2botnet    1545043423.8176048 1545043424.1066027 1545043434.9290047 11.11139988899231 10.822402000427246 0.2889978885650635
+
+node2      simpledetector1 1botnet    1545043081.3522022 1545043081.6626475 1545043097.5767345 16.22453236579895 15.914087057113647 0.31044530868530273
+
+node2      fusioncenter2 2botnet    1545043411.8804011 1545043412.1738658 1545043423.009478 11.129076957702637 10.835612297058105 0.29346466064453125
+
+node2      aggregate2 1botnet    1545043034.1652834 1545043034.4801476 1545043050.3192956 16.154012203216553 15.839148044586182 0.3148641586303711
+
+node2      globalfusion 1botnet    1545043178.4608977 1545043178.7474036 1545043189.57749 11.116592407226562 10.830086469650269 0.28650593757629395
+
+node2      fusioncenter0 1botnet    1545043144.6049767 1545043144.9230702 1545043155.7401755 11.135198831558228 10.817105293273926 0.31809353828430176
+
+node2      fusioncenter1 1botnet    1545043155.5690072 1545043155.8668327 1545043166.692074 11.123066902160645 10.825241327285767 0.29782557487487793
+
+********************************************
+10.244.2.17 - - [17/Dec/2018 10:43:55] "GET /recv_runtime_profile_computingnode?work_node=node2&task_name=globalfusion&msg=rt_finish+2botnet+1545043434.9290047 HTTP/1.1" 200 -
+ending time is:  [1545043192.3389976, 1545043437.6290016]
+starting time is:  [1545042977.3411922, 1545043222.5150833]
+execution time is:  [214.99780535697937, 215.11391830444336]
+estimate price
+***************************************************
+ Retrieve all input information: 
+Retrieve network information info
+***************************************************
+Execution time is:0.0062525272369384766
+0.0063506364822387695
+***************************************************
+--- Network cost:----------- 
+{'node6': 286.6642557198794, 'node3': 1493.2257406775052, 'node5': 2685.116254440044, 'node2': 2406.0159834416327, 'node4': 145.3496537401546}
+-----------------
+Overall price:
+{'cpu': -1, 'memory': -1, 'queue': -1, 'network': {'node6': 286.6642557198794, 'node3': 1493.2257406775052, 'node5': 2685.116254440044, 'node2': 2406.0159834416327, 'node4': 145.3496537401546}}
+Execution time is:0.00686335563659668
+0.00691986083984375
+***************************************************
+***************************************************
+Announce my price
+home#-1#-1#-1$node6%286.6642557198794$node3%1493.2257406775052$node5%2685.116254440044$node2%2406.0159834416327$node4%145.3496537401546
+Execution time is:0.00905156135559082
+0.010037839412689209
+***************************************************
+Recieved request for number of output files. Current done: 2
+10.244.0.0 - - [17/Dec/2018 10:44:20] "GET / HTTP/1.1" 200 -

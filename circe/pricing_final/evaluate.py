@@ -58,6 +58,7 @@ def evaluate_sequential():
     Copy files from folder ``sample_input`` to folder ``input`` one after another for evaluation 
     
     """
+
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
     # src = "sample_input/1botnet.ipsum"
@@ -83,6 +84,17 @@ def evaluate_sequential():
 
 if __name__ == '__main__':
     #evaluate_random()
-    time.sleep(240)
+    my_id = os.environ['TASK']
+    print(my_id)
+    n = my_id.split('home')
+    
+    num = 1
+    if n[1].isdigit():
+        num = float(n[1])
+    sleep_time_default = 240
+    sleep_time = sleep_time_default + (num-1)*240
+    print('The delay to send sample files')
+    print(sleep_time)
+    time.sleep(sleep_time)
     print('Start copying sample files for evaluation')
     evaluate_sequential()

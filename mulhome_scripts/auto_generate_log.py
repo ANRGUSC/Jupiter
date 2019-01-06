@@ -35,6 +35,7 @@ import datetime
 
 from functools import wraps
 import _thread
+import cProfile
 
 
 
@@ -412,12 +413,13 @@ def check_finish_evaluation(app_name,port,num_samples):
                 break
             time.sleep(60)
         except Exception as e: 
-            #print(e)
+            print(e)
             print("Will check back later if finishing all the samples for app "+app_name)
             time.sleep(60)
 
    
 def deploy_app_jupiter(app_id,app_name,port,circe_log,num_runs,num_samples,mapper_log):
+    
     setup_port(port)
     k8s_jupiter_deploy(app_id,app_name,port,mapper_log)
     log_folder ='../logs'
@@ -426,7 +428,10 @@ def deploy_app_jupiter(app_id,app_name,port,circe_log,num_runs,num_samples,mappe
     log_name = "../logs/evaluation_log_" + app_name+":"+str(port) 
     with open(log_name,'w+') as f:
         for i in range(0,num_runs):
+            pr = cProfile.Profile()
+            pr.enable()
             file_log = circe_log+'_'+str(i)
+            file_profile = circe_log+'_'+str(i)+'_profile'
             f.write('============================\n')
             check_finish_evaluation(app_name,port,num_samples)
             f.write('\nFinish one run !!!!!!!!!!!!!!!!!!!!!!')
@@ -438,13 +443,18 @@ def deploy_app_jupiter(app_id,app_name,port,circe_log,num_runs,num_samples,mappe
             time.sleep(30)
             # f.write('\nRedeploy the system')
             # redeploy_system(app_id,app_name,port,mapper_log)
+            pr.disable()
+            pr.print_stats(sort='time')
+            pr.dump_stats(file_profile)
         f.write('\nFinish the experiments for the current application')
+    
     #teardown_system(app_name)
     
 def main():
     """ 
         Deploy num_dags of the application specified by app_name
     """
+    
     app_name = 'dummy'
     num_samples = 2
     num_runs = 1

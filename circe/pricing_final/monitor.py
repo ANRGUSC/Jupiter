@@ -34,10 +34,26 @@ import _thread
 import threading
 import numpy as np
 from apscheduler.schedulers.background import BackgroundScheduler
+import cProfile
+import numpy as np
+from collections import defaultdict
+
 
 
 
 app = Flask(__name__)
+
+
+global bottleneck
+bottleneck = defaultdict(list)
+
+def tic():
+    return time.time()
+
+def toc(t):
+    texec = time.time() - t
+    print('Execution time is:'+str(texec))
+    return texec
 
 def convert_bytes(num):
     """Convert bytes to Kbit as required by HEFT
@@ -69,8 +85,10 @@ def receive_price_info():
         Receive price from every computing node, choose the most suitable computing node 
     """
     try:
-        pricing_info = request.args.get('pricing_info').split('#')
+        print('***************************************************')
         print("Received pricing info")
+        t = tic()
+        pricing_info = request.args.get('pricing_info').split('#')
         print(pricing_info)
         #Network, CPU, Memory, Queue
         node_name = pricing_info[0]
@@ -81,12 +99,15 @@ def receive_price_info():
         price_net_info = pricing_info[3].split('$')[1:]
         print(price_net_info)
         for price in price_net_info:
-            print(price)
-            print(node_name)
-            print(price.split('-')[0])
-            print(price.split('-')[1])
-            task_price_net[node_name,price.split('-')[0]] = float(price.split('-')[1])
-
+            # print(price)
+            # print(node_name)
+            # print(price.split('%')[0])
+            # print(price.split('%')[1])
+            task_price_net[node_name,price.split('%')[0]] = float(price.split('%')[1])
+        txec = toc(t)
+        bottleneck['receiveprice'].append(txec)
+        print(np.mean(bottleneck['receiveprice']))
+        print('***************************************************')
 
     except Exception as e:
         print("Bad reception or failed processing in Flask for pricing announcement: "+ e) 
@@ -97,11 +118,15 @@ app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info
 
 
 def default_best_node(source_node):
+    print('***************************************************')
     print('Select the current best node')
+    t = tic()
     w_net = 1 # Network profiling: longer time, higher price
-    w_cpu = 1 # Resource profiling : larger cpu resource, lower price
-    w_mem = 1 # Resource profiling : larger mem resource, lower price
+    w_cpu = 100000 # Resource profiling : larger cpu resource, lower price
+    w_mem = 100000 # Resource profiling : larger mem resource, lower price
     w_queue = 1 # Queue : currently 0
+    print('-----------------Current ratio')
+    print(w_mem)
     best_node = -1
     task_price_network= dict()
     # print('----------')
@@ -114,18 +139,29 @@ def default_best_node(source_node):
     print('DEBUG')
     for (source, dest), price in task_price_net.items():
         if source == source_node:
-            print('hehehhehheheh')
-            print(source_node)
+            # print('hehehhehheheh')
+            # print(source_node)
             task_price_network[dest]= price
     
     print('uhmmmmmmm')
     print(self_id)
     print(self_task)
     print(self_name)
-    task_price_network[source] = 0 #the same node
+    task_price_network[source_node] = 0 #the same node
     print(task_price_network)
     print(task_price_cpu)
-    if len(task_price_network.keys()) == len(task_price_cpu.keys()):
+
+    # print('------------3')
+    print('CPU utilization')
+    print(task_price_cpu)
+    print('Memory utilization')
+    print(task_price_mem)
+    print('Queue cost')
+    print(task_price_queue)
+    print('Network cost')
+    print(task_price_network)
+
+    if len(task_price_network.keys())>1: #net(node,home) not exist
         #print('------------2')
         task_price_summary = dict()
         # print(task_price_cpu.items())
@@ -141,19 +177,18 @@ def default_best_node(source_node):
             # print(task_price_network[item])
             task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
         
-        # print('------------3')
-        print('CPU utilization')
-        print(task_price_cpu)
-        print('Memory utilization')
-        print(task_price_mem)
-        print('Queue cost')
-        print(task_price_queue)
-        print('Network cost')
-        print(task_price_network)
+        
         print('Summary cost')
         print(task_price_summary)
         best_node = min(task_price_summary,key=task_price_summary.get)
         print(best_node)
+
+        txec = toc(t)
+        bottleneck['selectbest'].append(txec)
+        print(np.mean(bottleneck['selectbest']))
+        print('***************************************************')
+    else:
+        print('Task price summary is not ready yet.....') 
     return best_node
 
 def predict_best_node(source_node):
@@ -165,7 +200,9 @@ def predict_best_node(source_node):
 
 def receive_best_assignment_request():
     try:
+        print('***************************************************')
         print("------ Receive request of best assignment")
+        t = tic()
         home_id = request.args.get('home_id')
         source_node = request.args.get('node_name')
         file_name = request.args.get('file_name')
@@ -176,6 +213,10 @@ def receive_best_assignment_request():
         best_node = predict_best_node(source_node)
         # print(best_node)
         # print('******')
+        txec = toc(t)
+        bottleneck['receiveassign'].append(txec)
+        print(np.mean(bottleneck['receiveassign']))
+        print('***************************************************')
         
         announce_best_assignment(home_id,best_node, source_node, file_name)
         
@@ -188,7 +229,9 @@ app.add_url_rule('/receive_best_assignment_request', 'receive_best_assignment_re
 
 def announce_best_assignment(home_id,best_node, source_node, file_name):
     try:
+        print('***************************************************')
         print("Announce the best computing node for my task:" + self_task)
+        t = tic()
         # print(node_ip_map)
         # print(source_node)
         # print(self_task)
@@ -203,6 +246,10 @@ def announce_best_assignment(home_id,best_node, source_node, file_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        txec = toc(t)
+        bottleneck['announcebest'].append(txec)
+        print(np.mean(bottleneck['announcebest']))
+        print('***************************************************')
     except Exception as e:
         print("Sending assignment information to flask server on computing nodes FAILED!!!")
         print(e)
@@ -211,14 +258,36 @@ def announce_best_assignment(home_id,best_node, source_node, file_name):
 
 def send_controller_info(node_ip):
     try:
+        print('***************************************************')
+        t = tic()
+        t1 = time.time()
         print("Announce my current node mapping to " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
         params = {'controller_id_map':controller_id_map}
+        # thread = Worker(url,params)
+        # thread.start()
+        print(time.time()-t1)
+        t1 = time.time()
         params = parse.urlencode(params)
+        print(time.time()-t1)
+        t1 = time.time()
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        print(time.time()-t1)
+        t1 = time.time()
         res = urllib.request.urlopen(req)
+        print(time.time()-t1)
+        t1 = time.time()
         res = res.read()
+        print(time.time()-t1)
+        t1 = time.time()
         res = res.decode('utf-8')
+        print(time.time()-t1)
+        t1 = time.time()
+        txec = toc(t)
+        bottleneck['sendcontroller'].append(txec)
+        print(time.time()-t1)
+        print(np.mean(bottleneck['sendcontroller']))
+        print('***************************************************')
     except Exception as e:
         print("Sending controller message to flask server on computing node FAILED!!!")
         print(e)
@@ -226,68 +295,31 @@ def send_controller_info(node_ip):
 
 def push_controller_map():
     time.sleep(90)
+    print('***************************************************')
+    print('Send all controller information')
+    t = tic()
     for computing_ip in all_computing_ips:
+        t1 = time.time()
+        print(computing_ip)
         send_controller_info(computing_ip)
+        print(time.time()-t1)
+    txec = toc(t)
+    print('***************************************************')
     
 
+class Worker(threading.Thread):
 
-def send_monitor_data(msg):
-    """
-    Sending message to flask server on home
+    def __init__(self, url,values):
+        self.values = values
+        self.url = url
+        threading.Thread.__init__(self)
 
-    Args:
-        msg (str): the message to be sent
-
-    Returns:
-        str: the message if successful, "not ok" otherwise.
-
-    Raises:
-        Exception: if sending message to flask server on home is failed
-    """
-    try:
-        print("Sending message", msg)
-        for home_node_host_port in home_node_host_ports:
-            url = "http://" + home_node_host_port + "/recv_monitor_data"
-            params = {'msg': msg, "work_node": taskname}
-            params = parse.urlencode(params)
-            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-            res = urllib.request.urlopen(req)
-            res = res.read()
-            res = res.decode('utf-8')
-    except Exception as e:
-        print("Sending message to flask server on home FAILED!!!")
-        print(e)
-        return "not ok"
-    return res
-
-def send_runtime_profile(msg,taskname):
-    """
-    Sending runtime profiling information to flask server on home
-
-    Args:
-        msg (str): the message to be sent
-
-    Returns:
-        str: the message if successful, "not ok" otherwise.
-
-    Raises:
-        Exception: if sending message to flask server on home is failed
-    """
-    try:
-        print("Sending message", msg)
-        for home_node_host_port in home_node_host_ports:
-            url = "http://" + home_node_host_port + "/recv_runtime_profile"
-            params = {'msg': msg, "work_node": taskname}
-            params = parse.urlencode(params)
-            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-            res = urllib.request.urlopen(req)
-            res = res.read()
-            res = res.decode('utf-8')
-    except Exception as e:
-        print("Sending runtime profiling info to flask server on home FAILED!!!")
-        print(e)
-        return "not ok"
-    return res
+    def run(self):
+        data = urllib.parse.urlencode(self.values)
+        encoded_data = data.encode('ascii')
+        req = urllib.request.Request(self.url, encoded_data)
+        response = urllib.request.urlopen(req)
+        the_page = response.read()
 
 class MonitorRecv(multiprocessing.Process):
     def __init__(self):
@@ -298,7 +330,8 @@ class MonitorRecv(multiprocessing.Process):
         Start Flask server
         """
         print("Flask server started")
-        app.run(host='0.0.0.0', port=FLASK_DOCKER)
+        app.run(host='0.0.0.0', port=FLASK_DOCKER,threaded=True)
+        # app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
 
 
@@ -313,6 +346,8 @@ def main():
         -   If there are enough input files for the first task on the current node, run the first task. 
 
     """
+
+    
 
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
@@ -382,7 +417,8 @@ def main():
     self_name= os.environ['NODE_NAME']
     self_id  = os.environ['NODE_ID']
     self_task= os.environ['TASK']
-    controller_id_map = self_task + ":" + self_id
+    #controller_id_map = self_task + ":" + self_id
+    controller_id_map = self_task + "#" + self_id
     #update_interval = 10 #minutes
     home_node_host_ports =  [x + ":" + str(FLASK_SVC) for x in home_ips]
 

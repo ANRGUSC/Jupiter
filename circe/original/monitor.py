@@ -29,6 +29,20 @@ import time
 import urllib
 import urllib.request
 import configparser
+import numpy as np
+from collections import defaultdict
+
+global bottleneck
+bottleneck = defaultdict(list)
+
+def tic():
+    return time.time()
+
+def toc(t):
+    texec = time.time() - t
+    print('Execution time is:'+str(texec))
+    return texec
+
 
 def send_monitor_data(msg):
     """
@@ -44,7 +58,9 @@ def send_monitor_data(msg):
         Exception: if sending message to flask server on home is failed
     """
     try:
-        print("Sending message", msg)
+        print('***************************************************')
+        t = tic()
+        print("Sending monitor message", msg)
         url = "http://" + home_node_host_port + "/recv_monitor_data"
         params = {'msg': msg, "work_node": taskname}
         params = urllib.parse.urlencode(params)
@@ -52,6 +68,10 @@ def send_monitor_data(msg):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        txec = toc(t)
+        bottleneck['sendmsg'].append(txec)
+        print(np.mean(bottleneck['sendmsg']))
+        print('***************************************************')
     except Exception as e:
         print("Sending message to flask server on home FAILED!!!")
         print(e)
@@ -72,7 +92,9 @@ def send_runtime_profile(msg):
         Exception: if sending message to flask server on home is failed
     """
     try:
-        print("Sending message", msg)
+        print('***************************************************')
+        t = tic()
+        print("Sending runtime message", msg)
         url = "http://" + home_node_host_port + "/recv_runtime_profile"
         print(url)
         params = {'msg': msg, "work_node": taskname}
@@ -84,6 +106,10 @@ def send_runtime_profile(msg):
         res = res.read()
         res = res.decode('utf-8')
         print(res)
+        txec = toc(t)
+        bottleneck['sendruntime'].append(txec)
+        print(np.mean(bottleneck['sendruntime']))
+        print('***************************************************')
     except Exception as e:
         print("Sending runtime profiling info to flask server on home FAILED!!!")
         print(e)
@@ -102,6 +128,9 @@ def transfer_data_scp(IP,user,pword,source, destination):
     """
     #Keep retrying in case the containers are still building/booting up on
     #the child nodes.
+    print('***************************************************')
+    print('Transfer data')
+    t = tic()
     print(IP)
     retry = 0
     ts = -1
@@ -119,6 +148,10 @@ def transfer_data_scp(IP,user,pword,source, destination):
             print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
+    txec = toc(t)
+    bottleneck['transfer'].append(txec)
+    print(np.mean(bottleneck['transfer']))
+    print('***************************************************')
     if retry == num_retries:
         s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,source,ts)
         runtime_sender_log.write(s)
@@ -231,8 +264,13 @@ class Handler1(FileSystemEventHandler):
             return None
 
         elif event.event_type == 'created':
+
+            print('***************************************************')
+            
+            
              
             print("Received file as output - %s." % event.src_path)
+            t = tic()
 
             #Runtime profiler (finished_time)
             
@@ -243,6 +281,8 @@ class Handler1(FileSystemEventHandler):
             # execution_end_time = datetime.datetime.utcnow()
             # pathrun = '/centralized_scheduler/runtime/'
             # runtime_file = os.path.join(pathrun,'droplet_runtime_output_' + node_name)
+
+            t1 = time.time()
             new_file = os.path.split(event.src_path)[-1]
 
             if '_' in new_file:
@@ -261,6 +301,8 @@ class Handler1(FileSystemEventHandler):
             flag2 = sys.argv[2]
 
             #if you are sending the final output back to scheduler
+            print(time.time()-t1)
+            t1 = time.time()
             
             if sys.argv[3] == 'home':
                 
@@ -301,6 +343,13 @@ class Handler1(FileSystemEventHandler):
 
                     files_out=[]
 
+            print(time.time()-t1)
+
+            txec = toc(t)
+            bottleneck['receiveoutput'].append(txec)
+            print(np.mean(bottleneck['receiveoutput']))
+            print('***************************************************')
+
 
 #for INPUT folder
 class Watcher(multiprocessing.Process):
@@ -338,7 +387,9 @@ class Handler(FileSystemEventHandler):
 
         elif event.event_type == 'created':
 
+            print('***************************************************')
             print("Received file as input - %s." % event.src_path)
+            t = tic()
             new_file = os.path.split(event.src_path)[-1]
 
 
@@ -374,6 +425,7 @@ class Handler(FileSystemEventHandler):
 
             flag1 = sys.argv[1]
 
+            t1 = time.time()
             if flag1 == "1":
                 # Start msg
                 ts = time.time()
@@ -408,6 +460,11 @@ class Handler(FileSystemEventHandler):
                     runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info)
                     # end msg
+            print(time.time()-t1)
+            txec = toc(t)
+            bottleneck['receiveinput'].append(txec)
+            print(np.mean(bottleneck['receiveinput']))
+            print('***************************************************')
 
 def main():
     """

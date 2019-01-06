@@ -471,7 +471,7 @@ def announce_price(task_controller_ip, price):
         for node in price['network']:
             # print(node)
             # print(price['network'][node])
-            pricing_info = pricing_info + "$"+node+"-"+str(price['network'][node])
+            pricing_info = pricing_info + "$"+node+"%"+str(price['network'][node])
         
         print(pricing_info)
         params = {'pricing_info':pricing_info}
