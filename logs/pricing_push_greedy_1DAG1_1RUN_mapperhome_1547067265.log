@@ -1,0 +1,150 @@
+Starting home or master node
+starting the main thread on port
+Nodes {'node20': '10.109.254.24:6100', 'node11': '10.106.55.200:6100', 'node7': '10.102.192.148:6100', 'node8': '10.96.194.31:6100', 'node9': '10.96.180.103:6100', 'node16': '10.102.7.39:6100', 'node19': '10.106.207.243:6100', 'node18': '10.102.229.102:6100', 'node22': '10.111.68.33:6100', 'node4': '10.111.128.178:6100', 'node17': '10.99.222.45:6100', 'node12': '10.102.172.2:6100', 'node13': '10.108.31.28:6100', 'node5': '10.106.71.25:6100', 'node25': '10.110.173.241:6100', 'node23': '10.100.0.97:6100', 'node15': '10.98.95.84:6100', 'node24': '10.111.186.5:6100', 'node6': '10.98.195.75:6100', 'node10': '10.109.131.239:6100', 'node21': '10.105.240.175:6100', 'node14': '10.100.24.10:6100'}
+Max task number  14
+starting the main thread on port 8888
+init_tasks {'node4': ['localpro']}
+control_relation {'aggregate2': ['simpledetector2', 'astutedetector2'], 'simpledetector0': ['fusioncenter0'], 'simpledetector1': ['fusioncenter1'], 'fusioncenter0': ['globalfusion'], 'simpledetector2': ['fusioncenter2'], 'aggregate0': ['simpledetector0', 'astutedetector0'], 'aggregate1': ['simpledetector1', 'astutedetector1'], 'localpro': ['aggregate2', 'aggregate1', 'aggregate0']}
+ * Running on http://0.0.0.0:8888/ (Press CTRL+C to quit)
+Recieved request for current mapping. Current mappings done: 0
+{}
+10.244.0.0 - - [09/Jan/2019 20:53:27] "GET / HTTP/1.1" 200 -
+Recieved request for current mapping. Current mappings done: 0
+{}
+10.244.0.0 - - [09/Jan/2019 20:53:33] "GET / HTTP/1.1" 200 -
+10.244.0.0 - - [09/Jan/2019 20:53:38] "GET / HTTP/1.1" 200 -
+Recieved request for current mapping. Current mappings done: 0
+{}
+Recieved request for current mapping. Current mappings done: 0
+{}
+10.244.0.0 - - [09/Jan/2019 20:53:44] "GET / HTTP/1.1" 200 -
+Recieved request for current mapping. Current mappings done: 0
+{}
+10.244.0.0 - - [09/Jan/2019 20:53:50] "GET / HTTP/1.1" 200 -
+Recieved request for current mapping. Current mappings done: 0
+{}
+10.244.0.0 - - [09/Jan/2019 20:53:55] "GET / HTTP/1.1" 200 -
+Recieved request for current mapping. Current mappings done: 0
+{}
+10.244.0.0 - - [09/Jan/2019 20:54:01] "GET / HTTP/1.1" 200 -
+Recieved request for current mapping. Current mappings done: 0
+{}
+10.244.0.0 - - [09/Jan/2019 20:54:06] "GET / HTTP/1.1" 200 -
+Recieved request for current mapping. Current mappings done: 0
+{}
+10.244.0.0 - - [09/Jan/2019 20:54:12] "GET / HTTP/1.1" 200 -
+Recieved request for current mapping. Current mappings done: 0
+{}
+10.244.0.0 - - [09/Jan/2019 20:54:18] "GET / HTTP/1.1" 200 -
+Assign the first task based on the input file
+http://10.111.128.178:6100/assign_task
+localpro
+Receive mapping from the workers
+-------------------
+{'localpro': 'node4'}
+-------------------
+10.244.4.38 - - [09/Jan/2019 20:54:19] "GET /recv_mapping?node=node4&mapping=localpro HTTP/1.1" 200 -
+Assign task localpro to node node4
+Receive mapping from the workers
+-------------------
+{'aggregate2': 'node11', 'localpro': 'node4'}
+-------------------
+10.244.11.152 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?node=node11&mapping=aggregate2 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'aggregate0': 'node11', 'aggregate2': 'node11', 'localpro': 'node4'}
+-------------------
+Receive mapping from the workers
+-------------------
+{'aggregate0': 'node11', 'aggregate2': 'node11', 'localpro': 'node4'}
+-------------------
+10.244.11.152 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?node=node11&mapping=aggregate0 HTTP/1.1" 200 -
+10.244.4.38 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?node=node11&mapping=aggregate2 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'aggregate0': 'node11', 'aggregate2': 'node11', 'aggregate1': 'node11', 'localpro': 'node4'}
+-------------------
+10.244.11.152 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?node=node11&mapping=aggregate1 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'aggregate0': 'node11', 'aggregate2': 'node11', 'aggregate1': 'node11', 'localpro': 'node4'}
+-------------------
+10.244.4.38 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?node=node11&mapping=aggregate0 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'aggregate0': 'node11', 'aggregate2': 'node11', 'aggregate1': 'node11', 'localpro': 'node4'}
+-------------------
+10.244.4.38 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?node=node11&mapping=aggregate1 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'aggregate0': 'node11', 'aggregate2': 'node11', 'aggregate1': 'node11', 'localpro': 'node4', 'astutedetector2': 'node18'}
+-------------------
+10.244.18.125 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?mapping=astutedetector2&node=node18 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'aggregate2': 'node11', 'astutedetector0': 'node4', 'aggregate0': 'node11', 'aggregate1': 'node11', 'localpro': 'node4', 'astutedetector2': 'node18'}
+-------------------
+10.244.4.38 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?node=node4&mapping=astutedetector0 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'simpledetector2': 'node18', 'aggregate2': 'node11', 'astutedetector0': 'node4', 'aggregate0': 'node11', 'aggregate1': 'node11', 'localpro': 'node4', 'astutedetector2': 'node18'}
+-------------------
+10.244.18.125 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?mapping=simpledetector2&node=node18 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'simpledetector0': 'node19', 'simpledetector2': 'node18', 'aggregate2': 'node11', 'astutedetector0': 'node4', 'aggregate0': 'node11', 'aggregate1': 'node11', 'localpro': 'node4', 'astutedetector2': 'node18'}
+-------------------
+10.244.19.162 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?mapping=simpledetector0&node=node19 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'simpledetector0': 'node19', 'simpledetector2': 'node18', 'aggregate2': 'node11', 'astutedetector0': 'node4', 'aggregate0': 'node11', 'aggregate1': 'node11', 'localpro': 'node4', 'astutedetector2': 'node18'}
+-------------------
+10.244.11.152 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?node=node18&mapping=simpledetector2 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'simpledetector0': 'node19', 'simpledetector2': 'node18', 'aggregate2': 'node11', 'astutedetector0': 'node4', 'aggregate0': 'node11', 'aggregate1': 'node11', 'localpro': 'node4', 'astutedetector2': 'node18'}
+-------------------
+10.244.11.152 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?node=node19&mapping=simpledetector0 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'simpledetector0': 'node19', 'simpledetector2': 'node18', 'astutedetector1': 'node13', 'aggregate2': 'node11', 'astutedetector0': 'node4', 'aggregate0': 'node11', 'aggregate1': 'node11', 'localpro': 'node4', 'astutedetector2': 'node18'}
+-------------------
+10.244.13.24 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?mapping=astutedetector1&node=node13 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'simpledetector0': 'node19', 'simpledetector1': 'node13', 'simpledetector2': 'node18', 'astutedetector1': 'node13', 'aggregate2': 'node11', 'astutedetector0': 'node4', 'aggregate0': 'node11', 'aggregate1': 'node11', 'localpro': 'node4', 'astutedetector2': 'node18'}
+-------------------
+10.244.13.24 - - [09/Jan/2019 20:54:20] "GET /recv_mapping?mapping=simpledetector1&node=node13 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'simpledetector0': 'node19', 'simpledetector1': 'node13', 'simpledetector2': 'node18', 'astutedetector1': 'node13', 'aggregate2': 'node11', 'astutedetector0': 'node4', 'aggregate0': 'node11', 'aggregate1': 'node11', 'localpro': 'node4', 'astutedetector2': 'node18'}
+-------------------
+10.244.11.152 - - [09/Jan/2019 20:54:21] "GET /recv_mapping?node=node13&mapping=simpledetector1 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'fusioncenter2': 'node11', 'simpledetector0': 'node19', 'simpledetector1': 'node13', 'simpledetector2': 'node18', 'astutedetector1': 'node13', 'aggregate2': 'node11', 'astutedetector0': 'node4', 'aggregate0': 'node11', 'aggregate1': 'node11', 'localpro': 'node4', 'astutedetector2': 'node18'}
+-------------------
+10.244.11.152 - - [09/Jan/2019 20:54:21] "GET /recv_mapping?node=node11&mapping=fusioncenter2 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'simpledetector1': 'node13', 'fusioncenter0': 'node11', 'aggregate2': 'node11', 'fusioncenter2': 'node11', 'aggregate1': 'node11', 'simpledetector0': 'node19', 'astutedetector1': 'node13', 'simpledetector2': 'node18', 'astutedetector2': 'node18', 'aggregate0': 'node11', 'astutedetector0': 'node4', 'localpro': 'node4'}
+-------------------
+10.244.11.152 - - [09/Jan/2019 20:54:21] "GET /recv_mapping?node=node11&mapping=fusioncenter0 HTTP/1.1" 200 -
+10.244.19.162 - - [09/Jan/2019 20:54:21] "GET /recv_mapping?mapping=fusioncenter0&node=node11 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'simpledetector1': 'node13', 'fusioncenter0': 'node11', 'aggregate2': 'node11', 'fusioncenter2': 'node11', 'aggregate1': 'node11', 'simpledetector0': 'node19', 'astutedetector1': 'node13', 'simpledetector2': 'node18', 'astutedetector2': 'node18', 'aggregate0': 'node11', 'astutedetector0': 'node4', 'localpro': 'node4'}
+-------------------
+Receive mapping from the workers
+-------------------
+{'simpledetector1': 'node13', 'fusioncenter0': 'node11', 'aggregate2': 'node11', 'fusioncenter2': 'node11', 'fusioncenter1': 'node21', 'aggregate1': 'node11', 'simpledetector0': 'node19', 'astutedetector1': 'node13', 'simpledetector2': 'node18', 'astutedetector2': 'node18', 'aggregate0': 'node11', 'astutedetector0': 'node4', 'localpro': 'node4'}
+-------------------
+10.244.21.23 - - [09/Jan/2019 20:54:21] "GET /recv_mapping?mapping=fusioncenter1&node=node21 HTTP/1.1" 200 -
+Receive mapping from the workers
+-------------------
+{'simpledetector1': 'node13', 'fusioncenter0': 'node11', 'aggregate2': 'node11', 'fusioncenter2': 'node11', 'fusioncenter1': 'node21', 'aggregate1': 'node11', 'simpledetector0': 'node19', 'globalfusion': 'node21', 'astutedetector1': 'node13', 'simpledetector2': 'node18', 'astutedetector2': 'node18', 'aggregate0': 'node11', 'astutedetector0': 'node4', 'localpro': 'node4'}
+-------------------
+10.244.21.23 - - [09/Jan/2019 20:54:21] "GET /recv_mapping?mapping=globalfusion&node=node21 HTTP/1.1" 200 -
+Recieved request for current mapping. Current mappings done: 14
+{'simpledetector1': 'node13', 'fusioncenter0': 'node11', 'aggregate2': 'node11', 'fusioncenter2': 'node11', 'fusioncenter1': 'node21', 'aggregate1': 'node11', 'simpledetector0': 'node19', 'globalfusion': 'node21', 'astutedetector1': 'node13', 'simpledetector2': 'node18', 'astutedetector2': 'node18', 'aggregate0': 'node11', 'astutedetector0': 'node4', 'localpro': 'node4'}
+10.244.0.0 - - [09/Jan/2019 20:54:23] "GET / HTTP/1.1" 200 -

@@ -83,7 +83,21 @@ def evaluate_sequential():
     
 
 if __name__ == '__main__':
-    #evaluate_random()
-    time.sleep(300)
+    my_id = os.environ['TASK']
+    print(my_id)
+    n = my_id.split('home')
+    
+    num = 1
+    if n[1].isdigit():
+        num = float(n[1])
+    sleep_time_default = 240
+    sleep_time = sleep_time_default + (num-1)*120
+    print('The delay to send sample files')
+    print(sleep_time)
+    time.sleep(sleep_time)
     print('Start copying sample files for evaluation')
     evaluate_sequential()
+    #evaluate_random()
+    # time.sleep(300)
+    # print('Start copying sample files for evaluation')
+    # evaluate_sequential()

@@ -1,0 +1,1889 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+Installing and starting mongodb
+Start MongoDB.
+about to fork child process, waiting until server is ready for connections.
+forked process: 32
+child process started successfully, parent exiting
+Starting the scheduler
+TASK:  localpro
+DAG:  {'fusioncenter0': ['2', 'true', 'globalfusion'], 'localpro': ['1', 'false', 'aggregate0', 'aggregate1', 'aggregate2'], 'fusioncenter1': ['2', 'true', 'globalfusion'], 'aggregate2': ['1', 'true', 'simpledetector2', 'astutedetector2'], 'astutedetector2': ['1', 'true', 'fusioncenter2'], 'simpledetector2': ['1', 'true', 'fusioncenter2'], 'astutedetector0': ['1', 'true', 'fusioncenter0'], 'aggregate0': ['1', 'true', 'simpledetector0', 'astutedetector0'], 'simpledetector1': ['1', 'true', 'fusioncenter1'], 'astutedetector1': ['1', 'true', 'fusioncenter1'], 'aggregate1': ['1', 'true', 'simpledetector1', 'astutedetector1'], 'fusioncenter2': ['2', 'true', 'globalfusion'], 'simpledetector0': ['1', 'true', 'fusioncenter0'], 'globalfusion': ['3', 'true', 'home']}
+HOSTS:  {'home': ['home', 'ubuntu-2gb-nyc2-01-fra1', 'root', 'PASSWORD']}
+Starting the output monitoring system:
+Flask server started
+ * Serving Flask app "scheduler" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:8888/ (Press CTRL+C to quit)
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [09/Jan/2019 08:44:17] "GET / HTTP/1.1" 200 -
+10.244.0.0 - - [09/Jan/2019 08:45:18] "GET / HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [09/Jan/2019 08:46:19] "GET / HTTP/1.1" 200 -
+ Retrieve all input information: 
+--- Network cost:----------- 
+-----------------
+Overall price:
+{'queue': -1, 'cpu': -1, 'memory': -1, 'network': {'node4': 208.33281009783929, 'node19': 142.5626137328938, 'home3': 153.7781973885229, 'node16': 1588.7297664816429, 'node7': 2550.452646576722, 'node18': 188.6347045065221, 'node9': 1500.3521534038166, 'node11': 147.4093360693392, 'node10': 1580.3559660588187, 'node5': 2622.3030851230396, 'node17': 2525.7562340659156, 'node21': 253.54572520217386, 'node6': 282.3240087404825, 'node15': 2536.957106090802, 'node12': 1413.7976644502228, 'node14': 363.1956484690361, 'node23': 1490.2921598300293, 'node22': 1479.5565689811447, 'node8': 373.46244902152534, 'home2': 156.59538845914926, 'node25': 2486.540640460643, 'node24': 1394.5040904455097, 'node13': 256.1060420016565, 'node20': 2639.796276802997}}
+Announce my price
+home#-1#-1#-1$node4%208.33281009783929$node19%142.5626137328938$home3%153.7781973885229$node16%1588.7297664816429$node7%2550.452646576722$node18%188.6347045065221$node9%1500.3521534038166$node11%147.4093360693392$node10%1580.3559660588187$node5%2622.3030851230396$node17%2525.7562340659156$node21%253.54572520217386$node6%282.3240087404825$node15%2536.957106090802$node12%1413.7976644502228$node14%363.1956484690361$node23%1490.2921598300293$node22%1479.5565689811447$node8%373.46244902152534$home2%156.59538845914926$node25%2486.540640460643$node24%1394.5040904455097$node13%256.1060420016565$node20%2639.796276802997
+-----------Received assignment info
+{'localpro': 'node19'}
+10.244.4.16 - - [09/Jan/2019 08:46:37] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'localpro': 'node19', 'aggregate1': 'node19'}
+10.244.11.123 - - [09/Jan/2019 08:46:53] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'localpro': 'node19', 'aggregate1': 'node19', 'aggregate0': 'node4'}
+10.244.18.103 - - [09/Jan/2019 08:46:54] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'localpro': 'node19', 'aggregate1': 'node19', 'aggregate0': 'node4', 'aggregate2': 'node19'}
+10.244.19.135 - - [09/Jan/2019 08:46:55] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'simpledetector1': 'node19', 'localpro': 'node19', 'aggregate1': 'node19', 'aggregate0': 'node4', 'aggregate2': 'node19'}
+10.244.19.133 - - [09/Jan/2019 08:47:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.23.175 - - [09/Jan/2019 08:47:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+{'simpledetector1': 'node19', 'localpro': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'aggregate1': 'node19', 'aggregate0': 'node4'}
+-----------Received assignment info
+{'simpledetector1': 'node19', 'localpro': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'aggregate1': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4'}
+10.244.19.134 - - [09/Jan/2019 08:47:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'simpledetector1': 'node19', 'localpro': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'aggregate1': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4'}
+10.244.23.177 - - [09/Jan/2019 08:47:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.11.124 - - [09/Jan/2019 08:47:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+{'simpledetector1': 'node19', 'localpro': 'node19', 'simpledetector0': 'node4', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'aggregate1': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4'}
+-----------Received assignment info
+{'simpledetector1': 'node19', 'localpro': 'node19', 'astutedetector1': 'node19', 'simpledetector0': 'node4', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'aggregate1': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4'}
+10.244.19.136 - - [09/Jan/2019 08:47:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [09/Jan/2019 08:47:19] "GET / HTTP/1.1" 200 -
+-----------Received assignment info
+{'simpledetector1': 'node19', 'localpro': 'node19', 'astutedetector1': 'node19', 'simpledetector0': 'node4', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'aggregate1': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'fusioncenter2': 'node19', 'aggregate0': 'node4'}
+10.244.9.178 - - [09/Jan/2019 08:47:32] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4'}
+10.244.23.176 - - [09/Jan/2019 08:47:33] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4'}
+10.244.4.15 - - [09/Jan/2019 08:47:36] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 08:47:46] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+10.244.13.8 - - [09/Jan/2019 08:47:46] "GET /update_assignment_info_child?assignment_info=globalfusion%23node19 HTTP/1.1" 404 -
+Start copying sample files for evaluation
+---- Generate random input files
+---- Generate random input files
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [09/Jan/2019 08:48:20] "GET / HTTP/1.1" 200 -
+Received file as input - /input/1botnet.ipsum.
+start time is:  [1547023700.638397]
+Transfer to IP: 10.108.82.17 , username: root , password: PASSWORD, source path: /input/1botnet.ipsum , destination path: /centralized_scheduler/input/1botnet.ipsum#home#localpro#false
+Warning: Permanently added '[10.108.82.17]:5000' (ECDSA) to the list of known hosts.
+data transfer complete
+
+Received flask message: node19 rt_enter 1botnet 1547023715.2403517 localpro
+10.244.19.132 - - [09/Jan/2019 08:48:35] "GET /recv_runtime_profile_computingnode?task_name=localpro&work_node=node19&msg=rt_enter+1botnet+1547023715.2403517 HTTP/1.1" 200 -
+10.244.19.132 - - [09/Jan/2019 08:48:35] "GET /recv_runtime_profile_computingnode?task_name=localpro&work_node=node19&msg=rt_exec+1botnet+1547023715.2726214 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 1botnet 1547023715.2726214 localpro
+Received flask message: node19 rt_finish 1botnet 1547023730.8104835 localpro
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: localpro
+Total duration time:15.570131778717041
+Waiting time:0.03226971626281738
+node19 execution time:15.537862062454224
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8104835 15.570131778717041 15.537862062454224 0.03226971626281738
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:48:50] "GET /recv_runtime_profile_computingnode?task_name=localpro&work_node=node19&msg=rt_finish+1botnet+1547023730.8104835 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 1botnet 1547023730.8219213 localpro
+----------------------------
+10.244.19.132 - - [09/Jan/2019 08:48:50] "GET /recv_runtime_profile_computingnode?task_name=localpro&work_node=node19&msg=rt_finish+1botnet+1547023730.8219213 HTTP/1.1" 200 -
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: localpro
+Total duration time:15.58156967163086
+Waiting time:0.03226971626281738
+node19 execution time:15.549299955368042
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8219213 15.58156967163086 15.549299955368042 0.03226971626281738
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:48:50] "GET /recv_runtime_profile_computingnode?task_name=localpro&work_node=node19&msg=rt_finish+1botnet+1547023730.8281426 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 1botnet 1547023730.8281426 localpro
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: localpro
+Total duration time:15.587790966033936
+Waiting time:0.03226971626281738
+node19 execution time:15.555521249771118
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+********************************************
+10.244.4.14 - - [09/Jan/2019 08:48:51] "GET /recv_runtime_profile_computingnode?msg=rt_enter+1botnet+1547023731.566577&work_node=node4&task_name=aggregate0 HTTP/1.1" 200 -
+10.244.4.14 - - [09/Jan/2019 08:48:51] "GET /recv_runtime_profile_computingnode?msg=rt_exec+1botnet+1547023731.572055&work_node=node4&task_name=aggregate0 HTTP/1.1" 200 -
+Received flask message: node4 rt_enter 1botnet 1547023731.566577 aggregate0
+Received flask message: node4 rt_exec 1botnet 1547023731.572055 aggregate0
+Received flask message: node4 rt_finish 1botnet 1547023747.1014183 aggregate0
+----------------------------
+Runtime info at each computing node
+Worker node: node4
+Input file : 1botnet
+Task name: aggregate0
+Total duration time:15.534841299057007
+Waiting time:0.0054781436920166016
+node4 execution time:15.52936315536499
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+********************************************
+10.244.4.14 - - [09/Jan/2019 08:49:07] "GET /recv_runtime_profile_computingnode?msg=rt_finish+1botnet+1547023747.1014183&work_node=node4&task_name=aggregate0 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.9.178 - - [09/Jan/2019 08:49:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.9.178 - - [09/Jan/2019 08:49:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.133 - - [09/Jan/2019 08:49:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.133 - - [09/Jan/2019 08:49:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.23.175 - - [09/Jan/2019 08:49:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.175 - - [09/Jan/2019 08:49:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.176 - - [09/Jan/2019 08:49:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+10.244.23.176 - - [09/Jan/2019 08:49:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.123 - - [09/Jan/2019 08:49:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.123 - - [09/Jan/2019 08:49:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.134 - - [09/Jan/2019 08:49:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.19.134 - - [09/Jan/2019 08:49:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.177 - - [09/Jan/2019 08:49:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.177 - - [09/Jan/2019 08:49:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.18.103 - - [09/Jan/2019 08:49:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.18.103 - - [09/Jan/2019 08:49:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.11.124 - - [09/Jan/2019 08:49:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.124 - - [09/Jan/2019 08:49:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 08:49:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 08:49:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 08:49:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+10.244.13.8 - - [09/Jan/2019 08:49:16] "GET /update_assignment_info_child?assignment_info=globalfusion%23node19 HTTP/1.1" 404 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 08:49:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.136 - - [09/Jan/2019 08:49:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+10.244.19.136 - - [09/Jan/2019 08:49:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.15 - - [09/Jan/2019 08:49:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.15 - - [09/Jan/2019 08:49:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.16 - - [09/Jan/2019 08:49:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+10.244.4.16 - - [09/Jan/2019 08:49:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+ Retrieve all input information: 
+--- Network cost:----------- 
+-----------------
+Overall price:
+{'queue': -1, 'cpu': -1, 'memory': -1, 'network': {'node4': 208.33281009783929, 'node19': 142.5626137328938, 'home3': 153.7781973885229, 'node16': 1588.7297664816429, 'node7': 2550.452646576722, 'node18': 188.6347045065221, 'node9': 1500.3521534038166, 'node11': 147.4093360693392, 'node10': 1580.3559660588187, 'node5': 2622.3030851230396, 'node17': 2525.7562340659156, 'node21': 253.54572520217386, 'node6': 282.3240087404825, 'node15': 2536.957106090802, 'node12': 1413.7976644502228, 'node14': 363.1956484690361, 'node23': 1490.2921598300293, 'node22': 1479.5565689811447, 'node8': 373.46244902152534, 'home2': 156.59538845914926, 'node25': 2486.540640460643, 'node24': 1394.5040904455097, 'node13': 256.1060420016565, 'node20': 2639.796276802997}}
+Announce my price
+home#-1#-1#-1$node4%208.33281009783929$node19%142.5626137328938$home3%153.7781973885229$node16%1588.7297664816429$node7%2550.452646576722$node18%188.6347045065221$node9%1500.3521534038166$node11%147.4093360693392$node10%1580.3559660588187$node5%2622.3030851230396$node17%2525.7562340659156$node21%253.54572520217386$node6%282.3240087404825$node15%2536.957106090802$node12%1413.7976644502228$node14%363.1956484690361$node23%1490.2921598300293$node22%1479.5565689811447$node8%373.46244902152534$home2%156.59538845914926$node25%2486.540640460643$node24%1394.5040904455097$node13%256.1060420016565$node20%2639.796276802997
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [09/Jan/2019 08:49:21] "GET / HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547023775.5285323 aggregate1
+10.244.19.132 - - [09/Jan/2019 08:49:35] "GET /recv_runtime_profile_computingnode?task_name=aggregate1&work_node=node19&msg=rt_enter+1botnet+1547023775.5285323 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 1botnet 1547023775.5358572 aggregate1
+10.244.19.132 - - [09/Jan/2019 08:49:35] "GET /recv_runtime_profile_computingnode?task_name=aggregate1&work_node=node19&msg=rt_exec+1botnet+1547023775.5358572 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547023790.5701997 aggregate2
+10.244.19.132 - - [09/Jan/2019 08:49:50] "GET /recv_runtime_profile_computingnode?task_name=aggregate2&work_node=node19&msg=rt_enter+1botnet+1547023790.5701997 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 1botnet 1547023790.6096332 aggregate2
+10.244.19.132 - - [09/Jan/2019 08:49:50] "GET /recv_runtime_profile_computingnode?task_name=aggregate2&work_node=node19&msg=rt_exec+1botnet+1547023790.6096332 HTTP/1.1" 200 -
+10.244.19.132 - - [09/Jan/2019 08:49:51] "GET /recv_runtime_profile_computingnode?task_name=aggregate1&work_node=node19&msg=rt_finish+1botnet+1547023791.0641167 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 1botnet 1547023791.0641167 aggregate1
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: aggregate1
+Total duration time:15.535584449768066
+Waiting time:0.007324934005737305
+node19 execution time:15.528259515762329
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+********************************************
+Received flask message: node4 rt_enter 1botnet 1547023791.8284316 simpledetector0
+10.244.4.14 - - [09/Jan/2019 08:49:51] "GET /recv_runtime_profile_computingnode?msg=rt_enter+1botnet+1547023791.8284316&work_node=node4&task_name=simpledetector0 HTTP/1.1" 200 -
+Received flask message: node4 rt_exec 1botnet 1547023791.8334608 simpledetector0
+10.244.4.14 - - [09/Jan/2019 08:49:51] "GET /recv_runtime_profile_computingnode?msg=rt_exec+1botnet+1547023791.8334608&work_node=node4&task_name=simpledetector0 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 1botnet 1547023806.1348763 aggregate2
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: aggregate2
+Total duration time:15.564676523208618
+Waiting time:0.03943347930908203
+node19 execution time:15.525243043899536
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:50:06] "GET /recv_runtime_profile_computingnode?task_name=aggregate2&work_node=node19&msg=rt_finish+1botnet+1547023806.1348763 HTTP/1.1" 200 -
+Received flask message: node4 rt_enter 1botnet 1547023806.8621023 astutedetector0
+10.244.4.14 - - [09/Jan/2019 08:50:06] "GET /recv_runtime_profile_computingnode?msg=rt_enter+1botnet+1547023806.8621023&work_node=node4&task_name=astutedetector0 HTTP/1.1" 200 -
+Received flask message: node4 rt_exec 1botnet 1547023806.8717406 astutedetector0
+10.244.4.14 - - [09/Jan/2019 08:50:06] "GET /recv_runtime_profile_computingnode?msg=rt_exec+1botnet+1547023806.8717406&work_node=node4&task_name=astutedetector0 HTTP/1.1" 200 -
+Received flask message: node4 rt_finish 1botnet 1547023807.3554385 simpledetector0
+----------------------------
+Runtime info at each computing node
+Worker node: node4
+Input file : 1botnet
+Task name: simpledetector0
+Total duration time:15.52700686454773
+Waiting time:0.005029201507568359
+node4 execution time:15.521977663040161
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+********************************************
+10.244.4.14 - - [09/Jan/2019 08:50:07] "GET /recv_runtime_profile_computingnode?msg=rt_finish+1botnet+1547023807.3554385&work_node=node4&task_name=simpledetector0 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [09/Jan/2019 08:50:22] "GET / HTTP/1.1" 200 -
+Received flask message: node4 rt_finish 1botnet 1547023822.5412273 astutedetector0
+----------------------------
+Runtime info at each computing node
+Worker node: node4
+Input file : 1botnet
+Task name: astutedetector0
+Total duration time:15.6791250705719
+Waiting time:0.009638309478759766
+node4 execution time:15.66948676109314
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+********************************************
+10.244.4.14 - - [09/Jan/2019 08:50:22] "GET /recv_runtime_profile_computingnode?msg=rt_finish+1botnet+1547023822.5412273&work_node=node4&task_name=astutedetector0 HTTP/1.1" 200 -
+Received flask message: node4 rt_enter 1botnet 1547023862.3114069 fusioncenter0
+10.244.4.14 - - [09/Jan/2019 08:51:02] "GET /recv_runtime_profile_computingnode?msg=rt_enter+1botnet+1547023862.3114069&work_node=node4&task_name=fusioncenter0 HTTP/1.1" 200 -
+Received flask message: node4 rt_enter 1botnet 1547023862.3234656 fusioncenter0
+10.244.4.14 - - [09/Jan/2019 08:51:02] "GET /recv_runtime_profile_computingnode?msg=rt_enter+1botnet+1547023862.3234656&work_node=node4&task_name=fusioncenter0 HTTP/1.1" 200 -
+Received flask message: node4 rt_exec 1botnet 1547023862.328352 fusioncenter0
+10.244.4.14 - - [09/Jan/2019 08:51:02] "GET /recv_runtime_profile_computingnode?msg=rt_exec+1botnet+1547023862.328352&work_node=node4&task_name=fusioncenter0 HTTP/1.1" 200 -
+Received flask message: node4 rt_finish 1botnet 1547023872.8516567 fusioncenter0
+----------------------------
+Runtime info at each computing node
+Worker node: node4
+Input file : 1botnet
+Task name: fusioncenter0
+Total duration time:10.528191089630127
+Waiting time:0.0048863887786865234
+node4 execution time:10.52330470085144
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+********************************************
+10.244.4.14 - - [09/Jan/2019 08:51:12] "GET /recv_runtime_profile_computingnode?msg=rt_finish+1botnet+1547023872.8516567&work_node=node4&task_name=fusioncenter0 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [09/Jan/2019 08:51:22] "GET / HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547023896.083437 simpledetector1
+10.244.19.132 - - [09/Jan/2019 08:51:36] "GET /recv_runtime_profile_computingnode?task_name=simpledetector1&work_node=node19&msg=rt_enter+1botnet+1547023896.083437 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 1botnet 1547023896.0887175 simpledetector1
+10.244.19.132 - - [09/Jan/2019 08:51:36] "GET /recv_runtime_profile_computingnode?task_name=simpledetector1&work_node=node19&msg=rt_exec+1botnet+1547023896.0887175 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547023911.1144803 astutedetector1
+10.244.19.132 - - [09/Jan/2019 08:51:51] "GET /recv_runtime_profile_computingnode?task_name=astutedetector1&work_node=node19&msg=rt_enter+1botnet+1547023911.1144803 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 1botnet 1547023911.1245959 astutedetector1
+10.244.19.132 - - [09/Jan/2019 08:51:51] "GET /recv_runtime_profile_computingnode?task_name=astutedetector1&work_node=node19&msg=rt_exec+1botnet+1547023911.1245959 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 1botnet 1547023911.6084688 simpledetector1
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: simpledetector1
+Total duration time:15.525031805038452
+Waiting time:0.005280494689941406
+node19 execution time:15.51975131034851
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:51:51] "GET /recv_runtime_profile_computingnode?task_name=simpledetector1&work_node=node19&msg=rt_finish+1botnet+1547023911.6084688 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547023926.2278745 simpledetector2
+10.244.19.132 - - [09/Jan/2019 08:52:06] "GET /recv_runtime_profile_computingnode?task_name=simpledetector2&work_node=node19&msg=rt_enter+1botnet+1547023926.2278745 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 1botnet 1547023926.2627723 simpledetector2
+10.244.19.132 - - [09/Jan/2019 08:52:06] "GET /recv_runtime_profile_computingnode?task_name=simpledetector2&work_node=node19&msg=rt_exec+1botnet+1547023926.2627723 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 1botnet 1547023926.7205207 astutedetector1
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: astutedetector1
+Total duration time:15.606040477752686
+Waiting time:0.010115623474121094
+node19 execution time:15.595924854278564
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:52:06] "GET /recv_runtime_profile_computingnode?task_name=astutedetector1&work_node=node19&msg=rt_finish+1botnet+1547023926.7205207 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.9.178 - - [09/Jan/2019 08:52:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.9.178 - - [09/Jan/2019 08:52:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.19.133 - - [09/Jan/2019 08:52:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.133 - - [09/Jan/2019 08:52:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.175 - - [09/Jan/2019 08:52:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.175 - - [09/Jan/2019 08:52:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.176 - - [09/Jan/2019 08:52:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.23.176 - - [09/Jan/2019 08:52:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.123 - - [09/Jan/2019 08:52:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.123 - - [09/Jan/2019 08:52:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.134 - - [09/Jan/2019 08:52:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.134 - - [09/Jan/2019 08:52:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.23.177 - - [09/Jan/2019 08:52:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.177 - - [09/Jan/2019 08:52:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.18.103 - - [09/Jan/2019 08:52:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+10.244.18.103 - - [09/Jan/2019 08:52:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.124 - - [09/Jan/2019 08:52:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.124 - - [09/Jan/2019 08:52:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 08:52:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 08:52:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 08:52:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+10.244.13.8 - - [09/Jan/2019 08:52:16] "GET /update_assignment_info_child?assignment_info=globalfusion%23node19 HTTP/1.1" 404 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 08:52:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.136 - - [09/Jan/2019 08:52:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.136 - - [09/Jan/2019 08:52:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.15 - - [09/Jan/2019 08:52:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.15 - - [09/Jan/2019 08:52:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.16 - - [09/Jan/2019 08:52:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.4.16 - - [09/Jan/2019 08:52:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+ Retrieve all input information: 
+--- Network cost:----------- 
+-----------------
+Overall price:
+{'queue': -1, 'cpu': -1, 'memory': -1, 'network': {'node4': 208.33281009783929, 'node19': 142.5626137328938, 'home3': 153.7781973885229, 'node16': 1588.7297664816429, 'node7': 2550.452646576722, 'node18': 188.6347045065221, 'node9': 1500.3521534038166, 'node11': 147.4093360693392, 'node10': 1580.3559660588187, 'node5': 2622.3030851230396, 'node17': 2525.7562340659156, 'node21': 253.54572520217386, 'node6': 282.3240087404825, 'node15': 2536.957106090802, 'node12': 1413.7976644502228, 'node14': 363.1956484690361, 'node23': 1490.2921598300293, 'node22': 1479.5565689811447, 'node8': 373.46244902152534, 'home2': 156.59538845914926, 'node25': 2486.540640460643, 'node24': 1394.5040904455097, 'node13': 256.1060420016565, 'node20': 2639.796276802997}}
+Announce my price
+home#-1#-1#-1$node4%208.33281009783929$node19%142.5626137328938$home3%153.7781973885229$node16%1588.7297664816429$node7%2550.452646576722$node18%188.6347045065221$node9%1500.3521534038166$node11%147.4093360693392$node10%1580.3559660588187$node5%2622.3030851230396$node17%2525.7562340659156$node21%253.54572520217386$node6%282.3240087404825$node15%2536.957106090802$node12%1413.7976644502228$node14%363.1956484690361$node23%1490.2921598300293$node22%1479.5565689811447$node8%373.46244902152534$home2%156.59538845914926$node25%2486.540640460643$node24%1394.5040904455097$node13%256.1060420016565$node20%2639.796276802997
+Received flask message: node19 rt_enter 1botnet 1547023941.304602 astutedetector2
+10.244.19.132 - - [09/Jan/2019 08:52:21] "GET /recv_runtime_profile_computingnode?task_name=astutedetector2&work_node=node19&msg=rt_enter+1botnet+1547023941.304602 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 1botnet 1547023941.3094292 astutedetector2
+10.244.19.132 - - [09/Jan/2019 08:52:21] "GET /recv_runtime_profile_computingnode?task_name=astutedetector2&work_node=node19&msg=rt_exec+1botnet+1547023941.3094292 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 1botnet 1547023941.79752 simpledetector2
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: simpledetector2
+Total duration time:15.569645404815674
+Waiting time:0.034897804260253906
+node19 execution time:15.53474760055542
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:52:21] "GET /recv_runtime_profile_computingnode?task_name=simpledetector2&work_node=node19&msg=rt_finish+1botnet+1547023941.79752 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [09/Jan/2019 08:52:23] "GET / HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 1botnet 1547023956.9057448 astutedetector2
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: astutedetector2
+Total duration time:15.601142883300781
+Waiting time:0.004827260971069336
+node19 execution time:15.596315622329712
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:52:36] "GET /recv_runtime_profile_computingnode?task_name=astutedetector2&work_node=node19&msg=rt_finish+1botnet+1547023956.9057448 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [09/Jan/2019 08:53:24] "GET / HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547024026.8555992 globalfusion
+10.244.19.132 - - [09/Jan/2019 08:53:46] "GET /recv_runtime_profile_computingnode?task_name=globalfusion&work_node=node19&msg=rt_enter+1botnet+1547024026.8555992 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547024036.9088101 fusioncenter1
+10.244.19.132 - - [09/Jan/2019 08:53:56] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter1&work_node=node19&msg=rt_enter+1botnet+1547024036.9088101 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547024036.9174187 fusioncenter1
+10.244.19.132 - - [09/Jan/2019 08:53:56] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter1&work_node=node19&msg=rt_enter+1botnet+1547024036.9174187 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 1botnet 1547024036.9264975 fusioncenter1
+10.244.19.132 - - [09/Jan/2019 08:53:56] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter1&work_node=node19&msg=rt_exec+1botnet+1547024036.9264975 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547024046.9596968 fusioncenter2
+10.244.19.132 - - [09/Jan/2019 08:54:06] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter2&work_node=node19&msg=rt_enter+1botnet+1547024046.9596968 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547024046.995474 fusioncenter2
+10.244.19.132 - - [09/Jan/2019 08:54:06] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter2&work_node=node19&msg=rt_enter+1botnet+1547024046.995474 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 1botnet 1547024047.0003066 fusioncenter2
+10.244.19.132 - - [09/Jan/2019 08:54:07] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter2&work_node=node19&msg=rt_exec+1botnet+1547024047.0003066 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 1botnet 1547024047.4520438 fusioncenter1
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: fusioncenter1
+Total duration time:10.534625053405762
+Waiting time:0.009078741073608398
+node19 execution time:10.525546312332153
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:54:07] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter1&work_node=node19&msg=rt_finish+1botnet+1547024047.4520438 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 1botnet 1547024057.5237582 fusioncenter2
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: fusioncenter2
+Total duration time:10.528284072875977
+Waiting time:0.00483250617980957
+node19 execution time:10.523451566696167
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     fusioncenter2 1botnet    1547024046.995474 1547024047.0003066 1547024057.5237582 10.528284072875977 10.523451566696167 0.00483250617980957
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:54:17] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter2&work_node=node19&msg=rt_finish+1botnet+1547024057.5237582 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 0
+10.244.0.0 - - [09/Jan/2019 08:54:24] "GET / HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547024087.1581075 globalfusion
+10.244.19.132 - - [09/Jan/2019 08:54:47] "GET /recv_runtime_profile_computingnode?task_name=globalfusion&work_node=node19&msg=rt_enter+1botnet+1547024087.1581075 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 1botnet 1547024087.180957 globalfusion
+10.244.19.132 - - [09/Jan/2019 08:54:47] "GET /recv_runtime_profile_computingnode?task_name=globalfusion&work_node=node19&msg=rt_enter+1botnet+1547024087.180957 HTTP/1.1" 200 -
+10.244.19.132 - - [09/Jan/2019 08:54:47] "GET /recv_runtime_profile_computingnode?task_name=globalfusion&work_node=node19&msg=rt_exec+1botnet+1547024087.185861 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 1botnet 1547024087.185861 globalfusion
+Received flask message: node19 rt_finish 1botnet 1547024097.71016 globalfusion
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 1botnet
+Task name: globalfusion
+Total duration time:10.529202938079834
+Waiting time:0.004904031753540039
+node19 execution time:10.524298906326294
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     globalfusion 1botnet    1547024087.180957 1547024087.185861 1547024097.71016 10.529202938079834 10.524298906326294 0.004904031753540039
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     fusioncenter2 1botnet    1547024046.995474 1547024047.0003066 1547024057.5237582 10.528284072875977 10.523451566696167 0.00483250617980957
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:54:57] "GET /recv_runtime_profile_computingnode?task_name=globalfusion&work_node=node19&msg=rt_finish+1botnet+1547024097.71016 HTTP/1.1" 200 -
+ending time is:  [1547024098.4725385]
+starting time is:  [1547023700.638397]
+execution time is:  [397.8341414928436]
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.9.178 - - [09/Jan/2019 08:55:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.9.178 - - [09/Jan/2019 08:55:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.133 - - [09/Jan/2019 08:55:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.133 - - [09/Jan/2019 08:55:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.175 - - [09/Jan/2019 08:55:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.175 - - [09/Jan/2019 08:55:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.176 - - [09/Jan/2019 08:55:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.176 - - [09/Jan/2019 08:55:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.123 - - [09/Jan/2019 08:55:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.123 - - [09/Jan/2019 08:55:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.134 - - [09/Jan/2019 08:55:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.134 - - [09/Jan/2019 08:55:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+10.244.23.177 - - [09/Jan/2019 08:55:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.177 - - [09/Jan/2019 08:55:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+10.244.18.103 - - [09/Jan/2019 08:55:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+10.244.18.103 - - [09/Jan/2019 08:55:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.124 - - [09/Jan/2019 08:55:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+10.244.11.124 - - [09/Jan/2019 08:55:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 08:55:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 08:55:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 08:55:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+10.244.13.8 - - [09/Jan/2019 08:55:16] "GET /update_assignment_info_child?assignment_info=globalfusion%23node19 HTTP/1.1" 404 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 08:55:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.136 - - [09/Jan/2019 08:55:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.136 - - [09/Jan/2019 08:55:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.15 - - [09/Jan/2019 08:55:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.4.15 - - [09/Jan/2019 08:55:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.16 - - [09/Jan/2019 08:55:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.16 - - [09/Jan/2019 08:55:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+ Retrieve all input information: 
+--- Network cost:----------- 
+-----------------
+Overall price:
+{'queue': -1, 'cpu': -1, 'memory': -1, 'network': {'node4': 208.33281009783929, 'node19': 142.5626137328938, 'home3': 153.7781973885229, 'node16': 1588.7297664816429, 'node7': 2550.452646576722, 'node18': 188.6347045065221, 'node9': 1500.3521534038166, 'node11': 147.4093360693392, 'node10': 1580.3559660588187, 'node5': 2622.3030851230396, 'node17': 2525.7562340659156, 'node21': 253.54572520217386, 'node6': 282.3240087404825, 'node15': 2536.957106090802, 'node12': 1413.7976644502228, 'node14': 363.1956484690361, 'node23': 1490.2921598300293, 'node22': 1479.5565689811447, 'node8': 373.46244902152534, 'home2': 156.59538845914926, 'node25': 2486.540640460643, 'node24': 1394.5040904455097, 'node13': 256.1060420016565, 'node20': 2639.796276802997}}
+Announce my price
+home#-1#-1#-1$node4%208.33281009783929$node19%142.5626137328938$home3%153.7781973885229$node16%1588.7297664816429$node7%2550.452646576722$node18%188.6347045065221$node9%1500.3521534038166$node11%147.4093360693392$node10%1580.3559660588187$node5%2622.3030851230396$node17%2525.7562340659156$node21%253.54572520217386$node6%282.3240087404825$node15%2536.957106090802$node12%1413.7976644502228$node14%363.1956484690361$node23%1490.2921598300293$node22%1479.5565689811447$node8%373.46244902152534$home2%156.59538845914926$node25%2486.540640460643$node24%1394.5040904455097$node13%256.1060420016565$node20%2639.796276802997
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [09/Jan/2019 08:55:25] "GET / HTTP/1.1" 200 -
+---- Generate random input files
+Received file as input - /input/2botnet.ipsum.
+start time is:  [1547023700.638397, 1547024131.028803]
+Transfer to IP: 10.108.82.17 , username: root , password: PASSWORD, source path: /input/2botnet.ipsum , destination path: /centralized_scheduler/input/2botnet.ipsum#home#localpro#false
+data transfer complete
+
+Received flask message: node19 rt_enter 2botnet 1547024135.5685997 localpro
+10.244.19.132 - - [09/Jan/2019 08:55:35] "GET /recv_runtime_profile_computingnode?task_name=localpro&work_node=node19&msg=rt_enter+2botnet+1547024135.5685997 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 2botnet 1547024135.576866 localpro
+10.244.19.132 - - [09/Jan/2019 08:55:35] "GET /recv_runtime_profile_computingnode?task_name=localpro&work_node=node19&msg=rt_exec+2botnet+1547024135.576866 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 2botnet 1547024151.1056137 localpro
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: localpro
+Total duration time:15.53701400756836
+Waiting time:0.008266210556030273
+node19 execution time:15.528747797012329
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     globalfusion 1botnet    1547024087.180957 1547024087.185861 1547024097.71016 10.529202938079834 10.524298906326294 0.004904031753540039
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     fusioncenter2 1botnet    1547024046.995474 1547024047.0003066 1547024057.5237582 10.528284072875977 10.523451566696167 0.00483250617980957
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node19     localpro   2botnet    1547024135.5685997 1547024135.576866 1547024151.1056137 15.53701400756836 15.528747797012329 0.008266210556030273
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:55:51] "GET /recv_runtime_profile_computingnode?task_name=localpro&work_node=node19&msg=rt_finish+2botnet+1547024151.1056137 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 2botnet 1547024151.1172996 localpro
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: localpro
+Total duration time:15.548699855804443
+Waiting time:0.008266210556030273
+node19 execution time:15.540433645248413
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     globalfusion 1botnet    1547024087.180957 1547024087.185861 1547024097.71016 10.529202938079834 10.524298906326294 0.004904031753540039
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     fusioncenter2 1botnet    1547024046.995474 1547024047.0003066 1547024057.5237582 10.528284072875977 10.523451566696167 0.00483250617980957
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node19     localpro   2botnet    1547024135.5685997 1547024135.576866 1547024151.1172996 15.548699855804443 15.540433645248413 0.008266210556030273
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:55:51] "GET /recv_runtime_profile_computingnode?task_name=localpro&work_node=node19&msg=rt_finish+2botnet+1547024151.1172996 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 2botnet 1547024151.1262693 localpro
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: localpro
+Total duration time:15.557669639587402
+Waiting time:0.008266210556030273
+node19 execution time:15.549403429031372
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     globalfusion 1botnet    1547024087.180957 1547024087.185861 1547024097.71016 10.529202938079834 10.524298906326294 0.004904031753540039
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     fusioncenter2 1botnet    1547024046.995474 1547024047.0003066 1547024057.5237582 10.528284072875977 10.523451566696167 0.00483250617980957
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node19     localpro   2botnet    1547024135.5685997 1547024135.576866 1547024151.1262693 15.557669639587402 15.549403429031372 0.008266210556030273
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+10.244.19.132 - - [09/Jan/2019 08:55:51] "GET /recv_runtime_profile_computingnode?task_name=localpro&work_node=node19&msg=rt_finish+2botnet+1547024151.1262693 HTTP/1.1" 200 -
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+Received flask message: node4 rt_enter 2botnet 1547024151.8207884 aggregate0
+10.244.4.14 - - [09/Jan/2019 08:55:51] "GET /recv_runtime_profile_computingnode?msg=rt_enter+2botnet+1547024151.8207884&work_node=node4&task_name=aggregate0 HTTP/1.1" 200 -
+Received flask message: node4 rt_exec 2botnet 1547024151.8267283 aggregate0
+10.244.4.14 - - [09/Jan/2019 08:55:51] "GET /recv_runtime_profile_computingnode?msg=rt_exec+2botnet+1547024151.8267283&work_node=node4&task_name=aggregate0 HTTP/1.1" 200 -
+Received flask message: node4 rt_finish 2botnet 1547024167.3535197 aggregate0
+----------------------------
+Runtime info at each computing node
+Worker node: node4
+Input file : 2botnet
+Task name: aggregate0
+Total duration time:15.532731294631958
+Waiting time:0.005939960479736328
+node4 execution time:15.526791334152222
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     globalfusion 1botnet    1547024087.180957 1547024087.185861 1547024097.71016 10.529202938079834 10.524298906326294 0.004904031753540039
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     fusioncenter2 1botnet    1547024046.995474 1547024047.0003066 1547024057.5237582 10.528284072875977 10.523451566696167 0.00483250617980957
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node19     localpro   2botnet    1547024135.5685997 1547024135.576866 1547024151.1262693 15.557669639587402 15.549403429031372 0.008266210556030273
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+10.244.4.14 - - [09/Jan/2019 08:56:07] "GET /recv_runtime_profile_computingnode?msg=rt_finish+2botnet+1547024167.3535197&work_node=node4&task_name=aggregate0 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [09/Jan/2019 08:56:26] "GET / HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 2botnet 1547024195.798077 aggregate1
+10.244.19.132 - - [09/Jan/2019 08:56:35] "GET /recv_runtime_profile_computingnode?task_name=aggregate1&work_node=node19&msg=rt_enter+2botnet+1547024195.798077 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 2botnet 1547024195.805126 aggregate1
+10.244.19.132 - - [09/Jan/2019 08:56:35] "GET /recv_runtime_profile_computingnode?task_name=aggregate1&work_node=node19&msg=rt_exec+2botnet+1547024195.805126 HTTP/1.1" 200 -
+Received flask message: node4 rt_enter 2botnet 1547024197.0503218 simpledetector0
+10.244.4.14 - - [09/Jan/2019 08:56:37] "GET /recv_runtime_profile_computingnode?msg=rt_enter+2botnet+1547024197.0503218&work_node=node4&task_name=simpledetector0 HTTP/1.1" 200 -
+Received flask message: node4 rt_exec 2botnet 1547024197.0557747 simpledetector0
+10.244.4.14 - - [09/Jan/2019 08:56:37] "GET /recv_runtime_profile_computingnode?msg=rt_exec+2botnet+1547024197.0557747&work_node=node4&task_name=simpledetector0 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 2botnet 1547024210.842954 aggregate2
+10.244.19.132 - - [09/Jan/2019 08:56:50] "GET /recv_runtime_profile_computingnode?task_name=aggregate2&work_node=node19&msg=rt_enter+2botnet+1547024210.842954 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 2botnet 1547024210.8563848 aggregate2
+10.244.19.132 - - [09/Jan/2019 08:56:50] "GET /recv_runtime_profile_computingnode?task_name=aggregate2&work_node=node19&msg=rt_exec+2botnet+1547024210.8563848 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 2botnet 1547024211.3364484 aggregate1
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: aggregate1
+Total duration time:15.538371324539185
+Waiting time:0.007048845291137695
+node19 execution time:15.531322479248047
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     globalfusion 1botnet    1547024087.180957 1547024087.185861 1547024097.71016 10.529202938079834 10.524298906326294 0.004904031753540039
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     fusioncenter2 1botnet    1547024046.995474 1547024047.0003066 1547024057.5237582 10.528284072875977 10.523451566696167 0.00483250617980957
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     aggregate1 2botnet    1547024195.798077 1547024195.805126 1547024211.3364484 15.538371324539185 15.531322479248047 0.007048845291137695
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node19     localpro   2botnet    1547024135.5685997 1547024135.576866 1547024151.1262693 15.557669639587402 15.549403429031372 0.008266210556030273
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:56:51] "GET /recv_runtime_profile_computingnode?task_name=aggregate1&work_node=node19&msg=rt_finish+2botnet+1547024211.3364484 HTTP/1.1" 200 -
+Received flask message: node4 rt_enter 2botnet 1547024212.0949569 astutedetector0
+10.244.4.14 - - [09/Jan/2019 08:56:52] "GET /recv_runtime_profile_computingnode?msg=rt_enter+2botnet+1547024212.0949569&work_node=node4&task_name=astutedetector0 HTTP/1.1" 200 -
+10.244.4.14 - - [09/Jan/2019 08:56:52] "GET /recv_runtime_profile_computingnode?msg=rt_exec+2botnet+1547024212.100955&work_node=node4&task_name=astutedetector0 HTTP/1.1" 200 -
+Received flask message: node4 rt_exec 2botnet 1547024212.100955 astutedetector0
+Received flask message: node4 rt_finish 2botnet 1547024212.588449 simpledetector0
+----------------------------
+Runtime info at each computing node
+Worker node: node4
+Input file : 2botnet
+Task name: simpledetector0
+Total duration time:15.538127183914185
+Waiting time:0.005452871322631836
+node4 execution time:15.532674312591553
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     globalfusion 1botnet    1547024087.180957 1547024087.185861 1547024097.71016 10.529202938079834 10.524298906326294 0.004904031753540039
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     fusioncenter2 1botnet    1547024046.995474 1547024047.0003066 1547024057.5237582 10.528284072875977 10.523451566696167 0.00483250617980957
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     aggregate1 2botnet    1547024195.798077 1547024195.805126 1547024211.3364484 15.538371324539185 15.531322479248047 0.007048845291137695
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      simpledetector0 2botnet    1547024197.0503218 1547024197.0557747 1547024212.588449 15.538127183914185 15.532674312591553 0.005452871322631836
+
+node19     localpro   2botnet    1547024135.5685997 1547024135.576866 1547024151.1262693 15.557669639587402 15.549403429031372 0.008266210556030273
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+10.244.4.14 - - [09/Jan/2019 08:56:52] "GET /recv_runtime_profile_computingnode?msg=rt_finish+2botnet+1547024212.588449&work_node=node4&task_name=simpledetector0 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 2botnet 1547024226.3845603 aggregate2
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: aggregate2
+Total duration time:15.541606426239014
+Waiting time:0.01343083381652832
+node19 execution time:15.528175592422485
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     globalfusion 1botnet    1547024087.180957 1547024087.185861 1547024097.71016 10.529202938079834 10.524298906326294 0.004904031753540039
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     fusioncenter2 1botnet    1547024046.995474 1547024047.0003066 1547024057.5237582 10.528284072875977 10.523451566696167 0.00483250617980957
+
+node19     aggregate2 2botnet    1547024210.842954 1547024210.8563848 1547024226.3845603 15.541606426239014 15.528175592422485 0.01343083381652832
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     aggregate1 2botnet    1547024195.798077 1547024195.805126 1547024211.3364484 15.538371324539185 15.531322479248047 0.007048845291137695
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      simpledetector0 2botnet    1547024197.0503218 1547024197.0557747 1547024212.588449 15.538127183914185 15.532674312591553 0.005452871322631836
+
+node19     localpro   2botnet    1547024135.5685997 1547024135.576866 1547024151.1262693 15.557669639587402 15.549403429031372 0.008266210556030273
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+10.244.19.132 - - [09/Jan/2019 08:57:06] "GET /recv_runtime_profile_computingnode?task_name=aggregate2&work_node=node19&msg=rt_finish+2botnet+1547024226.3845603 HTTP/1.1" 200 -
+10.244.4.14 - - [09/Jan/2019 08:57:07] "GET /recv_runtime_profile_computingnode?msg=rt_finish+2botnet+1547024227.7303517&work_node=node4&task_name=astutedetector0 HTTP/1.1" 200 -
+Received flask message: node4 rt_finish 2botnet 1547024227.7303517 astutedetector0
+----------------------------
+Runtime info at each computing node
+Worker node: node4
+Input file : 2botnet
+Task name: astutedetector0
+Total duration time:15.635394811630249
+Waiting time:0.005998134613037109
+node4 execution time:15.629396677017212
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     globalfusion 1botnet    1547024087.180957 1547024087.185861 1547024097.71016 10.529202938079834 10.524298906326294 0.004904031753540039
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     fusioncenter2 1botnet    1547024046.995474 1547024047.0003066 1547024057.5237582 10.528284072875977 10.523451566696167 0.00483250617980957
+
+node19     aggregate2 2botnet    1547024210.842954 1547024210.8563848 1547024226.3845603 15.541606426239014 15.528175592422485 0.01343083381652832
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     aggregate1 2botnet    1547024195.798077 1547024195.805126 1547024211.3364484 15.538371324539185 15.531322479248047 0.007048845291137695
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      simpledetector0 2botnet    1547024197.0503218 1547024197.0557747 1547024212.588449 15.538127183914185 15.532674312591553 0.005452871322631836
+
+node19     localpro   2botnet    1547024135.5685997 1547024135.576866 1547024151.1262693 15.557669639587402 15.549403429031372 0.008266210556030273
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node4      astutedetector0 2botnet    1547024212.0949569 1547024212.100955 1547024227.7303517 15.635394811630249 15.629396677017212 0.005998134613037109
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [09/Jan/2019 08:57:27] "GET / HTTP/1.1" 200 -
+Received flask message: node4 rt_enter 2botnet 1547024252.3470912 fusioncenter0
+Received flask message: node4 rt_enter 2botnet 1547024252.4144776 fusioncenter0
+10.244.4.14 - - [09/Jan/2019 08:57:32] "GET /recv_runtime_profile_computingnode?msg=rt_enter+2botnet+1547024252.3470912&work_node=node4&task_name=fusioncenter0 HTTP/1.1" 200 -
+10.244.4.14 - - [09/Jan/2019 08:57:32] "GET /recv_runtime_profile_computingnode?msg=rt_enter+2botnet+1547024252.4144776&work_node=node4&task_name=fusioncenter0 HTTP/1.1" 200 -
+10.244.4.14 - - [09/Jan/2019 08:57:32] "GET /recv_runtime_profile_computingnode?msg=rt_exec+2botnet+1547024252.4194937&work_node=node4&task_name=fusioncenter0 HTTP/1.1" 200 -
+Received flask message: node4 rt_exec 2botnet 1547024252.4194937 fusioncenter0
+Received flask message: node4 rt_finish 2botnet 1547024262.9426692 fusioncenter0
+----------------------------
+Runtime info at each computing node
+Worker node: node4
+Input file : 2botnet
+Task name: fusioncenter0
+Total duration time:10.528191566467285
+Waiting time:0.0050160884857177734
+node4 execution time:10.523175477981567
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node19     globalfusion 1botnet    1547024087.180957 1547024087.185861 1547024097.71016 10.529202938079834 10.524298906326294 0.004904031753540039
+
+node19     fusioncenter1 1botnet    1547024036.9174187 1547024036.9264975 1547024047.4520438 10.534625053405762 10.525546312332153 0.009078741073608398
+
+node19     fusioncenter2 1botnet    1547024046.995474 1547024047.0003066 1547024057.5237582 10.528284072875977 10.523451566696167 0.00483250617980957
+
+node19     aggregate2 2botnet    1547024210.842954 1547024210.8563848 1547024226.3845603 15.541606426239014 15.528175592422485 0.01343083381652832
+
+node19     astutedetector1 1botnet    1547023911.1144803 1547023911.1245959 1547023926.7205207 15.606040477752686 15.595924854278564 0.010115623474121094
+
+node19     astutedetector2 1botnet    1547023941.304602 1547023941.3094292 1547023956.9057448 15.601142883300781 15.596315622329712 0.004827260971069336
+
+node19     simpledetector1 1botnet    1547023896.083437 1547023896.0887175 1547023911.6084688 15.525031805038452 15.51975131034851 0.005280494689941406
+
+node19     aggregate2 1botnet    1547023790.5701997 1547023790.6096332 1547023806.1348763 15.564676523208618 15.525243043899536 0.03943347930908203
+
+node4      aggregate0 1botnet    1547023731.566577 1547023731.572055 1547023747.1014183 15.534841299057007 15.52936315536499 0.0054781436920166016
+
+node19     aggregate1 2botnet    1547024195.798077 1547024195.805126 1547024211.3364484 15.538371324539185 15.531322479248047 0.007048845291137695
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+node4      simpledetector0 2botnet    1547024197.0503218 1547024197.0557747 1547024212.588449 15.538127183914185 15.532674312591553 0.005452871322631836
+
+node4      fusioncenter0 2botnet    1547024252.4144776 1547024252.4194937 1547024262.9426692 10.528191566467285 10.523175477981567 0.0050160884857177734
+
+node19     localpro   2botnet    1547024135.5685997 1547024135.576866 1547024151.1262693 15.557669639587402 15.549403429031372 0.008266210556030273
+
+node19     simpledetector2 1botnet    1547023926.2278745 1547023926.2627723 1547023941.79752 15.569645404815674 15.53474760055542 0.034897804260253906
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node4      astutedetector0 2botnet    1547024212.0949569 1547024212.100955 1547024227.7303517 15.635394811630249 15.629396677017212 0.005998134613037109
+
+node4      fusioncenter0 1botnet    1547023862.3234656 1547023862.328352 1547023872.8516567 10.528191089630127 10.52330470085144 0.0048863887786865234
+
+node4      simpledetector0 1botnet    1547023791.8284316 1547023791.8334608 1547023807.3554385 15.52700686454773 15.521977663040161 0.005029201507568359
+
+node4      astutedetector0 1botnet    1547023806.8621023 1547023806.8717406 1547023822.5412273 15.6791250705719 15.66948676109314 0.009638309478759766
+
+********************************************
+10.244.4.14 - - [09/Jan/2019 08:57:42] "GET /recv_runtime_profile_computingnode?msg=rt_finish+2botnet+1547024262.9426692&work_node=node4&task_name=fusioncenter0 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.9.178 - - [09/Jan/2019 08:58:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.9.178 - - [09/Jan/2019 08:58:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.133 - - [09/Jan/2019 08:58:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.19.133 - - [09/Jan/2019 08:58:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.175 - - [09/Jan/2019 08:58:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.175 - - [09/Jan/2019 08:58:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.176 - - [09/Jan/2019 08:58:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.176 - - [09/Jan/2019 08:58:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.123 - - [09/Jan/2019 08:58:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.123 - - [09/Jan/2019 08:58:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.134 - - [09/Jan/2019 08:58:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.134 - - [09/Jan/2019 08:58:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.177 - - [09/Jan/2019 08:58:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.18.103 - - [09/Jan/2019 08:58:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.177 - - [09/Jan/2019 08:58:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.18.103 - - [09/Jan/2019 08:58:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.124 - - [09/Jan/2019 08:58:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.11.124 - - [09/Jan/2019 08:58:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 08:58:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 08:58:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 08:58:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+10.244.13.8 - - [09/Jan/2019 08:58:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 08:58:16] "GET /update_assignment_info_child?assignment_info=globalfusion%23node19 HTTP/1.1" 404 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+10.244.19.136 - - [09/Jan/2019 08:58:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.136 - - [09/Jan/2019 08:58:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.15 - - [09/Jan/2019 08:58:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.15 - - [09/Jan/2019 08:58:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.16 - - [09/Jan/2019 08:58:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+10.244.4.16 - - [09/Jan/2019 08:58:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+ Retrieve all input information: 
+--- Network cost:----------- 
+-----------------
+Overall price:
+{'queue': -1, 'cpu': -1, 'memory': -1, 'network': {'node4': 208.33281009783929, 'node19': 142.5626137328938, 'home3': 153.7781973885229, 'node16': 1588.7297664816429, 'node7': 2550.452646576722, 'node18': 188.6347045065221, 'node9': 1500.3521534038166, 'node11': 147.4093360693392, 'node10': 1580.3559660588187, 'node5': 2622.3030851230396, 'node17': 2525.7562340659156, 'node21': 253.54572520217386, 'node6': 282.3240087404825, 'node15': 2536.957106090802, 'node12': 1413.7976644502228, 'node14': 363.1956484690361, 'node23': 1490.2921598300293, 'node22': 1479.5565689811447, 'node8': 373.46244902152534, 'home2': 156.59538845914926, 'node25': 2486.540640460643, 'node24': 1394.5040904455097, 'node13': 256.1060420016565, 'node20': 2639.796276802997}}
+Announce my price
+home#-1#-1#-1$node4%208.33281009783929$node19%142.5626137328938$home3%153.7781973885229$node16%1588.7297664816429$node7%2550.452646576722$node18%188.6347045065221$node9%1500.3521534038166$node11%147.4093360693392$node10%1580.3559660588187$node5%2622.3030851230396$node17%2525.7562340659156$node21%253.54572520217386$node6%282.3240087404825$node15%2536.957106090802$node12%1413.7976644502228$node14%363.1956484690361$node23%1490.2921598300293$node22%1479.5565689811447$node8%373.46244902152534$home2%156.59538845914926$node25%2486.540640460643$node24%1394.5040904455097$node13%256.1060420016565$node20%2639.796276802997
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [09/Jan/2019 08:58:30] "GET / HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 2botnet 1547024316.779127 simpledetector1
+10.244.19.132 - - [09/Jan/2019 08:59:26] "GET /recv_runtime_profile_computingnode?task_name=simpledetector1&work_node=node19&msg=rt_enter+2botnet+1547024316.779127 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [09/Jan/2019 09:00:32] "GET / HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.9.178 - - [09/Jan/2019 09:01:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.9.178 - - [09/Jan/2019 09:01:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.133 - - [09/Jan/2019 09:01:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.133 - - [09/Jan/2019 09:01:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.175 - - [09/Jan/2019 09:01:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.175 - - [09/Jan/2019 09:01:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.176 - - [09/Jan/2019 09:01:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.176 - - [09/Jan/2019 09:01:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.123 - - [09/Jan/2019 09:01:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.123 - - [09/Jan/2019 09:01:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.134 - - [09/Jan/2019 09:01:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.134 - - [09/Jan/2019 09:01:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.177 - - [09/Jan/2019 09:01:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.177 - - [09/Jan/2019 09:01:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.18.103 - - [09/Jan/2019 09:01:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.18.103 - - [09/Jan/2019 09:01:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.124 - - [09/Jan/2019 09:01:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.124 - - [09/Jan/2019 09:01:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 09:01:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 09:01:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 09:01:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+10.244.13.8 - - [09/Jan/2019 09:01:16] "GET /update_assignment_info_child?assignment_info=globalfusion%23node19 HTTP/1.1" 404 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 09:01:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.136 - - [09/Jan/2019 09:01:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.136 - - [09/Jan/2019 09:01:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.15 - - [09/Jan/2019 09:01:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.15 - - [09/Jan/2019 09:01:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.16 - - [09/Jan/2019 09:01:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.16 - - [09/Jan/2019 09:01:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+ Retrieve all input information: 
+--- Network cost:----------- 
+-----------------
+Overall price:
+{'queue': -1, 'cpu': -1, 'memory': -1, 'network': {'node4': 208.33281009783929, 'node19': 142.5626137328938, 'home3': 153.7781973885229, 'node16': 1588.7297664816429, 'node7': 2550.452646576722, 'node18': 188.6347045065221, 'node9': 1500.3521534038166, 'node11': 147.4093360693392, 'node10': 1580.3559660588187, 'node5': 2622.3030851230396, 'node17': 2525.7562340659156, 'node21': 253.54572520217386, 'node6': 282.3240087404825, 'node15': 2536.957106090802, 'node12': 1413.7976644502228, 'node14': 363.1956484690361, 'node23': 1490.2921598300293, 'node22': 1479.5565689811447, 'node8': 373.46244902152534, 'home2': 156.59538845914926, 'node25': 2486.540640460643, 'node24': 1394.5040904455097, 'node13': 256.1060420016565, 'node20': 2639.796276802997}}
+Announce my price
+home#-1#-1#-1$node4%208.33281009783929$node19%142.5626137328938$home3%153.7781973885229$node16%1588.7297664816429$node7%2550.452646576722$node18%188.6347045065221$node9%1500.3521534038166$node11%147.4093360693392$node10%1580.3559660588187$node5%2622.3030851230396$node17%2525.7562340659156$node21%253.54572520217386$node6%282.3240087404825$node15%2536.957106090802$node12%1413.7976644502228$node14%363.1956484690361$node23%1490.2921598300293$node22%1479.5565689811447$node8%373.46244902152534$home2%156.59538845914926$node25%2486.540640460643$node24%1394.5040904455097$node13%256.1060420016565$node20%2639.796276802997
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [09/Jan/2019 09:01:33] "GET / HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 2botnet 1547024509.0861676 astutedetector1
+Received flask message: node19 rt_exec 2botnet 1547024509.1410413 astutedetector1
+10.244.19.132 - - [09/Jan/2019 09:01:49] "GET /recv_runtime_profile_computingnode?task_name=astutedetector1&work_node=node19&msg=rt_enter+2botnet+1547024509.0861676 HTTP/1.1" 200 -
+10.244.19.132 - - [09/Jan/2019 09:01:49] "GET /recv_runtime_profile_computingnode?task_name=astutedetector1&work_node=node19&msg=rt_exec+2botnet+1547024509.1410413 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 2botnet 1547024509.5765927 simpledetector1
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: simpledetector1
+Total duration time:192.797465801239
+Bad reception or failed processing in Flask for runtime profiling
+unsupported operand type(s) for -: 'list' and 'float'
+10.244.19.132 - - [09/Jan/2019 09:01:49] "GET /recv_runtime_profile_computingnode?task_name=simpledetector1&work_node=node19&msg=rt_finish+2botnet+1547024509.5765927 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 2botnet 1547024524.2869852 simpledetector2
+Received flask message: node19 rt_exec 2botnet 1547024524.307856 simpledetector2
+10.244.19.132 - - [09/Jan/2019 09:02:04] "GET /recv_runtime_profile_computingnode?task_name=simpledetector2&work_node=node19&msg=rt_enter+2botnet+1547024524.2869852 HTTP/1.1" 200 -
+10.244.19.132 - - [09/Jan/2019 09:02:04] "GET /recv_runtime_profile_computingnode?task_name=simpledetector2&work_node=node19&msg=rt_exec+2botnet+1547024524.307856 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 2botnet 1547024524.779074 astutedetector1
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: astutedetector1
+Total duration time:15.692906379699707
+Waiting time:0.05487370491027832
+node19 execution time:15.638032674789429
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+Bad reception or failed processing in Flask for runtime profiling
+unsupported operand type(s) for -: 'float' and 'list'
+10.244.19.132 - - [09/Jan/2019 09:02:04] "GET /recv_runtime_profile_computingnode?task_name=astutedetector1&work_node=node19&msg=rt_finish+2botnet+1547024524.779074 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 2botnet 1547024539.349373 astutedetector2
+10.244.19.132 - - [09/Jan/2019 09:02:19] "GET /recv_runtime_profile_computingnode?task_name=astutedetector2&work_node=node19&msg=rt_enter+2botnet+1547024539.349373 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 2botnet 1547024539.3550951 astutedetector2
+10.244.19.132 - - [09/Jan/2019 09:02:19] "GET /recv_runtime_profile_computingnode?task_name=astutedetector2&work_node=node19&msg=rt_exec+2botnet+1547024539.3550951 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 2botnet 1547024539.8428473 simpledetector2
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: simpledetector2
+Total duration time:15.555862188339233
+Waiting time:0.02087092399597168
+node19 execution time:15.534991264343262
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+Bad reception or failed processing in Flask for runtime profiling
+unsupported operand type(s) for -: 'float' and 'list'
+10.244.19.132 - - [09/Jan/2019 09:02:19] "GET /recv_runtime_profile_computingnode?task_name=simpledetector2&work_node=node19&msg=rt_finish+2botnet+1547024539.8428473 HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [09/Jan/2019 09:02:33] "GET / HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 2botnet 1547024554.9541075 astutedetector2
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: astutedetector2
+Total duration time:15.604734420776367
+Waiting time:0.0057220458984375
+node19 execution time:15.59901237487793
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+Bad reception or failed processing in Flask for runtime profiling
+unsupported operand type(s) for -: 'float' and 'list'
+10.244.19.132 - - [09/Jan/2019 09:02:34] "GET /recv_runtime_profile_computingnode?task_name=astutedetector2&work_node=node19&msg=rt_finish+2botnet+1547024554.9541075 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 2botnet 1547024564.5144796 globalfusion
+10.244.19.132 - - [09/Jan/2019 09:02:44] "GET /recv_runtime_profile_computingnode?task_name=globalfusion&work_node=node19&msg=rt_enter+2botnet+1547024564.5144796 HTTP/1.1" 200 -
+10.244.0.0 - - [09/Jan/2019 09:03:34] "GET / HTTP/1.1" 200 -
+Recieved request for number of output files. Current done: 1
+10.244.19.132 - - [09/Jan/2019 09:03:55] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter1&work_node=node19&msg=rt_enter+2botnet+1547024634.9874372 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 2botnet 1547024634.9874372 fusioncenter1
+Received flask message: node19 rt_enter 2botnet 1547024635.0241716 fusioncenter1
+Received flask message: node19 rt_exec 2botnet 1547024635.0295322 fusioncenter1
+10.244.19.132 - - [09/Jan/2019 09:03:55] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter1&work_node=node19&msg=rt_enter+2botnet+1547024635.0241716 HTTP/1.1" 200 -
+10.244.19.132 - - [09/Jan/2019 09:03:55] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter1&work_node=node19&msg=rt_exec+2botnet+1547024635.0295322 HTTP/1.1" 200 -
+10.244.19.132 - - [09/Jan/2019 09:04:05] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter2&work_node=node19&msg=rt_enter+2botnet+1547024645.0599203 HTTP/1.1" 200 -
+10.244.19.132 - - [09/Jan/2019 09:04:05] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter2&work_node=node19&msg=rt_enter+2botnet+1547024645.093775 HTTP/1.1" 200 -
+10.244.19.132 - - [09/Jan/2019 09:04:05] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter2&work_node=node19&msg=rt_exec+2botnet+1547024645.099408 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 2botnet 1547024645.0599203 fusioncenter2
+Received flask message: node19 rt_enter 2botnet 1547024645.093775 fusioncenter2
+Received flask message: node19 rt_exec 2botnet 1547024645.099408 fusioncenter2
+Received flask message: node19 rt_finish 2botnet 1547024645.5516307 fusioncenter1
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: fusioncenter1
+Total duration time:10.527459144592285
+Waiting time:0.005360603332519531
+node19 execution time:10.522098541259766
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+Bad reception or failed processing in Flask for runtime profiling
+unsupported operand type(s) for -: 'float' and 'list'
+10.244.19.132 - - [09/Jan/2019 09:04:05] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter1&work_node=node19&msg=rt_finish+2botnet+1547024645.5516307 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.9.178 - - [09/Jan/2019 09:04:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.9.178 - - [09/Jan/2019 09:04:12] "GET /receive_assignment_info?assignment_info=fusioncenter2%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.133 - - [09/Jan/2019 09:04:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.133 - - [09/Jan/2019 09:04:12] "GET /receive_assignment_info?assignment_info=simpledetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.175 - - [09/Jan/2019 09:04:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.175 - - [09/Jan/2019 09:04:12] "GET /receive_assignment_info?assignment_info=astutedetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.176 - - [09/Jan/2019 09:04:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.176 - - [09/Jan/2019 09:04:13] "GET /receive_assignment_info?assignment_info=fusioncenter1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+-----------Received assignment info
+10.244.11.123 - - [09/Jan/2019 09:04:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+10.244.11.123 - - [09/Jan/2019 09:04:13] "GET /receive_assignment_info?assignment_info=aggregate1%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.134 - - [09/Jan/2019 09:04:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.134 - - [09/Jan/2019 09:04:14] "GET /receive_assignment_info?assignment_info=astutedetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.177 - - [09/Jan/2019 09:04:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.23.177 - - [09/Jan/2019 09:04:14] "GET /receive_assignment_info?assignment_info=simpledetector2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.18.103 - - [09/Jan/2019 09:04:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.18.103 - - [09/Jan/2019 09:04:14] "GET /receive_assignment_info?assignment_info=aggregate0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.124 - - [09/Jan/2019 09:04:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.11.124 - - [09/Jan/2019 09:04:14] "GET /receive_assignment_info?assignment_info=simpledetector0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 09:04:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.135 - - [09/Jan/2019 09:04:15] "GET /receive_assignment_info?assignment_info=aggregate2%23node19 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 2botnet 1547024655.62513 fusioncenter2
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: fusioncenter2
+Total duration time:10.531354904174805
+Waiting time:0.005632877349853516
+node19 execution time:10.525722026824951
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+Bad reception or failed processing in Flask for runtime profiling
+unsupported operand type(s) for -: 'float' and 'list'
+10.244.19.132 - - [09/Jan/2019 09:04:15] "GET /recv_runtime_profile_computingnode?task_name=fusioncenter2&work_node=node19&msg=rt_finish+2botnet+1547024655.62513 HTTP/1.1" 200 -
+-----------Received assignment info
+10.244.13.8 - - [09/Jan/2019 09:04:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 09:04:16] "GET /update_assignment_info_child?assignment_info=globalfusion%23node19 HTTP/1.1" 404 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.13.8 - - [09/Jan/2019 09:04:16] "GET /receive_assignment_info?assignment_info=globalfusion%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.136 - - [09/Jan/2019 09:04:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.19.136 - - [09/Jan/2019 09:04:16] "GET /receive_assignment_info?assignment_info=astutedetector1%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.15 - - [09/Jan/2019 09:04:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.15 - - [09/Jan/2019 09:04:16] "GET /receive_assignment_info?assignment_info=fusioncenter0%23node4 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.16 - - [09/Jan/2019 09:04:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+-----------Received assignment info
+{'fusioncenter0': 'node4', 'localpro': 'node19', 'fusioncenter1': 'node19', 'aggregate2': 'node19', 'astutedetector2': 'node19', 'simpledetector2': 'node19', 'astutedetector0': 'node4', 'aggregate0': 'node4', 'simpledetector1': 'node19', 'astutedetector1': 'node19', 'aggregate1': 'node19', 'fusioncenter2': 'node19', 'simpledetector0': 'node4', 'globalfusion': 'node19'}
+10.244.4.16 - - [09/Jan/2019 09:04:17] "GET /receive_assignment_info?assignment_info=localpro%23node19 HTTP/1.1" 200 -
+ Retrieve all input information: 
+--- Network cost:----------- 
+-----------------
+Overall price:
+{'queue': -1, 'cpu': -1, 'memory': -1, 'network': {'node4': 208.33281009783929, 'node19': 142.5626137328938, 'home3': 153.7781973885229, 'node16': 1588.7297664816429, 'node7': 2550.452646576722, 'node18': 188.6347045065221, 'node9': 1500.3521534038166, 'node11': 147.4093360693392, 'node10': 1580.3559660588187, 'node5': 2622.3030851230396, 'node17': 2525.7562340659156, 'node21': 253.54572520217386, 'node6': 282.3240087404825, 'node15': 2536.957106090802, 'node12': 1413.7976644502228, 'node14': 363.1956484690361, 'node23': 1490.2921598300293, 'node22': 1479.5565689811447, 'node8': 373.46244902152534, 'home2': 156.59538845914926, 'node25': 2486.540640460643, 'node24': 1394.5040904455097, 'node13': 256.1060420016565, 'node20': 2639.796276802997}}
+Announce my price
+home#-1#-1#-1$node4%208.33281009783929$node19%142.5626137328938$home3%153.7781973885229$node16%1588.7297664816429$node7%2550.452646576722$node18%188.6347045065221$node9%1500.3521534038166$node11%147.4093360693392$node10%1580.3559660588187$node5%2622.3030851230396$node17%2525.7562340659156$node21%253.54572520217386$node6%282.3240087404825$node15%2536.957106090802$node12%1413.7976644502228$node14%363.1956484690361$node23%1490.2921598300293$node22%1479.5565689811447$node8%373.46244902152534$home2%156.59538845914926$node25%2486.540640460643$node24%1394.5040904455097$node13%256.1060420016565$node20%2639.796276802997
+Recieved request for number of output files. Current done: 1
+10.244.0.0 - - [09/Jan/2019 09:04:35] "GET / HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 2botnet 1547024685.278853 globalfusion
+10.244.19.132 - - [09/Jan/2019 09:04:45] "GET /recv_runtime_profile_computingnode?task_name=globalfusion&work_node=node19&msg=rt_enter+2botnet+1547024685.278853 HTTP/1.1" 200 -
+Received flask message: node19 rt_enter 2botnet 1547024685.2932303 globalfusion
+10.244.19.132 - - [09/Jan/2019 09:04:45] "GET /recv_runtime_profile_computingnode?task_name=globalfusion&work_node=node19&msg=rt_enter+2botnet+1547024685.2932303 HTTP/1.1" 200 -
+Received flask message: node19 rt_exec 2botnet 1547024685.2975335 globalfusion
+10.244.19.132 - - [09/Jan/2019 09:04:45] "GET /recv_runtime_profile_computingnode?task_name=globalfusion&work_node=node19&msg=rt_exec+2botnet+1547024685.2975335 HTTP/1.1" 200 -
+Received flask message: node19 rt_finish 2botnet 1547024695.8181376 globalfusion
+----------------------------
+Runtime info at each computing node
+Worker node: node19
+Input file : 2botnet
+Task name: globalfusion
+Total duration time:10.524907350540161
+Waiting time:0.0043032169342041016
+node19 execution time:10.520604133605957
+----------------------------
+********************************************
+Runtime profiling computing node info:
+Worker_node Task_name  local_input_file Enter_time Execute_time Finish_time Elapse_time Duration_time Waiting_time 
+
+node19     aggregate1 1botnet    1547023775.5285323 1547023775.5358572 1547023791.0641167 15.535584449768066 15.528259515762329 0.007324934005737305
+
+node4      aggregate0 2botnet    1547024151.8207884 1547024151.8267283 1547024167.3535197 15.532731294631958 15.526791334152222 0.005939960479736328
+
+node19     localpro   1botnet    1547023715.2403517 1547023715.2726214 1547023730.8281426 15.587790966033936 15.555521249771118 0.03226971626281738
+
+Bad reception or failed processing in Flask for runtime profiling
+unsupported operand type(s) for -: 'float' and 'list'
+10.244.19.132 - - [09/Jan/2019 09:04:55] "GET /recv_runtime_profile_computingnode?task_name=globalfusion&work_node=node19&msg=rt_finish+2botnet+1547024695.8181376 HTTP/1.1" 200 -
+ending time is:  [1547024098.4725385, 1547024696.5994031]
+starting time is:  [1547023700.638397, 1547024131.028803]
+execution time is:  [397.8341414928436, 565.5706000328064]
+---- Finish generating sequential input files
+Recieved request for number of output files. Current done: 2
+10.244.0.0 - - [09/Jan/2019 09:05:35] "GET / HTTP/1.1" 200 -

@@ -92,7 +92,7 @@ if __name__ == '__main__':
     if n[1].isdigit():
         num = float(n[1])
     sleep_time_default = 240
-    sleep_time = sleep_time_default + (num-1)*240
+    sleep_time = sleep_time_default + (num-1)*120
     print('The delay to send sample files')
     print(sleep_time)
     time.sleep(sleep_time)

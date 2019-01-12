@@ -97,7 +97,7 @@ def receive_price_info():
     try:
         pricing_info = request.args.get('pricing_info').split('#')
         print("Received pricing info")
-        print(pricing_info)
+        # print(pricing_info)
         #Network, CPU, Memory, Queue
         node_name = pricing_info[0]
 
@@ -112,7 +112,10 @@ def receive_price_info():
             # print(price.split('%')[0])
             # print(price.split('%')[1])
             task_price_net[node_name,price.split('%')[0]] = float(price.split('%')[1])
-        print(task_price_net)
+        # print(task_price_net)
+        print('Check price updated interval ')
+        print(node_name)
+        pass_time[node_name] = TimedValue()
 
 
     except Exception as e:
@@ -194,8 +197,18 @@ def default_best_node():
                 # print(item)
                 # print(p)
                 if item in home_ids: continue
+                #check time pass
+                print('Check passing time------------------')
+                print(item)
+
+                test = pass_time[item].__call__()
+                print(test)
+                if test==True: 
+                    print('Yeahhhhhhhhhhhhhhhhhhhhhh')
+                    task_price_network[item] = float('Inf')
+                print(task_price_network[item])
                 task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
-            
+                print(task_price_summary[item])
             # print('------------3')
             
             print('Summary cost')
@@ -416,6 +429,17 @@ def send_runtime_profile(msg,taskname):
         return "not ok"
     return res
 
+class TimedValue:
+
+    def __init__(self):
+        self._started_at = datetime.datetime.utcnow()
+
+    def __call__(self):
+        time_passed = datetime.datetime.utcnow() - self._started_at
+        if time_passed.total_seconds() > (6*60-1): #scheduled price announce = 3 mins
+            return True
+        return False
+
 class MonitorRecv(multiprocessing.Process):
     def __init__(self):
         multiprocessing.Process.__init__(self)
@@ -570,6 +594,9 @@ def main():
     task_price_queue = manager.dict()
     task_price_net = manager.dict()
     task_node_map = manager.dict()
+
+    global pass_time
+    pass_time = dict()
     
 
 

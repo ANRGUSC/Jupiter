@@ -100,10 +100,13 @@ def receive_price_info():
         print(price_net_info)
         for price in price_net_info:
             # print(price)
-            # print(node_name)
-            # print(price.split('%')[0])
+            print(node_name)
+            print(price.split('%')[0])
             # print(price.split('%')[1])
             task_price_net[node_name,price.split('%')[0]] = float(price.split('%')[1])
+        print('Check price updated interval ')
+        print(node_name)
+        pass_time[node_name] = TimedValue()
         txec = toc(t)
         bottleneck['receiveprice'].append(txec)
         print(np.mean(bottleneck['receiveprice']))
@@ -175,8 +178,18 @@ def default_best_node(source_node):
             # print(task_price_mem[item])
             # print(task_price_queue[item])
             # print(task_price_network[item])
+            #check time pass
+            print('Check passing time------------------')
+            print(item)
+
+            test = pass_time[item].__call__()
+            print(test)
+            if test==True: 
+                print('Yeahhhhhhhhhhhhhhhhhhhhhh')
+                task_price_network[item] = float('Inf')
+            print(task_price_network[item])
             task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
-        
+            print(task_price_summary[item])
         
         print('Summary cost')
         print(task_price_summary)
@@ -305,7 +318,17 @@ def push_controller_map():
         print(time.time()-t1)
     txec = toc(t)
     print('***************************************************')
-    
+
+class TimedValue:
+
+    def __init__(self):
+        self._started_at = datetime.datetime.utcnow()
+
+    def __call__(self):
+        time_passed = datetime.datetime.utcnow() - self._started_at
+        if time_passed.total_seconds() > (6*60-1): #scheduled price announce = 3 mins
+            return True
+        return False
 
 class Worker(threading.Thread):
 
@@ -439,6 +462,9 @@ def main():
     task_price_queue = manager.dict()
     task_price_net = manager.dict()
     task_node_summary = manager.dict()
+
+    global pass_time
+    pass_time = dict()
 
     # Set up default value for task_node_summary: the task controller will perform the tasks also
     task_node_summary['current_best_node'] = self_id

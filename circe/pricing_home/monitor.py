@@ -223,6 +223,7 @@ def send_runtime_profile(msg,taskname):
         return "not ok"
     return res
 
+
 class MonitorRecv(multiprocessing.Process):
     def __init__(self):
         multiprocessing.Process.__init__(self)
