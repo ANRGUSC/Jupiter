@@ -154,7 +154,8 @@ def recv_runtime_profile():
             print("Waiting time:" + str(rt_exec_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
             print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
             
-            print('----------------------------')  
+            print('----------------------------') 
+            # print(worker_node) 
             if worker_node == "globalfusion" or "task4":
                 # Per task stats:
                 print('********************************************') 
@@ -173,8 +174,12 @@ def recv_runtime_profile():
                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
                 print(s)
                 log_file.write(s)
+                # print(rt_enter_time)
                 for k, v in rt_enter_time.items():
                     worker, file = k
+                    # print(worker)
+                    # print(file)
+                    # print(rt_finish_time)
                     if k in rt_finish_time:
                         elapse = rt_finish_time[k]-v
                         duration = rt_finish_time[k]-rt_exec_time[k]
@@ -369,8 +374,6 @@ class Handler(FileSystemEventHandler):
 
             print('***************************************************')
             print("Received file as input - %s." % event.src_path)  
-            t = tic()          
-
             if RUNTIME == 1:   
                 ts = time.time() 
                 s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.src_path,ts)
@@ -388,9 +391,9 @@ class Handler(FileSystemEventHandler):
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
             transfer_data(IP,username, password,source, destination)
-        txec = toc(t)
-        bottleneck['receiveinput'].append(txec)
-        print(np.mean(bottleneck['receiveinput']))
+        
+        # bottleneck['receiveinput'].append(txec)
+        # print(np.mean(bottleneck['receiveinput']))
         print('***************************************************')
 def main():
     """

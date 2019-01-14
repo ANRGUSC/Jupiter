@@ -473,9 +473,9 @@ def main():
         
         if jupiter_config.PRICING == 0:
             option = 'nopricing'
-        elif jupiter_config.PRICING == 5:
+        elif jupiter_config.PRICING == 1:
             option = 'pricing_push'
-        elif jupiter_config.PRICING == 6:
+        elif jupiter_config.PRICING == 2:
             option = 'pricing_driven'
         else: 
             option = 'pricing'

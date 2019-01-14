@@ -91,21 +91,21 @@ def set_globals():
 	pricing_option 			= 'pricing' #original pricing
 	profiler_option     	= 'onehome'
 
-	if PRICING == 2:#separated
-		pricing_option 		= 'pricing_separate'
-	if PRICING == 3:#decoupled
-		pricing_option 		= 'pricing_coded'
-	if PRICING == 4:#home
-		pricing_option 		= 'pricing_home'
-	if PRICING == 5:#multiple home (push circe)
-		pricing_option 		= 'pricing_multiple_home'
+	# if PRICING == 2:#separated
+	# 	pricing_option 		= 'pricing_separate'
+	# if PRICING == 3:#decoupled
+	# 	pricing_option 		= 'pricing_coded'
+	# if PRICING == 4:#home
+	# 	pricing_option 		= 'pricing_home'
+	if PRICING == 1:#multiple home (push circe)
+		pricing_option 		= 'pricing_push'
 		profiler_option     = 'multiple_home'
 		NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
 		EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
 		HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
 		WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
-	if PRICING == 6:#multiple home, pricing (event-driven circe)
-		pricing_option 		= 'pricing_final'
+	if PRICING == 2:#multiple home, pricing (event-driven circe)
+		pricing_option 		= 'pricing_event'
 		profiler_option     = 'multiple_home'
 		NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
 		EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
