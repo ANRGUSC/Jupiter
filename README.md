@@ -1,7 +1,21 @@
 # Jupiter  
 
 Jupiter is an orchestrator for Dispersed Computing (distributed computing with networked computers) that 
-uses Docker containers and Kubernetes (K8s).  The Jupiter system has three
+uses Docker containers and Kubernetes (K8s).  
+
+It allows complex computing applications that are specified as directed acyclic graph (DAG)-based task 
+graphs to be distributed across an arbitrary network of computers in such a way as to optimize the 
+execution of the distributed computations. Depending on the scheduling algorithm/task mapper used with the 
+Jupiter framework, the optimizations may be for different objectives, for example, the goal may be to try 
+and minimize the total end to end delay (makespan) of the computation for a single set of data inputs. Jupiter
+includes both centralized task mappers such as one that performs the classical HEFT (heterogeneous earliest finish
+time) scheduling algorithm, as well as an innovative new distributed task mapping framework called WAVE. 
+In order to do enable optimization-oriented task mapping, Jupiter also provides tools for profiling the 
+application run time on the computers as well as profiling and monitoring the performance of the network. Jupiter also 
+provides for container-based code dispatch and execution of the distributed application at run-time for both single-shot
+and pipelined (streaming) computations. 
+
+The Jupiter system has three
 main components: Profilers, Task Mappers, and
 CIRCE Dispatcher. **(For a detailed documentation refer to our [http://jupiter.readthedocs.io/](http://jupiter.readthedocs.io/))**
 
@@ -15,13 +29,19 @@ resources as well as network links between compute nodes in a dispersed
 computing system to a central node. DRUPE consists of a network profiler and a
 resource profiler.
 
-The onetime Execution Profiler is a tool to collect information about the computation time of the pipelined computations described in the form of a directed acyclic graph (DAG) on each of the networked computation resources. This tool runs a sample execution of the entire DAG on every node to collect the statistics for each of the task in the DAG as well as the makespan of the entire DAG. 
+The onetime Execution Profiler is a tool to collect information about the computation time of the pipelined computations
+described in the form of a directed acyclic graph (DAG) on each of the networked computation resources. This tool runs a sample
+execution of the entire DAG on every node to collect the statistics for each of the task in the DAG as well as the makespan of
+the entire DAG. 
 
 
 ### Task Mappers
-Jupiter comes with three different task mappers: HEFT, WAVE Greedy, WAVE Random; to effciently map the tasks of a DAG to the processors such that the makespan of the pipelines processing is optimized.
+Jupiter comes with three different task mappers: HEFT, WAVE Greedy, WAVE Random; to effciently map the tasks of a DAG to the
+processors such that the makespan of the pipelines processing is optimized.
 
-[HEFT](https://github.com/oyld/heft.git) i.e., Heterogeneous Earliest Finish Time is a static centralized algorithm for a DAG based task graph that efficiently maps the tasks of the DAG into the processors by taking into account global information about communication delays and execution times.
+[HEFT](https://github.com/oyld/heft.git) i.e., Heterogeneous Earliest Finish Time is a static centralized algorithm for a DAG
+based task graph that efficiently maps the tasks of the DAG into the processors by taking into account global information about
+communication delays and execution times.
 
 [WAVE](https://github.com/ANRGUSC/WAVE) is a distributed scheduler for DAG type
 task graph that outputs a mapping of tasks to real compute nodes by only taking into acount local profiler statistics.
@@ -78,8 +98,8 @@ You can install them by simply running ```pip3 install -r k8_requirements.txt```
 4) You MUST have a working kubernetes cluster with `proxy` capability.
 
 5) To control the cluster, you need to grab the `admin.conf` file from the k8s 
-master node. When the cluster is bootstrapped by `kubeadm`, the `admin.conf` file is stored in `/etc/kubernetes/admin.conf`. Usually, a copy
-is made into the $HOME folder. Either way, make a copy of `admin.conf` into your 
+master node. When the cluster is bootstrapped by `kubeadm`, the `admin.conf` file is stored in `/etc/kubernetes/admin.conf`.
+Usually, a copy is made into the $HOME folder. Either way, make a copy of `admin.conf` into your 
 local machine's home folder. 
 **Currently, you need to have `admin.conf` in the $Home folder. Our python scripts need it exactly
 there to work.**
@@ -125,24 +145,40 @@ For a step by step instruction for deployment of Jupiter, please refer to our [t
 
 ## Tutorial 
 
-Step by step instructions to set up Jupiter on a private network provided by Sean Griffin (Raytheon BBN Technologies) [here](tutorial/Jupiter_setup.pdf)
+Step by step instructions to set up Jupiter on a private network provided by Sean Griffin (Raytheon BBN Technologies) [here
+(tutorial/Jupiter_setup.pdf)
 
 ## Applications:
 
- Jupiter accepts pipelined computations described in a form of a Graph where the main task flow is represented as a Directed Acyclic Graph(DAG). Thus, one should be able separate the graph into two pieces, the DAG part and non-DAG part. Jupiter requires that each task in the DAG part of the graph to be written as a Python function in a separate file under the scripts folder. On the other hand the non-DAG tasks can be either Python function or a shell script with any number of arguments, located under the scripts folder.
+ Jupiter accepts pipelined computations described in a form of a Graph where the main task flow is represented as a Directed
+ Acyclic Graph (DAG). Thus, one should be able separate the graph into two pieces, the DAG part and non-DAG part. Jupiter
+ requires that each task in the DAG part of the graph to be written as a Python function in a separate file under the scripts
+ folder. On the other hand the non-DAG tasks can be either Python function or a shell script with any number of arguments,
+ located under the scripts folder.
 
- As an example, please refer to our codes available for an application called the Coded Network Anomaly Detection ([Coded DNAD](https://github.com/ANRGUSC/Coded-DNAD)). This is an application customized for the Jupiter Orchestrator.
+ As an example, please refer to our codes available for an application called the Coded Network Anomaly Detection ([Coded
+ DNAD](https://github.com/ANRGUSC/Coded-DNAD)). This is an application customized for the Jupiter Orchestrator.
 
 ## Visualization
 
-The visualization tool for Jupiter is given [here](https://github.com/ANRGUSC/Jupiter_Visualization ). This tool generates an interactive plot to show the scheduling result of WAVE and the dispatcher mapping of CIRCE. To visualize your own application, make sure the format of your logs are in line with the input files of the tools. We will integrate this as a real-time visualization tool for Jupiter in the next release.  
+The visualization tool for Jupiter is given [here](https://github.com/ANRGUSC/Jupiter_Visualization ). This tool generates an
+interactive plot to show the scheduling result of WAVE and the dispatcher mapping of CIRCE. To visualize your own application,
+make sure the format of your logs are in line with the input files of the tools. We will integrate this as a real-time
+visualization tool for Jupiter in the next release.  
 
 ## References
-[1] Quynh Nguyen, Pradipta Ghosh, and Bhaskar Krishnamachari, “End-to-End Network Performance Monitoring for Dispersed Computing“, International Conference on Computing, Networking and Communications, March 2018
+[1] Quynh Nguyen, Pradipta Ghosh, and Bhaskar Krishnamachari, “End-to-End Network Performance Monitoring for Dispersed
+Computing“, International Conference on Computing, Networking and Communications, March 2018
 
-[2] Aleksandra Knezevic, Quynh Nguyen, Jason A. Tran, Pradipta Ghosh, Pranav Sakulkar, Bhaskar Krishnamachari, and Murali Annavaram, “DEMO: CIRCE – A runtime scheduler for DAG-based dispersed computing,” The Second ACM/IEEE Symposium on Edge Computing (SEC) 2017. (poster)
+[2] Aleksandra Knezevic, Quynh Nguyen, Jason A. Tran, Pradipta Ghosh, Pranav Sakulkar, Bhaskar Krishnamachari, and Murali
+Annavaram, “DEMO: CIRCE – A runtime scheduler for DAG-based dispersed computing,” The Second ACM/IEEE Symposium on Edge Computing
+(SEC) 2017. (poster)
 
-[3] Pranav Sakulkar, Pradipta Ghosh, Aleksandra Knezevic, Jiatong Wang, Quynh Nguyen, Jason Tran, H.V. Krishna Giri Narra, Zhifeng Lin, Songze Li, Ming Yu, Bhaskar Krishnamachari, Salman Avestimehr, and Murali Annavaram, “WAVE: A Distributed Scheduling Framework for Dispersed Computing“, USC ANRG Technical Report, ANRG-2018-01.
+[3] Pranav Sakulkar, Pradipta Ghosh, Aleksandra Knezevic, Jiatong Wang, Quynh Nguyen, Jason Tran, H.V. Krishna Giri Narra,
+Zhifeng Lin, Songze Li, Ming Yu, Bhaskar Krishnamachari, Salman Avestimehr, and Murali Annavaram, “WAVE: A Distributed Scheduling
+Framework for Dispersed Computing“, USC ANRG Technical Report, ANRG-2018-01.
 
 ## Acknowledgment
-This material is based upon work supported by Defense Advanced Research Projects Agency (DARPA) under Contract No. HR001117C0053. Any views, opinions, and/or findings expressed are those of the author(s) and should not be interpreted as representing the official views or policies of the Department of Defense or the U.S. Government.
+This material is based upon work supported by Defense Advanced Research Projects Agency (DARPA) under Contract No. HR001117C0053.
+Any views, opinions, and/or findings expressed are those of the author(s) and should not be interpreted as representing the
+official views or policies of the Department of Defense or the U.S. Government.
