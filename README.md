@@ -3,7 +3,7 @@
 Jupiter is an orchestrator for Dispersed Computing (distributed computing with networked computers) that 
 uses Docker containers and Kubernetes (K8s).  
 
-It allows complex computing applications that are specified as directed acyclic graph (DAG)-based task 
+Jupiter enables complex computing applications that are specified as directed acyclic graph (DAG)-based task 
 graphs to be distributed across an arbitrary network of computers in such a way as to optimize the 
 execution of the distributed computations. Depending on the scheduling algorithm/task mapper used with the 
 Jupiter framework, the optimizations may be for different objectives, for example, the goal may be to try 
