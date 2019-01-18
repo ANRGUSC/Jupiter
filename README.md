@@ -146,7 +146,7 @@ For a step by step instruction for deployment of Jupiter, please refer to our [t
 ## Tutorial 
 
 Step by step instructions to set up Jupiter on a private network provided by Sean Griffin (Raytheon BBN Technologies) [here
-(tutorial/Jupiter_setup.pdf)
+(tutorial/Jupiter_setup.pdf)]
 
 ## Applications:
 
