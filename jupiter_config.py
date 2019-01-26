@@ -91,12 +91,6 @@ def set_globals():
 	pricing_option 			= 'pricing' #original pricing
 	profiler_option     	= 'onehome'
 
-	# if PRICING == 2:#separated
-	# 	pricing_option 		= 'pricing_separate'
-	# if PRICING == 3:#decoupled
-	# 	pricing_option 		= 'pricing_coded'
-	# if PRICING == 4:#home
-	# 	pricing_option 		= 'pricing_home'
 	if PRICING == 1:#multiple home (push circe)
 		pricing_option 		= 'pricing_push'
 		profiler_option     = 'multiple_home'
@@ -125,65 +119,63 @@ def set_globals():
 	KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
 	# Namespaces
-	DEPLOYMENT_NAMESPACE    = 'quynh-circe'
-	PROFILER_NAMESPACE      = 'quynh-profiler'
-	MAPPER_NAMESPACE        = 'quynh-mapper'
-	EXEC_NAMESPACE          = 'quynh-exec'
+	DEPLOYMENT_NAMESPACE    = 'johndoe-circe'
+	PROFILER_NAMESPACE      = 'johndoe-profiler'
+	MAPPER_NAMESPACE        = 'johndoe-mapper'
+	EXEC_NAMESPACE          = 'johndoe-exec'
 
 	""" Node file path and first task information """
 	global HOME_NODE, HOME_CHILD
 
 	HOME_NODE               = get_home_node(HERE + 'nodes.txt')
 	#HOME_CHILD              = 'task1'
-	HOME_CHILD              = 'localpro'
+	HOME_CHILD              = 'sample_ingress_task1'
 
 	"""pricing CIRCE home and worker images"""
 	global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTING_IMAGE
 
-	PRICING_HOME_IMAGE 		= 'docker.io/anrg/%s_circe_home:coded' %(pricing_option)
-	WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:coded' %(pricing_option)
-	WORKER_COMPUTING_IMAGE  = 'docker.io/anrg/%s_circe_computing:coded' %(pricing_option)
+	PRICING_HOME_IMAGE 		= 'docker.io/johndoe/%s_circe_home:coded' %(pricing_option)
+	WORKER_CONTROLLER_IMAGE = 'docker.io/johndoe/%s_circe_controller:coded' %(pricing_option)
+	WORKER_COMPUTING_IMAGE  = 'docker.io/johndoe/%s_circe_computing:coded' %(pricing_option)
 	
 	"""CIRCE home and worker images for execution profiler"""
 	global HOME_IMAGE, WORKER_IMAGE
 
-	HOME_IMAGE              = 'docker.io/anrg/circe_home:coded'
-	WORKER_IMAGE            = 'docker.io/anrg/circe_worker:coded'
+	HOME_IMAGE              = 'docker.io/johndoe/circe_home:coded'
+	WORKER_IMAGE            = 'docker.io/johndoe/circe_worker:coded'
 
 	"""DRUPE home and worker images"""
 	global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
 	
-	PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded'%(profiler_option)
-	PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded'%(profiler_option)
+	PROFILER_HOME_IMAGE     = 'docker.io/johndoe/%s_profiler_home:coded'%(profiler_option)
+	PROFILER_WORKER_IMAGE   = 'docker.io/johndoe/%s_profiler_worker:coded'%(profiler_option)
 
 	"""WAVE home and worker images"""
 	global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
 
 	#coded: random, v1: greedy
 
-	WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:coded' %(mapper_option,profiler_option)
-	WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:coded' %(mapper_option,profiler_option)
+	WAVE_HOME_IMAGE         = 'docker.io/johndoe/%s_%s_wave_home:coded' %(mapper_option,profiler_option)
+	WAVE_WORKER_IMAGE       = 'docker.io/johndoe/%s_%s_wave_worker:coded' %(mapper_option,profiler_option)
 
 	"""Execution profiler home and worker images"""
 	global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-	EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:coded'%(profiler_option)
-	EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:coded'%(profiler_option)
+	EXEC_HOME_IMAGE         = 'docker.io/johndoe/%s_exec_home:coded'%(profiler_option)
+	EXEC_WORKER_IMAGE       = 'docker.io/johndoe/%s_exec_worker:coded'%(profiler_option)
 
 	"""HEFT docker image"""
 	global HEFT_IMAGE
 
-	HEFT_IMAGE              = 'docker.io/anrg/%s_heft:coded'%(profiler_option)
+	HEFT_IMAGE              = 'docker.io/johndoe/%s_heft:coded'%(profiler_option)
 
 	"""Application Information"""
 	global APP_PATH, APP_NAME
 
-	APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app_dag/'
-	APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
+	APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
+	APP_NAME                = 'app_specific_files/network_monitoring_app'
 
-	# APP_PATH                = HERE  + 'app_specific_files/dummy_app/'
-	# APP_NAME                = 'app_specific_files/dummy_app'
 
 if __name__ == '__main__':
 	set_globals()
