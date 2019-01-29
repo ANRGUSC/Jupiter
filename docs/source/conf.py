@@ -17,24 +17,26 @@ import sys
 import mock
 
 sys.path.insert(0, os.path.abspath('../../'))
-sys.path.insert(0, os.path.abspath('../../circe'))
+sys.path.insert(0, os.path.abspath('../../circe/original'))
+sys.path.insert(0, os.path.abspath('../../circe/pricing_event'))
+sys.path.insert(0, os.path.abspath('../../circe/pricing_push'))
 
-sys.path.insert(0, os.path.abspath('../../profilers/execution_profiler'))
-sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler'))
-sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler/home/resource_profiling_files'))
-sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler/home'))
-sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler/worker'))
+sys.path.insert(0, os.path.abspath('../../profilers/execution_profiler_mulhome'))
+sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler_mulhome'))
+sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler_mulhome/home/resource_profiling_files'))
+sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler_mulhome/home'))
+sys.path.insert(0, os.path.abspath('../../profilers/network_resource_profiler_mulhome/worker'))
 
-sys.path.insert(0, os.path.abspath('../../scripts'))
+sys.path.insert(0, os.path.abspath('../../mulhome_scripts'))
 
-sys.path.insert(0, os.path.abspath('../../task_mapper/wave/random_wave/home'))
-sys.path.insert(0, os.path.abspath('../../task_mapper/wave/random_wave/worker'))
+sys.path.insert(0, os.path.abspath('../../task_mapper/wave_mulhome/random_wave/home'))
+sys.path.insert(0, os.path.abspath('../../task_mapper/wave_mulhome/random_wave/worker'))
 
-sys.path.insert(0, os.path.abspath('../../task_mapper/wave/greedy_wave/home'))
-sys.path.insert(0, os.path.abspath('../../task_mapper/wave/greedy_wave/worker'))
+sys.path.insert(0, os.path.abspath('../../task_mapper/wave_mulhome/greedy_wave/home'))
+sys.path.insert(0, os.path.abspath('../../task_mapper/wave_mulhome/greedy_wave/worker'))
 
-sys.path.insert(0, os.path.abspath('../../task_mapper/heft/modified'))
-sys.path.insert(0, os.path.abspath('../../task_mapper/heft/original'))
+sys.path.insert(0, os.path.abspath('../../task_mapper/heft_mulhome/modified'))
+sys.path.insert(0, os.path.abspath('../../task_mapper/heft_mulhome/original'))
 
 
 autodoc_mock_imports = ['numpy', 'paramiko','pymongo','netifaces','pandas','scp','flask','urllib','urllib.request',
@@ -45,7 +47,7 @@ autodoc_mock_imports = ['numpy', 'paramiko','pymongo','netifaces','pandas','scp'
 # -- Project information -----------------------------------------------------
 
 project = 'Jupiter'
-copyright = '2018, ANRG'
+copyright = '2019, ANRG'
 author = 'ANRG'
 
 # The short X.Y version
