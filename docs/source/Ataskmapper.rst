@@ -10,11 +10,11 @@ HEFT
 .. toctree::
    :maxdepth: 4
 
-   task_mapper/heft/modified/create_input
-   task_mapper/heft/modified/heft_dup
-   task_mapper/heft/modified/master_heft
-   task_mapper/heft/modified/read_input_heft
-   task_mapper/heft/modified/write_input_heft
+   task_mapper/heft_mulhome/modified/create_input
+   task_mapper/heft_mulhome/modified/heft_dup
+   task_mapper/heft_mulhome/modified/master_heft
+   task_mapper/heft_mulhome/modified/read_input_heft
+   task_mapper/heft_mulhome/modified/write_input_heft
 
 
 WAVE
@@ -26,8 +26,8 @@ Random Wave
 .. toctree::
    :maxdepth: 4
 
-   task_mapper/wave/random_wave/home/master_random
-   task_mapper/wave/random_wave/worker/child_appointment_random
+   task_mapper/wave_mulhome/random_wave/home/master_random
+   task_mapper/wave_mulhome/random_wave/worker/child_appointment_random
 
 Greedy Wave
 -----------
@@ -35,5 +35,5 @@ Greedy Wave
 .. toctree::
    :maxdepth: 4
    
-   task_mapper/wave/greedy_wave/home/master_greedy
-   task_mapper/wave/greedy_wave/worker/child_appointment_greedy
+   task_mapper/wave_mulhome/greedy_wave/home/master_greedy
+   task_mapper/wave_mulhome/greedy_wave/worker/child_appointment_greedy

@@ -3,31 +3,32 @@
 make clean
 
 rm -rf source/circe
-sphinx-apidoc -o source/circe ../circe 
+sphinx-apidoc -o source/circe/original ../circe/original
+sphinx-apidoc -o source/circe/pricing_event ../circe/pricing_event
+sphinx-apidoc -o source/circe/pricing_push ../circe/pricing_push
 
-rm -rf source/profilers/execution_profiler
-sphinx-apidoc -o source/profilers/execution_profiler ../profilers/execution_profiler
 
-rm -rf source/profilers/network_resource_profiler
+rm -rf source/profilers
+sphinx-apidoc -o source/profilers/execution_profiler_mulhome ../profilers/execution_profiler_mulhome
 
-sphinx-apidoc -o source/profilers/network_resource_profiler ../profilers/network_resource_profiler
+sphinx-apidoc -o source/profilers/network_resource_profiler_mulhome ../profilers/network_resource_profiler_mulhome
 
-sphinx-apidoc -o source/profilers/network_resource_profiler/home ../profilers/network_resource_profiler/home
-sphinx-apidoc -o source/profilers/network_resource_profiler/worker ../profilers/network_resource_profiler/worker
+sphinx-apidoc -o source/profilers/network_resource_profiler_mulhome/home ../profilers/network_resource_profiler_mulhome/home
+sphinx-apidoc -o source/profilers/network_resource_profiler_mulhome/worker ../profilers/network_resource_profiler_mulhome/worker
 
-sphinx-apidoc -o source/profilers/network_resource_profiler/home/resource_profiling_files ../profilers/network_resource_profiler/home/resource_profiling_files
+sphinx-apidoc -o source/profilers/network_resource_profiler_mulhome/home/resource_profiling_files ../profilers/network_resource_profiler_mulhome/home/resource_profiling_files
 
-rm -rf source/scripts 
-sphinx-apidoc -o source/scripts ../scripts
+rm -rf source/mulhome_scripts 
+sphinx-apidoc -o source/mulhome_scripts ../mulhome_scripts
 
-rm -rf source/task_mapper/heft
-sphinx-apidoc -o source/task_mapper/heft/modified ../task_mapper/heft/modified
+rm -rf source/task_mapper/heft_mulhome
+sphinx-apidoc -o source/task_mapper/heft_mulhome/modified ../task_mapper/heft_mulhome/modified
 
-rm -rf source/task_mapper/wave
-sphinx-apidoc -o source/task_mapper/wave/greedy_wave/home ../task_mapper/wave/greedy_wave/home
-sphinx-apidoc -o source/task_mapper/wave/greedy_wave/worker ../task_mapper/wave/greedy_wave/worker
-sphinx-apidoc -o source/task_mapper/wave/random_wave/home ../task_mapper/wave/random_wave/home
-sphinx-apidoc -o source/task_mapper/wave/random_wave/worker ../task_mapper/wave/random_wave/worker
+rm -rf source/task_mapper/wave_mulhome
+sphinx-apidoc -o source/task_mapper/wave_mulhome/greedy_wave/home ../task_mapper/wave_mulhome/greedy_wave/home
+sphinx-apidoc -o source/task_mapper/wave_mulhome/greedy_wave/worker ../task_mapper/wave_mulhome/greedy_wave/worker
+sphinx-apidoc -o source/task_mapper/wave_mulhome/random_wave/home ../task_mapper/wave_mulhome/random_wave/home
+sphinx-apidoc -o source/task_mapper/wave_mulhome/random_wave/worker ../task_mapper/wave_mulhome/random_wave/worker
 
 make html
 xdg-open build/html/index.html
