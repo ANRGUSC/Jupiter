@@ -8,62 +8,70 @@ Build scripts
 .. toctree::
    :maxdepth: 4
 
-   scripts/build_push_circe
-   scripts/build_push_exec
-   scripts/build_push_heft
-   scripts/build_push_jupiter
-   scripts/build_push_profiler
-   scripts/build_push_wave
+   mulhome_scripts/build_push_circe
+   mulhome_scripts/build_push_pricing_circe
+   mulhome_scripts/build_push_exec
+   mulhome_scripts/build_push_heft
+   mulhome_scripts/build_push_jupiter
+   mulhome_scripts/build_push_profiler
+   mulhome_scripts/build_push_wave
 
 Teardown scripts
 ----------------
 .. toctree::
    :maxdepth: 4
 
-   scripts/delete_all_circe
-   scripts/delete_all_exec
-   scripts/delete_all_heft
-   scripts/delete_all_profilers
-   scripts/delete_all_waves
-   scripts/k8s_jupiter_teardown
+   mulhome_scripts/delete_all_circe
+   mulhome_scripts/delete_all_pricing_circe
+   mulhome_scripts/delete_all_exec
+   mulhome_scripts/delete_all_heft
+   mulhome_scripts/delete_all_profilers
+   mulhome_scripts/delete_all_waves
+   mulhome_scripts/k8s_jupiter_teardown
+   mulhome_scripts/auto_teardown_system
 
 Deploy scripts
 --------------
 .. toctree::
    :maxdepth: 4
    
-   scripts/k8s_circe_scheduler
-   scripts/k8s_exec_scheduler
-   scripts/k8s_heft_scheduler
-   scripts/k8s_jupiter_deploy
-   scripts/k8s_profiler_scheduler
-   scripts/k8s_wave_scheduler
+   mulhome_scripts/k8s_circe_scheduler
+   mulhome_scripts/k8s_pricing_circe_scheduler
+   mulhome_scripts/k8s_exec_scheduler
+   mulhome_scripts/k8s_heft_scheduler
+   mulhome_scripts/k8s_jupiter_deploy
+   mulhome_scripts/k8s_profiler_scheduler
+   mulhome_scripts/k8s_wave_scheduler
+   mulhome_scripts/auto_generate_log
 
 Configuration scripts
 ---------------------
 .. toctree::
    :maxdepth: 4
 
-   scripts/write_circe_service_specs
-   scripts/write_circe_specs
-   scripts/write_exec_service_specs
-   scripts/write_exec_specs
-   scripts/write_heft_service_specs
-   scripts/write_heft_specs
-   scripts/write_profiler_service_specs
-   scripts/write_profiler_specs
-   scripts/write_wave_service_specs
-   scripts/write_wave_specs
+   mulhome_scripts/write_circe_service_specs
+   mulhome_scripts/write_circe_specs
+   mulhome_scripts/write_pricing_circe_service_specs
+   mulhome_scripts/write_pricing_circe_specs
+   mulhome_scripts/write_exec_service_specs
+   mulhome_scripts/write_exec_specs
+   mulhome_scripts/write_heft_service_specs
+   mulhome_scripts/write_heft_specs
+   mulhome_scripts/write_profiler_service_specs
+   mulhome_scripts/write_profiler_specs
+   mulhome_scripts/write_wave_service_specs
+   mulhome_scripts/write_wave_specs
 
 Docker file preparation scripts
 -------------------------------
 .. toctree::
    :maxdepth: 4
 
-   circe/circe_docker_files_generator
-   profilers/execution_profiler/exec_docker_files_generator
-   profilers/network_resource_profiler/profiler_docker_files_generator
-   task_mapper/heft/modified/heft_dockerfile_generator
+   circe/original/circe_docker_files_generator
+   profilers/execution_profiler_mulhome/exec_docker_files_generator
+   profilers/network_resource_profiler_mulhome/profiler_docker_files_generator
+   task_mapper/heft_mulhome/modified/heft_dockerfile_generator
+   task_mapper/wave_mulhome/greedy_wave/wave_docker_files_generator
 
 
 Other scripts
@@ -71,10 +79,9 @@ Other scripts
 .. toctree::
    :maxdepth: 4
 
-   scripts/auto_redeploy
-   scripts/static_assignment
-   scripts/utilities
-   scripts/keep_alive
+   mulhome_scripts/static_assignment
+   mulhome_scripts/utilities
+   mulhome_scripts/keep_alive
 
    
 

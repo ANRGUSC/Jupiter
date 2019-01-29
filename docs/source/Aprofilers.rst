@@ -9,11 +9,11 @@ Network Profiler
 .. toctree::
    :maxdepth: 4
 
-   profilers/network_resource_profiler/home/central_query_statistics
-   profilers/network_resource_profiler/home/central_scheduler
-   profilers/network_resource_profiler/home/generate_link_list
-   profilers/network_resource_profiler/worker/automate_droplet
-   profilers/network_resource_profiler/worker/get_schedule
+   profilers/network_resource_profiler_mulhome/home/central_query_statistics
+   profilers/network_resource_profiler_mulhome/home/central_scheduler
+   profilers/network_resource_profiler_mulhome/home/generate_link_list
+   profilers/network_resource_profiler_mulhome/worker/automate_droplet
+   profilers/network_resource_profiler_mulhome/worker/get_schedule
    
 
 
@@ -22,17 +22,17 @@ Resource Profiler
 .. toctree::
    :maxdepth: 4
 
-   profilers/network_resource_profiler/home/resource_profiling_files/insert_to_container
-   profilers/network_resource_profiler/home/resource_profiling_files/job
-   profilers/network_resource_profiler/home/resource_profiling_files/read_info
-   profilers/network_resource_profiler/worker/resource_profiler
+   profilers/network_resource_profiler_mulhome/home/resource_profiling_files/insert_to_container
+   profilers/network_resource_profiler_mulhome/home/resource_profiling_files/job
+   profilers/network_resource_profiler_mulhome/home/resource_profiling_files/read_info
+   profilers/network_resource_profiler_mulhome/worker/resource_profiler
 
 Execution Profiler
 ------------------
 .. toctree::
    :maxdepth: 4
 
-   profilers/execution_profiler/exec_docker_files_generator
-   profilers/execution_profiler/get_files
-   profilers/execution_profiler/profiler_home
-   profilers/execution_profiler/profiler_worker
+   profilers/execution_profiler_mulhome/exec_docker_files_generator
+   profilers/execution_profiler_mulhome/get_files
+   profilers/execution_profiler_mulhome/profiler_home
+   profilers/execution_profiler_mulhome/profiler_worker
