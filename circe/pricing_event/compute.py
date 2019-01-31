@@ -5,7 +5,7 @@
 """
 
 __author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
-__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "3.0"
 
@@ -29,8 +29,7 @@ import time
 import requests
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import urllib.request
-from urllib import parse
+import urllib
 from apscheduler.schedulers.background import BackgroundScheduler
 from readconfig import read_config
 import numpy as np
@@ -533,7 +532,7 @@ def announce_price(task_controller_ip, price):
         params = {'pricing_info':pricing_info}
         print(time.time()-t1)
         t1 = time.time()
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         print(time.time()-t1)
         t1 = time.time()
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -684,7 +683,7 @@ def send_runtime_profile_computingnode(msg,task_name,home_id):
         params = {'msg': msg, "work_node": self_name, "task_name": task_name}
         print(time.time()-t1)
         t1 = time.time()
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         print(time.time()-t1)
         t1 = time.time()
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -765,7 +764,7 @@ def request_best_assignment(home_id,task_name,file_name):
         t = tic()
         url = "http://" + controllers_ip_map[task_name] + ":" + str(FLASK_SVC) + "/receive_best_assignment_request"
         params = {'home_id':home_id,'node_name':self_name,'file_name':file_name}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
