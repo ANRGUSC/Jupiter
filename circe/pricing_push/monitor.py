@@ -5,7 +5,7 @@
 """
 
 __author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
-__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "3.0"
 
@@ -25,8 +25,7 @@ from os import path
 from socket import gethostbyname, gaierror, error
 import multiprocessing
 import time
-import urllib.request
-from urllib import parse
+import urllib
 import configparser
 from multiprocessing import Process, Manager
 from flask import Flask, request
@@ -256,7 +255,7 @@ def send_controller_info(node_ip):
         print("Announce my current node mapping to " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
         params = {'controller_id_map':controller_id_map}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -299,7 +298,7 @@ def send_assignment_info(node_ip):
         assignment_info = self_task + "#"+task_node_map[self_task]
         print(assignment_info)
         params = {'assignment_info': assignment_info}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -316,7 +315,7 @@ def update_assignment_info_to_child(node_ip):
         assignment_info = self_task + "#"+task_node_map[self_task]
         #print(assignment_info)
         params = {'assignment_info': assignment_info}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -390,7 +389,7 @@ def send_monitor_data(msg):
         for home_node_host_port in home_node_host_ports:
             url = "http://" + home_node_host_port + "/recv_monitor_data"
             params = {'msg': msg, "work_node": taskname}
-            params = parse.urlencode(params)
+            params = urllib.parse.urlencode(params)
             req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
             res = urllib.request.urlopen(req)
             res = res.read()
@@ -419,7 +418,7 @@ def send_runtime_profile(msg,taskname):
         for home_node_host_port in home_node_host_ports:
             url = "http://" + home_node_host_port + "/recv_runtime_profile"
             params = {'msg': msg, "work_node": taskname}
-            params = parse.urlencode(params)
+            params = urllib.parse.urlencode(params)
             req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
             res = urllib.request.urlopen(req)
             res = res.read()
