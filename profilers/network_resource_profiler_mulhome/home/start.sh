@@ -53,7 +53,7 @@ echo $home_ips
 # The hostnames correspond to the node name the profiler will run on.
 
 for ((i = 0; i < ${#home_ids[@]}; i++)); do
-    INPUT_ARGS="${home_ids[i]},${home_ips[i]},PASSWORD"
+    INPUT_ARGS="${home_ids[i]},${home_ips[i]},NA"
     echo $INPUT_ARGS >> /network_profiling/central_input/nodes.txt
     INPUT_ARGS_2="${home_ips[i]}"
     echo $INPUT_ARGS_2 >> /resource_profiling/ip_path
@@ -61,7 +61,7 @@ done
 
 
 for ((i = 0; i < ${#nodes[@]}; i++)); do
-    INPUT_ARGS="${nodes[i]},${nodes_ips[i]},PASSWORD"
+    INPUT_ARGS="${nodes[i]},${nodes_ips[i]},NA"
     echo $INPUT_ARGS >> /network_profiling/central_input/nodes.txt
     INPUT_ARGS_2="${nodes_ips[i]}"
     echo $INPUT_ARGS_2 >> /resource_profiling/ip_path

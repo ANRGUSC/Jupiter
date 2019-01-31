@@ -2,7 +2,7 @@ LICENSE
 ========
 .. include:: <isonum.txt>
 
-Copyright |copy| 2018, Autonomous Networks Research Group. All rights reserved.
+Copyright |copy| 2019, Autonomous Networks Research Group. All rights reserved.
 
 Developed by:
 
@@ -15,8 +15,8 @@ Developed by:
 
 Contributors:
 
-- Pradipta Ghosh 
-- Quynh Nguyen 
+- Quynh Nguyen
+- Pradipta Ghosh  
 - Pranav Sakulkar 
 - Aleksandra Knezevic 
 - Jiatong Wang
