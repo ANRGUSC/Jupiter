@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 __author__ = "Pradipta Ghosh and Bhaskar Krishnamachari"
-__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
 
@@ -71,7 +71,7 @@ CMD ["./start.sh"]"""
 ############################################ HOME DOCKER TEMPLATE#########################################################
 
 template_home ="""\
-# ** Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved.
+# ** Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved.
 # **     contributor: Pradipta Ghosh, Quynh Nguyen, Bhaskar Krishnamachari
 # **     Read license file in main directory for more details
 

@@ -5,7 +5,7 @@
 """
 
 __author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
-__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "3.0"
 
@@ -29,8 +29,7 @@ import time
 import requests
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import urllib.request
-from urllib import parse
+import urllib
 from apscheduler.schedulers.background import BackgroundScheduler
 from readconfig import read_config
 
@@ -561,7 +560,7 @@ def announce_price(task_controller_ip, price):
         # print(url)
         # print(task_controller_ip)
         params = {'pricing_info':pricing_info}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -687,7 +686,7 @@ def send_runtime_profile_computingnode(msg,task_name,home_id):
         print("Sending message", msg)
         url = "http://" + home_node_host_ports[home_id] + "/recv_runtime_profile_computingnode"
         params = {'msg': msg, "work_node": self_name, "task_name": task_name}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
