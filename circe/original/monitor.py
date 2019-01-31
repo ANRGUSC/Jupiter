@@ -5,7 +5,7 @@
 """
 
 __author__ = "Aleksandra Knezevic,Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar,  Jason A Tran and Bhaskar Krishnamachari"
-__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
 
@@ -27,7 +27,6 @@ from socket import gethostbyname, gaierror, error
 import multiprocessing
 import time
 import urllib
-import urllib.request
 import configparser
 import numpy as np
 from collections import defaultdict

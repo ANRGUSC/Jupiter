@@ -2,7 +2,7 @@
     This Script allows querrying network profiling information updated from the cenetral mongo database, table ``central_network_profiler``.
 """
 __author__ = "Quynh Nguyen, Pradipta Ghosh, Bhaskar Krishnamachari"
-__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
 

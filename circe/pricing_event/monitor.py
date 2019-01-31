@@ -5,7 +5,7 @@
 """
 
 __author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
-__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "3.0"
 
@@ -25,8 +25,7 @@ from os import path
 from socket import gethostbyname, gaierror, error
 import multiprocessing
 import time
-import urllib.request
-from urllib import parse
+import urllib
 import configparser
 from multiprocessing import Process, Manager
 from flask import Flask, request
@@ -254,7 +253,7 @@ def announce_best_assignment(home_id,best_node, source_node, file_name):
         url = "http://" + node_ip_map[source_node] + ":" + str(FLASK_SVC) + "/receive_best_assignment"
         # print(url)
         params = {'home_id':home_id,'task_name':self_task,'file_name':file_name,'best_computing_node':best_node}
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
@@ -281,7 +280,7 @@ def send_controller_info(node_ip):
         # thread.start()
         print(time.time()-t1)
         t1 = time.time()
-        params = parse.urlencode(params)
+        params = urllib.parse.urlencode(params)
         print(time.time()-t1)
         t1 = time.time()
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))

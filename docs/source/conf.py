@@ -39,7 +39,7 @@ sys.path.insert(0, os.path.abspath('../../task_mapper/heft_mulhome/modified'))
 sys.path.insert(0, os.path.abspath('../../task_mapper/heft_mulhome/original'))
 
 
-autodoc_mock_imports = ['numpy', 'paramiko','pymongo','netifaces','pandas','scp','flask','urllib','urllib.request',
+autodoc_mock_imports = ['numpy', 'paramiko','pymongo','netifaces','pandas','scp','flask','urllib',
                 'apscheduler', 'pyinotify','psutil','_thread','kubernetes','kubernetes.client','kubernetes.client.apis',
                 'xmlrpc','watchdog','yaml','watchdog.events','watchdog.observers','watchdog.utils.BaseThread','dockerfile_parse','utilities','jupiter_config',
                 'requests','configparser','parse','apscheduler.schedulers.background','schedulers.background',

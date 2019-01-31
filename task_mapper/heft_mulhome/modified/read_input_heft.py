@@ -4,7 +4,7 @@
    This file read the generated TGFF file as an input of HEFT
 """
 __author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
-__copyright__ = "Copyright (c) 2018, Autonomous Networks Research Group. All rights reserved."
+__copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
 
