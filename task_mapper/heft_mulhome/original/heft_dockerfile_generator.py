@@ -43,7 +43,7 @@ ADD task_mapper/heft_mulhome/original/create_input.py /heft/create_input.py
 ADD task_mapper/heft_mulhome/original/read_input_heft.py /heft/read_input_heft.py
 ADD task_mapper/heft_mulhome/original/write_input_heft.py /heft/write_input_heft.py
 ADD jupiter_config.ini /heft/jupiter_config.ini
-ADD scripts/keep_alive.py /heft/keep_alive.py
+ADD mulhome_scripts/keep_alive.py /heft/keep_alive.py
 
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh
