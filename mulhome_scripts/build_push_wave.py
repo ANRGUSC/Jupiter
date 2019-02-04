@@ -18,6 +18,7 @@ def build_push_wave():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
     sys.path.append(jupiter_config.WAVE_PATH)
+    print(jupiter_config.WAVE_PATH)
 
     import wave_docker_files_generator as dc 
     os.chdir(jupiter_config.WAVE_PATH)

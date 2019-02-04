@@ -525,8 +525,8 @@ def main():
 
 
     # Price calculation methods
-    global PRICE_OPTION
-    PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
+    # global PRICE_OPTION
+    # PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
 
 
     global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, task_mul, count_dict,self_ip
@@ -639,4 +639,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    

@@ -12,6 +12,7 @@ from os import path
 from multiprocessing import Process
 from k8s_profiler_scheduler import *
 from k8s_wave_scheduler import *
+from k8s_circe_scheduler import *
 from k8s_pricing_circe_scheduler import *
 from k8s_exec_scheduler import *
 from k8s_heft_scheduler import *
@@ -30,7 +31,6 @@ from delete_all_heft import *
 from auto_teardown_system import *
 
 from flask import Flask, request
-from k8s_jupiter_deploy import *
 import datetime
 
 from functools import wraps
@@ -53,14 +53,13 @@ def task_mapping_decorator(f):
     """
     @wraps(f)
     def task_mapping(*args, **kwargs):
-      if jupiter_config.SCHEDULER == 0:
+      if jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: #HEFT
+        print('HEFT mapper')
         return f(*args, **kwargs)
-      else:
-        return f(args[0])
+      else: #WAVE
+        print('WAVE mapper')
+        return f(args[0],args[3])
     return task_mapping
-
-def empty_function():
-    return []
 
 def setup_port(port):
     cmd = "kubectl proxy -p " + str(port)+ " &"
@@ -70,7 +69,7 @@ def setup_port(port):
         print('Error setting up port \n')
         print(e)
 
-def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
+def k8s_jupiter_deploy(app_id,app_name,port):
     """
         Deploy all Jupiter components (WAVE, CIRCE, DRUPE) in the system.
     """
@@ -79,15 +78,23 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
     static_mapping = jupiter_config.STATIC_MAPPING
     pricing = jupiter_config.PRICING
 
-
-    if jupiter_config.SCHEDULER == 0: # HEFT
+    if jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # HEFT
         print('Deploy HEFT mapper')
         task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
-        exec_profiler_function = k8s_exec_scheduler
     else:# WAVE
-        print('Deploy WAVE mapper')
+        print('Deploy WAVE greedy mapper')
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
+        
+
+    if jupiter_config.PRICING == 1 or jupiter_config.PRICING == 2:
+        print('Deploy Execution Profiler')
+        exec_profiler_function = k8s_exec_scheduler
+    elif jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # Nonpricing, HEFT
+        print('De[loy Execution Profiler')
+        exec_profiler_function = k8s_exec_scheduler
+    else: # Nonpricing, WAVE
         exec_profiler_function = empty_function
+
 
     # This loads the task graph and node list
     if not static_mapping:
@@ -144,7 +151,6 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
 
 
         pprint(mapping)
-        export_mapper_log(app_name,mapper_log)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
@@ -172,117 +178,13 @@ def k8s_jupiter_deploy(app_id,app_name,port,mapper_log):
 
     print("The Jupiter Deployment is Successful!")
 
-def get_pod_logs_circe(namespace, pod_name, log_name):
-    """Generate log of pod given name space and pod name
-    
-    Args:
-        namespace (str): corresponding name space
-        pod_name (str): corresponding pod name
-    """
-    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print(namespace)
-    print(pod_name)
-    print(log_name)
-    ts = int(time.time())
-    log_file = "%s_%d.log" %(log_name,ts)
-    bash_log = "kubectl logs %s -n %s > %s"%(pod_name,namespace,log_file)
-    os.system(bash_log)
 
-
-    log_runtime = "../logs/%s_runtime_%d.log" %(log_name,ts)
-    bash_runtime = "kubectl cp %s/%s:runtime_tasks.txt %s "%(namespace,pod_name,log_runtime)
-    print(bash_runtime)
-    os.system(bash_runtime)
-
-    log_send = "../logs/%s_sender_%d.log" %(log_name,ts)
-    bash_send = "kubectl cp %s/%s:runtime_transfer_sender.txt %s "%(namespace,pod_name,log_send)
-    print(bash_send)
-    os.system(bash_send)
-
-    log_receive = "../logs/%s_receiver_%d.log" %(log_name,ts)
-    bash_receive = "kubectl cp %s/%s:runtime_transfer_receiver.txt %s "%(namespace,pod_name,log_receive)
-    os.system(bash_receive)
-
-def get_pod_logs_mapper(namespace, pod_name, log_name):
-    """Generate log of pod given name space and pod name
-    
-    Args:
-        namespace (str): corresponding name space
-        pod_name (str): corresponding pod name
-    """
-    print('^^^^^^^^^^^^^^^^^^^^^^^^^^^')
-    print(namespace)
-    print(pod_name)
-    print(log_name)
-    ts = int(time.time())
-    log_file = "%s_%d.log" %(log_name,ts)
-    bash_log = "kubectl logs %s -n %s > %s"%(pod_name,namespace,log_file)
-    os.system(bash_log)
-
-
-
-def export_circe_log(app_name,log_name):
-    """Export circe home log for evaluation, should only use when for non-static mapping
-    """
-    jupiter_config.set_globals()
-    path1 = jupiter_config.APP_PATH + 'configuration.txt'
-    dag_info = utilities.k8s_read_dag(path1)
-    dag = dag_info[1]
-    print(dag)
-    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
-    core_v1_api = client.CoreV1Api()
-    resp = core_v1_api.list_namespaced_pod(jupiter_config.DEPLOYMENT_NAMESPACE)
-    home_name=app_name+'-home'
-    for i in resp.items:
-        if i.metadata.name.startswith(home_name):
-            circe_name = i.metadata.name
-            break;
-    print('******************* Circe pod to export')
-    print(circe_name)
-    get_pod_logs_circe(jupiter_config.DEPLOYMENT_NAMESPACE,circe_name,log_name)
-
-
-def export_mapper_log(app_name,log_name):
-    """Export circe home log for evaluation, should only use when for non-static mapping
-    """
-    jupiter_config.set_globals()
-    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
-    core_v1_api = client.CoreV1Api()
-    resp = core_v1_api.list_namespaced_pod(jupiter_config.MAPPER_NAMESPACE)
-    home_name=app_name+'-home'
-    for i in resp.items:
-        if i.metadata.name.startswith(home_name):
-            mapper_name = i.metadata.name
-            break;
-    print('******************* Mapper pod to export')
-    print(mapper_name)
-    get_pod_logs_mapper(jupiter_config.MAPPER_NAMESPACE,mapper_name,log_name)
-
-
-
-def task_mapping_decorator(f):
-    """Mapping the chosen scheduling modules based on ``jupiter_config.SCHEDULER`` in ``jupiter_config.ini``
-    
-    Args:
-        f (function): either HEFT or WAVE scheduling modules specified from ``jupiter_config.ini``
-    
-    Returns:
-        function: chosen scheduling modules
-    """
-    @wraps(f)
-    def task_mapping(*args, **kwargs):
-      if jupiter_config.SCHEDULER == 0:
-        return f(*args, **kwargs)
-      else:
-        return f(args[0],args[3])
-    return task_mapping
-
-def empty_function():
+def empty_function(app_id):
     return []
 
 
 
-def redeploy_system(app_id,app_name,port,mapper_log):
+def redeploy_system(app_id,app_name,port):
     """
         Redeploy the whole system
     """
@@ -299,30 +201,37 @@ def redeploy_system(app_id,app_name,port,mapper_log):
         delete_all_circe(app_name)
     else:
         delete_all_pricing_circe(app_name)
-    if jupiter_config.SCHEDULER == 0: # HEFT
+    if jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # HEFT
         print('Tear down all current HEFT deployments')
         delete_all_heft(app_name)
         task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
-        exec_profiler_function = k8s_exec_scheduler
     else:# WAVE
         print('Tear down all current WAVE deployments')
         delete_all_waves(app_name)
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
-        exec_profiler_function = empty_function
+        
 
+    if jupiter_config.PRICING == 1 or jupiter_config.PRICING == 2:
+        exec_profiler_function = k8s_exec_scheduler
+    elif jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # Nonpricing, HEFT
+        exec_profiler_function = k8s_exec_scheduler
+    else: # Nonpricing, WAVE
+        exec_profiler_function = empty_function
+        
+        
     # This loads the task graph and node list
     if not static_mapping:
         path1 = jupiter_config.APP_PATH + 'configuration.txt'
         path2 = jupiter_config.HERE + 'nodes.txt'
 
         # start the profilers
-        profiler_ips = get_all_profilers()
-        # profiler_ips = k8s_profiler_scheduler()
+        #profiler_ips = get_all_profilers()
+        profiler_ips = k8s_profiler_scheduler()
 
 
         # start the execution profilers
-        execution_ips = get_all_execs(app_id)
-        # execution_ips = exec_profiler_function()
+        #execution_ips = get_all_execs(app_id)
+        execution_ips = exec_profiler_function(app_id)
 
         print('*************************')
         print('Network Profiling Information2222:')
@@ -368,7 +277,6 @@ def redeploy_system(app_id,app_name,port,mapper_log):
                 time.sleep(30)
         pprint(mapping)
 
-        export_mapper_log(app_name,mapper_log)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
@@ -384,7 +292,7 @@ def redeploy_system(app_id,app_name,port,mapper_log):
         # dag = static_assignment.dag
         # schedule = static_assignment.schedule
 
-    print('Network Profiling Information2222:')
+    print('Network Profiling Information:')
     print(profiler_ips)
     # Start CIRCE
     if pricing == 0:
@@ -418,36 +326,17 @@ def check_finish_evaluation(app_name,port,num_samples):
             time.sleep(60)
 
    
-def deploy_app_jupiter(app_id,app_name,port,circe_log,num_runs,num_samples,mapper_log):
+def deploy_app_jupiter(app_id,app_name,port,num_runs,num_samples):
     
     setup_port(port)
-    k8s_jupiter_deploy(app_id,app_name,port,mapper_log)
-    log_folder ='../logs'
-    if not os.path.exists(log_folder):
-        os.makedirs(log_folder)
-    log_name = "../logs/evaluation_log_" + app_name+":"+str(port) 
-    with open(log_name,'w+') as f:
-        for i in range(0,num_runs):
-            pr = cProfile.Profile()
-            pr.enable()
-            file_log = circe_log+'_'+str(i)
-            file_profile = circe_log+'_'+str(i)+'_profile'
-            f.write('============================\n')
-            check_finish_evaluation(app_name,port,num_samples)
-            f.write('\nFinish one run !!!!!!!!!!!!!!!!!!!!!!')
-            t = str(datetime.datetime.now())
-            print(t)            
-            f.write(t)
-            f.write('\nExport the log for this run')
-            export_circe_log(app_name,file_log)
-            time.sleep(30)
-            # f.write('\nRedeploy the system')
-            # redeploy_system(app_id,app_name,port,mapper_log)
-            pr.disable()
-            pr.print_stats(sort='time')
-            pr.dump_stats(file_profile)
-        f.write('\nFinish the experiments for the current application')
-    
+    k8s_jupiter_deploy(app_id,app_name,port)
+    for i in range(0,num_runs):
+        check_finish_evaluation(app_name,port,num_samples)
+        print('Finish one run !!!!!!!!!!!!!!!!!!!!!!')
+        t = str(datetime.datetime.now())
+        print(t)            
+        time.sleep(30)
+        redeploy_system(app_id,app_name,port)
     #teardown_system(app_name)
     
 def main():
@@ -464,42 +353,19 @@ def main():
         temp = app_name
         print(num_dags)
         jupiter_config.set_globals()
-        if jupiter_config.SCHEDULER == 0:
-            alg = 'heft'
-        elif jupiter_config.SCHEDULER == 1:
-            alg = 'random'
-        else:
-            alg = 'greedy'
-        
-        if jupiter_config.PRICING == 0:
-            option = 'nopricing'
-        elif jupiter_config.PRICING == 1:
-            option = 'pricing_push'
-        elif jupiter_config.PRICING == 2:
-            option = 'pricing_driven'
-        else: 
-            option = 'pricing'
-
         port_list = []
         app_list = []
-        log_circe_list = []
-        log_mapper_list = []
         for num in range(1,num_dags+1):
-            log_circe = '../logs/%s_%s_%dDAG%d_%dRUN_circehome' %(option, alg,num_dags,num,num_runs)
-            log_mapper = '../logs/%s_%s_%dDAG%d_%dRUN_mapperhome' %(option, alg,num_dags,num,num_runs)
             port =  8080 + num-1
             cur_app = temp+str(num)
             port_list.append(port)
-            app_list.append(cur_app)
-            log_circe_list.append(log_circe)  
-            log_mapper_list.append(log_mapper)       
+            app_list.append(cur_app)     
         print(port_list)
         print(app_list)
-        print(log_circe_list)
        
         for idx,appname in enumerate(app_list):
             print(appname)
-            _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],log_circe_list[idx],num_runs,num_samples,log_mapper_list[idx]))
+            _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],num_runs,num_samples))
 
 
 
