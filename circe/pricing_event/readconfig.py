@@ -55,14 +55,19 @@ def read_config(path1,path2):
                 hosts[myline[0]].append(myline[j])
             if j==1:
                 hosts[myline[0]].append(nodes.get(myline[1])[0])
-                hosts[myline[0]].append(nodes.get(myline[1])[1])
-                hosts[myline[0]].append(nodes.get(myline[1])[2])
+                #hosts[myline[0]].append(nodes.get(myline[1])[1])
+                #hosts[myline[0]].append(nodes.get(myline[1])[2])
+
+    print('-----------------')
+    print(nodes.get('home')[0])
 
     hosts.setdefault('home',[])
     hosts['home'].append('home')
     hosts['home'].append(nodes.get('home')[0])
-    hosts['home'].append(nodes.get('home')[1])
-    hosts['home'].append(nodes.get('home')[2])
+    #hosts['home'].append(nodes.get('home')[1])
+    #hosts['home'].append(nodes.get('home')[2])
+
+
 
     dag_info.append(hosts)
     return dag_info

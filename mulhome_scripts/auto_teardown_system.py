@@ -31,7 +31,6 @@ from delete_all_exec import *
 from delete_all_profilers import *
 
 from flask import Flask, request
-from k8s_jupiter_deploy import *
 import datetime
 
 from k8s_get_service_ips import *
@@ -44,24 +43,25 @@ def teardown_system(app_name):
     
     static_mapping = jupiter_config.STATIC_MAPPING
     pricing = jupiter_config.PRICING
+    scheduler = jupiter_config.SCHEDULER
     
     """
         Tear down all current deployments
     """
-    print('Tear down all current CIRCE deployments')
+    
     if pricing == 0:
-    	delete_all_circe(app_name)
+        print('Tear down all current Non-pricing CIRCE deployments')
+        delete_all_circe(app_name)
     else:
-    	delete_all_pricing_circe(app_name)
-    if jupiter_config.SCHEDULER == 0: # HEFT
+        print('Tear down all current Pricing CIRCE deployments')
+        delete_all_pricing_circe(app_name)
+    if scheduler == 0 or scheduler==3: # HEFT
         print('Tear down all current HEFT deployments')
         delete_all_heft(app_name)
     else:# WAVE
         print('Tear down all current WAVE deployments')
         delete_all_waves(app_name)
 
-    delete_all_exec(app_name)
-    delete_all_profilers()
 
 
 def main():
@@ -69,6 +69,9 @@ def main():
         Deploy num_dags of the application specified by app_name
     """
     app_name = 'dummy'
+    # delete_all_exec(app_name)
+    # delete_all_profilers()
+
     num_dags = 1
     app_list = []
     for num in range(1,num_dags+1):
@@ -77,7 +80,8 @@ def main():
     print(app_list)
 
     for app_name in app_list:
-    	teardown_system(app_name)	
+        teardown_system(app_name)   
+
 
 if __name__ == '__main__':
     main()

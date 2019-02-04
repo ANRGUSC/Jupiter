@@ -39,7 +39,7 @@ ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py
 
 ADD circe/pricing_push/start_computing_worker.sh /start.sh
-ADD scripts/keep_alive.py /centralized_scheduler/keep_alive.py
+ADD mulhome_scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD app_specific_files/network_monitoring_app/configuration.txt  /centralized_scheduler/dag.txt
 ADD app_specific_files/network_monitoring_app/scripts/config.json /centralized_scheduler/config.json
 ADD app_specific_files/network_monitoring_app/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum

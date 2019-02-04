@@ -43,7 +43,7 @@ end_times = []
 exec_times = []
 count = 0
 
-
+app = Flask(__name__)
 
 # Per task times
 start_time = defaultdict(list)
@@ -56,8 +56,6 @@ rt_finish_time = defaultdict(list)
 rt_enter_time_computingnode = defaultdict(list)
 rt_exec_time_computingnode = defaultdict(list)
 rt_finish_time_computingnode = defaultdict(list)
-
-app = Flask(__name__)
 
 #@app.route('/recv_monitor_data')
 def recv_mapping():
@@ -677,8 +675,6 @@ def main():
     ##
     ## Load all the confuguration
     ##
-
-    
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
@@ -796,4 +792,5 @@ def main():
     
     
 if __name__ == '__main__':
+
     main()

@@ -10,7 +10,7 @@ RUN apt-get install -y openssh-server sshpass nano virtualenv supervisor
 RUN apt-get install -y vim
 
 # Install required python libraries
-ADD task_mapper/heft/modified/requirements.txt /requirements.txt
+ADD task_mapper/heft_mulhome/modified/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 RUN pip2 install -r requirements.txt
 
@@ -25,19 +25,19 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 # Prepare heft files
 RUN mkdir -p heft
-ADD task_mapper/heft/modified/start.sh /heft/start.sh
-ADD task_mapper/heft/modified/master_heft.py  /heft/master.py
-ADD task_mapper/heft/modified/heft_dup.py /heft/heft_dup.py
-ADD task_mapper/heft/modified/create_input.py /heft/create_input.py
-ADD task_mapper/heft/modified/read_input_heft.py /heft/read_input_heft.py
-ADD task_mapper/heft/modified/write_input_heft.py /heft/write_input_heft.py
+ADD task_mapper/heft_mulhome/modified/start.sh /heft/start.sh
+ADD task_mapper/heft_mulhome/modified/master_heft.py  /heft/master.py
+ADD task_mapper/heft_mulhome/modified/heft_dup.py /heft/heft_dup.py
+ADD task_mapper/heft_mulhome/modified/create_input.py /heft/create_input.py
+ADD task_mapper/heft_mulhome/modified/read_input_heft.py /heft/read_input_heft.py
+ADD task_mapper/heft_mulhome/modified/write_input_heft.py /heft/write_input_heft.py
 ADD jupiter_config.ini /heft/jupiter_config.ini
-ADD scripts/keep_alive.py /heft/keep_alive.py
+ADD mulhome_scripts/keep_alive.py /heft/keep_alive.py
 
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh
-ADD app_specific_files/network_monitoring_app_dag/configuration.txt  /heft/dag.txt
-ADD app_specific_files/network_monitoring_app_dag/scripts/config.json /heft/config.json
+ADD app_specific_files/network_monitoring_app/configuration.txt  /heft/dag.txt
+ADD app_specific_files/network_monitoring_app/scripts/config.json /heft/config.json
 
 WORKDIR /heft/
 
