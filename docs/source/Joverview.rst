@@ -4,20 +4,26 @@ Overview
 Components
 ==========
 
-`Jupiter`_ is an Orchestrator for Dispersed Computing that uses `Docker`_ containers and `Kubernetes`_ (K8s). The Jupiter system has three main components: Profilers, Task Mapper and `CIRCE`_ Dispatcher.
+`Jupiter`_ is an Orchestrator for Dispersed Computing that uses `Docker`_ containers and `Kubernetes`_ (K8s). 
+
+Jupiter enables complex computing applications that are specified as directed acyclic graph (DAG)-based task graphs to be distributed across an arbitrary network of computers in such a way as to optimize the execution of the distributed computations. Depending on the scheduling algorithm/task mapper used with the Jupiter framework, the optimizations may be for different objectives, for example, the goal may be to try and minimize the total end to end delay (makespan) of the computation for a single set of data inputs. Jupiter includes both centralized task mappers such as one that performs the classical HEFT (heterogeneous earliest finish time) scheduling algorithm, as well as an innovative new distributed task mapping framework called WAVE. In order to do enable optimization-oriented task mapping, Jupiter also provides tools for profiling the application run time on the computers as well as profiling and monitoring the performance of the network. Jupiter also provides for container-based code dispatch and execution of the distributed application at run-time for both single-shot and pipelined (streaming) computations.
+
+The Jupiter system has three main components: Profilers, Task Mapper and `CIRCE`_ Dispatcher.
 
 - Profilers are tools used to collect information about the system.
 
 	- `DRUPE`_ (Network and Resource Profiler) is a tool to collect information about computational resources as well as network links between compute nodes in a dispersed computing system to a central node. DRUPE consists of a network profiler and a resource profiler.
 
-	- Execution profiler is a tool to collect the duration time as well as size of output files while performing a task on a specific computing node.
+	- The onetime Execution Profiler is a tool to collect information about the computation time of the pipelined computations described in the form of a directed acyclic graph (DAG) on each of the networked computation resources. This tool runs a sample execution of the entire DAG on every node to collect the statistics for each of the task in the DAG as well as the makespan of the entire DAG.
 
--  Task Mapper is a tool to choose the specific scheduler as well as algorithm to be used for scheduling the tasks. 
+-  Task Mapper comes with three different versions: HEFT, WAVE Greedy, WAVE Random; to effciently map the tasks of a DAG to the processors such that the makespan of the pipelines processing is optimized.
 	
-	- `HEFT`_ (Heterogeneous Earliest Finish Time) is a popular centralized scheduling algorithm
-	- `WAVE`_ is a distributed scheduler for DAG type task graph that outputs a mapping of tasks to real compute nodes. The current algorithm list includes random WAVE and greedy WAVE.
+	- `HEFT`_ Heterogeneous Earliest Finish Time is a static centralized algorithm for a DAG based task graph that efficiently maps the tasks of the DAG into the processors by taking into account global information about communication delays and execution times.
+	- `WAVE`_ is a distributed scheduler for DAG type task graph that outputs a mapping of tasks to real compute nodes by only taking into acount local profiler statistics. Currently we have two types of WAVE algorithms: WAVE Random and WAVE Greedy. WAVE Random is a very simple algorithm that maps the tasks to a random node without taking into acount the profiler data. WAVE Greedy is a Greedy algorithm that uses a weighted sum of different profiler data to map tasks to the compute nodes.
 
-- `CIRCE`_ is a dispatcher tool for dispersed computing, which can deploy pipelined computations described in the form of a directed acyclic graph (DAG) on multiple geographically dispersed computers (compute nodes). CIRCE deploys each task on the corresponding compute node (from the output of WAVE), uses input and output queues for pipelined execution, and takes care of the data transfer between different tasks.
+- `CIRCE`_ is a dispatcher tool for dispersed computing, which can deploy pipelined computations described in the form of a directed acyclic graph (DAG) on multiple geographically dispersed computers (compute nodes). CIRCE deploys each task on the corresponding compute node (from the output of WAVE), uses input and output queues for pipelined execution, and takes care of the data transfer between different tasks. ``CIRCE`` comes with three different versions: nonpricing scheme, pricing event driven scheme and pricing push scheme.
+    - ``Nonpricing CIRCE``: static version of dispatcher, in which the task controller 
+
 
 .. _Jupiter: https://github.com/ANRGUSC/Jupiter
 .. _Docker: https://docs.docker.com/
@@ -41,20 +47,26 @@ File nodes.txt
 
 This file lists all the nodes, line by line, in the following format:
 
-+-------+----------+----------+-----+
-| home  | nodename | username | pw  |
-+=======+==========+==========+=====+
-| node1 | nodename | username | pw  |
-+-------+----------+----------+-----+
-| node2 | nodename | username | pw  |
-+-------+----------+----------+-----+
-| node3 | nodename | username | pw  |
-+-------+----------+----------+-----+
++-------+----------+
+| home  | nodename | 
++=======+==========+
+| node2 | nodename | 
++-------+----------+
+| node3 | nodename | 
++-------+----------+
+| node4 | nodename | 
++-------+----------+
+| ..... | nodename | 
++-------+----------+
 
 A given sample of node file:
 
 .. figure::  images/nodes.png
    :align:   center
+
+There are 2 kind of nodes: home node and compute nodes. Home nodes start with ``home``, which allow stream of incoming data for the given DAG tasks as well as store all statistical performance information. Compute nodes start with ``node``, which will perform scheduling tasks and compute tasks. 
+
+.. warning:: In the case of nonpricing CIRCE dispatcher, only 1 home node is supported. In the case of pricing CIRCE dispatcher (Event driven or Push scheme), multiple home nodes are supported. The home node list should be as followed: ``home``, ``home2``,``home3``,....
 
 
 File jupiter_config.py
@@ -65,20 +77,31 @@ This file includes all paths configuration for Jupiter system to start. The late
 .. code-block:: text
     :linenos:
 
-    HERE                    = path.abspath(path.dirname(__file__)) + "/"
-    INI_PATH                = HERE + 'jupiter_config.ini'
-
-    config = configparser.ConfigParser()
-    config.read(INI_PATH)
+    global STATIC_MAPPING, SCHEDULER, TRANSFER, PROFILER, RUNTIME, PRICING, PRICE_OPTION
 
     STATIC_MAPPING          = int(config['CONFIG']['STATIC_MAPPING'])
+    # scheduler option chosen from SCHEDULER_LIST
     SCHEDULER               = int(config['CONFIG']['SCHEDULER'])
+    # transfer option chosen from TRANSFER_LIST
     TRANSFER                = int(config['CONFIG']['TRANSFER'])
+    # Network and Resource profiler (TA2) option chosen from TA2_LIST
     PROFILER                = int(config['CONFIG']['PROFILER'])
+    # Runtime profiling for data transfer methods: 0 for only senders, 1 for both senders and receivers
+    RUNTIME                 = int(config['CONFIG']['RUNTIME'])
+    # Using pricing or original scheme
+    PRICING                 = int(config['CONFIG']['PRICING'])
+    # Pricing option from pricing option list
+    PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
+
+    """Authorization information in the containers"""
+    global USERNAME, PASSWORD
 
     USERNAME                = config['AUTH']['USERNAME']
     PASSWORD                = config['AUTH']['PASSWORD']
 
+    """Port and target port in containers for services to be used: Mongo, SSH and Flask"""
+    global MONGO_SVC, MONGO_DOCKER, SSH_SVC, SSH_DOCKER, FLASK_SVC, FLASK_DOCKER
+    
     MONGO_SVC               = config['PORT']['MONGO_SVC']
     MONGO_DOCKER            = config['PORT']['MONGO_DOCKER']
     SSH_SVC                 = config['PORT']['SSH_SVC']
@@ -86,58 +109,130 @@ This file includes all paths configuration for Jupiter system to start. The late
     FLASK_SVC               = config['PORT']['FLASK_SVC']
     FLASK_DOCKER            = config['PORT']['FLASK_DOCKER']
 
+    """Modules path of Jupiter"""
+    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, CIRCE_ORIGINAL_PATH
+
+    # default network and resource profiler: DRUPE
+    # default wave mapper: random wave
     NETR_PROFILER_PATH      = HERE + 'profilers/network_resource_profiler/'
     EXEC_PROFILER_PATH      = HERE + 'profilers/execution_profiler/'
-    CIRCE_PATH              = HERE + 'circe/'
-    HEFT_PATH               = HERE + 'task_mapper/heft/'
+    CIRCE_PATH              = HERE + 'circe/pricing/'
+    HEFT_PATH               = HERE + 'task_mapper/heft/original/'
     WAVE_PATH               = HERE + 'task_mapper/wave/random_wave/'
     SCRIPT_PATH             = HERE + 'scripts/'
 
-    if SCHEDULER == config['SCHEDULER_LIST']['WAVE_RANDOM']:
+    global mapper_option
+    mapper_option           = 'heft'    
+
+
+    if SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_RANDOM']):
+        print('Task mapper: Wave random selected')
         WAVE_PATH           = HERE + 'task_mapper/wave/random_wave/'
-    elif SCHEDULER == config['SCHEDULER_LIST']['WAVE_GREEDY']:
+        mapper_option       = 'random'
+    elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY']):
+        print('Task mapper: Wave greedy selected')
         WAVE_PATH           = HERE + 'task_mapper/wave/greedy_wave/'
-    elif SCHEDULER == config['SCHEDULER_LIST']['HEFT_MODIFIED']:
-        HEFT_PATH           = HERE + 'task_mapper/heft/modified/'
+        mapper_option       = 'greedy'
+    elif SCHEDULER == int(config['SCHEDULER_LIST']['HEFT_MODIFIED']):
+        print('Task mapper: Heft modified selected')
+        HEFT_PATH           = HERE + 'task_mapper/heft/modified/'   
+        mapper_option       = 'modified'
+    else: 
+        print('Task mapper: Heft original selected')
+
+    global pricing_option, profiler_option
+
+    pricing_option          = 'pricing' #original pricing
+    profiler_option         = 'onehome'
+
+    if PRICING == 1:#multiple home (push circe)
+        pricing_option      = 'pricing_push'
+        profiler_option     = 'multiple_home'
+        NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
+        EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
+        HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
+        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
+        print('Pricing pushing scheme selected')
+    if PRICING == 2:#multiple home, pricing (event-driven circe)
+        pricing_option      = 'pricing_event'
+        profiler_option     = 'multiple_home'
+        NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
+        EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
+        HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
+        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
+        print('Pricing event driven scheme selected')
+
+    CIRCE_PATH              = HERE + 'circe/%s/'%(pricing_option)
+    if PRICING == 0: #non-pricing
+        CIRCE_PATH          = HERE + 'circe/original/'  
+        NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
+        EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
+        HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
+        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
+        print('Non pricing scheme selected')
+    """Kubernetes required information"""
+    global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 
     KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
     # Namespaces
-
     DEPLOYMENT_NAMESPACE    = 'johndoe-circe'
     PROFILER_NAMESPACE      = 'johndoe-profiler'
     MAPPER_NAMESPACE        = 'johndoe-mapper'
     EXEC_NAMESPACE          = 'johndoe-exec'
 
+    """ Node file path and first task information """
+    global HOME_NODE, HOME_CHILD
 
     HOME_NODE               = get_home_node(HERE + 'nodes.txt')
+    HOME_CHILD              = 'sample_ingress_task1'
 
-    HOME_IMAGE              = 'docker.io/johndoe/home_node:v1'
+    """pricing CIRCE home and worker images"""
+    global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTING_IMAGE
 
-    HOME_CHILD              = 'sample_ingress_task'
+    PRICING_HOME_IMAGE      = 'docker.io/johndoe/%s_circe_home:coded' %(pricing_option)
+    WORKER_CONTROLLER_IMAGE = 'docker.io/johndoe/%s_circe_controller:coded' %(pricing_option)
+    WORKER_COMPUTING_IMAGE  = 'docker.io/johndoe/%s_circe_computing:coded' %(pricing_option)
+    
+    """CIRCE home and worker images for execution profiler"""
+    global HOME_IMAGE, WORKER_IMAGE
 
-    WORKER_IMAGE            = 'docker.io/johndoe/worker_node:v1'
+    HOME_IMAGE              = 'docker.io/johndoe/circe_home:coded'
+    WORKER_IMAGE            = 'docker.io/johndoe/circe_worker:coded'
 
-    # Profiler docker image
-    PROFILER_HOME_IMAGE     = 'docker.io/johndoe/central_profiler:v1'
-    PROFILER_WORKER_IMAGE   = 'docker.io/johndoe/worker_profiler:v1'
+    """DRUPE home and worker images"""
+    global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
+    
+    PROFILER_HOME_IMAGE     = 'docker.io/johndoe/%s_profiler_home:coded'%(profiler_option)
+    PROFILER_WORKER_IMAGE   = 'docker.io/johndoe/%s_profiler_worker:coded'%(profiler_option)
 
-    # WAVE docker image
-    WAVE_HOME_IMAGE         = 'docker.io/johndoe/wave_home:v1'
-    WAVE_WORKER_IMAGE       = 'docker.io/johndoe/wave_worker:v1'
+    """WAVE home and worker images"""
+    global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
 
-    # Execution profiler  docker image
-    EXEC_HOME_IMAGE         = 'docker.io/johndoe/exec_home:v1'
-    EXEC_WORKER_IMAGE       = 'docker.io/johndoe/exec_worker:v1'
+    #coded: random, v1: greedy
 
-    # Heft docker image
-    HEFT_IMAGE              = 'docker.io/johndoe/heft:v1'
+    WAVE_HOME_IMAGE         = 'docker.io/johndoe/%s_%s_wave_home:coded' %(mapper_option,profiler_option)
+    WAVE_WORKER_IMAGE       = 'docker.io/johndoe/%s_%s_wave_worker:coded' %(mapper_option,profiler_option)
 
-    # Application folder 
+    """Execution profiler home and worker images"""
+    global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
+
+
+    EXEC_HOME_IMAGE         = 'docker.io/johndoe/%s_exec_home:coded'%(profiler_option)
+    EXEC_WORKER_IMAGE       = 'docker.io/johndoe/%s_exec_worker:coded'%(profiler_option)
+
+    """HEFT docker image"""
+    global HEFT_IMAGE
+
+    HEFT_IMAGE              = 'docker.io/johndoe/%s_heft:coded'%(profiler_option)
+
+    """Application Information"""
+    global APP_PATH, APP_NAME
+
     APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
     APP_NAME                = 'app_specific_files/network_monitoring_app'
 
-.. warning:: You need to create required namespaces in your Kubernetes cluster that will be dedicated to the profiler, scheduling mapper (to choose specific scheduling algorithms from HEFT, Random WAVE, greedy WAVE), and CIRCE deployments, respectively. You also need to update your namespace information correspondingly.
+.. warning:: You need to create required namespaces in your Kubernetes cluster that will be dedicated to the profiler, scheduling mapper (to choose specific scheduling algorithms from HEFT, Random WAVE, greedy WAVE), and CIRCE deployments (non-pricing, pricing event driven or pricing push), respectively. You also need to update your namespace information correspondingly.
 
 .. code-block:: python
     :linenos:
@@ -150,6 +245,7 @@ This file includes all paths configuration for Jupiter system to start. The late
 You also need to specify the corresponding information:
 
 - CIRCE images : ``HOME_IMAGE`` and ``WORKER_IMAGE``
+- Pricing CIRCE images : ``PRICING_HOME_IMAGE``, ``WORKER_CONTROLLER_IMAGE`` and ``WORKER_COMPUTING_IMAGE``
 - DRUPE images : ``PROFILER_HOME_IMAGE`` and ``PROFILER_WORKER_IMAGE``
 - Execution profiler images: ``EXEC_HOME_IMAGE`` and ``EXEC_WORKER_IMAGE``
 - HEFT images: ``HEFT_IMAGE``
@@ -167,9 +263,12 @@ This file includes all configuration options for Jupiter system to start. The la
 
     [CONFIG]
         STATIC_MAPPING = 0
-        SCHEDULER = 2
+        SCHEDULER = 1
         TRANSFER = 0
         PROFILER = 0
+        RUNTIME = 1
+        PRICING = 1
+        PRICE_OPTION = 0
     [PORT]
         MONGO_SVC = 6200
         MONGO_DOCKER = 27017
@@ -182,8 +281,8 @@ This file includes all configuration options for Jupiter system to start. The la
         PASSWORD = PASSWORD
     [OTHER]
         MAX_LOG = 10
-        NUM_NODES = 88
         SSH_RETRY_NUM = 20
+        TASK_QUEUE_SIZE = -1
     [SCHEDULER_LIST]
         HEFT = 0
         WAVE_RANDOM = 1
@@ -193,6 +292,15 @@ This file includes all configuration options for Jupiter system to start. The la
         DRUPE = 0
     [TRANSFER_LIST]
         SCP = 0
+    [PRICING_LIST]
+        NONPRICING = 0
+        PUSH_MULTIPLEHOME = 1
+        DRIVEN_MULTIPLEHOME = 2
+    [PRICING_FUNCTION_LIST]
+        SUM = 1
+        MAX = 2
+
+.. warning:: You should specify ``PRICING`` in ``CONFIG`` section to choose the specific CIRCE dispatcher from the ``PRICING_LIST``. There are three kinds of CIRCE dispatcher: ``NONPRICING``, ``PUSH_MULTIPLEHOME`` and ``DRIVEN_MULTIPLEHOME``.
 
 .. warning:: You should specify ``SCHEDULER`` in ``CONFIG`` section to choose the specific scheduling algorithm from the ``SCHEDULER_LIST``. ``STATIC_MAPPING`` is only chosen on testing purpose. 
 

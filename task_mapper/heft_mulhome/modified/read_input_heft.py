@@ -44,16 +44,21 @@ def get_global_info():
         -   dict: network_map - mapping of node IPs and node names
         -   dict: node_list - node list
     """
-    global profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list, home_profiler_ip
+    global profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list, home_profiler_ip, home_profiler_nodes
     profiler_ip = os.environ['PROFILERS'].split(' ')
     profiler_ip = [info.split(":") for info in profiler_ip]
     exec_home_ip = os.environ['EXECUTION_HOME_IP']
     num_nodes = len(profiler_ip)
-    print(num_nodes)
     node_list = [info[0] for info in profiler_ip]
     node_IP = [info[1] for info in profiler_ip]
     network_map = dict(zip(node_IP, node_list))
-    home_profiler_ip = os.environ['HOME_PROFILER_IP']
+    home_profiler = os.environ['HOME_PROFILER_IP'].split(' ')
+    home_profiler_nodes = [x.split(':')[0] for x in home_profiler]
+    home_profiler_ip = [x.split(':')[1] for x in home_profiler]
+    print('----------------- ^^^^^^^^^^^')
+    print(home_profiler)
+    print(home_profiler_nodes)
+    print(home_profiler_ip)
 
 def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
     """Collect the execution profile from the home execution profiler's MongoDB
@@ -87,15 +92,25 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
             time.sleep(60)
 
     #print(collection)
+    print('*********&&&&&&&&&&&&&&&&')
+    print(home_profiler_nodes)
     for col in collection:
         print('--- Check execution profiler ID : '+ col)
+        print(col)
+        print(home_profiler_nodes)
+        if col in home_profiler_nodes:
+            print('hoho')
+            continue
         logging =db[col].find()
         for record in logging:
             # Node ID, Task, Execution Time, Output size
             info_to_csv=[col,record['Task'],record['Duration [sec]'],str(record['Output File [Kbit]'])]
             execution_info.append(info_to_csv)
+    print('--------------------------------------------')
     print('Execution information has already been provided')
-    # print(execution_info)
+    print(execution_info)
+    print(len(execution_info))
+    print(len(execution_info[0]))
     with open('/heft/execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
@@ -150,14 +165,18 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
             time.sleep(60)
             num_rows = db[ip[1]].count()
         logging =db[ip[1]].find().limit(num_nb)
+    
         for record in logging:
             # print(record)
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
-            if record['Destination[IP]'] == home_profiler_ip: continue
+            print(home_profiler_ip)
+            if record['Destination[IP]'] in home_profiler_ip: 
+                print('hoho')
+                continue
             info_to_csv=[network_map[record['Source[IP]']],record['Source[IP]'],network_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info.append(info_to_csv)
     print('Network information has already been provided')
-    #print(network_info)
+    print(network_info)
     with open('/heft/network_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(network_info)
@@ -191,7 +210,7 @@ if __name__ == '__main__':
     print('\n Step 1: Read task list from DAG file and global information \n')
 
     configuration_path='/heft/dag.txt'
-    global profiler_ip,exec_home_ip,num_nodes,MONGO_SVC_PORT,network_map,node_list, home_profiler_ip
+    global profiler_ip,exec_home_ip,num_nodes,network_map,node_list
     get_global_info()
     print(profiler_ip)
     print(exec_home_ip)
