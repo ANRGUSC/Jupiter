@@ -42,7 +42,7 @@ def set_globals():
 	# Using pricing or original scheme
 	PRICING                 = int(config['CONFIG']['PRICING'])
 	# Pricing option from pricing option list
-	PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
+	# PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
 
 	"""Authorization information in the containers"""
 	global USERNAME, PASSWORD
@@ -65,62 +65,51 @@ def set_globals():
 
 	# default network and resource profiler: DRUPE
 	# default wave mapper: random wave
-	NETR_PROFILER_PATH      = HERE + 'profilers/network_resource_profiler/'
-	EXEC_PROFILER_PATH      = HERE + 'profilers/execution_profiler/'
+	NETR_PROFILER_PATH      = HERE + 'profilers/network_resource_profiler_mulhome/'
+	EXEC_PROFILER_PATH      = HERE + 'profilers/execution_profiler_mulhome/'
 	CIRCE_PATH              = HERE + 'circe/pricing/'
-	HEFT_PATH               = HERE + 'task_mapper/heft/original/'
-	WAVE_PATH               = HERE + 'task_mapper/wave/random_wave/'
+	HEFT_PATH               = HERE + 'task_mapper/heft_mulhome/original/'
+	WAVE_PATH               = HERE + 'task_mapper/wave_mulhome/random_wave/'
 	SCRIPT_PATH             = HERE + 'scripts/'
 
-	global mapper_option
-	mapper_option           = 'heft'	
+	global heft_option, wave_option
+	heft_option           	= 'original'	
+	wave_option 			= 'random' 
 
 
 	if SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_RANDOM']):
 		print('Task mapper: Wave random selected')
-		WAVE_PATH           = HERE + 'task_mapper/wave/random_wave/'
-		mapper_option 		= 'random'
+		WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/random_wave/'
+		wave_option 		= 'random'
 	elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY']):
 		print('Task mapper: Wave greedy selected')
-		WAVE_PATH           = HERE + 'task_mapper/wave/greedy_wave/'
-		mapper_option 		= 'greedy'
+		WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
+		wave_option 		= 'greedy'
 	elif SCHEDULER == int(config['SCHEDULER_LIST']['HEFT_MODIFIED']):
 		print('Task mapper: Heft modified selected')
-		HEFT_PATH           = HERE + 'task_mapper/heft/modified/'	
-		mapper_option 		= 'modified'
+		HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/modified/'	
+		heft_option 		= 'modified'
 	else: 
 		print('Task mapper: Heft original selected')
 
 	global pricing_option, profiler_option
 
 	pricing_option 			= 'pricing' #original pricing
-	profiler_option     	= 'onehome'
+	profiler_option         = 'multiple_home'
 
 	if PRICING == 1:#multiple home (push circe)
 		pricing_option 		= 'pricing_push'
-		profiler_option     = 'multiple_home'
-		NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
-		EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
-		HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
-		WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
 		print('Pricing pushing scheme selected')
 	if PRICING == 2:#multiple home, pricing (event-driven circe)
 		pricing_option 		= 'pricing_event'
-		profiler_option     = 'multiple_home'
-		NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
-		EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
-		HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
-		WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
 		print('Pricing event driven scheme selected')
-
-	CIRCE_PATH          	= HERE + 'circe/%s/'%(pricing_option)
 	if PRICING == 0: #non-pricing
-		CIRCE_PATH          = HERE + 'circe/original/'	
-		NETR_PROFILER_PATH  = HERE + 'profilers/network_resource_profiler_mulhome/'
-		EXEC_PROFILER_PATH  = HERE + 'profilers/execution_profiler_mulhome/'
-		HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/original/'
-		WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
+		pricing_option 		= 'original'
 		print('Non pricing scheme selected')
+	CIRCE_PATH          	= HERE + 'circe/%s/'%(pricing_option)
+
+	print('CIRCE path-------------------------------------------')
+	print(CIRCE_PATH)
 	"""Kubernetes required information"""
 	global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 
@@ -163,8 +152,8 @@ def set_globals():
 
 	#coded: random, v1: greedy
 
-	WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:coded' %(mapper_option,profiler_option)
-	WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:coded' %(mapper_option,profiler_option)
+	WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:coded' %(wave_option,profiler_option)
+	WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:coded' %(wave_option,profiler_option)
 
 	"""Execution profiler home and worker images"""
 	global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
@@ -176,7 +165,7 @@ def set_globals():
 	"""HEFT docker image"""
 	global HEFT_IMAGE
 
-	HEFT_IMAGE              = 'docker.io/anrg/%s_heft:coded'%(profiler_option)
+	HEFT_IMAGE              = 'docker.io/anrg/%s_heft:coded'%(heft_option)
 
 	"""Application Information"""
 	global APP_PATH, APP_NAME

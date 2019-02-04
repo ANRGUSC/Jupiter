@@ -712,6 +712,7 @@ def main():
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
     dag_info = read_config(path1,path2)
+    print(dag_info)
 
     #get DAG and home machine info
     # first_task = dag_info[0]

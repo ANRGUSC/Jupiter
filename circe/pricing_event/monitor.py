@@ -206,8 +206,8 @@ def default_best_node(source_node):
 def predict_best_node(source_node):
     """Select the best node from price information of all nodes, either default or customized from user price file
     """
-    if PRICE_OPTION ==0: #default
-        best_node = default_best_node(source_node)
+    #if PRICE_OPTION ==0: #default
+    best_node = default_best_node(source_node)
     return best_node
 
 def receive_best_assignment_request():
@@ -401,8 +401,8 @@ def main():
 
 
     # Price calculation methods
-    global PRICE_OPTION
-    PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
+    # global PRICE_OPTION
+    # PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
 
 
     global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, task_mul, count_dict,self_ip, home_ips, home_ids
