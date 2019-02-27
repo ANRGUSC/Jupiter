@@ -42,7 +42,8 @@ Deploy scripts
    mulhome_scripts/k8s_jupiter_deploy
    mulhome_scripts/k8s_profiler_scheduler
    mulhome_scripts/k8s_wave_scheduler
-   mulhome_scripts/auto_generate_log
+   mulhome_scripts/auto_deploy_system
+   mulhome_scripts/auto_teardown_system
 
 Configuration scripts
 ---------------------

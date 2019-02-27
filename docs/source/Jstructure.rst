@@ -14,23 +14,37 @@ The directory structure of the project MUST conform with the following:
     ├── ...
     ├── docs
     ├── circe
-    │   ├── home_node.Dockerfile
-    │   ├── circe_docker_files_generator.py
-    │   ├── monitor.py
-    │   ├── readconfig.py
-    │   ├── requirements.txt
-    │   ├── rt_profiler_data_update.py
-    │   ├── rt_profiler_update_mongo.py
-    │   ├── runSQuery.py
-    │   ├── runtime_profiler_mongodb
-    │   ├── scheduler.py
-    │   ├── start_home.sh
-    │   ├── start_worker.sh
-    │   └── worker_node.Dockerfile
-    |
+    │   ├── original
+    |   │   ├── home_node.Dockerfile
+    |   │   ├── circe_docker_files_generator.py
+    |   │   ├── monitor.py
+    |   │   ├── readconfig.py
+    |   │   ├── requirements.txt
+    |   │   ├── evaluate.py
+    |   │   ├── runtime_profiler_mongodb
+    |   │   ├── scheduler.py
+    |   │   ├── start_home.sh
+    |   │   ├── start_worker.sh
+    |   │   └── worker_node.Dockerfile
+    │   ├── pricing_event
+    |   │   ├── home_node.Dockerfile
+    |   │   ├── circe_docker_files_generator.py
+    |   │   ├── monitor.py
+    |   │   ├── readconfig.py
+    |   │   ├── requirements.txt
+    |   │   ├── evaluate.py
+    |   │   ├── runtime_profiler_mongodb
+    |   │   ├── scheduler.py 
+    |   │   ├── compute.py 
+    |   │   ├── start_home.sh
+    |   │   ├── start_computing_worker.sh
+    |   │   ├── start_controller_worker.sh
+    |   │   ├── controller_worker_node.Dockerfile
+    |   │   └── computing_worker_node.Dockerfile
+    │   ├── pricing_push
     ├── task_mapper 
     │   |
-    |   heft
+    |   heft_mulhome
     |   |__original
     |   |   ├── heft.Dockerfile
     |   |   ├── heft_dockerfile_generator.py
@@ -49,7 +63,7 @@ The directory structure of the project MUST conform with the following:
     |   |   ├── requirements.txt
     |   |   ├── start.sh
     |   |   ├── write_input_heft.py
-    └── wave
+    └── wave_mulhome
     │   ├── random_wave      
     |   |   ├── home
     |   |   │   ├── requirements.txt
@@ -61,6 +75,7 @@ The directory structure of the project MUST conform with the following:
     |   |   |   └── start.sh
     |   |   |__ home.Dockerfile
     |   |   |__ worker.Dockerfile
+    |   |   |__ wave_docker_files_generator.py
     │   ├── greedy_wave  
     |   |   ├── home
     |   |   │   ├── requirements.txt
@@ -72,8 +87,9 @@ The directory structure of the project MUST conform with the following:
     |   |   |   └── start.sh
     |   |   |__ home.Dockerfile
     |   |   |__ worker.Dockerfile   
+    |   |   |__ wave_docker_files_generator.py
     ├── profilers
-    │   ├── network_resource_profiler
+    │   ├── network_resource_profiler_mulhome
     │   |   |___home
     │   |   |   |
     |   │   │   ├── central_input
@@ -102,7 +118,7 @@ The directory structure of the project MUST conform with the following:
     |   |   |___profiler_docker_files_generator.py
     |   |   |___profiler_home.Dockerfile
     |   |   |___profiler_worker.Dockerfile
-    │   ├── execution_profiler
+    │   ├── execution_profiler_mulhome
     │   |   |___exec_docker_files_generator.py
     │   |   |___exec_home.Dockerfile
     │   |   |___exec_worker.Dockerfile 
@@ -115,7 +131,8 @@ The directory structure of the project MUST conform with the following:
     ├── task_specific_files
     │   └── APP_Folder
     │       ├── configuration.txt
-    │       ├── app_config.ini 
+    │       ├── app_config.ini
+    │       ├── name_convert.txt 
     │       ├── sample_input
     │       │   ├── sample1
     │       │   └── sample2
@@ -123,24 +140,26 @@ The directory structure of the project MUST conform with the following:
     │           ├── task1.py
     │           └── task2.py
     |
-    └── scripts
-        ├── auto_redeploy.py
+    └── mulhome_scripts
+        ├── auto_deploy_system.py
+        ├── auto_teardown_system.py
         ├── build_push_circe.py
+        ├── build_push_pricing_circe.py
         ├── build_push_jupiter.py
         ├── build_push_profiler.py
         ├── build_push_wave.py
         ├── build_push_heft.py
         ├── build_push_exec.py
         ├── delete_all_circe.py
+        ├── delete_all_pricing_circe.py
         ├── delete_all_profilers.py
         ├── delete_all_waves.py
         ├── delete_all_heft.py
         ├── delete_all_exec.py
         ├── k8s_circe_scheduler.py
+        ├── k8s_pricing_circe_scheduler.py
         ├── k8s_heft_scheduler.py
         ├── k8s_exec_scheduler.py
-        ├── k8s_jupiter_deploy.py
-        ├── k8s_jupiter_teardown.py
         ├── k8s_profiler_scheduler.py
         ├── k8s_wave_scheduler.py
         ├── static_assignment.py
@@ -148,6 +167,8 @@ The directory structure of the project MUST conform with the following:
         ├── keep_alive.py
         ├── write_circe_service_specs.py
         ├── write_circe_specs.py
+        ├── write_pricing_circe_service_specs.py
+        ├── write_pricing_circe_specs.py
         ├── write_profiler_service_specs.py
         ├── write_profiler_specs.py
         ├── write_wave_service_specs.py

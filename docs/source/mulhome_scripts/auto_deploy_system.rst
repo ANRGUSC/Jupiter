@@ -1,7 +1,7 @@
-k8s\_jupiter\_deploy module
+auto\_deploy\_system module
 ===========================
 
-.. automodule:: k8s_jupiter_deploy
+.. automodule:: auto_deploy_system
     :members:
     :undoc-members:
     :show-inheritance:

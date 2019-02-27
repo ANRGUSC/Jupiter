@@ -9,5 +9,4 @@ pricing_push
    evaluate
    monitor
    readconfig
-   runSQuery
    scheduler

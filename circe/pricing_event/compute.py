@@ -47,7 +47,7 @@ def tic():
 
 def toc(t):
     texec = time.time() - t
-    print('Execution time is:'+str(texec))
+    # print('Execution time is:'+str(texec))
     return texec
 
 def k8s_read_dag(dag_info_file):
@@ -318,7 +318,7 @@ def update_exec_profile_file():
 
 
 def get_updated_execution_profile():
-    """Get updated execution information from text file
+    """Get updated execution information from the generated text file
     """
     print('***************************************************')
     print('----- Get updated execution information')
@@ -348,7 +348,9 @@ def get_updated_execution_profile():
     return execution_info
 
 def get_updated_network_profile():
-    
+    """
+        Get updated network information from the network profilers
+    """
    
     print('Retrieve network information info')
     network_info = dict()        
@@ -513,6 +515,13 @@ def price_aggregate(task_name):
 
 
 def announce_price(task_controller_ip, price):
+    """
+        Announce my current price (network, resource, task queue) to the corresponding task controller 
+
+        Args:
+            task_controller_ip (str): IP of the task controller
+            price: my current price
+    """
     try:
         print('***************************************************')
         print("Announce my price")
@@ -526,27 +535,27 @@ def announce_price(task_controller_ip, price):
             # print(node)
             # print(price['network'][node])
             pricing_info = pricing_info + "$"+node+"%"+str(price['network'][node])
-        print(time.time()-t1)
-        print(pricing_info)
+        # print(time.time()-t1)
+        # print(pricing_info)
         t1 = time.time()
         params = {'pricing_info':pricing_info}
-        print(time.time()-t1)
-        t1 = time.time()
+        # print(time.time()-t1)
+        # t1 = time.time()
         params = urllib.parse.urlencode(params)
-        print(time.time()-t1)
-        t1 = time.time()
+        # print(time.time()-t1)
+        # t1 = time.time()
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        print(time.time()-t1)
-        t1 = time.time()
+        # print(time.time()-t1)
+        # t1 = time.time()
         res = urllib.request.urlopen(req)
-        print(time.time()-t1)
+        # print(time.time()-t1)
         t1 = time.time()
         res = res.read()
         res = res.decode('utf-8')
-        print(time.time()-t1)
+        # print(time.time()-t1)
         txec = toc(t)
         bottleneck['announceprice'].append(txec)
-        print(np.mean(bottleneck['announceprice']))
+        # print(np.mean(bottleneck['announceprice']))
         print('***************************************************')
     except Exception as e:
         print("Sending price message to flask server on controller node FAILED!!!")
@@ -554,9 +563,8 @@ def announce_price(task_controller_ip, price):
         return "not ok"
 
 def push_updated_price():
-    # print('***********')
-    # print(task_controllers)
-    # print(controllers_ip_map)
+    """Push the update price to all the task controllers
+    """
     for idx,task in enumerate(task_controllers):
         if task in home_ids: continue
         price = price_aggregate(task)
@@ -564,7 +572,11 @@ def push_updated_price():
 
     
 def schedule_update_price(interval):
-    # scheduling updated price
+    """Schedule the price update procedure every given interval
+    
+    Args:
+        interval (int): chosen interval (minutes)
+    """
     sched = BackgroundScheduler()
     sched.add_job(push_updated_price,'interval',id='push_price', minutes=interval, replace_existing=True)
     sched.start()
@@ -664,14 +676,16 @@ def transfer_data(IP,user,pword,source, destination):
 def send_runtime_profile_computingnode(msg,task_name,home_id):
     """
     Sending runtime profiling information to flask server on home
-
+    
     Args:
         msg (str): the message to be sent
-
+        task_name (str): task name
+        home_id (str): id of the home
+    
     Returns:
         str: the message if successful, "not ok" otherwise.
-
-    Raises:
+    
+    No Longer Raises:
         Exception: if sending message to flask server on home is failed
     """
     try:
@@ -681,24 +695,24 @@ def send_runtime_profile_computingnode(msg,task_name,home_id):
         t1 = time.time()
         url = "http://" + home_node_host_ports[home_id] + "/recv_runtime_profile_computingnode"
         params = {'msg': msg, "work_node": self_name, "task_name": task_name}
-        print(time.time()-t1)
-        t1 = time.time()
+        # print(time.time()-t1)
+        # t1 = time.time()
         params = urllib.parse.urlencode(params)
-        print(time.time()-t1)
-        t1 = time.time()
+        # print(time.time()-t1)
+        # t1 = time.time()
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        print(time.time()-t1)
-        t1 = time.time()
+        # print(time.time()-t1)
+        # t1 = time.time()
         res = urllib.request.urlopen(req)
-        print(time.time()-t1)
+        # print(time.time()-t1)
         t1 = time.time()
         res = res.read()
         res = res.decode('utf-8')
-        print(time.time()-t1)
+        # print(time.time()-t1)
         t1 = time.time()
         txec = toc(t)
         bottleneck['sendmsg'].append(txec)
-        print(np.mean(bottleneck['sendmsg']))
+        # print(np.mean(bottleneck['sendmsg']))
         print('***************************************************')
     except Exception as e:
         print("Sending runtime profiling info to flask server on home FAILED!!!")
@@ -707,7 +721,7 @@ def send_runtime_profile_computingnode(msg,task_name,home_id):
     return res
 
 def retrieve_input_enter(task_name, file_name):
-    """Retrieve the corresponding input name based on the name conversion provided by the user and the output file name 
+    """Retrieve the corresponding input name based on the name conversion provided by the user and the output file name in ``name_convert.txt``
     
     Args:
         task_name (str): task name
@@ -718,23 +732,23 @@ def retrieve_input_enter(task_name, file_name):
     t = tic()
     t1 = time.time()
     suffix = name_convert_in[task_name]
-    print(time.time()-t1)
+    # print(time.time()-t1)
     t1 = time.time()
     # print(suffix)
     # print(type(suffix))
     prefix = file_name.split(suffix)
-    print(time.time()-t1)
+    # print(time.time()-t1)
     t1 = time.time()
     # print('$$$$$$')
     # print(file_name)
     # print(suffix)
     # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    print(time.time()-t1)
+    # print(time.time()-t1)
     # print(input_name)
     txec = toc(t)
     bottleneck['retrieveinput'].append(txec)
-    print(np.mean(bottleneck['retrieveinput']))
+    # print(np.mean(bottleneck['retrieveinput']))
     print('***************************************************')
     return input_name
 
@@ -757,6 +771,12 @@ def retrieve_input_finish(task_name, file_name):
 
 def request_best_assignment(home_id,task_name,file_name):
     """Request the best computing node for the task
+    
+    Args:
+        home_id (str): id of the home
+        task_name (str): name of the current task
+        file_name (str): name of the current processed file
+    
     """
     try:
         print('***************************************************')
@@ -771,7 +791,7 @@ def request_best_assignment(home_id,task_name,file_name):
         res = res.decode('utf-8')
         txec = toc(t)
         bottleneck['reequestassign'].append(txec)
-        print(np.mean(bottleneck['requestassign']))
+        # print(np.mean(bottleneck['requestassign']))
         print('***************************************************')
     except Exception as e:
         print("Sending assignment request to flask server on controller node FAILED!!!")
@@ -798,7 +818,7 @@ def receive_best_assignment():
         update_best[home_id,task_name,file_name] = True
         txec = toc(t)
         bottleneck['receiveassign'].append(txec)
-        print(np.mean(bottleneck['receiveassign']))
+        # print(np.mean(bottleneck['receiveassign']))
         print('***************************************************')
 
     except Exception as e:
@@ -862,7 +882,7 @@ class Handler1(FileSystemEventHandler):
             
             ts = time.time()
             
-            print(time.time()-t1)
+            # print(time.time()-t1)
             t1 = time.time()
             if RUNTIME == 1:
                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,event.src_path,ts)
@@ -873,11 +893,11 @@ class Handler1(FileSystemEventHandler):
             home_id = event.src_path.split('/')[-2]
             input_name = retrieve_input_finish(task_name, temp_name)
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
-            print(time.time()-t1)
-            t1 = time.time()
+            # print(time.time()-t1)
+            # t1 = time.time()
             send_runtime_profile_computingnode(runtime_info,task_name,home_id)
-            print(time.time()-t1)
-            t1 = time.time()
+            # print(time.time()-t1)
+            # t1 = time.time()
             key = (home_id,task_name,input_name)
             # print('#############')
             # print(next_mul)
@@ -885,11 +905,11 @@ class Handler1(FileSystemEventHandler):
             # print(next_tasks_map)
             # print(next_tasks_map[task_name])
             # print(flag)
-            print(time.time()-t1)
+            # print(time.time()-t1)
             t1 = time.time()
             if next_tasks_map[task_name][0] in home_ids: 
                 transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)   
-                print(time.time()-t1)
+                # print(time.time()-t1)
                 t1 = time.time() 
             else: 
                 # print(next_tasks_map[task_name])
@@ -900,7 +920,7 @@ class Handler1(FileSystemEventHandler):
                         request_best_assignment(home_id,next_task,input_name)
                         print('--- waiting for computing node assignment')
                         time.sleep(1)
-                print(time.time()-t1)
+                # print(time.time()-t1)
                 t1 = time.time()
                 # print('---------- Now what')
                 # print(computing_ip_map)
@@ -908,7 +928,7 @@ class Handler1(FileSystemEventHandler):
                 next_hosts =  [task_node_summary[home_id,x,input_name] for x in next_tasks_map[task_name]]
                 next_IPs   = [computing_ip_map[x] for x in next_hosts]
 
-                print('**************')
+                # print('**************')
                 # print(next_hosts)
                 # print(next_IPs)
                 # print(next_tasks_map[task_name])
@@ -927,7 +947,7 @@ class Handler1(FileSystemEventHandler):
                             # print(cmd)
                             # os.system(cmd)
                             copyfile(event.src_path, destinations[idx])
-                    print(time.time()-t1)
+                    # print(time.time()-t1)
                     t1 = time.time()
                 else: #each output file to each of the next children task
 
@@ -936,7 +956,7 @@ class Handler1(FileSystemEventHandler):
                     else:
                         files_mul[key] = files_mul[key] + [event.src_path]
                     # print(files_mul[key])
-                    print(time.time()-t1)
+                    # print(time.time()-t1)
                     t1 = time.time()
 
                     if len(files_mul[key]) == len(next_IPs):
@@ -954,11 +974,11 @@ class Handler1(FileSystemEventHandler):
                                 # # print(cmd)
                                 # os.system(cmd)
                                 copyfile(files_mul[key][idx],destinations)
-                    print(time.time()-t1)
+                    # print(time.time()-t1)
              
             txec = toc(t)
             bottleneck['receiveoutput'].append(txec)
-            print(np.mean(bottleneck['receiveoutput']))
+            # print(np.mean(bottleneck['receiveoutput']))
             print('***************************************************')
 
 #for INPUT folder
@@ -1011,7 +1031,7 @@ class Handler(FileSystemEventHandler):
                 file_name = new_file.split('.')[0]
 
             ts = time.time()
-            print(time.time()-t1)
+            # print(time.time()-t1)
             t1 = time.time()
             print('***************************************^^^^^^^^^^^')
             # print(new_file)
@@ -1021,10 +1041,10 @@ class Handler(FileSystemEventHandler):
             input_name = retrieve_input_enter(task_name, file_name)
             runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
             key = (home_id,task_name,input_name)
-            print(time.time()-t1)
+            # print(time.time()-t1)
             t1 = time.time()
             send_runtime_profile_computingnode(runtime_info,task_name,home_id)
-            print(time.time()-t1)
+            # print(time.time()-t1)
             t1 = time.time()
             # print(next_tasks_map)
             # print(next_tasks_map[task_name])
@@ -1035,7 +1055,7 @@ class Handler(FileSystemEventHandler):
             # print('&&&&&&&&&&&&&&&&&&&&')
             # print(dag[task_name])
             # print(flag)
-            print(time.time()-t1)
+            # print(time.time()-t1)
             t1 = time.time()
 
             if key not in task_mul:
@@ -1043,13 +1063,13 @@ class Handler(FileSystemEventHandler):
                 count_mul[key]= int(flag)-1
                 size_mul[key] = cal_file_size(event.src_path)
                 next_mul[key] = [task_flag]
-                print(time.time()-t1)
+                # print(time.time()-t1)
                 t1 = time.time()
             else:
                 task_mul[key] = task_mul[key] + [new_file]
                 count_mul[key]=count_mul[key]-1
                 size_mul[key] = size_mul[key] + cal_file_size(event.src_path)
-                print(time.time()-t1)
+                # print(time.time()-t1)
                 t1 = time.time()
 
             if count_mul[key] == 0: # enough input files
@@ -1058,7 +1078,7 @@ class Handler(FileSystemEventHandler):
                     filenames = incoming_file[0]
                 else:
                     filenames = incoming_file
-                print(time.time()-t1)
+                # print(time.time()-t1)
                 t1 = time.time()
                 print('Add task to the processing queue')
                 queue_mul[key] = False 
@@ -1067,16 +1087,16 @@ class Handler(FileSystemEventHandler):
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
                 output_path = os.path.join(output_path,task_name,home_id)
-                print(time.time()-t1)
+                # print(time.time()-t1)
                 t1 = time.time()
                 # print('!!!!!!!!!')
                 # print(input_name)
                 execute_task(home_id,task_name,input_name, filenames, input_path, output_path)
-                print(time.time()-t1)
+                # print(time.time()-t1)
                 queue_mul[key] = True
             txec = toc(t)
             bottleneck['receiveinput'].append(txec)
-            print(np.mean(bottleneck['receiveinput']))
+            # print(np.mean(bottleneck['receiveinput']))
             print('***************************************************')
                 
 
