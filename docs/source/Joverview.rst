@@ -16,13 +16,16 @@ The Jupiter system has three main components: Profilers, Task Mapper and `CIRCE`
 
 	- The onetime Execution Profiler is a tool to collect information about the computation time of the pipelined computations described in the form of a directed acyclic graph (DAG) on each of the networked computation resources. This tool runs a sample execution of the entire DAG on every node to collect the statistics for each of the task in the DAG as well as the makespan of the entire DAG.
 
--  Task Mapper comes with three different versions: HEFT, WAVE Greedy, WAVE Random; to effciently map the tasks of a DAG to the processors such that the makespan of the pipelines processing is optimized.
+-  Task Mapper comes with three different versions: HEFT, WAVE Greedy, WAVE Random; to effciently map the task controllers of a DAG to the processors such that the makespan of the pipelines processing is optimized.
 	
 	- `HEFT`_ Heterogeneous Earliest Finish Time is a static centralized algorithm for a DAG based task graph that efficiently maps the tasks of the DAG into the processors by taking into account global information about communication delays and execution times.
-	- `WAVE`_ is a distributed scheduler for DAG type task graph that outputs a mapping of tasks to real compute nodes by only taking into acount local profiler statistics. Currently we have two types of WAVE algorithms: WAVE Random and WAVE Greedy. WAVE Random is a very simple algorithm that maps the tasks to a random node without taking into acount the profiler data. WAVE Greedy is a Greedy algorithm that uses a weighted sum of different profiler data to map tasks to the compute nodes.
+	- `WAVE`_ is a distributed scheduler for DAG type task graph that outputs a mapping of task controllers to real compute nodes by only taking into acount local profiler statistics. Currently we have two types of WAVE algorithms: WAVE Random and WAVE Greedy. WAVE Random is a very simple algorithm that maps the tasks to a random node without taking into acount the profiler data. WAVE Greedy is a Greedy algorithm that uses a weighted sum of different profiler data to map tasks to the most suitable nodes.
 
-- `CIRCE`_ is a dispatcher tool for dispersed computing, which can deploy pipelined computations described in the form of a directed acyclic graph (DAG) on multiple geographically dispersed computers (compute nodes). CIRCE deploys each task on the corresponding compute node (from the output of WAVE), uses input and output queues for pipelined execution, and takes care of the data transfer between different tasks. ``CIRCE`` comes with three different versions: nonpricing scheme, pricing event driven scheme and pricing push scheme.
-    - ``Nonpricing CIRCE``: static version of dispatcher, in which the task controller 
+-  `CIRCE`_ is a dispatcher tool for dispersed computing, which can deploy pipelined computations described in the form of a directed acyclic graph (DAG) on multiple geographically dispersed computers (compute nodes). CIRCE uses input and output queues for pipelined execution, and takes care of the data transfer between different tasks. ``CIRCE`` comes with three different versions: nonpricing scheme, pricing event driven scheme and pricing push scheme.
+
+    - ``Nonpricing CIRCE``: static version of dispatcher, which deploys each task controllers on the corresponding compute node given the output of the chosen Task mapper. The task controller is also responsible for the corresponding task itself. This is one-time scheduler. If the user wants to reschedule the compute nodes, he has to run the deploy script again (run corresponding Task mapper and CIRCE again).
+    - ``Pricing Event driven CIRCE``: dynamic version of dispatcher, which deploys each task controllers on the corresponding compute node given the output of the chosen Task mapper. Moreover, the task controller will select the best current available compute node to perform the task it is responsible for based on the updated resource information (communication delays, execution times, compute resource availability, queue delays at each compute node). The update is performed at the time the task controllers receive the incoming streaming file, the task controllers request the update from the compute nodes. 
+    - ``Pricing Pushing CIRCE``: similar to  `Pricing Event driven CIRCE``, but the update is performed in a different way, in which the compute nodes push the update to the task controllers every interval.
 
 
 .. _Jupiter: https://github.com/ANRGUSC/Jupiter
@@ -42,6 +45,8 @@ The code is open source, and `available on GitHub`_.
 Input
 =====
 
+Files ``nodes.txt``, ``jupiter_config.py`` and ``config.ini`` are found in the main folder of Jupiter and should be updated based on the requirements of users. Files  ``app_config.ini``, ``configurations.txt`` and ``name_convert.txt`` should be present in the application folder to support different Jupiter modules to work properly.
+
 File nodes.txt
 --------------
 
@@ -56,17 +61,15 @@ This file lists all the nodes, line by line, in the following format:
 +-------+----------+
 | node4 | nodename | 
 +-------+----------+
-| ..... | nodename | 
-+-------+----------+
 
 A given sample of node file:
 
 .. figure::  images/nodes.png
    :align:   center
 
-There are 2 kind of nodes: home node and compute nodes. Home nodes start with ``home``, which allow stream of incoming data for the given DAG tasks as well as store all statistical performance information. Compute nodes start with ``node``, which will perform scheduling tasks and compute tasks. 
 
-.. warning:: In the case of nonpricing CIRCE dispatcher, only 1 home node is supported. In the case of pricing CIRCE dispatcher (Event driven or Push scheme), multiple home nodes are supported. The home node list should be as followed: ``home``, ``home2``,``home3``,....
+
+.. warning:: There are 2 kind of nodes: ``home node`` and ``compute node``. Home nodes start with ``home``, which allow stream of incoming data for the given DAG tasks as well as store all statistical performance information. Compute nodes start with ``node``, which will perform scheduling tasks and compute tasks. In the case of nonpricing CIRCE dispatcher, only 1 home node is supported. In the case of pricing CIRCE dispatcher (Event driven or Pushing scheme), multiple home nodes are supported. The home node list should be as followed: ``home``, ``home2``, ``home3``.
 
 
 File jupiter_config.py
@@ -300,13 +303,16 @@ This file includes all configuration options for Jupiter system to start. The la
         SUM = 1
         MAX = 2
 
-.. warning:: You should specify ``PRICING`` in ``CONFIG`` section to choose the specific CIRCE dispatcher from the ``PRICING_LIST``. There are three kinds of CIRCE dispatcher: ``NONPRICING``, ``PUSH_MULTIPLEHOME`` and ``DRIVEN_MULTIPLEHOME``.
+.. warning:: You can specify the following values:
 
-.. warning:: You should specify ``SCHEDULER`` in ``CONFIG`` section to choose the specific scheduling algorithm from the ``SCHEDULER_LIST``. ``STATIC_MAPPING`` is only chosen on testing purpose. 
+    - ``PRICING`` in ``CONFIG`` section to choose the specific CIRCE dispatcher from the ``PRICING_LIST``. There are three kinds of CIRCE dispatcher: ``NONPRICING``, ``PUSH_MULTIPLEHOME`` and ``DRIVEN_MULTIPLEHOME``.
 
-.. warning:: You should specify ``TRANSFER`` in ``CONFIG`` section to choose the specific file transfer method from the ``TRANSFER_LIST``. The default file transfer method that we used is ``SCP``. If you want to use another file transfer method, please refer to the guideline how to use the interface. 
+    - ``SCHEDULER`` in ``CONFIG`` section to choose the specific scheduling algorithm from the ``SCHEDULER_LIST``. ``STATIC_MAPPING`` is only chosen on testing purpose.
 
-.. warning:: You should specify ``PROFILER`` in ``CONFIG`` section to choose the specific network monitoring from the ``PROFILERS_LIST``. The default network monitoring tool that we used is ``DRUPE``. If you want to use another network monitoring tool, please refer to the guideline how to use the interface.
+    - ``PROFILER`` in ``CONFIG`` section to choose the specific network monitoring from the ``PROFILERS_LIST``. The default network monitoring tool that we used is ``DRUPE``. If you want to use another network monitoring tool, please refer to the guideline how to use the interface.
+
+    - ``TRANSFER`` in ``CONFIG`` section to choose the specific file transfer method for Jupiter from the ``TRANSFER_LIST``. The default file transfer method that we used is ``SCP``. If you want to use another file transfer method, please refer to the guideline how to use the interface. 
+
 
 File configuration.txt
 ----------------------
@@ -343,6 +349,26 @@ Inside the application folder, there should be a ``app_config.ini`` file having 
         PYTHON-PORT = 57021
     [SVC_PORT]
         PYTHON-PORT = 57021
+
+File name_convert.txt
+---------------------
+
+This file helps to output the correct performance statistics of Jupiter's runtime profiler, which lists all the task name, its corresponding input and output file name, line by line, in the following format:
+
++--------+-------------------+----------------------+
+| input  | output_app_name   |   input_app_name     |
++========+===================+======================+
+| task1  | output_task1_name |   input_task1_name   |
++--------+-------------------+----------------------+
+| task2  | output_task2_name |   input_task2_name   | 
++--------+-------------------+----------------------+
+| task3  | output_task3_name |   input_task3_name   | 
++--------+-------------------+----------------------+
+
+A given sample of ``name_convert.txt`` file:
+
+.. figure::  images/name_convert.png
+   :align:   center
 
 Output
 ======

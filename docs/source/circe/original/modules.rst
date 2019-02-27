@@ -8,5 +8,4 @@ original
    evaluate
    monitor
    readconfig
-   runSQuery
    scheduler

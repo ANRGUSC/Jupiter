@@ -1,7 +1,7 @@
 Jupiter Evaluation
 ==================
 
-We have built a runtime profiler for the purpose of gathering and analyzing relevant performance statistics while running Jupiter. The runtime profiler's purpose is to collect timestamp information either for all the tasks and incoming files, or file transfer process.  This built-in runtime profiler runs at the same time with the deployed system without any further actions. 
+We have built a runtime profiler for the purpose of gathering and analyzing relevant performance statistics while running Jupiter. The runtime profiler's purpose is to collect timestamp information either for all the tasks, compute nodes and incoming files, or file transfer process.  This built-in runtime profiler runs at the same time with the deployed system without any further actions. 
 
 
 Automatic evaluation script
@@ -11,7 +11,7 @@ We wrote the optional script ``evaluate.py`` inside `CIRCE`_ , which you can cho
 
 Collecting task performance statistics
 --------------------------------------
-This part of runtime profiler is integrated with `CIRCE`_ , the dispatcher tool of `Jupiter`_ You can find corresponding runtime profiler implementation in ``monitor.py`` and ``scheduler.py`` scripts of ``CIRCE``. Every computing node has a Flask server which can send related runtime information to the Flask server on the home node of ``CIRCE``. All the task-related runtime statistics are output at ``runtime_tasks.txt`` on the ``CIRCE home node`` under the following collumn-based format: ``Task_name``, ``local_input_file``, ``Enter_time``, ``Execute_time``, ``Finish_time,Elapse_time``, ``Duration_time``, ``Waiting_time``. This runtime file is only available after the ``evaluation.py`` finishes running. 
+This part of runtime profiler is integrated with `CIRCE`_ , the dispatcher tool of `Jupiter`_ You can find corresponding runtime profiler implementation in ``monitor.py`` and ``scheduler.py`` scripts of ``CIRCE``. Every compute node has a Flask server which can send related runtime information to the Flask server on the home node of ``CIRCE``. All the task-related runtime statistics are output at ``runtime_tasks.txt`` on the ``CIRCE home node`` under the following collumn-based format: ``Task_name``, ``local_input_file``, ``Enter_time``, ``Execute_time``, ``Finish_time,Elapse_time``, ``Duration_time``, ``Waiting_time``. This runtime file is only available after the ``evaluation.py`` finishes running. 
 
 	- Enter time: time the input file enter the queue
 	- Execute time: time the input file is processed

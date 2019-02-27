@@ -4,7 +4,7 @@ mulhome_scripts
 .. toctree::
    :maxdepth: 4
 
-   auto_generate_log
+   auto_deploy_system
    auto_teardown_system
    build_push_circe
    build_push_exec
@@ -24,11 +24,7 @@ mulhome_scripts
    k8s_exec_scheduler
    k8s_get_service_ips
    k8s_heft_scheduler
-   k8s_jupiter_deploy
-   k8s_jupiter_teardown
    k8s_pricing_circe_scheduler
-   k8s_pricing_jupiter_deploy
-   k8s_pricing_jupiter_teardown
    k8s_profiler_scheduler
    k8s_wave_scheduler
    keep_alive

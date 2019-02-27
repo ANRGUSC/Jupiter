@@ -70,7 +70,7 @@ def tic():
 
 def toc(t):
     texec = time.time() - t
-    print('Execution time is:'+str(texec))
+    #print('Execution time is:'+str(texec))
     return texec
 
 
@@ -103,7 +103,7 @@ def request_best_assignment(home_id,task_name,file_name):
         res = res.decode('utf-8')
         txec = toc(t)
         bottleneck['requestassignment'].append(txec)
-        print(np.mean(bottleneck['requestassignment']))
+        # print(np.mean(bottleneck['requestassignment']))
         print('***************************************************')
     except Exception as e:
         print("Sending assignment request to flask server on controller node FAILED!!!")
@@ -130,7 +130,7 @@ def receive_best_assignment():
         update_best[task_name,file_name] = True
         txec = toc(t)
         bottleneck['receiveassignment'].append(txec)
-        print(np.mean(bottleneck['receiveassignment']))
+        # print(np.mean(bottleneck['receiveassignment']))
         print('***************************************************')
 
 
@@ -155,13 +155,13 @@ def update_controller_map():
         t = tic()
         #info = request.args.get('controller_id_map').split(':')
         info = request.args.get('controller_id_map').split('#')
-        print("--- Received controller info")
-        print(info)
+        # print("--- Received controller info")
+        # print(info)
         #Task, Node
         controllers_id_map[info[0]] = info[1]
         txec = toc(t)
         bottleneck['controller'].append(txec)
-        print(np.mean(bottleneck['controller']))
+        # print(np.mean(bottleneck['controller']))
         print('***************************************************')
 
     except Exception as e:
@@ -290,7 +290,7 @@ def transfer_data_scp(IP,user,pword,source, destination):
 
     txec = toc(t)
     bottleneck['transfer'].append(txec)
-    print(np.mean(bottleneck['transfer']))
+    # print(np.mean(bottleneck['transfer']))
     print('***************************************************')
 
     
@@ -317,8 +317,8 @@ def transfer_data(IP,user,pword,source, destination):
 
 
 def get_updated_network_profile():
-    
-    
+    """Get updated network information from network profilers
+    """
     print('Retrieve network information info')
 
     network_info = dict()        
@@ -350,7 +350,7 @@ def get_updated_network_profile():
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
         txec = toc(t)
         bottleneck['getnetwork'].append(txec)
-        print(np.mean(bottleneck['getnetwork']))
+        # print(np.mean(bottleneck['getnetwork']))
         print('***************************************************')
         
         return network_info
@@ -423,7 +423,7 @@ def price_estimate():
         print(price)
         txec = toc(t)
         bottleneck['estimate'].append(txec)
-        print(np.mean(bottleneck['estimate']))
+        # print(np.mean(bottleneck['estimate']))
         print('***************************************************')
         return price
              
@@ -435,6 +435,12 @@ def price_estimate():
 
 
 def announce_price(task_controller_ip, price):
+    """Announce my current price to the task controller given the task controller IP
+    
+    Args:
+        task_controller_ip (str): IP of the corresponding task controller
+        price: my current price 
+    """
     try:
         print('***************************************************')
         print("Announce my price")
@@ -446,7 +452,7 @@ def announce_price(task_controller_ip, price):
             # print(price['network'][node])
             pricing_info = pricing_info + "$"+node+"%"+str(price['network'][node])
         
-        print(pricing_info)
+        # print(pricing_info)
         params = {'pricing_info':pricing_info}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -455,7 +461,7 @@ def announce_price(task_controller_ip, price):
         res = res.decode('utf-8')
         txec = toc(t)
         bottleneck['announceprice'].append(txec)
-        print(np.mean(bottleneck['announceprice']))
+        # print(np.mean(bottleneck['announceprice']))
         print('***************************************************')
     except Exception as e:
         print("Sending price message to flask server on controller node FAILED!!!")
@@ -463,11 +469,17 @@ def announce_price(task_controller_ip, price):
         return "not ok"
 
 def push_updated_price():
+    """Push the current updated price to the fist task
+    """
     price = price_estimate() #to the first task only
     announce_price(controller_ip_map[first_task], price)
 
 def schedule_update_price(interval):
-    # scheduling updated price
+    """Scheduler the price update procedure every interval
+    
+    Args:
+        interval (int): chosen interval (minutes)
+    """
     sched = BackgroundScheduler()
     sched.add_job(push_updated_price,'interval',id='push_price', minutes=interval, replace_existing=True)
     sched.start()
@@ -538,7 +550,7 @@ class Watcher:
         """
         Monitoring ``INPUT`` folder for the incoming files.
         
-        At the moment you have to manually place input files into the ``INPUT`` folder (which is under ``centralized_scheduler_with_task_profiler``):
+        You can manually place input files into the ``INPUT`` folder
         
             .. code-block:: bash
         
@@ -591,8 +603,8 @@ class Handler(FileSystemEventHandler):
             new_file_name = os.path.split(event.src_path)[-1]
 
             update_best[first_task,new_file_name]= False
-            print(first_task)
-            print(new_file_name)
+            # print(first_task)
+            # print(new_file_name)
             t1 = time.time()
             request_best_assignment(my_task,first_task,new_file_name)
             while not update_best[first_task,new_file_name]:
@@ -600,25 +612,25 @@ class Handler(FileSystemEventHandler):
                 time.sleep(1)
                 request_best_assignment(my_task,first_task,new_file_name)
                 
-            print(time.time()-t1)
-            print('---------- Now what')
+            # print(time.time()-t1)
+            # print('---------- Now what')
             t1 = time.time()
-            print(task_node_summary)
-            print(node_ip_map)
+            # print(task_node_summary)
+            # print(node_ip_map)
             IP = node_ip_map[task_node_summary[first_task,new_file_name]]
             # update_best[first_task] = False
 
             new_file_name = new_file_name+"#"+my_task+"#"+first_task+"#"+first_flag
-            print(new_file_name)
-            print(time.time()-t1)
+            # print(new_file_name)
+            # print(time.time()-t1)
             t1 = time.time()
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
             transfer_data(IP,username, password,source, destination)
-            print(time.time()-t1)
+            # print(time.time()-t1)
             txec = toc(t)
             bottleneck['input'].append(txec)
-            print(np.mean(bottleneck['input']))
+            # print(np.mean(bottleneck['input']))
             print('***************************************************')
 
 
@@ -701,8 +713,8 @@ def main():
     profiler_nodes = [info.split(":") for info in profiler_nodes]
     profiler_nodes = profiler_nodes[0][1:]
     ip_profilers_map = dict(zip(profiler_ip, profiler_nodes))
-    print('############')
-    print(ip_profilers_map)
+    # print('############')
+    # print(ip_profilers_map)
 
     my_id = os.environ['TASK']
     my_task = my_id.split('-')[1]

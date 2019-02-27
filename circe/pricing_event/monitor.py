@@ -51,7 +51,7 @@ def tic():
 
 def toc(t):
     texec = time.time() - t
-    print('Execution time is:'+str(texec))
+    # print('Execution time is:'+str(texec))
     return texec
 
 def convert_bytes(num):
@@ -99,8 +99,8 @@ def receive_price_info():
         print(price_net_info)
         for price in price_net_info:
             # print(price)
-            print(node_name)
-            print(price.split('%')[0])
+            # print(node_name)
+            # print(price.split('%')[0])
             # print(price.split('%')[1])
             task_price_net[node_name,price.split('%')[0]] = float(price.split('%')[1])
         print('Check price updated interval ')
@@ -108,7 +108,7 @@ def receive_price_info():
         pass_time[node_name] = TimedValue()
         txec = toc(t)
         bottleneck['receiveprice'].append(txec)
-        print(np.mean(bottleneck['receiveprice']))
+        # print(np.mean(bottleneck['receiveprice']))
         print('***************************************************')
 
     except Exception as e:
@@ -127,8 +127,8 @@ def default_best_node(source_node):
     w_cpu = 100000 # Resource profiling : larger cpu resource, lower price
     w_mem = 100000 # Resource profiling : larger mem resource, lower price
     w_queue = 1 # Queue : currently 0
-    print('-----------------Current ratio')
-    print(w_mem)
+    # print('-----------------Current ratio')
+    # print(w_mem)
     best_node = -1
     task_price_network= dict()
     # print('----------')
@@ -138,20 +138,20 @@ def default_best_node(source_node):
     # print(task_price_net)
     # print(len(task_price_net))
     # print(source_node)
-    print('DEBUG')
+    # print('DEBUG')
     for (source, dest), price in task_price_net.items():
         if source == source_node:
             # print('hehehhehheheh')
             # print(source_node)
             task_price_network[dest]= price
     
-    print('uhmmmmmmm')
-    print(self_id)
-    print(self_task)
-    print(self_name)
+    # print('uhmmmmmmm')
+    # print(self_id)
+    # print(self_task)
+    # print(self_name)
     task_price_network[source_node] = 0 #the same node
-    print(task_price_network)
-    print(task_price_cpu)
+    # print(task_price_network)
+    # print(task_price_cpu)
 
     # print('------------3')
     print('CPU utilization')
@@ -177,27 +177,28 @@ def default_best_node(source_node):
             # print(task_price_mem[item])
             # print(task_price_queue[item])
             # print(task_price_network[item])
+
             #check time pass
-            print('Check passing time------------------')
-            print(item)
+            # print('Check passing time------------------')
+            # print(item)
 
             test = pass_time[item].__call__()
-            print(test)
+            # print(test)
             if test==True: 
-                print('Yeahhhhhhhhhhhhhhhhhhhhhh')
+                # print('Yeahhhhhhhhhhhhhhhhhhhhhh')
                 task_price_network[item] = float('Inf')
-            print(task_price_network[item])
+            # print(task_price_network[item])
             task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
-            print(task_price_summary[item])
+            # print(task_price_summary[item])
         
-        print('Summary cost')
-        print(task_price_summary)
+        # print('Summary cost')
+        # print(task_price_summary)
         best_node = min(task_price_summary,key=task_price_summary.get)
-        print(best_node)
+        # print(best_node)
 
         txec = toc(t)
         bottleneck['selectbest'].append(txec)
-        print(np.mean(bottleneck['selectbest']))
+        # print(np.mean(bottleneck['selectbest']))
         print('***************************************************')
     else:
         print('Task price summary is not ready yet.....') 
@@ -227,7 +228,7 @@ def receive_best_assignment_request():
         # print('******')
         txec = toc(t)
         bottleneck['receiveassign'].append(txec)
-        print(np.mean(bottleneck['receiveassign']))
+        # print(np.mean(bottleneck['receiveassign']))
         print('***************************************************')
         
         announce_best_assignment(home_id,best_node, source_node, file_name)
@@ -260,7 +261,7 @@ def announce_best_assignment(home_id,best_node, source_node, file_name):
         res = res.decode('utf-8')
         txec = toc(t)
         bottleneck['announcebest'].append(txec)
-        print(np.mean(bottleneck['announcebest']))
+        # print(np.mean(bottleneck['announcebest']))
         print('***************************************************')
     except Exception as e:
         print("Sending assignment information to flask server on computing nodes FAILED!!!")
@@ -278,27 +279,27 @@ def send_controller_info(node_ip):
         params = {'controller_id_map':controller_id_map}
         # thread = Worker(url,params)
         # thread.start()
-        print(time.time()-t1)
+        # print(time.time()-t1)
         t1 = time.time()
         params = urllib.parse.urlencode(params)
-        print(time.time()-t1)
+        # print(time.time()-t1)
         t1 = time.time()
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        print(time.time()-t1)
+        # print(time.time()-t1)
         t1 = time.time()
         res = urllib.request.urlopen(req)
-        print(time.time()-t1)
+        # print(time.time()-t1)
         t1 = time.time()
         res = res.read()
-        print(time.time()-t1)
+        # print(time.time()-t1)
         t1 = time.time()
         res = res.decode('utf-8')
-        print(time.time()-t1)
+        # print(time.time()-t1)
         t1 = time.time()
         txec = toc(t)
         bottleneck['sendcontroller'].append(txec)
-        print(time.time()-t1)
-        print(np.mean(bottleneck['sendcontroller']))
+        # print(time.time()-t1)
+        # print(np.mean(bottleneck['sendcontroller']))
         print('***************************************************')
     except Exception as e:
         print("Sending controller message to flask server on computing node FAILED!!!")
@@ -312,9 +313,9 @@ def push_controller_map():
     t = tic()
     for computing_ip in all_computing_ips:
         t1 = time.time()
-        print(computing_ip)
+        # print(computing_ip)
         send_controller_info(computing_ip)
-        print(time.time()-t1)
+        # print(time.time()-t1)
     txec = toc(t)
     print('***************************************************')
 

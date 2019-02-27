@@ -12,7 +12,6 @@ Original CIRCE (Non-pricing CIRCE)
 
    circe/original/monitor
    circe/original/readconfig
-   circe/original/runSQuery
    circe/original/scheduler
    circe/original/evaluate
 
