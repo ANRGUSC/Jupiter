@@ -57,6 +57,7 @@ In order to use the Jupiter Orchestrator tool, your computer needs to fulfill th
                |       |
                |       └───sample_input
                |
-               └───scripts
+               └───mulhome_scripts
+               |___docs
 
 

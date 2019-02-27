@@ -62,6 +62,11 @@ def task_mapping_decorator(f):
     return task_mapping
 
 def setup_port(port):
+    """Automatically set up the proxy port
+    
+    Args:
+        port (int): port number
+    """
     cmd = "kubectl proxy -p " + str(port)+ " &"
     try:
         os.system(cmd)
@@ -180,6 +185,12 @@ def k8s_jupiter_deploy(app_id,app_name,port):
 
 
 def empty_function(app_id):
+    """Empty function
+    
+    Args:
+        app_id (str): application id
+    
+    """
     return []
 
 
@@ -225,13 +236,13 @@ def redeploy_system(app_id,app_name,port):
         path2 = jupiter_config.HERE + 'nodes.txt'
 
         # start the profilers
-        #profiler_ips = get_all_profilers()
-        profiler_ips = k8s_profiler_scheduler()
+        profiler_ips = get_all_profilers()
+        #profiler_ips = k8s_profiler_scheduler()
 
 
         # start the execution profilers
-        #execution_ips = get_all_execs(app_id)
-        execution_ips = exec_profiler_function(app_id)
+        execution_ips = get_all_execs(app_id)
+        #execution_ips = exec_profiler_function(app_id)
 
         print('*************************')
         print('Network Profiling Information2222:')
@@ -303,6 +314,13 @@ def redeploy_system(app_id,app_name,port):
 
 
 def check_finish_evaluation(app_name,port,num_samples):
+    """Check if the evaluation script is finished
+    
+    Args:
+        app_name (str): application name
+        port (int): port number 
+        num_samples (int): number of sample files
+    """
     jupiter_config.set_globals()
     line = "http://localhost:%d/api/v1/namespaces/"%(port)
     line = line + jupiter_config.DEPLOYMENT_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
@@ -327,7 +345,15 @@ def check_finish_evaluation(app_name,port,num_samples):
 
    
 def deploy_app_jupiter(app_id,app_name,port,num_runs,num_samples):
+    """Deploy JUPITER given all the input parameters
     
+    Args:
+        app_id (str): Application ID
+        app_name (str): Application name
+        port (int): port number
+        num_runs (int): number of runs
+        num_samples (int): number of samples
+    """
     setup_port(port)
     k8s_jupiter_deploy(app_id,app_name,port)
     for i in range(0,num_runs):

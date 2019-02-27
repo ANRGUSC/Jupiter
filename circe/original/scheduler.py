@@ -334,7 +334,7 @@ class Watcher:
         """
         Monitoring ``INPUT`` folder for the incoming files.
         
-        At the moment you have to manually place input files into the ``INPUT`` folder (which is under ``centralized_scheduler_with_task_profiler\``):
+        You can manually place input files into the ``INPUT`` folder (which is under ``centralized_scheduler_with_task_profiler\``):
         
             .. code-block:: bash
         
