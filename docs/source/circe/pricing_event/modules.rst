@@ -9,5 +9,4 @@ pricing_event
    evaluate
    monitor
    readconfig
-   runSQuery
    scheduler

@@ -10,31 +10,26 @@ Step 2 : Update Node list
 -------------------------
 
 List of nodes for the experiment is kept in file ``nodes.txt`` 
-(the user needs to fill the file with the appropriate **kubernetes nodenames,usernames and passwords** of their compute nodes). 
-Note that, these usernames and passwords are actually the passwords for the dockers: Each line of the ``nodes.txt`` except the first line follow a format 
-
-.. code-block:: text
-
-    node#  nodename root password
+(the user needs to fill the file with the appropriate **kubernetes nodenames** of their compute nodes). 
 
 You can simply change just the hostnames in the given sample file. 
 The first line should be 
 
 .. code-block:: text
 
-    home nodename root password
+    home nodename
 
 Everything else can be the same.
 
-+-------+----------+----------+-----+
-| home  | nodename | username | pw  |
-+=======+==========+==========+=====+
-| node1 | nodename | username | pw  |
-+-------+----------+----------+-----+
-| node2 | nodename | username | pw  |
-+-------+----------+----------+-----+
-| node3 | nodename | username | pw  |
-+-------+----------+----------+-----+
++-------+----------+
+| home  | nodename |
++=======+==========+
+| node1 | nodename |
++-------+----------+
+| node2 | nodename |
++-------+----------+
+| node3 | nodename |
++-------+----------+
 
 
 Step 3 : Setup Home Node
@@ -67,7 +62,7 @@ Step 4 : Setup APP Folder
 -------------------------
 
 You need to make sure that you have a ``APP_folder`` with all the task specific files
-inside the ``task_specific_files`` folder. The ``APP_folder`` needs to have a ``configuration.txt``. 
+inside the ``task_specific_files`` folder. The ``APP_folder`` needs to have a ``configuration.txt``,``app_config.ini`` and ``name_convert.txt``. 
 
 The ``APP_folder`` MUST also contain all executable files of the task graph under the ``scripts`` sub-folder. 
 You need to follow this exact folder structure to develop an APP for the Jupiter Orchestrator. 
@@ -79,7 +74,8 @@ You need to follow this exact folder structure to develop an APP for the Jupiter
     APP_folder
     |
     |   configuration.txt
-    |   app_config.ini  
+    |   app_config.ini 
+    |   name_convert.txt 
     |
     └───scripts
     |
@@ -90,44 +86,8 @@ You need to follow this exact folder structure to develop an APP for the Jupiter
 Step 5 : Setup the Dockers
 --------------------------
 
-Version 1.0
-^^^^^^^^^^^
-
-The dockerfiles can be found under the ``circe/`` folder.
-
-Change the follwing lines in the ``home_node.Dockerfile`` to refer to your own app
-
-.. code-block:: text
-    :linenos:
-
-    # Add input files
-    COPY  task_specific_files/network_monitoring_app/sample_input /sample_input
-
-    # Add the task speficific configuration files
-    ADD task_specific_files/network_monitoring_app/configuration.txt /configuration.txt
-
-
-Now you need to update the ``worker_node.Dockerfile`` to add your app specific
-packages by changing the follwing lines:
-
-.. code-block:: text
-    :linenos:
-
-    ## Install TASK specific needs. The hadoop is a requirement for the network profiler application
-
-    RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
-
-    RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
-
-
-Also change the following line to refer to your app: 
-
-.. code-block:: text
-
-    ADD task_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
-
-Version 2.0
-^^^^^^^^^^^
+Version 2.0 and 3.0
+^^^^^^^^^^^^^^^^^^^
 Starting from version 2.0, to simplify the process we have provided with the following scripts:
     
 .. code-block:: text
@@ -135,10 +95,28 @@ Starting from version 2.0, to simplify the process we have provided with the fol
 
     circe/circe_docker_files_generator.py --- prepare Docker files for CIRCE
     profilers/execution_profiler/exec_docker_files_generator.py --- for execution profiler
-    circe/network_resource_profiler/profiler_docker_files_generator.py --- for DRUPE 
+    profilers/network_resource_profiler/profiler_docker_files_generator.py --- for DRUPE 
     task_mapper/heft/heft_docker_files_generator.py --- for HEFT
 
 These scripts will read the configuration information from ``jupiter_config.ini`` and ``jupiter_config.py`` to help generate corresponding Docker files for all the components. 
+
+Version 4.0
+^^^^^^^^^^^
+The automatic scripts paths are updated:
+
+.. code-block:: text
+    :linenos:
+
+    circe/original/circe_docker_files_generator.py --- prepare Docker files for CIRCE (nonpricing)
+    circe/pricing_event/circe_docker_files_generator.py --- prepare Docker files for CIRCE (event driven pricing)
+    circe/pricing_push/circe_docker_files_generator.py --- prepare Docker files for CIRCE (pushing pricing)
+    profilers/execution_profiler_mulhome/exec_docker_files_generator.py --- for execution profiler
+    profilers/network_resource_profiler/profiler_docker_files_generator.py --- for network profiler 
+    task_mapper/heft_mulhome/original/heft_docker_files_generator.py --- for HEFT (original)
+    task_mapper/heft_mulhome/modified/heft_docker_files_generator.py --- for HEFT (modified)
+    task_mapper/wave_mulhome/greedy_wave/wave_docker_files_generator.py --- for WAVE (greedy)
+    task_mapper/wave_mulhome/random_wave/wave_docker_files_generator.py --- for WAVE (random)
+
 
 Step 6 : Choose the task mapper
 -------------------------------
@@ -160,7 +138,13 @@ You must choose the Task Mapper from ``config.ini``. Currently, there are 4 opti
 
 .. note:: When HEFT tries to optimize the Makespan by reducing communication overhead and putting many tasks on the same computing node, it ends up overloading them. While the Jupiter system can recover from failures, multiple failures of the overloaded computing nodes actually ends up adding more delay in the execution of the tasks as well as the communication between tasks due to temporary disruptions of the data flow. The modified HEFT is restricted to allocate no more than ``MAX_TASK_ALLOWED`` containers per computing node where the number ``MAX_TASK_ALLOWED`` is dependent upon the processing power of the node. You can find ``MAX_TASK_ALLOWED`` variable from ``heft_dup.py``. 
 
-Step 7 : Optional - Modify the File Transfer Method or Network & Resource Monitor Tool
+Step 7 : Choose the CIRCE dispatcher 
+------------------------------------
+
+Starting from **Jupiter Version 4**, you must choose the CIRCE dispatcher from ``config.ini``. Currently, there are 3 options from the dispatcher list: nonpricing, pricing (event driven scheme, pushing scheme)
+
+
+Step 8 : Optional - Modify the File Transfer Method or Network & Resource Monitor Tool
 --------------------------------------------------------------------------------------
 
 Select File Transfer method 
@@ -197,37 +181,14 @@ Secondly, update ``config.ini`` to make Jupiter use your corresponding Network &
     [PROFILERS_LIST]
     DRUPE = 0
 
-Step 8 : Push the Dockers
+Step 9 : Push the Dockers
 -------------------------
 
 Now, you need to build your Docker images. 
-There are currently nine different docker images (two each for DRUPE, WAVE, CIRCE, execution profiler and one for HEFT).
 
 To build Docker images and push them to the Docker Hub repo, first login 
-to Docker Hub using your own credentials by running ``docker login``. Then, in the
-folder with the ``*.Dockerfile`` files, use this template to build all the needed
-Docker images:
+to Docker Hub using your own credentials by running ``docker login``. Starting from **Jupiter Version 2**, we have provided with the following building scripts:
 
-.. code-block:: bash
-    :linenos:
-
-    docker build -f $target_dockerfile . -t $dockerhub_user/$repo_name:$tag
-    docker push $dockerhub_user/$repo_name:$tag
-
-Example:
-
-.. code-block:: bash
-    :linenos:
-
-    docker build -f worker_node.Dockerfile . -t johndoe/worker_node:v1
-    docker push johndoe/worker_node:v1
-    docker build -f home_node.Dockerfile . -t johndoe/home_node:v1
-    docker push johndoe/home_node:v1
-
-The same thing needs to be done for the profilers, the WAVE and HEFT files.
-
-.. note:: To simplify the process we have provided with the following scripts:
-    
 .. code-block:: text
 
     scripts/build_push_jupiter.py --- push all Jupiter related dockers
@@ -237,10 +198,23 @@ The same thing needs to be done for the profilers, the WAVE and HEFT files.
     scripts/build_push_heft.py --- Push HEFT dockers only
     scripts/build_push_exec.py --- Push execution profiler's  dockers only
 
+The build path scripts are modified in **Jupiter Version 4**:
+    
+.. code-block:: text
+
+    mulhome_scripts/build_push_jupiter.py --- push all Jupiter related dockers and nonpricing circe dispatcher
+    mulhome_scripts/build_push_pricing_jupiter.py --- push all Jupiter related dockers and pricing circe dispatcher
+    mulhome_scripts/build_push_circe.py --- Push nonpricing CIRCE dockers only
+    mulhome_scripts/build_push_pricing_circe.py --- Push pricing CIRCE dockers only
+    mulhome_scripts/build push_profiler.py --- Push DRUPE dockers only
+    mulhome_scripts/build_push_wave.py --- Push WAVE dockers only
+    mulhome_scripts/build_push_heft.py --- Push HEFT dockers only
+    mulhome_scripts/build_push_exec.py --- Push execution profiler's  dockers only
+
 .. warning:: However, before running any of these scripts you should update the ``jupiter_config`` file with your own docker names as well as dockerhub username. DO NOT run the script without crosschecking the config file.
 
-Step 9 : Setup the Proxy
-------------------------
+Step 10 : Optional - Setup the Proxy (only required for Version 2 & 3)
+----------------------------------------------------------------------
 
 Now, you have to create a kubernetes proxy. You can do that by running the follwing command on a terminal.
 
@@ -250,7 +224,7 @@ Now, you have to create a kubernetes proxy. You can do that by running the follw
     kubectl proxy -p 8080
 
 
-Step 10 : Create the Namespaces
+Step 11 : Create the Namespaces
 -------------------------------
 
 You need to create difference namespaces in your Kubernetes cluster 
@@ -276,7 +250,7 @@ You can create these namespaces commands similar to the following:
     EXEC_NAMESPACE          = 'johndoe-exec'
 
 
-Step 11 : Run the Jupiter Orchestrator
+Step 12 : Run the Jupiter Orchestrator
 --------------------------------------
 
 
@@ -285,11 +259,11 @@ Next, you can simply run:
 .. code-block:: bash
     :linenos:
 
-    cd scripts/
-    python3 k8s_jupiter_deploy.py
+    cd mulhome_scripts/
+    python3 auto_deploy_system.py
 
 
-Step 12 : Optional - Alternate scheduler
+Step 13 : Optional - Alternate scheduler
 ----------------------------------------
 
 If you do not want to use our task mappers (``HEFT`` or ``WAVE``) for the scheduler and design your own, you can do that by simply using the ``static_assignment.py``. You must do that by setting ``STATIC_MAPPING`` to ``1`` from ``jupiter_config.ini``. You have to pipe your scheduling output to the ``static_assignment.py`` while conforming to the sample dag and sample schedule structure. Then you can run:
@@ -297,11 +271,11 @@ If you do not want to use our task mappers (``HEFT`` or ``WAVE``) for the schedu
 .. code-block:: bash
     :linenos:
 
-    cd scripts/
-    python3 k8s_jupiter_deploy.py
+    cd mulhome_scripts/
+    python3 auto_deploy_system.py
 
 
-Step 13 : Interact With the DAG
+Step 14 : Interact With the DAG
 -------------------------------
 
 Now you can interact with the pos using the kubernetes dashboard. 

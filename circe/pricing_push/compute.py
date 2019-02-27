@@ -283,9 +283,12 @@ def update_exec_profile_file():
             conn = True
         except:
             print('Error connection')
-            time.sleep(60)
+            time.sleep(5)
 
-    print(conn)
+    # collection = db.collection_names(include_system_collections=False)
+    # print('Collections in the database:')
+    # for collect in collection:
+    #     print(collect)
 
 
     while not available_data:
@@ -294,9 +297,7 @@ def update_exec_profile_file():
             available_data = True
         except:
             print('Execution information for the current node is not ready!!!')
-            time.sleep(60)
-    print(available_data)
-    print(logging)
+            time.sleep(5)
 
     for record in logging:
         # Node ID, Task, Execution Time, Output size
@@ -335,7 +336,8 @@ def get_updated_execution_profile():
     return execution_info
 
 def get_updated_network_profile():
-    
+    """Get updated network information from the network profilers
+    """
     #print('Retrieve network information info')
     network_info = dict()        
     try:
@@ -382,7 +384,7 @@ def get_updated_resource_profile():
             if len(result) != 0:
                 resource_info=result
                 break
-            time.sleep(60)
+            time.sleep(1)
 
         if c == num_retries:
             print("Exceeded maximum try times.")
@@ -425,10 +427,10 @@ def price_aggregate(task_name):
         #print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        # print(resource_info)
-        # print(execution_info)
+        print(resource_info)
+        print(execution_info)
         network_info = get_updated_network_profile()
-        # print(network_info)
+        print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         
         
@@ -481,6 +483,12 @@ def price_aggregate(task_name):
 
 
 def announce_price(task_controller_ip, price):
+    """Announce my current price to the task controller given its IP
+    
+    Args:
+        task_controller_ip (str): IP of the task controllers
+        price: my current price
+    """
     try:
 
         print("Announce my price")
@@ -506,6 +514,8 @@ def announce_price(task_controller_ip, price):
         return "not ok"
 
 def push_updated_price():
+    """Push my current price to all the task controllers
+    """
     # print('***********')
     # print(task_controllers)
     # print(controllers_ip_map)
@@ -521,6 +531,11 @@ def push_updated_price():
 
     
 def schedule_update_price(interval):
+    """Schedule the price update procedure every interval
+    
+    Args:
+        interval (int): chosen interval (minutes)
+    """
     # scheduling updated price
     sched = BackgroundScheduler()
     sched.add_job(push_updated_price,'interval',id='push_price', minutes=interval, replace_existing=True)
@@ -579,7 +594,7 @@ def transfer_mapping_decorator(TRANSFER=0):
                 break
             except:
                 print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
-                time.sleep(2)
+                time.sleep(1)
                 retry += 1
         if retry == num_retries:
             s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,source,ts)
@@ -712,7 +727,7 @@ class Watcher1():
         self.observer.start()
         try:
             while True:
-                time.sleep(5)
+                time.sleep(1)
         except:
             self.observer.stop()
             print("Error")
@@ -847,7 +862,7 @@ class Watcher(multiprocessing.Process):
         self.observer.start()
         try:
             while True:
-                time.sleep(5)
+                time.sleep(1)
         except:
             self.observer.stop()
             print("Error")

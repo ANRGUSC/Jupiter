@@ -39,6 +39,11 @@ import _thread
 
 
 def teardown_system(app_name):
+    """Automatically tear down the whole system
+    
+    Args:
+        app_name (str): Application name
+    """
     jupiter_config.set_globals()
     
     static_mapping = jupiter_config.STATIC_MAPPING

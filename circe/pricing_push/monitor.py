@@ -126,6 +126,8 @@ app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info
 
 
 def default_best_node():
+    """select the current best node
+    """
     print('Select the current best node')
     w_net = 1 # Network profiling: longer time, higher price
     w_cpu = 1 # Resource profiling : larger cpu resource, lower price
@@ -251,6 +253,11 @@ def schedule_update_price(interval):
     sched.start()
 
 def send_controller_info(node_ip):
+    """Send my task controller information to the compute node
+    
+    Args:
+        node_ip (str): IP of the compute node
+    """
     try:
         print("Announce my current node mapping to " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
@@ -266,6 +273,8 @@ def send_controller_info(node_ip):
         return "not ok"
 
 def push_controller_map():
+    """Push my task controller information to all the compute nodes
+    """
     time.sleep(90)
     for computing_ip in all_computing_ips:
         send_controller_info(computing_ip)
@@ -292,6 +301,11 @@ def update_assignment_info_child():
 app.add_url_rule('/update_assignment_info_child', '/update_assignment_info_child', update_assignment_info_child)
 
 def send_assignment_info(node_ip):
+    """Send my current best compute node to the node given its IP
+    
+    Args:
+        node_ip (str): IP of the node
+    """
     try:
         print("Announce my current best computing node " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/receive_assignment_info"
@@ -309,6 +323,11 @@ def send_assignment_info(node_ip):
         return "not ok"
 
 def update_assignment_info_to_child(node_ip):
+    """Update my current best compute node to my children tasks
+    
+    Args:
+        node_ip (str): IP of my children task
+    """
     try:
         print("Announce my current best computing node to children " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_assignment_info_child"
@@ -326,6 +345,8 @@ def update_assignment_info_to_child(node_ip):
         return "not ok"
 
 def announce_best_assignment_to_child():
+    """Announce my current best assignment to all my children tasks
+    """
     print('Announce best assignment to my children')
     #print(child_nodes_ip)
     for child_ip in child_nodes_ip:
@@ -333,6 +354,8 @@ def announce_best_assignment_to_child():
         update_assignment_info_to_child(child_ip)   
 
 def push_first_assignment_map():
+    """Waiting for the first assignment
+    """
     print('Waiting for the first assignment')
     
     # print(task_node_map)
@@ -349,6 +372,8 @@ def push_first_assignment_map():
     announce_best_assignment_to_child()
 
 def push_assignment_map():
+    """Update assignment periodically
+    """
     print('Updated assignment periodically')
     default_best_node()
     print(task_node_map)
@@ -364,7 +389,11 @@ def push_assignment_map():
 
 def schedule_update_assignment(interval):
     """
-        Send controller id node mapping to all the computing nodes
+    Schedulete the assignment update every interval
+    
+    Args:
+        interval (int): chosen interval (minutes)
+    
     """
     sched = BackgroundScheduler()
     sched.add_job(push_assignment_map,'interval',id='assign_id', minutes=interval, replace_existing=True)
