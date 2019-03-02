@@ -14,6 +14,7 @@ import shutil
 import os
 import random
 import time
+import glob
 
 
 def evaluate_random():
@@ -60,9 +61,6 @@ def evaluate_sequential():
     """
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
-    # src = "sample_input/1botnet.ipsum"
-    # dest = "input/1botnet.ipsum"
-    #print('---- Generate random input files')
     print('---- Generate random input files')
     file_count = 2
     for i in range(1,file_count+1):
@@ -80,10 +78,29 @@ def evaluate_sequential():
 
 
     print('---- Finish generating sequential input files')
-    
+
+def evaluate_test():
+    file_count = len(os.listdir("sample_input/"))
+    print(file_count)
+    file_count_out = len(os.listdir("output/"))
+    print(file_count_out)
+    for filepath in glob.iglob('sample_input/*.ipsum'):
+        print(filepath)
+        filename = filepath.split('/')[1]
+        dest = "input/"+filename
+        print('---- Generate random input files')
+        shutil.copyfile(filepath,dest)
+        count = 0
+        while 1:
+            time.sleep(5)
+            file_count_out = len(os.listdir("output/"))
+            if file_count_out ==  file_count:
+                time.sleep(30)
+                break
 
 if __name__ == '__main__':
     #evaluate_random()
     time.sleep(60)
     print('Start copying sample files for evaluation')
     evaluate_sequential()
+    #evaluate_test()

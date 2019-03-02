@@ -60,7 +60,8 @@ COPY task_mapper/wave_mulhome/greedy_wave/worker/start.sh /
 
 ADD {app_file}/configuration.txt DAG/DAG_application.txt
 ADD {app_file}/input_node.txt DAG
-ADD {app_file}/sample_input/1botnet.ipsum /1botnet.ipsum
+#ADD {app_file}/sample_input/1botnet.ipsum /1botnet.ipsum
+ADD {app_file}/sample_input /
 
 ADD jupiter_config.ini /jupiter_config.ini
 

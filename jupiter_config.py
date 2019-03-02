@@ -125,7 +125,8 @@ def set_globals():
 	global HOME_NODE, HOME_CHILD
 
 	HOME_NODE               = get_home_node(HERE + 'nodes.txt')
-	HOME_CHILD              = 'localpro'
+	HOME_CHILD              = 'task0'
+	#HOME_CHILD              = 'localpro'
 	#HOME_CHILD              = 'sample_ingress_task1'
 
 	"""pricing CIRCE home and worker images"""
@@ -170,8 +171,10 @@ def set_globals():
 	"""Application Information"""
 	global APP_PATH, APP_NAME
 
-	APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
-	APP_NAME                = 'app_specific_files/network_monitoring_app'
+	# APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
+	# APP_NAME                = 'app_specific_files/network_monitoring_app'
+	APP_PATH                = HERE  + 'app_specific_files/dummy_app/'
+	APP_NAME                = 'app_specific_files/dummy_app'
 
 
 if __name__ == '__main__':
