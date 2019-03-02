@@ -362,7 +362,7 @@ def deploy_app_jupiter(app_id,app_name,port,num_runs,num_samples):
         t = str(datetime.datetime.now())
         print(t)            
         time.sleep(30)
-        redeploy_system(app_id,app_name,port)
+        # redeploy_system(app_id,app_name,port)
     #teardown_system(app_name)
     
 def main():

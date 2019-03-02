@@ -27,6 +27,7 @@ from socket import gethostbyname, gaierror, error
 import multiprocessing
 import time
 import urllib
+import urllib.request
 import configparser
 import numpy as np
 from collections import defaultdict
