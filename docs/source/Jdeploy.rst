@@ -138,8 +138,8 @@ You must choose the Task Mapper from ``config.ini``. Currently, there are 4 opti
 
 .. note:: When HEFT tries to optimize the Makespan by reducing communication overhead and putting many tasks on the same computing node, it ends up overloading them. While the Jupiter system can recover from failures, multiple failures of the overloaded computing nodes actually ends up adding more delay in the execution of the tasks as well as the communication between tasks due to temporary disruptions of the data flow. The modified HEFT is restricted to allocate no more than ``MAX_TASK_ALLOWED`` containers per computing node where the number ``MAX_TASK_ALLOWED`` is dependent upon the processing power of the node. You can find ``MAX_TASK_ALLOWED`` variable from ``heft_dup.py``. 
 
-Step 7 : Choose the CIRCE dispatcher 
-------------------------------------
+Step 7 : Optional - Choose the CIRCE dispatcher (only starting from Version 4) 
+------------------------------------------------------------------------------
 
 Starting from **Jupiter Version 4**, you must choose the CIRCE dispatcher from ``config.ini``. Currently, there are 3 options from the dispatcher list: nonpricing, pricing (event driven scheme, pushing scheme)
 

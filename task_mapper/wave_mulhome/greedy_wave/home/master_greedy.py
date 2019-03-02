@@ -235,7 +235,9 @@ def init_thread():
     Assign the first task
     """
     time.sleep(60)
+    print('--------------- Init thread')
     for key in init_tasks:
+        print(key)
         tasks = init_tasks[key]
         for _, task in enumerate(tasks):
             res = assign_task_to_remote(key, task)
@@ -306,6 +308,7 @@ def init_task_topology():
             else:
                 init_tasks[node] = [task]
 
+    print('------- Init tasks')
     print("init_tasks" ,init_tasks)
 
     for line in application:
@@ -339,6 +342,7 @@ def init_task_topology():
                     break
             if not flag:
                 control_relation[parent[0]] = [key]
+    print('----------- Control relation')
     print("control_relation" ,control_relation)
 
 

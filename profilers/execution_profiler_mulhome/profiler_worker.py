@@ -171,12 +171,16 @@ def main():
 
             start_time = datetime.datetime.utcnow()
             filename = module.main()
+            print('------------------------------------------------')
+            print(filename)
             stop_time = datetime.datetime.utcnow()
             mytime = stop_time - start_time
             mytime = int(mytime.total_seconds())
 
 
             output_data = [file_size(fname) for fname in filename]
+            print(output_data)
+            print('------------------------------------------------')
             sum_output_data = sum(output_data) #current: summation of all output files
             line=task+','+str(mytime)+ ','+ str(sum_output_data) + '\n'
             print(line)
