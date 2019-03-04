@@ -35,6 +35,13 @@ from readconfig import read_config
 
 app = Flask(__name__)
 
+def tic():
+    return time.time()
+
+def toc(t):
+    texec = time.time() - t
+    # print('Execution time is:'+str(texec))
+    return texec
 
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
@@ -224,6 +231,7 @@ def prepare_global_info():
     # print(next_tasks_map)
     # print(last_tasks_map)
     # print(task_node_map)
+    print('Generating task folders for OUTPUT\n')
     global task_module
     task_module = {}
     for task in dag:
@@ -232,6 +240,15 @@ def prepare_global_info():
         task_module[task] = __import__(task)
         for home_id in home_ids:
             cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
+            os.system(cmd)
+
+    print('Generating task folders for INPUT\n')
+    for task in dag:
+        cmd = "mkdir centralized_scheduler/input/"+task 
+        os.system(cmd)
+        task_module[task] = __import__(task)
+        for home_id in home_ids:
+            cmd = "mkdir centralized_scheduler/input/"+task+"/" + home_id
             os.system(cmd)
 
 def update_controller_map():
@@ -648,22 +665,40 @@ def send_runtime_profile_computingnode(msg,task_name,home_id):
     return res
 
 def retrieve_input_enter(task_name, file_name):
-    """Retrieve the corresponding input name based on the name conversion provided by the user and the output file name 
+    """Retrieve the corresponding input name based on the name conversion provided by the user and the output file name in ``name_convert.txt``
     
     Args:
         task_name (str): task name
         file_name (str): name of the file enter at the INPUT folder
     """
+    print('***************************************************')
+    print('retrieve input name')
+    t = tic()
+    t1 = time.time()
+    print(file_name)
+    print(task_name)
+    print(name_convert_in)
     suffix = name_convert_in[task_name]
+    print(suffix)
+    # print(time.time()-t1)
+    t1 = time.time()
     # print(suffix)
     # print(type(suffix))
     prefix = file_name.split(suffix)
+    print(prefix)
+    # print(time.time()-t1)
+    t1 = time.time()
     # print('$$$$$$')
     # print(file_name)
     # print(suffix)
     # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    # print(input_name)
+    # print(time.time()-t1)
+    print(input_name)
+    txec = toc(t)
+    #bottleneck['retrieveinput'].append(txec)
+    # print(np.mean(bottleneck['retrieveinput']))
+    print('***************************************************')
     return input_name
 
 def retrieve_input_finish(task_name, file_name):
@@ -673,14 +708,20 @@ def retrieve_input_finish(task_name, file_name):
         task_name (str): task name
         file_name (str): name of the file output at the OUTPUT folder
     """
+    print('***************************************************')
+    print('retrieve finish name')
+    print(file_name)
+    print(name_convert_out)
     suffix = name_convert_out[task_name]
+    print(suffix)
     prefix = file_name.split(suffix)
     # print('$$$$$$')
     # print(file_name)
     # print(suffix)
-    # print(prefix)
+    print(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    # print(input_name)
+    print(input_name)
+    print('***************************************************')
     return input_name
 
 def receive_best_assignment():
@@ -765,11 +806,12 @@ class Handler1(FileSystemEventHandler):
                 runtime_receiver_log.write(s)
                 runtime_receiver_log.flush()
 
+            print(event.src_path.split('#'))
             task_name = event.src_path.split('/')[-3]
             home_id = event.src_path.split('/')[-2]
-            # print('!!!!!!!!!!!!!!!!!')
-            # print(home_id)
-            # print(task_name)
+            print('!!!!!!!!!!!!!!!!!------------------')
+            print(home_id)
+            print(task_name)
             input_name = retrieve_input_finish(task_name, temp_name)
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
             # print(input_name)
@@ -777,6 +819,7 @@ class Handler1(FileSystemEventHandler):
             key = (home_id,task_name,input_name)
             print('#############')
             print(next_mul)
+            print(key)
             flag = next_mul[key][0]
             print(next_tasks_map)
             print(next_tasks_map[task_name])
@@ -805,7 +848,8 @@ class Handler1(FileSystemEventHandler):
                 # print(flag)
 
                 if flag == 'true':
-                    destinations = ["/centralized_scheduler/input/" +new_file +"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
+                    destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
+                    #destinations = ["/centralized_scheduler/input/" +new_file +"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
                     for idx,ip in enumerate(next_IPs):
                         # print('----')
                         # print(ip)
@@ -832,7 +876,8 @@ class Handler1(FileSystemEventHandler):
                             # print(next_tasks_map[task_name][idx])
                             current_file = files_mul[key][idx].split('/')[-1]
                             # print(current_file)
-                            destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
+                            # destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
+                            destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
                             # print(destinations)
                             if self_ip!=ip:
                                 transfer_data(ip,username,password,files_mul[key][idx], destinations)
@@ -889,8 +934,11 @@ class Handler(FileSystemEventHandler):
                 file_name = new_file.split('.')[0]
 
             ts = time.time()
-            task_name = new_file.split('#')[2]
-            home_id = new_file.split('#')[1]
+            # task_name = new_file.split('#')[2]
+            # home_id = new_file.split('#')[1]
+            home_id = event.src_path.split('/')[-2]
+            task_name = event.src_path.split('/')[-3]
+            
             input_name = retrieve_input_enter(task_name, file_name)
             runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
             key = (home_id,task_name,input_name)
@@ -900,9 +948,11 @@ class Handler(FileSystemEventHandler):
             
             flag = dag[task_name][0] 
             task_flag = dag[task_name][1] 
-            # print('&&&&&&&&&&&&&&&&&&&&')
-            # print(dag[task_name])
-            # print(flag)
+            print('&&&&&&&&&&&&&&&&&&&&')
+            print(dag[task_name])
+            print(flag)
+            print(key)
+            print(task_mul)
 
             if key not in task_mul:
                 task_mul[key] = [new_file]
@@ -914,19 +964,24 @@ class Handler(FileSystemEventHandler):
                 count_mul[key]=count_mul[key]-1
                 size_mul[key] = size_mul[key] + cal_file_size(event.src_path)
 
+            print('^^^^^^^^^^^^^^^')
+            print(count_mul[key])
             if count_mul[key] == 0: # enough input files
                 incoming_file = task_mul[key]
+                print('^^^^^^^^^^^^^2')
+                print(incoming_file)
                 if len(incoming_file)==1: 
                     filenames = incoming_file[0]
                 else:
                     filenames = incoming_file
-                print('Add task to the processing queue')
+                print(filenames)
+                print('--------------Add task to the processing queue')
                 queue_mul[key] = False 
                 
-
                 input_path = os.path.split(event.src_path)[0]
-                output_path = os.path.join(os.path.split(input_path)[0],'output')
-                output_path = os.path.join(output_path,task_name,home_id)
+                output_path = input_path.replace("input","output")
+                # output_path = os.path.join(os.path.split(input_path)[0],'output')
+                # output_path = os.path.join(output_path,task_name,home_id)
                 print('!!!!!!!!!')
                 print(input_name)
                 print(input_path)
