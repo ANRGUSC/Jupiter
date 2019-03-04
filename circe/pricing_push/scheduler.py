@@ -678,10 +678,11 @@ class Handler(FileSystemEventHandler):
             IP = node_ip_map[task_node_summary[first_task]]
 
             print(new_file_name)
-            new_file_name = new_file_name+"#"+my_task+"#"+first_task+"#"+first_flag
-            print(new_file_name)
+            # new_file_name = new_file_name+"#"+my_task+"#"+first_task+"#"+first_flag
+            # print(new_file_name)
             source = event.src_path
-            destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
+            destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)
+            # destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
             transfer_data(IP,username, password,source, destination)
 
 
