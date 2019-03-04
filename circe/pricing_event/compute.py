@@ -241,12 +241,23 @@ def prepare_global_info():
     # print(task_node_map)
     global task_module
     task_module = {}
+
+    print('Generating task folders for OUTPUT\n')
     for task in dag:
         cmd = "mkdir centralized_scheduler/output/"+task 
         os.system(cmd)
         task_module[task] = __import__(task)
         for home_id in home_ids:
             cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
+            os.system(cmd)
+
+    print('Generating task folders for INPUT\n')
+    for task in dag:
+        cmd = "mkdir centralized_scheduler/input/"+task 
+        os.system(cmd)
+        task_module[task] = __import__(task)
+        for home_id in home_ids:
+            cmd = "mkdir centralized_scheduler/input/"+task+"/" + home_id
             os.system(cmd)
 
 def update_controller_map():
@@ -731,12 +742,17 @@ def retrieve_input_enter(task_name, file_name):
     print('retrieve input name')
     t = tic()
     t1 = time.time()
+    print(file_name)
+    print(task_name)
+    print(name_convert_in)
     suffix = name_convert_in[task_name]
+    print(suffix)
     # print(time.time()-t1)
     t1 = time.time()
     # print(suffix)
     # print(type(suffix))
     prefix = file_name.split(suffix)
+    print(prefix)
     # print(time.time()-t1)
     t1 = time.time()
     # print('$$$$$$')
@@ -745,7 +761,7 @@ def retrieve_input_enter(task_name, file_name):
     # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
     # print(time.time()-t1)
-    # print(input_name)
+    print(input_name)
     txec = toc(t)
     bottleneck['retrieveinput'].append(txec)
     # print(np.mean(bottleneck['retrieveinput']))
@@ -759,14 +775,20 @@ def retrieve_input_finish(task_name, file_name):
         task_name (str): task name
         file_name (str): name of the file output at the OUTPUT folder
     """
+    print('***************************************************')
+    print('retrieve finish name')
+    print(file_name)
+    print(name_convert_out)
     suffix = name_convert_out[task_name]
+    print(suffix)
     prefix = file_name.split(suffix)
     # print('$$$$$$')
     # print(file_name)
     # print(suffix)
-    # print(prefix)
+    print(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    # print(input_name)
+    print(input_name)
+    print('***************************************************')
     return input_name
 
 def request_best_assignment(home_id,task_name,file_name):
@@ -891,7 +913,11 @@ class Handler1(FileSystemEventHandler):
 
             task_name = event.src_path.split('/')[-3]
             home_id = event.src_path.split('/')[-2]
+            print(task_name)
+            print(home_id)
             input_name = retrieve_input_finish(task_name, temp_name)
+            print('????????????????')
+            print(input_name)
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
             # print(time.time()-t1)
             # t1 = time.time()
@@ -899,21 +925,23 @@ class Handler1(FileSystemEventHandler):
             # print(time.time()-t1)
             # t1 = time.time()
             key = (home_id,task_name,input_name)
-            # print('#############')
-            # print(next_mul)
+            print('#############')
+            print(next_mul)
             flag = next_mul[key][0]
-            # print(next_tasks_map)
-            # print(next_tasks_map[task_name])
-            # print(flag)
+            print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+            print(new_file)
+            print(next_tasks_map)
+            print(next_tasks_map[task_name])
+            print(flag)
             # print(time.time()-t1)
             t1 = time.time()
-            if next_tasks_map[task_name][0] in home_ids: 
+            if next_tasks_map[task_name][0] in home_ids: # next node is HOME
                 transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)   
                 # print(time.time()-t1)
                 t1 = time.time() 
-            else: 
-                # print(next_tasks_map[task_name])
-                # print(len(next_tasks_map[task_name]))
+            else: #next node is another compute node
+                print(next_tasks_map[task_name])
+                print(len(next_tasks_map[task_name]))
                 
                 for next_task in next_tasks_map[task_name]:
                     while not update_best[home_id,next_task,input_name]:
@@ -922,20 +950,20 @@ class Handler1(FileSystemEventHandler):
                         time.sleep(1)
                 # print(time.time()-t1)
                 t1 = time.time()
-                # print('---------- Now what')
-                # print(computing_ip_map)
-                # print(task_node_summary[home_id,next_task,input_name])
+                print('---------- Now what')
+                print(computing_ip_map)
+                print(task_node_summary[home_id,next_task,input_name])
                 next_hosts =  [task_node_summary[home_id,x,input_name] for x in next_tasks_map[task_name]]
                 next_IPs   = [computing_ip_map[x] for x in next_hosts]
 
-                # print('**************')
-                # print(next_hosts)
-                # print(next_IPs)
-                # print(next_tasks_map[task_name])
-                # print(flag)
+                print('**************!!!!!!!!!!!!!!!!!!!!!')
+                print(next_tasks_map[task_name])
+                print(flag)
 
                 if flag == 'true': # same output to all of the children task
-                    destinations = ["/centralized_scheduler/input/" +new_file+"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
+                    # destinations = ["/centralized_scheduler/input/" +new_file+"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
+                    destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
+                    print(destinations)
                     for idx,ip in enumerate(next_IPs):
                         # print('----')
                         # print(ip)
@@ -961,12 +989,13 @@ class Handler1(FileSystemEventHandler):
 
                     if len(files_mul[key]) == len(next_IPs):
                         for idx,ip in enumerate(next_IPs):
-                            # print(files_mul[key][idx])
-                            # print(next_tasks_map[task_name][idx])
+                            print(files_mul[key][idx])
+                            print(next_tasks_map[task_name][idx])
                             current_file = files_mul[key][idx].split('/')[-1]
-                            # print(current_file)
-                            destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
-                            # print(destinations)
+                            print(current_file)
+                            # destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
+                            destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
+                            print(destinations)
                             if self_ip!=ip:
                                 transfer_data(ip,username,password,files_mul[key][idx], destinations)
                             else: 
@@ -1034,11 +1063,19 @@ class Handler(FileSystemEventHandler):
             # print(time.time()-t1)
             t1 = time.time()
             print('***************************************^^^^^^^^^^^')
-            # print(new_file)
+            
             # print(file_name)
-            home_id = new_file.split('#')[1]
-            task_name = new_file.split('#')[2]
+            # home_id = new_file.split('#')[1]
+            # task_name = new_file.split('#')[2]
+            print(new_file)
+            print(event.src_path.split('/'))
+            home_id = event.src_path.split('/')[-2]
+            task_name = event.src_path.split('/')[-3]
+            print(home_id)
+            print(task_name)
             input_name = retrieve_input_enter(task_name, file_name)
+            print('???????????')
+            print(input_name)
             runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
             key = (home_id,task_name,input_name)
             # print(time.time()-t1)
@@ -1046,15 +1083,15 @@ class Handler(FileSystemEventHandler):
             send_runtime_profile_computingnode(runtime_info,task_name,home_id)
             # print(time.time()-t1)
             t1 = time.time()
-            # print(next_tasks_map)
-            # print(next_tasks_map[task_name])
+            print(next_tasks_map)
+            print(next_tasks_map[task_name])
             for next_task in next_tasks_map[task_name]:
                 update_best[home_id,next_task,input_name]= False
             flag = dag[task_name][0] 
             task_flag = dag[task_name][1] 
-            # print('&&&&&&&&&&&&&&&&&&&&')
-            # print(dag[task_name])
-            # print(flag)
+            print('&&&&&&&&&&&&&&&&&&&&')
+            print(dag[task_name])
+            print(flag)
             # print(time.time()-t1)
             t1 = time.time()
 
@@ -1085,8 +1122,11 @@ class Handler(FileSystemEventHandler):
                 
 
                 input_path = os.path.split(event.src_path)[0]
-                output_path = os.path.join(os.path.split(input_path)[0],'output')
-                output_path = os.path.join(output_path,task_name,home_id)
+                output_path = input_path.replace("input","output")
+                # output_path = os.path.join(os.path.split(input_path)[0],'output')
+                #output_path = os.path.join(output_path,task_name,home_id)
+
+                print(output_path)
                 # print(time.time()-t1)
                 t1 = time.time()
                 # print('!!!!!!!!!')
