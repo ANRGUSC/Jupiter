@@ -39,91 +39,7 @@ def add_ports(dep, app_specific_flag, *args):
   return dep
 
 
-template_nondag = """
-    apiVersion: extensions/v1beta1
-    kind: Deployment
-    metadata:
-      name: {name}
-    spec:
-      template:
-        metadata:
-          labels:
-            app: {name}
-        spec:
-          containers:
-          - name: {name}
-            imagePullPolicy: Always
-            image: {image}
-            env:
-            - name: FLAG
-              value: {flag}
-            - name: INPUTNUM
-              value: {inputnum}
-            - name: CHILD_NODES
-              value: {child}
-            - name: CHILD_NODES_IPS
-              value: {child_ips}
-            - name: TASK
-              value: {task_name}
-            - name: NODE_NAME
-              value: {node_name}
-            - name: HOME_NODE
-              value: {home_node_ip}
-            - name: OWN_IP
-              value: {own_ip}
-            - name: ALL_NODES
-              value: {all_node}
-            - name: ALL_NODES_IPS
-              value: {all_node_ips}
-          restartPolicy: Always
 
-"""
-
-def write_exec_specs_non_dag_tasks(**kwargs):
-    """
-    This function genetares the deployment service description yaml for execution profiler worker (non DAG tasks)
-    
-    In this case, call argument should be:
-    
-      -   app: {name}
-      -   image: {image}
-      -   SSH Port: {ssh_port}
-      -   Mongo Port: {mongo_port}
-      -   Flask Port: {flask_port}
-      -   FLAG: {flag}
-      -   INPUTNUM: {inputnum}
-      -   CHILD_NODES: {child}
-      -   CHILD_NODES_IPS: {child_ips}
-      -   NODE_NAME: {node_name}
-      -   HOME_NODE: {home_node_ip}
-      -   OWN_IP: {own_ip}
-      -   ALL_NODES: {all_node}
-      -   ALL_NODES_IPS: {all_node_ips}
-    
-
-    Args:
-        ``**kwargs``: list of key value pair
-    
-    Returns:
-        dict: loaded configuration 
-    """
-
-    jupiter_config.set_globals()
-
-    INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
-    config = configparser.ConfigParser()
-    config.read(INI_PATH)
-
-    # insert your values
-
-    specific_yaml = template_nondag.format(**kwargs)
-
-    dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
-
-    return add_ports(dep, 1,
-                      jupiter_config.SSH_DOCKER,
-                      jupiter_config.FLASK_DOCKER,
-                      jupiter_config.MONGO_DOCKER)
 
 template_home = """
     apiVersion: extensions/v1beta1
@@ -242,6 +158,10 @@ spec:
           value: {home_node_ip}
         - name: NODE_NAME
           value: {node_name}
+        - name: ALL_NODES
+          value: {all_node}
+        - name: ALL_NODES_IPS
+          value: {all_node_ips}
 """
 
 
@@ -275,3 +195,89 @@ def write_exec_specs(**kwargs):
                                     **kwargs)
     dep = yaml.load(specific_yaml)
     return dep
+
+template_nondag = """
+    apiVersion: extensions/v1beta1
+    kind: Deployment
+    metadata:
+      name: {name}
+    spec:
+      template:
+        metadata:
+          labels:
+            app: {name}
+        spec:
+          containers:
+          - name: {name}
+            imagePullPolicy: Always
+            image: {image}
+            env:
+            - name: FLAG
+              value: {flag}
+            - name: INPUTNUM
+              value: {inputnum}
+            - name: CHILD_NODES
+              value: {child}
+            - name: CHILD_NODES_IPS
+              value: {child_ips}
+            - name: TASK
+              value: {task_name}
+            - name: NODE_NAME
+              value: {node_name}
+            - name: HOME_NODE
+              value: {home_node_ip}
+            - name: OWN_IP
+              value: {own_ip}
+            - name: ALL_NODES
+              value: {all_node}
+            - name: ALL_NODES_IPS
+              value: {all_node_ips}
+          restartPolicy: Always
+
+"""
+
+def write_exec_specs_non_dag_tasks(**kwargs):
+    """
+    This function genetares the deployment service description yaml for execution profiler worker (non DAG tasks)
+    
+    In this case, call argument should be:
+    
+      -   app: {name}
+      -   image: {image}
+      -   SSH Port: {ssh_port}
+      -   Mongo Port: {mongo_port}
+      -   Flask Port: {flask_port}
+      -   FLAG: {flag}
+      -   INPUTNUM: {inputnum}
+      -   CHILD_NODES: {child}
+      -   CHILD_NODES_IPS: {child_ips}
+      -   NODE_NAME: {node_name}
+      -   HOME_NODE: {home_node_ip}
+      -   OWN_IP: {own_ip}
+      -   ALL_NODES: {all_node}
+      -   ALL_NODES_IPS: {all_node_ips}
+    
+
+    Args:
+        ``**kwargs``: list of key value pair
+    
+    Returns:
+        dict: loaded configuration 
+    """
+
+    jupiter_config.set_globals()
+
+    INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    # insert your values
+
+    specific_yaml = template_nondag.format(**kwargs)
+
+    dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
+
+    return add_ports(dep, 1,
+                      jupiter_config.SSH_DOCKER,
+                      jupiter_config.FLASK_DOCKER,
+                      jupiter_config.MONGO_DOCKER)

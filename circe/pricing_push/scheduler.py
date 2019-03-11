@@ -114,7 +114,7 @@ def receive_assignment_info():
     """
     try:
         assignment_info = request.args.get('assignment_info').split('#')
-        print("-----------Received assignment info")
+        # print("-----------Received assignment info")
         task_node_summary[assignment_info[0]] = assignment_info[1]
         print(task_node_summary)
 
@@ -432,12 +432,12 @@ def price_estimate():
 
     try:
         
-        print(' Retrieve all input information: ')
+        # print(' Retrieve all input information: ')
         network_info = get_updated_network_profile()
         # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         # print(test_size)
-        print('--- Network cost:----------- ')
+        # print('--- Network cost:----------- ')
         price['network'] = dict()
         for node in network_info:
             # print(network_info[node])
@@ -675,6 +675,11 @@ class Handler(FileSystemEventHandler):
             print(first_task)
             print(task_node_summary)
             print(node_ip_map)
+
+            while not task_node_summary:
+                print('task node summary not yet available!!!')
+                time.sleep(2)
+                
             IP = node_ip_map[task_node_summary[first_task]]
 
             print(new_file_name)

@@ -109,5 +109,6 @@ def delete_all_waves(app_name):
         # At this point you should not have any of the profiler related service, pod, or deployment running     
 
 if __name__ == '__main__':
-    app_name = 'dummy1'
+    jupiter_config.set_globals() 
+    app_name = jupiter_config.app_option
     delete_all_waves(app_name)

@@ -19,6 +19,11 @@ import jupiter_config
 #from utilities import *
 import utilities
 
+import sys, json
+sys.path.append("../")
+
+
+
 
 
 def check_status_circe_controller(dag,app_name):
@@ -129,7 +134,14 @@ def check_status_circe_computing(app_name):
 # if __name__ == '__main__':
 def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ips,app_name):
     """
-        This script deploys CIRCE in the system. 
+    This script deploys CIRCE in the system. 
+    
+    Args:
+        dag_info : DAG info and mapping
+        temp_info : schedule information
+        profiler_ips : IPs of network profilers
+        execution_ips : IP of execution profilers 
+        app_name (str): application name
     """
     print('INPUT PROFILERS')
     print(profiler_ips)
@@ -137,9 +149,17 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     
     sys.path.append(jupiter_config.CIRCE_PATH)
 
+    global configs, taskmap, path1
+
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path1)
     pprint(nodes)
+
+
+    configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
+    taskmap = configs["taskname_map"]
+    executionmap = configs["exec_profiler"]
+
 
     """
         This loads the kubernetes instance configuration.
@@ -204,7 +224,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
     print('-------- Create task controllers service')
     """
-        Create task controllers' service
+        Create task controllers' service (all the tasks)
     """
    
     for key, value in dag.items():
@@ -216,6 +236,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
             Generate the yaml description of the required service for each task
         """
         pod_name = app_name+"-"+task
+
         body = write_circe_service_specs(name = pod_name)
 
         # Call the Kubernetes API to create the service
@@ -331,8 +352,11 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     
     print('--------- Start task controllers')
     """
-        Start task controllers
+        Start task controllers (DAG)
     """
+
+    print(dag_info)
+    print(service_ips)
 
     for key, value in dag.items():
 
@@ -373,23 +397,53 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
         pod_name = app_name+"-"+task
 
-        dep = write_circe_controller_specs(flag = str(flag), inputnum = str(inputnum), name = pod_name, node_name = hosts.get(task)[1],
-            image = jupiter_config.WORKER_CONTROLLER_IMAGE, child = nexthosts, 
-            child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
-            home_node_ip = home_nodes_str,
-            node_id = dag_info[2][task], own_ip = service_ips[key],
-            task_name = task,
-            all_node = all_node,
-            all_node_ips = all_node_ips,
-            first_task = jupiter_config.HOME_CHILD,
-            all_computing_nodes = all_computing_nodes,
-            all_computing_ips = all_computing_ips)
-        #pprint(dep)
-        
+        if taskmap[key][1] and executionmap[key]: #DAG
+            print('--------- Start task controllers DAG')
+            dep = write_circe_controller_specs(flag = str(flag), inputnum = str(inputnum), name = pod_name, node_name = hosts.get(task)[1],
+                image = jupiter_config.WORKER_CONTROLLER_IMAGE, child = nexthosts, 
+                child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
+                home_node_ip = home_nodes_str,
+                node_id = dag_info[2][task], own_ip = service_ips[key],
+                task_name = task,
+                all_node = all_node,
+                all_node_ips = all_node_ips,
+                first_task = jupiter_config.HOME_CHILD,
+                all_computing_nodes = all_computing_nodes,
+                all_computing_ips = all_computing_ips)
+        elif taskmap[key][1] and not executionmap[key]: #nonDAG controllers:
+            print('--------- Start task controllers nonDAG')
+            #Generate the yaml description of the required deployment for each task
+            dep = write_circe_nondag_specs(flag = str(flag), inputnum = str(inputnum), name = pod_name, node_name = hosts.get(task)[1],
+                image = jupiter_config.NONDAG_CONTROLLER_IMAGE, child = nexthosts, task_name=task,
+                child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
+                home_node_ip = home_nodes_str,
+                own_ip = service_ips[task],
+                all_node = all_node,
+                all_node_ips = all_node_ips,
+                all_computing_nodes = all_computing_nodes,
+                all_computing_ips = all_computing_ips,
+                node_id = dag_info[2][key])
+        else:
+            print('--------- Start nonDAG workers')
+            dep = write_circe_specs_non_dag_tasks(flag = str(flag), inputnum = str(inputnum), name = pod_name, node_name = task,
+                image = jupiter_config.NONDAG_WORKER_IMAGE, child = nexthosts,
+                host = hosts.get(task)[1],
+                child_ips = next_svc,
+                task_name = task,
+                home_node_ip = home_nodes_str,
+                own_ip = service_ips[key],
+                all_node = all_node,
+                all_node_ips = all_node_ips,
+                all_computing_nodes = all_computing_nodes,
+                all_computing_ips = all_computing_ips,
+                node_id = dag_info[2][key])
+            pprint(dep)
 
+        pprint(dep)
         # # Call the Kubernetes API to create the deployment
         resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
         print("Deployment created. status = '%s'" % str(resp.status))
+
 
 
     while 1:
