@@ -112,8 +112,8 @@ def receive_price_info():
             # print(price.split('%')[1])
             task_price_net[node_name,price.split('%')[0]] = float(price.split('%')[1])
         # print(task_price_net)
-        print('Check price updated interval ')
-        print(node_name)
+        # print('Check price updated interval ')
+        # print(node_name)
         pass_time[node_name] = TimedValue()
 
 
@@ -143,22 +143,22 @@ def default_best_node():
     # print(len(task_price_net))
     # print(source_node)
 
-    # print('----------------------------??????')
-    # print(last_tasks_map)
-    # print(self_task)
-    # print(last_tasks_map[self_task][0])
+    print('----------------------------??????')
+    print(last_tasks_map)
+    print(self_task)
+    print(last_tasks_map[self_task][0])
     # print(task_node_map)
-    # print(task_node_map[last_tasks_map[self_task][0]])
+    
     if last_tasks_map[self_task][0] not in task_node_map:
         print('Parent tasks not available yet!!!!')
     else:
-        #print('Parent tasks')
-        #print(last_tasks_map[self_task])
+        print('Parent tasks')
+        print(last_tasks_map[self_task])
         source_node = task_node_map[last_tasks_map[self_task][0]]# case that have multiple parents: temporarily choose the lowest index???
         print('Current best compute node of parent tasks')
         print(source_node)
-        print('DEBUG')
-        print(task_price_net)
+        # print('DEBUG')
+        # print(task_price_net)
         for (source, dest), price in task_price_net.items():
             if source == source_node:
                 # print('hehehhehheheh')
@@ -166,7 +166,7 @@ def default_best_node():
                 task_price_network[dest]= price
         
         task_price_network[source_node] = 0 #the same node
-        # print('uhmmmmmmm')
+        print('uhmmmmmmm')
         # print(task_price_network)
         # print(task_price_cpu)
         # print(self_id)
@@ -184,6 +184,7 @@ def default_best_node():
         print(task_price_queue)
         print('Network cost')
         print(task_price_network)
+        print(task_price_network.keys())
         if len(task_price_network.keys())>1: #net(node,home) not exist
             
             # print('------------2')
@@ -199,17 +200,17 @@ def default_best_node():
                 # print(p)
                 if item in home_ids: continue
                 #check time pass
-                print('Check passing time------------------')
-                print(item)
+                # print('Check passing time------------------')
+                # print(item)
 
                 test = pass_time[item].__call__()
-                print(test)
+                # print(test)
                 if test==True: 
-                    print('Yeahhhhhhhhhhhhhhhhhhhhhh')
+                    # print('Yeahhhhhhhhhhhhhhhhhhhhhh')
                     task_price_network[item] = float('Inf')
-                print(task_price_network[item])
+                # print(task_price_network[item])
                 task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
-                print(task_price_summary[item])
+                # print(task_price_summary[item])
             # print('------------3')
             
             print('Summary cost')
@@ -348,9 +349,10 @@ def announce_best_assignment_to_child():
     """Announce my current best assignment to all my children tasks
     """
     print('Announce best assignment to my children')
-    #print(child_nodes_ip)
-    for child_ip in child_nodes_ip:
-        #print(child_ip)
+    print(child_nodes_dag)
+    print(child_nodes_ip_dag)
+    for child_ip in child_nodes_ip_dag:
+        print(child_ip)
         update_assignment_info_to_child(child_ip)   
 
 def push_first_assignment_map():
@@ -367,7 +369,7 @@ def push_first_assignment_map():
         time.sleep(10) 
     
     print('Sucessfully assign the first best computing node')
-    #print(task_node_map)
+    print(task_node_map)
     update_best_node()
     announce_best_assignment_to_child()
 
@@ -400,34 +402,34 @@ def schedule_update_assignment(interval):
     sched.start()
 
 
-def send_monitor_data(msg):
-    """
-    Sending message to flask server on home
+# def send_monitor_data(msg):
+#     """
+#     Sending message to flask server on home
 
-    Args:
-        msg (str): the message to be sent
+#     Args:
+#         msg (str): the message to be sent
 
-    Returns:
-        str: the message if successful, "not ok" otherwise.
+#     Returns:
+#         str: the message if successful, "not ok" otherwise.
 
-    Raises:
-        Exception: if sending message to flask server on home is failed
-    """
-    try:
-        print("Sending message", msg)
-        for home_node_host_port in home_node_host_ports:
-            url = "http://" + home_node_host_port + "/recv_monitor_data"
-            params = {'msg': msg, "work_node": taskname}
-            params = urllib.parse.urlencode(params)
-            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-            res = urllib.request.urlopen(req)
-            res = res.read()
-            res = res.decode('utf-8')
-    except Exception as e:
-        print("Sending message to flask server on home FAILED!!!")
-        print(e)
-        return "not ok"
-    return res
+#     Raises:
+#         Exception: if sending message to flask server on home is failed
+#     """
+#     try:
+#         print("Sending message", msg)
+#         for home_node_host_port in home_node_host_ports:
+#             url = "http://" + home_node_host_port + "/recv_monitor_data"
+#             params = {'msg': msg, "work_node": taskname}
+#             params = urllib.parse.urlencode(params)
+#             req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+#             res = urllib.request.urlopen(req)
+#             res = res.read()
+#             res = res.decode('utf-8')
+#     except Exception as e:
+#         print("Sending message to flask server on home FAILED!!!")
+#         print(e)
+#         return "not ok"
+#     return res
 
 def send_runtime_profile(msg,taskname):
     """
@@ -457,6 +459,54 @@ def send_runtime_profile(msg,taskname):
         print(e)
         return "not ok"
     return res
+
+def get_taskmap():
+    """Get the task map from ``config.json`` and ``dag.txt`` files.
+    
+    Returns:
+        - dict: tasks - DAG dictionary
+        - list: task_order - (DAG) task list in the order of execution
+        - list: super_tasks 
+        - list: non_tasks - tasks not belong to DAG
+    """
+    configs = json.load(open('centralized_scheduler/config.json'))
+    task_map = configs['taskname_map']
+    execution_map = configs['exec_profiler']
+    tasks_info = open('centralized_scheduler/dag.txt', "r")
+
+    task_order = []#create the  (DAG) task list in the order of execution
+    super_tasks = []
+    tasks = {} #create DAG dictionary
+    count = 0
+    non_tasks = []
+    for line in tasks_info:
+        if count == 0:
+            count += 1
+            continue
+
+        data = line.strip().split(" ")
+        if task_map[data[0]][1] == True and execution_map[data[0]] == False:
+            if data[0] not in super_tasks:
+                super_tasks.append(data[0])
+
+        if task_map[data[0]][1] == False and execution_map[data[0]] == False:
+            if data[0] not in non_tasks:
+                non_tasks.append(data[0])
+
+        if task_map[data[0]][1] == False:
+            continue
+
+        tasks.setdefault(data[0], [])
+        if data[0] not in task_order:
+            task_order.append(data[0])
+        for i in range(3, len(data)):
+            if  data[i] != 'home' and task_map[data[i]][1] == True :
+                tasks[data[0]].extend([data[i]])
+    print("tasks: ", tasks)
+    print("task order", task_order) #task_list
+    print("super tasks", super_tasks)
+    print("non tasks", non_tasks)
+    return tasks, task_order, super_tasks, non_tasks
 
 class TimedValue:
 
@@ -503,6 +553,7 @@ def main():
     dag_info = k8s_read_dag(dag_file)
     dag = dag_info[1]
 
+
     global next_tasks_map,last_tasks_map, child_nodes, child_nodes_ip, home_ips,home_ids, home_ip_map
     next_tasks_map = dict()
     last_tasks_map = dict()
@@ -521,6 +572,7 @@ def main():
 
     child_nodes = os.environ['CHILD_NODES'].split(':')
     child_nodes_ip = os.environ['CHILD_NODES_IPS'].split(':')
+
 
     home_nodes = os.environ['HOME_NODE'].split(' ')
     home_ids = [x.split(':')[0] for x in home_nodes]
@@ -628,6 +680,8 @@ def main():
     pass_time = dict()
     
 
+    global tasks, task_order, super_tasks, non_tasks
+    tasks, task_order, super_tasks, non_tasks = get_taskmap()
 
     last_tasks_map[first_task] = []
     for home_id in home_ids:
@@ -636,7 +690,29 @@ def main():
         next_tasks_map[home_id] = [first_task]
         last_tasks_map[first_task].append(home_id)
 
+    for task in super_tasks:
+        print(task)
+        task_node_map[task] = task   
 
+    global child_nodes_dag, child_nodes_ip_dag
+
+    child_nodes_dag = []
+    child_nodes_ip_dag = []
+
+    print('---------------------------------------------- DEBUG')
+    # print(child_nodes)
+    for idx, child in enumerate(child_nodes):
+        print(idx)
+        print(child)
+        if child not in super_tasks:
+            child_nodes_dag.append(child)
+            child_nodes_ip_dag.append(child_nodes_ip[idx])
+
+    print(child_nodes_dag)
+    print(child_nodes_ip_dag)
+
+
+    
     _thread.start_new_thread(push_controller_map,())
     _thread.start_new_thread(push_first_assignment_map,())
     _thread.start_new_thread(schedule_update_price,(update_interval,))

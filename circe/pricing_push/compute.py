@@ -83,6 +83,7 @@ def cal_file_size(file_path):
         file_info = os.stat(file_path)
         return file_info.st_size * 0.008
 
+
 def get_taskmap():
     """Get the task map from ``config.json`` and ``dag.txt`` files.
     
@@ -101,6 +102,7 @@ def get_taskmap():
     super_tasks = []
     tasks = {} #create DAG dictionary
     count = 0
+    non_tasks = []
     for line in tasks_info:
         if count == 0:
             count += 1
@@ -110,6 +112,11 @@ def get_taskmap():
         if task_map[data[0]][1] == True and execution_map[data[0]] == False:
             if data[0] not in super_tasks:
                 super_tasks.append(data[0])
+
+        if task_map[data[0]][1] == False and execution_map[data[0]] == False:
+            if data[0] not in non_tasks:
+                non_tasks.append(data[0])
+
         if task_map[data[0]][1] == False:
             continue
 
@@ -118,10 +125,16 @@ def get_taskmap():
             task_order.append(data[0])
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
-                tasks[data[0]].append(data[i])
-    return tasks, task_order, super_tasks
+                tasks[data[0]].extend([data[i]])
+    print("tasks: ", tasks)
+    print("task order", task_order) #task_list
+    print("super tasks", super_tasks)
+    print("non tasks", non_tasks)
+    return tasks, task_order, super_tasks, non_tasks
 
 def prepare_global_info():
+
+
     """Get information of corresponding profiler (network profiler, execution profiler)"""
     global self_profiler_ip,profiler_ip, profiler_nodes,exec_home_ip, self_name,self_ip, task_controllers, task_controllers_ips, home_ips,home_ids, home_ip_map
     profiler_ip = os.environ['ALL_PROFILERS'].split(' ')
@@ -148,40 +161,6 @@ def prepare_global_info():
     computing_nodes = os.environ['ALL_COMPUTING_NODES'].split(':')
     computing_ips = os.environ['ALL_COMPUTING_IPS'].split(':')
 
-
-    global ip_profilers_map,profilers_ip_map, controllers_ip_map, computing_ip_map, profilers_ip_homes
-    # print('DEBUG')
-    # print(profiler_nodes)
-    # print(profiler_ip)
-    
-
-    ip_profilers_map = dict(zip(profiler_ip, profiler_nodes))
-    profilers_ip_map = dict(zip(profiler_nodes, profiler_ip))
-
-    # print(home_nodes)
-    # print(home_ids)
-    # print(home_ips)
-    # print(profilers_ip_map)
-    # print(ip_profilers_map)
-    profilers_ip_homes = [profilers_ip_map[x] for x in home_ids]
-
-    controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
-    computing_ip_map = dict(zip(computing_nodes, computing_ips))
-
-    global name_convert_out, name_convert_in
-    name_convert_in = dict()
-    name_convert_out = dict()
-    convert_name_file = '/centralized_scheduler/name_convert.txt'
-    with open(convert_name_file) as f:
-        lines = f.readlines()
-        for line in lines:
-            info = line.rstrip().split(' ')
-            name_convert_out[info[0]] = info[1]
-            name_convert_in[info[0]] = info[2]
-    # print('@@@@@@@@@@@@@@@@@@@@@@@@')
-    # print(name_convert_out)
-    # print(name_convert_in)
-
     global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map, task_node_map
 
     manager = Manager()
@@ -193,7 +172,6 @@ def prepare_global_info():
     files_mul = manager.dict()
     controllers_id_map = manager.dict()
     task_node_map = manager.dict()
-    
 
     global home_node_host_ports, dag
     home_node_host_ports = dict()
@@ -206,6 +184,35 @@ def prepare_global_info():
     dag_file = '/centralized_scheduler/dag.txt'
     dag_info = k8s_read_dag(dag_file)
     dag = dag_info[1]
+
+
+    global tasks, task_order, super_tasks, non_tasks
+    tasks, task_order, super_tasks, non_tasks = get_taskmap()
+
+
+    global ip_profilers_map,profilers_ip_map, controllers_ip_map, computing_ip_map, profilers_ip_homes
+    # print('DEBUG')
+    # print(profiler_nodes)
+    # print(profiler_ip)
+    
+    ip_profilers_map = dict(zip(profiler_ip, profiler_nodes))
+    profilers_ip_map = dict(zip(profiler_nodes, profiler_ip))
+
+    # print(home_nodes)
+    # print(home_ids)
+    # print(home_ips)
+    # print(profilers_ip_map)
+    # print(ip_profilers_map)
+    profilers_ip_homes = [profilers_ip_map[x] for x in home_ids]
+
+    controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
+    computing_ip_map = dict(zip(computing_nodes, computing_ips))
+    
+    for task in task_controllers:
+        if task in super_tasks:
+            computing_ip_map[task] = controllers_ip_map[task]
+
+    print(computing_ip_map)  
 
     global next_tasks_map,last_tasks_map
     next_tasks_map = dict()
@@ -227,29 +234,75 @@ def prepare_global_info():
         next_tasks_map[home_id] = [os.environ['CHILD_NODES']]
         last_tasks_map[os.environ['CHILD_NODES']].append(home_id)
 
-    # print('DEBUG NEXT LAST-----------')
-    # print(next_tasks_map)
-    # print(last_tasks_map)
-    # print(task_node_map)
+
+    for task in task_controllers:
+        print(task)
+        if task in super_tasks:
+            task_node_map[task] = task    
+    print('DEBUG NEXT LAST-----------')
+    print(next_tasks_map)
+    print(last_tasks_map)
+    print(task_node_map)
+
+    global name_convert_out, name_convert_in
+    name_convert_in = dict()
+    name_convert_out = dict()
+    convert_name_file = '/centralized_scheduler/name_convert.txt'
+    with open(convert_name_file) as f:
+        lines = f.readlines()
+        for line in lines:
+            info = line.rstrip().split(' ')
+            name_convert_out[info[0]] = info[1]
+            name_convert_in[info[0]] = info[2]
+    # print('@@@@@@@@@@@@@@@@@@@@@@@@')
+    # print(name_convert_out)
+    # print(name_convert_in)
+
+
+    
+
+    
+    
+
+    
+
+    # CHECK NON_DAG tasks
+    global configs, taskmap
+
+    configs = json.load(open('/centralized_scheduler/config.json'))
+    taskmap = configs["taskname_map"]
+    execution_map = configs['exec_profiler']
+
+
     print('Generating task folders for OUTPUT\n')
     global task_module
     task_module = {}
+    # print(taskmap)
+    # print(execution_map)
     for task in dag:
-        cmd = "mkdir centralized_scheduler/output/"+task 
-        os.system(cmd)
-        task_module[task] = __import__(task)
-        for home_id in home_ids:
-            cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
+        # print(task)
+        # print(taskmap[task][1])
+        if taskmap[task][1] and execution_map[task]: #DAG
+            task_module[task] = __import__(task)
+            cmd = "mkdir centralized_scheduler/output/"+task 
             os.system(cmd)
+            for home_id in home_ids:
+                cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
+                os.system(cmd)
 
+    print(task_module)
     print('Generating task folders for INPUT\n')
     for task in dag:
-        cmd = "mkdir centralized_scheduler/input/"+task 
-        os.system(cmd)
-        task_module[task] = __import__(task)
-        for home_id in home_ids:
-            cmd = "mkdir centralized_scheduler/input/"+task+"/" + home_id
+        if taskmap[task][1]: #DAG
+            cmd = "mkdir centralized_scheduler/input/"+task 
             os.system(cmd)
+            for home_id in home_ids:
+                cmd = "mkdir centralized_scheduler/input/"+task+"/" + home_id
+                os.system(cmd)
+
+    print(task_module)
+
+    
 
 def update_controller_map():
     """
@@ -444,10 +497,13 @@ def price_aggregate(task_name):
         #print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        print(resource_info)
-        print(execution_info)
+        # print('--------------')
+        # print(resource_info)
+        # print('--------------2')
+        # print(execution_info)
         network_info = get_updated_network_profile()
-        print(network_info)
+        # print('--------------3')
+        # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         
         
@@ -471,14 +527,17 @@ def price_aggregate(task_name):
         # print(price['queue'])
 
         # print('--- Network cost:----------- ')
+        # print(task_name)
         test_output = execution_info[task_name][1]
         # print(test_output)
-        # print(network_info)
-        # print(type(network_info))
+
         price['network'] = dict()
         for node in network_info:
+            # print('==')
+            # print(node)
             # print(network_info[node])
             computing_params = network_info[node].split(' ')
+            # print('====')
             # print(computing_params)
             computing_params = [float(x) for x in computing_params]
             # print(computing_params)
@@ -538,6 +597,8 @@ def push_updated_price():
     # print(controllers_ip_map)
     for idx,task in enumerate(task_controllers):
         if task in home_ids: continue
+        if task in super_tasks: continue 
+        if task in non_tasks: continue 
         price = price_aggregate(task)
         # print('Uhmmmm')
         # print(task)
@@ -570,6 +631,8 @@ def execute_task(home_id,task_name,file_name, filenames, input_path, output_path
     ts = time.time()
     runtime_info = 'rt_exec '+ file_name+ ' '+str(ts)
     send_runtime_profile_computingnode(runtime_info,task_name,home_id)
+    print('*** Perform the task!!!')
+    print(task_name)
     dag_task = multiprocessing.Process(target=task_module[task_name].task, args=(filenames, input_path, output_path))
     dag_task.start()
     dag_task.join()
@@ -817,68 +880,72 @@ class Handler1(FileSystemEventHandler):
             # print(input_name)
             send_runtime_profile_computingnode(runtime_info,task_name,home_id)
             key = (home_id,task_name,input_name)
-            print('#############')
-            print(next_mul)
-            print(key)
-            flag = next_mul[key][0]
-            print(next_tasks_map)
-            print(next_tasks_map[task_name])
-            print(flag)
             # print('#############')
+            # print(next_mul)
+            # print(key)
+            flag = next_mul[key][0]
+            # print(next_tasks_map)
+            # print(next_tasks_map[task_name])
+            # print(flag)
+            print('#############')
             # print(next_mul)
             #flag = next_mul[key][0]
             # print(next_tasks_map)
             # print(next_tasks_map[task_name])
             # print(flag)
 
+            print(next_tasks_map)
+            print(next_tasks_map[task_name])
+            print(next_tasks_map[task_name][0])
             if next_tasks_map[task_name][0] in home_ids: 
-                transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)    
-            else: 
+                print('----- next step is home')
+                transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)   
+            else:
+                print('----- next step is not home')
                 print(task_node_map)
-                print(computing_ip_map)
                 next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
                 next_IPs   = [computing_ip_map[x] for x in next_hosts]
-
                 
-                
-                # print('**************')
-                # print(next_hosts)
-                # print(next_IPs)
-                # print(next_tasks_map[task_name])
-                # print(flag)
+                print(next_hosts)
+                print(next_IPs)
+                print(next_tasks_map[task_name])
+                print(flag)
 
-                if flag == 'true':
+                print('Sending the output files to the corresponding destinations')
+                if flag: 
+                    #send a single output of the task to all its children 
                     destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
                     #destinations = ["/centralized_scheduler/input/" +new_file +"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
                     for idx,ip in enumerate(next_IPs):
                         # print('----')
                         # print(ip)
-                        # print(destinations[idx])
-                        if self_ip!=ip:
+                        print(destinations[idx])
+                        if self_ip!=ip: # different node
                             transfer_data(ip,username,password,event.src_path, destinations[idx])
-                        else:
+                        else: # same node
                             cmd = "cp %s %s"%(event.src_path,destinations[idx])
                             print(cmd)
                             os.system(cmd)
                 else:
+                    #it will wait the output files and start putting them into queue, send frst output to first listed child, ....
                     if key not in files_mul:
                         files_mul[key] = [event.src_path]
                     else:
                         files_mul[key] = files_mul[key] + [event.src_path]
-                    # print('-------------')
-                    # print(files_mul[key])
-                    # print(next_IPs)
-                    # print(self_name)
-                    # print(self_ip)
+                    print('-------------')
+                    print(files_mul[key])
+                    print(next_IPs)
+                    print(self_name)
+                    print(self_ip)
                     if len(files_mul[key]) == len(next_IPs):
                         for idx,ip in enumerate(next_IPs):
-                            # print(files_mul[key][idx])
-                            # print(next_tasks_map[task_name][idx])
+                            print(files_mul[key][idx])
+                            print(next_tasks_map[task_name][idx])
                             current_file = files_mul[key][idx].split('/')[-1]
-                            # print(current_file)
+                            print(current_file)
                             # destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
                             destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
-                            # print(destinations)
+                            print(destinations)
                             if self_ip!=ip:
                                 transfer_data(ip,username,password,files_mul[key][idx], destinations)
                             else: 
@@ -948,11 +1015,11 @@ class Handler(FileSystemEventHandler):
             
             flag = dag[task_name][0] 
             task_flag = dag[task_name][1] 
-            print('&&&&&&&&&&&&&&&&&&&&')
-            print(dag[task_name])
-            print(flag)
-            print(key)
-            print(task_mul)
+            # print('&&&&&&&&&&&&&&&&&&&&')
+            # print(dag[task_name])
+            # print(flag)
+            # print(key)
+            # print(task_mul)
 
             if key not in task_mul:
                 task_mul[key] = [new_file]
@@ -964,29 +1031,28 @@ class Handler(FileSystemEventHandler):
                 count_mul[key]=count_mul[key]-1
                 size_mul[key] = size_mul[key] + cal_file_size(event.src_path)
 
-            print('^^^^^^^^^^^^^^^')
-            print(count_mul[key])
+            # print('^^^^^^^^^^^^^^^')
+            # print(count_mul[key])
             if count_mul[key] == 0: # enough input files
                 incoming_file = task_mul[key]
-                print('^^^^^^^^^^^^^2')
-                print(incoming_file)
+                # print('^^^^^^^^^^^^^2')
+                # print(incoming_file)
                 if len(incoming_file)==1: 
                     filenames = incoming_file[0]
                 else:
                     filenames = incoming_file
-                print(filenames)
+                # print(filenames)
                 print('--------------Add task to the processing queue')
                 queue_mul[key] = False 
                 
                 input_path = os.path.split(event.src_path)[0]
                 output_path = input_path.replace("input","output")
-                # output_path = os.path.join(os.path.split(input_path)[0],'output')
-                # output_path = os.path.join(output_path,task_name,home_id)
-                print('!!!!!!!!!')
-                print(input_name)
-                print(input_path)
-                print(output_path)
-                print(home_id)
+                
+                # print('!!!!!!!!!')
+                # print(input_name)
+                # print(input_path)
+                # print(output_path)
+                # print(home_id)
                 execute_task(home_id,task_name,input_name, filenames, input_path, output_path)
                 queue_mul[key] = True
                 

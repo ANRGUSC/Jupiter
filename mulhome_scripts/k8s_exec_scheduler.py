@@ -306,6 +306,7 @@ def k8s_exec_scheduler(app_name):
 
         if taskmap[key][1] == False:
             #Generate the yaml description of the required deployment for each task
+            # TODO-check
             dep = write_exec_specs_non_dag_tasks(flag = str(flag), inputnum = str(inputnum), name = pod_name, node_name = task,
                 image = jupiter_config.WORKER_IMAGE, child = nexthosts,
                 child_ips = next_svc,
@@ -337,7 +338,8 @@ def k8s_exec_scheduler(app_name):
         #print(i)
         pod_name = app_name+'-'+i
         dep = write_exec_specs(name = pod_name, label = pod_name + "exec_profiler", node_name = i, image = jupiter_config.EXEC_WORKER_IMAGE,
-                                         host = nodes[i][0], home_node_ip = service_ips['home'])
+                                         host = nodes[i][0], home_node_ip = service_ips['home'],
+                                         all_node = all_node,all_node_ips = all_node_ips)
         # # pprint(dep)
         # # Call the Kubernetes API to create the deployment
         resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
@@ -381,5 +383,6 @@ def k8s_exec_scheduler(app_name):
     return(service_ips)
 
 if __name__ == '__main__':
-    app_name = 'dummy'
+    jupiter_config.set_globals() 
+    app_name = jupiter_config.app_option
     k8s_exec_scheduler(app_name)

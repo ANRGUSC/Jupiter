@@ -81,7 +81,6 @@ def k8s_read_dag(dag_info_file):
   dag_info.append(dag)
   return dag_info
 
-
 def k8s_get_nodes(node_info_file):
   """read the node info from the file input
   

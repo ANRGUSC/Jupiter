@@ -36,6 +36,8 @@ import datetime
 from functools import wraps
 import _thread
 import cProfile
+import configparser
+
 
 
 
@@ -370,7 +372,10 @@ def main():
         Deploy num_dags of the application specified by app_name
     """
     
-    app_name = 'dummy'
+    jupiter_config.set_globals()
+    app_name = jupiter_config.app_option
+    circe_port = int(jupiter_config.FLASK_CIRCE)
+    
     num_samples = 2
     num_runs = 1
     num_dags_list = [1]
@@ -382,7 +387,7 @@ def main():
         port_list = []
         app_list = []
         for num in range(1,num_dags+1):
-            port =  8080 + num-1
+            port =  circe_port + num-1
             cur_app = temp+str(num)
             port_list.append(port)
             app_list.append(cur_app)     
@@ -392,9 +397,6 @@ def main():
         for idx,appname in enumerate(app_list):
             print(appname)
             _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],num_runs,num_samples))
-
-
-
     app.run(host='0.0.0.0')
 if __name__ == '__main__':
     main()
