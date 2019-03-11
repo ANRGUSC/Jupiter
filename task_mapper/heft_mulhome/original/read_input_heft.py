@@ -96,11 +96,11 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
     print(home_profiler_nodes)
     for col in collection:
         print('--- Check execution profiler ID : '+ col)
-        print(col)
-        print(home_profiler_nodes)
-        if col in home_profiler_nodes:
-            print('hoho')
-            continue
+        # print(col)
+        # print(home_profiler_nodes)
+        # if col in home_profiler_nodes:
+        #     print('hoho')
+        #     continue
         logging =db[col].find()
         for record in logging:
             # Node ID, Task, Execution Time, Output size

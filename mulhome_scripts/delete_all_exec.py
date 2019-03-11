@@ -103,7 +103,7 @@ def delete_all_exec(app_name):
         # if a service is running, kill it
         if resp:
             #del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace)
-            del_resp_2 = core_v1_api.delete_namespaced_service(key, namespace,v1_delete_options)
+            del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace,v1_delete_options)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the related service, pods, deployment running
@@ -239,5 +239,6 @@ def delete_all_exec(app_name):
         # At this point you should not have any of the profiler related service, pod, or deployment running
 
 if __name__ == '__main__':
-    app_name = 'dummy'
+    jupiter_config.set_globals() 
+    app_name = jupiter_config.app_option
     delete_all_exec(app_name)

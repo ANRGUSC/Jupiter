@@ -51,7 +51,7 @@ def set_globals():
 	PASSWORD                = config['AUTH']['PASSWORD']
 
 	"""Port and target port in containers for services to be used: Mongo, SSH and Flask"""
-	global MONGO_SVC, MONGO_DOCKER, SSH_SVC, SSH_DOCKER, FLASK_SVC, FLASK_DOCKER
+	global MONGO_SVC, MONGO_DOCKER, SSH_SVC, SSH_DOCKER, FLASK_SVC, FLASK_DOCKER, FLASK_CIRCE
 	
 	MONGO_SVC               = config['PORT']['MONGO_SVC']
 	MONGO_DOCKER            = config['PORT']['MONGO_DOCKER']
@@ -59,6 +59,7 @@ def set_globals():
 	SSH_DOCKER              = config['PORT']['SSH_DOCKER']
 	FLASK_SVC               = config['PORT']['FLASK_SVC']
 	FLASK_DOCKER            = config['PORT']['FLASK_DOCKER']
+	FLASK_CIRCE             = config['PORT']['FLASK_CIRCE']
 
 	"""Modules path of Jupiter"""
 	global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, CIRCE_ORIGINAL_PATH
@@ -125,22 +126,43 @@ def set_globals():
 	global HOME_NODE, HOME_CHILD
 
 	HOME_NODE               = get_home_node(HERE + 'nodes.txt')
-	HOME_CHILD              = 'task0'
-	#HOME_CHILD              = 'localpro'
 	#HOME_CHILD              = 'sample_ingress_task1'
+
+	"""Application Information"""
+	global APP_PATH, APP_NAME, app_option
+	
+	HOME_CHILD              = 'localpro'
+	APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
+	APP_NAME                = 'app_specific_files/network_monitoring_app'
+	app_option 				= 'coded'
+
+	# HOME_CHILD              = 'localpro'
+	# APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app_dag/'
+	# APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
+	# app_option 				= 'dag'
+
+	# HOME_CHILD              = 'task0'
+	# APP_PATH                = HERE  + 'app_specific_files/dummy_app/'
+	# APP_NAME                = 'app_specific_files/dummy_app'
+	# app_option 				= 'dummy'
+
 
 	"""pricing CIRCE home and worker images"""
 	global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTING_IMAGE
 
-	PRICING_HOME_IMAGE 		= 'docker.io/anrg/%s_circe_home:coded' %(pricing_option)
-	WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:coded' %(pricing_option)
-	WORKER_COMPUTING_IMAGE  = 'docker.io/anrg/%s_circe_computing:coded' %(pricing_option)
+	PRICING_HOME_IMAGE 		= 'docker.io/anrg/%s_circe_home:%s' %(pricing_option,app_option)
+	WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:%s' %(pricing_option,app_option)
+	WORKER_COMPUTING_IMAGE  = 'docker.io/anrg/%s_circe_computing:%s' %(pricing_option,app_option)
+
+	global NONDAG_CONTROLLER_IMAGE,NONDAG_WORKER_IMAGE # only required for non-DAG tasks (teradetectors and dft)
+	NONDAG_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_nondag:%s' %(pricing_option,app_option)
+	NONDAG_WORKER_IMAGE = 'docker.io/anrg/%s_circe_nondag_worker:%s' %(pricing_option,app_option)
 	
 	"""CIRCE home and worker images for execution profiler"""
 	global HOME_IMAGE, WORKER_IMAGE
 
-	HOME_IMAGE              = 'docker.io/anrg/circe_home:coded'
-	WORKER_IMAGE            = 'docker.io/anrg/circe_worker:coded'
+	HOME_IMAGE              = 'docker.io/anrg/circe_home:%s'%(app_option)
+	WORKER_IMAGE            = 'docker.io/anrg/circe_worker:%s'%(app_option)
 
 	"""DRUPE home and worker images"""
 	global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
@@ -151,30 +173,26 @@ def set_globals():
 	"""WAVE home and worker images"""
 	global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
 
-	#coded: random, v1: greedy
+	#%s: random, v1: greedy
 
-	WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:coded' %(wave_option,profiler_option)
-	WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:coded' %(wave_option,profiler_option)
+	WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:%s' %(wave_option,profiler_option,app_option)
+	WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:%s' %(wave_option,profiler_option,app_option)
 
 	"""Execution profiler home and worker images"""
 	global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-	EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:coded'%(profiler_option)
-	EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:coded'%(profiler_option)
+	EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s'%(profiler_option,app_option)
+	EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s'%(profiler_option,app_option)
 
 	"""HEFT docker image"""
 	global HEFT_IMAGE
 
-	HEFT_IMAGE              = 'docker.io/anrg/%s_heft:coded'%(heft_option)
+	HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s'%(heft_option,app_option)
 
-	"""Application Information"""
-	global APP_PATH, APP_NAME
+	
 
-	# APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
-	# APP_NAME                = 'app_specific_files/network_monitoring_app'
-	APP_PATH                = HERE  + 'app_specific_files/dummy_app/'
-	APP_NAME                = 'app_specific_files/dummy_app'
+	
 
 
 if __name__ == '__main__':

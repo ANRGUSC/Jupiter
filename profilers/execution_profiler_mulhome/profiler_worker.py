@@ -93,6 +93,18 @@ def main():
         -   send output file back to the scheduler machine
     """
     # Load all the confuguration
+    
+    # configs  = json.load(open('/centralized_scheduler/config.json'))
+    # dag_flag = configs['exec_profiler']
+    # task_map = configs['taskname_map']
+    # nodename = os.environ['NODE_NAME']
+
+    # HERE     = path.abspath(path.dirname(__file__)) + "/"
+    # INI_PATH = HERE + 'jupiter_config.ini'
+    # config = configparser.ConfigParser()
+    # config.read(INI_PATH)
+
+    print('Load all the configuration')
     configs  = json.load(open('/centralized_scheduler/config.json'))
     dag_flag = configs['exec_profiler']
     task_map = configs['taskname_map']
@@ -102,15 +114,15 @@ def main():
     INI_PATH = HERE + 'jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
-    configs  = json.load(open('/centralized_scheduler/config.json'))
-    dag_flag = configs['exec_profiler']
-    task_map = configs['taskname_map']
-    nodename = os.environ['NODE_NAME']
 
-    HERE     = path.abspath(path.dirname(__file__)) + "/"
-    INI_PATH = HERE + 'jupiter_config.ini'
-    config = configparser.ConfigParser()
-    config.read(INI_PATH)
+
+    print('-----')
+    print(configs)
+    print(dag_flag)
+    print(task_map)
+    print(nodename)
+    print(os.environ['ALL_NODES'])
+    print('-----')
 
     global TRANSFER
     TRANSFER = int(config['CONFIG']['TRANSFER'])
