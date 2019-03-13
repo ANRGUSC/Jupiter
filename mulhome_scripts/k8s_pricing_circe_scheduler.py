@@ -230,6 +230,8 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     for key, value in dag.items():
 
         task = key
+        print('---')
+        print(task)
         
         # all_current_nodes = all_current_nodes + task + ":" + currentnodes + "!"
         """
@@ -255,6 +257,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
 
+    print(all_node)
     print('-------- Create computing nodes service')
 
     """

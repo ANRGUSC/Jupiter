@@ -143,22 +143,29 @@ def default_best_node():
     # print(len(task_price_net))
     # print(source_node)
 
+    # case that have multiple parents: temporarily choose the lowest index???
     print('----------------------------??????')
     print(last_tasks_map)
     print(self_task)
-    print(last_tasks_map[self_task][0])
+    print(last_tasks_map[self_task])
+    temp_parents = [x for x in last_tasks_map[self_task] if x not in super_tasks]
+
+    print(temp_parents)
     # print(task_node_map)
     
-    if last_tasks_map[self_task][0] not in task_node_map:
+    if temp_parents[0] not in task_node_map:
+    #if last_tasks_map[self_task][0] not in task_node_map:
         print('Parent tasks not available yet!!!!')
     else:
         print('Parent tasks')
-        print(last_tasks_map[self_task])
-        source_node = task_node_map[last_tasks_map[self_task][0]]# case that have multiple parents: temporarily choose the lowest index???
+        # print(last_tasks_map[self_task])
+        # print(last_tasks_map[self_task][0])
+        source_node = task_node_map[temp_parents[0]]
+        # source_node = task_node_map[last_tasks_map[self_task][0]]
         print('Current best compute node of parent tasks')
         print(source_node)
-        # print('DEBUG')
-        # print(task_price_net)
+        print('DEBUG')
+        print(task_price_net)
         for (source, dest), price in task_price_net.items():
             if source == source_node:
                 # print('hehehhehheheh')
@@ -242,6 +249,8 @@ def update_best_node():
             send_assignment_info(computing_ip)
         for home_ip in home_ips:
             send_assignment_info(home_ip)
+        for controller_ip in controller_ip_nondag:
+            send_assignment_info(controller_ip)
     except:
         print('Not yet receive best compute node assignment!')
 
@@ -314,12 +323,16 @@ def send_assignment_info(node_ip):
         print(assignment_info)
         params = {'assignment_info': assignment_info}
         params = urllib.parse.urlencode(params)
+        print(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        print(req)
         res = urllib.request.urlopen(req)
+        print(res)
         res = res.read()
+        print(res)
         res = res.decode('utf-8')
     except Exception as e:
-        print("Sending assignment message to flask server on computing node FAILED!!!")
+        print("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
         print(e)
         return "not ok"
 
@@ -380,11 +393,25 @@ def push_assignment_map():
     default_best_node()
     print(task_node_map)
     print(self_task)
+    print(all_computing_ips)
+    print(all_computing_nodes)
     if self_task in task_node_map:
+        print('*********************************************')
+        print('update compute nodes')
+        print(all_computing_nodes)
         for computing_ip in all_computing_ips:
             send_assignment_info(computing_ip)
+        print('*********************************************')
+        print('home nodes')
+        print(home_ips)
+        print(home_ids)
         for home_ip in home_ips:
             send_assignment_info(home_ip)
+        print('*********************************************')
+        print('controller non_dag')
+        print(controller_nondag)
+        for controller_ip in controller_ip_nondag:
+            send_assignment_info(controller_ip)
         announce_best_assignment_to_child()
     else:
         print('Current best computing node not yet assigned!')
@@ -610,7 +637,7 @@ def main():
     # PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
 
 
-    global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, task_mul, count_dict,self_ip
+    global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, task_mul, count_dict,self_ip, all_nodes, all_nodes_ips
 
 
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
@@ -621,13 +648,16 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     self_ip     = os.environ['OWN_IP']
+    all_nodes   = os.environ['ALL_NODES'].split(':')
+    all_nodes_ips   = os.environ['ALL_NODES_IPS'].split(':')
+
     home_nodes = os.environ['HOME_NODE'].split(' ')
     home_ids = [x.split(':')[0] for x in home_nodes]
     home_ips = [x.split(':')[1] for x in home_nodes]
 
 
     global taskmap, taskname, taskmodule, filenames,files_out, home_node_host_ports
-    global all_nodes, all_nodes_ips, self_id, self_name, self_task, first_task
+    global self_id, self_name, self_task, first_task
     global all_computing_nodes,all_computing_ips, num_computing_nodes, node_ip_map, controller_id_map
 
     configs = json.load(open('/centralized_scheduler/config.json'))
@@ -698,6 +728,7 @@ def main():
 
     child_nodes_dag = []
     child_nodes_ip_dag = []
+    
 
     print('---------------------------------------------- DEBUG')
     # print(child_nodes)
@@ -710,7 +741,21 @@ def main():
 
     print(child_nodes_dag)
     print(child_nodes_ip_dag)
+    
+    global controller_nondag, controller_ip_nondag
+    controller_nondag = []
+    controller_ip_nondag = []
 
+    print(all_nodes)
+    print(super_tasks)
+    for idx, controller in enumerate(all_nodes):
+        if controller in super_tasks:
+            print(controller)
+            controller_nondag.append(controller)
+            controller_ip_nondag.append(all_nodes_ips[idx])
+
+    print(controller_nondag) 
+    print(controller_ip_nondag)
 
     
     _thread.start_new_thread(push_controller_map,())

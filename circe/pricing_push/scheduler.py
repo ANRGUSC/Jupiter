@@ -178,6 +178,7 @@ def recv_runtime_profile():
             print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
             
             print('----------------------------')  
+
             if worker_node == "globalfusion" or "task4":
                 # Per task stats:
                 print('********************************************') 
@@ -260,6 +261,7 @@ def recv_runtime_profile_computingnode():
 
             if task_name == "globalfusion" or "task4":
                 # Per task stats:
+                print(task_name)
                 print('********************************************') 
                 print("Runtime profiling computing node info:")
                 """
@@ -273,11 +275,18 @@ def recv_runtime_profile_computingnode():
                     - Waiting time: total time since the input file is created till it is processed
                 """
                 log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks_computingnode.txt'), "w")
-                s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Worker_node','Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
+                s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Worker_node','Task_name','input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
                 print(s)
                 log_file.write(s)
                 for k, v in rt_enter_time_computingnode.items():
                     worker, task, file = k
+                    # print('***')
+                    # print(k)
+                    # print(v)
+                    # print(worker)
+                    # print(task)
+                    # print(file)
+                    # print(rt_finish_time_computingnode)
                     if k in rt_finish_time_computingnode:
                         elapse = rt_finish_time_computingnode[k]-v
                         duration = rt_finish_time_computingnode[k]-rt_exec_time_computingnode[k]
