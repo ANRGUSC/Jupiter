@@ -337,7 +337,6 @@ def retrieve_input_finish(task_name, file_name):
     return input_name
 
 
-#TODO: Check
 def receive_assignment_info():
     """
         Receive corresponding best nodes from the corresponding computing node
@@ -453,6 +452,7 @@ class Handler1(FileSystemEventHandler):
             print(home_id)
             print(task_name)
             input_name = retrieve_input_finish(task_name, temp_name)
+            ts = time.time()
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
             # print(input_name)
             send_runtime_profile_computingnode(runtime_info,task_name,home_id)
@@ -461,27 +461,56 @@ class Handler1(FileSystemEventHandler):
             print(sys.argv[3])
             if sys.argv[3] in home_ids:
                 print('----- next step is home')
-                # user = sys.argv[5]
-                # password=sys.argv[6]
-                # transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)  
+                IPaddr = sys.argv[4]
+                user = sys.argv[5]
+                password=sys.argv[6]
+                source = event.src_path
+                destination = os.path.join('/output', new_file)
+                transfer_data(IPaddr,user,password,source, destination)
             elif flag2 == 'true':
                 print('True flag')
                 for i in range(3, len(sys.argv)-1,4):
+                    next_task = sys.argv[i]
                     IPaddr = sys.argv[i+1]
                     user = sys.argv[i+2]
                     password = sys.argv[i+3]
-                    print(IPaddr)
-                    print(super_task_ips_map)
                     print('-------3')
-                    if IPaddr in super_task_ips_map:
+                    print(next_task)
+                    print(task_node_map)
+                    print(task_node_map.keys())
+                    # print(non_tasks_ips_map.keys())
+                    # print(non_tasks_ips_map)
+                    # print(super_task_ips_map.keys())
+                    # print(super_task_ips_map)
+                    
+                    # if IPaddr in super_task_ips_map:
+                    if next_task in super_tasks:
                         print('super_tasks')
                         # destination = os.path.join('/centralized_scheduler', 'input', new_file)
-                        destination = "/centralized_scheduler/input/" +super_task_ips_map[IPaddr] + "/"+home_id+"/"+new_file 
+                        destination = "/centralized_scheduler/input/" +next_task + "/"+home_id+"/"+new_file 
+                        print(IPaddr) 
                         transfer_data(IPaddr,user,password,event.src_path, destination)
+                    # elif IPaddr in non_tasks_ips_map:
+                    elif next_task in non_tasks:
+                        print('non_tasks : Do nothing')
                     else:
                         print('normal tasks')
-                        # destination = "/centralized_scheduler/input/" +super_task_ips_map[IPaddr] + "/"+home_id+"/"+new_file 
-                        # transfer_data(IPaddr,user,password,event.src_path, destination)
+                        while next_task not in task_node_map:
+                            print('Best compute node for the next task is not updated yet!')
+                            time.sleep(5)
+                        # best_ip = task_node_map[next_tasks_map[task_name][i]]
+                        best_ip = computing_ip_map[task_node_map[next_task]]
+                        # print(task_node_map)
+                        # print(next_tasks_map)
+                        # print(task_name)
+                        # print(next_tasks_map[task_name][i])
+                        destination = "/centralized_scheduler/input/" +next_task + "/"+home_id+"/"+new_file 
+                        print(destination)
+                        print(task_node_map[next_task])
+                        print(best_ip)
+
+                        transfer_data(best_ip,user,password,event.src_path, destination)
+                        
 
             else:
                 print('False flag')
@@ -499,18 +528,30 @@ class Handler1(FileSystemEventHandler):
                         IPaddr = sys.argv[i+1]
                         user = sys.argv[i+2]
                         password = sys.argv[i+3]
+                        print('-------4')
                         print(IPaddr)
-                        print('-------3')
+                        print(non_tasks_ips_map.keys())
+                        print(non_tasks_ips_map)
+                        print(super_task_ips_map.keys())
+                        print(super_task_ips_map)
+                        
                         if IPaddr in super_task_ips_map:
                             print('super_tasks')
                             # destination = os.path.join('/centralized_scheduler', 'input', new_file)
                             destination = "/centralized_scheduler/input/" +super_task_ips_map[IPaddr] + "/"+home_id+"/"+new_file 
+
                             transfer_data(IPaddr,user,password,event.src_path, destination)
+                        elif IPaddr in non_tasks_ips_map:
+                            print('non_tasks : Do nothing')
                         else:
                             print('normal tasks')
-                            print(next_tasks_map[task_name][i])
+                            # print(next_tasks_map[task_name][i])
+                            # print(myfile)
                             best_ip = task_node_map[next_tasks_map[task_name][i]]
-                            destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][i]+"/"+home_id+"/"+myfile
+                            destination = "/centralized_scheduler/input/" +next_tasks_map[task_name][i]+"/"+home_id+"/"+myfile
+                            print(destination)
+                            print(next_tasks_map[task_name][i])
+                            print(best_ip)
                             transfer_data(best_ip,user,password,event.src_path, destination)
                         print(task_node_map)
                         
@@ -576,6 +617,7 @@ class Handler(FileSystemEventHandler):
 
             task_name = event.src_path.split('/')[-3]
             home_id = event.src_path.split('/')[-2]
+            input_name = retrieve_input_enter(task_name, temp_name)
 
             queue_mul.put(new_file)
             
@@ -592,7 +634,7 @@ class Handler(FileSystemEventHandler):
             global filenames
 
             if len(filenames) == 0:
-                runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
+                runtime_info = 'rt_enter '+ input_name+ ' '+str(ts)
                 print(runtime_info)
                 print(task_name)
                 print(home_id)
@@ -605,7 +647,7 @@ class Handler(FileSystemEventHandler):
             if flag1 == "1":
                 # Start msg
                 ts = time.time()
-                runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+                runtime_info = 'rt_exec '+ input_name+ ' '+str(ts)
                 send_runtime_profile_computingnode(runtime_info,task_name,home_id)
                 # send_runtime_profile(runtime_info)
                 inputfile=queue_mul.get()
@@ -619,14 +661,14 @@ class Handler(FileSystemEventHandler):
                 dag_task.start()
                 dag_task.join()
                 ts = time.time()
-                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                runtime_info = 'rt_finish '+ input_name+ ' '+str(ts)
                 send_runtime_profile_computingnode(runtime_info,task_name,home_id)
             else:
                 filenames.append(queue_mul.get())
                 if (len(filenames) == int(flag1)):
                     #start msg
                     ts = time.time()
-                    runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+                    runtime_info = 'rt_exec '+ input_name+ ' '+str(ts)
                     send_runtime_profile_computingnode(runtime_info,task_name,home_id)
                     
                     input_path = os.path.split(event.src_path)[0]
@@ -638,7 +680,7 @@ class Handler(FileSystemEventHandler):
                     dag_task.join()
                     filenames = []
                     ts = time.time()
-                    runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                    runtime_info = 'rt_finish '+ input_name+ ' '+str(ts)
                     send_runtime_profile_computingnode(runtime_info,task_name,home_id)
                 
             print(time.time()-t1)
@@ -676,9 +718,10 @@ def main():
     config.read(INI_PATH)
 
     # Prepare transfer-runtime file:
-    global runtime_sender_log, RUNTIME, TRANSFER, transfer_type
+    global runtime_sender_log, RUNTIME, TRANSFER, FLASK_DOCKER,transfer_type
     RUNTIME = int(config['CONFIG']['RUNTIME'])
     TRANSFER = int(config['CONFIG']['TRANSFER'])
+    FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 
     if TRANSFER == 0:
         transfer_type = 'scp'
@@ -723,7 +766,7 @@ def main():
     node_name = os.environ['NODE_NAME']
     node_id = os.environ['NODE_ID']
 
-    global home_ip_map, home_node_host_ports
+    global home_ip_map, home_node_host_ports, home_ids,  home_ips
 
     home_nodes = os.environ['HOME_NODE'].split(' ')
     home_ids = [x.split(':')[0] for x in home_nodes]
@@ -736,9 +779,9 @@ def main():
         # print(home_id)
         home_node_host_ports[home_id] = home_ip_map[home_id] + ":" + str(FLASK_SVC)
 
-    print('-----DEBUG')
-    print(home_ip_map)
-    print(home_node_host_ports)
+    # print('-----DEBUG')
+    # print(home_ip_map)
+    # print(home_node_host_ports)
 
     my_task = os.environ["TASK"]
 
@@ -774,7 +817,7 @@ def main():
             name_convert_in[info[0]] = info[2]
 
 
-    global manager,task_node_map, computing_ip_map
+    global manager,task_node_map, computing_ip_map, super_task_ips_map, non_tasks_ips_map
 
     computing_nodes = os.environ['ALL_COMPUTING_NODES'].split(':')
     computing_ips = os.environ['ALL_COMPUTING_IPS'].split(':')
@@ -784,6 +827,7 @@ def main():
     manager = Manager()
     task_node_map = manager.dict()
     super_task_ips_map = dict()
+    non_tasks_ips_map = dict()
 
     print('---------')
     print(all_nodes)
@@ -798,9 +842,13 @@ def main():
             print(task)
             print(all_nodes_ips[idx])
             super_task_ips_map[all_nodes_ips[idx]] = task
+        elif task in non_tasks:
+            non_tasks_ips_map[all_nodes_ips[idx]] = task
 
     print(task_node_map)
     print(super_task_ips_map)
+    print(non_tasks_ips_map)
+
 
     print('------2')
     dag_file = '/centralized_scheduler/dag.txt'
@@ -814,6 +862,9 @@ def main():
 
     for home_id in home_ids:
         next_tasks_map[home_id] = [os.environ['CHILD_NODES']]
+
+    web_server = MonitorRecv()
+    web_server.start()
 
     if taskmap[1] == True:
         queue_mul=multiprocessing.Queue()
