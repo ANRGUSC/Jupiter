@@ -1,0 +1,138 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+my child nodes are:
+fusioncenter0:dftslave00:dftslave01:dftslave02
+their IPs are:
+10.105.109.202:10.106.235.229:10.98.41.12:10.109.33.69
+my task is:
+dftdetector0
+flag is:
+true
+number of inputs for my task:
+1
+home node is:
+10.99.133.114
+monitor.py input args are:
+1 true fusioncenter0 10.105.109.202 root PASSWORD dftslave00 10.106.235.229 root PASSWORD dftslave01 10.98.41.12 root PASSWORD dftslave02 10.109.33.69 root PASSWORD
+python3 centralized_scheduler/monitor.py 1 true  fusioncenter0 10.105.109.202 root PASSWORD dftslave00 10.106.235.229 root PASSWORD dftslave01 10.98.41.12 root PASSWORD dftslave02 10.109.33.69 root PASSWORD dftdetector0
+{'teradetector0': '10.106.135.100', 'simpledetector1': '10.109.125.63', 'teramaster1': '10.103.250.225', 'dftslave11': '10.105.214.155', 'dftslave22': '10.101.60.199', 'teradetector1': '10.99.103.228', 'teraworker10': '10.103.66.10', 'fusioncenter0': '10.105.109.202', 'teraworker22': '10.109.136.43', 'teraworker11': '10.104.188.27', 'aggregate2': '10.102.138.251', 'teraworker00': '10.106.165.175', 'teramaster0': '10.110.109.19', 'teradetector2': '10.96.171.130', 'simpledetector2': '10.105.72.253', 'aggregate1': '10.96.205.10', 'localpro': '10.110.90.23', 'dftslave01': '10.98.41.12', 'dftdetector2': '10.110.187.61', 'dftslave20': '10.106.67.11', 'teraworker01': '10.99.136.141', 'globalfusion': '10.107.67.133', 'teraworker20': '10.96.5.15', 'teraworker21': '10.110.119.145', 'astutedetector0': '10.108.219.82', 'dftslave00': '10.106.235.229', 'aggregate0': '10.97.255.255', 'dftdetector0': '10.99.98.166', 'teraworker02': '10.99.20.196', 'teramaster2': '10.98.95.100', 'dftslave02': '10.109.33.69', 'astutedetector2': '10.106.147.244', 'simpledetector0': '10.109.226.28', 'dftslave12': '10.105.79.149', 'fusioncenter2': '10.104.100.9', 'dftslave10': '10.111.111.60', 'dftdetector1': '10.110.106.182', 'fusioncenter1': '10.107.37.147', 'teraworker12': '10.107.37.233', 'astutedetector1': '10.101.229.227', 'dftslave21': '10.110.79.55', 'home': '10.99.133.114'}
+Received file as input - /centralized_scheduler/input/1merged_file0.ipsum.
+1284940 1284940
+Configs {'execTimes': [2, 2, 2], 'masterConfigs': {'IP': 'nerv2', 'PortNum': '57021'}, 'matrixConfigs': {'dimension': 4950, 'encoding': [[1, 0, 1], [0, 1, 1]]}, 'exec_profiler': {'teraworker00': False, 'teraworker02': False, 'teramaster1': False, 'dftslave22': False, 'teradetector1': False, 'teraworker10': False, 'teraworker21': False, 'teraworker22': False, 'teraworker11': False, 'aggregate2': True, 'dftslave11': False, 'teramaster0': False, 'teradetector2': False, 'astutedetector1': True, 'simpledetector1': True, 'aggregate1': True, 'localpro': True, 'dftslave01': False, 'dftdetector2': False, 'dftslave20': False, 'teraworker01': False, 'teraworker20': False, 'simpledetector2': True, 'astutedetector0': True, 'teraworker12': False, 'aggregate0': True, 'fusioncenter0': True, 'globalfusion': True, 'teramaster2': False, 'teradetector0': False, 'dftslave02': False, 'astutedetector2': True, 'dftslave10': False, 'dftslave12': False, 'fusioncenter2': True, 'dftdetector1': False, 'fusioncenter1': True, 'dftslave00': False, 'dftdetector0': False, 'dftslave21': False, 'simpledetector0': True}, 'nos_slave': 3, 'nos_tera_worker': 3, 'PortNum': '57021', 'ssh_port': '5000', 'chunks': 1, 'taskname_map': {'teraworker00': ['terasort/worker/rate-limit-then-standby', False, 0, 0, 3], 'teraworker02': ['terasort/worker/rate-limit-then-standby', False, 0, 2, 3], 'teramaster1': ['terasort/master/standby', False, 1], 'dftslave22': ['dftslave', False, 2, 2, 3], 'teradetector1': ['teradetector1', True, 1], 'teraworker10': ['terasort/worker/rate-limit-then-standby', False, 1, 0, 3], 'teraworker21': ['terasort/worker/rate-limit-then-standby', False, 2, 1, 3], 'teraworker22': ['terasort/worker/rate-limit-then-standby', False, 2, 2, 3], 'teraworker11': ['terasort/worker/rate-limit-then-standby', False, 1, 1, 3], 'aggregate2': ['aggregate2', True], 'dftslave11': ['dftslave', False, 1, 1, 3], 'teramaster0': ['terasort/master/standby', False, 0], 'teradetector2': ['teradetector2', True, 2], 'astutedetector1': ['astutedetector1', True], 'simpledetector1': ['simpledetector1', True], 'aggregate1': ['aggregate1', True], 'localpro': ['localpro', True], 'dftslave01': ['dftslave', False, 0, 1, 3], 'dftdetector2': ['dftdetector2', True, 2], 'dftslave20': ['dftslave', False, 2, 0, 3], 'teraworker01': ['terasort/worker/rate-limit-then-standby', False, 0, 1, 3], 'teraworker20': ['terasort/worker/rate-limit-then-standby', False, 2, 0, 3], 'simpledetector2': ['simpledetector2', True], 'astutedetector0': ['astutedetector0', True], 'teraworker12': ['terasort/worker/rate-limit-then-standby', False, 1, 2, 3], 'aggregate0': ['aggregate0', True], 'fusioncenter0': ['fusioncenter0', True], 'globalfusion': ['globalfusion', True], 'teramaster2': ['terasort/master/standby', False, 2], 'teradetector0': ['teradetector0', True, 0], 'dftslave02': ['dftslave', False, 0, 2, 3], 'astutedetector2': ['astutedetector2', True], 'dftslave10': ['dftslave', False, 1, 0, 3], 'dftslave12': ['dftslave', False, 1, 2, 3], 'fusioncenter2': ['fusioncenter2', True], 'dftdetector1': ['dftdetector1', True, 1], 'fusioncenter1': ['fusioncenter1', True], 'dftslave00': ['dftslave', False, 0, 0, 3], 'dftdetector0': ['dftdetector0', True, 0], 'dftslave21': ['dftslave', False, 2, 1, 3], 'simpledetector0': ['simpledetector0', True]}}
+Slaves_IP 10.106.235.229
+/usr/local/lib/python3.5/dist-packages/paramiko/kex_ecdh_nist.py:39: CryptographyDeprecationWarning: encode_point has been deprecated on EllipticCurvePublicNumbers and will be removed in a future version. Please use EllipticCurvePublicKey.public_bytes to obtain both compressed and uncompressed point encoding.
+  m.add_string(self.Q_C.public_numbers().encode_point())
+/usr/local/lib/python3.5/dist-packages/paramiko/kex_ecdh_nist.py:96: CryptographyDeprecationWarning: Support for unsafe construction of public numbers from encoded data will be removed in a future version. Please use EllipticCurvePublicKey.from_encoded_point
+  self.curve, Q_S_bytes
+/usr/local/lib/python3.5/dist-packages/paramiko/kex_ecdh_nist.py:111: CryptographyDeprecationWarning: encode_point has been deprecated on EllipticCurvePublicNumbers and will be removed in a future version. Please use EllipticCurvePublicKey.public_bytes to obtain both compressed and uncompressed point encoding.
+  hm.add_string(self.Q_C.public_numbers().encode_point())
+Slaves_IP 10.98.41.12
+Slaves_IP 10.109.33.69
+---------------- DEBUG
+{'teraworker00': ['terasort/worker/rate-limit-then-standby', False, 0, 0, 3], 'teraworker02': ['terasort/worker/rate-limit-then-standby', False, 0, 2, 3], 'teramaster1': ['terasort/master/standby', False, 1], 'dftslave22': ['dftslave', False, 2, 2, 3], 'teradetector1': ['teradetector1', True, 1], 'teraworker10': ['terasort/worker/rate-limit-then-standby', False, 1, 0, 3], 'teraworker21': ['terasort/worker/rate-limit-then-standby', False, 2, 1, 3], 'teraworker22': ['terasort/worker/rate-limit-then-standby', False, 2, 2, 3], 'teraworker11': ['terasort/worker/rate-limit-then-standby', False, 1, 1, 3], 'aggregate2': ['aggregate2', True], 'dftslave11': ['dftslave', False, 1, 1, 3], 'teramaster0': ['terasort/master/standby', False, 0], 'teradetector2': ['teradetector2', True, 2], 'astutedetector1': ['astutedetector1', True], 'simpledetector1': ['simpledetector1', True], 'aggregate1': ['aggregate1', True], 'localpro': ['localpro', True], 'dftslave01': ['dftslave', False, 0, 1, 3], 'dftdetector2': ['dftdetector2', True, 2], 'dftslave20': ['dftslave', False, 2, 0, 3], 'teraworker01': ['terasort/worker/rate-limit-then-standby', False, 0, 1, 3], 'teraworker20': ['terasort/worker/rate-limit-then-standby', False, 2, 0, 3], 'simpledetector2': ['simpledetector2', True], 'astutedetector0': ['astutedetector0', True], 'teraworker12': ['terasort/worker/rate-limit-then-standby', False, 1, 2, 3], 'aggregate0': ['aggregate0', True], 'fusioncenter0': ['fusioncenter0', True], 'globalfusion': ['globalfusion', True], 'teramaster2': ['terasort/master/standby', False, 2], 'teradetector0': ['teradetector0', True, 0], 'dftslave02': ['dftslave', False, 0, 2, 3], 'astutedetector2': ['astutedetector2', True], 'dftslave10': ['dftslave', False, 1, 0, 3], 'dftslave12': ['dftslave', False, 1, 2, 3], 'fusioncenter2': ['fusioncenter2', True], 'dftdetector1': ['dftdetector1', True, 1], 'fusioncenter1': ['fusioncenter1', True], 'dftslave00': ['dftslave', False, 0, 0, 3], 'dftdetector0': ['dftdetector0', True, 0], 'dftslave21': ['dftslave', False, 2, 1, 3], 'simpledetector0': ['simpledetector0', True]}
+dftdetector0
+0
+starting master server process...
+10.106.235.229:57021
+10.98.41.12:57021
+10.109.33.69:57021
+10.244.11.155
+57021
+Matrix not None
+10.244.11.155 - - [21/Mar/2019 08:46:10] "POST /RPC2 HTTP/1.1" 200 -
+wait for all slaves to get ready
+10.244.3.174 - - [21/Mar/2019 08:46:11] "POST /RPC2 HTTP/1.1" 200 -
+slave_ready
+1
+slave 1 is ready
+slave_ready
+3
+slave 3 is ready
+10.244.4.50 - - [21/Mar/2019 08:46:11] "POST /RPC2 HTTP/1.1" 200 -
+slave_ready
+2
+slave 2 is ready
+10.244.9.68 - - [21/Mar/2019 08:46:11] "POST /RPC2 HTTP/1.1" 200 -
+[0. 0. 0.] [27.0, 27.0, 27.0]
+0
+1
+2
+10.244.3.174 - - [21/Mar/2019 08:46:12] "POST /RPC2 HTTP/1.1" 200 -
+10.244.4.50 - - [21/Mar/2019 08:46:15] "POST /RPC2 HTTP/1.1" 200 -
+10.244.11.155 - - [21/Mar/2019 08:46:15] "POST /RPC2 HTTP/1.1" 200 -
+{'slave1': '/home/darpa/apps/data/product1.mat', 'slave3': '/home/darpa/apps/data/product3.mat'}
+10.244.11.155 - - [21/Mar/2019 08:46:15] "POST /RPC2 HTTP/1.1" 200 -
+here
+Stop Server Called
+/centralized_scheduler/input
+/centralized_scheduler/output
+<_io.TextIOWrapper name='/centralized_scheduler/output/1anomalies_dft0.log' mode='w' encoding='ANSI_X3.4-1968'>
+Received file as output - /centralized_scheduler/output/1anomalies_dft0.log.
+Warning: Permanently added '[10.105.109.202]:5000' (ECDSA) to the list of known hosts.
+data transfer complete
+
+Warning: Permanently added '[10.106.235.229]:5000' (ECDSA) to the list of known hosts.
+data transfer complete
+
+ssh: connect to host 10.98.41.12 port 5000: Connection refused
+lost connection
+data transfer complete
+
+ssh: connect to host 10.109.33.69 port 5000: Connection timed out
+lost connection
+data transfer complete
+
+Received file as input - /centralized_scheduler/input/2merged_file0.ipsum.
+1284940 1284940
+Configs {'execTimes': [2, 2, 2], 'masterConfigs': {'IP': 'nerv2', 'PortNum': '57021'}, 'matrixConfigs': {'dimension': 4950, 'encoding': [[1, 0, 1], [0, 1, 1]]}, 'exec_profiler': {'teraworker00': False, 'teraworker02': False, 'teramaster1': False, 'dftslave22': False, 'teradetector1': False, 'teraworker10': False, 'teraworker21': False, 'teraworker22': False, 'teraworker11': False, 'aggregate2': True, 'dftslave11': False, 'teramaster0': False, 'teradetector2': False, 'astutedetector1': True, 'simpledetector1': True, 'aggregate1': True, 'localpro': True, 'dftslave01': False, 'dftdetector2': False, 'dftslave20': False, 'teraworker01': False, 'teraworker20': False, 'simpledetector2': True, 'astutedetector0': True, 'teraworker12': False, 'aggregate0': True, 'fusioncenter0': True, 'globalfusion': True, 'teramaster2': False, 'teradetector0': False, 'dftslave02': False, 'astutedetector2': True, 'dftslave10': False, 'dftslave12': False, 'fusioncenter2': True, 'dftdetector1': False, 'fusioncenter1': True, 'dftslave00': False, 'dftdetector0': False, 'dftslave21': False, 'simpledetector0': True}, 'nos_slave': 3, 'nos_tera_worker': 3, 'PortNum': '57021', 'ssh_port': '5000', 'chunks': 1, 'taskname_map': {'teraworker00': ['terasort/worker/rate-limit-then-standby', False, 0, 0, 3], 'teraworker02': ['terasort/worker/rate-limit-then-standby', False, 0, 2, 3], 'teramaster1': ['terasort/master/standby', False, 1], 'dftslave22': ['dftslave', False, 2, 2, 3], 'teradetector1': ['teradetector1', True, 1], 'teraworker10': ['terasort/worker/rate-limit-then-standby', False, 1, 0, 3], 'teraworker21': ['terasort/worker/rate-limit-then-standby', False, 2, 1, 3], 'teraworker22': ['terasort/worker/rate-limit-then-standby', False, 2, 2, 3], 'teraworker11': ['terasort/worker/rate-limit-then-standby', False, 1, 1, 3], 'aggregate2': ['aggregate2', True], 'dftslave11': ['dftslave', False, 1, 1, 3], 'teramaster0': ['terasort/master/standby', False, 0], 'teradetector2': ['teradetector2', True, 2], 'astutedetector1': ['astutedetector1', True], 'simpledetector1': ['simpledetector1', True], 'aggregate1': ['aggregate1', True], 'localpro': ['localpro', True], 'dftslave01': ['dftslave', False, 0, 1, 3], 'dftdetector2': ['dftdetector2', True, 2], 'dftslave20': ['dftslave', False, 2, 0, 3], 'teraworker01': ['terasort/worker/rate-limit-then-standby', False, 0, 1, 3], 'teraworker20': ['terasort/worker/rate-limit-then-standby', False, 2, 0, 3], 'simpledetector2': ['simpledetector2', True], 'astutedetector0': ['astutedetector0', True], 'teraworker12': ['terasort/worker/rate-limit-then-standby', False, 1, 2, 3], 'aggregate0': ['aggregate0', True], 'fusioncenter0': ['fusioncenter0', True], 'globalfusion': ['globalfusion', True], 'teramaster2': ['terasort/master/standby', False, 2], 'teradetector0': ['teradetector0', True, 0], 'dftslave02': ['dftslave', False, 0, 2, 3], 'astutedetector2': ['astutedetector2', True], 'dftslave10': ['dftslave', False, 1, 0, 3], 'dftslave12': ['dftslave', False, 1, 2, 3], 'fusioncenter2': ['fusioncenter2', True], 'dftdetector1': ['dftdetector1', True, 1], 'fusioncenter1': ['fusioncenter1', True], 'dftslave00': ['dftslave', False, 0, 0, 3], 'dftdetector0': ['dftdetector0', True, 0], 'dftslave21': ['dftslave', False, 2, 1, 3], 'simpledetector0': ['simpledetector0', True]}}
+Slaves_IP 10.106.235.229
+/usr/local/lib/python3.5/dist-packages/paramiko/kex_ecdh_nist.py:39: CryptographyDeprecationWarning: encode_point has been deprecated on EllipticCurvePublicNumbers and will be removed in a future version. Please use EllipticCurvePublicKey.public_bytes to obtain both compressed and uncompressed point encoding.
+  m.add_string(self.Q_C.public_numbers().encode_point())
+/usr/local/lib/python3.5/dist-packages/paramiko/kex_ecdh_nist.py:96: CryptographyDeprecationWarning: Support for unsafe construction of public numbers from encoded data will be removed in a future version. Please use EllipticCurvePublicKey.from_encoded_point
+  self.curve, Q_S_bytes
+/usr/local/lib/python3.5/dist-packages/paramiko/kex_ecdh_nist.py:111: CryptographyDeprecationWarning: encode_point has been deprecated on EllipticCurvePublicNumbers and will be removed in a future version. Please use EllipticCurvePublicKey.public_bytes to obtain both compressed and uncompressed point encoding.
+  hm.add_string(self.Q_C.public_numbers().encode_point())
+Slaves_IP 10.98.41.12
+Slaves_IP 10.109.33.69
+---------------- DEBUG
+{'teraworker00': ['terasort/worker/rate-limit-then-standby', False, 0, 0, 3], 'teraworker02': ['terasort/worker/rate-limit-then-standby', False, 0, 2, 3], 'teramaster1': ['terasort/master/standby', False, 1], 'dftslave22': ['dftslave', False, 2, 2, 3], 'teradetector1': ['teradetector1', True, 1], 'teraworker10': ['terasort/worker/rate-limit-then-standby', False, 1, 0, 3], 'teraworker21': ['terasort/worker/rate-limit-then-standby', False, 2, 1, 3], 'teraworker22': ['terasort/worker/rate-limit-then-standby', False, 2, 2, 3], 'teraworker11': ['terasort/worker/rate-limit-then-standby', False, 1, 1, 3], 'aggregate2': ['aggregate2', True], 'dftslave11': ['dftslave', False, 1, 1, 3], 'teramaster0': ['terasort/master/standby', False, 0], 'teradetector2': ['teradetector2', True, 2], 'astutedetector1': ['astutedetector1', True], 'simpledetector1': ['simpledetector1', True], 'aggregate1': ['aggregate1', True], 'localpro': ['localpro', True], 'dftslave01': ['dftslave', False, 0, 1, 3], 'dftdetector2': ['dftdetector2', True, 2], 'dftslave20': ['dftslave', False, 2, 0, 3], 'teraworker01': ['terasort/worker/rate-limit-then-standby', False, 0, 1, 3], 'teraworker20': ['terasort/worker/rate-limit-then-standby', False, 2, 0, 3], 'simpledetector2': ['simpledetector2', True], 'astutedetector0': ['astutedetector0', True], 'teraworker12': ['terasort/worker/rate-limit-then-standby', False, 1, 2, 3], 'aggregate0': ['aggregate0', True], 'fusioncenter0': ['fusioncenter0', True], 'globalfusion': ['globalfusion', True], 'teramaster2': ['terasort/master/standby', False, 2], 'teradetector0': ['teradetector0', True, 0], 'dftslave02': ['dftslave', False, 0, 2, 3], 'astutedetector2': ['astutedetector2', True], 'dftslave10': ['dftslave', False, 1, 0, 3], 'dftslave12': ['dftslave', False, 1, 2, 3], 'fusioncenter2': ['fusioncenter2', True], 'dftdetector1': ['dftdetector1', True, 1], 'fusioncenter1': ['fusioncenter1', True], 'dftslave00': ['dftslave', False, 0, 0, 3], 'dftdetector0': ['dftdetector0', True, 0], 'dftslave21': ['dftslave', False, 2, 1, 3], 'simpledetector0': ['simpledetector0', True]}
+dftdetector0
+0
+starting master server process...
+10.106.235.229:57021
+10.98.41.12:57021
+10.109.33.69:57021
+10.244.11.155
+57021
+Matrix not None
+10.244.11.155 - - [21/Mar/2019 08:48:46] "POST /RPC2 HTTP/1.1" 200 -
+wait for all slaves to get ready
+slave_ready
+1
+slave 1 is ready
+10.244.3.174 - - [21/Mar/2019 08:48:46] "POST /RPC2 HTTP/1.1" 200 -
+slave_ready
+3
+slave 3 is ready
+10.244.4.50 - - [21/Mar/2019 08:48:47] "POST /RPC2 HTTP/1.1" 200 -
+slave_ready
+2
+slave 2 is ready
+[0. 0. 0.] [27.0, 27.0, 27.0]
+0
+10.244.9.68 - - [21/Mar/2019 08:48:47] "POST /RPC2 HTTP/1.1" 200 -
+1
+2
+10.244.3.174 - - [21/Mar/2019 08:48:48] "POST /RPC2 HTTP/1.1" 200 -
+10.244.9.68 - - [21/Mar/2019 08:48:51] "POST /RPC2 HTTP/1.1" 200 -
+10.244.11.155 - - [21/Mar/2019 08:48:51] "POST /RPC2 HTTP/1.1" 200 -
+{'slave1': '/home/darpa/apps/data/product1.mat', 'slave2': '/home/darpa/apps/data/product2.mat'}
+10.244.11.155 - - [21/Mar/2019 08:48:51] "POST /RPC2 HTTP/1.1" 200 -
+here
+Stop Server Called
+/centralized_scheduler/input
+/centralized_scheduler/output
+<_io.TextIOWrapper name='/centralized_scheduler/output/2anomalies_dft0.log' mode='w' encoding='ANSI_X3.4-1968'>
+Received file as output - /centralized_scheduler/output/2anomalies_dft0.log.
+data transfer complete
+
