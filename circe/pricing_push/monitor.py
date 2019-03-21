@@ -429,35 +429,6 @@ def schedule_update_assignment(interval):
     sched.start()
 
 
-# def send_monitor_data(msg):
-#     """
-#     Sending message to flask server on home
-
-#     Args:
-#         msg (str): the message to be sent
-
-#     Returns:
-#         str: the message if successful, "not ok" otherwise.
-
-#     Raises:
-#         Exception: if sending message to flask server on home is failed
-#     """
-#     try:
-#         print("Sending message", msg)
-#         for home_node_host_port in home_node_host_ports:
-#             url = "http://" + home_node_host_port + "/recv_monitor_data"
-#             params = {'msg': msg, "work_node": taskname}
-#             params = urllib.parse.urlencode(params)
-#             req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-#             res = urllib.request.urlopen(req)
-#             res = res.read()
-#             res = res.decode('utf-8')
-#     except Exception as e:
-#         print("Sending message to flask server on home FAILED!!!")
-#         print(e)
-#         return "not ok"
-#     return res
-
 def send_runtime_profile(msg,taskname):
     """
     Sending runtime profiling information to flask server on home

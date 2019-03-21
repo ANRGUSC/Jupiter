@@ -32,6 +32,7 @@ from watchdog.events import FileSystemEventHandler
 import urllib
 from apscheduler.schedulers.background import BackgroundScheduler
 from readconfig import read_config
+from shutil import copyfile
 
 app = Flask(__name__)
 
@@ -787,31 +788,31 @@ def retrieve_input_finish(task_name, file_name):
     print('***************************************************')
     return input_name
 
-def receive_best_assignment():
-    """
-        Receive the best computing node for the task
-    """
+# def receive_best_assignment():
+#     """
+#         Receive the best computing node for the task
+#     """
     
-    try:
-        print("Received best assignment")
-        home_id = request.args.get('home_id')
-        task_name = request.args.get('task_name')
-        file_name = request.args.get('file_name')
-        best_computing_node = request.args.get('best_computing_node')
-        task_node_map[home_id,task_name,file_name] = best_computing_node
-        # print(task_name)
-        # print(best_computing_node)
-        # print(task_node_summary)
-        update_best[home_id,task_name,file_name] = True
+#     try:
+#         print("Received best assignment")
+#         home_id = request.args.get('home_id')
+#         task_name = request.args.get('task_name')
+#         file_name = request.args.get('file_name')
+#         best_computing_node = request.args.get('best_computing_node')
+#         task_node_map[home_id,task_name,file_name] = best_computing_node
+#         # print(task_name)
+#         # print(best_computing_node)
+#         # print(task_node_summary)
+#         update_best[home_id,task_name,file_name] = True
 
 
-    except Exception as e:
-        update_best[home_id,task_name,file_name] = False
-        print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
-        return "not ok" 
+#     except Exception as e:
+#         update_best[home_id,task_name,file_name] = False
+#         print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
+#         return "not ok" 
 
-    return "ok"
-app.add_url_rule('/receive_best_assignment', 'receive_best_assignment', receive_best_assignment)
+#     return "ok"
+# app.add_url_rule('/receive_best_assignment', 'receive_best_assignment', receive_best_assignment)
 
 #for OUTPUT folder 
 class Watcher1():
@@ -912,7 +913,7 @@ class Handler1(FileSystemEventHandler):
                 print(flag)
 
                 print('Sending the output files to the corresponding destinations')
-                if flag: 
+                if flag=='true': 
                     #send a single output of the task to all its children 
                     destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
                     #destinations = ["/centralized_scheduler/input/" +new_file +"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
@@ -923,9 +924,10 @@ class Handler1(FileSystemEventHandler):
                         if self_ip!=ip: # different node
                             transfer_data(ip,username,password,event.src_path, destinations[idx])
                         else: # same node
-                            cmd = "cp %s %s"%(event.src_path,destinations[idx])
-                            print(cmd)
-                            os.system(cmd)
+                            # cmd = "cp %s %s"%(event.src_path,destinations[idx])
+                            # print(cmd)
+                            # os.system(cmd)
+                            copyfile(event.src_path, destinations[idx])
                 else:
                     #it will wait the output files and start putting them into queue, send frst output to first listed child, ....
                     if key not in files_mul:
@@ -949,9 +951,10 @@ class Handler1(FileSystemEventHandler):
                             if self_ip!=ip:
                                 transfer_data(ip,username,password,files_mul[key][idx], destinations)
                             else: 
-                                cmd = "cp %s %s"%(files_mul[key][idx],destinations)
-                                # print(cmd)
-                                os.system(cmd)
+                                # cmd = "cp %s %s"%(files_mul[key][idx],destinations)
+                                # # print(cmd)
+                                # os.system(cmd)
+                                copyfile(files_mul[key][idx],destinations)
             
 
 #for INPUT folder
