@@ -148,6 +148,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
                 r = requests.get(line)
                 mapping = r.json()
                 data = json.dumps(mapping)
+                print(data)
                 if len(mapping) != 0:
                     if "status" not in data:
                         break

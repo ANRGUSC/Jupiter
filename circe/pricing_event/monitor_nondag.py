@@ -337,22 +337,86 @@ def retrieve_input_finish(task_name, file_name):
     return input_name
 
 
-def receive_assignment_info():
-    """
-        Receive corresponding best nodes from the corresponding computing node
+# def receive_assignment_info():
+#     """
+#         Receive corresponding best nodes from the corresponding computing node
+#     """
+#     try:
+#         assignment_info = request.args.get('assignment_info').split('#')
+#         print("Received assignment info")
+#         task_node_map[assignment_info[0]] = assignment_info[1]
+#         print(task_node_map)
+#     except Exception as e:
+#         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
+#         return "not ok" 
+
+#     return "ok"
+# app.add_url_rule('/receive_assignment_info', 'receive_assignment_info', receive_assignment_info)
+
+def request_best_assignment(home_id,task_name,file_name):
+    """Request the best computing node for the task
+    
+    Args:
+        home_id (str): id of the home
+        task_name (str): name of the current task
+        file_name (str): name of the current processed file
+    
     """
     try:
-        assignment_info = request.args.get('assignment_info').split('#')
-        print("Received assignment info")
-        task_node_map[assignment_info[0]] = assignment_info[1]
-        print(task_node_map)
+        print('***************************************************')
+        print("Request the best computing node for the task" + task_name)
+        # t = tic()
+        url = "http://" + controllers_ip_map[task_name] + ":" + str(FLASK_SVC) + "/receive_best_assignment_request"
+        params = {'home_id':home_id,'node_name':node_id,'file_name':file_name,'key':my_task}
+        print(params)
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+        # txec = toc(t)
+        # bottleneck['reequestassign'].append(txec)
+        # print(np.mean(bottleneck['requestassign']))
+        # print('***************************************************')
     except Exception as e:
-        print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
+        print("Sending assignment request to flask server on controller node FAILED!!!")
+        print(e)
+        return "not ok"
+
+def receive_best_assignment():
+    """
+        Receive the best computing node for the task
+    """
+    
+    try:
+        # print('***************************************************')
+        print("Received best assignment")
+        # t = tic()
+
+        home_id = request.args.get('home_id')
+        task_name = request.args.get('task_name')
+        file_name = request.args.get('file_name')
+        best_computing_node = request.args.get('best_computing_node')
+        print(task_name)
+        print(best_computing_node)
+        print(task_name)
+        print(file_name)
+        task_node_map[home_id,task_name,file_name] = best_computing_node
+        # task_node_summary[home_id,task_name,file_name] = best_computing_node
+        
+        update_best[home_id,task_name,file_name] = True
+        # txec = toc(t)
+        # bottleneck['receiveassign'].append(txec)
+        # print(np.mean(bottleneck['receiveassign']))
+        # print('***************************************************')
+
+    except Exception as e:
+        update_best[home_id,task_name,file_name] = False
+        print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
         return "not ok" 
 
     return "ok"
-app.add_url_rule('/receive_assignment_info', 'receive_assignment_info', receive_assignment_info)
-
+app.add_url_rule('/receive_best_assignment', 'receive_best_assignment', receive_best_assignment)
 
 
 #for OUTPUT folder 
@@ -469,18 +533,22 @@ class Handler1(FileSystemEventHandler):
                         print('non_tasks : Do nothing')
                     else:
                         print('normal tasks')
-                        while next_task not in task_node_map:
-                            print('Best compute node for the next task is not updated yet!')
-                            time.sleep(5)
+                        key = (home_id,next_task,input_name)
+                        print(key)
+                        while key not in task_node_map:
+                            request_best_assignment(home_id,next_task,input_name)
+                            print('--- waiting for computing node assignment')
+                            time.sleep(3)
                         # best_ip = task_node_map[next_tasks_map[task_name][i]]
-                        best_ip = computing_ip_map[task_node_map[next_task]]
+                        best_ip = computing_ip_map[task_node_map[key]]
+                        print(best_ip)
+
                         # print(task_node_map)
                         # print(next_tasks_map)
                         # print(task_name)
                         # print(next_tasks_map[task_name][i])
                         destination = "/centralized_scheduler/input/" +next_task + "/"+home_id+"/"+new_file 
                         print(destination)
-                        print(task_node_map[next_task])
                         print(best_ip)
 
                         transfer_data(best_ip,user,password,event.src_path, destination)
@@ -613,6 +681,11 @@ class Handler(FileSystemEventHandler):
                 print(task_name)
                 print(home_id)
                 send_runtime_profile_computingnode(runtime_info,task_name,home_id)
+
+                print(next_tasks_map)
+                print(next_tasks_map[task_name])
+                for next_task in next_tasks_map[task_name]:
+                    update_best[home_id,next_task,input_name]= False
                 # send_runtime_profile(runtime_info)
 
             flag1 = sys.argv[1]
@@ -723,6 +796,12 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 
+    global controllers_ip_map, task_controllers, task_controllers_ips
+
+    task_controllers = os.environ['ALL_NODES'].split(':')
+    task_controllers_ips = os.environ['ALL_NODES_IPS'].split(':')
+    controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
+
 
     global taskmap, taskname, taskmodule, filenames,files_out, node_name,node_id,all_nodes, all_nodes_ips
 
@@ -740,7 +819,7 @@ def main():
     node_name = os.environ['NODE_NAME']
     node_id = os.environ['NODE_ID']
 
-    global home_ip_map, home_node_host_ports, home_ids,  home_ips
+    global home_ip_map, home_node_host_ports, home_ids,  home_ips,my_task
 
     home_nodes = os.environ['HOME_NODE'].split(' ')
     home_ids = [x.split(':')[0] for x in home_nodes]
@@ -791,7 +870,7 @@ def main():
             name_convert_in[info[0]] = info[2]
 
 
-    global manager,task_node_map, computing_ip_map, super_task_ips_map, non_tasks_ips_map
+    global manager,task_node_map, computing_ip_map, super_task_ips_map, non_tasks_ips_map,update_best
 
     computing_nodes = os.environ['ALL_COMPUTING_NODES'].split(':')
     computing_ips = os.environ['ALL_COMPUTING_IPS'].split(':')
@@ -802,6 +881,7 @@ def main():
     task_node_map = manager.dict()
     super_task_ips_map = dict()
     non_tasks_ips_map = dict()
+    update_best = dict()
 
     print('---------')
     print(all_nodes)
@@ -812,14 +892,14 @@ def main():
     for idx, task in enumerate(all_nodes):
         print(task)
         if task in super_tasks:
-            task_node_map[task] = task 
+            # task_node_map[task] = task 
             print(task)
             print(all_nodes_ips[idx])
             super_task_ips_map[all_nodes_ips[idx]] = task
         elif task in non_tasks:
             non_tasks_ips_map[all_nodes_ips[idx]] = task
 
-    print(task_node_map)
+    # print(task_node_map)
     print(super_task_ips_map)
     print(non_tasks_ips_map)
 
