@@ -116,7 +116,7 @@ def receive_assignment_info():
         assignment_info = request.args.get('assignment_info').split('#')
         # print("-----------Received assignment info")
         task_node_summary[assignment_info[0]] = assignment_info[1]
-        print(task_node_summary)
+        # print(task_node_summary)
 
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
@@ -131,8 +131,8 @@ def update_controller_map():
     """
     try:
         info = request.args.get('controller_id_map').split(':')
-        print("--- Received controller info")
-        print(info)
+        # print("--- Received controller info")
+        # print(info)
         #Task, Node
         controllers_id_map[info[0]] = info[1]
 
@@ -143,81 +143,81 @@ def update_controller_map():
     return "ok"
 app.add_url_rule('/update_controller_map', 'update_controller_map', update_controller_map)
 
-def recv_runtime_profile():
-    """
+# def recv_runtime_profile():
+#     """
 
-    Receiving run-time profiling information for every task (task name, start time stats, waiting time stats, end time stats)
+#     Receiving run-time profiling information for every task (task name, start time stats, waiting time stats, end time stats)
     
-    Raises:
-        Exception: failed processing in Flask
-    """
+#     Raises:
+#         Exception: failed processing in Flask
+#     """
 
-    global rt_enter_time
-    global rt_exec_time
-    global rt_finish_time
+#     global rt_enter_time
+#     global rt_exec_time
+#     global rt_finish_time
 
-    try:
-        worker_node = request.args.get('work_node')
-        msg = request.args.get('msg').split()
+#     try:
+#         worker_node = request.args.get('work_node')
+#         msg = request.args.get('msg').split()
         
 
-        print("Received flask message:", worker_node, msg[0],msg[1], msg[2])
+#         # print("Received flask message:", worker_node, msg[0],msg[1], msg[2])
 
-        if msg[0] == 'rt_enter':
-            rt_enter_time[(worker_node,msg[1])] = float(msg[2])
-        elif msg[0] == 'rt_exec' :
-            rt_exec_time[(worker_node,msg[1])] = float(msg[2])
-        else: #rt_finish
-            rt_finish_time[(worker_node,msg[1])] = float(msg[2])
+#         if msg[0] == 'rt_enter':
+#             rt_enter_time[(worker_node,msg[1])] = float(msg[2])
+#         elif msg[0] == 'rt_exec' :
+#             rt_exec_time[(worker_node,msg[1])] = float(msg[2])
+#         else: #rt_finish
+#             rt_finish_time[(worker_node,msg[1])] = float(msg[2])
 
-            print('----------------------------')
-            print("Worker node: "+ worker_node)
-            print("Input file : "+ msg[1])
-            print("Total duration time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
-            print("Waiting time:" + str(rt_exec_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
-            print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
+#             print('----------------------------')
+#             print("Worker node: "+ worker_node)
+#             print("Input file : "+ msg[1])
+#             print("Total duration time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
+#             print("Waiting time:" + str(rt_exec_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
+#             print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
             
-            print('----------------------------')  
+#             print('----------------------------')  
 
-            if worker_node == "globalfusion" or "task4":
-                # Per task stats:
-                print('********************************************') 
-                print("Runtime profiling info:")
-                """
-                    - Worker node: task name
-                    - Input file: input files
-                    - Enter time: time the input file enter the queue
-                    - Execute time: time the input file is processed
-                    - Finish time: time the output file is generated
-                    - Elapse time: total time since the input file is created till the output file is created
-                    - Duration time: total execution time of the task
-                    - Waiting time: total time since the input file is created till it is processed
-                """
-                log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks.txt'), "w")
-                s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
-                print(s)
-                log_file.write(s)
-                for k, v in rt_enter_time.items():
-                    worker, file = k
-                    if k in rt_finish_time:
-                        elapse = rt_finish_time[k]-v
-                        duration = rt_finish_time[k]-rt_exec_time[k]
-                        waiting = rt_exec_time[k]-v
-                        s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
-                        print(s)
-                        log_file.write(s)
-                        log_file.flush()
+#             if worker_node == "globalfusion" or "task4":
+#                 # Per task stats:
+#                 print('********************************************') 
+#                 print("Runtime profiling info:")
+#                 """
+#                     - Worker node: task name
+#                     - Input file: input files
+#                     - Enter time: time the input file enter the queue
+#                     - Execute time: time the input file is processed
+#                     - Finish time: time the output file is generated
+#                     - Elapse time: total time since the input file is created till the output file is created
+#                     - Duration time: total execution time of the task
+#                     - Waiting time: total time since the input file is created till it is processed
+#                 """
+#                 log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks.txt'), "w")
+#                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
+#                 print(s)
+#                 log_file.write(s)
+#                 for k, v in rt_enter_time.items():
+#                     worker, file = k
+#                     if k in rt_finish_time:
+#                         elapse = rt_finish_time[k]-v
+#                         duration = rt_finish_time[k]-rt_exec_time[k]
+#                         waiting = rt_exec_time[k]-v
+#                         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
+#                         print(s)
+#                         log_file.write(s)
+#                         log_file.flush()
 
-                log_file.close()
-                print('********************************************')
+#                 log_file.close()
+#                 print('********************************************')
 
                 
-    except Exception as e:
-        print("Bad reception or failed processing in Flask for runtime profiling")
-        print(e)
-        return "not ok"
-    return "ok"
-app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
+#     except Exception as e:
+#         print("Bad reception or failed processing in Flask for runtime profiling")
+#         print(e)
+#         return "not ok"
+#     return "ok"
+# app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
 
 
 def recv_runtime_profile_computingnode():
@@ -239,7 +239,7 @@ def recv_runtime_profile_computingnode():
         task_name = request.args.get('task_name')
         
 
-        print("Received flask message:", worker_node, msg[0],msg[1], msg[2],task_name)
+        # print("Received flask message:", worker_node, msg[0],msg[1], msg[2],task_name)
 
         if msg[0] == 'rt_enter':
             rt_enter_time_computingnode[(worker_node,task_name,msg[1])] = float(msg[2])
@@ -261,7 +261,7 @@ def recv_runtime_profile_computingnode():
 
             if task_name == "globalfusion" or "task4":
                 # Per task stats:
-                print(task_name)
+                # print(task_name)
                 print('********************************************') 
                 print("Runtime profiling computing node info:")
                 """
@@ -354,7 +354,7 @@ def transfer_data(IP,user,pword,source, destination):
         destination (str): destination file path
     """
     msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
-    print(msg)
+    # print(msg)
     
 
     if TRANSFER == 0:
@@ -460,7 +460,7 @@ def price_estimate():
             price['network'][node] = p
             
         # print(price['network'])
-        print('-----------------')
+        # print('-----------------')
         print('Overall price:')
         print(price)
         return price
@@ -481,7 +481,7 @@ def announce_price(task_controller_ip, price):
     """
     try:
 
-        print("Announce my price")
+        # print("Announce my price")
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
         pricing_info = my_task+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
         for node in price['network']:
@@ -489,7 +489,7 @@ def announce_price(task_controller_ip, price):
             # print(price['network'][node])
             pricing_info = pricing_info + "$"+node+"%"+str(price['network'][node])
         
-        print(pricing_info)
+        # print(pricing_info)
         params = {'pricing_info':pricing_info}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -524,7 +524,7 @@ def update_assignment_info_child(node_ip):
         node_ip (str): IP of the node
     """
     try:
-        print("Announce my current best computing node " + node_ip)
+        # print("Announce my current best computing node " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_assignment_info_child"
         assignment_info = self_task + "#"+task_node_summary[self_task]
         params = {'assignment_info': assignment_info}
@@ -544,7 +544,7 @@ def receive_best_assignment():
     """
     
     try:
-        print("Received best assignment")
+        # print("Received best assignment")
         home_id = request.args.get('home_id')
         task_name = request.args.get('task_name')
         file_name = request.args.get('file_name')
@@ -691,7 +691,7 @@ class Handler(FileSystemEventHandler):
                 
             IP = node_ip_map[task_node_summary[first_task]]
 
-            print(new_file_name)
+            # print(new_file_name)
             # new_file_name = new_file_name+"#"+my_task+"#"+first_task+"#"+first_flag
             # print(new_file_name)
             source = event.src_path
