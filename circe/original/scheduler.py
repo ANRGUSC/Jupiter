@@ -74,9 +74,9 @@ def recv_mapping():
     global end_time
 
     try:
-        print('***************************************************')
-        t = tic()
-        print('Receive final runtime profiling')
+        # print('***************************************************')
+        # t = tic()
+        # print('Receive final runtime profiling')
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg')
         ts = time.time()
@@ -93,10 +93,10 @@ def recv_mapping():
                 print("Start time stats:", start_time)
                 print("End time stats:", end_time)
 
-        txec = toc(t)
-        bottleneck['receivefinalruntime'].append(txec)
-        print(np.mean(bottleneck['receivefinalruntime']))
-        print('***************************************************')
+        # txec = toc(t)
+        # bottleneck['receivefinalruntime'].append(txec)
+        # print(np.mean(bottleneck['receivefinalruntime']))
+        # print('***************************************************')
 
     except Exception as e:
         print("Bad reception or failed processing in Flask")
@@ -131,14 +131,14 @@ def recv_runtime_profile():
     global rt_finish_time
 
     try:
-        print('***************************************************')
-        t = tic()
-        print('Receive runtime profiling')
+        # print('***************************************************')
+        # t = tic()
+        # print('Receive runtime profiling')
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg').split()
         
 
-        print("Received flask message:", worker_node, msg[0],msg[1], msg[2])
+        # print("Received flask message:", worker_node, msg[0],msg[1], msg[2])
 
         if msg[0] == 'rt_enter':
             rt_enter_time[(worker_node,msg[1])] = float(msg[2])
@@ -191,10 +191,10 @@ def recv_runtime_profile():
 
                 log_file.close()
                 print('********************************************')
-        txec = toc(t)
-        bottleneck['receiveruntime'].append(txec)
-        print(np.mean(bottleneck['receiveruntime']))
-        print('***************************************************')
+        # txec = toc(t)
+        # bottleneck['receiveruntime'].append(txec)
+        # print(np.mean(bottleneck['receiveruntime']))
+        # print('***************************************************')
 
                 
     except Exception as e:
@@ -230,10 +230,10 @@ def transfer_data_scp(IP,user,pword,source, destination):
     """
     #Keep retrying in case the containers are still building/booting up on
     #the child nodes.
-    print('***************************************************')
-    print('Transfer data')
-    t = tic()
-    print(IP)
+    # print('***************************************************')
+    # print('Transfer data')
+    # t = tic()
+    # print(IP)
     retry = 0
     ts = -1
     while retry < num_retries:
@@ -250,10 +250,10 @@ def transfer_data_scp(IP,user,pword,source, destination):
             print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
-    txec = toc(t)
-    bottleneck['transfer'].append(txec)
-    print(np.mean(bottleneck['transfer']))
-    print('***************************************************')
+    # txec = toc(t)
+    # bottleneck['transfer'].append(txec)
+    # print(np.mean(bottleneck['transfer']))
+    # print('***************************************************')
     if retry == num_retries:
         s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,source,ts)
         runtime_sender_log.write(s)
@@ -308,7 +308,7 @@ class MyHandler(PatternMatchingEventHandler):
         """
         # the file will be processed there
         if event.event_type == 'created':
-            print(event.src_path, event.event_type)  # print now only for degug
+            # print(event.src_path, event.event_type)  # print now only for degug
             end_times.append(time.time())
             print("ending time is: ", end_times)
 
@@ -372,7 +372,7 @@ class Handler(FileSystemEventHandler):
 
         elif event.event_type == 'created':
 
-            print('***************************************************')
+            # print('***************************************************')
             print("Received file as input - %s." % event.src_path)  
             if RUNTIME == 1:   
                 ts = time.time() 

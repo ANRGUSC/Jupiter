@@ -213,7 +213,7 @@ def prepare_global_info():
         if task in super_tasks:
             computing_ip_map[task] = controllers_ip_map[task]
 
-    print(computing_ip_map)  
+    # print(computing_ip_map)  
 
     global next_tasks_map,last_tasks_map
     next_tasks_map = dict()
@@ -237,13 +237,13 @@ def prepare_global_info():
 
 
     for task in task_controllers:
-        print(task)
+        # print(task)
         if task in super_tasks:
             task_node_map[task] = task    
-    print('DEBUG NEXT LAST-----------')
-    print(next_tasks_map)
-    print(last_tasks_map)
-    print(task_node_map)
+    # print('DEBUG NEXT LAST-----------')
+    # print(next_tasks_map)
+    # print(last_tasks_map)
+    # print(task_node_map)
 
     global name_convert_out, name_convert_in
     name_convert_in = dict()
@@ -291,7 +291,7 @@ def prepare_global_info():
                 cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
                 os.system(cmd)
 
-    print(task_module)
+    # print(task_module)
     print('Generating task folders for INPUT\n')
     for task in dag:
         if taskmap[task][1]: #DAG
@@ -301,7 +301,7 @@ def prepare_global_info():
                 cmd = "mkdir centralized_scheduler/input/"+task+"/" + home_id
                 os.system(cmd)
 
-    print(task_module)
+    # print(task_module)
 
     
 
@@ -311,8 +311,8 @@ def update_controller_map():
     """
     try:
         info = request.args.get('controller_id_map').split(':')
-        print("--- Received controller info")
-        print(info)
+        # print("--- Received controller info")
+        # print(info)
         #Task, Node
         controllers_id_map[info[0]] = info[1]
 
@@ -329,9 +329,9 @@ def receive_assignment_info():
     """
     try:
         assignment_info = request.args.get('assignment_info').split('#')
-        print("Received assignment info")
+        # print("Received assignment info")
         task_node_map[assignment_info[0]] = assignment_info[1]
-        print(task_node_map)
+        # print(task_node_map)
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
         return "not ok" 
@@ -372,7 +372,7 @@ def update_exec_profile_file():
 
     for record in logging:
         # Node ID, Task, Execution Time, Output size
-        print(record)
+        # print(record)
         info_to_csv=[record['Task'],record['Duration [sec]'],str(record['Output File [Kbit]'])]
         execution_info.append(info_to_csv)
     print('Execution information has already been provided')
@@ -568,7 +568,7 @@ def announce_price(task_controller_ip, price):
     """
     try:
 
-        print("Announce my price")
+        # print("Announce my price")
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
         pricing_info = self_name+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
         for node in price['network']:
@@ -576,7 +576,7 @@ def announce_price(task_controller_ip, price):
             # print(price['network'][node])
             pricing_info = pricing_info + "$"+node+"%"+str(price['network'][node])
         
-        print(pricing_info)
+        # print(pricing_info)
         # print(url)
         # print(task_controller_ip)
         params = {'pricing_info':pricing_info}
@@ -632,8 +632,8 @@ def execute_task(home_id,task_name,file_name, filenames, input_path, output_path
     ts = time.time()
     runtime_info = 'rt_exec '+ file_name+ ' '+str(ts)
     send_runtime_profile_computingnode(runtime_info,task_name,home_id)
-    print('*** Perform the task!!!')
-    print(task_name)
+    # print('*** Perform the task!!!')
+    # print(task_name)
     dag_task = multiprocessing.Process(target=task_module[task_name].task, args=(filenames, input_path, output_path))
     dag_task.start()
     dag_task.join()
@@ -714,7 +714,7 @@ def send_runtime_profile_computingnode(msg,task_name,home_id):
         Exception: if sending message to flask server on home is failed
     """
     try:
-        print("Sending message", msg)
+        # print("Sending message", msg)
         url = "http://" + home_node_host_ports[home_id] + "/recv_runtime_profile_computingnode"
         params = {'msg': msg, "work_node": self_name, "task_name": task_name}
         params = urllib.parse.urlencode(params)
@@ -735,34 +735,34 @@ def retrieve_input_enter(task_name, file_name):
         task_name (str): task name
         file_name (str): name of the file enter at the INPUT folder
     """
-    print('***************************************************')
-    print('retrieve input name')
-    t = tic()
-    t1 = time.time()
-    print(file_name)
-    print(task_name)
-    print(name_convert_in)
+    # print('***************************************************')
+    # print('retrieve input name')
+    # t = tic()
+    # t1 = time.time()
+    # print(file_name)
+    # print(task_name)
+    # print(name_convert_in)
     suffix = name_convert_in[task_name]
-    print(suffix)
+    # print(suffix)
     # print(time.time()-t1)
-    t1 = time.time()
+    # t1 = time.time()
     # print(suffix)
     # print(type(suffix))
     prefix = file_name.split(suffix)
-    print(prefix)
+    # print(prefix)
     # print(time.time()-t1)
-    t1 = time.time()
+    # t1 = time.time()
     # print('$$$$$$')
     # print(file_name)
     # print(suffix)
     # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
     # print(time.time()-t1)
-    print(input_name)
-    txec = toc(t)
-    #bottleneck['retrieveinput'].append(txec)
-    # print(np.mean(bottleneck['retrieveinput']))
-    print('***************************************************')
+    # print(input_name)
+    # txec = toc(t)
+    # #bottleneck['retrieveinput'].append(txec)
+    # # print(np.mean(bottleneck['retrieveinput']))
+    # print('***************************************************')
     return input_name
 
 def retrieve_input_finish(task_name, file_name):
@@ -772,47 +772,21 @@ def retrieve_input_finish(task_name, file_name):
         task_name (str): task name
         file_name (str): name of the file output at the OUTPUT folder
     """
-    print('***************************************************')
-    print('retrieve finish name')
-    print(file_name)
-    print(name_convert_out)
+    # print('***************************************************')
+    # print('retrieve finish name')
+    # print(file_name)
+    # print(name_convert_out)
     suffix = name_convert_out[task_name]
-    print(suffix)
+    # print(suffix)
     prefix = file_name.split(suffix)
     # print('$$$$$$')
     # print(file_name)
     # print(suffix)
-    print(prefix)
+    # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    print(input_name)
-    print('***************************************************')
+    # print(input_name)
+    # print('***************************************************')
     return input_name
-
-# def receive_best_assignment():
-#     """
-#         Receive the best computing node for the task
-#     """
-    
-#     try:
-#         print("Received best assignment")
-#         home_id = request.args.get('home_id')
-#         task_name = request.args.get('task_name')
-#         file_name = request.args.get('file_name')
-#         best_computing_node = request.args.get('best_computing_node')
-#         task_node_map[home_id,task_name,file_name] = best_computing_node
-#         # print(task_name)
-#         # print(best_computing_node)
-#         # print(task_node_summary)
-#         update_best[home_id,task_name,file_name] = True
-
-
-#     except Exception as e:
-#         update_best[home_id,task_name,file_name] = False
-#         print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
-#         return "not ok" 
-
-#     return "ok"
-# app.add_url_rule('/receive_best_assignment', 'receive_best_assignment', receive_best_assignment)
 
 #for OUTPUT folder 
 class Watcher1():
@@ -870,12 +844,12 @@ class Handler1(FileSystemEventHandler):
                 runtime_receiver_log.write(s)
                 runtime_receiver_log.flush()
 
-            print(event.src_path.split('#'))
+            # print(event.src_path.split('#'))
             task_name = event.src_path.split('/')[-3]
             home_id = event.src_path.split('/')[-2]
-            print('!!!!!!!!!!!!!!!!!------------------')
-            print(home_id)
-            print(task_name)
+            # print('!!!!!!!!!!!!!!!!!------------------')
+            # print(home_id)
+            # print(task_name)
             input_name = retrieve_input_finish(task_name, temp_name)
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
             # print(input_name)
@@ -888,31 +862,31 @@ class Handler1(FileSystemEventHandler):
             # print(next_tasks_map)
             # print(next_tasks_map[task_name])
             # print(flag)
-            print('#############')
+            # print('#############')
             # print(next_mul)
             #flag = next_mul[key][0]
             # print(next_tasks_map)
             # print(next_tasks_map[task_name])
             # print(flag)
 
-            print(next_tasks_map)
-            print(next_tasks_map[task_name])
-            print(next_tasks_map[task_name][0])
+            # print(next_tasks_map)
+            # print(next_tasks_map[task_name])
+            # print(next_tasks_map[task_name][0])
             if next_tasks_map[task_name][0] in home_ids: 
-                print('----- next step is home')
+                # print('----- next step is home')
                 transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)   
             else:
-                print('----- next step is not home')
-                print(task_node_map)
+                # print('----- next step is not home')
+                # print(task_node_map)
                 next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
                 next_IPs   = [computing_ip_map[x] for x in next_hosts]
                 
-                print(next_hosts)
-                print(next_IPs)
-                print(next_tasks_map[task_name])
-                print(flag)
+                # print(next_hosts)
+                # print(next_IPs)
+                # print(next_tasks_map[task_name])
+                # print(flag)
 
-                print('Sending the output files to the corresponding destinations')
+                # print('Sending the output files to the corresponding destinations')
                 if flag=='true': 
                     #send a single output of the task to all its children 
                     destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
@@ -920,7 +894,7 @@ class Handler1(FileSystemEventHandler):
                     for idx,ip in enumerate(next_IPs):
                         # print('----')
                         # print(ip)
-                        print(destinations[idx])
+                        # print(destinations[idx])
                         if self_ip!=ip: # different node
                             transfer_data(ip,username,password,event.src_path, destinations[idx])
                         else: # same node
@@ -934,20 +908,20 @@ class Handler1(FileSystemEventHandler):
                         files_mul[key] = [event.src_path]
                     else:
                         files_mul[key] = files_mul[key] + [event.src_path]
-                    print('-------------')
-                    print(files_mul[key])
-                    print(next_IPs)
-                    print(self_name)
-                    print(self_ip)
+                    # print('-------------')
+                    # print(files_mul[key])
+                    # print(next_IPs)
+                    # print(self_name)
+                    # print(self_ip)
                     if len(files_mul[key]) == len(next_IPs):
                         for idx,ip in enumerate(next_IPs):
-                            print(files_mul[key][idx])
-                            print(next_tasks_map[task_name][idx])
+                            # print(files_mul[key][idx])
+                            # print(next_tasks_map[task_name][idx])
                             current_file = files_mul[key][idx].split('/')[-1]
-                            print(current_file)
+                            # print(current_file)
                             # destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
                             destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
-                            print(destinations)
+                            # print(destinations)
                             if self_ip!=ip:
                                 transfer_data(ip,username,password,files_mul[key][idx], destinations)
                             else: 
@@ -1045,7 +1019,7 @@ class Handler(FileSystemEventHandler):
                 else:
                     filenames = incoming_file
                 # print(filenames)
-                print('--------------Add task to the processing queue')
+                # print('--------------Add task to the processing queue')
                 queue_mul[key] = False 
                 
                 input_path = os.path.split(event.src_path)[0]
