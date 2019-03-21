@@ -95,7 +95,7 @@ def request_best_assignment(home_id,task_name,file_name):
         print("Request the best computing node for the task" + task_name)
         t = tic()
         url = "http://" + controller_ip_map[task_name] + ":" + str(FLASK_SVC) + "/receive_best_assignment_request"
-        params = {'home_id':home_id,'node_name':home_id,'file_name':file_name}
+        params = {'home_id':home_id,'node_name':home_id,'file_name':file_name,'key':home_id}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
@@ -118,7 +118,7 @@ def receive_best_assignment():
     try:
         print('***************************************************')
         print("Received best assignment")
-        t = tic()
+        # t = tic()
         home_id = request.args.get('home_id')
         task_name = request.args.get('task_name')
         file_name = request.args.get('file_name')
@@ -128,8 +128,8 @@ def receive_best_assignment():
         # print(best_computing_node)
         # print(task_node_summary)
         update_best[task_name,file_name] = True
-        txec = toc(t)
-        bottleneck['receiveassignment'].append(txec)
+        # txec = toc(t)
+        # bottleneck['receiveassignment'].append(txec)
         # print(np.mean(bottleneck['receiveassignment']))
         print('***************************************************')
 
@@ -229,6 +229,7 @@ def recv_runtime_profile_computingnode():
                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Worker_node','Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
                 print(s)
                 log_file.write(s)
+                # print(rt_enter_time_computingnode)
                 for k, v in rt_enter_time_computingnode.items():
                     worker, task, file = k
                     if k in rt_finish_time_computingnode:
@@ -606,15 +607,17 @@ class Handler(FileSystemEventHandler):
             # print(first_task)
             # print(new_file_name)
             t1 = time.time()
-            request_best_assignment(my_task,first_task,new_file_name)
+            #request_best_assignment(my_task,first_task,new_file_name)
             while not update_best[first_task,new_file_name]:
+                print(update_best[first_task,new_file_name])
                 print('--- waiting for computing node assignment')
                 time.sleep(1)
                 request_best_assignment(my_task,first_task,new_file_name)
                 
             # print(time.time()-t1)
-            # print('---------- Now what')
-            t1 = time.time()
+            print('---------- Now what')
+            print(update_best[first_task,new_file_name])
+            # t1 = time.time()
             # print(task_node_summary)
             # print(node_ip_map)
             IP = node_ip_map[task_node_summary[first_task,new_file_name]]
