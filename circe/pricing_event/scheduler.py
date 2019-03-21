@@ -91,9 +91,9 @@ def request_best_assignment(home_id,task_name,file_name):
     """Request the best computing node for the task
     """
     try:
-        print('***************************************************')
-        print("Request the best computing node for the task" + task_name)
-        t = tic()
+        # print('***************************************************')
+        # print("Request the best computing node for the task" + task_name)
+        # t = tic()
         url = "http://" + controller_ip_map[task_name] + ":" + str(FLASK_SVC) + "/receive_best_assignment_request"
         params = {'home_id':home_id,'node_name':home_id,'file_name':file_name,'key':home_id}
         params = urllib.parse.urlencode(params)
@@ -101,10 +101,10 @@ def request_best_assignment(home_id,task_name,file_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        txec = toc(t)
-        bottleneck['requestassignment'].append(txec)
-        # print(np.mean(bottleneck['requestassignment']))
-        print('***************************************************')
+        # txec = toc(t)
+        # bottleneck['requestassignment'].append(txec)
+        # # print(np.mean(bottleneck['requestassignment']))
+        # print('***************************************************')
     except Exception as e:
         print("Sending assignment request to flask server on controller node FAILED!!!")
         print(e)
@@ -116,8 +116,8 @@ def receive_best_assignment():
     """
     
     try:
-        print('***************************************************')
-        print("Received best assignment")
+        # print('***************************************************')
+        # print("Received best assignment")
         # t = tic()
         home_id = request.args.get('home_id')
         task_name = request.args.get('task_name')
@@ -131,7 +131,7 @@ def receive_best_assignment():
         # txec = toc(t)
         # bottleneck['receiveassignment'].append(txec)
         # print(np.mean(bottleneck['receiveassignment']))
-        print('***************************************************')
+        # print('***************************************************')
 
 
     except Exception as e:
@@ -150,19 +150,19 @@ def update_controller_map():
     """
 
     try:
-        print('***************************************************')
-        print('update controller map')
-        t = tic()
+        # print('***************************************************')
+        # print('update controller map')
+        # t = tic()
         #info = request.args.get('controller_id_map').split(':')
         info = request.args.get('controller_id_map').split('#')
         # print("--- Received controller info")
         # print(info)
         #Task, Node
         controllers_id_map[info[0]] = info[1]
-        txec = toc(t)
-        bottleneck['controller'].append(txec)
+        # txec = toc(t)
+        # bottleneck['controller'].append(txec)
         # print(np.mean(bottleneck['controller']))
-        print('***************************************************')
+        # print('***************************************************')
 
     except Exception as e:
         print("Bad reception or failed processing in Flask for controllers matching announcement: "+ e) 
@@ -191,7 +191,7 @@ def recv_runtime_profile_computingnode():
         task_name = request.args.get('task_name')
         
 
-        print("Received flask message:", worker_node, msg[0],msg[1], msg[2],task_name)
+        # print("Received flask message:", worker_node, msg[0],msg[1], msg[2],task_name)
 
         if msg[0] == 'rt_enter':
             rt_enter_time_computingnode[(worker_node,task_name,msg[1])] = float(msg[2])
@@ -265,9 +265,9 @@ def transfer_data_scp(IP,user,pword,source, destination):
     #Keep retrying in case the containers are still building/booting up on
     #the child nodes.
 
-    print('***************************************************')
-    print('transfer data scp')
-    t = tic()
+    # print('***************************************************')
+    # print('transfer data scp')
+    # t = tic()
     retry = 0
     ts = -1
     while retry < num_retries:
@@ -289,10 +289,10 @@ def transfer_data_scp(IP,user,pword,source, destination):
         runtime_sender_log.write(s)
         runtime_sender_log.flush()
 
-    txec = toc(t)
-    bottleneck['transfer'].append(txec)
-    # print(np.mean(bottleneck['transfer']))
-    print('***************************************************')
+    # txec = toc(t)
+    # bottleneck['transfer'].append(txec)
+    # # print(np.mean(bottleneck['transfer']))
+    # print('***************************************************')
 
     
 
@@ -307,7 +307,7 @@ def transfer_data(IP,user,pword,source, destination):
         destination (str): destination file path
     """
     msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
-    print(msg)
+    # print(msg)
     
 
     if TRANSFER == 0:
@@ -320,12 +320,12 @@ def transfer_data(IP,user,pword,source, destination):
 def get_updated_network_profile():
     """Get updated network information from network profilers
     """
-    print('Retrieve network information info')
+    # print('Retrieve network information info')
 
     network_info = dict()        
     try:
-        print('***************************************************')
-        t = tic()
+        # print('***************************************************')
+        # t = tic()
         client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
@@ -349,10 +349,10 @@ def get_updated_network_profile():
             # print(record['Destination[IP]'])
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
-        txec = toc(t)
-        bottleneck['getnetwork'].append(txec)
-        # print(np.mean(bottleneck['getnetwork']))
-        print('***************************************************')
+        # txec = toc(t)
+        # bottleneck['getnetwork'].append(txec)
+        # # print(np.mean(bottleneck['getnetwork']))
+        # print('***************************************************')
         
         return network_info
     except Exception as e:
@@ -381,7 +381,7 @@ def price_estimate():
 
     # Default values
     
-    print('estimate price')
+    # print('estimate price')
 
     price = dict()
     price['network'] = sys.maxsize
@@ -398,14 +398,14 @@ def price_estimate():
     """
 
     try:
-        print('***************************************************')
-        t = tic()
+        # print('***************************************************')
+        # t = tic()
         print(' Retrieve all input information: ')
         network_info = get_updated_network_profile()
         # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         # print(test_size)
-        print('--- Network cost:----------- ')
+        # print('--- Network cost:----------- ')
         price['network'] = dict()
         for node in network_info:
             # print(network_info[node])
@@ -418,14 +418,14 @@ def price_estimate():
             # print(node)
             price['network'][node] = p
             
-        print(price['network'])
-        print('-----------------')
-        print('Overall price:')
-        print(price)
-        txec = toc(t)
-        bottleneck['estimate'].append(txec)
-        # print(np.mean(bottleneck['estimate']))
-        print('***************************************************')
+        # print(price['network'])
+        # print('-----------------')
+        # print('Overall price:')
+        # print(price)
+        # txec = toc(t)
+        # bottleneck['estimate'].append(txec)
+        # # print(np.mean(bottleneck['estimate']))
+        # print('***************************************************')
         return price
              
     except:
@@ -443,9 +443,9 @@ def announce_price(task_controller_ip, price):
         price: my current price 
     """
     try:
-        print('***************************************************')
-        print("Announce my price")
-        t = tic()
+        # print('***************************************************')
+        # print("Announce my price")
+        # t = tic()
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
         pricing_info = my_task+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
         for node in price['network']:
@@ -460,10 +460,10 @@ def announce_price(task_controller_ip, price):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        txec = toc(t)
-        bottleneck['announceprice'].append(txec)
-        # print(np.mean(bottleneck['announceprice']))
-        print('***************************************************')
+        # txec = toc(t)
+        # bottleneck['announceprice'].append(txec)
+        # # print(np.mean(bottleneck['announceprice']))
+        # print('***************************************************')
     except Exception as e:
         print("Sending price message to flask server on controller node FAILED!!!")
         print(e)
@@ -589,9 +589,9 @@ class Handler(FileSystemEventHandler):
 
         elif event.event_type == 'created':
 
-            print('***************************************************')
+            # print('***************************************************')
             print("Received file as input - %s." % event.src_path)
-            t = tic()
+            # t = tic()
 
             if RUNTIME == 1:   
                 ts = time.time() 
@@ -609,14 +609,14 @@ class Handler(FileSystemEventHandler):
             t1 = time.time()
             #request_best_assignment(my_task,first_task,new_file_name)
             while not update_best[first_task,new_file_name]:
-                print(update_best[first_task,new_file_name])
+                # print(update_best[first_task,new_file_name])
                 print('--- waiting for computing node assignment')
                 time.sleep(1)
                 request_best_assignment(my_task,first_task,new_file_name)
                 
             # print(time.time()-t1)
-            print('---------- Now what')
-            print(update_best[first_task,new_file_name])
+            # print('---------- Now what')
+            # print(update_best[first_task,new_file_name])
             # t1 = time.time()
             # print(task_node_summary)
             # print(node_ip_map)
@@ -628,19 +628,19 @@ class Handler(FileSystemEventHandler):
             # print(new_file_name)
             # print(time.time()-t1)
 
-            print('^^^^^^^^^^^^^^^^^^^^^^')
-            print(my_task)
-            print(first_task)
-            print(new_file_name)
-            t1 = time.time()
+            # print('^^^^^^^^^^^^^^^^^^^^^^')
+            # print(my_task)
+            # print(first_task)
+            # print(new_file_name)
+            # t1 = time.time()
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)
             transfer_data(IP,username, password,source, destination)
             # print(time.time()-t1)
-            txec = toc(t)
-            bottleneck['input'].append(txec)
-            # print(np.mean(bottleneck['input']))
-            print('***************************************************')
+            # txec = toc(t)
+            # bottleneck['input'].append(txec)
+            # # print(np.mean(bottleneck['input']))
+            # print('***************************************************')
 
 
 def main():
@@ -733,7 +733,7 @@ def main():
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
     dag_info = read_config(path1,path2)
-    print(dag_info)
+    # print(dag_info)
 
     #get DAG and home machine info
     # first_task = dag_info[0]

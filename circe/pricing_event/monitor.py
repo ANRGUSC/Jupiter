@@ -111,11 +111,11 @@ def receive_price_info():
         Receive price from every computing node, choose the most suitable computing node 
     """
     try:
-        print('***************************************************')
-        print("Received pricing info")
-        t = tic()
+        # print('***************************************************')
+        # print("Received pricing info")
+        # t = tic()
         pricing_info = request.args.get('pricing_info').split('#')
-        print(pricing_info)
+        # print(pricing_info)
         #Network, CPU, Memory, Queue
         node_name = pricing_info[0]
 
@@ -123,20 +123,20 @@ def receive_price_info():
         task_price_mem[node_name] = float(pricing_info[2])
         task_price_queue[node_name] = float(pricing_info[3].split('$')[0])
         price_net_info = pricing_info[3].split('$')[1:]
-        print(price_net_info)
+        # print(price_net_info)
         for price in price_net_info:
             # print(price)
             # print(node_name)
             # print(price.split('%')[0])
             # print(price.split('%')[1])
             task_price_net[node_name,price.split('%')[0]] = float(price.split('%')[1])
-        print('Check price updated interval ')
-        print(node_name)
+        # print('Check price updated interval ')
+        # print(node_name)
         pass_time[node_name] = TimedValue()
-        txec = toc(t)
-        bottleneck['receiveprice'].append(txec)
-        # print(np.mean(bottleneck['receiveprice']))
-        print('***************************************************')
+        # txec = toc(t)
+        # bottleneck['receiveprice'].append(txec)
+        # # print(np.mean(bottleneck['receiveprice']))
+        # print('***************************************************')
 
     except Exception as e:
         print("Bad reception or failed processing in Flask for pricing announcement: "+ e) 
@@ -177,18 +177,18 @@ def default_best_node(source_node):
     # print(self_task)
     # print(self_name)
     task_price_network[source_node] = 0 #the same node
-    print(task_price_network)
+    # print(task_price_network)
     # print(task_price_cpu)
 
     # print('------------3')
-    print('CPU utilization')
-    print(task_price_cpu)
-    print('Memory utilization')
-    print(task_price_mem)
-    print('Queue cost')
-    print(task_price_queue)
-    print('Network cost')
-    print(task_price_network)
+    # print('CPU utilization')
+    # print(task_price_cpu)
+    # print('Memory utilization')
+    # print(task_price_mem)
+    # print('Queue cost')
+    # print(task_price_queue)
+    # print('Network cost')
+    # print(task_price_network)
 
     if len(task_price_network.keys())>1: #net(node,home) not exist
         #print('------------2')
@@ -218,15 +218,15 @@ def default_best_node(source_node):
             task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
             # print(task_price_summary[item])
         
-        print('Summary cost')
-        print(task_price_summary)
+        # print('Summary cost')
+        # print(task_price_summary)
         best_node = min(task_price_summary,key=task_price_summary.get)
-        print(best_node)
+        # print(best_node)
 
         # txec = toc(t)
         # bottleneck['selectbest'].append(txec)
         # print(np.mean(bottleneck['selectbest']))
-        print('***************************************************')
+        # print('***************************************************')
     else:
         print('Task price summary is not ready yet.....') 
     return best_node
@@ -241,25 +241,25 @@ def predict_best_node(source_node):
 def receive_best_assignment_request():
     try:
         # print('***************************************************')
-        print("------ Receive request of best assignment")
+        # print("------ Receive request of best assignment")
         # t = tic()
         home_id = request.args.get('home_id')
         source_node = request.args.get('node_name')
         file_name = request.args.get('file_name')
         source_key = request.args.get('key')
-        print('***')
-        print(home_id)
-        print(source_node)
-        print(file_name)
-        print(source_key)
+        # print('***')
+        # print(home_id)
+        # print(source_node)
+        # print(file_name)
+        # print(source_key)
         best_node = predict_best_node(source_node)
-        print(best_node)
+        # print(best_node)
         # print('******')
         # txec = toc(t)
         # bottleneck['receiveassign'].append(txec)
         # print(np.mean(bottleneck['receiveassign']))
-        print('***************************************************')
-        print('Announce ---')
+        # print('***************************************************')
+        # print('Announce ---')
         
         announce_best_assignment(home_id,best_node, source_node, file_name,source_key)
         
@@ -273,26 +273,26 @@ app.add_url_rule('/receive_best_assignment_request', 'receive_best_assignment_re
 def announce_best_assignment(home_id,best_node, source_node, file_name,source_key):
     try:
         # print('***************************************************')
-        print("Announce the best computing node for my task:" + self_task)
+        # print("Announce the best computing node for my task:" + self_task)
         # t = tic()
         # print(node_ip_map)
         # print(source_node)
         # print(self_task)
         # print(best_node)
         # print(file_name)
-        print(source_key)
-        print(node_ip_map[source_key])
+        # print(source_key)
+        # print(node_ip_map[source_key])
         url = "http://" + node_ip_map[source_key] + ":" + str(FLASK_SVC) + "/receive_best_assignment"
-        print(url)
+        # print(url)
         params = {'home_id':home_id,'task_name':self_task,'file_name':file_name,'best_computing_node':best_node}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        print(req)
+        # print(req)
         res = urllib.request.urlopen(req)
-        print(res)
+        # print(res)
         res = res.read()
         res = res.decode('utf-8')
-        print(res)
+        # print(res)
 
         # txec = toc(t)
         # bottleneck['announcebest'].append(txec)
@@ -309,7 +309,7 @@ def send_controller_info(node_ip):
         # print('***************************************************')
         # t = tic()
         # t1 = time.time()
-        print("Announce my current node mapping to " + node_ip)
+        # print("Announce my current node mapping to " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_controller_map"
         params = {'controller_id_map':controller_id_map}
         # thread = Worker(url,params)
@@ -335,7 +335,7 @@ def send_controller_info(node_ip):
         # bottleneck['sendcontroller'].append(txec)
         # print(time.time()-t1)
         # print(np.mean(bottleneck['sendcontroller']))
-        print('***************************************************')
+        # print('***************************************************')
     except Exception as e:
         print("Sending controller message to flask server on computing node FAILED!!!")
         print(e)
@@ -344,7 +344,7 @@ def send_controller_info(node_ip):
 def push_controller_map():
     time.sleep(90)
     # print('***************************************************')
-    print('Send all controller information')
+    # print('Send all controller information')
     # t = tic()
     for computing_ip in all_computing_ips:
         # t1 = time.time()
@@ -538,8 +538,8 @@ def main():
     all_nodes = all_computing_nodes + home_ids
     all_nodes_ips = all_computing_ips + home_ips
 
-    print(all_nodes)
-    print(super_tasks)
+    # print(all_nodes)
+    # print(super_tasks)
     for idx, controller in enumerate(all_nodes_list):
         if controller in super_tasks:
             print(controller)
@@ -550,8 +550,8 @@ def main():
             all_nodes.append(controller)
             all_nodes_ips.append(all_nodes_ips_list[idx])
             
-    print(controller_nondag) 
-    print(controller_ip_nondag)
+    # print(controller_nondag) 
+    # print(controller_ip_nondag)
 
     if taskmap[1] == True:
         taskmodule = __import__(taskname)
@@ -571,8 +571,8 @@ def main():
 
     node_ip_map = dict(zip(all_nodes, all_nodes_ips))
 
-    print('************************** DEBUG 3')
-    print(node_ip_map)
+    # print('************************** DEBUG 3')
+    # print(node_ip_map)
 
 
     
