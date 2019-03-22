@@ -98,8 +98,6 @@ RUN apt-get install iproute2 -y
 RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
 RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
-RUN apt-get install -y mosquitto-clients
-
 ADD circe/original/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt

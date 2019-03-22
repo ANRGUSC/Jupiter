@@ -31,8 +31,6 @@ import urllib.request
 import configparser
 import numpy as np
 from collections import defaultdict
-import paho.mqtt.client as mqtt
-import socket
 
 global bottleneck
 bottleneck = defaultdict(list)
@@ -307,15 +305,6 @@ class Handler1(FileSystemEventHandler):
             # t1 = time.time()
             
             if sys.argv[3] == 'home':
-
-                # Visualization code
-                if BOKEH == 1:
-                    client = mqtt.Client()
-                    client.connect(BOKEH_SERVER, BOKEH_PORT,60)
-                    print(sys.argv)
-                    print(sys.argv[len(sys.argv)-1])
-                    client.publish("JUPITER", sys.argv[len(sys.argv)-1] + " ends",qos=1)
-                    client.disconnect()
                 
                 IPaddr = sys.argv[4]
                 user = sys.argv[5]
@@ -326,15 +315,6 @@ class Handler1(FileSystemEventHandler):
                 
 
             elif flag2 == 'true':
-
-                # Visualization code
-                if BOKEH == 1:
-                    client = mqtt.Client()
-                    client.connect(BOKEH_SERVER, BOKEH_PORT,60)
-                    print(sys.argv)
-                    print(sys.argv[len(sys.argv)-1])
-                    client.publish("JUPITER", sys.argv[len(sys.argv)-1] + " ends",qos=1)
-                    client.disconnect()
 
                 for i in range(3, len(sys.argv)-1,4):
                     IPaddr = sys.argv[i+1]
@@ -447,16 +427,6 @@ class Handler(FileSystemEventHandler):
 
             # t1 = time.time()
             if flag1 == "1":
-
-                # Visualization code
-                if BOKEH == 1:
-                    client = mqtt.Client()
-                    client.connect(BOKEH_SERVER, BOKEH_PORT,60)
-                    print(sys.argv)
-                    print(sys.argv[len(sys.argv)-1])
-                    client.publish("JUPITER", sys.argv[len(sys.argv)-1] + " starts",qos=1)
-                    client.disconnect()
-
                 # Start msg
                 ts = time.time()
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
@@ -475,16 +445,6 @@ class Handler(FileSystemEventHandler):
 
                 filenames.append(queue_mul.get())
                 if (len(filenames) == int(flag1)):
-
-                    # Visualization code
-                    if BOKEH == 1:
-                        client = mqtt.Client()
-                        client.connect(BOKEH_SERVER, BOKEH_PORT,60)
-                        print(sys.argv)
-                        print(sys.argv[len(sys.argv)-1])
-                        client.publish("JUPITER", sys.argv[len(sys.argv)-1] + " starts",qos=1)
-                        client.disconnect()
-
                     #start msg
                     ts = time.time()
                     runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
@@ -574,10 +534,7 @@ def main():
     all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
 
     
-    global BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
+
 
     if taskmap[1] == True:
         queue_mul=multiprocessing.Queue()
