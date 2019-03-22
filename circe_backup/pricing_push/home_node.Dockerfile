@@ -4,10 +4,10 @@ FROM ubuntu:16.04
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
-ADD circe/original/requirements.txt /requirements.txt
+ADD circe/pricing_push/requirements.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
 RUN pip3 install --upgrade pip
-RUN apt-get install -y sshpass nano 
+RUN apt-get install -y sshpass nano
 
 # Taken from quynh's network profiler
 RUN pip install cryptography
@@ -27,32 +27,33 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 
-# Create the input, output, and runtime profiler directories
+# Create the input, output
 RUN mkdir -p /input
 RUN mkdir -p /output
-#RUN mkdir -p /runtime
 
 # Add input files
-COPY  app_specific_files/network_monitoring_app_dag/sample_input /sample_input
+COPY  app_specific_files/network_monitoring_app/sample_input /sample_input
 
 # Add the mongodb scripts
-ADD circe/original/runtime_profiler_mongodb /central_mongod
-#ADD circe/original/rt_profiler_update_mongo.py /run_update.py
+ADD circe/pricing_push/runtime_profiler_mongodb /central_mongod
 
-ADD circe/original/readconfig.py /readconfig.py
-ADD circe/original/scheduler.py /scheduler.py
+ADD circe/pricing_push/readconfig.py /readconfig.py
+ADD circe/pricing_push/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
-ADD circe/original/evaluate.py /evaluate.py
+ADD circe/pricing_push/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
-ADD app_specific_files/network_monitoring_app_dag/configuration.txt /configuration.txt
-
+RUN echo app_specific_files/network_monitoring_app/configuration.txt
+ADD app_specific_files/network_monitoring_app/configuration.txt /configuration.txt
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
 
-ADD circe/original/start_home.sh /start.sh
+#ADD circe/pricing_push/monitor.py /centralized_scheduler/monitor.py
+ADD circe/pricing_push/start_home.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
+ADD app_specific_files/network_monitoring_app/name_convert.txt /centralized_scheduler/name_convert.txt
+ADD app_specific_files/network_monitoring_app/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
 
 WORKDIR /
 

@@ -374,7 +374,6 @@ class Handler(FileSystemEventHandler):
 
             # print('***************************************************')
             print("Received file as input - %s." % event.src_path)  
-
             if RUNTIME == 1:   
                 ts = time.time() 
                 s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.src_path,ts)
