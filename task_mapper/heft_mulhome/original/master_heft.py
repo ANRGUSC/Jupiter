@@ -16,6 +16,7 @@ import json
 from random import randint
 import configparser
 from os import path
+import paho.mqtt.client as mqtt
 
 app = Flask(__name__)
 
@@ -123,12 +124,19 @@ def get_taskmap():
     print("non tasks", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
+def demo_help(server,port,topic,msg):
+    client = mqtt.Client()
+    client.connect(server, port,60)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
+
 def main():
     """
         - Load all the confuguration
         - Check whether the input TGFF file has been generated
         - Assign random master and slaves for now
     """
+
 
     global node_info, MAX_TASK_NUMBER, FLASK_PORT, MONGO_SVC_PORT, assignments
 
@@ -155,6 +163,12 @@ def main():
     tasks, task_order, super_tasks, non_tasks = get_taskmap()
     configuration_path='/heft/dag.txt'
     profiler_ip,exec_home_ip,num_nodes,network_map,node_list = get_global_info()
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+
     
     while True:
         if os.path.isfile(tgff_file):
@@ -167,6 +181,12 @@ def main():
                 assignments[non_tasks[i]] = node_info[randint(1,num_nodes)] 
             heft_scheduler.display_result()
             print(assignments)
+            t = time.time()
+            if BOKEH == 1:
+                assgn = ' '.join('{}:{}:{}'.format(key, val,t) for key, val in assignments.items())
+                msg = "mappings "+ assgn
+                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+
             break;
         else:
             print('No input TGFF file found!')

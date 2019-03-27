@@ -13,9 +13,9 @@ RUN mkdir -p DAG
 
 COPY task_mapper/wave_mulhome/random_wave/worker/start.sh /
 
-ADD app_specific_files/network_monitoring_app/configuration.txt DAG/DAG_application.txt
-ADD app_specific_files/network_monitoring_app/input_node.txt DAG
-ADD app_specific_files/network_monitoring_app/sample_input/1botnet.ipsum /1botnet.ipsum
+ADD app_specific_files/network_monitoring_app_dag/configuration.txt DAG/DAG_application.txt
+ADD app_specific_files/network_monitoring_app_dag/input_node.txt DAG
+ADD app_specific_files/network_monitoring_app_dag/sample_input/1botnet.ipsum /1botnet.ipsum
 
 ADD jupiter_config.ini /jupiter_config.ini
 
