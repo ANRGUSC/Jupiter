@@ -229,6 +229,12 @@ def multicast_data(IP_list,user_list,pword_list,source, destination):
         return multicast_data_scp
     return multicast_data_scp
 
+def demo_help(server,port,topic,msg):
+    client = mqtt.Client()
+    client.connect(server, port,60)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
+
 #for OUTPUT folder 
 class Watcher1():
     
@@ -306,16 +312,14 @@ class Handler1(FileSystemEventHandler):
             # print(time.time()-t1)
             # t1 = time.time()
             
+            ts = time.time()
             if sys.argv[3] == 'home':
 
-                # Visualization code
+
                 if BOKEH == 1:
-                    client = mqtt.Client()
-                    client.connect(BOKEH_SERVER, BOKEH_PORT,60)
-                    print(sys.argv)
-                    print(sys.argv[len(sys.argv)-1])
-                    client.publish("JUPITER", sys.argv[len(sys.argv)-1] + " ends",qos=1)
-                    client.disconnect()
+                    #msg = taskname + " ends "+str(ts)
+                    msg = taskname + " ends"
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                 
                 IPaddr = sys.argv[4]
                 user = sys.argv[5]
@@ -327,14 +331,10 @@ class Handler1(FileSystemEventHandler):
 
             elif flag2 == 'true':
 
-                # Visualization code
                 if BOKEH == 1:
-                    client = mqtt.Client()
-                    client.connect(BOKEH_SERVER, BOKEH_PORT,60)
-                    print(sys.argv)
-                    print(sys.argv[len(sys.argv)-1])
-                    client.publish("JUPITER", sys.argv[len(sys.argv)-1] + " ends",qos=1)
-                    client.disconnect()
+                    # msg = taskname + " ends "+str(ts)
+                    msg = taskname + " ends"
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
 
                 for i in range(3, len(sys.argv)-1,4):
                     IPaddr = sys.argv[i+1]
@@ -350,7 +350,11 @@ class Handler1(FileSystemEventHandler):
 
                 if (len(files_out) == num_child):
 
-                
+                    if BOKEH == 1:
+                        # msg = taskname + " ends "+str(ts)
+                        msg = taskname + " ends"
+                        demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+
                     for i in range(3, len(sys.argv)-1,4):
                         myfile = files_out.pop(0)
                         event_path = os.path.join(''.join(os.path.split(event.src_path)[:-1]), myfile)
@@ -447,20 +451,15 @@ class Handler(FileSystemEventHandler):
 
             # t1 = time.time()
             if flag1 == "1":
-
-                # Visualization code
-                if BOKEH == 1:
-                    client = mqtt.Client()
-                    client.connect(BOKEH_SERVER, BOKEH_PORT,60)
-                    print(sys.argv)
-                    print(sys.argv[len(sys.argv)-1])
-                    client.publish("JUPITER", sys.argv[len(sys.argv)-1] + " starts",qos=1)
-                    client.disconnect()
-
+    
                 # Start msg
                 ts = time.time()
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
+                if BOKEH == 1:
+                    # msg = taskname + " starts "+str(ts)
+                    msg = taskname + " starts"
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                 inputfile=queue_mul.get()
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
@@ -476,19 +475,14 @@ class Handler(FileSystemEventHandler):
                 filenames.append(queue_mul.get())
                 if (len(filenames) == int(flag1)):
 
-                    # Visualization code
-                    if BOKEH == 1:
-                        client = mqtt.Client()
-                        client.connect(BOKEH_SERVER, BOKEH_PORT,60)
-                        print(sys.argv)
-                        print(sys.argv[len(sys.argv)-1])
-                        client.publish("JUPITER", sys.argv[len(sys.argv)-1] + " starts",qos=1)
-                        client.disconnect()
-
                     #start msg
                     ts = time.time()
                     runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info)
+                    if BOKEH == 1:
+                        # msg = taskname + " starts "+str(ts)
+                        msg = taskname + " starts"
+                        demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     input_path = os.path.split(event.src_path)[0]
                     output_path = os.path.join(os.path.split(input_path)[0],'output')
 
@@ -578,6 +572,7 @@ def main():
     BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
     BOKEH = int(config['OTHER']['BOKEH'])
+
 
     if taskmap[1] == True:
         queue_mul=multiprocessing.Queue()

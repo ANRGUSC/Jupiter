@@ -64,14 +64,14 @@ class mq():
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self,client, userdata, msg):
         start_messages = ['localpro starts', 'aggregate0 starts', 'aggregate1 starts', 'aggregate2 starts',
-        'simple_detector0 starts', 'simple_detector1 starts', 'simple_detector2 starts', 'astute_detector0 starts',
-        'astute_detector1 starts', 'astute_detector2 starts', 'fusion_center0 starts', 'fusion_center1 starts', 
-        'fusion_center2 starts', 'global_fusion starts']
+        'simpledetector0 starts', 'simpledetector1 starts', 'simpledetector2 starts', 'astutedetector0 starts',
+        'astutedetector1 starts', 'astutedetector2 starts', 'fusioncenter0 starts', 'fusioncenter1 starts', 
+        'fusioncenter2 starts', 'globalfusion starts']
 
         end_messages = ['localpro ends', 'aggregate0 ends', 'aggregate1 ends', 'aggregate2 ends',
-        'simple_detector0 ends', 'simple_detector1 ends', 'simple_detector2 ends', 'astute_detector0 ends',
-        'astute_detector1 ends', 'astute_detector2 ends', 'fusion_center0 ends', 'fusion_center1 ends', 
-        'fusion_center2 ends', 'global_fusion ends']
+        'simpledetector0 ends', 'simpledetector1 ends', 'simpledetector2 ends', 'astutedetector0 ends',
+        'astutedetector1 ends', 'astutedetector2 ends', 'fusioncenter0 ends', 'fusioncenter1 ends', 
+        'fusioncenter2 ends', 'globalfusion ends']
 
 
         top_dag=[5.15, 4.15, 4.15, 4.15, 3.15, 3.15, 3.15, 3.15, 3.15, 3.15, 2.15,2.15,2.15,1.15]
@@ -92,7 +92,6 @@ class mq():
 
         print('--------------')
         print(message)
-        print(time.time())
         print('--------------')
         if message in start_messages:
 
@@ -104,6 +103,11 @@ class mq():
             top,bottom,left,right = top[index],bottom[index],left[index],right[index]
             topd,bottomd,leftd,rightd = top_dag[index],bottom_dag[index],left_dag[index],right_dag[index]
         
+            print('---------------- starts')
+            print(update3)
+            print(update1)
+            print('---------------- startss')
+
             color = "red"
             doc.add_next_tick_callback(partial(update3, top= topd, bottom=bottomd,left=leftd,right=rightd, color=color))
             doc.add_next_tick_callback(partial(update1, top=top, bottom=bottom,left=left, right=right,color=color))
@@ -117,6 +121,10 @@ class mq():
                 global offset
                 global input_num
                 print("TOTAL_TIME: ", total_time, " minutes")
+
+                print('-------- all ends')
+                print(update2)
+                print('-------- all ends')
                 doc.add_next_tick_callback(partial(update2, x=7.5, y=3.2-offset, time = 'in'+str(input_num)+": "+str(format(total_time, '.4f') + ' min')))
                 offset = offset + 0.2
                 input_num = input_num+1
@@ -132,6 +140,10 @@ class mq():
             color1=["#C2D2F9","#5984E8","#5984E8","#5984E8","#9380F0","#1906BF","#9380F0",
             "#1906BF","#9380F0","#1906BF","#084594","#084594","#084594","#33148E"]
 
+            print('---------------- ends')
+            print(update3)
+            print(update1)
+            print('----------------ends')
             doc.add_next_tick_callback(partial(update3, top= topd, bottom=bottomd,left=leftd,right=rightd, color=color1[index]))
             doc.add_next_tick_callback(partial(update1, top=top, bottom=bottom,left=left, right=right,color=color[index]))
 
@@ -151,6 +163,8 @@ p.quad(top=[2,2,2,2,2,2,2,4,4,4,4,4,4,4], bottom=[0,0,0,0,0,0,0,2,2,2,2,2,2,2], 
        '#C2D2F9',"#5984E8","#5984E8","#5984E8","#9380F0","#9380F0","#9380F0"], 
        line_color="black", line_width=2)
 
+print('----------------')
+print(source1)
 lab = LabelSet(x='x', y='y', text='time',text_font_style='bold',text_color='black',source=source1)
 p.add_layout(lab)
 

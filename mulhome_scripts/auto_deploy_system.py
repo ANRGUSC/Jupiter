@@ -174,7 +174,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         dag = st.dag
         schedule = st.schedule
 
-    #Start CIRCE
+    # Start CIRCE
     if pricing == 0:
         print('Non pricing evaluation')
         k8s_circe_scheduler(dag,schedule,app_name)

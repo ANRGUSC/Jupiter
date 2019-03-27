@@ -131,14 +131,16 @@ def recv_runtime_profile():
     global rt_finish_time
 
     try:
-        # print('***************************************************')
-        # t = tic()
-        # print('Receive runtime profiling')
+        
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg').split()
         
 
-        # print("Received flask message:", worker_node, msg[0],msg[1], msg[2])
+        print("Received runtime message:", worker_node, msg[0],msg[1], msg[2])
+        
+        print(rt_enter_time)
+        print(rt_exec_time)
+        print(rt_finish_time)
 
         if msg[0] == 'rt_enter':
             rt_enter_time[(worker_node,msg[1])] = float(msg[2])
@@ -146,7 +148,6 @@ def recv_runtime_profile():
             rt_exec_time[(worker_node,msg[1])] = float(msg[2])
         else: #rt_finish
             rt_finish_time[(worker_node,msg[1])] = float(msg[2])
-
             print('----------------------------')
             print("Worker node: "+ worker_node)
             print("Input file : "+ msg[1])
@@ -155,9 +156,10 @@ def recv_runtime_profile():
             print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
             
             print('----------------------------') 
-            # print(worker_node) 
+            print(worker_node) 
             if worker_node == "globalfusion" or "task4":
                 # Per task stats:
+                print('DEBUG')
                 print('********************************************') 
                 print("Runtime profiling info:")
                 """
@@ -191,10 +193,7 @@ def recv_runtime_profile():
 
                 log_file.close()
                 print('********************************************')
-        # txec = toc(t)
-        # bottleneck['receiveruntime'].append(txec)
-        # print(np.mean(bottleneck['receiveruntime']))
-        # print('***************************************************')
+        
 
                 
     except Exception as e:
