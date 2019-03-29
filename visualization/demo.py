@@ -21,6 +21,7 @@ from bokeh.models.widgets import DataTable, DateFormatter, TableColumn
 from bokeh.models.widgets import MultiSelect, Select, Div
 from bokeh.models import Label
 from datetime import date
+from datetime import datetime
 from random import randint
 import paho.mqtt.client as mqtt
 import time
@@ -30,6 +31,7 @@ import random
 import pandas as pd
 import datetime
 import collections
+from pytz import timezone
 
 
 class mq():
@@ -75,11 +77,6 @@ class mq():
         right_dag=[3.7,1.7,3.7,5.7, 1.2, 2.2, 3.2, 4.2, 5.2, 6.2,1.7,3.7,5.7,3.7]
 
 
-        top = [4,4,4,4,4,4,4,2,2,2,2,2,2,2]
-        bottom = [2,2,2,2,2,2,2,0,0,0,0,0,0,0]
-        left = [0,1,2,3,4,5,6,0,1,2,3,4,5,6]
-        right = [1,2,3,4,5,6,7,1,2,3,4,5,6,7]
-
         message = msg.payload.decode()
         global start_time
         global finish_time
@@ -89,36 +86,15 @@ class mq():
         print(message)
         print('--------------')
         if message in start_messages:
-
-            if message == 'localpro starts':
-                new_time =  time.time()
-                start_time.append(new_time)
-
             index = start_messages.index(message)
-            top,bottom,left,right = top[index],bottom[index],left[index],right[index]
             topd,bottomd,leftd,rightd = top_dag[index],bottom_dag[index],left_dag[index],right_dag[index]
-
             color = "red"
             doc.add_next_tick_callback(partial(update3, top= topd, bottom=bottomd,left=leftd,right=rightd, color=color))
-            #doc.add_next_tick_callback(partial(update1, top=top, bottom=bottom,left=left, right=right,color=color))
             
 
         elif message in end_messages:
 
-            if message == 'global_fusion ends':
-                finish_time = time.time()
-                total_time = (finish_time - start_time.pop(0))/60
-                global offset
-                global input_num
-                print("TOTAL_TIME: ", total_time, " minutes")
-
-                #doc.add_next_tick_callback(partial(update2, x=7.5, y=3.2-offset, time = 'in'+str(input_num)+": "+str(format(total_time, '.4f') + ' min')))
-                offset = offset + 0.2
-                input_num = input_num+1
-
-
             index = end_messages.index(message)
-            top,bottom,left,right = top[index],bottom[index],left[index],right[index]
             topd,bottomd,leftd,rightd = top_dag[index],bottom_dag[index],left_dag[index],right_dag[index]
 
 
@@ -128,12 +104,19 @@ class mq():
             "#1906BF","#9380F0","#1906BF","#084594","#084594","#084594","#33148E"]
 
             doc.add_next_tick_callback(partial(update3, top= topd, bottom=bottomd,left=leftd,right=rightd, color=color1[index]))
-            #doc.add_next_tick_callback(partial(update1, top=top, bottom=bottom,left=left, right=right,color=color[index]))
 
         elif message.startswith('mapping'):
             print('---- Receive task mapping')
             doc.add_next_tick_callback(partial(update5,new=message,old=source6_df,attr=source6.data))
             doc.add_next_tick_callback(partial(update4,new=message,old=source5_df,attr=data_table2.source))
+        elif message.startswith('runtime'):
+            print('---- Receive runtime statistics')
+            doc.add_next_tick_callback(partial(update8,new=message,old=source8_df,attr=data_table4.source))
+        elif message.startswith('global'):
+            print('-----Receive global information')
+            doc.add_next_tick_callback(partial(update7,new=message,old=source7_df,attr=data_table3.source))
+
+
 
 def retrieve_tasks(dag_info_file):
     config_file = open(dag_info_file,'r')
@@ -189,7 +172,7 @@ def update4(attr, old, new):
     for info in assigned_info:
         tmp = info.split(':')
         new_source5_df.loc[new_source5_df.task_names==tmp[0],'assigned']=tmp[1]
-        new_source5_df.loc[new_source5_df.task_names==tmp[0],'as_time']=datetime.datetime.fromtimestamp(float(tmp[2])).strftime("%d.%m.%y %H:%M:%S")
+        new_source5_df.loc[new_source5_df.task_names==tmp[0],'as_time']=convert_time(tmp[2])
 
     source5.data = {
         'task_id'       : new_source5_df.task_id,
@@ -217,6 +200,67 @@ def update5(attr, old, new):
         'assigned_task':new_source6_df.assigned_task    
     }
 
+@gen.coroutine
+def update7(attr, old, new):
+
+    tmp = new.split(' ')[1:]
+    home_id = tmp[0]
+    if tmp[1]=='start':
+        data = ['N/A','N/A',tmp[2],tmp[0],convert_time(tmp[3])]
+        new_source7_df.loc[len(new_source7_df),:]=data
+    else:
+        new_source7_df.loc[(new_source7_df.home_id==tmp[0]) & (new_source7_df.global_input==tmp[2]),'end_times']=convert_time(tmp[3])
+        tmp1 = new_source7_df.loc[(new_source7_df.home_id==tmp[0]) & (new_source7_df.global_input==tmp[2]),'end_times']
+        tmp2 = new_source7_df.loc[(new_source7_df.home_id==tmp[0]) & (new_source7_df.global_input==tmp[2]),'start_times'] 
+        new_source7_df.loc[(new_source7_df.home_id==tmp[0]) & (new_source7_df.global_input==tmp[2]),'exec_times']=time_delta(tmp1,tmp2)
+    source7.data = {
+        'home_id'       : new_source7_df.home_id,
+        'global_input'  : new_source7_df.global_input,
+        'start_times'   : new_source7_df.start_times,
+        'end_times'     : new_source7_df.end_times,
+        'exec_times'    : new_source7_df.exec_times,
+    }
+
+@gen.coroutine
+def update8(attr, old, new):
+    tmp = new.split(' ')[1:]
+    if tmp[0]=='enter':
+        data = ['N/A','N/A',convert_time(tmp[3]),'N/A','N/A',tmp[2],'N/A',tmp[1]]
+        new_source8_df.loc[len(new_source8_df),:]=data    
+    elif tmp[0]=='exec':
+        new_source8_df.loc[(new_source8_df.task_name==tmp[1]) & (new_source8_df.local_input==tmp[2]),'local_exec_times']=convert_time(tmp[3])
+        tmp1 = new_source8_df.loc[(new_source8_df.task_name==tmp[1]) & (new_source8_df.local_input==tmp[2]),'local_exec_times']
+        tmp2 = new_source8_df.loc[(new_source8_df.task_name==tmp[1]) & (new_source8_df.local_input==tmp[2]),'local_enter_times']
+        new_source8_df.loc[(new_source8_df.task_name==tmp[1]) & (new_source8_df.local_input==tmp[2]),'local_waiting_times']=time_delta(tmp1,tmp2)    
+    else:
+        new_source8_df.loc[(new_source8_df.task_name==tmp[1]) & (new_source8_df.local_input==tmp[2]),'local_finish_times']=convert_time(tmp[3])
+        tmp1 = new_source8_df.loc[(new_source8_df.task_name==tmp[1]) & (new_source8_df.local_input==tmp[2]),'local_finish_times']
+        tmp2 = new_source8_df.loc[(new_source8_df.task_name==tmp[1]) & (new_source8_df.local_input==tmp[2]),'local_enter_times']
+        tmp3 = new_source8_df.loc[(new_source8_df.task_name==tmp[1]) & (new_source8_df.local_input==tmp[2]),'local_exec_times']
+        new_source8_df.loc[(new_source8_df.task_name==tmp[1]) & (new_source8_df.local_input==tmp[2]),'local_elapse_times']=time_delta(tmp1,tmp2)   
+        new_source8_df.loc[(new_source8_df.task_name==tmp[1]) & (new_source8_df.local_input==tmp[2]),'local_duration_times']=time_delta(tmp1,tmp3) 
+
+    source8.data = {
+        'local_duration_times'  : new_source8_df.local_duration_times,
+        'local_elapse_times'    : new_source8_df.local_elapse_times,
+        'local_enter_times'     : new_source8_df.local_enter_times,
+        'local_exec_times'      : new_source8_df.local_exec_times,
+        'local_finish_times'    : new_source8_df.local_finish_times,
+        'local_input'           : new_source8_df.local_input,
+        'local_waiting_times'   : new_source8_df.local_waiting_times,
+        'task_name'             : new_source8_df.task_name
+    }
+
+
+
+
+def convert_time(t):
+    return datetime.datetime.fromtimestamp(float(t)).strftime("%d.%m.%y %H:%M:%S")
+def time_delta(end,start): 
+    tmp1 = datetime.datetime.strptime(end.iloc[0],"%d.%m.%y %H:%M:%S")
+    tmp2 = datetime.datetime.strptime(start.iloc[0],"%d.%m.%y %H:%M:%S")
+    delta = (tmp1-tmp2).total_seconds()
+    return delta
 
 ###################################################################################################
 
@@ -225,7 +269,7 @@ OUTFNAME = 'demo_original.html'
 SERVER_IP = "127.0.0.1"
 SUBSCRIPTIONS = 'JUPITER'
 DAG_PATH = 'configuration.txt'
-NODE_PATH = 'nodes.txt'
+NODE_PATH = '../nodes.txt'
 
 global start_time, finish_time, total_time, offset, input_num
 start_time =[]
@@ -255,8 +299,10 @@ doc.title = 'CIRCE Visualization'
 m = mq(outfname=OUTFNAME,subs=SUBSCRIPTIONS,server = SERVER_IP,port=1883,timeout=60,looptimeout=1)
 
 ###################################################################################################################################
+
+global data_table, data_table2, source5_df,new_source5_df,source6_df,new_source6_df
+
 node_id = ['N'+str(i) for i in nodes.keys()]
-print(node_id)
 node_short = [i[0] for i in nodes.values()]
 node_full = [i[1] for i in nodes.values()]
 
@@ -320,17 +366,22 @@ new_source6_df = source6.to_df()
 
 ###################################################################################################################################
 
-home_input = []
+global data_table3, data_table4, source7_df,new_source7_df,source8_df,new_source8_df
+
+home_id = []
 global_input = []
 start_times = []
 end_times = []
 exec_times = []
-source7 = ColumnDataSource(dict(home_id=home_input,global_input=global_input,start_times=start_times,end_times=end_times,exec_times=exec_times))
-columns = [TableColumn(field="home_id", title="Home ID"),TableColumn(field="global_input", title="Global Input Name"),TableColumn(field="start_times", title="Enter time"),TableColumn(field="end_times", title="Finish tme"),TableColumn(field="exec_times", title="Make span")]
+source7 = ColumnDataSource(dict(home_id=home_id,global_input=global_input,start_times=start_times,end_times=end_times,exec_times=exec_times))
+columns = [TableColumn(field="home_id", title="Home ID"),TableColumn(field="global_input", title="Global Input Name"),TableColumn(field="start_times", title="Enter time"),TableColumn(field="end_times", title="Finish tme"),TableColumn(field="exec_times", title="Make span [s]")]
 data_table3 = DataTable(source=source7, columns=columns, width=600, height=580,selectable=True)
 
 title3 = Div(text='Global Input Information',style={'font-size': '15pt', 'color': 'black','text-align': 'center'},width=600, height=20)
 
+source7_df=source7.to_df()
+new_source7_df=source7.to_df()
+data_table3.on_change('source', lambda attr, old, new: update7())
 
 task_name = []
 local_input = []
@@ -346,9 +397,13 @@ columns = [TableColumn(field="task_name", title="Task name"),TableColumn(field="
             TableColumn(field="local_enter_times", title="Enter time"),TableColumn(field="local_exec_times", title="Exec time"),
             TableColumn(field="local_finish_times", title="Finish time"),TableColumn(field="local_elapse_times", title="Elapse time"),
             TableColumn(field="local_duration_times", title="Duration time"),TableColumn(field="local_waiting_times", title="Waiting time")]
-data_table4 = DataTable(source=source7, columns=columns, width=900, height=580,selectable=True)
+data_table4 = DataTable(source=source8, columns=columns, width=900, height=580,selectable=True)
 
 title4 = Div(text='Local Input Information',style={'font-size': '15pt', 'color': 'black','text-align': 'center'},width=600, height=20)
+
+source8_df=source8.to_df()
+new_source8_df=source8.to_df()
+data_table4.on_change('source', lambda attr, old, new: update8())
 
 ###################################################################################################################################
 
@@ -360,7 +415,7 @@ p1.xaxis.axis_label = 'Network Anomaly Detection Task Graph'
 p1.xaxis.axis_label_text_font_size='20pt'
 
 
-p1.add_layout(Label(x= 4.5, y=4.7, text="CIRCE", text_color="black", text_font_style='bold',text_font_size='38pt'))
+p1.add_layout(Label(x= 4.5, y=4.7, text="JUPITER", text_color="black", text_font_style='bold',text_font_size='32pt'))
 
 
 p1.quad(top=[5.15, 4.15, 4.15, 4.15, 3.15, 3.15, 3.15, 3.15, 3.15, 3.15, 2.15,2.15,2.15,1.15], 
@@ -461,7 +516,7 @@ p1.add_layout(global_fusion)
 ellipse_source = p1.quad(top='top', bottom='bottom', left='left', right='right',color='color', source= source2)
 
 ###################################################################################################################################
-p2 = layout([widgetbox(data_table,width=400,height=280),title1,widgetbox(data_table2,width=400,height=280),title2],sizing_mode='fixed',width=400,height=600)
+p2 = layout([title1,widgetbox(data_table,width=400,height=280),title2,widgetbox(data_table2,width=400,height=280)],sizing_mode='fixed',width=400,height=600)
 layout = row(p2,p,p1)
 doc.add_root(layout)
 
