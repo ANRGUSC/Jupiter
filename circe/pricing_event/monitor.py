@@ -147,7 +147,7 @@ app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info
 
 
 def default_best_node(source_node):
-    print('***************************************************')
+    # print('***************************************************')
     print('Select the current best node')
     # t = tic()
     w_net = 1 # Network profiling: longer time, higher price
@@ -352,7 +352,7 @@ def push_controller_map():
         send_controller_info(computing_ip)
         # print(time.time()-t1)
     # txec = toc(t)
-    print('***************************************************')
+    # print('***************************************************')
 
 class TimedValue:
 
@@ -542,8 +542,8 @@ def main():
     # print(super_tasks)
     for idx, controller in enumerate(all_nodes_list):
         if controller in super_tasks:
-            print(controller)
-            print(all_nodes_ips_list[idx])
+            # print(controller)
+            # print(all_nodes_ips_list[idx])
             controller_nondag.append(controller)
             controller_ip_nondag.append(all_nodes_ips_list[idx])
 

@@ -18,14 +18,13 @@ FROM ubuntu:16.04
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
-ADD circe/{pricing_option}/requirements.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
 
 # Taken from quynh's network profiler
 RUN pip install cryptography
-
+ADD circe/{pricing_option}/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
@@ -306,6 +305,8 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
+
+RUN apt-get install lsof
 
 RUN mkdir -p /centralized_scheduler/input
 RUN mkdir -p /centralized_scheduler/output
