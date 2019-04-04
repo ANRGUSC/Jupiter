@@ -681,9 +681,9 @@ class Handler(FileSystemEventHandler):
             new_file_name = os.path.split(event.src_path)[-1]
 
 
-            print(first_task)
-            print(task_node_summary)
-            print(node_ip_map)
+            # print(first_task)
+            # print(task_node_summary)
+            # print(node_ip_map)
 
             while not task_node_summary:
                 print('task node summary not yet available!!!')

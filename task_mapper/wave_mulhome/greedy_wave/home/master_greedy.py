@@ -172,8 +172,9 @@ def return_assignment():
         json: mapping assignments
     """
     print("Recieved request for current mapping. Current mappings done:", len(assignments))
-    print(assignments)
+    
     if len(assignments) == MAX_TASK_NUMBER:
+        print(assignments)
         return json.dumps(assignments)
     else:
         return json.dumps(dict())
