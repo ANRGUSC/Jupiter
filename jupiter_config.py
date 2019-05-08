@@ -117,10 +117,10 @@ def set_globals():
 	KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
 	# Namespaces
-	DEPLOYMENT_NAMESPACE    = 'johndoe-circe'
-	PROFILER_NAMESPACE      = 'johndoe-profiler'
-	MAPPER_NAMESPACE        = 'johndoe-mapper'
-	EXEC_NAMESPACE          = 'johndoe-exec'
+	DEPLOYMENT_NAMESPACE    = 'quynh2-circe'
+	PROFILER_NAMESPACE      = 'quynh2-profiler'
+	MAPPER_NAMESPACE        = 'quynh2-mapper'
+	EXEC_NAMESPACE          = 'quynh2-exec'
 
 	""" Node file path and first task information """
 	global HOME_NODE, HOME_CHILD
@@ -131,11 +131,11 @@ def set_globals():
 	"""Application Information"""
 	global APP_PATH, APP_NAME, app_option
 	
-	HOME_CHILD              = 'sample_ingress_task1'
-	# HOME_CHILD              = 'localpro'
-	APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
-	APP_NAME                = 'app_specific_files/network_monitoring_app'
-	app_option 				= 'coded'
+	# HOME_CHILD              = 'sample_ingress_task1'
+	# # HOME_CHILD              = 'localpro'
+	# APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
+	# APP_NAME                = 'app_specific_files/network_monitoring_app'
+	# app_option 				= 'coded'
 
 	# HOME_CHILD              = 'localpro'
 	# APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app_dag/'
@@ -147,49 +147,54 @@ def set_globals():
 	# APP_NAME                = 'app_specific_files/dummy_app'
 	# app_option 				= 'dummy'
 
+	HOME_CHILD              = 'dummy'
+	APP_PATH                = HERE  + 'app_specific_files/MCPDAG/'
+	APP_NAME                = 'app_specific_files/MCPDAG'
+	app_option 				= 'mcp'
+
 
 	"""pricing CIRCE home and worker images"""
 	global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTING_IMAGE
 
-	PRICING_HOME_IMAGE 		= 'docker.io/johndoe/%s_circe_home:%s' %(pricing_option,app_option)
-	WORKER_CONTROLLER_IMAGE = 'docker.io/johndoe/%s_circe_controller:%s' %(pricing_option,app_option)
-	WORKER_COMPUTING_IMAGE  = 'docker.io/johndoe/%s_circe_computing:%s' %(pricing_option,app_option)
+	PRICING_HOME_IMAGE 		= 'docker.io/anrg/%s_circe_home:%s' %(pricing_option,app_option)
+	WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:%s' %(pricing_option,app_option)
+	WORKER_COMPUTING_IMAGE  = 'docker.io/anrg/%s_circe_computing:%s' %(pricing_option,app_option)
 
 	global NONDAG_CONTROLLER_IMAGE,NONDAG_WORKER_IMAGE # only required for non-DAG tasks (teradetectors and dft)
-	NONDAG_CONTROLLER_IMAGE = 'docker.io/johndoe/%s_circe_nondag:%s' %(pricing_option,app_option)
-	NONDAG_WORKER_IMAGE = 'docker.io/johndoe/%s_circe_nondag_worker:%s' %(pricing_option,app_option)
+	NONDAG_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_nondag:%s' %(pricing_option,app_option)
+	NONDAG_WORKER_IMAGE = 'docker.io/anrg/%s_circe_nondag_worker:%s' %(pricing_option,app_option)
 	
 	"""CIRCE home and worker images for execution profiler"""
 	global HOME_IMAGE, WORKER_IMAGE
 
-	HOME_IMAGE              = 'docker.io/johndoe/circe_home:%s'%(app_option)
-	WORKER_IMAGE            = 'docker.io/johndoe/circe_worker:%s'%(app_option)
+	HOME_IMAGE              = 'docker.io/anrg/circe_home:%s'%(app_option)
+	WORKER_IMAGE            = 'docker.io/anrg/circe_worker:%s'%(app_option)
 
 	"""DRUPE home and worker images"""
 	global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
 	
-	PROFILER_HOME_IMAGE     = 'docker.io/johndoe/%s_profiler_home:coded'%(profiler_option)
-	PROFILER_WORKER_IMAGE   = 'docker.io/johndoe/%s_profiler_worker:coded'%(profiler_option)
+	PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded'%(profiler_option)
+	PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded'%(profiler_option)
 
 	"""WAVE home and worker images"""
 	global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
 
 	#%s: random, v1: greedy
 
-	WAVE_HOME_IMAGE         = 'docker.io/johndoe/%s_%s_wave_home:%s' %(wave_option,profiler_option,app_option)
-	WAVE_WORKER_IMAGE       = 'docker.io/johndoe/%s_%s_wave_worker:%s' %(wave_option,profiler_option,app_option)
+	WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:%s' %(wave_option,profiler_option,app_option)
+	WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:%s' %(wave_option,profiler_option,app_option)
 
 	"""Execution profiler home and worker images"""
 	global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-	EXEC_HOME_IMAGE         = 'docker.io/johndoe/%s_exec_home:%s'%(profiler_option,app_option)
-	EXEC_WORKER_IMAGE       = 'docker.io/johndoe/%s_exec_worker:%s'%(profiler_option,app_option)
+	EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s'%(profiler_option,app_option)
+	EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s'%(profiler_option,app_option)
 
 	"""HEFT docker image"""
 	global HEFT_IMAGE
 
-	HEFT_IMAGE              = 'docker.io/johndoe/%s_heft:%s'%(heft_option,app_option)
+	HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s'%(heft_option,app_option)
 
 	
 

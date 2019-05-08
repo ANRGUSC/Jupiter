@@ -24,6 +24,14 @@ ADD profilers/execution_profiler_mulhome/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 
+# MCP
+RUN apt-get -y install build-essential pkg-config
+RUN apt-get -y install libavcodec-dev libavformat-dev libswscale-dev
+RUN apt-get -yqq update
+RUN apt-get install libgdk-pixbuf2.0-common
+RUN apt-get -y install libgtk2.0-dev
+RUN pip3 install opencv-contrib-python
+
 
 # Authentication
 RUN echo 'root:PASSWORD' | chpasswd
@@ -48,12 +56,12 @@ RUN mkdir -p /centralized_scheduler/profiler_files_processed
 
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
-COPY app_specific_files/network_monitoring_app/sample_input /centralized_scheduler/sample_input
+ADD app_specific_files/MCPDAG/scripts/ /centralized_scheduler/
+COPY app_specific_files/MCPDAG/sample_input /centralized_scheduler/sample_input
 RUN mkdir -p /home/darpa/apps/data
 
 
-ADD app_specific_files/network_monitoring_app/configuration.txt /centralized_scheduler/DAG.txt
+ADD app_specific_files/MCPDAG/configuration.txt /centralized_scheduler/DAG.txt
 
 ADD profilers/execution_profiler_mulhome/start_home.sh /centralized_scheduler/start.sh
 ADD mulhome_scripts/keep_alive.py /centralized_scheduler/keep_alive.py

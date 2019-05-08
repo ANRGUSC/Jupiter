@@ -36,9 +36,9 @@ ADD mulhome_scripts/keep_alive.py /heft/keep_alive.py
 
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh
-RUN echo app_specific_files/network_monitoring_app
-ADD app_specific_files/network_monitoring_app/configuration.txt  /heft/dag.txt
-ADD app_specific_files/network_monitoring_app/scripts/config.json /heft/config.json
+RUN echo app_specific_files/MCPDAG
+ADD app_specific_files/MCPDAG/configuration.txt  /heft/dag.txt
+ADD app_specific_files/MCPDAG/scripts/config.json /heft/config.json
 
 WORKDIR /heft/
 

@@ -28,6 +28,15 @@ RUN pip install cryptography
 
 
 RUN pip3 install -r requirements.txt
+
+# MCP
+RUN apt-get -y install build-essential pkg-config
+RUN apt-get -y install libavcodec-dev libavformat-dev libswscale-dev
+RUN apt-get -yqq update
+RUN apt-get install libgdk-pixbuf2.0-common
+RUN apt-get -y install libgtk2.0-dev
+RUN pip3 install opencv-contrib-python
+
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
@@ -101,6 +110,15 @@ RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/original/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
+
+# MCP
+RUN apt-get -y install build-essential pkg-config
+RUN apt-get -y install libavcodec-dev libavformat-dev libswscale-dev
+RUN apt-get -yqq update
+RUN apt-get install libgdk-pixbuf2.0-common
+RUN apt-get -y install libgtk2.0-dev
+RUN pip3 install opencv-contrib-python
+
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config

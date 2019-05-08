@@ -17,6 +17,15 @@ RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/original/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
+
+# MCP
+RUN apt-get -y install build-essential pkg-config
+RUN apt-get -y install libavcodec-dev libavformat-dev libswscale-dev
+RUN apt-get -yqq update
+RUN apt-get install libgdk-pixbuf2.0-common
+RUN apt-get -y install libgtk2.0-dev
+RUN pip3 install opencv-contrib-python
+
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -37,7 +46,7 @@ RUN mkdir -p /home/darpa/apps/data
 #ADD circe/original/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
+ADD app_specific_files/MCPDAG/scripts/ /centralized_scheduler/
 
 ADD jupiter_config.ini /jupiter_config.ini
 

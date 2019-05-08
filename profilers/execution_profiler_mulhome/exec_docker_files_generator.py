@@ -41,6 +41,14 @@ ADD profilers/execution_profiler_mulhome/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 
+# MCP
+RUN apt-get -y install build-essential pkg-config
+RUN apt-get -y install libavcodec-dev libavformat-dev libswscale-dev
+RUN apt-get -yqq update
+RUN apt-get install libgdk-pixbuf2.0-common
+RUN apt-get -y install libgtk2.0-dev
+RUN pip3 install opencv-contrib-python
+
 RUN mkdir -p /home/darpa/apps/data
 
 
@@ -96,6 +104,14 @@ RUN apt-get install -y openssh-server
 ADD profilers/execution_profiler_mulhome/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
+
+# MCP
+RUN apt-get -y install build-essential pkg-config
+RUN apt-get -y install libavcodec-dev libavformat-dev libswscale-dev
+RUN apt-get -yqq update
+RUN apt-get install libgdk-pixbuf2.0-common
+RUN apt-get -y install libgtk2.0-dev
+RUN pip3 install opencv-contrib-python
 
 
 # Authentication
