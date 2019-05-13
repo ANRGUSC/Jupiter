@@ -31,6 +31,9 @@ import configparser
 import numpy as np
 from collections import defaultdict
 
+import pyinotify
+import threading
+
 global bottleneck
 bottleneck = defaultdict(list)
 
@@ -150,13 +153,16 @@ def recv_runtime_profile():
             print('----------------------------')
             print("Worker node: "+ worker_node)
             print("Input file : "+ msg[1])
+            print(rt_enter_time)
+            print(rt_exec_time)
+            print(rt_finish_time)
             print("Total duration time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
             print("Waiting time:" + str(rt_exec_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
             print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
             
             print('----------------------------') 
             # print(worker_node) 
-            if worker_node == "globalfusion" or "task4":
+            if worker_node == "globalfusion" or "task4" or "fusion":
                 # Per task stats:
                 print('********************************************') 
                 print("Runtime profiling info:")
@@ -207,16 +213,7 @@ app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_p
 
 
 
-class MonitorRecv(multiprocessing.Process):
-    def __init__(self):
-        multiprocessing.Process.__init__(self)
 
-    def run(self):
-        """
-        Start Flask server
-        """
-        print("Flask server started")
-        app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
 def transfer_data_scp(IP,user,pword,source, destination):
     """Transfer data using SCP
@@ -279,6 +276,60 @@ def transfer_data(IP,user,pword,source, destination):
         return transfer_data_scp(IP,user,pword,source, destination)
 
     return transfer_data_scp(IP,user,pword,source, destination) #default
+
+
+def watch_output(path):
+    wm = pyinotify.WatchManager()
+    notifier = pyinotify.Notifier(wm, MyEventHandler1())
+    
+    wm.add_watch(path, pyinotify.ALL_EVENTS, rec=True)
+    while True:
+        try:
+            notifier.process_events()
+            if notifier.check_events():
+                notifier.read_events()
+        except KeyboardInterrupt:
+            notifier.stop()
+            break
+
+
+class MyEventHandler1(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
+    """
+    def process_IN_CLOSE_WRITE(self, event):
+        """
+        Args:
+            event (ProcessEvent): a new file is created
+        """
+        global start_times
+        global end_times
+        global exec_times
+        global count
+
+        print("Received file as output - %s." % event.pathname)
+        # t = tic()
+        new_file = os.path.split(event.pathname)[-1]
+
+        end_times.append(time.time())
+        print("ending time is: ", end_times)
+
+        exec_times.append(end_times[count] - start_times[count])
+
+        print("execution time is: ", exec_times)
+        count+=1
+
+def watch_input(path):
+    wm = pyinotify.WatchManager()
+    notifier = pyinotify.Notifier(wm, MyEventHandler())
+    wm.add_watch(path, pyinotify.ALL_EVENTS, rec=True)
+    while True:
+        try:
+            notifier.process_events()
+            if notifier.check_events():
+                notifier.read_events()
+        except KeyboardInterrupt:
+            notifier.stop()
+            break
 
 
 class MyHandler(PatternMatchingEventHandler):
@@ -347,6 +398,38 @@ class Watcher:
         self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
         self.observer.start()
 
+class MyEventHandler(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
+    """
+    def process_IN_CLOSE_WRITE(self, event):
+        """
+        Args:
+            event (ProcessEvent): a new file is created
+        """
+
+        print("Received file as input - %s." % event.pathname)
+        # t = tic()
+        new_file = os.path.split(event.pathname)[-1]
+
+        if RUNTIME == 1:   
+            ts = time.time() 
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.pathname,ts)
+            runtime_receiver_log.write(s)
+            runtime_receiver_log.flush()
+
+        start_times.append(time.time())
+        print("start time is: ", start_times)
+        new_file_name = os.path.split(event.pathname)[-1]
+
+
+        #This part should be optimized to avoid hardcoding IP, user and password
+        #of the first task node
+        IP = os.environ['CHILD_NODES_IPS']
+        source = event.pathname
+        destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
+        transfer_data(IP,username, password,source, destination)
+
+
 class Handler(FileSystemEventHandler):
     """
         Handling the event when there is a new file generated in ``INPUT`` folder
@@ -395,6 +478,33 @@ class Handler(FileSystemEventHandler):
         # bottleneck['receiveinput'].append(txec)
         # print(np.mean(bottleneck['receiveinput']))
         print('***************************************************')
+
+class MonitorRecv(multiprocessing.Process):
+    def __init__(self):
+        multiprocessing.Process.__init__(self)
+
+    def run(self):
+        """
+        Start Flask server
+        """
+        print("Flask server started")
+        app.run(host='0.0.0.0', port=FLASK_DOCKER)
+
+def run_app():
+    print("Flask server started")
+    app.run(host='0.0.0.0', port=FLASK_DOCKER)
+
+def threads_join(threads):
+    '''
+         Let the main thread block, wait for the child thread to finish before continuing. The advantage of using this method over the use of join is that ctrl+c can kill the process.
+    '''
+    for t in threads:
+        while 1:
+            if t.isAlive():
+                time.sleep(10)
+            else:
+                break
+
 def main():
     """
         -   Read configurations (DAG info, node info) from ``nodes.txt`` and ``configuration.txt``
@@ -454,25 +564,77 @@ def main():
     print("DAG: ", dag_info[1])
     print("HOSTS: ", dag_info[2])
 
+    
+
+    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
+
+    threads = []
+    t1 = threading.Thread(target=watch_input,args=(DIRECTORY_TO_WATCH,))
+    threads.append(t1)
+
+    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+
+    t2 = threading.Thread(target=watch_output,args=(DIRECTORY_TO_WATCH,))
+    threads.append(t2)
+
+    t3 = threading.Thread(target=run_app)
+    threads.append(t3)
+
+    for t in threads:
+        t.setDaemon(True)
+        t.start()
+
+    threads_join(threads)
+
+    # web_server = MonitorRecv()
+    # web_server.start()
+
+    # # watch manager
+    # wm = pyinotify.WatchManager()
+
+    
+    # # event handler
+    # eh = MyEventHandler()
+    # # notifier
+    # notifier = pyinotify.ThreadedNotifier(wm, eh)
+    # notifier.daemon = True
+
+    # DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
+    # wm.add_watch(DIRECTORY_TO_WATCH, pyinotify.ALL_EVENTS, rec=True)
+    # print('starting the watching INPUT\n')
+
+    # notifier.start()
+
+    
+    # # event handler
+    # eh1 = MyEventHandler1()
+    # # notifier
+    # notifier1 = pyinotify.ThreadedNotifier(wm, eh1)
+    # notifier1.daemon = True
+
+    # DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+    # wm.add_watch(DIRECTORY_TO_WATCH, pyinotify.ALL_EVENTS, rec=True)
+    # print('starting the watching OUTPUT\n')
+
+    # notifier1.start()
+
     #monitor INPUT folder for the incoming files
-    w = Watcher()
-    w.run()
+    # w = Watcher()
+    # w.run()
 
-    web_server = MonitorRecv()
-    web_server.start()
+    
+    # print("Starting the output monitoring system:")
+    # observer = Observer()
+    # observer.schedule(MyHandler(), path=os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/'))
+    # observer.start()
 
-    print("Starting the output monitoring system:")
-    observer = Observer()
-    observer.schedule(MyHandler(), path=os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/'))
-    observer.start()
+    # try:
+    #     while True:
+    #         time.sleep(1)
+    # except KeyboardInterrupt:
+    #     observer.stop()
 
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
-
-    observer.join()
+    # observer.join()
 
 
     

@@ -10,7 +10,8 @@ service ssh start
 echo 'Installing and starting mongodb'
 /central_mongod start
 
-cp sample_input/1botnet.ipsum generated_files/25botnet.ipsum
+# cp sample_input/1botnet.ipsum generated_files/25botnet.ipsum
+cp sample_input/* generated_files
 
 echo 'Automatically run the scheduler'
 
