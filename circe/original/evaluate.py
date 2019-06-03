@@ -98,6 +98,9 @@ def evaluate_test():
                 time.sleep(30)
                 break
 
+def evaluate_mcp():
+    
+
 if __name__ == '__main__':
     #evaluate_random()
     time.sleep(60)
