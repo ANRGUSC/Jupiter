@@ -99,11 +99,33 @@ def evaluate_test():
                 break
 
 def evaluate_mcp():
-    
+    file_count = len(os.listdir("sample_input/"))
+    file_count_out = len(os.listdir("output/"))
+    print('---- Generate random input files')
+    print(file_count)
+    for i in range(0,file_count):
+        print(i)
+        src1 = "sample_input/c0_Pictures%d%d%d" %(i)
+        dest1 = "input/c0_Pictures%d%d%d" %(i)
+        src2 = "sample_input/c1_Pictures%d%d%d" %(i)
+        dest2 = "input/c1_Pictures%d%d%d" %(i)
+        shutil.copyfile(src1,dest1)
+        shutil.copyfile(src2,dest2)
+        count = 0
+        while 1:
+            time.sleep(5)
+            file_count_out = len(os.listdir("output/"))
+            if file_count_out ==  i+1:
+                time.sleep(30)
+                break
+
+
+    print('---- Finish generating sequential input files')   
 
 if __name__ == '__main__':
     #evaluate_random()
     time.sleep(60)
     print('Start copying sample files for evaluation')
-    evaluate_sequential()
+    evaluate_mcp()
+    #evaluate_sequential()
     #evaluate_test()

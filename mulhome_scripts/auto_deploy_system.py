@@ -399,6 +399,6 @@ def main():
         for idx,appname in enumerate(app_list):
             print(appname)
             _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],num_runs,num_samples))
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0',port=6666)
 if __name__ == '__main__':
     main()
