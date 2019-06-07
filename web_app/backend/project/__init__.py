@@ -140,8 +140,10 @@ def get_k8s_exec_info():
     exec_home_pod_name = cmd_output.split('/')[1].split('\\')[0]
 
 def run_command_get_file(node):
+    log_file = 'profiler_%s.txt' % (node)
     file_path = '%s/%s:/centralized_scheduler/profiler_files_processed/profiler_%s.txt' % (exec_namespace, exec_home_pod_name, node)
-    cmd = "kubectl cp " + file_path + " ."
+    cmd = "kubectl cp " + file_path + " "+ log_file
+
     print("RUN: " + cmd)
     os.system(cmd)
 
@@ -228,8 +230,9 @@ def get_k8s_mapper_info():
     mapper_home_pod_name = cmd_output.split('/')[1].split('\\')[0]
 
 def run_command_get_file_net():
+    log_file = 'network_log.txt'
     file_path = '%s/%s:/heft/network_log.txt' % (mapper_namespace, mapper_home_pod_name)
-    cmd = "kubectl cp " + file_path + " ."
+    cmd = "kubectl cp " + file_path + " "+ log_file
     print("RUN: " + cmd)
     os.system(cmd)
 
