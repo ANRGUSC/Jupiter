@@ -105,10 +105,10 @@ def evaluate_mcp():
     print(file_count)
     for i in range(0,file_count):
         print(i)
-        src1 = "sample_input/c0_Pictures%d%d%d" %(i)
-        dest1 = "input/c0_Pictures%d%d%d" %(i)
-        src2 = "sample_input/c1_Pictures%d%d%d" %(i)
-        dest2 = "input/c1_Pictures%d%d%d" %(i)
+        src1 = "sample_input/c0_Pictures%d%d%d.jpg" %(i,i,i)
+        dest1 = "input/c0_Pictures%d%d%d.jpg" %(i,i,i)
+        src2 = "sample_input/c1_Pictures%d%d%d.jpg" %(i,i,i)
+        dest2 = "input/c1_Pictures%d%d%d.jpg" %(i,i,i)
         shutil.copyfile(src1,dest1)
         shutil.copyfile(src2,dest2)
         count = 0
