@@ -142,15 +142,20 @@ def set_globals():
     # APP_NAME                = 'app_specific_files/network_monitoring_app'
     # app_option                = 'coded'
 
-    HOME_CHILD              = 'localpro'
-    APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app_dag/'
-    APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
-    app_option              = 'dag'
+    # HOME_CHILD              = 'localpro'
+    # APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app_dag/'
+    # APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
+    # app_option              = 'dag'
+
+    HOME_CHILD              = 'task0'
+    APP_PATH                = HERE  + 'app_specific_files/dummy_app/'
+    APP_NAME                = 'app_specific_files/dummy_app'
+    app_option                = 'dummy'
 
     # HOME_CHILD              = 'task0'
-    # APP_PATH                = HERE  + 'app_specific_files/dummy_app/'
-    # APP_NAME                = 'app_specific_files/dummy_app'
-    # app_option                = 'dummy'
+    # APP_PATH                = HERE  + 'app_specific_files/dummy_app_100/'
+    # APP_NAME                = 'app_specific_files/dummy_app_100'
+    # app_option                = 'dummy100'
 
 
     """pricing CIRCE home and worker images"""
