@@ -5,7 +5,7 @@ import math
 import random
 
 def task(filename,pathin,pathout):
-	execution_time = 1.3
+	execution_time = 2.1
 	execution_time
 	timeout = time.time() + execution_time
 	while time.time() < timeout:
