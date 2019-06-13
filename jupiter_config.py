@@ -162,6 +162,11 @@ def set_globals():
     # APP_NAME                = 'app_specific_files/dummy_app_50'
     # app_option                = 'dummy50'
 
+    # HOME_CHILD              = 'task0'
+    # APP_PATH                = HERE  + 'app_specific_files/dummy_app_20/'
+    # APP_NAME                = 'app_specific_files/dummy_app_20'
+    # app_option                = 'dummy20'
+
 
     """pricing CIRCE home and worker images"""
     global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTING_IMAGE

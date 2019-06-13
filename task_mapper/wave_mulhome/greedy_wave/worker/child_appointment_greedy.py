@@ -78,7 +78,7 @@ def prepare_global():
 
 
 
-    global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
+    global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready, application
 
     
     threshold = 15
@@ -99,6 +99,51 @@ def prepare_global():
     application = read_file("DAG/DAG_application.txt")
     del application[0]
 
+    # for line in application:
+    #     line = line.strip()
+    #     items = line.split()
+
+    #     parent = items[0]
+    #     if parent == items[3] or items[3] == "home":
+    #         continue
+
+    #     children[parent] = items[3:]
+    #     for child in items[3:]:
+    #         if child in parents.keys():
+    #             parents[child].append(parent)
+    #         else:
+    #             parents[child] = [parent]
+
+    # print("application",application)
+    # print("children",children)
+    # print("parents" ,parents)
+    # for key in parents:
+    #     parent = parents[key]
+    #     if len(parent) == 1:
+    #         if parent[0] in control_relation:
+    #             control_relation[parent[0]].append(key)
+    #         else:
+    #             control_relation[parent[0]] = [key]
+    #     if len(parent) > 1:
+    #         flag = False
+    #         for p in parent:
+    #             if p in control_relation:
+    #                 control_relation[p].append(key)
+    #                 flag = True
+    #                 break
+    #         if not flag:
+    #             control_relation[parent[0]] = [key]
+
+    # print("control_relation" ,control_relation)
+
+def init_task_topology():
+    """
+        - Read ``DAG/input_node.txt``, get inital task information for each node
+        - Read ``DAG/DAG_application.txt``, get parent list of child tasks
+        - Create the DAG
+        - Write control relations to ``DAG/parent_controller.txt``
+    """
+
     for line in application:
         line = line.strip()
         items = line.split()
@@ -114,8 +159,12 @@ def prepare_global():
             else:
                 parents[child] = [parent]
 
-    for key in parents:
-        parent = parents[key]
+    print(parents)
+    print(child)
+    # for key in parents:
+    #     parent = parents[key]
+    for key, value in sorted(parents.items()):
+        parent = value
         if len(parent) == 1:
             if parent[0] in control_relation:
                 control_relation[parent[0]].append(key)
@@ -130,7 +179,7 @@ def prepare_global():
                     break
             if not flag:
                 control_relation[parent[0]] = [key]
-
+    print('----------- Control relation')
     print("control_relation" ,control_relation)
 
 def assign_task():
@@ -156,6 +205,8 @@ def assign_task():
         print('*******************')
         if len(control_relation[task_name])>0:
             print('I am responsible for the next children tasks')
+            print(control_relation[task_name])
+            print(local_children)
             for task in control_relation[task_name]:
                 print(task)
                 if task not in local_children.keys():
@@ -577,6 +628,7 @@ def main():
     local_responsibility = "task_responsibility"
     os.mkdir(local_responsibility)
 
+    init_task_topology()
     # Get resource data
     _thread.start_new_thread(get_resource_data, ())
 
