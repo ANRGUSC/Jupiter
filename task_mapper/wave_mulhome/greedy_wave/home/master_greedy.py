@@ -326,8 +326,13 @@ def init_task_topology():
             else:
                 parents[child] = [parent]
 
-    for key in parents:
-        parent = parents[key]
+    print(parents)
+    print(child)
+
+    for key, value in sorted(parents.items()):
+    # for key in parents:
+        # parent = parents[key]
+        parent = value
         if len(parent) == 1:
             if parent[0] in control_relation:
                 control_relation[parent[0]].append(key)
