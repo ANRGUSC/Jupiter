@@ -38,8 +38,12 @@ def task(filename,pathin,pathout):
 	f.close()
 	comm = dict()
 	for line in total_info:
+		print('-------')
+		print(line)
 		src = line.strip().split(' ')[0]
-		dest_info = line.split(' ')[1:-1]
+		print(src)
+		dest_info = line.strip().split(' ')[1:]
+		print(dest_info)
 		if len(dest_info)>0:
 			comm[src] = dest_info
 	print('-------------------------##')

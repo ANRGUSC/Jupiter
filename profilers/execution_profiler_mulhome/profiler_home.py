@@ -220,7 +220,7 @@ def main():
     task_module = {}
     modules=[]
     for task in tasks.keys():
-        print(task)
+        # print(task)
         os.environ['TASK'] = task
         taskmodule  = __import__(task)
         modules.append(taskmodule)
@@ -229,6 +229,7 @@ def main():
     ## write results in a text file
     myfile = open(os.path.join(os.path.dirname(__file__), 'profiler_'+nodename+'.txt'), "w")
     myfile.write('task,time(sec),output_data (Kbit)\n')
+    print('task order:')
     print(task_order)
 
     ## execute each task and get the timing and data size

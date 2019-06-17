@@ -98,9 +98,35 @@ def evaluate_test():
                 time.sleep(30)
                 break
 
+def evaluate_combine(num_apps,num_samples):
+    file_count = len(os.listdir("sample_input/"))
+    print(file_count)  
+    file_count_out = len(os.listdir("output/")) 
+    print(file_count_out)
+    count = 0
+    for i in range(1,num_samples+1):
+        print('---- Generate random input files')
+        for j in range(1,num_apps+1):
+            filein = 'sample_input/dummyapp%d-%dbotnet.ipsum'%(j,i)
+            fileout ='input/dummyapp%d-%dbotnet.ipsum'%(j,i)
+            shutil.copyfile(filein,fileout)
+        count = count+num_apps
+        
+        while 1:
+            time.sleep(5)
+            file_count_out = len(os.listdir("output/"))
+            print('-----Checking')
+            print(file_count_out)
+            print(count)
+            if file_count_out ==  count:
+                print('Finishing all the current samples')
+                break
+        print('Continue to generate more random input files')
+
 if __name__ == '__main__':
     #evaluate_random()
     time.sleep(60)
     print('Start copying sample files for evaluation')
-    evaluate_sequential()
+    #evaluate_sequential()
     #evaluate_test()
+    evaluate_combine(2,10)

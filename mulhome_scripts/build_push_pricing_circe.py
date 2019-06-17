@@ -84,8 +84,8 @@ def build_push_pricing_circe():
     os.system("sudo docker push " + jupiter_config.WORKER_COMPUTING_IMAGE)
 
     # only required for non-DAG tasks (Tera detectors and DFT detectors)
-    print(jupiter_config.app_option)
-    if jupiter_config.app_option == 'coded':
+    print(jupiter_config.APP_OPTION)
+    if jupiter_config.APP_OPTION == 'coded':
 
       dc.write_circe_controller_nondag(username = jupiter_config.USERNAME,
                       password = jupiter_config.PASSWORD,

@@ -150,21 +150,31 @@ CMD ["./start.sh"]
 
 
 
-def write_exec_worker_docker(**kwargs):
+def write_exec_worker_docker(app_option=None,**kwargs):
     """
       Function to Generate the Dockerfile of the worker nodes of Execution Profiler.
     """
-    dfp = DockerfileParser(path='exec_worker.Dockerfile')
+    if app_option==None:
+      file_name = 'exec_home.Dockerfile'
+    else:
+      file_name = 'exec_home_%s.Dockerfile'%(app_option)
+    dfp = DockerfileParser(path=file_name)
     dfp.content =template_worker.format(**kwargs)
+    return file_name
     # print(dfp.content)
 
 
-def write_exec_home_docker(**kwargs):
+def write_exec_home_docker(app_option=None,**kwargs):
     """
       Function to Generate the Dockerfile of the home/master node
     """
-    dfp = DockerfileParser(path='exec_home.Dockerfile')
+    if app_option==None:
+      file_name = 'exec_worker.Dockerfile'
+    else:
+      file_name = 'exec_worker_%s.Dockerfile'%(app_option)
+    dfp = DockerfileParser(path=file_name)
     dfp.content =template_home.format(**kwargs)
+    return file_name
 
 if __name__ == '__main__':
     write_exec_home_docker(username = 'root',

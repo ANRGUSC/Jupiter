@@ -374,10 +374,10 @@ def main():
     """
     
     jupiter_config.set_globals()
-    app_name = jupiter_config.app_option
+    app_name = jupiter_config.APP_OPTION
     circe_port = int(jupiter_config.FLASK_CIRCE)
     
-    num_samples = 2
+    num_samples = 20
     num_runs = 1
     num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]

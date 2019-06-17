@@ -11,6 +11,8 @@ echo 'Installing and starting mongodb'
 /central_mongod start
 
 cp sample_input/1botnet.ipsum generated_files/25botnet.ipsum
+# cp sample_input/dummyapp1_1botnet.ipsum generated_files/
+# cp sample_input/dummyapp2_1botnet.ipsum generated_files/
 
 echo 'Automatically run the scheduler'
 
