@@ -384,5 +384,7 @@ def k8s_exec_scheduler(app_name):
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 
-    app_name = jupiter_config.app_option
+    app_name = jupiter_config.APP_OPTION
+    print('-------')
+    print(app_name)
     k8s_exec_scheduler(app_name)

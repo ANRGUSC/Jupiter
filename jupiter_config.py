@@ -135,55 +135,60 @@ def set_globals():
     #HOME_CHILD              = 'sample_ingress_task1'
 
     """Application Information"""
-    global APP_PATH, APP_NAME, app_option
+    global APP_PATH, APP_NAME, APP_OPTION
     
     # HOME_CHILD              = 'localpro'
     # APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
     # APP_NAME                = 'app_specific_files/network_monitoring_app'
-    # app_option                = 'coded'
+    # APP_OPTION              = 'coded'
 
     # HOME_CHILD              = 'localpro'
     # APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app_dag/'
     # APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
-    # app_option              = 'dag'
+    # APP_OPTION              = 'dag'
+
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
+    # APP_NAME                  = 'app_specific_files/dummy_app'
+    # APP_OPTION                = 'dummy'
 
     # HOME_CHILD              = 'task0'
-    # APP_PATH                = HERE  + 'app_specific_files/dummy_app/'
-    # APP_NAME                = 'app_specific_files/dummy_app'
-    # app_option                = 'dummy'
-
-    HOME_CHILD              = 'task0'
-    APP_PATH                = HERE  + 'app_specific_files/dummy_app_100/'
-    APP_NAME                = 'app_specific_files/dummy_app_100'
-    app_option                = 'dummy100'
+    # APP_PATH                = HERE  + 'app_specific_files/dummy_app_100/'
+    # APP_NAME                = 'app_specific_files/dummy_app_100'
+    # APP_OPTION              = 'dummy100'
 
     # HOME_CHILD              = 'task0'
     # APP_PATH                = HERE  + 'app_specific_files/dummy_app_50/'
     # APP_NAME                = 'app_specific_files/dummy_app_50'
-    # app_option                = 'dummy50'
+    # APP_OPTION                = 'dummy50'
 
     # HOME_CHILD              = 'task0'
     # APP_PATH                = HERE  + 'app_specific_files/dummy_app_20/'
     # APP_NAME                = 'app_specific_files/dummy_app_20'
-    # app_option                = 'dummy20'
+    # APP_OPTION                = 'dummy20'
+
+    HOME_CHILD                = 'distribute'
+    APP_PATH                  = HERE  + 'app_specific_files/dummy_app_combined/'
+    APP_NAME                  = 'app_specific_files/dummy_app_combined'
+    APP_OPTION                = 'combined'
 
 
     """pricing CIRCE home and worker images"""
     global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTING_IMAGE
 
-    PRICING_HOME_IMAGE      = 'docker.io/anrg/%s_circe_home:%s' %(pricing_option,app_option)
-    WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:%s' %(pricing_option,app_option)
-    WORKER_COMPUTING_IMAGE  = 'docker.io/anrg/%s_circe_computing:%s' %(pricing_option,app_option)
+    PRICING_HOME_IMAGE      = 'docker.io/anrg/%s_circe_home:%s' %(pricing_option,APP_OPTION)
+    WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:%s' %(pricing_option,APP_OPTION)
+    WORKER_COMPUTING_IMAGE  = 'docker.io/anrg/%s_circe_computing:%s' %(pricing_option,APP_OPTION)
 
     global NONDAG_CONTROLLER_IMAGE,NONDAG_WORKER_IMAGE # only required for non-DAG tasks (teradetectors and dft)
-    NONDAG_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_nondag:%s' %(pricing_option,app_option)
-    NONDAG_WORKER_IMAGE = 'docker.io/anrg/%s_circe_nondag_worker:%s' %(pricing_option,app_option)
+    NONDAG_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_nondag:%s' %(pricing_option,APP_OPTION)
+    NONDAG_WORKER_IMAGE = 'docker.io/anrg/%s_circe_nondag_worker:%s' %(pricing_option,APP_OPTION)
     
     """CIRCE home and worker images for execution profiler"""
     global HOME_IMAGE, WORKER_IMAGE
 
-    HOME_IMAGE              = 'docker.io/anrg/circe_home:%s'%(app_option)
-    WORKER_IMAGE            = 'docker.io/anrg/circe_worker:%s'%(app_option)
+    HOME_IMAGE              = 'docker.io/anrg/circe_home:%s'%(APP_OPTION)
+    WORKER_IMAGE            = 'docker.io/anrg/circe_worker:%s'%(APP_OPTION)
 
     """DRUPE home and worker images"""
     global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
@@ -196,20 +201,20 @@ def set_globals():
 
     #%s: random, v1: greedy
 
-    WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:%s' %(wave_option,profiler_option,app_option)
-    WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:%s' %(wave_option,profiler_option,app_option)
+    WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:%s' %(wave_option,profiler_option,APP_OPTION)
+    WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:%s' %(wave_option,profiler_option,APP_OPTION)
 
     """Execution profiler home and worker images"""
     global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-    EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s'%(profiler_option,app_option)
-    EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s'%(profiler_option,app_option)
+    EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s'%(profiler_option,APP_OPTION)
+    EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s'%(profiler_option,APP_OPTION)
 
     """HEFT docker image"""
     global HEFT_IMAGE
 
-    HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s'%(heft_option,app_option)
+    HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s'%(heft_option,APP_OPTION)
 
     
 

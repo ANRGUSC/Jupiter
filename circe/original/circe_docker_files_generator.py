@@ -145,21 +145,31 @@ CMD ["./start.sh"]
 
 
   
-def write_circe_worker_docker(**kwargs):
+def write_circe_worker_docker(app_option=None,**kwargs):
     """
         Function to Generate the Dockerfile of the worker nodes
     """
-    dfp = DockerfileParser(path='worker_node.Dockerfile')
+    if app_option==None:
+      file_name = 'worker_node.Dockerfile'
+    else:
+      file_name = 'worker_node_%s.Dockerfile'%(app_option)
+    dfp = DockerfileParser(path=file_name)
     dfp.content =template_worker.format(**kwargs)
+    return file_name
     # print(dfp.content)
 
 
-def write_circe_home_docker(**kwargs):
+def write_circe_home_docker(app_option=None,**kwargs):
     """
         Function to Generate the Dockerfile of the home/master node of CIRCE
     """
-    dfp = DockerfileParser(path='home_node.Dockerfile')
+    if app_option==None:
+      file_name = 'home_node.Dockerfile'
+    else:
+      file_name = 'home_node_%s.Dockerfile'%(app_option)
+    dfp = DockerfileParser(path=file_name)
     dfp.content =template_home.format(**kwargs)
+    return file_name
 
 
 if __name__ == '__main__':

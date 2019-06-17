@@ -359,7 +359,12 @@ def assign_children_task(children_task):
             print("Waiting for the profiler data")
             time.sleep(100)
     res = False
-    sample_size = cal_file_size('/1botnet.ipsum')
+    if 'app' in children_task:
+        appname = children_task.split('-')[0]
+        sample_file = '/'+appname+'-1botnet.ipsum'
+    else:
+        sample_file = '/1botnet.ipsum'
+    sample_size = cal_file_size(sample_file)
     assign_to_node = get_most_suitable_node(sample_size)
     if not assign_to_node:
         print("No suitable node found for assigning task: ", children_task)

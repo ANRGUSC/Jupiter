@@ -313,11 +313,28 @@ class Handler1(FileSystemEventHandler):
             # t1 = time.time()
             
             ts = time.time()
-            if sys.argv[3] == 'home':
-
-
+            print('====')
+            print(sys.argv)
+            print(flag2)
+            print(taskname)
+            if taskname == 'distribute':
+                print('This is the distribution point')
+                print(new_file)
+                print(temp_name)
+                appname = temp_name.split('-')[0]
+                print(appname)
+                source = event.src_path
+                print(sys.argv)
+                next_node = appname+'-task0'
+                print(sys.argv.index(next_node))
+                idx = sys.argv.index(next_node)
+                IPaddr = sys.argv[idx+1]
+                user = sys.argv[idx+2]
+                password=sys.argv[idx+3]
+                destination = os.path.join('/centralized_scheduler', 'input', new_file)
+                transfer_data(IPaddr,user,password,source, destination)
+            elif sys.argv[3] == 'home':
                 if BOKEH == 1:
-                    #msg = taskname + " ends "+str(ts)
                     msg = taskname + " ends"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                 
@@ -332,9 +349,9 @@ class Handler1(FileSystemEventHandler):
             elif flag2 == 'true':
 
                 if BOKEH == 1:
-                    # msg = taskname + " ends "+str(ts)
                     msg = taskname + " ends"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                
 
                 for i in range(3, len(sys.argv)-1,4):
                     IPaddr = sys.argv[i+1]
@@ -348,12 +365,15 @@ class Handler1(FileSystemEventHandler):
                 num_child = (len(sys.argv) - 4) / 4
                 files_out.append(new_file)
 
+                print(num_child)
+                print(files_out)
+
                 if (len(files_out) == num_child):
 
                     if BOKEH == 1:
-                        # msg = taskname + " ends "+str(ts)
                         msg = taskname + " ends"
                         demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                        
 
                     for i in range(3, len(sys.argv)-1,4):
                         myfile = files_out.pop(0)
@@ -446,6 +466,9 @@ class Handler(FileSystemEventHandler):
             if len(filenames) == 0:
                 runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
+                if BOKEH == 1:
+                    runtimebk = 'rt_enter '+ taskname+' '+ temp_name+ ' '+str(ts)
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
 
             flag1 = sys.argv[1]
 
@@ -455,11 +478,14 @@ class Handler(FileSystemEventHandler):
                 # Start msg
                 ts = time.time()
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)
+                send_runtime_profile(runtime_info)  
                 if BOKEH == 1:
                     # msg = taskname + " starts "+str(ts)
+                    runtimebk = 'rt_exec '+ taskname + ' '+temp_name+ ' '+str(ts)
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
                     msg = taskname + " starts"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                    
                 inputfile=queue_mul.get()
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
@@ -467,8 +493,11 @@ class Handler(FileSystemEventHandler):
                 dag_task.start()
                 dag_task.join()
                 ts = time.time()
-                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)
+                if BOKEH == 1:
+                    runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                    runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                    send_runtime_profile(runtime_info)
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
                 # end msg
             else:
 
@@ -479,8 +508,12 @@ class Handler(FileSystemEventHandler):
                     ts = time.time()
                     runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info)
+                    
+                        
                     if BOKEH == 1:
                         # msg = taskname + " starts "+str(ts)
+                        runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
+                        demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
                         msg = taskname + " starts"
                         demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     input_path = os.path.split(event.src_path)[0]
@@ -491,8 +524,11 @@ class Handler(FileSystemEventHandler):
                     dag_task.join()
                     filenames = []
                     ts = time.time()
-                    runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                    send_runtime_profile(runtime_info)
+                    if BOKEH == 1:
+                        runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                        runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                        demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+                        send_runtime_profile(runtime_info)
                     # end msg
             # print(time.time()-t1)
             # txec = toc(t)
@@ -552,7 +588,6 @@ def main():
 
     configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
-    # print(taskmap)
     taskname = taskmap[0]
     # print(taskname)
     if taskmap[1] == True:
@@ -573,8 +608,15 @@ def main():
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
     BOKEH = int(config['OTHER']['BOKEH'])
 
+    print('Bokeh information')
+    print(BOKEH_SERVER)
+    print(BOKEH_PORT)
+    print(BOKEH)
 
+    print('Taskmapping information')
+    print(taskmap[1])
     if taskmap[1] == True:
+        print('Monitor INPUT & OUTPUT')
         queue_mul=multiprocessing.Queue()
 
         #monitor INPUT as another process
@@ -585,7 +627,7 @@ def main():
         w1=Watcher1()
         w1.run()
     else:
-
+        print('Task Mapping information')
         print(taskmap[2:])
         path_src = "/centralized_scheduler/" + taskname
         args = ' '.join(str(x) for x in taskmap[2:])

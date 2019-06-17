@@ -240,5 +240,5 @@ def delete_all_exec(app_name):
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 
-    app_name = jupiter_config.app_option
+    app_name = jupiter_config.APP_OPTION
     delete_all_exec(app_name)

@@ -32,12 +32,35 @@ import pandas as pd
 import datetime
 import collections
 from pytz import timezone
+from networkx.drawing.nx_agraph import graphviz_layout
+import networkx as nx
+from bokeh.models import Plot, Range1d, MultiLine, Circle, HoverTool, BoxZoomTool, ResetTool
+from bokeh.models.graphs import from_networkx
+from bokeh.transform import transform 
+from bokeh.models.transforms import CustomJSTransform 
 
+def get_dag_nodes(lines):
+    nodes = []
+    for line in lines:
+        nodes.append(line.rstrip().split(" ")[0])
+    return nodes
+
+def get_dag_links(lines):
+    links = []
+    for i, line in enumerate(lines):
+        arr = line.rstrip().split(" ")
+        node = arr[0]
+        print(arr)
+        if i < len(lines)-1:
+            for i, each in enumerate(arr):
+                if i >= 3:
+                    links.append((node, arr[i].replace("\n","")))
+    return links
 
 class mq():
 
 
-    def __init__(self,outfname,subs,server,port,timeout,looptimeout):
+    def __init__(self,outfname,subs,server,port,timeout,looptimeout,nodes):
         self.OUTFNAME = outfname
         self.subs = subs
         self.server = server
@@ -49,6 +72,9 @@ class mq():
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.client.connect(self.server, self.port, self.timeout)
+        self.nodes = nodes
+        self.start_messages = [x+' starts' for x in self.nodes]
+        self.end_messages = [x+' ends' for x in self.nodes]
 
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self,client, userdata, flags, rc):
@@ -60,15 +86,10 @@ class mq():
 
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self,client, userdata, msg):
-        start_messages = ['localpro starts', 'aggregate0 starts', 'aggregate1 starts', 'aggregate2 starts',
-        'simpledetector0 starts', 'simpledetector1 starts', 'simpledetector2 starts', 'astutedetector0 starts',
-        'astutedetector1 starts', 'astutedetector2 starts', 'fusioncenter0 starts', 'fusioncenter1 starts', 
-        'fusioncenter2 starts', 'globalfusion starts']
-
-        end_messages = ['localpro ends', 'aggregate0 ends', 'aggregate1 ends', 'aggregate2 ends',
-        'simpledetector0 ends', 'simpledetector1 ends', 'simpledetector2 ends', 'astutedetector0 ends',
-        'astutedetector1 ends', 'astutedetector2 ends', 'fusioncenter0 ends', 'fusioncenter1 ends', 
-        'fusioncenter2 ends', 'globalfusion ends']
+        
+        
+        print(self.start_messages)
+        print(self.end_messages)
 
 
         top_dag=[5.15, 4.15, 4.15, 4.15, 3.15, 3.15, 3.15, 3.15, 3.15, 3.15, 2.15,2.15,2.15,1.15]
@@ -407,113 +428,206 @@ data_table4.on_change('source', lambda attr, old, new: update8())
 
 ###################################################################################################################################
 
-p1=figure(plot_width=600, plot_height=600)
-p1.background_fill_color = "#EEEDED"
-p1.xgrid.grid_line_color = None
-p1.ygrid.grid_line_color = None
-p1.xaxis.axis_label = 'Network Anomaly Detection Task Graph'
-p1.xaxis.axis_label_text_font_size='20pt'
+###################################################################################################################################
+
+file = open(DAG_PATH, 'r')
+lines = file.readlines()
+lines.pop(0)
+nodes = get_dag_nodes(lines)
+links = get_dag_links(lines)
+print('----------')
+print(nodes)
+print(links)
+print('-------------')
+
+G = nx.DiGraph()
+G.add_nodes_from(nodes)
+G.add_edges_from(links)
+pos = graphviz_layout(G ,prog='dot')
+
+# calculate the range for task graph
+range_x = [0,0]
+range_y = [0,0]
+for each in pos.values():
+    range_x[0] = min(range_x[0], int(each[0]))
+    range_x[1] = max(range_x[1], int(each[0]))
+    range_y[0] = min(range_y[0], int(each[1]))
+    range_y[1] = max(range_y[1], int(each[1]))
+range_x = [range_x[0]-50, range_x[1]+150]
+range_y = [range_y[0]-50, range_y[1]+50]
+
+p1 = Plot(plot_width=700, plot_height=700,
+    x_range=Range1d(range_x[0], range_x[1]), y_range=Range1d(range_y[0], range_y[1]))
+p1.title.text = "DAG"
+p.title.text_font_size = '20pt'
+node_hover_tool = HoverTool(tooltips=[("task", "@index")])
+p1.add_tools(node_hover_tool, BoxZoomTool(), ResetTool())
 
 
-p1.add_layout(Label(x= 4.5, y=4.7, text="JUPITER", text_color="black", text_font_style='bold',text_font_size='32pt'))
+global graph
+graph = from_networkx(G, pos, scale=1, center=(0,0))
+
+# print("DEBUG data_source:")
+# print(graph.node_renderer.data_source)
+# print(graph.edge_renderer.data_source.data)
+# print("DEBUG keys:")
+# print(pos.keys())
+# print("DEBUG values:")
+# print(pos.values())
 
 
-p1.quad(top=[5.15, 4.15, 4.15, 4.15, 3.15, 3.15, 3.15, 3.15, 3.15, 3.15, 2.15,2.15,2.15,1.15], 
-    bottom=[4.85, 3.85,3.85,3.85, 2.85,2.85,2.85,2.85,2.85,2.85, 1.85,1.85,1.85, 0.85], 
-    left=[3.3,1.3,3.3,5.3, 0.8, 1.8, 2.8, 3.8,  4.8,5.8, 1.3,3.3,5.3,3.3], 
-    right=[3.7,1.7,3.7,5.7, 1.2, 2.2, 3.2,  4.2,   5.2,  6.2,     1.7,3.7,5.7,3.7],
-    color=["#C2D2F9","#5984E8","#5984E8","#5984E8","#9380F0","#1906BF","#9380F0","#1906BF","#9380F0","#1906BF","#084594","#084594","#084594","#33148E"])
+colors = []
+indexs = []
+for i,each in enumerate(nodes):
+    indexs.append(i)
+    colors.append('blue')
+graph.node_renderer.data_source.data['colors'] = colors
+graph.node_renderer.data_source.data['name'] = nodes
+
+graph.node_renderer.glyph = Circle(size=15, fill_color='colors')
+graph.edge_renderer.glyph = MultiLine(line_color="black", line_alpha=0.8, line_width=1)
+p1.renderers.append(graph)
+
+# code = """
+#     var result = new Float64Array(xs.length)
+#     for (var i = 0; i < xs.length; i++) {
+#         result[i] = provider.graph_layout[xs[i]][%s]
+#     }
+#     return result
+# """
+# xcoord = CustomJSTransform(v_func=code % "0", args=dict(provider=graph.layout_provider))
+# ycoord = CustomJSTransform(v_func=code % "1", args=dict(provider=graph.layout_provider))
+
+# # Use the transforms to supply coords to a LabelSet 
+# labels = LabelSet(x=transform('index', xcoord),
+#                   y=transform('index', ycoord),
+#                   text='names', text_font_size="12px",
+#                   x_offset=5, y_offset=5,
+#                   source=source, render_mode='canvas')
+# p1.renderers.append(labels)
+
+# add labels to each node
+# x, y = zip(*graph.layout_provider.graph_layout.values())
+# node_labels = nx.get_node_attributes(G, 'name')
+# #node_labels = graph.node_renderer.data_source.data['name']
+# print(node_labels)
+# print(graph.node_renderer.data_source.data['name'])
+
+# source = ColumnDataSource({'x': x, 'y': y,
+#                            'task': tuple(node_labels)})
+
+# labels = LabelSet(x='x', y='y', text='task', source=source,
+#                   background_fill_color='white', x_offset=(-30), y_offset=8,
+#                   text_font_size="9pt")
+# p1.renderers.append(labels)
+
+# p1=figure(plot_width=600, plot_height=600)
+# p1.background_fill_color = "#EEEDED"
+# p1.xgrid.grid_line_color = None
+# p1.ygrid.grid_line_color = None
+# p1.xaxis.axis_label = 'Network Anomaly Detection Task Graph'
+# p1.xaxis.axis_label_text_font_size='20pt'
+
+
+# p1.add_layout(Label(x= 4.5, y=4.7, text="JUPITER", text_color="black", text_font_style='bold',text_font_size='32pt'))
+
+
+# p1.quad(top=[5.15, 4.15, 4.15, 4.15, 3.15, 3.15, 3.15, 3.15, 3.15, 3.15, 2.15,2.15,2.15,1.15], 
+#     bottom=[4.85, 3.85,3.85,3.85, 2.85,2.85,2.85,2.85,2.85,2.85, 1.85,1.85,1.85, 0.85], 
+#     left=[3.3,1.3,3.3,5.3, 0.8, 1.8, 2.8, 3.8,  4.8,5.8, 1.3,3.3,5.3,3.3], 
+#     right=[3.7,1.7,3.7,5.7, 1.2, 2.2, 3.2,  4.2,   5.2,  6.2,     1.7,3.7,5.7,3.7],
+#     color=["#C2D2F9","#5984E8","#5984E8","#5984E8","#9380F0","#1906BF","#9380F0","#1906BF","#9380F0","#1906BF","#084594","#084594","#084594","#33148E"])
 
 
 
-#p1.ellipse(3.5, 5, size=40, color="#C2D2F9") #localpro
-localpro = Label(x=2.3, y=4.9, text='localpro',text_color='black',background_fill_color='#C2D2F9', background_fill_alpha=0.5)
-p1.add_layout(localpro)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=4.85, x_end=1.5, y_end=4.2))
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=4.85, x_end=3.5, y_end=4.2))
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=4.85, x_end=5.5, y_end=4.2))
+# #p1.ellipse(3.5, 5, size=40, color="#C2D2F9") #localpro
+# localpro = Label(x=2.3, y=4.9, text='localpro',text_color='black',background_fill_color='#C2D2F9', background_fill_alpha=0.5)
+# p1.add_layout(localpro)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=4.85, x_end=1.5, y_end=4.2))
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=4.85, x_end=3.5, y_end=4.2))
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=4.85, x_end=5.5, y_end=4.2))
 
 
-#p1.ellipse(1.5, 4, size=40, color="#5984E8") #aggregate0
-aggregare0 = Label(x=1, y=4.3, text='aggregate0',text_color='black',background_fill_color='#5984E8', background_fill_alpha=0.5)
-p1.add_layout(aggregare0)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=1.5, y_start=3.83, x_end=1, y_end=3.2))
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=1.5, y_start=3.83, x_end=2, y_end=3.2))
+# #p1.ellipse(1.5, 4, size=40, color="#5984E8") #aggregate0
+# aggregare0 = Label(x=1, y=4.3, text='aggregate0',text_color='black',background_fill_color='#5984E8', background_fill_alpha=0.5)
+# p1.add_layout(aggregare0)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=1.5, y_start=3.83, x_end=1, y_end=3.2))
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=1.5, y_start=3.83, x_end=2, y_end=3.2))
 
 
-#p1.ellipse(3.5, 4, size=40, color="#5984E8") #aggregate1
-aggregate1 = Label(x=3.15, y=4.3, text='aggregate1',text_color='black',background_fill_color='#5984E8', background_fill_alpha=0.5)
-p1.add_layout(aggregate1)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=3.83, x_end=3, y_end=3.2))
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=3.83, x_end=4, y_end=3.2))
+# #p1.ellipse(3.5, 4, size=40, color="#5984E8") #aggregate1
+# aggregate1 = Label(x=3.15, y=4.3, text='aggregate1',text_color='black',background_fill_color='#5984E8', background_fill_alpha=0.5)
+# p1.add_layout(aggregate1)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=3.83, x_end=3, y_end=3.2))
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=3.83, x_end=4, y_end=3.2))
 
 
-#p1.ellipse(5.5, 4, size=40, color="#5984E8") #aggregate2
-aggregate2 = Label(x=5, y=4.3, text='aggregate2',text_color='black',background_fill_color='#5984E8', background_fill_alpha=0.5)
-p1.add_layout(aggregate2)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=5.5, y_start=3.83, x_end=5, y_end=3.2))
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=5.5, y_start=3.83, x_end=6, y_end=3.2))
+# #p1.ellipse(5.5, 4, size=40, color="#5984E8") #aggregate2
+# aggregate2 = Label(x=5, y=4.3, text='aggregate2',text_color='black',background_fill_color='#5984E8', background_fill_alpha=0.5)
+# p1.add_layout(aggregate2)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=5.5, y_start=3.83, x_end=5, y_end=3.2))
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=5.5, y_start=3.83, x_end=6, y_end=3.2))
 
 
-#p1.ellipse(1, 3, size=40, color="#9380F0") #simple_detector0
-simple_detector0 = Label(x=0.7, y=3.35, text='simple_detector0',text_color='black',background_fill_color='#9380F0', background_fill_alpha=0.5)
-p1.add_layout(simple_detector0)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=1, y_start=2.83, x_end=1.45, y_end=2.18))
+# #p1.ellipse(1, 3, size=40, color="#9380F0") #simple_detector0
+# simple_detector0 = Label(x=0.7, y=3.35, text='simple_detector0',text_color='black',background_fill_color='#9380F0', background_fill_alpha=0.5)
+# p1.add_layout(simple_detector0)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=1, y_start=2.83, x_end=1.45, y_end=2.18))
 
 
-#p1.ellipse(2, 3, size=40, color="#1906BF") #astute_detector0
-astute_detector0 = Label(x=1.5, y=2.6, text='astute_detector0',text_color='black',background_fill_color='#1906BF', background_fill_alpha=0.7)
-p1.add_layout(astute_detector0)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=2, y_start=2.83, x_end=1.55, y_end=2.18))
+# #p1.ellipse(2, 3, size=40, color="#1906BF") #astute_detector0
+# astute_detector0 = Label(x=1.5, y=2.6, text='astute_detector0',text_color='black',background_fill_color='#1906BF', background_fill_alpha=0.7)
+# p1.add_layout(astute_detector0)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=2, y_start=2.83, x_end=1.55, y_end=2.18))
 
 
-#p1.ellipse(3, 3, size=40, color="#9380F0") #simple_detector1
-simple_detector1 = Label(x=2.5, y=3.35, text='simple_detector1',text_color='black',background_fill_color='#9380F0', background_fill_alpha=0.5)
-p1.add_layout(simple_detector1)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3, y_start=2.83, x_end=3.45, y_end=2.18))
+# #p1.ellipse(3, 3, size=40, color="#9380F0") #simple_detector1
+# simple_detector1 = Label(x=2.5, y=3.35, text='simple_detector1',text_color='black',background_fill_color='#9380F0', background_fill_alpha=0.5)
+# p1.add_layout(simple_detector1)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3, y_start=2.83, x_end=3.45, y_end=2.18))
 
 
-#p1.ellipse(4, 3, size=40, color="#1906BF") #astute_detector1
-astute_detector1 = Label(x=3.5, y=2.6, text='astute detector1',text_color='black',background_fill_color='#1906BF', background_fill_alpha=0.7)
-p1.add_layout(astute_detector1)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=4, y_start=2.83, x_end=3.55, y_end=2.18))
+# #p1.ellipse(4, 3, size=40, color="#1906BF") #astute_detector1
+# astute_detector1 = Label(x=3.5, y=2.6, text='astute detector1',text_color='black',background_fill_color='#1906BF', background_fill_alpha=0.7)
+# p1.add_layout(astute_detector1)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=4, y_start=2.83, x_end=3.55, y_end=2.18))
 
 
-#p1.ellipse(5, 3, size=40, color="#9380F0") #simple_detector2
-simple_detector2 = Label(x=4.5, y=3.35, text='simple_detector2',text_color='black',background_fill_color='#9380F0', background_fill_alpha=0.5)
-p1.add_layout(simple_detector2)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=5, y_start=2.83, x_end=5.45, y_end=2.18))
+# #p1.ellipse(5, 3, size=40, color="#9380F0") #simple_detector2
+# simple_detector2 = Label(x=4.5, y=3.35, text='simple_detector2',text_color='black',background_fill_color='#9380F0', background_fill_alpha=0.5)
+# p1.add_layout(simple_detector2)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=5, y_start=2.83, x_end=5.45, y_end=2.18))
 
 
-#p1.ellipse(6, 3, size=40, color="#1906BF") #astute_detector2
-astute_detector2 = Label(x=5.5, y=2.6, text='astute_detector2',text_color='black',background_fill_color='#1906BF', background_fill_alpha=0.7)
-p1.add_layout(astute_detector2)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=6, y_start=2.83, x_end=5.55, y_end=2.18))
+# #p1.ellipse(6, 3, size=40, color="#1906BF") #astute_detector2
+# astute_detector2 = Label(x=5.5, y=2.6, text='astute_detector2',text_color='black',background_fill_color='#1906BF', background_fill_alpha=0.7)
+# p1.add_layout(astute_detector2)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=6, y_start=2.83, x_end=5.55, y_end=2.18))
 
 
-#p1.ellipse(1.5, 2, size=40, color="#084594") #fusion_center0
-fusion_center0 = Label(x=1, y=1.6, text='fusion_center0',text_color='black',background_fill_color='#084594', background_fill_alpha=0.5)
-p1.add_layout(fusion_center0)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=1.5, y_start=1.83, x_end=3.3, y_end=1.18))
+# #p1.ellipse(1.5, 2, size=40, color="#084594") #fusion_center0
+# fusion_center0 = Label(x=1, y=1.6, text='fusion_center0',text_color='black',background_fill_color='#084594', background_fill_alpha=0.5)
+# p1.add_layout(fusion_center0)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=1.5, y_start=1.83, x_end=3.3, y_end=1.18))
 
 
-#p1.ellipse(3.5, 2, size=40, color='#084594') #fusion_center1
-fusion_center1 = Label(x=3, y=1.6, text='fusion_center1',text_color='black',background_fill_color='#084594', background_fill_alpha=0.5)
-p1.add_layout(fusion_center1)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=1.83, x_end=3.5, y_end=1.18))
+# #p1.ellipse(3.5, 2, size=40, color='#084594') #fusion_center1
+# fusion_center1 = Label(x=3, y=1.6, text='fusion_center1',text_color='black',background_fill_color='#084594', background_fill_alpha=0.5)
+# p1.add_layout(fusion_center1)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=3.5, y_start=1.83, x_end=3.5, y_end=1.18))
 
 
-#p1.ellipse(5.5, 2, size=40, color='#084594') #fusion_center2
-fusion_center2 = Label(x=5, y=1.6, text='fusion_center2',text_color='black',background_fill_color='#084594', background_fill_alpha=0.5)
-p1.add_layout(fusion_center2)
-p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=5.5, y_start=1.83, x_end=3.7, y_end=1.18))
+# #p1.ellipse(5.5, 2, size=40, color='#084594') #fusion_center2
+# fusion_center2 = Label(x=5, y=1.6, text='fusion_center2',text_color='black',background_fill_color='#084594', background_fill_alpha=0.5)
+# p1.add_layout(fusion_center2)
+# p1.add_layout(Arrow(end=NormalHead(line_color="black", line_width=1, size=10),x_start=5.5, y_start=1.83, x_end=3.7, y_end=1.18))
 
 
-#p1.ellipse(3.5, 1, size=40, color="#33148E") #global_fusion
-global_fusion = Label(x=2, y=0.9, text='global_fusion',text_color='black',background_fill_color='#33148E', background_fill_alpha=0.5)
-p1.add_layout(global_fusion)
+# #p1.ellipse(3.5, 1, size=40, color="#33148E") #global_fusion
+# global_fusion = Label(x=2, y=0.9, text='global_fusion',text_color='black',background_fill_color='#33148E', background_fill_alpha=0.5)
+# p1.add_layout(global_fusion)
 
-ellipse_source = p1.quad(top='top', bottom='bottom', left='left', right='right',color='color', source= source2)
+# ellipse_source = p1.quad(top='top', bottom='bottom', left='left', right='right',color='color', source= source2)
 
 ###################################################################################################################################
 p2 = layout([title1,widgetbox(data_table,width=400,height=280),title2,widgetbox(data_table2,width=400,height=280)],sizing_mode='fixed',width=400,height=600)
