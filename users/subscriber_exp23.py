@@ -59,8 +59,7 @@ def get_app_list(app_path_list):
     
 
 class subscriber():
-    def __init__(self,outfname,ID,path,subs,server,port,timeout,looptimeout,user_log):
-        self.OUTFNAME = outfname
+    def __init__(self,ID,path,subs,server,port,timeout,looptimeout,user_log):
         self.id = ID
         self.path = path
         self.subs = subs
@@ -68,23 +67,25 @@ class subscriber():
         self.port = port
         self.timeout = timeout
         self.looptimeout = looptimeout
-        self.outf = open(OUTFNAME,'a')
-        self.client = mqtt.Client()
+        self.user_log = user_log
+        self.file = None
+        self.client = mqtt.Client(str(ID))
+        self.client.connect(self.server, self.port, self.timeout)
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
-        self.client.connect(self.server, self.port, self.timeout)
-        self.user_log = user_log
         self.client.loop_forever()
-        self.file = None
 
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self,client, userdata, flags, rc):
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
+        if rc==0:
+            print("connected OK Returned code=",rc)
+        else:
+            print("Bad connection Returned code=",rc)
         subres = client.subscribe(self.subs,qos=1)
-        print("Connected with result code "+str(rc))
-        print("Starting to write results to file")
-        self.file = open(self.user_log,'w')
+        # print("Starting to write results to file")
+        # self.file = open(self.user_log,'w')
         
 
     def on_message(self,client, userdata, msg):
@@ -101,17 +102,19 @@ class subscriber():
 global OUTFNAME, SERVER_IP, EXP, folder,APP_PATH_LIST
 OUTFNAME = 'users_management.html'
 SERVER_IP = "127.0.0.1"
-EXP = 'Experiment 2'
-folder = 'exp2'
-M = 1
+EXP = 'Experiment 3'
+folder = 'exp3'
+M = 5
 #EXP = 'Experiment 3'
 #folder = 'ex3'
 #M = 2
 
-APP_PATH_LIST = '../app_specific_files/dummy_app_combined/dummy_app_list_test'
+APP_PATH_LIST = '../app_specific_files/dummy_app_combined/dummy_app_list'
 
 global userid,userapp,app_options
 app_options = get_app_list(APP_PATH_LIST)
+
+print(app_options)
 
 N = len(app_options)
 cid = 1
@@ -120,17 +123,20 @@ userapp = []
 if os.path.isdir(folder):
     shutil.rmtree(folder)
 for i in range(1,N+1):
-    cur_app = app_options[i-1]
+    cur_app = 'dummyapp%d'%(i)
     for j in range(0,M):
         user_path = '%s/user%d'%(folder,cid)
         user_log = '%s/user%d/user%d.log'%(folder,cid,cid)
         user_id = 'U'+str(cid)
+        print(cid)
         cur_sub = cur_app
         userid.append(user_id)
         userapp.append(cur_app)
         if not os.path.isdir(user_path):
             os.makedirs(user_path, exist_ok=True)
-        _thread.start_new_thread(subscriber,(OUTFNAME,cid,user_path,cur_sub,SERVER_IP,1883,60,1,user_log))
+        info = _thread.start_new_thread(subscriber,(cid,user_path,cur_sub,SERVER_IP,1883,300,1,user_log))
+        time.sleep(1)
+        print(info)
         cid = cid+1
 
 
@@ -150,3 +156,5 @@ doc.title = 'Users management'
 p1 = layout([title1,widgetbox(data_table,width=1000,height=1000)])
 layout = row(p1)
 doc.add_root(layout)
+
+

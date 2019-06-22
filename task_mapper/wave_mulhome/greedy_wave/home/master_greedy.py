@@ -151,9 +151,9 @@ def recv_mapping():
             assignments[p] = node
             to_be_write.append(p + '\t' + node)
 
-        print('-------------------')
-        print(assignments)
-        print('-------------------')
+        # print('-------------------')
+        # print(assignments)
+        # print('-------------------')
         if not os.path.exists("./local"):
             os.mkdir("./local")
 
@@ -172,8 +172,8 @@ def return_assignment():
         json: mapping assignments
     """
     print("Recieved request for current mapping. Current mappings done:", len(assignments))
-    print(assignments)
     if len(assignments) == MAX_TASK_NUMBER:
+        print(assignments)
         return json.dumps(assignments)
     else:
         return json.dumps(dict())
@@ -193,8 +193,8 @@ def assign_task_to_remote(assigned_node, task_name):
     try:
         print('Assign the first task based on the input file')
         url = "http://" + nodes[assigned_node] + "/assign_task"
-        print(url)
-        print(task_name)
+        # print(url)
+        # print(task_name)
         params = {'task_name': task_name}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -237,7 +237,7 @@ def init_thread():
     time.sleep(60)
     print('--------------- Init thread')
     for key in init_tasks:
-        print(key)
+        # print(key)
         tasks = init_tasks[key]
         for _, task in enumerate(tasks):
             res = assign_task_to_remote(key, task)
@@ -254,7 +254,9 @@ def monitor_task_status():
 
     killed = 0
     while True:
+        print(len(assigned_tasks))
         if len(assigned_tasks) == MAX_TASK_NUMBER:
+            print(assigned_tasks)
             print("All task allocations are done! Great News!")
             break
         #     for node in nodes:
@@ -326,8 +328,8 @@ def init_task_topology():
             else:
                 parents[child] = [parent]
 
-    print(parents)
-    print(child)
+    # print(parents)
+    # print(child)
 
     for key, value in sorted(parents.items()):
     # for key in parents:

@@ -5,7 +5,7 @@ import math
 import random
 
 def task(filename,pathin,pathout):
-	execution_time = 1.2
+	execution_time = 2.1
 	execution_time
 	timeout = time.time() + execution_time
 	while time.time() < timeout:
@@ -39,7 +39,7 @@ def task(filename,pathin,pathout):
 	comm = dict()
 	for line in total_info:
 		src = line.strip().split(' ')[0]
-		dest_info = line.split(' ')[1:-1]
+		dest_info = line.strip().split(' ')[1:]
 		if len(dest_info)>0:
 			comm[src] = dest_info
 	print('-------------------------##')
@@ -51,9 +51,9 @@ def task(filename,pathin,pathout):
 	output_path=[]
 	if task_name in comm.keys():
 		print(comm[task_name])
-		dest=[x.split('-')[0] for x in comm[task_name]]
+		dest=[x.split('#')[0] for x in comm[task_name]]
 		print(dest)
-		comm_data=[str(math.ceil(float(x.split('-')[1]))) for x in comm[task_name]]
+		comm_data=[str(math.ceil(float(x.split('#')[1]))) for x in comm[task_name]]
 		print(comm_data)
 		output_list=[]
 		file_size=[]

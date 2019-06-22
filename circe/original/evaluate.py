@@ -62,7 +62,7 @@ def evaluate_sequential():
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
     print('---- Generate random input files')
-    file_count = 2
+    # file_count = 2
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
@@ -123,10 +123,44 @@ def evaluate_combine(num_apps,num_samples):
                 break
         print('Continue to generate more random input files')
 
+def evaluate_combine_app(num_apps,num_samples):
+    print('---- Generate random input files')
+    for i in range(1,num_apps+1):
+        filein = 'sample_input/dummyapp%d-1botnet.ipsum'%(i)
+        fileout ='input/dummyapp%d-1botnet.ipsum'%(i)
+        shutil.copyfile(filein,fileout)   
+    output_folder = 'output/'
+    outfile = set()
+    while 1:
+        time.sleep(120)
+        for (dirpath, dirnames, filenames) in os.walk(output_folder):
+            for filename in filenames:
+                input_file = filename.split('_')[0] 
+                if input_file not in outfile:
+                    print(input_file)
+                    appname = input_file.split('-')[0]
+                    print(appname)
+                    print(input_file.split('-')[1])
+                    curfile = input_file.split('-')[1].split('botnet')[0]
+                    print(curfile)
+                    curnum = int(curfile)+1
+                    if curnum >num_samples: continue
+                    print('Generate more random input files')
+                    newfile = 'sample_input/'+appname+'-'+str(curnum)+'botnet.ipsum'
+                    print(newfile)
+                    fileout ='input/'+appname+'-'+str(curnum)+'botnet.ipsum'
+                    print(fileout)
+                    shutil.copyfile(newfile,fileout)
+                    outfile.add(input_file)
+        print(outfile)
+
+
+
+
 if __name__ == '__main__':
     #evaluate_random()
     time.sleep(60)
     print('Start copying sample files for evaluation')
-    #evaluate_sequential()
+    evaluate_sequential()
     #evaluate_test()
-    evaluate_combine(2,10)
+    # evaluate_combine_app(100,10)

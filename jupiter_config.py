@@ -115,17 +115,17 @@ def set_globals():
         print('Non pricing scheme selected')
     CIRCE_PATH              = HERE + 'circe/%s/'%(pricing_option)
 
-    print('CIRCE path-------------------------------------------')
-    print(CIRCE_PATH)
+    # print('CIRCE path-------------------------------------------')
+    # print(CIRCE_PATH)
     """Kubernetes required information"""
     global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 
     KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
     # Namespaces
-    DEPLOYMENT_NAMESPACE    = 'quynh-circe'
+    DEPLOYMENT_NAMESPACE    = 'quynh2-circe'
     PROFILER_NAMESPACE      = 'quynh-profiler'
-    MAPPER_NAMESPACE        = 'quynh-mapper'
+    MAPPER_NAMESPACE        = 'quynh2-mapper'
     EXEC_NAMESPACE          = 'quynh-exec'
 
     """ Node file path and first task information """
@@ -152,25 +152,15 @@ def set_globals():
     # APP_NAME                  = 'app_specific_files/dummy_app'
     # APP_OPTION                = 'dummy'
 
-    # HOME_CHILD              = 'task0'
-    # APP_PATH                = HERE  + 'app_specific_files/dummy_app_100/'
-    # APP_NAME                = 'app_specific_files/dummy_app_100'
-    # APP_OPTION              = 'dummy100'
+    HOME_CHILD              = 'task0'
+    APP_PATH                = HERE  + 'app_specific_files/dummy_app_100/'
+    APP_NAME                = 'app_specific_files/dummy_app_100'
+    APP_OPTION              = 'dummy100'
 
-    # HOME_CHILD              = 'task0'
-    # APP_PATH                = HERE  + 'app_specific_files/dummy_app_50/'
-    # APP_NAME                = 'app_specific_files/dummy_app_50'
-    # APP_OPTION                = 'dummy50'
-
-    # HOME_CHILD              = 'task0'
-    # APP_PATH                = HERE  + 'app_specific_files/dummy_app_20/'
-    # APP_NAME                = 'app_specific_files/dummy_app_20'
-    # APP_OPTION                = 'dummy20'
-
-    HOME_CHILD                = 'distribute'
-    APP_PATH                  = HERE  + 'app_specific_files/dummy_app_combined/'
-    APP_NAME                  = 'app_specific_files/dummy_app_combined'
-    APP_OPTION                = 'combined'
+    # HOME_CHILD                = 'distribute'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app_combined/'
+    # APP_NAME                  = 'app_specific_files/dummy_app_combined'
+    # APP_OPTION                = 'combined'
 
 
     """pricing CIRCE home and worker images"""

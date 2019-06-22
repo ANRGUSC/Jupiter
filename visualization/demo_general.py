@@ -287,7 +287,9 @@ global OUTFNAME, SERVER_IP, SUBSCRIPTIONS, DAG_PATH,NODE_PATH
 OUTFNAME = 'demo_original.html'
 SERVER_IP = "127.0.0.1"
 SUBSCRIPTIONS = 'JUPITER'
-DAG_PATH = 'configuration_100.txt'
+#DAG_PATH = '../app_specific_files/dummy_app_100/configuration.txt'
+DAG_PATH = '../app_specific_files/dummy_app_combined/configuration.txt'
+
 NODE_PATH = '../nodes.txt'
 
 global start_time, finish_time, total_time, offset, input_num

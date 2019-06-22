@@ -45,7 +45,9 @@ from bokeh.transform import transform
 from bokeh.models.transforms import CustomJSTransform 
 import _thread
 import shutil
+from flask import Flask, request
 
+app = Flask(__name__)
     
 def retrieve_tasks(dag_info_file):
     config_file = open(dag_info_file,'r')
@@ -64,7 +66,7 @@ def retrieve_tasks(dag_info_file):
 
 class subscriber():
     def __init__(self,outfname,ID,path,subs,server,port,timeout,looptimeout,user_log):
-        self.OUTFNAME = outfname
+        # self.OUTFNAME = outfname
         self.id = ID
         self.path = path
         self.subs = subs
@@ -72,23 +74,20 @@ class subscriber():
         self.port = port
         self.timeout = timeout
         self.looptimeout = looptimeout
-        self.outf = open(OUTFNAME,'a')
+        # self.outf = open(OUTFNAME,'a')
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.client.connect(self.server, self.port, self.timeout)
         self.user_log = user_log
         self.client.loop_forever()
-        self.file = None
-
+        
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self,client, userdata, flags, rc):
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
         subres = client.subscribe(self.subs,qos=1)
         print("Connected with result code "+str(rc))
-        print("Starting to write results to file")
-        self.file = open(self.user_log,'w')
         
 
     def on_message(self,client, userdata, msg):
@@ -99,20 +98,21 @@ class subscriber():
         with open(self.user_log,'a') as f:
             f.write(message)
             f.write('\n')
+            time.sleep(20)
 
 
 
 global OUTFNAME, SERVER_IP, DAG_PATH, EXP,folder
 OUTFNAME = 'users_management.html'
 SERVER_IP = "127.0.0.1"
-DAG_PATH = 'configuration_100.txt'
+DAG_PATH = '../app_specific_files/dummy_app_100/configuration.txt'
 EXP = 'Experiment 1'
 folder = 'exp1'
 
 global tasks,taskid,userid,usertask
 tasks,tasksid = retrieve_tasks(DAG_PATH)
 N = len(tasks)
-M = 1
+M = 5
 cid = 1
 userid = []
 usertask = []
@@ -129,9 +129,11 @@ for i in range(1,N+1):
         usertask.append(cur_task)
         if not os.path.isdir(user_path):
             os.makedirs(user_path, exist_ok=True)
-        _thread.start_new_thread(subscriber,(OUTFNAME,cid,user_path,cur_sub,SERVER_IP,1883,60,1,user_log))
+        _thread.start_new_thread(subscriber,(OUTFNAME,cid,user_path,cur_sub,SERVER_IP,1883,300,1,user_log))
         cid = cid+1
 
+
+app.run(host='0.0.0.0',port=5055)
 
 #####################
 global doc, data_table,source

@@ -164,13 +164,17 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         dag.append(mapping)
         print("Printing DAG:")
         pprint(dag)
+        with open('log_DAG.txt', 'w') as outfile:  
+            json.dump(dag, outfile)
         print("Printing schedule")
         pprint(schedule)
+        with open('log_schedule.txt', 'w') as outfile:  
+            json.dump(schedule, outfile)
         print("End print")
         
     
     else:
-        import static_assignment1 as st
+        import static_assignment as st
         dag = st.dag
         schedule = st.schedule
 
@@ -296,15 +300,19 @@ def redeploy_system(app_id,app_name,port):
         dag.append(mapping)
         print("Printing DAG:")
         pprint(dag)
+        with open('log_DAG.txt', 'w') as outfile:  
+            json.dump(dag, outfile)
         print("Printing schedule")
         pprint(schedule)
+        with open('log_schedule.txt', 'w') as outfile:  
+            json.dump(schedule, outfile)
         print("End print")
 
     
     else:
         import static_assignment
-        # dag = static_assignment.dag
-        # schedule = static_assignment.schedule
+        dag = static_assignment.dag
+        schedule = static_assignment.schedule
 
     print('Network Profiling Information:')
     print(profiler_ips)
@@ -377,7 +385,7 @@ def main():
     app_name = jupiter_config.APP_OPTION
     circe_port = int(jupiter_config.FLASK_CIRCE)
     
-    num_samples = 20
+    num_samples = 100*10 #apps x samples
     num_runs = 1
     num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]

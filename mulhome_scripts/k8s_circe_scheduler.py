@@ -104,12 +104,12 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     first_task = dag_info[0]
     dag = dag_info[1]
     hosts = temp_info[2]
-    print("hosts:")
-    pprint(hosts)
-    print(len(dag_info))
-    pprint(dag_info[0])
-    pprint(dag_info[1])
-    pprint(dag_info[2])
+    # print("hosts:")
+    # pprint(hosts)
+    # print(len(dag_info))
+    # pprint(dag_info[0])
+    # pprint(dag_info[1])
+    # pprint(dag_info[2])
     service_ips = {}; #list of all service IPs
 
     """
@@ -119,7 +119,8 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     home_name =app_name+"-home"
     home_body = write_circe_service_specs(name = home_name)
     ser_resp = api.create_namespaced_service(namespace, home_body)
-    print("Home service created. status = '%s'" % str(ser_resp.status))
+    print("Home service created")
+    # print("Home service created. status = '%s'" % str(ser_resp.status))
 
     try:
         resp = api.read_namespaced_service(home_name, namespace)
@@ -127,7 +128,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
         print("Exception Occurred")
 
     service_ips['home'] = resp.spec.cluster_ip
-    print(resp.spec.cluster_ip)
+    # print(resp.spec.cluster_ip)
 
     """
         Iterate through the list of tasks and run the related k8 deployment, replicaset, pod, and service on the respective node.
@@ -139,9 +140,12 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             kubectl get pod -n "namespace name"
     """ 
    
+    count = 0
     for key, value in dag.items():
-
         task = key
+        print(task)
+        print(count)
+        count = count+1
         nexthosts = ''
  
         """
@@ -152,7 +156,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
 
         # Call the Kubernetes API to create the service
         ser_resp = api.create_namespaced_service(namespace, body)
-        print("Service created. status = '%s'" % str(ser_resp.status))
+        # print("Service created. status = '%s'" % str(ser_resp.status))
     
         try:
             resp = api.read_namespaced_service(pod_name, namespace)
@@ -165,10 +169,10 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
 
-    print(service_ips)
-    print(service_ips.keys())
-    print(service_ips.values())
-    print(all_node)
+    # print(service_ips)
+    # print(service_ips.keys())
+    # print(service_ips.values())
+    # print(all_node)
     """
     All services have started for CIRCE and deployment is yet to begin
     """
@@ -176,6 +180,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     """
     Start circe
     """
+    count = 0
     for key, value in dag.items():
 
         task = key
@@ -189,7 +194,9 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             Note that the k8node1 and k8node2 in the example are the unique node ids of the kubernets cluster nodes.
         """
         print(key)
-        print(value)
+        print(count)
+        count = count +1
+        # print(value)
         inputnum = str(value[0])
         flag = str(value[1])
 
@@ -202,10 +209,10 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             if i != 2:
                 next_svc = next_svc + ':'
             next_svc = next_svc + str(service_ips.get(value[i]))
-        print("NEXT HOSTS")
-        print(nexthosts)
-        print("NEXT SVC")
-        print(next_svc)
+        # print("NEXT HOSTS")
+        # print(nexthosts)
+        # print("NEXT SVC")
+        # print(next_svc)
     
         pod_name = app_name+"-"+task
         #Generate the yaml description of the required deployment for each task
@@ -216,12 +223,13 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             own_ip = service_ips[task],
             all_node = all_node,
             all_node_ips = all_node_ips)
-        pprint(dep)
+        # pprint(dep)
         
 
         # # Call the Kubernetes API to create the deployment
         resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
-        print("Deployment created. status = '%s'" % str(resp.status))
+        print("Deployment created")
+        # print("Deployment created. status = '%s'" % str(resp.status))
 
     while 1:
         if check_status_circe(dag,app_name):
@@ -234,9 +242,10 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
                                 child = jupiter_config.HOME_CHILD,
                                 child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
                                 dir = '{}')
-    print(home_dep)
+    # print(home_dep)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
-    print("Home deployment created. status = '%s'" % str(resp.status))
+    print("Home deployment created")
+    # print("Home deployment created. status = '%s'" % str(resp.status))
 
-    pprint(service_ips)
+    # pprint(service_ips)
     
