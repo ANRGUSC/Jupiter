@@ -64,7 +64,7 @@ rt_finish_time = defaultdict(list)
 
 def demo_help(server,port,topic,msg):
     client = mqtt.Client()
-    client.connect(server, port,60)
+    client.connect(server, port,300)
     client.publish(topic, msg,qos=1)
     client.disconnect()
 
@@ -94,9 +94,9 @@ def recv_mapping():
             start_time[worker_node].append(ts)
         else:
             end_time[worker_node].append(ts)
-            print(worker_node + " takes time:" + str(end_time[worker_node][-1] - start_time[worker_node][-1]))
+            # print(worker_node + " takes time:" + str(end_time[worker_node][-1] - start_time[worker_node][-1]))
             if worker_node in last_tasks:
-                print(worker_node)
+                # print(worker_node)
             #if worker_node == "globalfusion":
                 # Per task stats:
                 print("Start time stats:", start_time)
@@ -123,7 +123,7 @@ def return_output_files():
         int: number of output files
     """
     num_files = len(os.listdir("output/"))
-    print("Recieved request for number of output files. Current done:", num_files)
+    # print("Recieved request for number of output files. Current done:", num_files)
     return json.dumps(num_files)
 app.add_url_rule('/', 'return_output_files', return_output_files)
 
@@ -146,7 +146,7 @@ def recv_runtime_profile():
         msg = request.args.get('msg').split()
         
 
-        print("Received runtime message:", worker_node, msg[0],msg[1], msg[2])
+        # print("Received runtime message:", worker_node, msg[0],msg[1], msg[2])
         
         # print(rt_enter_time)
         # print(rt_exec_time)
@@ -158,20 +158,20 @@ def recv_runtime_profile():
             rt_exec_time[(worker_node,msg[1])] = float(msg[2])
         else: #rt_finish
             rt_finish_time[(worker_node,msg[1])] = float(msg[2])
-            print('----------------------------')
-            print("Worker node: "+ worker_node)
-            print("Input file : "+ msg[1])
-            print("Total duration time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
-            print("Waiting time:" + str(rt_exec_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
-            print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
+            # print('----------------------------')
+            # print("Worker node: "+ worker_node)
+            # print("Input file : "+ msg[1])
+            # print("Total duration time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
+            # print("Waiting time:" + str(rt_exec_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
+            # print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
             
-            print('----------------------------') 
+            # print('----------------------------') 
             #if worker_node == "globalfusion" or "task4" or "task99":
             if worker_node in last_tasks:
                 # Per task stats:
                 print('********************************************') 
                 print("Received final output at home: Runtime profiling info:")
-                print(worker_node)
+                # print(worker_node)
                 """
                     - Worker node: task name
                     - Input file: input files
@@ -197,12 +197,12 @@ def recv_runtime_profile():
                         duration = rt_finish_time[k]-rt_exec_time[k]
                         waiting = rt_exec_time[k]-v
                         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
-                        print(s)
+                        # print(s)
                         log_file.write(s)
                         log_file.flush()
 
                 log_file.close()
-                print('********************************************')
+                # print('********************************************')
         
 
                 
@@ -249,7 +249,7 @@ def transfer_data_scp(IP,user,pword,source, destination):
         try:
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
             os.system(cmd)
-            print('data transfer complete\n')
+            # print('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,ts)
             runtime_sender_log.write(s)
@@ -281,7 +281,7 @@ def transfer_data(IP,user,pword,source, destination):
         destination (str): destination file path
     """
     msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
-    print(msg)
+    # print(msg)
     
 
     if TRANSFER == 0:
@@ -318,17 +318,17 @@ class MyHandler(PatternMatchingEventHandler):
         """
         # the file will be processed there
         if event.event_type == 'created':
-            print(event.src_path, event.event_type)  # print now only for degug
+            # print(event.src_path, event.event_type)  # print now only for degug
             outputfile = event.src_path.split('/')[-1].split('_')[0]
 
-            print(outputfile)
+            # print(outputfile)
             end_times[outputfile] = time.time()
             
-            print("ending time is: ", end_times)
+            # print("ending time is: ", end_times)
             exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
-            print("execution time is: ", exec_times)
+            # print("execution time is: ", exec_times)
 
-            if BOKEH == 1:
+            if BOKEH == 2:
                 appname = outputfile.split('-')[0]
                 msg = 'makespan '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) 
                 demo_help(BOKEH_SERVER,BOKEH_PORT,appname,msg)
@@ -417,7 +417,7 @@ class Handler(FileSystemEventHandler):
         
         # bottleneck['receiveinput'].append(txec)
         # print(np.mean(bottleneck['receiveinput']))
-        print('***************************************************')
+        # print('***************************************************')
 def main():
     """
         -   Read configurations (DAG info, node info) from ``nodes.txt`` and ``configuration.txt``
@@ -473,9 +473,9 @@ def main():
     dag = dag_info[1]
     hosts=dag_info[2]
 
-    print("TASK1: ", dag_info[0])
-    print("DAG: ", dag_info[1])
-    print("HOSTS: ", dag_info[2])
+    # print("TASK1: ", dag_info[0])
+    # print("DAG: ", dag_info[1])
+    # print("HOSTS: ", dag_info[2])
 
     global last_tasks
     last_tasks = set()
@@ -483,17 +483,17 @@ def main():
         if 'home' in dag_info[1][task]:
             last_tasks.add(task)
 
-    print("LAST TASKS: ", last_tasks)
+    # print("LAST TASKS: ", last_tasks)
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH
     BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
     BOKEH = int(config['OTHER']['BOKEH'])
 
-    print('Bokeh information')
-    print(BOKEH_SERVER)
-    print(BOKEH_PORT)
-    print(BOKEH)
+    # print('Bokeh information')
+    # print(BOKEH_SERVER)
+    # print(BOKEH_PORT)
+    # print(BOKEH)
 
     #monitor INPUT folder for the incoming files
     w = Watcher()

@@ -44,10 +44,10 @@ class MyEventHandler(pyinotify.ProcessEvent):
         logging = db[node_info]
         with open(event.pathname) as f:
             first_line = f.readline()
-            print(first_line)
+            # print(first_line)
             for line in f:
                 parts = line.split()
-                print(parts)
+                # print(parts)
             try:
                 df = pd.read_csv(event.pathname,delimiter=',',header=0,names = ["Task","Duration [sec]", "Output File [Kbit]"])
                 data_json = json.loads(df.to_json(orient='records'))
@@ -74,10 +74,10 @@ def update_mongo(file_path):
     logging = db[node_info]
     with open(file_path) as f:
         first_line = f.readline()
-        print(first_line)
+        # print(first_line)
         for line in f:
             parts = line.split()
-            print(parts)
+            # print(parts)
         try:
             df = pd.read_csv(file_path,delimiter=',',header=0,names = ["Task","Duration [sec]", "Output File [Kbit]"])
             data_json = json.loads(df.to_json(orient='records'))
@@ -127,7 +127,7 @@ def transfer_data_scp(IP,user,pword,source, destination):
     retry = 0
     while retry < num_retries:
         try:
-            print(IP)
+            # print(IP)
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
             os.system(cmd)
             print('data transfer complete\n')
@@ -214,7 +214,7 @@ def main():
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].append(data[i])
-    print("tasks: ", tasks)
+    # print("tasks: ", tasks)
 
     ## import task modules, put then in a list and create task-module dictinary
     task_module = {}
@@ -229,30 +229,34 @@ def main():
     ## write results in a text file
     myfile = open(os.path.join(os.path.dirname(__file__), 'profiler_'+nodename+'.txt'), "w")
     myfile.write('task,time(sec),output_data (Kbit)\n')
-    print('task order:')
-    print(task_order)
+    # print('task order:')
+    # print(task_order)
 
     ## execute each task and get the timing and data size
+
+    count = 0
     for task in task_order:
 
         module = task_module.get(task)
         os.environ['TASK'] = task
-        print(task)
+        # print(task)
+        print(count)
+        count = count+1
 
         start_time = datetime.datetime.utcnow()
         filename = module.main()
-        print('------------------------------------------------')
-        print(filename)
+        # print('------------------------------------------------')
+        # print(filename)
         stop_time = datetime.datetime.utcnow()
         mytime = stop_time - start_time
         mytime = int(mytime.total_seconds()) #convert to seconds
 
         output_data = [file_size(fname) for fname in filename]
-        print(output_data)
-        print('------------------------------------------------')
+        # print(output_data)
+        # print('------------------------------------------------')
         sum_output_data = sum(output_data) #current: summation of all output files
         line=task+','+str(mytime)+ ','+ str(sum_output_data) + '\n'
-        print(line)
+        # print(line)
         myfile.write(line)
         myfile.flush()
 
@@ -282,7 +286,7 @@ def main():
         os.system('mv ' + master_profile_file_name + ' ' + local_profiler_path)
 
     nonDAG_file = local_profiler_path+ 'profiler_home.txt'
-    print(nonDAG_file)
+    # print(nonDAG_file)
     print('update non DAG info in MongoDB')
     client_mongo = MongoClient('mongodb://localhost:'+ str(MONGO_PORT) +'/')
     db = client_mongo['execution_profiler']
@@ -334,10 +338,10 @@ def main():
             try:
                 print('--- Add execution info from file: '+ file_path)
                 src_path = profiling_folder + '/' + file_path
-                print(src_path)
+                # print(src_path)
                 update_mongo(src_path)
-                print(profiling_folder_processed)
-                print(file_path)
+                # print(profiling_folder_processed)
+                # print(file_path)
                 shutil.move(src_path, profiling_folder_processed + file_path)
                 recv_file_count += 1
             except:

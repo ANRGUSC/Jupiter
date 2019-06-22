@@ -73,8 +73,8 @@ def prepare_global():
     network_map = {v: k for k, v in tmp_nodes_for_convert.items()}
 
     master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
-    print("Nodes", nodes)
-    print(network_map)
+    # print("Nodes", nodes)
+    # print(network_map)
 
 
 
@@ -159,8 +159,8 @@ def init_task_topology():
             else:
                 parents[child] = [parent]
 
-    print(parents)
-    print(child)
+    # print(parents)
+    # print(child)
     # for key in parents:
     #     parent = parents[key]
     for key, value in sorted(parents.items()):
@@ -191,26 +191,26 @@ def assign_task():
     try:
 
         task_name = request.args.get('task_name')
-        print('---------------')
-        print('I am assigned the task')
-        print(task_name)
+        # print('---------------')
+        # print('I am assigned the task')
+        # print(task_name)
         local_mapping[task_name] = False
         res = call_send_mapping(task_name, node_name)
-        print(res)
-        print('---------------')
+        # print(res)
+        # print('---------------')
         print('All my current tasks')
         print(local_mapping)
-        print('---------------')
+        # print('---------------')
         
         print('*******************')
         if len(control_relation[task_name])>0:
             print('I am responsible for the next children tasks')
-            print(control_relation[task_name])
+            # print(control_relation[task_name])
             print(local_children)
             for task in control_relation[task_name]:
-                print(task)
+                # print(task)
                 if task not in local_children.keys():
-                    print(task)
+                    # print(task)
                     local_children[task] = False
                     write_file(local_responsibility + "/" + task, 'TODO', "w+")
         else:
@@ -345,13 +345,13 @@ class Handler(FileSystemEventHandler):
 
             print("Received file as input - %s." % event.src_path)
             new_task = os.path.split(event.src_path)[-1]
-            print(new_task)
+            # print(new_task)
             _thread.start_new_thread(assign_children_task,(new_task,))
 
 
 def assign_children_task(children_task):
     print('Starting assigning process for the children task')
-    print(children_task)
+    # print(children_task)
     while True:
         if is_network_profile_data_ready and is_resource_data_ready:
             break
@@ -400,8 +400,8 @@ def get_most_suitable_node(file_size):
         if delay < min_value:
             min_value = delay
 
-    print('-------------- Network')
-    print(network_profile_data)
+    # print('-------------- Network')
+    # print(network_profile_data)
 
     # get all the nodes that satisfy: time < tmin * threshold
     for _, item in enumerate(network_profile_data):
@@ -411,7 +411,7 @@ def get_most_suitable_node(file_size):
     min_value = sys.maxsize
     result_node_name = ''
     for item in valid_nodes:
-        print(item)
+        # print(item)
         tmp_value = network_profile_data[item]['delay']
 
         # tmp_cpu = 10000
@@ -419,7 +419,7 @@ def get_most_suitable_node(file_size):
         tmp_cpu = sys.maxsize
         tmp_memory = sys.maxsize
         if item in resource_data.keys():
-            print(resource_data[item])
+            # print(resource_data[item])
             tmp_cpu = resource_data[item]['cpu']
             tmp_memory = resource_data[item]['memory']
 
@@ -428,8 +428,8 @@ def get_most_suitable_node(file_size):
             min_value = tmp_cost
             result_node_name = item
 
-    print('------------- Resource')
-    print(resource_data)
+    # print('------------- Resource')
+    # print(resource_data)
     
 
     if not result_node_name:
@@ -491,7 +491,7 @@ def get_resource_data_drupe():
                 break
             r = requests.get("http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC) + "/all")
             result = r.json()
-            print(result)
+            # print(result)
             if len(result) != 0:
                 break
             else:
@@ -531,15 +531,15 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     logging =db[my_profiler_ip].find().limit(num_nb)
     for record in logging:
         # Destination ID -> Parameters(a,b,c) , Destination IP
-        print('-------')
-        print(record['Destination[IP]'])
-        print(home_profiler_ip)
+        # print('-------')
+        # print(record['Destination[IP]'])
+        # print(home_profiler_ip)
         if record['Destination[IP]'] in home_profiler_ip: continue
         params = re.split(r'\s+', record['Parameters'])
         network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
                                                             'c': float(params[2]), 'ip': record['Destination[IP]']}
     print('Network information has already been provided')
-    print(network_profile_data)
+    # print(network_profile_data)
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
@@ -604,7 +604,7 @@ def main():
     """
     
     prepare_global()
-    print(control_relation)
+    # print(control_relation)
 
     global node_name, node_id, FLASK_PORT, home_profiler_ip, home_profiler_nodes
 
