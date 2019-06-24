@@ -40,11 +40,11 @@ import datetime
 from flask import Flask, request
 
 
-N = 500
+# N = 500
 folder = 'test/'
-if os.path.isdir(folder):
-    shutil.rmtree(folder)
-os.mkdir(folder)
+# if os.path.isdir(folder):
+#     shutil.rmtree(folder)
+# os.mkdir(folder)
 
 
 # class Test():
@@ -126,14 +126,14 @@ class subscriber():
 app = Flask(__name__)
 # Test MQTT
 def main():
-    N = 250
-    for i in range(0,N):
+    N = 500
+    for i in range(250,N):
         print(i)
         s = _thread.start_new_thread(subscriber,(i,))
         time.sleep(3)
 
     print(count)
-    app.run(host='0.0.0.0',port=5055)
+    app.run(host='0.0.0.0',port=5056)
 
 if __name__ == '__main__':
     main()

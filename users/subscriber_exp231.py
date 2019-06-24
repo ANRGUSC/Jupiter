@@ -4,7 +4,7 @@ __license__ = "GPL"
 __version__ = "2.1"
 
 """
-    Experiment 1 : 100 nodes, 1 DAG 100 tasks, 500 users, 5 users subscribe to the results of each task of the same DAG 
+    Experiment 2: 100 nodes, 100 DAGs, 100 users, each user subscribe to the final make span result of each DAG 
 """
 
 import os
@@ -48,25 +48,19 @@ import shutil
 from flask import Flask, request
 
 app = Flask(__name__)
-    
-def retrieve_tasks(dag_info_file):
-    config_file = open(dag_info_file,'r')
-    dag_size = int(config_file.readline())
 
-    tasks={}
-    tasksid={}
-    for i, line in enumerate(config_file, 1):
-        dag_line = line.strip().split(" ")
-        tasks[dag_line[0]]=i 
-        tasksid[i]=dag_line[0]
-        if i == dag_size:
-            break
+#bokeh serve --show subscriber_exp23.py
+def get_app_list(app_path_list):
+    app_option = []
+    dir_list = next(os.walk(app_path_list))[1]
+    for d in dir_list:
+        app_option.append(d)
+
+    return app_option
     
-    return tasks,tasksid
 
 class subscriber():
-    def __init__(self,outfname,ID,path,subs,server,port,timeout,looptimeout,user_log):
-        # self.OUTFNAME = outfname
+    def __init__(self,ID,path,subs,server,port,timeout,looptimeout,user_log):
         self.id = ID
         self.path = path
         self.subs = subs
@@ -74,8 +68,10 @@ class subscriber():
         self.port = port
         self.timeout = timeout
         self.looptimeout = looptimeout
-        # self.outf = open(OUTFNAME,'a')
         self.client = mqtt.Client()
+        self.username = 'anrgusc'
+        self.password = 'anrgusc'
+        self.client.username_pw_set(self.username,self.password)
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.client.connect(self.server, self.port, self.timeout)
@@ -101,53 +97,49 @@ class subscriber():
             time.sleep(20)
 
 
+if __name__ == '__main__':
 
-global OUTFNAME, SERVER_IP, DAG_PATH, EXP,folder
-OUTFNAME = 'users_management.html'
-SERVER_IP = "127.0.0.1"
-DAG_PATH = '../app_specific_files/dummy_app_100/configuration.txt'
-EXP = 'Experiment 1'
-folder = 'exp1'
+    global OUTFNAME, SERVER_IP, EXP, folder,APP_PATH_LIST
+    OUTFNAME = 'users_management.html'
+    SERVER_IP = "127.0.0.1"
 
-global tasks,taskid,userid,usertask
-tasks,tasksid = retrieve_tasks(DAG_PATH)
-N = len(tasks)
-M = 5
-cid = 1
-userid = []
-usertask = []
-if os.path.isdir(folder):
-    shutil.rmtree(folder)
-for i in range(1,N+1):
-    cur_task = tasksid[i]
-    for j in range(0,M):
-        user_path = '%s/user%d'%(folder,cid)
-        user_log = '%s/user%d/user%d.log'%(folder,cid,cid)
-        user_id = 'U'+str(cid)
-        cur_sub = cur_task
-        userid.append(user_id)
-        usertask.append(cur_task)
-        if not os.path.isdir(user_path):
-            os.makedirs(user_path, exist_ok=True)
-        _thread.start_new_thread(subscriber,(OUTFNAME,cid,user_path,cur_sub,SERVER_IP,1883,300,1,user_log))
-        cid = cid+1
+    # EXP = 'Experiment 2'
+    # folder = 'exp2'
+    # M = 1
+
+    EXP = 'Experiment 3'
+    folder = 'ex3'
+    M = 5
+
+    APP_PATH_LIST = '../app_specific_files/dummy_app_combined/dummy_app_list'
+
+    global userid,userapp,app_options
+    app_options = get_app_list(APP_PATH_LIST)
+
+    print(app_options)
+
+    N = int(len(app_options)/2)
+    
+    cid = 1
+    
+    if os.path.isdir(folder):
+        shutil.rmtree(folder)
+    for i in range(1,N+1):
+        cur_app = 'dummyapp%d'%(i)
+        for j in range(0,M):
+            user_path = '%s/user%d'%(folder,cid)
+            user_log = '%s/user%d/user%d.log'%(folder,cid,cid)
+            user_id = 'U'+str(cid)
+            print(cid)
+            cur_sub = cur_app
+            
+            if not os.path.isdir(user_path):
+                os.makedirs(user_path, exist_ok=True)
+            info = _thread.start_new_thread(subscriber,(cid,user_path,cur_sub,SERVER_IP,1883,300,1,user_log))
+            time.sleep(1)
+            cid = cid+1
 
 
-app.run(host='0.0.0.0',port=5055)
+    app.run(host='0.0.0.0',port=5055)
 
-#####################
-global doc, data_table,source
-print(userid)
-print(usertask)
-source = ColumnDataSource(dict(user_id=userid,topics=usertask))
-columns = [TableColumn(field="user_id", title="User ID"),TableColumn(field="topics", title="Topics")]
-data_table = DataTable(source=source, columns=columns, width=1000, height=1000,selectable=True)
-ti = '%s - Subscriber Information'%(EXP)
-title1 = Div(text=ti,style={'font-size': '15pt', 'color': 'black','text-align': 'center'},width=400, height=20)
-#####################
 
-doc = curdoc()
-doc.title = 'Users management'
-p1 = layout([title1,widgetbox(data_table,width=1000,height=1000)])
-layout = row(p1)
-doc.add_root(layout) 

@@ -3,8 +3,8 @@ from collections import OrderedDict
 import os
 from statistics import mean 
 
-#Experiment 1 Makespan
-# B = {'10botnet.ipsum': 104.53915619850159, '8botnet.ipsum': 104.4059100151062, '2botnet.ipsum': 104.58935880661011, '5botnet.ipsum': 104.04564428329468, '6botnet.ipsum': 104.37079286575317, '7botnet.ipsum': 107.29788970947266, '3botnet.ipsum': 104.47786402702332, '1botnet.ipsum': 106.05324864387512, '9botnet.ipsum': 104.63074469566345, '4botnet.ipsum': 103.99546027183533}
+# #Experiment 1 Makespan
+# B = {'9botnet.ipsum': 137.30246877670288, '7botnet.ipsum': 137.71886897087097, '2botnet.ipsum': 138.34141039848328, '3botnet.ipsum': 137.6883101463318, '8botnet.ipsum': 138.2628936767578, '10botnet.ipsum': 137.32285976409912, '5botnet.ipsum': 137.38104581832886, '1botnet.ipsum': 138.6391270160675, '6botnet.ipsum': 137.280699968338, '4botnet.ipsum': 137.23282027244568}
 # D = OrderedDict(sorted(B.items(), key=lambda t: t[0]))
 
 # title = 'Experiment 1: Makespan (100-tasks DAG)'
@@ -17,10 +17,9 @@ from statistics import mean
 # plt.ylabel(ylabel)
 # plt.show()
 
-#Experiment 1 Tasks
 
 
-#Experiment 2 Makespan
+# Experiment 2 Makespan
 # exp2_path = 'users/exp2_bu'
 # makespan = dict()
 # count = dict()
@@ -38,6 +37,7 @@ from statistics import mean
 
 # print(makespan)
 # print(count)
+# print(len(makespan))
 # sorted_makespan = OrderedDict(sorted(makespan.items(), key=lambda t: t[1]))
 # print(sorted_makespan)
 # title = 'Experiment 2: Makespan (100 DAGs)'
@@ -51,7 +51,7 @@ from statistics import mean
 # plt.xticks(rotation='vertical')
 # plt.show()
 
-#Experiment 2 Makespan
+#Experiment 3 Makespan
 exp3_path = 'users/exp3_bu'
 makespan = dict()
 count = dict()

@@ -63,7 +63,10 @@ rt_exec_time = defaultdict(list)
 rt_finish_time = defaultdict(list)
 
 def demo_help(server,port,topic,msg):
+    username = 'anrgusc'
+    password = 'anrgusc'
     client = mqtt.Client()
+    client.username_pw_set(username,password)
     client.connect(server, port,300)
     client.publish(topic, msg,qos=1)
     client.disconnect()
@@ -88,8 +91,8 @@ def recv_mapping():
         msg = request.args.get('msg')
         ts = time.time()
 
-        # print("Received flask message:", worker_node, msg, ts)
-
+        print("Received flask message:", worker_node, msg, ts)
+        print(last_tasks)
         if msg == 'start':
             start_time[worker_node].append(ts)
         else:
@@ -197,12 +200,12 @@ def recv_runtime_profile():
                         duration = rt_finish_time[k]-rt_exec_time[k]
                         waiting = rt_exec_time[k]-v
                         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
-                        # print(s)
+                        print(s)
                         log_file.write(s)
                         log_file.flush()
 
                 log_file.close()
-                # print('********************************************')
+                print('********************************************')
         
 
                 
@@ -318,6 +321,7 @@ class MyHandler(PatternMatchingEventHandler):
         """
         # the file will be processed there
         if event.event_type == 'created':
+            print("Received file as output - %s." % event.src_path) 
             # print(event.src_path, event.event_type)  # print now only for degug
             outputfile = event.src_path.split('/')[-1].split('_')[0]
 
@@ -326,7 +330,7 @@ class MyHandler(PatternMatchingEventHandler):
             
             # print("ending time is: ", end_times)
             exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
-            # print("execution time is: ", exec_times)
+            print("execution time is: ", exec_times)
 
             if BOKEH == 2:
                 appname = outputfile.split('-')[0]

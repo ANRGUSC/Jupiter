@@ -229,17 +229,20 @@ def multicast_data(IP_list,user_list,pword_list,source, destination):
         return multicast_data_scp
     return multicast_data_scp
 
-def demo_help(server,port,topic,msg):
-    # client = mqtt.Client()
-    # client.connect(server, port,300)
-    client.publish(topic, msg,qos=1)
+# def demo_help(server,port,topic,msg):
+#     # client = mqtt.Client()
+#     # client.connect(server, port,300)
+#     client.publish(topic, msg,qos=1)
     # client.disconnect()
 
-# def demo_help(server,port,topic,msg):
-#     client = mqtt.Client()
-#     client.connect(server, port,300)
-#     client.publish(topic, msg,qos=1)
-#     client.disconnect()
+def demo_help(server,port,topic,msg):
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 #for OUTPUT folder 
 class Watcher1():
@@ -619,9 +622,9 @@ def main():
     print(BOKEH_PORT)
     print(BOKEH)
 
-    global client
-    client = mqtt.Client()
-    client.connect(BOKEH_SERVER, BOKEH_PORT,300)
+    # global client
+    # client = mqtt.Client()
+    # client.connect(BOKEH_SERVER, BOKEH_PORT,300)
 
 
     print('Taskmapping information')

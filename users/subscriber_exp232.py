@@ -45,8 +45,9 @@ from bokeh.transform import transform
 from bokeh.models.transforms import CustomJSTransform 
 import _thread
 import shutil
+from flask import Flask, request
 
-
+app = Flask(__name__)
 
 #bokeh serve --show subscriber_exp23.py
 def get_app_list(app_path_list):
@@ -67,25 +68,22 @@ class subscriber():
         self.port = port
         self.timeout = timeout
         self.looptimeout = looptimeout
-        self.user_log = user_log
-        self.file = None
-        self.client = mqtt.Client(str(ID))
-        self.client.connect(self.server, self.port, self.timeout)
+        self.client = mqtt.Client()
+        self.username = 'anrgusc'
+        self.password = 'anrgusc'
+        self.client.username_pw_set(self.username,self.password)
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
+        self.client.connect(self.server, self.port, self.timeout)
+        self.user_log = user_log
         self.client.loop_forever()
-
+        
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self,client, userdata, flags, rc):
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
-        if rc==0:
-            print("connected OK Returned code=",rc)
-        else:
-            print("Bad connection Returned code=",rc)
         subres = client.subscribe(self.subs,qos=1)
-        # print("Starting to write results to file")
-        # self.file = open(self.user_log,'w')
+        print("Connected with result code "+str(rc))
         
 
     def on_message(self,client, userdata, msg):
@@ -96,65 +94,47 @@ class subscriber():
         with open(self.user_log,'a') as f:
             f.write(message)
             f.write('\n')
+            time.sleep(20)
+
+if __name__ == '__main__':
+
+    global OUTFNAME, SERVER_IP, EXP, folder,APP_PATH_LIST
+    OUTFNAME = 'users_management.html'
+    SERVER_IP = "127.0.0.1"
 
 
+    # EXP = 'Experiment 2'
+    # folder = 'exp2'
+    # M = 1
 
-global OUTFNAME, SERVER_IP, EXP, folder,APP_PATH_LIST
-OUTFNAME = 'users_management.html'
-SERVER_IP = "127.0.0.1"
-EXP = 'Experiment 3'
-folder = 'exp3'
-M = 5
-#EXP = 'Experiment 3'
-#folder = 'ex3'
-#M = 2
+    EXP = 'Experiment 3'
+    folder = 'ex3'
+    M = 5
 
-APP_PATH_LIST = '../app_specific_files/dummy_app_combined/dummy_app_list'
+    APP_PATH_LIST = '../app_specific_files/dummy_app_combined/dummy_app_list'
 
-global userid,userapp,app_options
-app_options = get_app_list(APP_PATH_LIST)
+    global userid,userapp,app_options
+    app_options = get_app_list(APP_PATH_LIST)
 
-print(app_options)
+    print(app_options)
 
-N = len(app_options)
-cid = 1
-userid = []
-userapp = []
-if os.path.isdir(folder):
-    shutil.rmtree(folder)
-for i in range(1,N+1):
-    cur_app = 'dummyapp%d'%(i)
-    for j in range(0,M):
-        user_path = '%s/user%d'%(folder,cid)
-        user_log = '%s/user%d/user%d.log'%(folder,cid,cid)
-        user_id = 'U'+str(cid)
-        print(cid)
-        cur_sub = cur_app
-        userid.append(user_id)
-        userapp.append(cur_app)
-        if not os.path.isdir(user_path):
-            os.makedirs(user_path, exist_ok=True)
-        info = _thread.start_new_thread(subscriber,(cid,user_path,cur_sub,SERVER_IP,1883,300,1,user_log))
-        time.sleep(1)
-        print(info)
-        cid = cid+1
+    N = int(len(app_options)/2)
+    cid = M*N+1
+    for i in range(N,len(app_options)):
+        cur_app = 'dummyapp%d'%(i)
+        for j in range(0,M):
+            user_path = '%s/user%d'%(folder,cid)
+            user_log = '%s/user%d/user%d.log'%(folder,cid,cid)
+            user_id = 'U'+str(cid)
+            print(cid)
+            cur_sub = cur_app
+            if not os.path.isdir(user_path):
+                os.makedirs(user_path, exist_ok=True)
+            info = _thread.start_new_thread(subscriber,(cid,user_path,cur_sub,SERVER_IP,1883,300,1,user_log))
+            time.sleep(1)
+            cid = cid+1
 
 
-#####################
-global doc, data_table,source
-print(userid)
-print(userapp)
-source = ColumnDataSource(dict(user_id=userid,topics=userapp))
-columns = [TableColumn(field="user_id", title="User ID"),TableColumn(field="topics", title="Topics")]
-data_table = DataTable(source=source, columns=columns, width=1000, height=1000,selectable=True)
-ti = '%s - Subscriber Information'%(EXP)
-title1 = Div(text=ti,style={'font-size': '15pt', 'color': 'black','text-align': 'center'},width=400, height=20)
-#####################
-
-doc = curdoc()
-doc.title = 'Users management'
-p1 = layout([title1,widgetbox(data_table,width=1000,height=1000)])
-layout = row(p1)
-doc.add_root(layout)
+    app.run(host='0.0.0.0',port=5056)
 
 
