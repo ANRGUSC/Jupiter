@@ -494,10 +494,6 @@ def main():
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
     BOKEH = int(config['OTHER']['BOKEH'])
 
-    # print('Bokeh information')
-    # print(BOKEH_SERVER)
-    # print(BOKEH_PORT)
-    # print(BOKEH)
 
     #monitor INPUT folder for the incoming files
     w = Watcher()

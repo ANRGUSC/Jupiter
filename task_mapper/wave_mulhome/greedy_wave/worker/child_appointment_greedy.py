@@ -25,8 +25,19 @@ import multiprocessing
 from multiprocessing import Process, Manager
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+import paho.mqtt.client as mqtt
+import socket
 
 app = Flask(__name__)
+
+def demo_help(server,port,topic,msg):
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 
 def prepare_global():
@@ -98,6 +109,19 @@ def prepare_global():
     global application
     application = read_file("DAG/DAG_application.txt")
     del application[0]
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+
+    print('Bokeh information')
+    print(BOKEH_SERVER)
+    print(BOKEH_PORT)
+    print(BOKEH)
+
+    global myneighbors
+    myneighbors = []
 
     # for line in application:
     #     line = line.strip()
@@ -223,15 +247,23 @@ def assign_task():
         return "not ok"
 app.add_url_rule('/assign_task', 'assign_task', assign_task)
 
-# def kill_thread():
-#     """assign kill thread as True
-#     """
-#     global kill_flag
-#     print('-------------- kill flag')
-#     print(kill_flag)
-#     kill_flag = True
-#     return "ok"
-# app.add_url_rule('/kill_thread', 'kill_thread', kill_thread)
+def announce_neighbors():
+    """Request assigned node for a specific task, write task assignment in local file at ``local_responsibility/task_name``.
+    
+    Raises:
+        Exception: ``ok`` if successful, ``not ok`` if either the request or the writing is failed
+    """
+    global myneighbors
+    try:
+        print('Receive neighbor information')
+        nbinfo = request.args.get('neighbors')
+        myneighbors = nbinfo.split(':')
+        print(myneighbors)
+        return "ok"
+    except Exception as e:
+        print(e)
+        return "not ok"
+app.add_url_rule('/announce_neighbors', 'announce_neighbors', announce_neighbors)
 
 def assign_task_to_remote(assigned_node, task_name):
     """Assign task to remote node
@@ -351,13 +383,23 @@ class Handler(FileSystemEventHandler):
 
 def assign_children_task(children_task):
     print('Starting assigning process for the children task')
-    # print(children_task)
+    global myneighbors
+    
     while True:
         if is_network_profile_data_ready and is_resource_data_ready:
             break
         else:
             print("Waiting for the profiler data")
-            time.sleep(100)
+            time.sleep(60)
+
+    
+    while True:
+        if myneighbors is None:
+            print("Waiting for neighboring data")
+            time.sleep(60)
+        else:
+            break
+    
     res = False
     if 'app' in children_task:
         appname = children_task.split('-')[0]
@@ -384,7 +426,15 @@ def get_most_suitable_node(file_size):
     Returns:
         str: result_node_name - assigned node for the current task
     """
+    global myneighbors
     print('Trying to get the most suitable node')
+    print('My neighbor information:')
+    print(myneighbors)
+    print('Network info')
+    print(network_profile_data)
+    print('Resource info')
+    print(resource_data)
+    print('-------')
     weight_network = 1
     weight_cpu = 1
     weight_memory = 1
@@ -506,7 +556,7 @@ def get_resource_data_drupe():
     is_resource_data_ready = True
 
     print("Got profiler data from http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC))
-    print("Resource profiles: ", json.dumps(result))
+    # print("Resource profiles: ", json.dumps(result))
 
 
 def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
@@ -531,9 +581,6 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     logging =db[my_profiler_ip].find().limit(num_nb)
     for record in logging:
         # Destination ID -> Parameters(a,b,c) , Destination IP
-        # print('-------')
-        # print(record['Destination[IP]'])
-        # print(home_profiler_ip)
         if record['Destination[IP]'] in home_profiler_ip: continue
         params = re.split(r'\s+', record['Parameters'])
         network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),

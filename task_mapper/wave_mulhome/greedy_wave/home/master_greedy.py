@@ -24,6 +24,8 @@ from multiprocessing import Process, Manager
 
 app = Flask(__name__)
 
+
+
 def read_file(file_name):
     """
     Get all lines in a file
@@ -114,6 +116,22 @@ def prepare_global():
 
     assignments = {}
 
+    global all_node_geo 
+    all_node_geo_info = os.environ['ALL_NODES_GEO']
+    print(all_node_geo_info)
+    info = all_node_geo_info.split('$')
+    all_node_geo = dict()
+    for geo in info:
+        g = geo.split(':')[0]
+        all_node_geo[geo] = []
+        tmp = geo.split(':')[1].split('#')
+        for t in tmp:
+            all_node_geo[geo].append(t)
+
+    print('--------- Neighbor information')
+    print(all_node_geo)
+        
+
 
 def recv_task_assign_info():
     """
@@ -179,6 +197,8 @@ def return_assignment():
         return json.dumps(dict())
 app.add_url_rule('/', 'return_assignment', return_assignment)
 
+
+
 def assign_task_to_remote(assigned_node, task_name):
     """
     A function that used for intermediate data transfer. Assign initial task mapping to corresponding node, used in `init_thread()`
@@ -207,29 +227,6 @@ def assign_task_to_remote(assigned_node, task_name):
     return res
 
 
-# def call_kill_thread(node):
-#     """
-#     When all the assignments are done, kill all running thread
-    
-#     Args:
-#         node (str): information of the node to be killed
-    
-#     Returns:
-#         str: request if sucessful, ``not ok`` otherwise
-#     """
-#     try:
-#         url = "http://" + nodes[node] + "/kill_thread"
-#         req = urllib.request.Request(url=url)
-#         res = urllib.request.urlopen(req)
-#         res = res.read()
-#         res = res.decode('utf-8')
-#     except Exception as e:
-#         print(e)
-#         return "not ok"
-#     return res
-
-
-
 def init_thread():
     """
     Assign the first task
@@ -252,6 +249,8 @@ def monitor_task_status():
     Monitor task allocation status and print notification if all task allocations are done
     """
 
+    print('Waiting for task assignments')
+
     killed = 0
     while True:
         print(len(assigned_tasks))
@@ -259,14 +258,6 @@ def monitor_task_status():
             print(assigned_tasks)
             print("All task allocations are done! Great News!")
             break
-        #     for node in nodes:
-        #         res = call_kill_thread(node)
-        #         if res != "ok":
-        #             output("Kill node thread failed: " + str(node))
-        #         else:
-        #             killed += 1
-        # if killed == MAX_TASK_NUMBER:
-        #     break
         time.sleep(60)
 
 
@@ -353,7 +344,38 @@ def init_task_topology():
     print("control_relation" ,control_relation)
 
 
+def announce_neighbor_info():
+    print('Announce geo information to all the worker nodes')
+    for geo,groupinfo in all_node_geo.items():
+        for node in groupinfo:
+            announce_neighbors(node,groupinfo)
 
+def announce_neighbors(node,groupinfo):
+    """
+    A function that used for intermediate data transfer. Assign initial task mapping to corresponding node, used in `init_thread()`
+    
+    Args:
+        - assigned_node (str): node which is assigned to the task
+        - task_name (str): name of the task
+    
+    Returns:
+        str: request if sucessful, ``not ok`` otherwise
+    """
+    try:
+        # print('Announce neighboring information to every worker node')
+        url = "http://" + nodes[node] + "/announce_neighbors"
+        groupinfo.remove(node)
+        nbinfo = ':'.join(groupinfo)
+        params = {'neighbors': nbinfo}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print(e)
+        return "not ok"
+    return res
 
 
 def output(msg):
@@ -379,7 +401,9 @@ def main():
 
     init_task_topology()
     _thread.start_new_thread(init_thread, ())
+    _thread.start_new_thread(announce_neighbor_info, ())
     _thread.start_new_thread(monitor_task_status, ())
+
     app.run(host='0.0.0.0', port=int(FLASK_PORT))
 
 if __name__ == '__main__':

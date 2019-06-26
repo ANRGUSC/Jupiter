@@ -12,6 +12,7 @@ from os import path
 from multiprocessing import Process
 from k8s_profiler_scheduler import *
 from k8s_wave_scheduler import *
+from k8s_wave_modified_scheduler import *
 from k8s_circe_scheduler import *
 from k8s_pricing_circe_scheduler import *
 from k8s_exec_scheduler import *
@@ -88,9 +89,12 @@ def k8s_jupiter_deploy(app_id,app_name,port):
     if jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # HEFT
         print('Deploy HEFT mapper')
         task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
-    else:# WAVE
+    elif jupiter_config.SCHEDULER == 2 :# WAVE
         print('Deploy WAVE greedy mapper')
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
+    else:
+        print('Deploy WAVE greedy (group of neighbors) mapper')
+        task_mapping_function = task_mapping_decorator(k8s_wave_modified_scheduler)
         
 
     if jupiter_config.PRICING == 1 or jupiter_config.PRICING == 2:
@@ -223,10 +227,14 @@ def redeploy_system(app_id,app_name,port):
         print('Tear down all current HEFT deployments')
         delete_all_heft(app_name)
         task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
-    else:# WAVE
+    elif jupiter_config.SCHEDULER == 2:# WAVE
         print('Tear down all current WAVE deployments')
         delete_all_waves(app_name)
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
+    else:
+        print('Deploy WAVE greedy (group of neighbors) mapper')
+        delete_all_waves(app_name)
+        task_mapping_function = task_mapping_decorator(k8s_wave_modified_scheduler)
         
 
     if jupiter_config.PRICING == 1 or jupiter_config.PRICING == 2:
@@ -314,13 +322,11 @@ def redeploy_system(app_id,app_name,port):
         dag = static_assignment.dag
         schedule = static_assignment.schedule
 
-    print('Network Profiling Information:')
-    print(profiler_ips)
     # Start CIRCE
-    if pricing == 0:
-        k8s_circe_scheduler(dag,schedule,app_name)
-    else:
-        k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
+    # if pricing == 0:
+    #     k8s_circe_scheduler(dag,schedule,app_name)
+    # else:
+    #     k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
 
 
 

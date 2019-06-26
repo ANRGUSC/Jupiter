@@ -343,7 +343,7 @@ class Handler1(FileSystemEventHandler):
                 destination = os.path.join('/centralized_scheduler', 'input', new_file)
                 transfer_data(IPaddr,user,password,source, destination)
             elif sys.argv[3] == 'home':
-                if BOKEH == 1:
+                if BOKEH == 0:
                     msg = taskname + " ends"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                 
@@ -357,7 +357,7 @@ class Handler1(FileSystemEventHandler):
 
             elif flag2 == 'true':
 
-                if BOKEH == 1:
+                if BOKEH == 0:
                     msg = taskname + " ends"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                 
@@ -379,7 +379,7 @@ class Handler1(FileSystemEventHandler):
 
                 if (len(files_out) == num_child):
 
-                    if BOKEH == 1:
+                    if BOKEH == 0:
                         msg = taskname + " ends"
                         demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                         
@@ -489,9 +489,9 @@ class Handler(FileSystemEventHandler):
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)  
                 if BOKEH == 1:
-                    # msg = taskname + " starts "+str(ts)
                     runtimebk = 'rt_exec '+ taskname + ' '+temp_name+ ' '+str(ts)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+                if BOKEH == 0:
                     msg = taskname + " starts"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     
@@ -502,10 +502,10 @@ class Handler(FileSystemEventHandler):
                 dag_task.start()
                 dag_task.join()
                 ts = time.time()
+                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                send_runtime_profile(runtime_info)
                 if BOKEH == 1:
-                    runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                    send_runtime_profile(runtime_info)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
                 # end msg
             else:
@@ -520,9 +520,9 @@ class Handler(FileSystemEventHandler):
                     
                         
                     if BOKEH == 1:
-                        # msg = taskname + " starts "+str(ts)
                         runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
                         demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+                    if BOKEH == 0:
                         msg = taskname + " starts"
                         demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     input_path = os.path.split(event.src_path)[0]
@@ -533,17 +533,11 @@ class Handler(FileSystemEventHandler):
                     dag_task.join()
                     filenames = []
                     ts = time.time()
+                    runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                    send_runtime_profile(runtime_info)
                     if BOKEH == 1:
-                        runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                         runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
                         demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-                        send_runtime_profile(runtime_info)
-                    # end msg
-            # print(time.time()-t1)
-            # txec = toc(t)
-            # bottleneck['receiveinput'].append(txec)
-            # print(np.mean(bottleneck['receiveinput']))
-            # print('***************************************************')
 
 def main():
     """
