@@ -118,15 +118,14 @@ def prepare_global():
 
     global all_node_geo 
     all_node_geo_info = os.environ['ALL_NODES_GEO']
-    print(all_node_geo_info)
     info = all_node_geo_info.split('$')
     all_node_geo = dict()
     for geo in info:
         g = geo.split(':')[0]
-        all_node_geo[geo] = []
+        all_node_geo[g] = []
         tmp = geo.split(':')[1].split('#')
         for t in tmp:
-            all_node_geo[geo].append(t)
+            all_node_geo[g].append(t)
 
     print('--------- Neighbor information')
     print(all_node_geo)
@@ -214,7 +213,9 @@ def assign_task_to_remote(assigned_node, task_name):
         print('Assign the first task based on the input file')
         url = "http://" + nodes[assigned_node] + "/assign_task"
         # print(url)
-        # print(task_name)
+        print(task_name)
+        print(nodes)
+        print(nodes[assigned_node])
         params = {'task_name': task_name}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -348,9 +349,10 @@ def announce_neighbor_info():
     print('Announce geo information to all the worker nodes')
     for geo,groupinfo in all_node_geo.items():
         for node in groupinfo:
-            announce_neighbors(node,groupinfo)
+            tmp = groupinfo.copy()
+            announce_neighbors(node,tmp)
 
-def announce_neighbors(node,groupinfo):
+def announce_neighbors(node,group):
     """
     A function that used for intermediate data transfer. Assign initial task mapping to corresponding node, used in `init_thread()`
     
@@ -362,10 +364,10 @@ def announce_neighbors(node,groupinfo):
         str: request if sucessful, ``not ok`` otherwise
     """
     try:
-        # print('Announce neighboring information to every worker node')
+        print('Announce neighboring information to every worker node')
         url = "http://" + nodes[node] + "/announce_neighbors"
-        groupinfo.remove(node)
-        nbinfo = ':'.join(groupinfo)
+        group.remove(node)
+        nbinfo = ':'.join(group)
         params = {'neighbors': nbinfo}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
