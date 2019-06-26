@@ -120,8 +120,6 @@ def prepare_global():
     print(BOKEH_PORT)
     print(BOKEH)
 
-    global myneighbors
-    myneighbors = []
 
     # for line in application:
     #     line = line.strip()
@@ -257,6 +255,7 @@ def announce_neighbors():
     try:
         print('Receive neighbor information')
         nbinfo = request.args.get('neighbors')
+        print(nbinfo)
         myneighbors = nbinfo.split(':')
         print(myneighbors)
         return "ok"
@@ -284,7 +283,8 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-    except Exception:
+    except Exception as e:
+        print(e)
         return "not ok"
     return res
 
@@ -383,8 +383,8 @@ class Handler(FileSystemEventHandler):
 
 def assign_children_task(children_task):
     print('Starting assigning process for the children task')
+    
     global myneighbors
-
     while True:
         if is_network_profile_data_ready and is_resource_data_ready:
             break
@@ -394,7 +394,8 @@ def assign_children_task(children_task):
 
     
     while True:
-        if myneighbors is None:
+        print(myneighbors)
+        if len(myneighbors) == 0:
             print("Waiting for neighboring data")
             time.sleep(60)
         else:
@@ -426,7 +427,6 @@ def get_most_suitable_node(file_size):
     Returns:
         str: result_node_name - assigned node for the current task
     """
-    global myneighbors
     print('Trying to get the most suitable node')
     print('My neighbor information:')
     print(myneighbors)
@@ -449,6 +449,9 @@ def get_most_suitable_node(file_size):
         cost[node] = weight_network*cost_net + weight_cpu*cost_cpu + weight_memory*cost_mem
 
     best_node = min(cost,key=cost.get)
+    print('cost')
+    print(cost)
+    print(best_node)
     return best_node   
 
     # valid_nodes = []
@@ -681,6 +684,9 @@ def main():
     manager = Manager()
     local_mapping = manager.dict()
     local_children = manager.dict()
+
+    global myneighbors
+    myneighbors = []
 
     local_responsibility = "task_responsibility"
     os.mkdir(local_responsibility)
