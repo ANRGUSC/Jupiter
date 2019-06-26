@@ -384,7 +384,7 @@ class Handler(FileSystemEventHandler):
 def assign_children_task(children_task):
     print('Starting assigning process for the children task')
     global myneighbors
-    
+
     while True:
         if is_network_profile_data_ready and is_resource_data_ready:
             break
@@ -438,64 +438,69 @@ def get_most_suitable_node(file_size):
     weight_network = 1
     weight_cpu = 1
     weight_memory = 1
+    
+    cost = dict()
 
-    valid_nodes = []
+    for node in myneighbors:
+        data = network_profile_data[node]
+        cost_net = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
+        cost_cpu = resource_data[node]['cpu']
+        cost_mem = resource_data[node]['memory']
+        cost[node] = weight_network*cost_net + weight_cpu*cost_cpu + weight_memory*cost_mem
 
-    min_value = sys.maxsize
+    best_node = min(cost,key=cost.get)
+    return best_node   
 
-    for tmp_node_name in network_profile_data:
-        data = network_profile_data[tmp_node_name]
-        delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
-        network_profile_data[tmp_node_name]['delay'] = delay
-        if delay < min_value:
-            min_value = delay
+    # valid_nodes = []
+    
+    # for tmp_node_name in network_profile_data:
+    #     data = network_profile_data[tmp_node_name]
+    #     delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
+    #     network_profile_data[tmp_node_name]['delay'] = delay
+    #     if delay < min_value:
+    #         min_value = delay
 
-    # print('-------------- Network')
-    # print(network_profile_data)
+    # # get all the nodes that satisfy: time < tmin * threshold
+    # for _, item in enumerate(network_profile_data):
+    #     if network_profile_data[item]['delay'] < min_value * threshold:
+    #         valid_nodes.append(item)
 
-    # get all the nodes that satisfy: time < tmin * threshold
-    for _, item in enumerate(network_profile_data):
-        if network_profile_data[item]['delay'] < min_value * threshold:
-            valid_nodes.append(item)
+    # min_value = sys.maxsize
+    # result_node_name = ''
+    # for item in valid_nodes:
+    #     # print(item)
+    #     tmp_value = network_profile_data[item]['delay']
 
-    min_value = sys.maxsize
-    result_node_name = ''
-    for item in valid_nodes:
-        # print(item)
-        tmp_value = network_profile_data[item]['delay']
+    #     # tmp_cpu = 10000
+    #     # tmp_memory = 10000
+    #     tmp_cpu = sys.maxsize
+    #     tmp_memory = sys.maxsize
+    #     if item in resource_data.keys():
+    #         # print(resource_data[item])
+    #         tmp_cpu = resource_data[item]['cpu']
+    #         tmp_memory = resource_data[item]['memory']
 
-        # tmp_cpu = 10000
-        # tmp_memory = 10000
-        tmp_cpu = sys.maxsize
-        tmp_memory = sys.maxsize
-        if item in resource_data.keys():
-            # print(resource_data[item])
-            tmp_cpu = resource_data[item]['cpu']
-            tmp_memory = resource_data[item]['memory']
+    #     tmp_cost = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
+    #     if  tmp_cost < min_value:
+    #         min_value = tmp_cost
+    #         result_node_name = item
 
-        tmp_cost = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
-        if  tmp_cost < min_value:
-            min_value = tmp_cost
-            result_node_name = item
-
-    # print('------------- Resource')
-    # print(resource_data)
+    # # print('------------- Resource')
+    # # print(resource_data)
     
 
-    if not result_node_name:
-        min_value = sys.maxsize
-        for item in resource_data:
-            tmp_cpu = resource_data[item]['cpu']
-            tmp_memory = resource_data[item]['memory']
-            tmp_cost = weight_cpu*tmp_cpu + weight_memory*tmp_memory
-            if  tmp_cost < min_value:
-                min_value = tmp_cost
-                result_node_name = item
+    # if not result_node_name:
+    #     min_value = sys.maxsize
+    #     for item in resource_data:
+    #         tmp_cpu = resource_data[item]['cpu']
+    #         tmp_memory = resource_data[item]['memory']
+    #         tmp_cost = weight_cpu*tmp_cpu + weight_memory*tmp_memory
+    #         if  tmp_cost < min_value:
+    #             min_value = tmp_cost
+    #             result_node_name = item
 
-    if result_node_name:
-        network_profile_data[result_node_name]['c'] = 100000
-
-    return result_node_name
+    # if result_node_name:
+    #     network_profile_data[result_node_name]['c'] = 100000
 
 
 def read_file(file_name):
