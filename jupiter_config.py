@@ -90,12 +90,16 @@ def set_globals():
         wave_option         = 'random'
     elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY']):
         print('Task mapper: Wave greedy selected')
-        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
+        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave_original/'
         wave_option         = 'greedy'
     elif SCHEDULER == int(config['SCHEDULER_LIST']['HEFT_MODIFIED']):
         print('Task mapper: Heft modified selected')
         HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/modified/'   
-        heft_option         = 'modified'
+        heft_option         = 'heftmodified'
+    elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY_MODIFIED']):
+        print('Task mapper: Wave greedy (group of neighbors) selected')
+        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'   
+        wave_option         = 'greedymodified'
     else: 
         print('Task mapper: Heft original selected')
 
@@ -157,10 +161,15 @@ def set_globals():
     # APP_NAME                = 'app_specific_files/dummy_app_100'
     # APP_OPTION              = 'dummy100'
 
-    HOME_CHILD                = 'distribute'
-    APP_PATH                  = HERE  + 'app_specific_files/dummy_app_combined/'
-    APP_NAME                  = 'app_specific_files/dummy_app_combined'
-    APP_OPTION                = 'combined'
+    # HOME_CHILD                = 'distribute'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app_combined/'
+    # APP_NAME                  = 'app_specific_files/dummy_app_combined'
+    # APP_OPTION                = 'combined'
+
+    HOME_CHILD                = 'task0'
+    APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
+    APP_NAME                  = 'app_specific_files/dummyapp30'
+    APP_OPTION                = 'dummy30'
 
 
     """pricing CIRCE home and worker images"""

@@ -108,7 +108,7 @@ if __name__ == '__main__':
     # M = 1
 
     EXP = 'Experiment 3'
-    folder = 'ex3'
+    folder = 'exp3'
     M = 5
 
     APP_PATH_LIST = '../app_specific_files/dummy_app_combined/dummy_app_list'
