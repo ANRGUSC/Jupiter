@@ -218,27 +218,30 @@ if __name__ == '__main__':
     #evaluate_random()
     time.sleep(60)
     print('Start copying sample files for evaluation')
-    # evaluate_sequential()
+
+    evaluate_sequential()
+
     #evaluate_test()
-    #evaluate_combine_app(100,10)
-    global num_apps, num_samples
-    num_apps = 100
-    num_samples = 10
-    print('---- Generate random input files')
-    for i in range(1,num_apps+1):
-        filein = 'sample_input/dummyapp%d-1botnet.ipsum'%(i)
-        fileout ='input/dummyapp%d-1botnet.ipsum'%(i)
-        shutil.copyfile(filein,fileout) 
     
-    print("Starting the output monitoring system:")
-    observer = Observer()
-    observer.schedule(MyHandler(), path=os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/'))
-    observer.start()
 
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
+    # global num_apps, num_samples
+    # num_apps = 100
+    # num_samples = 10
+    # print('---- Generate random input files')
+    # for i in range(1,num_apps+1):
+    #     filein = 'sample_input/dummyapp%d-1botnet.ipsum'%(i)
+    #     fileout ='input/dummyapp%d-1botnet.ipsum'%(i)
+    #     shutil.copyfile(filein,fileout) 
+    
+    # print("Starting the output monitoring system:")
+    # observer = Observer()
+    # observer.schedule(MyHandler(), path=os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/'))
+    # observer.start()
 
-    observer.join()
+    # try:
+    #     while True:
+    #         time.sleep(1)
+    # except KeyboardInterrupt:
+    #     observer.stop()
+
+    # observer.join()

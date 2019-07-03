@@ -27,10 +27,12 @@ def extract_geo_info(nodes):
             geo_nodes[geo] = [node]
         else:
             geo_nodes[geo].append(node)
+    # print(geo_nodes)
     all_node_geo = ''
     for geo,info in geo_nodes.items():
         all_node_geo = all_node_geo+geo+':'
         all_node_geo = all_node_geo+'#'.join(info)+'$'
+    # print(all_node_geo)
     return all_node_geo[:-1]
 
 
@@ -201,12 +203,17 @@ def k8s_wave_modified_scheduler(profiler_ips,app_name):
             """
                 Generate the yaml description of the required deployment for WAVE workers
             """
+            print('####')
+            print(i)
+            print(nodes[i])
             pod_name = app_name+'-'+i
             label_name = app_name+'-wave_'+i
-            dep = write_wave_specs(name = pod_name, label = label_name, image = jupiter_config.WAVE_WORKER_IMAGE,
+            dep = write_wave_worker_specs(name = pod_name, label = label_name, image = jupiter_config.WAVE_WORKER_IMAGE,
                                              host = nodes[i][0], all_node = nexthost_names,
                                              all_node_ips = nexthost_ips,
+                                             all_node_geo = all_node_geo,
                                              self_name=i,
+                                             my_geo = nodes[i][0],
                                              home_ip = home_ip,
                                              home_name = home_name,
                                              serv_ip = service_ips[i],

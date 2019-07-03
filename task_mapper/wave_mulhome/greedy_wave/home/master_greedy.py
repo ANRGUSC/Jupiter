@@ -19,11 +19,22 @@ import configparser
 from os import path
 import multiprocessing
 from multiprocessing import Process, Manager
+import paho.mqtt.client as mqtt
+from heapq import nsmallest
+
 
 
 
 app = Flask(__name__)
 
+def demo_help(server,port,topic,msg):
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 
 def read_file(file_name):
@@ -47,6 +58,58 @@ def read_file(file_name):
     file.close()
     #lock.release()
     return file_contents
+
+def define_cluster(all_geo_,num):
+    #num: select k neighbors near the node based on shorted distance
+    distance = {}
+    distance[('lon','tor')] = 8
+    distance[('lon','fra')] = 1.5
+    distance[('lon','sgp')] = 13
+    distance[('lon','blr')] = 10
+    distance[('lon','ams')] = 1
+    distance[('lon','sfo')] = 11
+    distance[('lon','nyc')] = 8
+    distance[('tor','fra')] = 8.5
+    distance[('tor','sgp')] = 20.5
+    distance[('tor','blr')] = 19.5 
+    distance[('tor','ams')] = 7
+    distance[('tor','sfo')] = 5
+    distance[('tor','nyc')] = 1.5
+    distance[('fra','sgp')] = 12.5
+    distance[('fra','blr')] = 9.5
+    distance[('fra','ams')] = 1
+    distance[('fra','sfo')] = 11
+    distance[('fra','nyc')] = 8.5
+    distance[('sgp','blr')] = 4.5 
+    distance[('sgp','ams')] = 13
+    distance[('sgp','sfo')] = 16.5
+    distance[('sgp','nyc')] = 18.5
+    distance[('blr','ams')] = 12
+    distance[('blr','sfo')] = 22
+    distance[('blr','nyc')] = 19.5
+    distance[('ams','sfo')] = 10.5
+    distance[('ams','nyc')] = 8
+    distance[('nyc','sfo')] = 5.5
+
+    reg = ['lon','tor','fra','sgp','blr','ams','sfo','nyc']
+    connected = {}
+    for city in reg:
+        pairs = [k for k,v in distance.items() if k[0]==city or k[1]==city]
+        nb = dict((k, distance[k]) for k in pairs)
+        neigbors = nsmallest(num, nb, key = nb.get)
+        for item in neigbors:
+            connected[item] = 1
+            connected[(item[1],item[0])] = 1
+
+    cluster = {}
+    for geo in all_node_geo:
+        cluster[geo] = all_node_geo[geo]
+        nbs = [k[1] for k,v in connected.items() if v==1 and (k[0]==geo)]
+        for nb in nbs:
+            cluster[geo].extend(all_node_geo[nb])
+    return cluster
+
+
 
 def prepare_global():
     """
@@ -116,7 +179,7 @@ def prepare_global():
 
     assignments = {}
 
-    global all_node_geo 
+    global all_node_geo, cluster
     all_node_geo_info = os.environ['ALL_NODES_GEO']
     info = all_node_geo_info.split('$')
     all_node_geo = dict()
@@ -127,20 +190,31 @@ def prepare_global():
         for t in tmp:
             all_node_geo[g].append(t)
 
-    print('--------- Neighbor information')
-    print(all_node_geo)
+    cluster = define_cluster(all_node_geo,3)
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+
+    # print('Bokeh information')
+    # print(BOKEH_SERVER)
+    # print(BOKEH_PORT)
+    # print(BOKEH)
         
 
 
-def recv_task_assign_info():
-    """
-        Receive task assignment information from the workers
-    """
-    assign = request.args.get('assign')
-    task_assign_summary.append(assign)
-    print("Task assign summary: " + json.dumps(task_assign_summary))
-    return 'ok'
-app.add_url_rule('/recv_task_assign_info', 'recv_task_assign_info', recv_task_assign_info)
+# def recv_task_assign_info():
+#     """
+#         Receive task assignment information from the workers
+#     """
+#     assign = request.args.get('assign')
+#     task_assign_summary.append(assign)
+#     print("Task assign summary: " + json.dumps(task_assign_summary))
+    
+
+#     return 'ok'
+# app.add_url_rule('/recv_task_assign_info', 'recv_task_assign_info', recv_task_assign_info)
 
 
 def recv_mapping():
@@ -159,6 +233,10 @@ def recv_mapping():
         print('Receive mapping from the workers')
         node = request.args.get('node')
         mapping = request.args.get("mapping")
+
+        if BOKEH==3:
+            msg = 'overhead wavehome taskassign 1 %s %s \n'%(node,mapping)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"overhead_home",msg)
 
         to_be_write = []
         items = re.split(r'#', mapping)
@@ -213,15 +291,18 @@ def assign_task_to_remote(assigned_node, task_name):
         print('Assign the first task based on the input file')
         url = "http://" + nodes[assigned_node] + "/assign_task"
         # print(url)
-        print(task_name)
-        print(nodes)
-        print(nodes[assigned_node])
+        # print(task_name)
+        # print(nodes)
+        # print(nodes[assigned_node])
         params = {'task_name': task_name}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        if BOKEH==3:
+            msg = 'overhead wavehome assignfirst 1 \n'
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"overhead_home",msg)
     except Exception as e:
         print(e)
         return "not ok"
@@ -254,9 +335,9 @@ def monitor_task_status():
 
     killed = 0
     while True:
-        print(len(assigned_tasks))
+        # print(len(assigned_tasks))
         if len(assigned_tasks) == MAX_TASK_NUMBER:
-            print(assigned_tasks)
+            # print(assigned_tasks)
             print("All task allocations are done! Great News!")
             break
         time.sleep(60)
@@ -345,41 +426,6 @@ def init_task_topology():
     print("control_relation" ,control_relation)
 
 
-def announce_neighbor_info():
-    print('Announce geo information to all the worker nodes')
-    for geo,groupinfo in all_node_geo.items():
-        for node in groupinfo:
-            tmp = groupinfo.copy()
-            announce_neighbors(node,tmp)
-
-def announce_neighbors(node,group):
-    """
-    A function that used for intermediate data transfer. Assign initial task mapping to corresponding node, used in `init_thread()`
-    
-    Args:
-        - assigned_node (str): node which is assigned to the task
-        - task_name (str): name of the task
-    
-    Returns:
-        str: request if sucessful, ``not ok`` otherwise
-    """
-    try:
-        print('Announce neighboring information to every worker node')
-        url = "http://" + nodes[node] + "/announce_neighbors"
-        group.remove(node)
-        nbinfo = ':'.join(group)
-        params = {'neighbors': nbinfo}
-        params = urllib.parse.urlencode(params)
-        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        res = urllib.request.urlopen(req)
-        res = res.read()
-        res = res.decode('utf-8')
-    except Exception as e:
-        print(e)
-        return "not ok"
-    return res
-
-
 def output(msg):
     """
     if debug is True, print the msg
@@ -402,9 +448,10 @@ def main():
     print("starting the main thread on port", FLASK_PORT)
 
     init_task_topology()
+    # _thread.start_new_thread(announce_neighbor_info, ())
     _thread.start_new_thread(init_thread, ())
-    _thread.start_new_thread(announce_neighbor_info, ())
     _thread.start_new_thread(monitor_task_status, ())
+    
 
     app.run(host='0.0.0.0', port=int(FLASK_PORT))
 

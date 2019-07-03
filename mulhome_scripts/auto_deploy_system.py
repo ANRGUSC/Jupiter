@@ -323,10 +323,10 @@ def redeploy_system(app_id,app_name,port):
         schedule = static_assignment.schedule
 
     # Start CIRCE
-    # if pricing == 0:
-    #     k8s_circe_scheduler(dag,schedule,app_name)
-    # else:
-    #     k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
+    if pricing == 0:
+        k8s_circe_scheduler(dag,schedule,app_name)
+    else:
+        k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
 
 
 
