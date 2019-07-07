@@ -337,8 +337,8 @@ def monitor_task_status():
     while True:
         # print(len(assigned_tasks))
         if len(assigned_tasks) == MAX_TASK_NUMBER:
-            # print(assigned_tasks)
             print("All task allocations are done! Great News!")
+            print(assignments)
             break
         time.sleep(60)
 

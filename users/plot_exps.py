@@ -160,9 +160,9 @@ def exp3():
 def exp4():
 
         # Experiment 4 Overhead
-        num_tasks = 816
+        num_tasks = 30
         dir_path = os.path.dirname(os.path.realpath(__file__))
-        exp4_path = os.path.join(dir_path,'exp4_full_816/')
+        exp4_path = os.path.join(dir_path,'exp4_30/')
         print(exp4_path)
         outfile = 'combined_%s.log'%(num_tasks)
         count = 0
