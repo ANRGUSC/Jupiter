@@ -127,9 +127,9 @@ def set_globals():
     KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
     # Namespaces
-    DEPLOYMENT_NAMESPACE    = 'quynh-circe'
-    PROFILER_NAMESPACE      = 'quynh3-profiler'
-    MAPPER_NAMESPACE        = 'quynh-mapper'
+    DEPLOYMENT_NAMESPACE    = 'quynh2-circe'
+    PROFILER_NAMESPACE      = 'quynh2-profiler'
+    MAPPER_NAMESPACE        = 'quynh2-mapper'
     EXEC_NAMESPACE          = 'quynh-exec'
 
     """ Node file path and first task information """
@@ -186,20 +186,20 @@ def set_globals():
     # APP_NAME                  = 'app_specific_files/dummyapp150'
     # APP_OPTION                = 'dummy150'
 
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp300/'
-    # APP_NAME                  = 'app_specific_files/dummyapp300'
-    # APP_OPTION                = 'dummy300'
+    HOME_CHILD                = 'task0'
+    APP_PATH                  = HERE  + 'app_specific_files/dummyapp300/'
+    APP_NAME                  = 'app_specific_files/dummyapp300'
+    APP_OPTION                = 'dummy300'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp500/'
     # APP_NAME                  = 'app_specific_files/dummyapp500'
     # APP_OPTION                = 'dummy500'
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummyapp800/'
-    APP_NAME                  = 'app_specific_files/dummyapp800'
-    APP_OPTION                = 'dummy800'
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp800/'
+    # APP_NAME                  = 'app_specific_files/dummyapp800'
+    # APP_OPTION                = 'dummy800'
 
 
     """pricing CIRCE home and worker images"""

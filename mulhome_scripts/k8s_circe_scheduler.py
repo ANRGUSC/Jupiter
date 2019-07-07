@@ -19,7 +19,113 @@ import jupiter_config
 #from utilities import *
 import utilities
 
+def test(dag,app_name,service_ips,all_node,all_node_ips,hosts):
+    jupiter_config.set_globals()
 
+    sys.path.append(jupiter_config.CIRCE_PATH)
+    """
+        This loads the kubernetes instance configuration.
+        In our case this is stored in admin.conf.
+        You should set the config file path in the jupiter_config.py file.
+    """
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
+
+
+    # We have defined the namespace for deployments in jupiter_config
+
+    # Get proper handles or pointers to the k8-python tool to call different functions.
+    extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
+    v1_delete_options = client.V1DeleteOptions()
+    core_v1_api = client.CoreV1Api()
+
+    # result = True
+    for key, value in dag.items():
+        # print(key)
+        # print(value)
+
+        # First check if there is a deployment existing with
+        # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
+        # The label of kubernets are used to identify replicaset associate to each task
+        label = "app=" + app_name+'-'+key
+        
+        
+        resp = None
+
+        resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
+        # if a pod is running just delete it
+        if resp.items:
+            a=resp.items[0]
+            if a.status.phase != "Running":
+                print("Pod Not Running", key)
+                print(label)
+                del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
+                # result = False
+
+                print("Pod Deleted. status='%s'" % str(del_resp_2.status))
+    #Regenerate the pods
+    # result = True
+    count = 0
+    for key, value in dag.items():
+        # print(key)
+        # print(value)
+
+        # First check if there is a deployment existing with
+        # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
+        # The label of kubernets are used to identify replicaset associate to each task
+        task = key
+        nexthosts = ''
+        next_svc = ''
+
+        """
+            We inject the host info for the child task via an environment variable valled CHILD_NODES to each pod/deployment.
+            We perform it by concatenating the child-hosts via delimeter ':'
+            For example if the child nodes are k8node1 and k8node2, we will set CHILD_NODES=k8node1:k8node2
+            Note that the k8node1 and k8node2 in the example are the unique node ids of the kubernets cluster nodes.
+        """
+        print(key)
+        print(count)
+        count = count +1
+        # print(value)
+        inputnum = str(value[0])
+        flag = str(value[1])
+
+        for i in range(2,len(value)):
+            if i != 2:
+                nexthosts = nexthosts + ':'
+            nexthosts = nexthosts + str(hosts.get(value[i])[0])
+
+        for i in range(2, len(value)): 
+            if i != 2:
+                next_svc = next_svc + ':'
+            next_svc = next_svc + str(service_ips.get(value[i]))
+
+        label = "app=" + app_name+'-'+key
+        pod_name = app_name+"-"+key
+        
+        
+        resp = None
+
+        resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
+        # if a pod is running just delete it
+        if resp.items:
+            a=resp.items[0]
+            if a.status.phase == "Running":
+                print("Pod Running", key)
+                print(label)
+        else:
+            print('Recreate the pod')
+            dep = write_circe_deployment_specs(flag = str(flag), inputnum = str(inputnum), name = pod_name, node_name = hosts.get(task)[1],
+            image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
+            child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
+            home_node_ip = service_ips.get('home'),
+            own_ip = service_ips[task],
+            all_node = all_node,
+            all_node_ips = all_node_ips)
+
+    
+
+    # return result   
 def check_status_circe(dag,app_name):
     """
     This function prints out all the tasks that are not running.
@@ -47,16 +153,15 @@ def check_status_circe(dag,app_name):
 
     result = True
     for key, value in dag.items():
-        print(key)
-        print(value)
+        # print(key)
+        # print(value)
 
         # First check if there is a deployment existing with
         # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
         # The label of kubernets are used to identify replicaset associate to each task
         label = "app=" + app_name+'-'+key
         
-        print(label)
-
+        
         resp = None
 
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
@@ -65,6 +170,7 @@ def check_status_circe(dag,app_name):
             a=resp.items[0]
             if a.status.phase != "Running":
                 print("Pod Not Running", key)
+                print(label)
                 result = False
 
             # print("Pod Deleted. status='%s'" % str(del_resp_2.status))
@@ -234,7 +340,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
         # # Call the Kubernetes API to create the deployment
         resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
         print("Deployment created")
-        # print("Deployment created. status = '%s'" % str(resp.status))
+        print("Deployment created. status = '%s'" % str(resp.status))
 
     while 1:
         print('Checking status CIRCE workers')
@@ -268,6 +374,11 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     #     # print resp.spec.cluster_ip
     #     service_ips[task] = resp.spec.cluster_ip
 
+    # all_node_ips = ':'.join(service_ips.values())
+    # all_node = ':'.join(service_ips.keys())
+
+    # test(dag,app_name,service_ips,all_node,all_node_ips,hosts)
+
     # print(service_ips)
     home_name =app_name+"-home"
     home_dep = write_circe_home_specs(name=home_name,image = jupiter_config.HOME_IMAGE, 
@@ -278,7 +389,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     # print(home_dep)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created")
-    # print("Home deployment created. status = '%s'" % str(resp.status))
+    print("Home deployment created. status = '%s'" % str(resp.status))
 
-    # pprint(service_ips)
+    pprint(service_ips)
     

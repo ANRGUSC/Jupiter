@@ -136,10 +136,10 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         
         task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
-        """
-            Make sure you run kubectl proxy --port=8080 on a terminal.
-            Then this is link to get the task to node mapping
-        """
+        # """
+        #     Make sure you run kubectl proxy --port=8080 on a terminal.
+        #     Then this is link to get the task to node mapping
+        # """
 
         line = "http://localhost:%d/api/v1/namespaces/"%(port)
         line = line + jupiter_config.MAPPER_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
