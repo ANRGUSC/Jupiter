@@ -131,15 +131,16 @@ def k8s_jupiter_deploy(app_id,app_name,port):
 
         node_names = utilities.k8s_get_nodes_string(path2)
         print('*************************')
+        print('Start Mapper module')
 
         #Start the task to node mapper
         
-        task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
+        # task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
-        # """
-        #     Make sure you run kubectl proxy --port=8080 on a terminal.
-        #     Then this is link to get the task to node mapping
-        # """
+        """
+            Make sure you run kubectl proxy --port=8080 on a terminal.
+            Then this is link to get the task to node mapping
+        """
 
         line = "http://localhost:%d/api/v1/namespaces/"%(port)
         line = line + jupiter_config.MAPPER_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
@@ -391,7 +392,8 @@ def main():
     app_name = jupiter_config.APP_OPTION
     circe_port = int(jupiter_config.FLASK_CIRCE)
     
-    num_samples = 100*10 #apps x samples
+    num_apps = 1
+    num_samples = num_apps * 10 #apps x samples
     num_runs = 1
     num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]

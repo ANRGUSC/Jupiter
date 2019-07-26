@@ -16,7 +16,7 @@ from copy import deepcopy
 import numpy as np
 import os
 
-MAX_TASK_ALLOWED = 4
+MAX_TASK_ALLOWED = 25
 
 class Duration:
     """Time duration about a task
@@ -316,9 +316,9 @@ class HEFT:
                 for processor in self.processors:
                     est = self.cal_est(task, processor)
                     if est + task.comp_cost[processor.number] < aft and processor.assigned_task < MAX_TASK_ALLOWED:
-                        print("est:", est)
-                        print("task:",task.comp_cost[processor.number])
-                        print(processor.number, task.number)
+                        # print("est:", est)
+                        # print("task:",task.comp_cost[processor.number])
+                        # print(processor.number, task.number)
                         aft = est + task.comp_cost[processor.number]
                         p = processor.number
                         processor.assigned_task += 1

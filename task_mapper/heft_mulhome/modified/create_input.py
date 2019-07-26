@@ -105,6 +105,6 @@ def init(filename):
         quaratic_profile[i-1][j-1] = tuple([a,b,c])
         line = f.readline()
 
-    print('==================')
+    # print('==================')
     # print(quaratic_profile)
     return [num_of_tasks, task_names, num_of_processors, comp_cost, rate, data, quaratic_profile]

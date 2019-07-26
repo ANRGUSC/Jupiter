@@ -1,57 +1,17 @@
+schedule = {'task110': 'node84', 'task111': 'node14', 'task112': 'node20', 'task113': 'node34', 'task114': 'node19', 'task115': 'node17', 'task116': 'node21', 'task117': 'node50', 'task118': 'node9', 'task119': 'node53', 'task438': 'node92', 'task235': 'node41', 'task234': 'node50', 'task237': 'node105', 'task236': 'node69', 'task231': 'node103', 'task230': 'node37', 'task233': 'node77', 'task232': 'node103', 'task239': 'node51', 'task238': 'node94', 'task66': 'node104', 'task327': 'node105', 'task454': 'node95', 'task457': 'node103', 'task280': 'node54', 'task281': 'node63', 'task72': 'node59', 'task73': 'node15', 'task74': 'node28', 'task285': 'node58', 'task76': 'node42', 'task77': 'node66', 'task78': 'node37', 'task79': 'node42', 'task60': 'node104', 'task322': 'node94', 'task453': 'node94', 'task452': 'node92', 'task301': 'node94', 'task300': 'node47', 'task303': 'node49', 'task302': 'node72', 'task305': 'node66', 'task304': 'node66', 'task307': 'node89', 'task306': 'node78', 'task309': 'node90', 'task308': 'node93', 'task424': 'node77', 'task425': 'node86', 'task426': 'node90', 'task427': 'node86', 'task420': 'node80', 'task421': 'node103', 'task422': 'node92', 'task423': 'node90', 'task428': 'node103', 'task429': 'node97', 'task318': 'node58', 'task319': 'node80', 'task81': 'node16', 'task80': 'node23', 'task83': 'node20', 'task82': 'node44', 'task85': 'node79', 'task84': 'node68', 'task87': 'node62', 'task86': 'node78', 'task89': 'node82', 'task88': 'node82', 'task259': 'node55', 'task311': 'node90', 'task0': 'node3', 'task1': 'node87', 'task2': 'node60', 'task3': 'node87', 'task4': 'node85', 'task5': 'node55', 'task6': 'node23', 'task7': 'node3', 'task8': 'node25', 'task9': 'node23', 'task169': 'node95', 'task168': 'node94', 'task161': 'node79', 'task160': 'node19', 'task163': 'node72', 'task162': 'node46', 'task165': 'node32', 'task164': 'node20', 'task167': 'node40', 'task166': 'node46', 'task34': 'node86', 'task35': 'node51', 'task36': 'node58', 'task37': 'node22', 'task30': 'node78', 'task31': 'node13', 'task32': 'node24', 'task33': 'node52', 'task38': 'node55', 'task39': 'node98', 'task345': 'node101', 'task344': 'node101', 'task347': 'node78', 'task346': 'node93', 'task341': 'node93', 'task340': 'node59', 'task343': 'node86', 'task342': 'node88', 'task349': 'node104', 'task348': 'node62', 'task268': 'node66', 'task269': 'node50', 'task266': 'node44', 'task267': 'node56', 'task264': 'node93', 'task265': 'node43', 'task262': 'node66', 'task263': 'node50', 'task260': 'node72', 'task261': 'node72', 'task495': 'node104', 'task370': 'node105', 'task468': 'node92', 'task469': 'node94', 'task460': 'node97', 'task461': 'node92', 'task462': 'node95', 'task463': 'node94', 'task464': 'node99', 'task465': 'node94', 'task466': 'node97', 'task467': 'node101', 'task514': 'node101', 'task515': 'node74', 'task516': 'node101', 'task517': 'node101', 'task510': 'node105', 'task511': 'node105', 'task512': 'node95', 'task513': 'node104', 'task518': 'node102', 'task519': 'node102', 'task129': 'node68', 'task128': 'node104', 'task125': 'node19', 'task124': 'node71', 'task127': 'node36', 'task126': 'node53', 'task121': 'node53', 'task120': 'node68', 'task123': 'node53', 'task122': 'node19', 'task456': 'node92', 'task451': 'node90', 'task222': 'node38', 'task388': 'node86', 'task220': 'node71', 'task221': 'node41', 'task226': 'node74', 'task227': 'node54', 'task224': 'node54', 'task225': 'node86', 'task381': 'node99', 'task380': 'node76', 'task383': 'node84', 'task229': 'node42', 'task385': 'node90', 'task384': 'node97', 'task387': 'node89', 'task386': 'node104', 'task70': 'node54', 'task71': 'node103', 'task282': 'node88', 'task283': 'node95', 'task69': 'node82', 'task68': 'node37', 'task67': 'node15', 'task284': 'node65', 'task65': 'node18', 'task64': 'node24', 'task63': 'node89', 'task62': 'node23', 'task61': 'node38', 'task75': 'node66', 'task286': 'node65', 'task287': 'node90', 'task257': 'node74', 'task256': 'node60', 'task255': 'node94', 'task254': 'node41', 'task253': 'node55', 'task252': 'node83', 'task251': 'node59', 'task250': 'node84', 'task316': 'node42', 'task317': 'node80', 'task314': 'node49', 'task315': 'node72', 'task312': 'node66', 'task313': 'node74', 'task310': 'node63', 'task258': 'node50', 'task411': 'node90', 'task410': 'node76', 'task413': 'node103', 'task412': 'node103', 'task415': 'node101', 'task414': 'node94', 'task417': 'node76', 'task416': 'node93', 'task419': 'node103', 'task418': 'node86', 'task278': 'node36', 'task176': 'node103', 'task177': 'node27', 'task174': 'node32', 'task175': 'node80', 'task172': 'node70', 'task173': 'node99', 'task170': 'node19', 'task171': 'node50', 'task178': 'node84', 'task179': 'node41', 'task485': 'node97', 'task23': 'node50', 'task22': 'node13', 'task21': 'node13', 'task20': 'node58', 'task27': 'node14', 'task26': 'node104', 'task25': 'node36', 'task24': 'node10', 'task29': 'node66', 'task28': 'node13', 'task352': 'node42', 'task353': 'node104', 'task350': 'node99', 'task351': 'node57', 'task356': 'node103', 'task357': 'node101', 'task354': 'node83', 'task355': 'node72', 'task358': 'node70', 'task359': 'node94', 'task219': 'node55', 'task218': 'node51', 'task213': 'node95', 'task212': 'node59', 'task211': 'node50', 'task210': 'node54', 'task217': 'node74', 'task216': 'node55', 'task215': 'node105', 'task214': 'node72', 'task271': 'node52', 'task189': 'node50', 'task188': 'node62', 'task379': 'node103', 'task183': 'node78', 'task182': 'node91', 'task181': 'node52', 'task180': 'node71', 'task187': 'node27', 'task186': 'node95', 'task185': 'node54', 'task184': 'node70', 'task56': 'node51', 'task57': 'node94', 'task54': 'node74', 'task55': 'node7', 'task52': 'node51', 'task53': 'node103', 'task50': 'node70', 'task289': 'node59', 'task58': 'node23', 'task59': 'node17', 'task455': 'node97', 'task326': 'node81', 'task325': 'node62', 'task324': 'node62', 'task323': 'node70', 'task450': 'node92', 'task321': 'node83', 'task320': 'node88', 'task459': 'node105', 'task458': 'node97', 'task329': 'node53', 'task328': 'node66', 'task521': 'node95', 'task520': 'node101', 'task138': 'node77', 'task139': 'node73', 'task132': 'node71', 'task133': 'node94', 'task130': 'node48', 'task131': 'node34', 'task136': 'node55', 'task137': 'node96', 'task134': 'node50', 'task135': 'node97', 'task149': 'node89', 'task148': 'node35', 'task147': 'node56', 'task146': 'node105', 'task145': 'node56', 'task144': 'node73', 'task143': 'node27', 'task142': 'node43', 'task141': 'node88', 'task140': 'node76', 'task18': 'node25', 'task19': 'node66', 'task12': 'node23', 'task13': 'node60', 'task10': 'node55', 'task11': 'node25', 'task16': 'node58', 'task17': 'node50', 'task14': 'node85', 'task15': 'node58', 'task244': 'node62', 'task245': 'node69', 'task246': 'node59', 'task247': 'node59', 'task240': 'node50', 'task241': 'node58', 'task242': 'node84', 'task243': 'node85', 'task491': 'node85', 'task362': 'node57', 'task493': 'node97', 'task360': 'node62', 'task248': 'node39', 'task249': 'node50', 'task497': 'node99', 'task364': 'node88', 'task293': 'node81', 'task44': 'node74', 'task291': 'node99', 'task396': 'node86', 'task397': 'node76', 'task394': 'node94', 'task395': 'node76', 'task392': 'node71', 'task393': 'node60', 'task390': 'node76', 'task391': 'node103', 'task41': 'node51', 'task398': 'node103', 'task296': 'node66', 'task43': 'node30', 'task42': 'node103', 'task408': 'node87', 'task409': 'node84', 'task406': 'node90', 'task407': 'node80', 'task404': 'node90', 'task405': 'node94', 'task402': 'node90', 'task403': 'node61', 'task400': 'node99', 'task401': 'node92', 'task290': 'node77', 'task103': 'node53', 'task102': 'node56', 'task101': 'node53', 'task100': 'node13', 'task107': 'node54', 'task106': 'node38', 'task105': 'node105', 'task104': 'node61', 'task109': 'node38', 'task108': 'node53', 'task366': 'node90', 'task442': 'node99', 'task335': 'node99', 'task336': 'node104', 'task441': 'node80', 'task446': 'node94', 'task492': 'node105', 'task331': 'node90', 'task444': 'node103', 'task333': 'node101', 'task208': 'node95', 'task209': 'node83', 'task200': 'node54', 'task201': 'node102', 'task202': 'node58', 'task203': 'node58', 'task204': 'node43', 'task205': 'node40', 'task206': 'node51', 'task207': 'node55', 'task198': 'node52', 'task199': 'node58', 'task190': 'node36', 'task191': 'node90', 'task192': 'node59', 'task193': 'node55', 'task194': 'node97', 'task195': 'node59', 'task196': 'node49', 'task197': 'node70', 'task45': 'node65', 'task292': 'node44', 'task47': 'node66', 'task46': 'node29', 'task297': 'node49', 'task40': 'node66', 'task295': 'node66', 'task294': 'node68', 'task299': 'node95', 'task298': 'node92', 'task49': 'node104', 'task48': 'node7', 'task334': 'node90', 'task443': 'node92', 'task440': 'node94', 'task337': 'node72', 'task330': 'node90', 'task447': 'node82', 'task332': 'node88', 'task445': 'node82', 'task448': 'node99', 'task449': 'node103', 'task338': 'node104', 'task339': 'node72', 'task499': 'node99', 'task288': 'node95', 'task498': 'node97', 'task369': 'node88', 'task368': 'node90', 'task363': 'node71', 'task490': 'node99', 'task361': 'node99', 'task437': 'node86', 'task436': 'node90', 'task435': 'node103', 'task434': 'node82', 'task433': 'node92', 'task432': 'node76', 'task431': 'node90', 'task430': 'node92', 'task367': 'node101', 'task439': 'node99', 'task494': 'node74', 'task365': 'node103', 'task496': 'node99', 'task92': 'node105', 'task93': 'node56', 'task90': 'node45', 'task91': 'node17', 'task96': 'node23', 'task97': 'node17', 'task94': 'node90', 'task95': 'node33', 'task98': 'node53', 'task99': 'node23', 'task389': 'node103', 'task223': 'node54', 'task158': 'node53', 'task159': 'node55', 'task154': 'node22', 'task155': 'node105', 'task156': 'node71', 'task157': 'node27', 'task150': 'node19', 'task151': 'node53', 'task152': 'node45', 'task153': 'node88', 'task228': 'node105', 'task486': 'node97', 'task487': 'node97', 'task484': 'node103', 'task382': 'node94', 'task482': 'node92', 'task483': 'node92', 'task480': 'node97', 'task481': 'node99', 'task488': 'node101', 'task489': 'node99', 'task378': 'node48', 'task270': 'node73', 'task273': 'node48', 'task272': 'node50', 'task275': 'node73', 'task274': 'node72', 'task277': 'node77', 'task276': 'node66', 'task279': 'node50', 'task371': 'node61', 'task372': 'node76', 'task373': 'node76', 'task374': 'node48', 'task375': 'node104', 'task376': 'node88', 'task377': 'node101', 'task399': 'node103', 'task479': 'node73', 'task478': 'node97', 'task473': 'node85', 'task472': 'node99', 'task471': 'node103', 'task470': 'node99', 'task477': 'node97', 'task476': 'node103', 'task475': 'node99', 'task474': 'node99', 'task51': 'node4', 'task507': 'node105', 'task506': 'node104', 'task505': 'node84', 'task504': 'node101', 'task503': 'node74', 'task502': 'node74', 'task501': 'node99', 'task500': 'node99', 'task509': 'node101', 'task508': 'node104'}
 
-from heapq import nsmallest
-    #num: select k neighbors near the node based on shorted distance
-distance = {}
-distance[('lon','tor')] = 8
-distance[('lon','fra')] = 1.5
-distance[('lon','sgp')] = 13
-distance[('lon','blr')] = 10
-distance[('lon','ams')] = 1
-distance[('lon','sfo')] = 11
-distance[('lon','nyc')] = 8
-distance[('tor','fra')] = 8.5
-distance[('tor','sgp')] = 20.5
-distance[('tor','blr')] = 19.5 
-distance[('tor','ams')] = 7
-distance[('tor','sfo')] = 5
-distance[('tor','nyc')] = 1.5
-distance[('fra','sgp')] = 12.5
-distance[('fra','blr')] = 9.5
-distance[('fra','ams')] = 1
-distance[('fra','sfo')] = 11
-distance[('fra','nyc')] = 8.5
-distance[('sgp','blr')] = 4.5 
-distance[('sgp','ams')] = 13
-distance[('sgp','sfo')] = 16.5
-distance[('sgp','nyc')] = 18.5
-distance[('blr','ams')] = 12
-distance[('blr','sfo')] = 22
-distance[('blr','nyc')] = 19.5
-distance[('ams','sfo')] = 10.5
-distance[('ams','nyc')] = 8
-distance[('nyc','sfo')] = 5.5
 
-reg = ['lon','tor','fra','sgp','blr','ams','sfo','nyc']
-num = 3
-connected = {}
-for city in reg:
-    pairs = [k for k,v in distance.items() if k[0]==city or k[1]==city]
-    nb = dict((k, distance[k]) for k in pairs)
-    neigbors = nsmallest(num, nb, key = nb.get)
-    for item in neigbors:
-        connected[item] = 1
-        connected[(item[1],item[0])] = 1
 
-cluster = {}
-all_node_geo = {'nyc': ['node111', 'node99', 'node73', 'node81', 'node110', 'node52', 'node71', 'node43', 'node13', 'node67', 'node92', 'node21', 'node76', 'node10', 'node8', 'node102', 'node98', 'node33', 'node75'], 'blr': ['node14', 'node64', 'node93', 'node30', 'node51', 'node104', 'node74', 'node49', 'node85', 'node45', 'node5'], 'lon': ['node16', 'node62', 'node27', 'node58', 'node69', 'node61', 'node7', 'node2', 'node29', 'node78', 'node106', 'node19', 'node77', 'node23', 'node57', 'node97'], 'sgp': ['node108', 'node44', 'node47', 'node40', 'node28', 'node36', 'node70', 'node65', 'node89'], 'tor': ['node103', 'node86', 'node80', 'node56', 'node87', 'node37', 'node94', 'node41', 'node63', 'node101'], 'sfo': ['node3', 'node107', 'node95', 'node53', 'node90', 'node54', 'node39', 'node72', 'node11', 'node79', 'node59', 'node100', 'node25'], 'ams': ['node55', 'node42', 'node46', 'node88', 'node35', 'node96', 'node68', 'node24', 'node66', 'node82', 'node60', 'node9'], 'fra': ['node48', 'node91', 'node18', 'node15', 'node83', 'node12', 'node32', 'node26', 'node50', 'node31', 'node34', 'node17', 'node6', 'node20', 'node38']}
+count = dict()
+for task in schedule:
+    if schedule[task] not in count:
+        count[schedule[task]] = 1
+    else:
+        count[schedule[task]] = count[schedule[task]] + 1
 
-for geo in all_node_geo:
-    print('----------')
-    print(geo)
-    cluster[geo] = all_node_geo[geo]
-    nbs = [k[1] for k,v in connected.items() if v==1 and (k[0]==geo)]
-    print(nbs)
-    for nb in nbs:
-        cluster[geo].extend(all_node_geo[nb])
+print(count)
+a = max(count, key=count.get)
+print(a)
+print(count[a])
 
-print(cluster[geo])
+
