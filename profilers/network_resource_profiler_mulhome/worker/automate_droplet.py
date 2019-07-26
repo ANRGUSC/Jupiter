@@ -27,6 +27,7 @@ from os.path import isfile, join
 from os import path
 import configparser
 import requests
+import time
 
 
 sys.path.append("../")
@@ -84,7 +85,6 @@ class droplet_measurement():
     def do_log_measurement(self):
         """This function pick a random file size, send the file to all of the neighbors and log the transfer time in the local Mongo database.
         """
-
         for idx in range (0, len(self.hosts)):
             random_size = random.choice(self.file_size)
             local_path  = '%s/%s_test_%dK'%(self.dir_local,self.my_host,random_size)

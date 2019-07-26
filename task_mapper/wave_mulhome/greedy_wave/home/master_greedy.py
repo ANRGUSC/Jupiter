@@ -27,6 +27,8 @@ from heapq import nsmallest
 
 app = Flask(__name__)
 
+MAX_TASK_ALLOWED = 25
+
 def demo_help(server,port,topic,msg):
     username = 'anrgusc'
     password = 'anrgusc'
@@ -59,7 +61,7 @@ def read_file(file_name):
     #lock.release()
     return file_contents
 
-def define_cluster(all_geo_,num):
+def define_cluster(all_node_geo,num):
     #num: select k neighbors near the node based on shorted distance
     distance = {}
     distance[('lon','tor')] = 8
@@ -91,7 +93,10 @@ def define_cluster(all_geo_,num):
     distance[('ams','nyc')] = 8
     distance[('nyc','sfo')] = 5.5
 
-    reg = ['lon','tor','fra','sgp','blr','ams','sfo','nyc']
+    # reg = ['lon','tor','fra','sgp','blr','ams','sfo','nyc']
+    reg = all_node_geo.keys()
+    # print(reg)
+    # print(type(reg))
     connected = {}
     for city in reg:
         pairs = [k for k,v in distance.items() if k[0]==city or k[1]==city]
@@ -101,12 +106,18 @@ def define_cluster(all_geo_,num):
             connected[item] = 1
             connected[(item[1],item[0])] = 1
 
+    # print(all_node_geo)
+
     cluster = {}
     for geo in all_node_geo:
         cluster[geo] = all_node_geo[geo]
+        # print(cluster)
+        # print(connected)
         nbs = [k[1] for k,v in connected.items() if v==1 and (k[0]==geo)]
+        # print(nbs)
         for nb in nbs:
-            cluster[geo].extend(all_node_geo[nb])
+            if nb in all_node_geo:
+                cluster[geo].extend(all_node_geo[nb])
     return cluster
 
 

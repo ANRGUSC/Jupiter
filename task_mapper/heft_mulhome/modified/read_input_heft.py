@@ -55,10 +55,10 @@ def get_global_info():
     home_profiler = os.environ['HOME_PROFILER_IP'].split(' ')
     home_profiler_nodes = [x.split(':')[0] for x in home_profiler]
     home_profiler_ip = [x.split(':')[1] for x in home_profiler]
-    print('----------------- ^^^^^^^^^^^')
-    print(home_profiler)
-    print(home_profiler_nodes)
-    print(home_profiler_ip)
+    # print('----------------- ^^^^^^^^^^^')
+    # print(home_profiler)
+    # print(home_profiler_nodes)
+    # print(home_profiler_ip)
 
 def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
     """Collect the execution profile from the home execution profiler's MongoDB
@@ -80,26 +80,26 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
             print('Error connection')
             time.sleep(60)
 
-    print(db)
+    # print(db)
     while num_profilers < (num_nodes+1):
         try:
             collection = db.collection_names(include_system_collections=False)
             num_profilers = len(collection)
-            print('Current number of updated execution profilers:')
-            print(num_profilers)
+            # print('Current number of updated execution profilers:')
+            # print(num_profilers)
         except Exception as e:
             print('--- Execution profiler info not yet loaded into MongoDB!')
             time.sleep(60)
 
     #print(collection)
-    print('*********&&&&&&&&&&&&&&&&')
-    print(home_profiler_nodes)
+    # print('*********&&&&&&&&&&&&&&&&')
+    # print(home_profiler_nodes)
     for col in collection:
-        print('--- Check execution profiler ID : '+ col)
-        print(col)
-        print(home_profiler_nodes)
+        # print('--- Check execution profiler ID : '+ col)
+        # print(col)
+        # print(home_profiler_nodes)
         if col in home_profiler_nodes:
-            print('hoho')
+            # print('hoho')
             continue
         logging =db[col].find()
         for record in logging:
@@ -108,9 +108,9 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
             execution_info.append(info_to_csv)
     print('--------------------------------------------')
     print('Execution information has already been provided')
-    print(execution_info)
-    print(len(execution_info))
-    print(len(execution_info[0]))
+    # print(execution_info)
+    # print(len(execution_info))
+    # print(len(execution_info[0]))
     with open('/heft/execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
@@ -146,7 +146,7 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
         - MONGO_SVC_PORT (str): Mongo service port
         - network_map (dict): mapping of node IPs and node names
     """
-    print(profiler_ip)
+    # print(profiler_ip)
     for ip in profiler_ip:
         print('Check Network Profiler IP: '+ip[0]+ '-' +ip[1])
         client_mongo = MongoClient('mongodb://'+ip[1]+':'+MONGO_SVC_PORT+'/')
@@ -158,7 +158,7 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
             time.sleep(60)
             collection = db.collection_names(include_system_collections=False)
             num_nb = len(collection)-1
-        print('--- Number of neighbors: '+str(num_nb))
+        # print('--- Number of neighbors: '+str(num_nb))
         num_rows = db[ip[1]].count()
         while num_rows < num_nb:
             print('--- Network profiler regression info not yet loaded into MongoDB!')
@@ -169,14 +169,14 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
         for record in logging:
             # print(record)
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
-            print(home_profiler_ip)
+            # print(home_profiler_ip)
             if record['Destination[IP]'] in home_profiler_ip: 
-                print('hoho')
+                # print('hoho')
                 continue
             info_to_csv=[network_map[record['Source[IP]']],record['Source[IP]'],network_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info.append(info_to_csv)
     print('Network information has already been provided')
-    print(network_info)
+    # print(network_info)
     with open('/heft/network_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(network_info)
@@ -212,11 +212,11 @@ if __name__ == '__main__':
     configuration_path='/heft/dag.txt'
     global profiler_ip,exec_home_ip,num_nodes,network_map,node_list
     get_global_info()
-    print(profiler_ip)
-    print(exec_home_ip)
-    print("Num nodes :" + str(num_nodes))
-    print(network_map)
-    print(node_list)
+    # print(profiler_ip)
+    # print(exec_home_ip)
+    # print("Num nodes :" + str(num_nodes))
+    # print(network_map)
+    # print(node_list)
 
     print('------------------------------------------------------------')
     print("\n Step 2: Read network profiler information : \n")

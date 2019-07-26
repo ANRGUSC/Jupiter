@@ -201,11 +201,11 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
 
     num_task, task_names, num_node, comp_cost, rate, data, quaratic_profile = init(tgff_file)
     print('Checking the written information')
-    print(num_task)
-    print(comp_cost)
-    print(rate)
-    print(data)
-    print(quaratic_profile)
+    # print(num_task)
+    # print(comp_cost)
+    # print(rate)
+    # print(data)
+    # print(quaratic_profile)
 
     return
 

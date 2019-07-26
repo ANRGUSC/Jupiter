@@ -43,7 +43,7 @@ def demo_help(server,port,topic,msg):
     client.publish(topic, msg,qos=1)
     client.disconnect()
 
-def define_cluster(all_geo_,num):
+def define_cluster(all_node_geo,num):
     #num: select k neighbors near the node based on shorted distance
     distance = {}
     distance[('lon','tor')] = 8
@@ -75,7 +75,10 @@ def define_cluster(all_geo_,num):
     distance[('ams','nyc')] = 8
     distance[('nyc','sfo')] = 5.5
 
-    reg = ['lon','tor','fra','sgp','blr','ams','sfo','nyc']
+    # reg = ['lon','tor','fra','sgp','blr','ams','sfo','nyc']
+    reg = all_node_geo.keys()
+    print(reg)
+    print(type(reg))
     connected = {}
     for city in reg:
         pairs = [k for k,v in distance.items() if k[0]==city or k[1]==city]
@@ -92,7 +95,8 @@ def define_cluster(all_geo_,num):
         nbs = [k[1] for k,v in connected.items() if v==1 and (k[0]==geo)]
         print(nbs)
         for nb in nbs:
-            cluster[geo].extend(all_node_geo[nb])
+            if nb in all_node_geo:
+                cluster[geo].extend(all_node_geo[nb])
     return cluster
 
 

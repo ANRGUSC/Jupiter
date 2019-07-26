@@ -104,5 +104,5 @@ def delete_all_heft(app_name):
         # At this point you should not have any of the profiler related service, pod, or deployment running
 
 if __name__ == '__main__':
-    app_name = 'dag1'
+    app_name = 'dummy5001'
     delete_all_heft(app_name)
