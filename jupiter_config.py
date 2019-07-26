@@ -127,8 +127,8 @@ def set_globals():
     KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
     # Namespaces
-    DEPLOYMENT_NAMESPACE    = 'quynh5-circe'
-    PROFILER_NAMESPACE      = 'quynh2-profiler'
+    DEPLOYMENT_NAMESPACE    = 'quynh-circe'
+    PROFILER_NAMESPACE      = 'quynh-profiler'
     MAPPER_NAMESPACE        = 'quynh-mapper'
     EXEC_NAMESPACE          = 'quynh-exec'
 
@@ -151,10 +151,10 @@ def set_globals():
     # APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
     # APP_OPTION              = 'dag'
 
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
-    # APP_NAME                  = 'app_specific_files/dummy_app'
-    # APP_OPTION                = 'dummy'
+    HOME_CHILD                = 'task0'
+    APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
+    APP_NAME                  = 'app_specific_files/dummy_app'
+    APP_OPTION                = 'dummy'
 
     # HOME_CHILD              = 'task0'
     # APP_PATH                = HERE  + 'app_specific_files/dummy_app_100/'
@@ -191,10 +191,10 @@ def set_globals():
     # APP_NAME                  = 'app_specific_files/dummyapp300'
     # APP_OPTION                = 'dummy300'
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummyapp500/'
-    APP_NAME                  = 'app_specific_files/dummyapp500'
-    APP_OPTION                = 'dummy500'
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp500/'
+    # APP_NAME                  = 'app_specific_files/dummyapp500'
+    # APP_OPTION                = 'dummy500'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp800/'
