@@ -252,7 +252,7 @@ def transfer_data_scp(IP,user,pword,source, destination):
         try:
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
             os.system(cmd)
-            # print('data transfer complete\n')
+            print('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,ts)
             runtime_sender_log.write(s)

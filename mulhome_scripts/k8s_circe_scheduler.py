@@ -298,7 +298,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
         resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
         print("Home deployment created")
         print("Home deployment created. status = '%s'" % str(resp.status))
-        print(resp)
+        # print(resp)
     except ApiException as e:
         print(e)
        

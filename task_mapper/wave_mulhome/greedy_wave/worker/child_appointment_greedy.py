@@ -28,8 +28,9 @@ from watchdog.events import FileSystemEventHandler
 import paho.mqtt.client as mqtt
 import socket
 from heapq import nsmallest
+import collections
 
-
+MAX_TASK_ALLOWED = 2
 
 app = Flask(__name__)
 
@@ -77,8 +78,6 @@ def define_cluster(all_node_geo,num):
 
     # reg = ['lon','tor','fra','sgp','blr','ams','sfo','nyc']
     reg = all_node_geo.keys()
-    print(reg)
-    print(type(reg))
     connected = {}
     for city in reg:
         pairs = [k for k,v in distance.items() if k[0]==city or k[1]==city]
@@ -90,10 +89,8 @@ def define_cluster(all_node_geo,num):
 
     cluster = {}
     for geo in all_node_geo:
-        print(geo)
         cluster[geo] = all_node_geo[geo]
         nbs = [k[1] for k,v in connected.items() if v==1 and (k[0]==geo)]
-        print(nbs)
         for nb in nbs:
             if nb in all_node_geo:
                 cluster[geo].extend(all_node_geo[nb])
@@ -290,7 +287,8 @@ def assign_task():
             # print(control_relation[task_name])
             print(local_children)
             for task in control_relation[task_name]:
-                # print(task)
+                print('----- my children')
+                print(task)
                 if task not in local_children.keys():
                     # print(task)
                     local_children[task] = False
@@ -462,16 +460,49 @@ def assign_children_task(children_task):
     else:
         sample_file = '/1botnet.ipsum'
     sample_size = cal_file_size(sample_file)
-    assign_to_node = get_most_suitable_node(sample_size)
-    if not assign_to_node:
-        print("No suitable node found for assigning task: ", children_task)
-    else:
-        print("Trying to assign", children_task, "to", assign_to_node)
-        status = assign_task_to_remote(assign_to_node, children_task)
-        if status == "ok":
-            local_children[children_task] = assign_to_node
-            # call_send_mapping(children_task,assign_to_node)
-
+    assign_to_node_list = get_most_suitable_node(sample_size)
+    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+    print(assign_to_node_list)
+    # if len(assign_to_node:
+    #     print("No suitable node found for assigning task: ", children_task)
+    # else:
+    for assign_to_node in assign_to_node_list:
+        print(assign_to_node)
+        if assign_to_node in total_assign_child:
+            print('--------------- 1')
+            if total_assign_child[assign_to_node]>= MAX_TASK_ALLOWED:
+                print('Overloaded nodes already....')
+                print(total_assign_child[assign_to_node])
+                continue
+            else:
+                print("Trying to assign", children_task, "to", assign_to_node)
+                print('Total number of tasks assigned to node',assign_to_node, ': ',str(total_assign_child[assign_to_node]))
+                status = assign_task_to_remote(assign_to_node, children_task)
+                print(status)
+                if status == "ok":
+                    print('Assign successfully')
+                    local_children[children_task] = assign_to_node
+                    print(local_children)
+                    total_assign_child[assign_to_node] = total_assign_child[assign_to_node]+1
+                    print('Total number of tasks assigned to node',assign_to_node, ': ',str(total_assign_child[assign_to_node]))
+                    break
+                    # call_send_mapping(children_task,assign_to_node)
+        else:
+            print('--------------- 2')
+            print("Trying to assign", children_task, "to", assign_to_node)
+            status = assign_task_to_remote(assign_to_node, children_task)
+            print(status)
+            if status == "ok":
+                print('Assign successfully')
+                local_children[children_task] = assign_to_node
+                print(local_children)
+                total_assign_child[assign_to_node] = 1
+                print('Total number of tasks assigned to node',assign_to_node, ': ',str(total_assign_child[assign_to_node]))
+                break
+    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+    print(children_task)
+    print(assign_to_node)
+    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
 def get_most_suitable_node_original(file_size):
     valid_nodes = []
     
@@ -559,10 +590,15 @@ def get_most_suitable_node(file_size):
 
     print('------------------cost')
     print(cost)
-    best_node = min(cost,key=cost.get)
+    # best_node = min(cost,key=cost.get)
     
-    print(best_node)
-    return best_node   
+    # print(best_node)
+    # return best_node   
+    # sorted_cost = sorted(cost.items(), key=lambda x: x[1])
+    
+    sorted_cost = sorted(cost, key=cost.get)
+    print(sorted_cost)
+    return sorted_cost
 
     
 
@@ -626,10 +662,6 @@ def get_resource_data_drupe():
 
     print("Got profiler data from http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC))
     # print("Resource profiles: ", json.dumps(result))
-
-    print('Overhead resource')
-    print(myneighbors)
-    print(len(myneighbors))
     if BOKEH==3:
         topic = 'overhead_%s'%(node_name)
         msg = 'overhead %s resource %d \n' %(node_name,len(myneighbors))
@@ -759,10 +791,11 @@ def main():
     # while init_folder() != "ok":  # Initialize the local folers
     #     pass
 
-    global local_mapping, local_children,local_responsibility, manager
+    global local_mapping, local_children,local_responsibility, manager, total_assign_child
     manager = Manager()
     local_mapping = manager.dict()
     local_children = manager.dict()
+    total_assign_child = manager.dict()
 
     global all_node_geo, cluster, mygeo
     all_node_geo_info = os.environ['ALL_NODES_GEO']
