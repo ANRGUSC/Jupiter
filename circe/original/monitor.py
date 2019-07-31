@@ -459,6 +459,7 @@ class Handler(FileSystemEventHandler):
 
 
             queue_mul.put(new_file)
+            print(new_file)
             
             ts = time.time()
             if RUNTIME == 1:
@@ -480,11 +481,13 @@ class Handler(FileSystemEventHandler):
                     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
 
             flag1 = sys.argv[1]
+            print(flag1)
 
             # t1 = time.time()
             if flag1 == "1":
     
                 # Start msg
+                print('Option1')
                 ts = time.time()
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)  
@@ -495,30 +498,34 @@ class Handler(FileSystemEventHandler):
                     msg = taskname + " starts"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     
+                print('Option11')
                 inputfile=queue_mul.get()
                 input_path = os.path.split(event.src_path)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
+                print('Option12')
                 dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
                 dag_task.start()
                 dag_task.join()
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
+                print('Option13')
                 if BOKEH == 1:
                     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
                 # end msg
             else:
-
+                print('Option2')
                 filenames.append(queue_mul.get())
                 if (len(filenames) == int(flag1)):
 
                     #start msg
+                    print('Option 2 continue')
                     ts = time.time()
                     runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info)
                     
-                        
+                    print('Option21')
                     if BOKEH == 1:
                         runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
                         demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
@@ -527,7 +534,7 @@ class Handler(FileSystemEventHandler):
                         demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     input_path = os.path.split(event.src_path)[0]
                     output_path = os.path.join(os.path.split(input_path)[0],'output')
-
+                    print('Option22')
                     dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
                     dag_task.start()
                     dag_task.join()
@@ -535,6 +542,7 @@ class Handler(FileSystemEventHandler):
                     ts = time.time()
                     runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info)
+                    print('Option23')
                     if BOKEH == 1:
                         runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
                         demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)

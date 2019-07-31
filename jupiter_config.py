@@ -156,10 +156,6 @@ def set_globals():
     APP_NAME                  = 'app_specific_files/dummy_app'
     APP_OPTION                = 'dummy'
 
-    # HOME_CHILD              = 'task0'
-    # APP_PATH                = HERE  + 'app_specific_files/dummy_app_100/'
-    # APP_NAME                = 'app_specific_files/dummy_app_100'
-    # APP_OPTION              = 'dummy100'
 
     # HOME_CHILD                = 'distribute'
     # APP_PATH                  = HERE  + 'app_specific_files/dummy_app_combined/'

@@ -239,7 +239,7 @@ def delete_all_exec(app_name):
         # At this point you should not have any of the profiler related service, pod, or deployment running
 
 if __name__ == '__main__':
-    # jupiter_config.set_globals() 
-    # app_name = jupiter_config.APP_OPTION
-    app_name = 'dummy500'
+    jupiter_config.set_globals() 
+    app_name = jupiter_config.APP_OPTION
+    # app_name = 'dummy500'
     delete_all_exec(app_name)
