@@ -29,6 +29,7 @@ import paho.mqtt.client as mqtt
 import socket
 from heapq import nsmallest
 import collections
+import random
 
 MAX_TASK_ALLOWED = 2
 
@@ -281,24 +282,25 @@ def assign_task():
         print(local_mapping)
         # print('---------------')
         
-        print('*******************')
+        # print('*******************')
         if len(control_relation[task_name])>0:
-            print('I am responsible for the next children tasks')
+            # print('I am responsible for the next children tasks')
             # print(control_relation[task_name])
-            print(local_children)
+            # print(local_children)
             for task in control_relation[task_name]:
-                print('----- my children')
-                print(task)
+                # print('----- my children')
+                # print(task)
                 if task not in local_children.keys():
                     # print(task)
-                    local_children[task] = False
+                    local_children[task] = 'None'
                     write_file(local_responsibility + "/" + task, 'TODO', "w+")
         else:
             print('No children tasks for this task')
-        print('*******************')
+        # print('*******************')
         
         return "ok"
     except Exception as e:
+        print('I am assigned the task but not successfully')
         print(e)
         return "not ok"
 app.add_url_rule('/assign_task', 'assign_task', assign_task)
@@ -314,7 +316,7 @@ def assign_task_to_remote(assigned_node, task_name):
         Exception: request if successful, ``not ok`` if failed
     """
     try:
-        print('Assign children task to the remote node')
+        # print('Assign children task to the remote node')
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
         params = urllib.parse.urlencode(params)
@@ -322,6 +324,8 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        # print(res)
+        # print('------@@@')
 
         if BOKEH==3:
             topic = 'overhead_%s'%(node_name)
@@ -329,8 +333,10 @@ def assign_task_to_remote(assigned_node, task_name):
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
     except Exception as e:
+        print('Failed assign children task to the remote node')
         print(e)
-        return "not ok"
+        return e
+
     return res
 
 def write_file(file_name, content, mode):
@@ -345,6 +351,21 @@ def write_file(file_name, content, mode):
     for line in content:
         file.write(line + "\n")
     file.close()
+
+
+def recv_count():
+    try:
+        print('Update count assign information')
+        count_info = request.args.get("count_info")
+        info = count_info.split('#')
+        for cin in info:
+            total_assign_child[cin.split(':')[0]] = int(cin.split(':')[1])
+    except Exception as e:
+        print(e)
+        print('Error update count assign information')
+        
+    return "ok"
+app.add_url_rule('/recv_count', 'recv_count', recv_count)
 
 def call_send_mapping(mapping, node):
     """
@@ -428,12 +449,15 @@ class Handler(FileSystemEventHandler):
 
             print("Received file as input - %s." % event.src_path)
             new_task = os.path.split(event.src_path)[-1]
-            # print(new_task)
+            print(new_task)
+            tmp = random.randint(0, 9)
+            time.sleep(tmp)
             _thread.start_new_thread(assign_children_task,(new_task,))
 
 
 def assign_children_task(children_task):
     print('Starting assigning process for the children task')
+    # print(children_task)
     
     global myneighbors
     while True:
@@ -461,48 +485,24 @@ def assign_children_task(children_task):
         sample_file = '/1botnet.ipsum'
     sample_size = cal_file_size(sample_file)
     assign_to_node_list = get_most_suitable_node(sample_size)
-    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-    print(assign_to_node_list)
     # if len(assign_to_node:
     #     print("No suitable node found for assigning task: ", children_task)
     # else:
     for assign_to_node in assign_to_node_list:
-        print(assign_to_node)
-        if assign_to_node in total_assign_child:
-            print('--------------- 1')
-            if total_assign_child[assign_to_node]>= MAX_TASK_ALLOWED:
-                print('Overloaded nodes already....')
-                print(total_assign_child[assign_to_node])
-                continue
-            else:
-                print("Trying to assign", children_task, "to", assign_to_node)
-                print('Total number of tasks assigned to node',assign_to_node, ': ',str(total_assign_child[assign_to_node]))
-                status = assign_task_to_remote(assign_to_node, children_task)
-                print(status)
-                if status == "ok":
-                    print('Assign successfully')
-                    local_children[children_task] = assign_to_node
-                    print(local_children)
-                    total_assign_child[assign_to_node] = total_assign_child[assign_to_node]+1
-                    print('Total number of tasks assigned to node',assign_to_node, ': ',str(total_assign_child[assign_to_node]))
-                    break
-                    # call_send_mapping(children_task,assign_to_node)
+        if total_assign_child[assign_to_node]>= MAX_TASK_ALLOWED:
+            print('Overloaded nodes already....')
+            print(total_assign_child[assign_to_node])
+            continue
         else:
-            print('--------------- 2')
             print("Trying to assign", children_task, "to", assign_to_node)
             status = assign_task_to_remote(assign_to_node, children_task)
-            print(status)
             if status == "ok":
-                print('Assign successfully')
+                print('Assign successfully ', children_task, "to", assign_to_node)
                 local_children[children_task] = assign_to_node
-                print(local_children)
-                total_assign_child[assign_to_node] = 1
-                print('Total number of tasks assigned to node',assign_to_node, ': ',str(total_assign_child[assign_to_node]))
+                call_send_mapping(children_task,assign_to_node)
                 break
-    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
-    print(children_task)
-    print(assign_to_node)
-    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
+            else:
+                print('Assign failed', children_task, "to", assign_to_node)
 def get_most_suitable_node_original(file_size):
     valid_nodes = []
     
@@ -565,13 +565,13 @@ def get_most_suitable_node(file_size):
         str: result_node_name - assigned node for the current task
     """
     global myneighbors
-    print('Trying to get the most suitable node')
-    print('My neighbor information:')
-    print(myneighbors)
-    print('Network info')
-    print(network_profile_data)
-    print('Resource info')
-    print(resource_data)
+    # print('Trying to get the most suitable node')
+    # print('My neighbor information:')
+    # print(myneighbors)
+    # print('Network info')
+    # print(network_profile_data)
+    # print('Resource info')
+    # print(resource_data)
 
 
     
@@ -588,16 +588,11 @@ def get_most_suitable_node(file_size):
         cost_mem = resource_data[node]['memory']
         cost[node] = weight_network*cost_net + weight_cpu*cost_cpu + weight_memory*cost_mem
 
-    print('------------------cost')
-    print(cost)
-    # best_node = min(cost,key=cost.get)
-    
-    # print(best_node)
-    # return best_node   
-    # sorted_cost = sorted(cost.items(), key=lambda x: x[1])
+    # print('------------------cost')
+    # print(cost)
     
     sorted_cost = sorted(cost, key=cost.get)
-    print(sorted_cost)
+    # print(sorted_cost)
     return sorted_cost
 
     
@@ -791,11 +786,12 @@ def main():
     # while init_folder() != "ok":  # Initialize the local folers
     #     pass
 
-    global local_mapping, local_children,local_responsibility, manager, total_assign_child
+    global local_mapping, local_children,local_responsibility, manager,total_assign_child
     manager = Manager()
     local_mapping = manager.dict()
     local_children = manager.dict()
     total_assign_child = manager.dict()
+    
 
     global all_node_geo, cluster, mygeo
     all_node_geo_info = os.environ['ALL_NODES_GEO']
@@ -814,9 +810,15 @@ def main():
 
     global myneighbors
     myneighbors = set(cluster[mygeo])
+
+    for node in myneighbors:
+        total_assign_child[node] = 0
+
     myneighbors.remove(node_name)
-    print('--------------My neighbors')
-    print(myneighbors)
+    # print('--------------My neighbors')
+    # print(myneighbors)
+
+    
 
     local_responsibility = "task_responsibility"
     os.mkdir(local_responsibility)
