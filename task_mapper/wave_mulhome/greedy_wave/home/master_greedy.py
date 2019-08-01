@@ -23,8 +23,6 @@ import paho.mqtt.client as mqtt
 from heapq import nsmallest
 
 
-
-
 app = Flask(__name__)
 
 MAX_TASK_ALLOWED = 25
@@ -178,10 +176,13 @@ def prepare_global():
     local_mapping = "local/local_mapping.txt"
     local_responsibility = "local/task_responsibility"
 
-    global lock, assigned_tasks, application, MAX_TASK_NUMBER,assignments, manager
+    global lock, assigned_tasks, application, MAX_TASK_NUMBER,assignments, manager,total_assign_child
     manager = Manager()
     assignments = manager.dict()
     assigned_tasks = manager.dict()
+    total_assign_child = manager.dict()
+    for node in nodes:
+        total_assign_child[node] = 0
 
     application = read_file("DAG/DAG_application.txt")
     MAX_TASK_NUMBER = int(application[0])  # Total number of tasks in the DAG 
@@ -244,6 +245,8 @@ def recv_mapping():
         print('Receive mapping from the workers')
         node = request.args.get('node')
         mapping = request.args.get("mapping")
+        total_assign_child[node] = total_assign_child[node]+1
+        announce_count_assigned()
 
         if BOKEH==3:
             msg = 'overhead wavehome taskassign 1 %s %s \n'%(node,mapping)
@@ -269,6 +272,26 @@ def recv_mapping():
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_mapping', 'recv_mapping', recv_mapping)
+
+def announce_count_assigned():
+    print(nodes)
+    for worker_ip in nodes:
+        try:
+            print(worker_ip)
+            print('Announce assigned counting information to the worker')
+            url = "http://" + worker_ip + "/recv_count"
+            count_info = '#'.join('{}:{}'.format(key, value) for key, value in total_assign_child.items())
+            print(count_info)
+            params = {"count_info": count_info}
+            params = urllib.parse.urlencode(params)
+            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+            res = urllib.request.urlopen(req)
+            res = res.read()
+            res = res.decode('utf-8')
+
+        except Exception as e:
+            print(e)
+            print("Failed to announce the count assign info to the worker")
 
 def return_assignment():
     """

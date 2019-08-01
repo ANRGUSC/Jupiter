@@ -16,7 +16,7 @@ from copy import deepcopy
 import numpy as np
 import os
 
-MAX_TASK_ALLOWED = 25
+MAX_TASK_ALLOWED = 2
 
 class Duration:
     """Time duration about a task
