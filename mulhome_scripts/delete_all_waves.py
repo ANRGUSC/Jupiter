@@ -111,4 +111,5 @@ def delete_all_waves(app_name):
 if __name__ == '__main__':
     jupiter_config.set_globals() 
     app_name = jupiter_config.APP_OPTION
+    app_name = app_name+'1'
     delete_all_waves(app_name)

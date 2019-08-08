@@ -21,7 +21,7 @@ RUN apt-get install -y openssh-server mongodb
 ADD circe/original/requirements.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
 RUN pip3 install --upgrade pip
-RUN apt-get install -y sshpass nano 
+RUN apt-get install -y sshpass nano stress
 
 # Taken from quynh's network profiler
 RUN pip install cryptography

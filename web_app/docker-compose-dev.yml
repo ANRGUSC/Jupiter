@@ -1,0 +1,42 @@
+# docker-compose -f docker-compose-dev.yml up -d
+version: '3.7'
+
+services:
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './backend:/usr/src/app'
+    ports:
+      - 5001:5000
+    environment:
+      - FLASK_APP=project/__init__.py
+      - FLASK_ENV=development
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-dev
+    volumes:
+      - './frontend:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    ports:
+      - 3007:3000
+    environment:
+      - NODE_ENV=development
+      - REACT_APP_URL=${REACT_APP_URL}
+    depends_on:
+      - backend
+
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile-dev
+    restart: always
+    ports:
+      - 80:80
+    depends_on:
+      - backend
+      - frontend

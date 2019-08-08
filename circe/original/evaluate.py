@@ -161,6 +161,8 @@ def evaluate_combine_app(num_apps,num_samples):
         print('------')
         print(outfile)
 
+def evaluate_stress():
+    
 
 class MyHandler(PatternMatchingEventHandler):
     """
@@ -221,7 +223,6 @@ if __name__ == '__main__':
 
     evaluate_sequential()
 
-    #evaluate_test()
     
 
     # global num_apps, num_samples

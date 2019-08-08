@@ -15,14 +15,14 @@ RUN pip install flask
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-ADD task_mapper/wave_mulhome/greedy_wave/home/requirements.txt /requirements.txt
+ADD task_mapper/wave_mulhome/greedy_wave_balance/home/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY task_mapper/wave_mulhome/greedy_wave/home/master_greedy.py /master.py
+COPY task_mapper/wave_mulhome/greedy_wave_balance/home/master_greedy.py /master.py
 
 RUN mkdir -p DAG
 
-COPY task_mapper/wave_mulhome/greedy_wave/home/start.sh /
+COPY task_mapper/wave_mulhome/greedy_wave_balance/home/start.sh /
 
 ADD {app_file}/configuration.txt DAG/DAG_application.txt
 ADD {app_file}/input_node.txt DAG
@@ -49,14 +49,14 @@ RUN pip install flask
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-ADD task_mapper/wave_mulhome/greedy_wave/worker/requirements.txt /requirements.txt
+ADD task_mapper/wave_mulhome/greedy_wave_balance/worker/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
-COPY task_mapper/wave_mulhome/greedy_wave/worker/child_appointment_greedy.py /child_appointment.py
+COPY task_mapper/wave_mulhome/greedy_wave_balance/worker/child_appointment_greedy.py /child_appointment.py
 
 RUN mkdir -p DAG
 
-COPY task_mapper/wave_mulhome/greedy_wave/worker/start.sh /
+COPY task_mapper/wave_mulhome/greedy_wave_balance/worker/start.sh /
 
 ADD {app_file}/configuration.txt DAG/DAG_application.txt
 ADD {app_file}/input_node.txt DAG

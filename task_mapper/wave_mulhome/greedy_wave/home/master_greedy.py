@@ -19,22 +19,11 @@ import configparser
 from os import path
 import multiprocessing
 from multiprocessing import Process, Manager
-import paho.mqtt.client as mqtt
-from heapq import nsmallest
+
 
 
 app = Flask(__name__)
 
-MAX_TASK_ALLOWED = 25
-
-def demo_help(server,port,topic,msg):
-    username = 'anrgusc'
-    password = 'anrgusc'
-    client = mqtt.Client()
-    client.username_pw_set(username,password)
-    client.connect(server, port,300)
-    client.publish(topic, msg,qos=1)
-    client.disconnect()
 
 
 def read_file(file_name):
@@ -58,67 +47,6 @@ def read_file(file_name):
     file.close()
     #lock.release()
     return file_contents
-
-def define_cluster(all_node_geo,num):
-    #num: select k neighbors near the node based on shorted distance
-    distance = {}
-    distance[('lon','tor')] = 8
-    distance[('lon','fra')] = 1.5
-    distance[('lon','sgp')] = 13
-    distance[('lon','blr')] = 10
-    distance[('lon','ams')] = 1
-    distance[('lon','sfo')] = 11
-    distance[('lon','nyc')] = 8
-    distance[('tor','fra')] = 8.5
-    distance[('tor','sgp')] = 20.5
-    distance[('tor','blr')] = 19.5 
-    distance[('tor','ams')] = 7
-    distance[('tor','sfo')] = 5
-    distance[('tor','nyc')] = 1.5
-    distance[('fra','sgp')] = 12.5
-    distance[('fra','blr')] = 9.5
-    distance[('fra','ams')] = 1
-    distance[('fra','sfo')] = 11
-    distance[('fra','nyc')] = 8.5
-    distance[('sgp','blr')] = 4.5 
-    distance[('sgp','ams')] = 13
-    distance[('sgp','sfo')] = 16.5
-    distance[('sgp','nyc')] = 18.5
-    distance[('blr','ams')] = 12
-    distance[('blr','sfo')] = 22
-    distance[('blr','nyc')] = 19.5
-    distance[('ams','sfo')] = 10.5
-    distance[('ams','nyc')] = 8
-    distance[('nyc','sfo')] = 5.5
-
-    # reg = ['lon','tor','fra','sgp','blr','ams','sfo','nyc']
-    reg = all_node_geo.keys()
-    # print(reg)
-    # print(type(reg))
-    connected = {}
-    for city in reg:
-        pairs = [k for k,v in distance.items() if k[0]==city or k[1]==city]
-        nb = dict((k, distance[k]) for k in pairs)
-        neigbors = nsmallest(num, nb, key = nb.get)
-        for item in neigbors:
-            connected[item] = 1
-            connected[(item[1],item[0])] = 1
-
-    # print(all_node_geo)
-
-    cluster = {}
-    for geo in all_node_geo:
-        cluster[geo] = all_node_geo[geo]
-        # print(cluster)
-        # print(connected)
-        nbs = [k[1] for k,v in connected.items() if v==1 and (k[0]==geo)]
-        # print(nbs)
-        for nb in nbs:
-            if nb in all_node_geo:
-                cluster[geo].extend(all_node_geo[nb])
-    return cluster
-
-
 
 def prepare_global():
     """
@@ -176,13 +104,10 @@ def prepare_global():
     local_mapping = "local/local_mapping.txt"
     local_responsibility = "local/task_responsibility"
 
-    global lock, assigned_tasks, application, MAX_TASK_NUMBER,assignments, manager,total_assign_child
+    global lock, assigned_tasks, application, MAX_TASK_NUMBER,assignments, manager
     manager = Manager()
     assignments = manager.dict()
     assigned_tasks = manager.dict()
-    total_assign_child = manager.dict()
-    for node in nodes:
-        total_assign_child[node] = 0
 
     application = read_file("DAG/DAG_application.txt")
     MAX_TASK_NUMBER = int(application[0])  # Total number of tasks in the DAG 
@@ -191,42 +116,16 @@ def prepare_global():
 
     assignments = {}
 
-    global all_node_geo, cluster
-    all_node_geo_info = os.environ['ALL_NODES_GEO']
-    info = all_node_geo_info.split('$')
-    all_node_geo = dict()
-    for geo in info:
-        g = geo.split(':')[0]
-        all_node_geo[g] = []
-        tmp = geo.split(':')[1].split('#')
-        for t in tmp:
-            all_node_geo[g].append(t)
 
-    cluster = define_cluster(all_node_geo,3)
-
-    global BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
-
-    # print('Bokeh information')
-    # print(BOKEH_SERVER)
-    # print(BOKEH_PORT)
-    # print(BOKEH)
-        
-
-
-# def recv_task_assign_info():
-#     """
-#         Receive task assignment information from the workers
-#     """
-#     assign = request.args.get('assign')
-#     task_assign_summary.append(assign)
-#     print("Task assign summary: " + json.dumps(task_assign_summary))
-    
-
-#     return 'ok'
-# app.add_url_rule('/recv_task_assign_info', 'recv_task_assign_info', recv_task_assign_info)
+def recv_task_assign_info():
+    """
+        Receive task assignment information from the workers
+    """
+    assign = request.args.get('assign')
+    task_assign_summary.append(assign)
+    print("Task assign summary: " + json.dumps(task_assign_summary))
+    return 'ok'
+app.add_url_rule('/recv_task_assign_info', 'recv_task_assign_info', recv_task_assign_info)
 
 
 def recv_mapping():
@@ -245,12 +144,6 @@ def recv_mapping():
         print('Receive mapping from the workers')
         node = request.args.get('node')
         mapping = request.args.get("mapping")
-        total_assign_child[node] = total_assign_child[node]+1
-        announce_count_assigned()
-
-        if BOKEH==3:
-            msg = 'overhead wavehome taskassign 1 %s %s \n'%(node,mapping)
-            demo_help(BOKEH_SERVER,BOKEH_PORT,"overhead_home",msg)
 
         to_be_write = []
         items = re.split(r'#', mapping)
@@ -273,26 +166,6 @@ def recv_mapping():
     return "ok"
 app.add_url_rule('/recv_mapping', 'recv_mapping', recv_mapping)
 
-def announce_count_assigned():
-    print(nodes)
-    for worker_ip in nodes:
-        try:
-            print(worker_ip)
-            print('Announce assigned counting information to the worker')
-            url = "http://" + worker_ip + "/recv_count"
-            count_info = '#'.join('{}:{}'.format(key, value) for key, value in total_assign_child.items())
-            print(count_info)
-            params = {"count_info": count_info}
-            params = urllib.parse.urlencode(params)
-            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-            res = urllib.request.urlopen(req)
-            res = res.read()
-            res = res.decode('utf-8')
-
-        except Exception as e:
-            print(e)
-            print("Failed to announce the count assign info to the worker")
-
 def return_assignment():
     """
     Return mapping assignments which have been finished at the current time of request.
@@ -307,8 +180,6 @@ def return_assignment():
     else:
         return json.dumps(dict())
 app.add_url_rule('/', 'return_assignment', return_assignment)
-
-
 
 def assign_task_to_remote(assigned_node, task_name):
     """
@@ -326,21 +197,39 @@ def assign_task_to_remote(assigned_node, task_name):
         url = "http://" + nodes[assigned_node] + "/assign_task"
         # print(url)
         # print(task_name)
-        # print(nodes)
-        # print(nodes[assigned_node])
         params = {'task_name': task_name}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==3:
-            msg = 'overhead wavehome assignfirst 1 \n'
-            demo_help(BOKEH_SERVER,BOKEH_PORT,"overhead_home",msg)
     except Exception as e:
         print(e)
         return "not ok"
     return res
+
+
+# def call_kill_thread(node):
+#     """
+#     When all the assignments are done, kill all running thread
+    
+#     Args:
+#         node (str): information of the node to be killed
+    
+#     Returns:
+#         str: request if sucessful, ``not ok`` otherwise
+#     """
+#     try:
+#         url = "http://" + nodes[node] + "/kill_thread"
+#         req = urllib.request.Request(url=url)
+#         res = urllib.request.urlopen(req)
+#         res = res.read()
+#         res = res.decode('utf-8')
+#     except Exception as e:
+#         print(e)
+#         return "not ok"
+#     return res
+
 
 
 def init_thread():
@@ -365,15 +254,21 @@ def monitor_task_status():
     Monitor task allocation status and print notification if all task allocations are done
     """
 
-    print('Waiting for task assignments')
-
     killed = 0
     while True:
-        # print(len(assigned_tasks))
+        print(len(assigned_tasks))
         if len(assigned_tasks) == MAX_TASK_NUMBER:
+            print(assigned_tasks)
             print("All task allocations are done! Great News!")
-            print(assignments)
             break
+        #     for node in nodes:
+        #         res = call_kill_thread(node)
+        #         if res != "ok":
+        #             output("Kill node thread failed: " + str(node))
+        #         else:
+        #             killed += 1
+        # if killed == MAX_TASK_NUMBER:
+        #     break
         time.sleep(60)
 
 
@@ -460,6 +355,9 @@ def init_task_topology():
     print("control_relation" ,control_relation)
 
 
+
+
+
 def output(msg):
     """
     if debug is True, print the msg
@@ -482,11 +380,8 @@ def main():
     print("starting the main thread on port", FLASK_PORT)
 
     init_task_topology()
-    # _thread.start_new_thread(announce_neighbor_info, ())
     _thread.start_new_thread(init_thread, ())
     _thread.start_new_thread(monitor_task_status, ())
-    
-
     app.run(host='0.0.0.0', port=int(FLASK_PORT))
 
 if __name__ == '__main__':
