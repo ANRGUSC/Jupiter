@@ -89,16 +89,16 @@ def set_globals():
         WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/random_wave/'
         wave_option         = 'random'
     elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY']):
-        print('Task mapper: Wave greedy selected')
-        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave_original/'
+        print('Task mapper: Wave greedy (original) selected')
+        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
         wave_option         = 'greedy'
     elif SCHEDULER == int(config['SCHEDULER_LIST']['HEFT_MODIFIED']):
         print('Task mapper: Heft modified selected')
         HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/modified/'   
         heft_option         = 'heftmodified'
     elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY_MODIFIED']):
-        print('Task mapper: Wave greedy (group of neighbors) selected')
-        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'   
+        print('Task mapper: Wave greedy (group of neighbors & load balanced) selected')
+        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave_balance/'   
         wave_option         = 'greedymodified'
     else: 
         print('Task mapper: Heft original selected')
@@ -151,10 +151,10 @@ def set_globals():
     # APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
     # APP_OPTION              = 'dag'
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
-    APP_NAME                  = 'app_specific_files/dummy_app'
-    APP_OPTION                = 'dummy'
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
+    # APP_NAME                  = 'app_specific_files/dummy_app'
+    # APP_OPTION                = 'dummy'
 
 
     # HOME_CHILD                = 'distribute'
@@ -162,10 +162,10 @@ def set_globals():
     # APP_NAME                  = 'app_specific_files/dummy_app_combined'
     # APP_OPTION                = 'combined'
 
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
-    # APP_NAME                  = 'app_specific_files/dummyapp30'
-    # APP_OPTION                = 'dummy30'
+    HOME_CHILD                = 'task0'
+    APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
+    APP_NAME                  = 'app_specific_files/dummyapp30'
+    APP_OPTION                = 'dummy30'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp50/'

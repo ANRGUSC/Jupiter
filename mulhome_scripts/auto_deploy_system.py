@@ -184,13 +184,13 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         schedule = st.schedule
 
     # Start CIRCE
-    if pricing == 0:
-        print('Non pricing evaluation')
-        k8s_circe_scheduler(dag,schedule,app_name)
-    else:
-        print('Pricing evaluation')
-        print(pricing)
-        k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
+    # if pricing == 0:
+    #     print('Non pricing evaluation')
+    #     k8s_circe_scheduler(dag,schedule,app_name)
+    # else:
+    #     print('Pricing evaluation')
+    #     print(pricing)
+    #     k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
 
 
     print("The Jupiter Deployment is Successful!")

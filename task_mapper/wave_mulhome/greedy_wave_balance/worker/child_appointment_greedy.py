@@ -27,10 +27,16 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import paho.mqtt.client as mqtt
 import socket
+from heapq import nsmallest
+import collections
+import random
+
+MAX_TASK_ALLOWED = 60
 
 app = Flask(__name__)
 
 def demo_help(server,port,topic,msg):
+    print('Sending demo')
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -38,6 +44,58 @@ def demo_help(server,port,topic,msg):
     client.connect(server, port,300)
     client.publish(topic, msg,qos=1)
     client.disconnect()
+
+def define_cluster(all_node_geo,num):
+    #num: select k neighbors near the node based on shorted distance
+    distance = {}
+    distance[('lon','tor')] = 8
+    distance[('lon','fra')] = 1.5
+    distance[('lon','sgp')] = 13
+    distance[('lon','blr')] = 10
+    distance[('lon','ams')] = 1
+    distance[('lon','sfo')] = 11
+    distance[('lon','nyc')] = 8
+    distance[('tor','fra')] = 8.5
+    distance[('tor','sgp')] = 20.5
+    distance[('tor','blr')] = 19.5 
+    distance[('tor','ams')] = 7
+    distance[('tor','sfo')] = 5
+    distance[('tor','nyc')] = 1.5
+    distance[('fra','sgp')] = 12.5
+    distance[('fra','blr')] = 9.5
+    distance[('fra','ams')] = 1
+    distance[('fra','sfo')] = 11
+    distance[('fra','nyc')] = 8.5
+    distance[('sgp','blr')] = 4.5 
+    distance[('sgp','ams')] = 13
+    distance[('sgp','sfo')] = 16.5
+    distance[('sgp','nyc')] = 18.5
+    distance[('blr','ams')] = 12
+    distance[('blr','sfo')] = 22
+    distance[('blr','nyc')] = 19.5
+    distance[('ams','sfo')] = 10.5
+    distance[('ams','nyc')] = 8
+    distance[('nyc','sfo')] = 5.5
+
+    # reg = ['lon','tor','fra','sgp','blr','ams','sfo','nyc']
+    reg = all_node_geo.keys()
+    connected = {}
+    for city in reg:
+        pairs = [k for k,v in distance.items() if k[0]==city or k[1]==city]
+        nb = dict((k, distance[k]) for k in pairs)
+        neigbors = nsmallest(num, nb, key = nb.get)
+        for item in neigbors:
+            connected[item] = 1
+            connected[(item[1],item[0])] = 1
+
+    cluster = {}
+    for geo in all_node_geo:
+        cluster[geo] = all_node_geo[geo]
+        nbs = [k[1] for k,v in connected.items() if v==1 and (k[0]==geo)]
+        for nb in nbs:
+            if nb in all_node_geo:
+                cluster[geo].extend(all_node_geo[nb])
+    return cluster
 
 
 def prepare_global():
@@ -109,6 +167,17 @@ def prepare_global():
     global application
     application = read_file("DAG/DAG_application.txt")
     del application[0]
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+
+    print('Bokeh information')
+    print(BOKEH_SERVER)
+    print(BOKEH_PORT)
+    print(BOKEH)
+
 
     # for line in application:
     #     line = line.strip()
@@ -203,46 +272,43 @@ def assign_task():
 
         task_name = request.args.get('task_name')
         # print('---------------')
-        # print('I am assigned the task')
-        # print(task_name)
+        print('I am assigned the task '+task_name)
         local_mapping[task_name] = False
         res = call_send_mapping(task_name, node_name)
         # print(res)
         # print('---------------')
-        print('All my current tasks')
-        print(local_mapping)
+        # print('All my current tasks')
+        # print(local_mapping)
         # print('---------------')
         
-        print('*******************')
-        if len(control_relation[task_name])>0:
+        # print('*******************')
+        # print(control_relation)
+        # print(local_children)
+        if (task_name in control_relation) and len(control_relation[task_name])>0:
             print('I am responsible for the next children tasks')
-            # print(control_relation[task_name])
-            print(local_children)
+            print(control_relation[task_name])
+            # print(local_children)
+            # print('1')
             for task in control_relation[task_name]:
+                # print('----- my children')
+                # print('2')
                 # print(task)
                 if task not in local_children.keys():
+                    # print('3')
                     # print(task)
-                    local_children[task] = False
+                    local_children[task] = 'None'
                     write_file(local_responsibility + "/" + task, 'TODO', "w+")
         else:
             print('No children tasks for this task')
-        print('*******************')
         
-        return "ok"
+        
+        print('I am assigned the task successfully '+task_name)
+        return 'ok'
     except Exception as e:
+        print('I am assigned the task but not successfully '+task_name)
         print(e)
-        return "not ok"
+        return 'not ok'
 app.add_url_rule('/assign_task', 'assign_task', assign_task)
-
-# def kill_thread():
-#     """assign kill thread as True
-#     """
-#     global kill_flag
-#     print('-------------- kill flag')
-#     print(kill_flag)
-#     kill_flag = True
-#     return "ok"
-# app.add_url_rule('/kill_thread', 'kill_thread', kill_thread)
 
 def assign_task_to_remote(assigned_node, task_name):
     """Assign task to remote node
@@ -255,7 +321,7 @@ def assign_task_to_remote(assigned_node, task_name):
         Exception: request if successful, ``not ok`` if failed
     """
     try:
-        print('Assign children task to the remote node')
+        print('Assign children task '+ task_name+'to the remote node '+assigned_node)
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
         params = urllib.parse.urlencode(params)
@@ -263,9 +329,21 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-    except Exception:
-        return "not ok"
-    return res
+        # print('------&&&&')
+        # print(res)
+        #
+
+        if BOKEH==3:
+            topic = 'overhead_%s'%(node_name)
+            msg = 'overhead %s assignremote 1 %s %s \n' %(node_name,task_name,assigned_node)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
+        return 'ok'
+
+    except Exception as e:
+        print('Failed assign children task to the remote node')
+        print(e)
+        return 'not ok'
 
 def write_file(file_name, content, mode):
     """Write the content to file
@@ -279,6 +357,22 @@ def write_file(file_name, content, mode):
     for line in content:
         file.write(line + "\n")
     file.close()
+
+
+def recv_count():
+    try:
+        print('Update count assign information')
+        count_info = request.args.get("count_info")
+        info = count_info.split('#')
+        for cin in info:
+            total_assign_child[cin.split(':')[0]] = int(cin.split(':')[1])
+        print(total_assign_child)
+    except Exception as e:
+        print(e)
+        print('Error update count assign information')
+        
+    return "ok"
+app.add_url_rule('/recv_count', 'recv_count', recv_count)
 
 def call_send_mapping(mapping, node):
     """
@@ -302,6 +396,12 @@ def call_send_mapping(mapping, node):
         res = res.read()
         res = res.decode('utf-8')
         local_mapping[mapping] = True
+
+        if BOKEH==3:
+            topic = 'overhead_%s'%(node_name)
+            msg = 'overhead %s announcehome 1 %s %s \n' %(node_name,node,mapping)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
     except Exception as e:
         return "Announce the mapping to the master host failed"
     return res
@@ -361,14 +461,27 @@ class Handler(FileSystemEventHandler):
 
 
 def assign_children_task(children_task):
-    print('Starting assigning process for the children task')
-    # print(children_task)
+    tmp = random.randint(0, 30)
+    time.sleep(tmp)
+    print('Starting assigning process for the children task '+children_task)
+    global myneighbors
     while True:
         if is_network_profile_data_ready and is_resource_data_ready:
             break
         else:
             print("Waiting for the profiler data")
-            time.sleep(100)
+            time.sleep(60)
+
+    
+    while True:
+        # print(myneighbors)
+        if len(myneighbors) == 0:
+            print("Waiting for neighboring data")
+            time.sleep(60)
+        else:
+            break
+    
+
     res = False
     if 'app' in children_task:
         appname = children_task.split('-')[0]
@@ -376,43 +489,36 @@ def assign_children_task(children_task):
     else:
         sample_file = '/1botnet.ipsum'
     sample_size = cal_file_size(sample_file)
-    assign_to_node = get_most_suitable_node(sample_size)
-    if not assign_to_node:
-        print("No suitable node found for assigning task: ", children_task)
-    else:
-        print("Trying to assign", children_task, "to", assign_to_node)
-        status = assign_task_to_remote(assign_to_node, children_task)
-        if status == "ok":
-            local_children[children_task] = assign_to_node
-            call_send_mapping(children_task,assign_to_node)
+    assign_to_node_list = get_most_suitable_node(sample_size)
+    print(assign_to_node_list)
+    for assign_to_node in assign_to_node_list:
+        print('---')
+        print(assign_to_node)
+        if total_assign_child[assign_to_node]>= (MAX_TASK_ALLOWED-1):
+            print(assign_to_node+' overloaded node already. Must reassign '+children_task)
+            print(assign_to_node)
+            print(total_assign_child[assign_to_node])
+            # continue
+        else:
+            print("Trying to assign", children_task, "to", assign_to_node)
+            status = assign_task_to_remote(assign_to_node, children_task)
 
-def get_most_suitable_node(file_size):
-    """Calculate network delay + resource delay
-    
-    Args:
-        file_size (int): file_size
-    
-    Returns:
-        str: result_node_name - assigned node for the current task
-    """
-    print('Trying to get the most suitable node')
-    weight_network = 1
-    weight_cpu = 1
-    weight_memory = 1
-
+            if status == "ok":
+                print('Successfully assign ', children_task, "to", assign_to_node)
+                local_children[children_task] = assign_to_node
+                break
+            else:
+                print('Failed assign ', children_task, "to", assign_to_node)
+        print('---')
+def get_most_suitable_node_original(file_size):
     valid_nodes = []
-
-    min_value = sys.maxsize
-
+    
     for tmp_node_name in network_profile_data:
         data = network_profile_data[tmp_node_name]
         delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
         network_profile_data[tmp_node_name]['delay'] = delay
         if delay < min_value:
             min_value = delay
-
-    # print('-------------- Network')
-    # print(network_profile_data)
 
     # get all the nodes that satisfy: time < tmin * threshold
     for _, item in enumerate(network_profile_data):
@@ -456,7 +562,47 @@ def get_most_suitable_node(file_size):
     if result_node_name:
         network_profile_data[result_node_name]['c'] = 100000
 
-    return result_node_name
+def get_most_suitable_node(file_size):
+    """Calculate network delay + resource delay
+    
+    Args:
+        file_size (int): file_size
+    
+    Returns:
+        str: result_node_name - assigned node for the current task
+    """
+    global myneighbors
+    # print('Trying to get the most suitable node')
+    # print('My neighbor information:')
+    # print(myneighbors)
+    # print('Network info')
+    # print(network_profile_data)
+    # print('Resource info')
+    # print(resource_data)
+
+
+    
+    weight_network = 1
+    weight_cpu = 1
+    weight_memory = 1
+    
+    cost = dict()
+
+    for nodeid,node in enumerate(myneighbors):
+        data = network_profile_data[node]
+        cost_net = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
+        cost_cpu = resource_data[node]['cpu']
+        cost_mem = resource_data[node]['memory']
+        cost[node] = weight_network*cost_net + weight_cpu*cost_cpu + weight_memory*cost_mem
+
+    # print('------------------cost')
+    # print(cost)
+    
+    sorted_cost = sorted(cost, key=cost.get)
+    # print(sorted_cost)
+    return sorted_cost
+
+    
 
 
 def read_file(file_name):
@@ -517,7 +663,11 @@ def get_resource_data_drupe():
     is_resource_data_ready = True
 
     print("Got profiler data from http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC))
-    print("Resource profiles: ", json.dumps(result))
+    # print("Resource profiles: ", json.dumps(result))
+    if BOKEH==3:
+        topic = 'overhead_%s'%(node_name)
+        msg = 'overhead %s resource %d \n' %(node_name,len(myneighbors))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
 def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
@@ -542,9 +692,6 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     logging =db[my_profiler_ip].find().limit(num_nb)
     for record in logging:
         # Destination ID -> Parameters(a,b,c) , Destination IP
-        # print('-------')
-        # print(record['Destination[IP]'])
-        # print(home_profiler_ip)
         if record['Destination[IP]'] in home_profiler_ip: continue
         params = re.split(r'\s+', record['Parameters'])
         network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
@@ -554,6 +701,13 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
+
+    if BOKEH==3:
+        topic = 'overhead_%s'%(node_name)
+        msg = 'overhead %s network %d \n' %(node_name,len(myneighbors))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+    
+
 
 
 
@@ -630,26 +784,45 @@ def main():
     print("Node name:", node_name, "and id", node_id)
     print("Starting the main thread on port", FLASK_PORT)
 
-    global BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
-
-    print('Bokeh information')
-    print(BOKEH_SERVER)
-    print(BOKEH_PORT)
-    print(BOKEH)
-
     
     get_network_data = get_network_data_mapping()
     get_resource_data = get_resource_data_mapping()
     # while init_folder() != "ok":  # Initialize the local folers
     #     pass
 
-    global local_mapping, local_children,local_responsibility, manager
+    global local_mapping, local_children,local_responsibility, manager,total_assign_child
     manager = Manager()
     local_mapping = manager.dict()
     local_children = manager.dict()
+    total_assign_child = manager.dict()
+    
+
+    global all_node_geo, cluster, mygeo
+    all_node_geo_info = os.environ['ALL_NODES_GEO']
+    mygeo = os.environ['MY_GEO']
+    mygeo = mygeo.split('-')[-1][0:3]
+    info = all_node_geo_info.split('$')
+    all_node_geo = dict()
+    for geo in info:
+        g = geo.split(':')[0]
+        all_node_geo[g] = []
+        tmp = geo.split(':')[1].split('#')
+        for t in tmp:
+            all_node_geo[g].append(t)
+
+    cluster = define_cluster(all_node_geo,3)
+
+    global myneighbors
+    myneighbors = set(cluster[mygeo])
+
+    for node in myneighbors:
+        total_assign_child[node] = 0
+
+    myneighbors.remove(node_name)
+    # print('--------------My neighbors')
+    # print(myneighbors)
+
+    
 
     local_responsibility = "task_responsibility"
     os.mkdir(local_responsibility)

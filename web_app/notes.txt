@@ -1,0 +1,26 @@
+Task information:
+http://localhost:8080/api/v1/namespaces/emilywang-mapper/services/dummyvisualtest1-home:6100/proxy/
+
+home ubuntu-2gb-fra1-02-sfo2
+node3 ubuntu-2gb-lon1-01-fra1
+node6 ubuntu-2gb-tor1-02-sfo2 
+node8 ubuntu-2gb-sfo2-01-nyc1 
+node9 ubuntu-2gb-sfo2-02-sfo2 
+node10 ubuntu-2gb-sfo2-03-blr1
+node11 ubuntu-2gb-sfo2-05-blr1
+node12 ubuntu-2gb-blr1-01-fra1
+node13 ubuntu-2gb-blr1-02-sfo2
+node14 ubuntu-2gb-blr1-03-sgp1
+node15 ubuntu-2gb-blr1-04-sgp1 
+node17 ubuntu-2gb-fra1-01-blr1
+node18 ubuntu-2gb-fra1-02-nyc3
+
+NOTE:
+1. Must change all the values before submitting, or the files will be set None by default (ini file, nodes file)
+2. Modify default port of Flask application
+3. Install pygraphviz
+
+sudo apt-get install graphviz libgraphviz-dev pkg-config
+sudo python3 -m pip install pygraphviz
+
+4. Fix APP_OPTION -> app_option in __init__.py
