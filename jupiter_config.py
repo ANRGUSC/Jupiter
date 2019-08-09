@@ -131,6 +131,7 @@ def set_globals():
     PROFILER_NAMESPACE      = 'quynh-profiler'
     MAPPER_NAMESPACE        = 'quynh-mapper'
     EXEC_NAMESPACE          = 'quynh-exec'
+    SIM_NAMESPACE           = 'quynh-sim'
 
     """ Node file path and first task information """
     global HOME_NODE, HOME_CHILD

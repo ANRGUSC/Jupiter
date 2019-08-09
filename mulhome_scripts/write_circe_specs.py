@@ -62,6 +62,10 @@ spec:
           value: {child}
         - name: CHILD_NODES_IPS
           value: {child_ips}
+        - name: ALL_WORKERS
+          value: {all_workers}
+        - name: ALL_WORKERS_IPS
+          value: {all_workers_ips}
         - name: TASK
           value: home
       restartPolicy: Always
@@ -101,15 +105,11 @@ def write_circe_home_specs(**kwargs):
     dep = yaml.load(specific_yaml)
     return dep
 
-
 template_worker = """
 apiVersion: extensions/v1beta1
-kind: Deployment    
+kind: Deployment
 metadata:
   name: {name}
-  labels:
-    app: ssh
-    purpose: dag-demo
 spec:
   template:
     metadata:
@@ -118,13 +118,9 @@ spec:
     spec:
       containers:
       - name: {name}
-        imagePullPolicy: Always
         image: {image}
+        imagePullPolicy: Always
         env:
-        - name: FLAG
-          value: {flag}
-        - name: INPUTNUM
-          value: {inputnum}
         - name: CHILD_NODES
           value: {child}
         - name: CHILD_NODES_IPS
@@ -141,10 +137,15 @@ spec:
           value: {all_node}
         - name: ALL_NODES_IPS
           value: {all_node_ips}
+        - name: FLAG
+          value: "{flag}"
+        - name: INPUTNUM
+          value: "{inputnum}"
       nodeSelector:
         kubernetes.io/hostname: {host}
       restartPolicy: Always
 """
+
 
 def write_circe_deployment_specs(**kwargs):
     """
@@ -184,3 +185,16 @@ def write_circe_deployment_specs(**kwargs):
     dep = add_ports(dep, 1, jupiter_config.SSH_DOCKER)
 
     return dep
+    # jupiter_config.set_globals()
+
+    # INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
+    # config = configparser.ConfigParser()
+    # config.read(INI_PATH)
+
+    # specific_yaml = template_worker.format(ssh_port = jupiter_config.SSH_DOCKER, 
+    #                                 flask_port = jupiter_config.FLASK_DOCKER,
+    #                                 **kwargs)
+
+    # dep = yaml.load(specific_yaml)
+    # dep = add_ports(dep, 1, jupiter_config.SSH_DOCKER)
+    # return dep
