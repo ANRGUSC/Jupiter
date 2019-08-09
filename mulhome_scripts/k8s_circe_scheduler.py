@@ -118,6 +118,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     pprint(dag_info[1])
     pprint(dag_info[2])
     service_ips = {}; #list of all service IPs
+    service_workers = {};
 
     # """
     # # #     First create the home node's service.
@@ -173,6 +174,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             resp = api.read_namespaced_service(pod_name, namespace)
             # print resp.spec.cluster_ip
             service_ips[task] = resp.spec.cluster_ip
+            service_workers[task] = resp.spec.cluster_ip
         except ApiException as e:
             print("Exception Occurred")
 
@@ -181,6 +183,8 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
+    all_workers = ':'.join(service_workers.keys())
+    all_workers_ips = ':'.join(service_workers.values())
 
     # print(service_ips)
     # print(service_ips.keys())
@@ -228,13 +232,14 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     
         pod_name = app_name+"-"+task
         #Generate the yaml description of the required deployment for each task
-        dep = write_circe_deployment_specs(flag = str(flag), inputnum = str(inputnum), name = pod_name, node_name = hosts.get(task)[1],
+        dep = write_circe_deployment_specs(name = pod_name, node_name = hosts.get(task)[1],
             image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
             child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
             home_node_ip = service_ips.get('home'),
             own_ip = service_ips[task],
             all_node = all_node,
-            all_node_ips = all_node_ips)
+            all_node_ips = all_node_ips,
+            flag = str(flag), inputnum = str(inputnum))
         # pprint(dep)
         
 
@@ -287,13 +292,10 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
                                 host = jupiter_config.HOME_NODE, 
                                 child = jupiter_config.HOME_CHILD,
                                 child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
+                                all_workers = all_workers,
+                                all_workers_ips = all_workers_ips,
                                 dir = '{}')
-    # print(home_dep)
-    # extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
-    # v1_delete_options = client.V1DeleteOptions()    
-    # del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(home_name, namespace, v1_delete_options)
-    # print('Delete')
-    # print("Deployment '%s' Deleted. status='%s'" % (home_name, str(del_resp_0.status)))
+
     try:
         resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
         print("Home deployment created")

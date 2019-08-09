@@ -24,7 +24,6 @@ import netifaces as ni
 import platform
 from os import path
 from socket import gethostbyname, gaierror, error
-import multiprocessing
 import time
 import urllib
 import urllib.request
@@ -34,8 +33,10 @@ from collections import defaultdict
 import paho.mqtt.client as mqtt
 import socket
 
+
 global bottleneck
 bottleneck = defaultdict(list)
+
 
 def tic():
     return time.time()
@@ -229,12 +230,6 @@ def multicast_data(IP_list,user_list,pword_list,source, destination):
         return multicast_data_scp
     return multicast_data_scp
 
-# def demo_help(server,port,topic,msg):
-#     # client = mqtt.Client()
-#     # client.connect(server, port,300)
-#     client.publish(topic, msg,qos=1)
-    # client.disconnect()
-
 def demo_help(server,port,topic,msg):
     username = 'anrgusc'
     password = 'anrgusc'
@@ -322,20 +317,21 @@ class Handler1(FileSystemEventHandler):
             # t1 = time.time()
             
             ts = time.time()
-            print('====')
-            print(sys.argv)
-            print(flag2)
-            print(taskname)
+            # print('====')
+            # print(sys.argv)
+            # print(flag2)
+            # print(taskname)
+            # print('====2')
             if taskname == 'distribute':
                 print('This is the distribution point')
-                print(new_file)
-                print(temp_name)
+                # print(new_file)
+                # print(temp_name)
                 appname = temp_name.split('-')[0]
-                print(appname)
+                # print(appname)
                 source = event.src_path
-                print(sys.argv)
+                # print(sys.argv)
                 next_node = appname+'-task0'
-                print(sys.argv.index(next_node))
+                # print(sys.argv.index(next_node))
                 idx = sys.argv.index(next_node)
                 IPaddr = sys.argv[idx+1]
                 user = sys.argv[idx+2]
@@ -343,6 +339,7 @@ class Handler1(FileSystemEventHandler):
                 destination = os.path.join('/centralized_scheduler', 'input', new_file)
                 transfer_data(IPaddr,user,password,source, destination)
             elif sys.argv[3] == 'home':
+                print('Next node is home')
                 if BOKEH == 0:
                     msg = taskname + " ends"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
@@ -356,7 +353,8 @@ class Handler1(FileSystemEventHandler):
                 
 
             elif flag2 == 'true':
-
+                # print(flag2)
+                # print('----- True')
                 if BOKEH == 0:
                     msg = taskname + " ends"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
@@ -371,11 +369,17 @@ class Handler1(FileSystemEventHandler):
                     transfer_data(IPaddr,user,password,source, destination)
 
             else:
+                # print(flag2)
+                # print('====== False')
                 num_child = (len(sys.argv) - 4) / 4
                 files_out.append(new_file)
 
-                print(num_child)
-                print(files_out)
+                # print(sys.argv)
+                # print(len(sys.argv))
+                # print(num_child)
+                # print(files_out)
+                # print(len(files_out))
+                # print(len(files_out) == num_child)
 
                 if (len(files_out) == num_child):
 
@@ -547,6 +551,9 @@ class Handler(FileSystemEventHandler):
                         runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
                         demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
 
+
+
+
 def main():
     """
         -   Load all the Jupiter confuguration
@@ -587,12 +594,13 @@ def main():
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    global FLASK_SVC, MONGO_PORT, username,password,ssh_port, num_retries, queue_mul
+    global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, queue_mul
 
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+    FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
 
 
     global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
@@ -623,6 +631,7 @@ def main():
     print(BOKEH_SERVER)
     print(BOKEH_PORT)
     print(BOKEH)
+
 
     # global client
     # client = mqtt.Client()

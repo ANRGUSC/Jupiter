@@ -21,7 +21,7 @@ RUN apt-get install -y openssh-server mongodb
 ADD circe/original/requirements.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
 RUN pip3 install --upgrade pip
-RUN apt-get install -y sshpass nano stress
+RUN apt-get install -y sshpass nano
 
 # Taken from quynh's network profiler
 RUN pip install cryptography
@@ -57,6 +57,7 @@ ADD circe/original/readconfig.py /readconfig.py
 ADD circe/original/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
 ADD circe/original/evaluate.py /evaluate.py
+
 
 # Add the task speficific configuration files
 ADD {app_file}/configuration.txt /configuration.txt
@@ -98,6 +99,7 @@ RUN apt-get install iproute2 -y
 RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
 RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
+RUN sudo apt update
 RUN apt-get install -y mosquitto-clients
 
 ADD circe/original/requirements.txt /requirements.txt
