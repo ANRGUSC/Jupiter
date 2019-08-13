@@ -12,6 +12,8 @@ from os import path
 from multiprocessing import Process
 from write_circe_service_specs import *
 from write_circe_specs import *
+from write_sim_service_specs import *
+from write_sim_specs import *
 import yaml
 from kubernetes import client, config
 from pprint import *
@@ -20,6 +22,120 @@ import jupiter_config
 import utilities
 from kubernetes.client.rest import ApiException
     
+
+def k8s_sim_scheduler(): 
+    """
+        Deploy DRUPE in the system. 
+    """
+    jupiter_config.set_globals()
+
+
+    """
+        This loads the task graph and node list
+    """
+    home_ips = ''
+    home_ids = ''
+    nexthost_ips = ''
+    nexthost_names = ''
+    path2 = jupiter_config.HERE + 'nodes.txt'
+    nodes = utilities.k8s_get_nodes(path2)
+
+
+    """
+        This loads the kubernetes instance configuration.
+        In our case this is stored in admin.conf.
+        You should set the config file path in the jupiter_config.py file.
+    """    
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    
+    """
+        We have defined the namespace for deployments in jupiter_config
+    """
+    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
+    
+    """
+        Get proper handles or pointers to the k8-python tool to call different functions.
+    """
+    api = client.CoreV1Api()
+    k8s_beta = client.ExtensionsV1beta1Api()
+
+    # first_task = dag_info[0]
+    # dag = dag_info[1]
+    # hosts = temp_info[2]
+    # print("hosts:")
+    # pprint(hosts)
+    # print(len(dag_info))
+    # pprint(dag_info[0])
+    # pprint(dag_info[1])
+    # pprint(dag_info[2])
+    service_ips = {}; 
+    pprint(nodes)
+
+    # # get the list of nodes
+    # ret = v1.list_node()
+
+    """
+        Loop through the list of nodes and run all profiler related k8 deployment, replicaset, pods, and service.
+        You can always check if a service/pod/deployment is running after running this script via kubectl command.
+        E.g., 
+            kubectl get svc -n "namespace name"
+            kubectl get deployement -n "namespace name"
+            kubectl get replicaset -n "namespace name"
+            kubectl get pod -n "namespace name"
+    """   
+    for i in nodes:
+
+        """
+            Generate the yaml description of the required service for each task
+        """
+        if i.startswith('home'):
+            continue
+        body = write_sim_service_specs(name = i, label = i + "sim")
+
+        # Call the Kubernetes API to create the service
+
+        try:
+            ser_resp = api.create_namespaced_service(namespace, body)
+            print("Service created. status = '%s'" % str(ser_resp.status))
+            print(i)
+            resp = api.read_namespaced_service(i, namespace)
+
+        except ApiException as e:
+            print(e)
+            print("Exception Occurred")
+
+        # print resp.spec.cluster_ip
+        service_ips[i] = resp.spec.cluster_ip
+    
+    print('Worker Simulation were created successfully!')
+    all_node_ips = ':'.join(service_ips.values())
+    all_node = ':'.join(service_ips.keys())
+
+    for i in nodes:
+
+        # print nodes[i][0]
+        
+        """
+            We check whether the node is a scheduler.
+            Since we do not run any task on the scheduler, we donot run any profiler on it as well.
+        """
+        if i.startswith('home'):
+            continue
+
+        #print(i)
+
+        """
+            Generate the yaml description of the required deployment for the profiles
+        """
+        dep = write_sim_specs(name = i, label = i + "sim", image = jupiter_config.SIM_IMAGE, all_sim_ips = all_node_ips,
+                                         serv_ip = service_ips[i], all_sim = all_node,
+                                         host = nodes[i][0])
+        # # pprint(dep)
+        # # Call the Kubernetes API to create the deployment
+        resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
+        print("Deployment created. status ='%s'" % str(resp.status))
+    
+    return service_ips
 
     # return result   
 def check_status_circe(dag,app_name):
@@ -77,12 +193,58 @@ def check_status_circe(dag,app_name):
 
     return result
 
+def retrieve_simulation_workers():
+    jupiter_config.set_globals()
+    
+    sys.path.append(jupiter_config.SIM_PATH)
+    path1 = jupiter_config.HERE + 'nodes.txt'
+    nodes = utilities.k8s_get_nodes(path1)
 
-# if __name__ == '__main__':
+    """
+        This loads the kubernetes instance configuration.
+        In our case this is stored in admin.conf.
+        You should set the config file path in the jupiter_config.py file.
+    """
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    
+    """
+        We have defined the namespace for deployments in jupiter_config
+    """
+    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
+    
+    """
+        Get proper handles or pointers to the k8-python tool to call different functions.
+    """
+    api = client.CoreV1Api()
+    k8s_beta = client.ExtensionsV1beta1Api() 
+
+    sim_ips = {}
+    for i in nodes:
+
+        """
+            Generate the yaml description of the required service for each task
+        """
+        if i.startswith('home'):
+            continue
+        try:
+            print(i)
+            resp = api.read_namespaced_service(i, namespace)
+        except ApiException as e:
+            print(e)
+            print("Exception Occurred")
+
+        # print resp.spec.cluster_ip
+        sim_ips[i] = resp.spec.cluster_ip
+
+    return sim_ips
+
+
 def k8s_circe_scheduler(dag_info , temp_info,app_name):
     """
         This script deploys CIRCE in the system. 
     """
+    print('Deploy simulation (stress test) workers: ')
+    k8s_sim_scheduler()
 
     jupiter_config.set_globals()
     
@@ -113,12 +275,16 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     
     print("hosts:")
     pprint(hosts)
-    print(len(dag_info))
-    pprint(dag_info[0])
-    pprint(dag_info[1])
-    pprint(dag_info[2])
+    print('DAG info:')
+    print(dag)
+
+    print('Simulation (stress test) information: ')
+    sim_ips = retrieve_simulation_workers()
+    print(sim_ips)
+    all_sim = ':'.join(sim_ips.keys())
+    all_sim_ips = ':'.join(sim_ips.values())
+
     service_ips = {}; #list of all service IPs
-    service_workers = {};
 
     # """
     # # #     First create the home node's service.
@@ -174,7 +340,6 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             resp = api.read_namespaced_service(pod_name, namespace)
             # print resp.spec.cluster_ip
             service_ips[task] = resp.spec.cluster_ip
-            service_workers[task] = resp.spec.cluster_ip
         except ApiException as e:
             print("Exception Occurred")
 
@@ -183,13 +348,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
-    all_workers = ':'.join(service_workers.keys())
-    all_workers_ips = ':'.join(service_workers.values())
-
-    # print(service_ips)
-    # print(service_ips.keys())
-    # print(service_ips.values())
-    # print(all_node)
+    
     """
     All services have started for CIRCE and deployment is yet to begin
     """
@@ -257,34 +416,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             break
         time.sleep(30)
 
-    # home_name =app_name+"-home"
-    # try:
-    #     resp = api.read_namespaced_service(home_name, namespace)
-    # except ApiException as e:
-    #     print("Exception Occurred")
 
-    # service_ips['home'] = resp.spec.cluster_ip
-
-    # for key, value in dag.items():
-    #     task = key
-    #     nexthosts = ''
-    #     print(task)
-
-    #     """
-    #         Generate the yaml description of the required service for each task
-    #     """
-    #     pod_name = app_name+"-"+task
-
-    #     try:
-    #         resp = api.read_namespaced_service(pod_name, namespace)
-    #     except ApiException as e:
-    #         print("Exception Occurred")
-
-    #     # print resp.spec.cluster_ip
-    #     service_ips[task] = resp.spec.cluster_ip
-
-    # all_node_ips = ':'.join(service_ips.values())
-    # all_node = ':'.join(service_ips.keys())
 
     # print(service_ips)
     home_name =app_name+"-home"
@@ -292,8 +424,8 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
                                 host = jupiter_config.HOME_NODE, 
                                 child = jupiter_config.HOME_CHILD,
                                 child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
-                                all_workers = all_workers,
-                                all_workers_ips = all_workers_ips,
+                                all_sim = all_sim,
+                                all_sim_ips = all_sim_ips,
                                 dir = '{}')
 
     try:
@@ -308,6 +440,6 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
        
 
 
-    # pprint(service_ips)
+    pprint(service_ips)
 
    

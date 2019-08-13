@@ -35,14 +35,12 @@ RUN mkdir -p /centralized_scheduler/input
 RUN mkdir -p /centralized_scheduler/output
 #RUN mkdir -p /centralized_scheduler/runtime
 ADD circe/original/monitor.py /centralized_scheduler/monitor.py
-ADD circe/original/stress_test.py /stress_test.py
-ADD circe/original/cpu_test.py /cpu_test.py
 RUN mkdir -p /home/darpa/apps/data
 
 #ADD circe/original/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/dummyapp30/scripts/ /centralized_scheduler/
+ADD app_specific_files/dummycpu30/scripts/ /centralized_scheduler/
 
 ADD jupiter_config.ini /jupiter_config.ini
 

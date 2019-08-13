@@ -62,10 +62,10 @@ spec:
           value: {child}
         - name: CHILD_NODES_IPS
           value: {child_ips}
-        - name: ALL_WORKERS
-          value: {all_workers}
-        - name: ALL_WORKERS_IPS
-          value: {all_workers_ips}
+        - name: ALL_SIM
+          value: {all_sim}
+        - name: ALL_SIM_IPS
+          value: {all_sim_ips}
         - name: TASK
           value: home
       restartPolicy: Always

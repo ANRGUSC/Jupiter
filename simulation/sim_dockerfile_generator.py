@@ -11,25 +11,24 @@ from dockerfile_parse import DockerfileParser
 
 ############################################ WORKER DOCKER TEMPLATE #########################################################
 
-template ="""\
+template_sim ="""\
 FROM ubuntu:16.04
 
 RUN apt-get -yqq update
-
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
-RUN apt-get -yqq update && apt-get install -y --no-install-recommends apt-utils
-RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
-RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen
-RUN apt-get install -y vim
-RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
-RUN apt-get install sudo -y
-RUN apt-get install iproute2 -y
+RUN apt-get install -y openssh-server mongodb
+ADD circe/original/requirements.txt /requirements.txt
+RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
+RUN pip3 install --upgrade pip
+RUN apt-get install -y sshpass nano
 
-RUN apt-get install -y openssh-server
+# Taken from quynh's network profiler
+RUN pip install cryptography
+
+
+RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
 
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
@@ -43,15 +42,27 @@ ADD simulation/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 
-ADD jupiter_config.ini /simulation/jupiter_config.ini
-ADD stress_test.py /simulation/stress_test.py
-ADD cpu_test.py /simulation/cpu_test.py
-ADD start_home.sh /start.sh
-RUN chmod +x /simulation/start.sh
+ADD jupiter_config.ini /jupiter_config.ini
+ADD simulation/stress_test.py /stress_test.py
+ADD simulation/cpu_test.py /cpu_test.py
+ADD simulation/start_home.sh /start.sh
+RUN chmod +x /start.sh
 
 
-WORKDIR /simulation/
+WORKDIR /
 
 EXPOSE {ports}
 
 CMD ["./start.sh"]"""
+
+def write_sim_docker(**kwargs):
+	"""
+			Function to Generate the Dockerfile of HEFT
+	"""
+	dfp = DockerfileParser(path='sim.Dockerfile')
+	dfp.content =template_sim.format(**kwargs)
+	# print(dfp.content)
+if __name__ == '__main__':
+		write_sim_docker(username = 'root',
+											password = 'PASSWORD',
+											ports = '22 8888')

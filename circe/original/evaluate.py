@@ -169,8 +169,8 @@ def evaluate_stress(num_nodes):
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
     num_stress = math.floor(file_count/3)
-    # print(num_stress)
-    # requested = False
+    print(num_stress)
+    requested = False
     print('---- Generate random input files')
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
@@ -182,10 +182,10 @@ def evaluate_stress(num_nodes):
         while 1:
             time.sleep(5)
             file_count_out = len(os.listdir("output/"))
-            # if file_count_out == num_stress and requested==False:
-            #     print('Start to run stress test')
-            #     request_stress_test(num_nodes)
-            #     requested = True
+            if file_count_out == num_stress and requested==False:
+                print('Start to run stress test')
+                request_stress_test(num_nodes)
+                requested = True
 
             if file_count_out ==  i:
                 time.sleep(30)
@@ -193,8 +193,8 @@ def evaluate_stress(num_nodes):
 
 
 def request_stress_test(num_nodes):
-    node_ips = os.environ['ALL_WORKERS_IPS'].split(':')
-    nodes = os.environ['ALL_WORKERS'].split(':')
+    node_ips = os.environ['ALL_SIM_IPS'].split(':')
+    nodes = os.environ['ALL_SIM'].split(':')
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
@@ -206,21 +206,6 @@ def request_stress_test(num_nodes):
         try:
             url = "http://" + worker_node_host_port + "/start_stress_test"
             params = {'msg': 'request stress test'}
-            params = urllib.parse.urlencode(params)
-            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-            res = urllib.request.urlopen(req)
-            res = res.read()
-            res = res.decode('utf-8')
-        except Exception as e:
-            print("Sending message to flask server on workers FAILED!!!")
-            print(e)
-    for i in range(num_nodes,len(node_ips)):
-        print('---------- Request CPU checking on the following node: '+nodes[i])
-        worker_node_host_port =  node_ips[i]+ ":" + str(FLASK_SVC)
-        print(worker_node_host_port)
-        try:
-            url = "http://" + worker_node_host_port + "/start_cpu_check"
-            params = {'msg': 'request CPU checking'}
             params = urllib.parse.urlencode(params)
             req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
             res = urllib.request.urlopen(req)

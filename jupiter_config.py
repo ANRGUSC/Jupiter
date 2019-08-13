@@ -28,7 +28,7 @@ def set_globals():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
     """User input for scheduler information"""
-    global STATIC_MAPPING, SCHEDULER, TRANSFER, PROFILER, RUNTIME, PRICING, PRICE_OPTION
+    global STATIC_MAPPING, SCHEDULER, TRANSFER, PROFILER, RUNTIME, PRICING, SIM
 
     STATIC_MAPPING          = int(config['CONFIG']['STATIC_MAPPING'])
     # scheduler option chosen from SCHEDULER_LIST
@@ -41,8 +41,9 @@ def set_globals():
     RUNTIME                 = int(config['CONFIG']['RUNTIME'])
     # Using pricing or original scheme
     PRICING                 = int(config['CONFIG']['PRICING'])
-    # Pricing option from pricing option list
-    # PRICE_OPTION          = int(config['CONFIG']['PRICE_OPTION'])
+    # simulation
+    SIM                     = int(config['CONFIG']['SIM'])
+
 
     """Authorization information in the containers"""
     global USERNAME, PASSWORD
@@ -68,7 +69,7 @@ def set_globals():
     
 
     """Modules path of Jupiter"""
-    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, CIRCE_ORIGINAL_PATH
+    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, SIM_PATH
 
     # default network and resource profiler: DRUPE
     # default wave mapper: random wave
@@ -78,6 +79,7 @@ def set_globals():
     HEFT_PATH               = HERE + 'task_mapper/heft_mulhome/original/'
     WAVE_PATH               = HERE + 'task_mapper/wave_mulhome/random_wave/'
     SCRIPT_PATH             = HERE + 'scripts/'
+    SIM_PATH                = HERE + 'simulation/'
 
     global heft_option, wave_option
     heft_option             = 'original'    
@@ -103,26 +105,32 @@ def set_globals():
     else: 
         print('Task mapper: Heft original selected')
 
-    global pricing_option, profiler_option
+    global pricing_option, profiler_option, sim_option
 
-    pricing_option          = 'pricing' #original pricing
+    pricing_option          = 'original' #original pricing
     profiler_option         = 'multiple_home'
 
-    if PRICING == 1:#multiple home (push circe)
+    if PRICING == int(config['PRICING_LIST']['PUSH_MULTIPLEHOME']):#multiple home (push circe)
         pricing_option      = 'pricing_push'
         print('Pricing pushing scheme selected')
-    if PRICING == 2:#multiple home, pricing (event-driven circe)
+    if PRICING == int(config['PRICING_LIST']['DRIVEN_MULTIPLEHOME']):#multiple home, pricing (event-driven circe)
         pricing_option      = 'pricing_event'
         print('Pricing event driven scheme selected')
-    if PRICING == 0: #non-pricing
-        pricing_option      = 'original'
+    if PRICING == int(config['PRICING_LIST']['PRICING']): #new-pricing
+        pricing_option      = 'pricing'
         print('Non pricing scheme selected')
     CIRCE_PATH              = HERE + 'circe/%s/'%(pricing_option)
+
+    sim_option              = 'nosimulation'
+    if SIM == int(config['SIM_LIST']['CPU']):
+        sim_option          = 'cpu'
+
+
 
     # print('CIRCE path-------------------------------------------')
     # print(CIRCE_PATH)
     """Kubernetes required information"""
-    global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
+    global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE, SIM_NAMESPACE
 
     KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
@@ -131,7 +139,6 @@ def set_globals():
     PROFILER_NAMESPACE      = 'quynh-profiler'
     MAPPER_NAMESPACE        = 'quynh-mapper'
     EXEC_NAMESPACE          = 'quynh-exec'
-    SIM_NAMESPACE           = 'quynh-sim'
 
     """ Node file path and first task information """
     global HOME_NODE, HOME_CHILD
@@ -164,9 +171,14 @@ def set_globals():
     # APP_OPTION                = 'combined'
 
     HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
-    APP_NAME                  = 'app_specific_files/dummyapp30'
-    APP_OPTION                = 'dummy30'
+    APP_PATH                  = HERE  + 'app_specific_files/dummycpu30/'
+    APP_NAME                  = 'app_specific_files/dummycpu30'
+    APP_OPTION                = 'dummycpu30'
+
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
+    # APP_NAME                  = 'app_specific_files/dummyapp30'
+    # APP_OPTION                = 'dummy30'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp50/'
@@ -241,6 +253,10 @@ def set_globals():
     global HEFT_IMAGE
 
     HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s'%(heft_option,APP_OPTION)
+
+    global SIM_IMAGE
+
+    SIM_IMAGE               = 'docker.io/anrg/%s_sim:v0'%(sim_option)         
 
     
 

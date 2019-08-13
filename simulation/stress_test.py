@@ -21,8 +21,7 @@ def stress_test(t1,t2):
         cmd = 'stress --cpu %d --timeout %ds &' %(count,t1)
         os.system(cmd)
         for i in range(0,t1+t2):
-            print('------- Current CPU usage '+ str(psutil.cpu_percent()))
-            time.sleep(3)  
+            time.sleep(1)
 
 if __name__ == '__main__':
     t1 = 100
