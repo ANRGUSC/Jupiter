@@ -11,6 +11,9 @@ import psutil
 import time
 import os
 from flask import Flask, request
+import multiprocessing
+import configparser
+import _thread
 
 app = Flask(__name__)
 
@@ -24,6 +27,11 @@ class MonitorRecv(multiprocessing.Process):
         """
         print("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
+
+# @app.route('/')
+# def hello():
+#     return 'Hello, World!'
+
 
 def start_stress_test():
     try:
@@ -46,12 +54,23 @@ def cpu_test(t1,t2):
         print('-' * 20)
         for i in range(0,t1+t2):
             print('------- Current CPU usage '+ str(psutil.cpu_percent()))
-            time.sleep(3)  
+            time.sleep(1)  
 
 if __name__ == '__main__':
-    t1 = 100
-    t2 = 5
-    cpu_test(t1,t2)    
+
+    INI_PATH = 'jupiter_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    global FLASK_DOCKER
+    FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
+
     web_server = MonitorRecv()
     web_server.start()
+
+    t1 = 100
+    t2 = 5
+    _thread.start_new_thread(cpu_test,(t1,t2))
+
+
        

@@ -54,6 +54,10 @@ count = 0
 
 app = Flask(__name__)
 
+@app.route('/')
+def hello():
+    return 'Hello, World!'
+
 # Per task times
 start_time = defaultdict(list)
 end_time = defaultdict(list)
