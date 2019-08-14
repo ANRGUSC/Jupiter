@@ -191,7 +191,8 @@ def push_assignment_map():
         task_list = task_list+':'+task
         best_list = best_list+':'+local_task_node_map[my_task,task]
         t0 = t0+1
-    
+    task_list = task_list[1:]
+    best_list = best_list[1:]
     if t0 == len(tasks):
         for computing_ip in all_computing_ips:
             # print(computing_ip)
@@ -243,16 +244,22 @@ def update_global_assignment():
     # print(local_task_node_map)
     # print(tasks)
     print(len(all_computing_nodes))
-    m = (len(all_computing_nodes)+1)*len(tasks)
+    m = (len(all_computing_nodes)+1)*len(tasks) # (all_compute & home,all_task)
     a = dict(local_task_node_map)
-    # print(a)
-    # print(len(a.keys()))
-    print(len(a))
+    print(a.keys())
+    print(len(a.keys()))
     print(m)
     if len(a)<m:
         print('Not yet fully loaded local information')
     else: 
         print('Fully loaded information')
+
+        print('======******======')
+        print(local_task_node_map)
+        print('======*****======')
+        print(global_task_node_map) 
+        print('======*****======')
+        print(last_tasks_map)
         # for task in tasks:
         #     print('-----------')
         #     print(task)
@@ -265,7 +272,7 @@ def update_global_assignment():
         #             print(s)
         #     print('-----------3')
 
-        global_task_node_map[first_task]=local_task_node_map[my_task,first_task]
+        # global_task_node_map[first_task]=local_task_node_map[my_task,first_task]
         # glocal_task_node_map = dict(local_task_node_map)
         # bfs(graph, first_task,glocal_task_node_map)
 
@@ -1063,7 +1070,7 @@ def predict_best_node(task_name):
         # print('Summary cost')
         # print(task_price_summary)
         best_node = min(task_price_summary,key=task_price_summary.get)
-        # print('Best node')
+        print('Best node for '+task_name)
         print(best_node)
 
         # txec = toc(t)
@@ -1483,6 +1490,7 @@ def main():
     update_interval = 2
     _thread.start_new_thread(schedule_update_price,(update_interval,))
     _thread.start_new_thread(schedule_update_assignment,(update_interval,))
+    time.sleep(30)  
     _thread.start_new_thread(schedule_update_global,(update_interval,))
 
     #monitor INPUT folder for the incoming files

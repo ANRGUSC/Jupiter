@@ -12,6 +12,7 @@ from os import path
 from multiprocessing import Process
 from k8s_profiler_scheduler import *
 from k8s_wave_scheduler import *
+from k8s_wave_modified_scheduler import *
 from k8s_circe_scheduler import *
 from k8s_pricing_circe_scheduler import *
 from k8s_exec_scheduler import *
@@ -88,9 +89,12 @@ def k8s_jupiter_deploy(app_id,app_name,port):
     if jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # HEFT
         print('Deploy HEFT mapper')
         task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
-    else:# WAVE
+    elif jupiter_config.SCHEDULER == 2 :# WAVE
         print('Deploy WAVE greedy mapper')
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
+    else:
+        print('Deploy WAVE greedy (group of neighbors) mapper')
+        task_mapping_function = task_mapping_decorator(k8s_wave_modified_scheduler)
         
 
     if jupiter_config.PRICING == 1 or jupiter_config.PRICING == 2:
@@ -127,65 +131,62 @@ def k8s_jupiter_deploy(app_id,app_name,port):
 
         node_names = utilities.k8s_get_nodes_string(path2)
         print('*************************')
+        print('Start Mapper module')
 
         #Start the task to node mapper
+        
+        task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
-        if pricing != 3: 
-            task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
+        """
+            Make sure you run kubectl proxy --port=8080 on a terminal.
+            Then this is link to get the task to node mapping
+        """
 
-            """
-                Make sure you run kubectl proxy --port=8080 on a terminal.
-                Then this is link to get the task to node mapping
-            """
-
-            line = "http://localhost:%d/api/v1/namespaces/"%(port)
-            line = line + jupiter_config.MAPPER_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
-            time.sleep(5)
-            print(line)
-            while 1:
-                try:
-                    print("get the data from " + line)
-                    time.sleep(5)
-                    r = requests.get(line)
-                    mapping = r.json()
-                    data = json.dumps(mapping)
-                    print(data)
-                    if len(mapping) != 0:
-                        if "status" not in data:
-                            break
-                except Exception as e:
-                    #print(e)
-                    print("Will retry to get the mapping for app "+ app_name)
-                    time.sleep(30)
+        line = "http://localhost:%d/api/v1/namespaces/"%(port)
+        line = line + jupiter_config.MAPPER_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
+        time.sleep(5)
+        print(line)
+        while 1:
+            try:
+                print("get the data from " + line)
+                time.sleep(5)
+                r = requests.get(line)
+                mapping = r.json()
+                data = json.dumps(mapping)
+                print(data)
+                if len(mapping) != 0:
+                    if "status" not in data:
+                        break
+            except Exception as e:
+                #print(e)
+                print("Will retry to get the mapping for app "+ app_name)
+                time.sleep(30)
 
 
-            pprint(mapping)
-            schedule = utilities.k8s_get_hosts(path1, path2, mapping)
-            print("Printing schedule")
-            pprint(schedule)
-            print("End print")
-            dag = utilities.k8s_read_dag(path1)
-            dag.append(mapping)
-            print("Printing DAG:")
-            pprint(dag)
-        else:
-            dag = utilities.k8s_read_dag(path1)
-            print("Printing DAG:")
-            pprint(dag)
+        pprint(mapping)
+        schedule = utilities.k8s_get_hosts(path1, path2, mapping)
+        dag = utilities.k8s_read_dag(path1)
+        dag.append(mapping)
+        print("Printing DAG:")
+        pprint(dag)
+        with open('log_DAG.txt', 'w') as outfile:  
+            json.dump(dag, outfile)
+        print("Printing schedule")
+        pprint(schedule)
+        with open('log_schedule.txt', 'w') as outfile:  
+            json.dump(schedule, outfile)
+        print("End print")
+        
     
     else:
-        import static_assignment1 as st
+        import static_assignment as st
         dag = st.dag
         schedule = st.schedule
 
-    #Start CIRCE
+    # Start CIRCE
     if pricing == 0:
         print('Non pricing evaluation')
         k8s_circe_scheduler(dag,schedule,app_name)
-    elif pricing == 3:
-        print('New Pricing evaluation')
-        print(pricing)
-        k8s_pricing_circe_scheduler_new(dag,profiler_ips,execution_ips,app_name)
     else:
         print('Pricing evaluation')
         print(pricing)
@@ -227,10 +228,14 @@ def redeploy_system(app_id,app_name,port):
         print('Tear down all current HEFT deployments')
         delete_all_heft(app_name)
         task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
-    else:# WAVE
+    elif jupiter_config.SCHEDULER == 2:# WAVE
         print('Tear down all current WAVE deployments')
         delete_all_waves(app_name)
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
+    else:
+        print('Deploy WAVE greedy (group of neighbors) mapper')
+        delete_all_waves(app_name)
+        task_mapping_function = task_mapping_decorator(k8s_wave_modified_scheduler)
         
 
     if jupiter_config.PRICING == 1 or jupiter_config.PRICING == 2:
@@ -304,18 +309,20 @@ def redeploy_system(app_id,app_name,port):
         dag.append(mapping)
         print("Printing DAG:")
         pprint(dag)
+        with open('log_DAG.txt', 'w') as outfile:  
+            json.dump(dag, outfile)
         print("Printing schedule")
         pprint(schedule)
+        with open('log_schedule.txt', 'w') as outfile:  
+            json.dump(schedule, outfile)
         print("End print")
 
     
     else:
         import static_assignment
-        # dag = static_assignment.dag
-        # schedule = static_assignment.schedule
+        dag = static_assignment.dag
+        schedule = static_assignment.schedule
 
-    print('Network Profiling Information:')
-    print(profiler_ips)
     # Start CIRCE
     if pricing == 0:
         k8s_circe_scheduler(dag,schedule,app_name)
@@ -385,8 +392,8 @@ def main():
     app_name = jupiter_config.APP_OPTION
     circe_port = int(jupiter_config.FLASK_CIRCE)
     
-    
-    num_samples = 2
+    num_apps = 1
+    num_samples = num_apps * 10 #apps x samples
     num_runs = 1
     num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]

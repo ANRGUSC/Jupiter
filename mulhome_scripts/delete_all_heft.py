@@ -104,5 +104,7 @@ def delete_all_heft(app_name):
         # At this point you should not have any of the profiler related service, pod, or deployment running
 
 if __name__ == '__main__':
-    app_name = 'dummy5001'
+    jupiter_config.set_globals() 
+    app_name = jupiter_config.APP_OPTION
+    app_name = app_name+'1'
     delete_all_heft(app_name)
