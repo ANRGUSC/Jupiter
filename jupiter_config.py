@@ -110,6 +110,9 @@ def set_globals():
     pricing_option          = 'original' #original pricing
     profiler_option         = 'multiple_home'
 
+    if PRICING == int(config['PRICING_LIST']['NONPRICING']): #non-pricing
+        pricing_option      = 'original'
+        print('Non pricing scheme selected')
     if PRICING == int(config['PRICING_LIST']['PUSH_MULTIPLEHOME']):#multiple home (push circe)
         pricing_option      = 'pricing_push'
         print('Pricing pushing scheme selected')
@@ -118,7 +121,9 @@ def set_globals():
         print('Pricing event driven scheme selected')
     if PRICING == int(config['PRICING_LIST']['PRICING']): #new-pricing
         pricing_option      = 'pricing'
-        print('Non pricing scheme selected')
+        print('New pricing scheme selected')
+
+
     CIRCE_PATH              = HERE + 'circe/%s/'%(pricing_option)
 
     sim_option              = 'nosimulation'
@@ -170,15 +175,15 @@ def set_globals():
     # APP_NAME                  = 'app_specific_files/dummy_app_combined'
     # APP_OPTION                = 'combined'
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummycpu30/'
-    APP_NAME                  = 'app_specific_files/dummycpu30'
-    APP_OPTION                = 'dummycpu30'
-
     # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
-    # APP_NAME                  = 'app_specific_files/dummyapp30'
-    # APP_OPTION                = 'dummy30'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummycpu30/'
+    # APP_NAME                  = 'app_specific_files/dummycpu30'
+    # APP_OPTION                = 'dummycpu30'
+
+    HOME_CHILD                = 'task0'
+    APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
+    APP_NAME                  = 'app_specific_files/dummyapp30'
+    APP_OPTION                = 'dummy30'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp50/'

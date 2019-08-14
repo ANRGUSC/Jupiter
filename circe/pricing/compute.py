@@ -147,71 +147,6 @@ def get_taskmap():
     return tasks, task_order, super_tasks, non_tasks
 
 
-
-# def bfs(graph, start,glocal_task_node_map):
-#     visited, queue = set(), [start]
-#     update = dict()
-#     while queue:
-#         print('------------')
-#         print(queue)
-#         vertex = queue.pop(0)
-#         print(vertex)
-#         print(queue)
-#         if vertex not in visited:
-#             visited.add(vertex)
-#             queue.extend(graph[vertex] - visited)
-#             # print('====')
-#             # print(vertex)
-#             # # for item in global_task_node_map:
-#             #     print(item)
-#             #     print(item[0])
-#             #     print(item[1])
-#             #     print(global_task_node_map[item])
-#             #     c = dict()
-#             #     for next_task in next_tasks_map[vertex]:
-#             #         print(last_tasks_map[next_task])
-#             #         print(len(last_tasks_map[next_task]))
-#             #         if len(last_tasks_map[next_task])==1:
-#             #             print(global_task_node_map[vertex])
-#             #             global_task_node_map[next_task]=local_task_node_map[global_task_node_map[vertex],next_task]
-#             #         else:
-#             #             for prev_task in last_tasks_map[next_task]:
-#             #                 print(prev_task)
-#             #                 print(global_task_node_map[prev_task])
-#             #                 print(local_task_node_map[global_task_node_map[prev_task],next_task]) 
-
-#             for next_task in tasks[vertex]:
-#                 # print(last_tasks_map[next_task])
-#                 # print(len(last_tasks_map[next_task]))
-#                 # print('====')
-#                 # print(next_task)
-#                 if len(last_tasks_map[next_task])==1:
-#                     # print(global_task_node_map[vertex])
-#                     global_task_node_map[next_task]=glocal_task_node_map[global_task_node_map[vertex],next_task]
-#                 else:
-#                     c = dict()
-#                     for prev_task in last_tasks_map[next_task]:
-#                         # print(prev_task)
-#                         print('----')
-#                         print(global_task_node_map[prev_task])
-#                         print(glocal_task_node_map[global_task_node_map[prev_task],next_task])   
-#                         best_avail = glocal_task_node_map[global_task_node_map[prev_task],next_task]
-#                         if best_avail not in c:
-#                             c[best_avail]=0
-#                         else:
-#                             c[best_avail]=c[best_avail]+1
-#                     best_node = max(c, key=c.get)
-#                     global_task_node_map[next_task] = best_node
-#                     update[next_task] = True
-#                 # print(global_task_node_map)
-#                 # print('====')
-#         print(global_task_node_map)      
-#         print(update)  
-#         # print(visited)
-#         if len(visited) == len(tasks) or len(update)==len(tasks):
-#             break
-#     print(global_task_node_map)
-
 def prepare_global_info():
 
 
@@ -335,14 +270,17 @@ def prepare_global_info():
             else:    
                 last_tasks_map[last_task].append(task)
 
-    global graph
-    graph= Graph(len(tasks)) 
-    for tmp_task in tasks:
-        for nb in tasks[tmp_task]:
-            graph.addEdge(tmp_task,nb)
-        # graph[tmp_task] = set(tasks[tmp_task])
+    global graph,top_order_task
+    graph= Graph(task_order) 
+    # for tmp_task in tasks:
+    #     for nb in tasks[tmp_task]:
+    #         graph.addEdge(tmp_task,nb)
+    #     # graph[tmp_task] = set(tasks[tmp_task])
     print('GRAPH')
+    print(task_order)
     print(graph)
+    top_order_task = graph.topologicalSort() 
+    print(top_order_task)
 
     last_tasks_map[os.environ['CHILD_NODES']] = []
     for home_id in home_ids:
@@ -371,18 +309,7 @@ def prepare_global_info():
         for line in lines:
             info = line.rstrip().split(' ')
             name_convert_out[info[0]] = info[1]
-            name_convert_in[info[0]] = info[2]
-    # print('@@@@@@@@@@@@@@@@@@@@@@@@')
-    # print(name_convert_out)
-    # print(name_convert_in)
-
-
-    
-    
-    
-    
-
-    
+            name_convert_in[info[0]] = info[2]    
 
     # CHECK NON_DAG tasks
     global configs, taskmap
@@ -457,10 +384,11 @@ def push_assignment_map():
     """
     print('Updated assignment periodically')
     for task in tasks:
-        # print('*********************************************')
+        print('*********************************************')
         # print('update compute nodes')
         # print(all_computing_nodes)
-        # print(task)
+        print(task)
+
         best_node = predict_best_node(task)
         # print(best_node)
         # print('----')
@@ -481,6 +409,8 @@ def push_assignment_map():
         task_list = task_list+':'+task
         best_list = best_list+':'+local_task_node_map[self_name,task]
         t0 = t0+1
+    task_list = task_list[1:]
+    best_list = best_list[1:]
     
     if t0 == len(tasks):
         for computing_ip in combined_ips:
@@ -535,12 +465,11 @@ def update_global_assignment():
     # print(tasks)
     # print(len(combined_nodes))
     # print(combined_nodes)
-    m = len(combined_nodes)*len(tasks)
+    m = (len(all_computing_nodes)+1)*len(tasks) # (all_compute & home,all_task)
     a = dict(local_task_node_map)
-    # print(a)
-    # print(len(a.keys()))
-    # print(len(a))
-    # print(m)
+    print(a.keys())
+    print(len(a.keys()))
+    print(m)
     if len(a)<m:
         print('Not yet fully loaded local information')
     else: 
@@ -557,42 +486,21 @@ def update_global_assignment():
         #             print(s)
         #     print('-----------3')
 
-        global_task_node_map[first_task]=local_task_node_map[self_name,first_task]
-        # print(global_task_node_map)
-        glocal_task_node_map = dict(local_task_node_map)
-        print('======')
-        print(local_task_node_map)
-        print('======') 
-        graph.topologicalSort() 
-        #bfs(graph, first_task,glocal_task_node_map)
-        # for task in tasks:
-        #     print(task)
-        #     print(next_tasks_map[task])
-        #     print(last_tasks_map[task])
-        # tmp_task_list = [first_task]
+        # global_task_node_map[first_task]=local_task_node_map[self_name,first_task]
+        # # print(global_task_node_map)
+        # glocal_task_node_map = dict(local_task_node_map)
+        # print('======')
+        # print(local_task_node_map)
         
-        # while len(tmp_task_list)>0:
-        #     for current_task in tmp_task_list
-        #         for next_task in next_tasks_map[tmp_task]:
-        #             print(last_tasks_map[next_task])
-        #             print(len(last_tasks_map[next_task]))
-        #             if len(last_tasks_map[next_task])==1:
-        #                 print(global_task_node_map[current_task])
-        #                 global_task_node_map[next_task]=local_task_node_map[global_task_node_map[current_task],next_task]
-        #             else:
-        #                 c = dict()
-        #                 for prev_task in last_tasks_map[next_task]:
-        #                     print(prev_task)
-        #                     print(global_task_node_map[prev_task])
-        #                     print(local_task_node_map[global_task_node_map[prev_task],next_task])   
-        #                     best_avail = local_task_node_map[global_task_node_map[prev_task],next_task]
-        #                     if best_avail not in c:
-        #                         c[best_avail]=0
-        #                     else:
-        #                         c[best_avail]=c[best_avail]+1
-        #                 best_node = min(c, key=c.get)
-        #                 global_task_node_map[next_task] = best_node
-        #     tmp_next_list.add(next_task)
+
+        print('======******======')
+        print(local_task_node_map)
+        print('======*****======')
+        print(global_task_node_map) 
+        print('======*****======')
+        print(last_tasks_map)
+        print('======') 
+        
 
 
 
@@ -1004,8 +912,8 @@ def predict_best_node(task_name):
         # print('Summary cost')
         # print(task_price_summary)
         best_node = min(task_price_summary,key=task_price_summary.get)
-        # print('Best node')
-        # print(best_node)
+        print('Best node for '+task_name)
+        print(best_node)
 
         # txec = toc(t)
         # bottleneck['selectbest'].append(txec)
@@ -1963,9 +1871,11 @@ class Graph():
         # Check if there was a cycle 
         if cnt != len(self.V): 
             print("There exists a cycle in the graph")
+            return None
         else : 
             #Print topological order 
             print(top_order) 
+            return top_order
 
 def main():
     
