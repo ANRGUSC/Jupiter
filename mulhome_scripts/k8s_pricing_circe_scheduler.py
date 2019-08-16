@@ -12,6 +12,7 @@ from os import path
 from multiprocessing import Process
 from write_pricing_circe_service_specs import *
 from write_pricing_circe_specs import *
+from write_decoupled_pricing_circe_specs import *
 import yaml
 from kubernetes import client, config
 from pprint import *
@@ -475,7 +476,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
     pprint(service_ips)
 
-def k8s_pricing_circe_scheduler_new(dag_info , profiler_ips, execution_ips,app_name):
+def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ips,app_name):
     """
     This script deploys CIRCE in the system. 
     
@@ -634,7 +635,7 @@ def k8s_pricing_circe_scheduler_new(dag_info , profiler_ips, execution_ips,app_n
         """
         pod_name = app_name+"-"+i
         #print(pod_name)
-        dep = write_circe_computing_specs_new(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTING_IMAGE,
+        dep = write_integrated_circe_computing_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTING_IMAGE,
                                          host = nodes[i][0], node_name = i,
                                          # all_node = all_node,
                                          # all_node_ips = all_node_ips,
@@ -662,7 +663,7 @@ def k8s_pricing_circe_scheduler_new(dag_info , profiler_ips, execution_ips,app_n
 
     for key in homes:
         home_name =app_name+"-" + key
-        home_dep = write_circe_home_specs_new(name=home_name,image = jupiter_config.PRICING_HOME_IMAGE, 
+        home_dep = write_integrated_circe_home_specs(name=home_name,image = jupiter_config.PRICING_HOME_IMAGE, 
                                     host = jupiter_config.HOME_NODE, 
                                     child = jupiter_config.HOME_CHILD,
                                     child_ips = service_ips.get(jupiter_config.HOME_CHILD), 

@@ -119,9 +119,12 @@ def set_globals():
     if PRICING == int(config['PRICING_LIST']['DRIVEN_MULTIPLEHOME']):#multiple home, pricing (event-driven circe)
         pricing_option      = 'pricing_event'
         print('Pricing event driven scheme selected')
-    if PRICING == int(config['PRICING_LIST']['PRICING']): #new-pricing
-        pricing_option      = 'pricing'
-        print('New pricing scheme selected')
+    if PRICING == int(config['PRICING_LIST']['INTERGRATED_PRICING']): #new-pricing
+        pricing_option      = 'integrated_pricing'
+        print('Integrated pricing scheme selected')
+    if PRICING == int(config['PRICING_LIST']['DECOUPLED_PRICING']): #new-pricing
+        pricing_option      = 'decoupled_pricing'
+        print('Decoupled pricing scheme selected')
 
 
     CIRCE_PATH              = HERE + 'circe/%s/'%(pricing_option)
@@ -164,10 +167,10 @@ def set_globals():
     # APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
     # APP_OPTION              = 'dag'
 
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
-    # APP_NAME                  = 'app_specific_files/dummy_app'
-    # APP_OPTION                = 'dummy'
+    HOME_CHILD                = 'task0'
+    APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
+    APP_NAME                  = 'app_specific_files/dummy_app'
+    APP_OPTION                = 'dummy'
 
 
     # HOME_CHILD                = 'distribute'
@@ -180,10 +183,10 @@ def set_globals():
     # APP_NAME                  = 'app_specific_files/dummycpu30'
     # APP_OPTION                = 'dummycpu30'
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
-    APP_NAME                  = 'app_specific_files/dummyapp30'
-    APP_OPTION                = 'dummy30'
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
+    # APP_NAME                  = 'app_specific_files/dummyapp30'
+    # APP_OPTION                = 'dummy30'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp50/'

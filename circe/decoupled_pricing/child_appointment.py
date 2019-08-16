@@ -67,14 +67,14 @@ def prepare_global():
     network_map = {}
 
     #Get nodes to self_ip mapping
-    for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
+    for name, node_ip in zip(os.environ['ALL_CONTROLLER'].split(":"), os.environ['ALL_CONTROLLER_IPS'].split(":")):
         if name == "":
             continue
         nodes[name] = node_ip + ":" + str(FLASK_SVC)
         node_count += 1
 
     #Get nodes to profiler_ip mapping
-    for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
+    for name, node_ip in zip(os.environ['ALL_CONTROLLER'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
         if name == "":
             continue
         #First get mapping like {node: profiler_ip}, and later convert it to {profiler_ip: node}
@@ -119,7 +119,6 @@ def prepare_global():
     print(BOKEH_SERVER)
     print(BOKEH_PORT)
     print(BOKEH)
-
 
     # for line in application:
     #     line = line.strip()
@@ -642,6 +641,7 @@ def main():
     print("Starting the main thread on port", FLASK_PORT)
 
     
+
     
     get_network_data = get_network_data_mapping()
     get_resource_data = get_resource_data_mapping()

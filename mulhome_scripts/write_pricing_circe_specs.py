@@ -498,7 +498,7 @@ def write_circe_computing_specs(**kwargs):
     dep = yaml.load(specific_yaml)
     return dep
 
-template_computing_worker_new = """
+template_integrated_computing_worker = """
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -543,7 +543,7 @@ spec:
 
 """
 
-def write_circe_computing_specs_new(**kwargs):
+def write_integrated_circe_computing_specs(**kwargs):
     """
     This function genetares the description yaml for WAVE
      
@@ -570,13 +570,13 @@ def write_circe_computing_specs_new(**kwargs):
     """
     jupiter_config.set_globals()
     
-    specific_yaml = template_computing_worker_new.format(flask_port = jupiter_config.FLASK_DOCKER,
+    specific_yaml = template_integrated_computing_worker_new.format(flask_port = jupiter_config.FLASK_DOCKER,
                                               ssh_port = jupiter_config.SSH_DOCKER,
                                     **kwargs)
     dep = yaml.load(specific_yaml)
     return dep
 
-template_home_new = """
+template_integrated_home = """
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -619,7 +619,7 @@ spec:
 """
 
 
-def write_circe_home_specs_new(**kwargs):
+def write_integrated_circe_home_specs(**kwargs):
     """
     This function genetares the description yaml for CIRCE
      
@@ -644,7 +644,7 @@ def write_circe_home_specs_new(**kwargs):
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    specific_yaml = template_home_new.format(ssh_port = jupiter_config.SSH_DOCKER, 
+    specific_yaml = template_integrated_home.format(ssh_port = jupiter_config.SSH_DOCKER, 
                                     flask_port = jupiter_config.FLASK_DOCKER,
                                     mongo_port = jupiter_config.MONGO_DOCKER,
                                     **kwargs)
