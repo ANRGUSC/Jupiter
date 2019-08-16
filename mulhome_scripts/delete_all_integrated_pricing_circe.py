@@ -15,7 +15,7 @@ from kubernetes.client.rest import ApiException
 import jupiter_config
 
 
-def delete_all_new_pricing_circe(app_name):
+def delete_all_integrated_pricing_circe(app_name):
     """Tear down all CIRCE deployments.
     """
     jupiter_config.set_globals()
@@ -165,4 +165,4 @@ if __name__ == '__main__':
     jupiter_config.set_globals() 
     app_name = jupiter_config.APP_OPTION
     app_name = app_name+'1'
-    delete_all_new_pricing_circe(app_name)
+    delete_all_integrated_pricing_circe(app_name)

@@ -215,6 +215,8 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     label_name = app_name+'-wave_home'
     print(profiler_ips)
     print(service_ips)
+
+
     home_dep = write_wave_specs(name = home_name, label = label_name,
                                 image = jupiter_config.WAVE_HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, all_node = nexthost_names,

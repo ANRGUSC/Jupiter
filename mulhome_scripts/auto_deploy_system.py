@@ -14,6 +14,7 @@ from k8s_profiler_scheduler import *
 from k8s_wave_scheduler import *
 from k8s_circe_scheduler import *
 from k8s_pricing_circe_scheduler import *
+from k8s_decoupled_pricing_circe_scheduler import *
 from k8s_exec_scheduler import *
 from k8s_heft_scheduler import *
 from pprint import *
@@ -130,7 +131,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
 
         #Start the task to node mapper
 
-        if pricing != 3: 
+        if pricing == 0: #original non-pricing
             task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
             """
@@ -168,7 +169,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
             dag.append(mapping)
             print("Printing DAG:")
             pprint(dag)
-        else:
+        else: #integrated_pricing 
             dag = utilities.k8s_read_dag(path1)
             print("Printing DAG:")
             pprint(dag)
@@ -179,13 +180,18 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         schedule = st.schedule
 
     #Start CIRCE
-    if pricing == 0:
+    if pricing == 0: #original non-pricing
         print('Non pricing evaluation')
         k8s_circe_scheduler(dag,schedule,app_name)
-    elif pricing == 3:
-        print('New Pricing evaluation')
+    elif pricing == 3: #integrated pricing
+        print('Integrated Pricing evaluation')
         print(pricing)
-        k8s_pricing_circe_scheduler_new(dag,profiler_ips,execution_ips,app_name)
+        k8s_integrated_pricing_circe_scheduler(dag,profiler_ips,execution_ips,app_name)
+    elif pricing == 4: #decoupled pricing
+        print('*********************************')
+        print('Decoupled Pricing evaluation')
+        print(pricing)
+        k8s_decoupled_pricing_circe_scheduler(dag,profiler_ips,execution_ips,app_name)
     else:
         print('Pricing evaluation')
         print(pricing)
