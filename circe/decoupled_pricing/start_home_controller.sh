@@ -5,5 +5,5 @@
 # all the print statements.
 # 
 
-echo 'Starting circe controller workers'
-python3 -u /child_appointment.py
+echo 'Starting home or master node'
+python -u /master.py

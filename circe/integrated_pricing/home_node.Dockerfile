@@ -1,10 +1,9 @@
 # Instructions copied from - https://hub.docker.com/_/python/
 FROM ubuntu:16.04
-
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
-ADD circe/pricing/requirements.txt /requirements.txt
+ADD circe/integrated_pricing/requirements.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
@@ -12,7 +11,7 @@ RUN apt-get install -y sshpass nano
 # Taken from quynh's network profiler
 RUN pip install cryptography
 
-
+RUN apt-get -yqq update
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -32,30 +31,30 @@ RUN mkdir -p /input
 RUN mkdir -p /output
 
 # Add input files
-COPY  app_specific_files/dummyapp30/sample_input /sample_input
+COPY  app_specific_files/dummy_app/sample_input /sample_input
 
 # Add the mongodb scripts
-ADD circe/pricing/runtime_profiler_mongodb /central_mongod
+ADD circe/integrated_pricing/runtime_profiler_mongodb /central_mongod
 
-ADD circe/pricing/readconfig.py /readconfig.py
-ADD circe/pricing/scheduler.py /scheduler.py
+ADD circe/integrated_pricing/readconfig.py /readconfig.py
+ADD circe/integrated_pricing/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
-ADD circe/pricing/evaluate.py /evaluate.py
+ADD circe/integrated_pricing/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
-RUN echo app_specific_files/dummyapp30/configuration.txt
-ADD app_specific_files/dummyapp30/configuration.txt /configuration.txt
+RUN echo app_specific_files/dummy_app/configuration.txt
+ADD app_specific_files/dummy_app/configuration.txt /configuration.txt
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
 
-#ADD circe/pricing/monitor.py /centralized_scheduler/monitor.py
-ADD circe/pricing/start_home.sh /start.sh
+#ADD circe/integrated_pricing/monitor.py /centralized_scheduler/monitor.py
+ADD circe/integrated_pricing/start_home.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
-ADD app_specific_files/dummyapp30/name_convert.txt /centralized_scheduler/name_convert.txt
-ADD app_specific_files/dummyapp30/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
-ADD app_specific_files/dummyapp30/scripts/config.json /centralized_scheduler/config.json
-ADD app_specific_files/dummyapp30/configuration.txt  /centralized_scheduler/dag.txt
+ADD app_specific_files/dummy_app/name_convert.txt /centralized_scheduler/name_convert.txt
+ADD app_specific_files/dummy_app/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD app_specific_files/dummy_app/scripts/config.json /centralized_scheduler/config.json
+ADD app_specific_files/dummy_app/configuration.txt  /centralized_scheduler/dag.txt
 
 WORKDIR /
 

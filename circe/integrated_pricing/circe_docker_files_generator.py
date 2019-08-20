@@ -14,7 +14,6 @@ from dockerfile_parse import DockerfileParser
 template_home ="""\
 # Instructions copied from - https://hub.docker.com/_/python/
 FROM ubuntu:16.04
-
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
@@ -26,7 +25,7 @@ RUN apt-get install -y sshpass nano
 # Taken from quynh's network profiler
 RUN pip install cryptography
 
-
+RUN apt-get -yqq update
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config

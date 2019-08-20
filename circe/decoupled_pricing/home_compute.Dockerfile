@@ -1,10 +1,9 @@
 # Instructions copied from - https://hub.docker.com/_/python/
 FROM ubuntu:16.04
-
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
-ADD circe/decoupled_pricing/requirements.txt /requirements.txt
+ADD circe/decoupled_pricing/requirements_compute.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
@@ -12,7 +11,7 @@ RUN apt-get install -y sshpass nano
 # Taken from quynh's network profiler
 RUN pip install cryptography
 
-
+RUN apt-get -yqq update
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -31,10 +30,6 @@ RUN mkdir -p /mongodb/log
 RUN mkdir -p /input
 RUN mkdir -p /output
 
-RUN mkdir -p DAG
-ADD app_specific_files/dummy_app/configuration.txt DAG/DAG_application.txt
-ADD app_specific_files/dummy_app/input_node.txt DAG
-
 # Add input files
 COPY  app_specific_files/dummy_app/sample_input /sample_input
 
@@ -52,12 +47,13 @@ ADD app_specific_files/dummy_app/configuration.txt /configuration.txt
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
 
-#ADD circe/decoupled_pricing/monitor.py /centralized_scheduler/monitor.py
-ADD circe/decoupled_pricing/start_home.sh /start.sh
+ADD circe/decoupled_pricing/start_home_compute.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
 ADD app_specific_files/dummy_app/name_convert.txt /centralized_scheduler/name_convert.txt
 ADD app_specific_files/dummy_app/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD app_specific_files/dummy_app/scripts/config.json /centralized_scheduler/config.json
+ADD app_specific_files/dummy_app/configuration.txt  /centralized_scheduler/dag.txt
 
 WORKDIR /
 
