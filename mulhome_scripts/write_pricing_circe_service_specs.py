@@ -63,7 +63,7 @@ spec:
     app: {name}
 """
 
-def write_circe_service_specs(**kwargs):
+def write_pricing_circe_service_specs(**kwargs):
     """
     This function genetares the service description yaml for CIRCE
     
@@ -88,8 +88,6 @@ def write_circe_service_specs(**kwargs):
     INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
-
-
     # insert your values
     specific_yaml = template.format(ssh_svc = jupiter_config.SSH_SVC,
                                     ssh_port = jupiter_config.SSH_DOCKER, 

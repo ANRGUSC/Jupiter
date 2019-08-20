@@ -14,7 +14,7 @@ RUN apt-get install iproute2 -y
 RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
 RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
-ADD circe/decoupled_pricing/requirements.txt /requirements.txt
+ADD circe/decoupled_pricing/requirements_compute.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
@@ -30,28 +30,24 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 RUN mkdir -p /centralized_scheduler/input
 RUN mkdir -p /centralized_scheduler/output
-RUN mkdir -p /centralized_scheduler/sample_input
 RUN mkdir -p /home/darpa/apps/data
-
-COPY circe/decoupled_pricing/child_appointment.py /child_appointment.py
-RUN mkdir -p DAG
-ADD app_specific_files/dummy_app/configuration.txt DAG/DAG_application.txt
-ADD app_specific_files/dummy_app/input_node.txt DAG
-ADD app_specific_files/dummy_app/sample_input /
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
 ADD app_specific_files/dummy_app/scripts/ /centralized_scheduler/
-ADD app_specific_files/dummy_app/sample_input/ /centralized_scheduler/sample_input/
-ADD app_specific_files/dummy_app/configuration.txt  /centralized_scheduler/dag.txt
 
 ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py
 
-ADD circe/decoupled_pricing/start_controller_worker.sh /start.sh
+ADD circe/decoupled_pricing/start_worker_compute.sh /start.sh
+ADD mulhome_scripts/keep_alive.py /centralized_scheduler/keep_alive.py
+ADD app_specific_files/dummy_app/configuration.txt  /centralized_scheduler/dag.txt
+ADD app_specific_files/dummy_app/scripts/config.json /centralized_scheduler/config.json
+ADD app_specific_files/dummy_app/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD nodes.txt /centralized_scheduler/nodes.txt
 
-# ADD circe/decoupled_pricing/monitor.py /centralized_scheduler/monitor.py
-
-
+ADD circe/decoupled_pricing/compute.py /centralized_scheduler/compute.py
+ADD circe/decoupled_pricing/readconfig.py /readconfig.py
+ADD app_specific_files/dummy_app/name_convert.txt /centralized_scheduler/name_convert.txt
 
 RUN chmod +x /start.sh
 

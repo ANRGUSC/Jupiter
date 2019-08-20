@@ -570,7 +570,7 @@ def write_integrated_circe_computing_specs(**kwargs):
     """
     jupiter_config.set_globals()
     
-    specific_yaml = template_integrated_computing_worker_new.format(flask_port = jupiter_config.FLASK_DOCKER,
+    specific_yaml = template_integrated_computing_worker.format(flask_port = jupiter_config.FLASK_DOCKER,
                                               ssh_port = jupiter_config.SSH_DOCKER,
                                     **kwargs)
     dep = yaml.load(specific_yaml)

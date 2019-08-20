@@ -1,7 +1,7 @@
-__author__ = "Quynh Nguyen, Pradipta Ghosh,  Pranav Sakulkar,  Jason A Tran,  Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "3.0"
+__version__ = "2.1"
 
 import sys
 sys.path.append("../")
@@ -37,78 +37,58 @@ def prepare_global_info():
     print('The list of ports to be exposed in the circe workers are ', " ".join(port_list_worker))
 
     return port_list_home, port_list_worker
-    
-def build_push_pricing_circe():
-    """Build CIRCE home and worker image from Docker files and push them to the Dockerhub.
+
+def build_push_decoupled_pricing_circe():
+    """Build WAVE home and worker image from Docker files and push them to the Dockerhub.
     """
     jupiter_config.set_globals()
+    INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+    sys.path.append(jupiter_config.CIRCE_PATH)
+    print(jupiter_config.CIRCE_PATH)
 
-    port_list_home, port_list_worker = prepare_global_info()
-    import circe_docker_files_generator as dc 
-
+    import decoupled_pricing_docker_files_generator as dc 
     os.chdir(jupiter_config.CIRCE_PATH)
 
-    print(jupiter_config.CIRCE_PATH)
-    print(jupiter_config.USERNAME)
-    print(jupiter_config.PRICING_HOME_IMAGE)
-    print(jupiter_config.WORKER_CONTROLLER_IMAGE)
-    print(jupiter_config.WORKER_COMPUTING_IMAGE )
-    print(jupiter_config.pricing_option)
+    home_file = dc.write_decoupled_pricing_controller_home_docker(app_file = jupiter_config.APP_NAME, 
+                                          ports = jupiter_config.FLASK_DOCKER,
+                                          pricing_option = jupiter_config.pricing_option)
+    worker_file = dc.write_decoupled_pricing_controller_worker_docker(app_file = jupiter_config.APP_NAME, 
+                                          ports = jupiter_config.FLASK_DOCKER,
+                                          pricing_option = jupiter_config.pricing_option)
 
-    dc.write_decoupled_circe_home_docker(username = jupiter_config.USERNAME,
+
+    # cmd = "sudo docker build -f %s ../../ -t %s"%(home_file,jupiter_config.PRICING_HOME_CONTROLLER)
+    # os.system(cmd)
+    # os.system("sudo docker push " + jupiter_config.PRICING_HOME_CONTROLLER)
+    
+    # cmd = "sudo docker build -f %s ../../ -t %s"%(worker_file,jupiter_config.WORKER_CONTROLLER_IMAGE)
+    # os.system(cmd)
+    # os.system("sudo docker push " + jupiter_config.WORKER_CONTROLLER_IMAGE)
+
+    port_list_home, port_list_worker = prepare_global_info()
+
+    dc.write_decoupled_pricing_circe_compute_home_docker(username = jupiter_config.USERNAME,
                       password = jupiter_config.PASSWORD,
                       app_file = jupiter_config.APP_NAME,
                       ports = " ".join(port_list_home),
                       pricing_option = jupiter_config.pricing_option)
 
-    dc.write_decoupled_circe_controller_worker_docker(username = jupiter_config.USERNAME,
-                      password = jupiter_config.PASSWORD,
-                      app_file = jupiter_config.APP_NAME,
-                      ports = " ".join(port_list_worker),
-                      pricing_option = jupiter_config.pricing_option)
-    dc.write_decoupled_circe_computing_worker_docker(username = jupiter_config.USERNAME,
+    dc.write_decoupled_pricing_circe_compute_worker_docker(username = jupiter_config.USERNAME,
                       password = jupiter_config.PASSWORD,
                       app_file = jupiter_config.APP_NAME,
                       ports = " ".join(port_list_worker),
                       pricing_option = jupiter_config.pricing_option)
 
     #--no-cache
-    os.system("sudo docker build -f home_node.Dockerfile ../.. -t "
-                             + jupiter_config.PRICING_HOME_IMAGE)
-    os.system("sudo docker push " + jupiter_config.PRICING_HOME_IMAGE)
-    # os.system("sudo docker build -f controller_worker_node.Dockerfile ../.. -t "
-    #                              + jupiter_config.WORKER_CONTROLLER_IMAGE)
-    # os.system("sudo docker push " + jupiter_config.WORKER_CONTROLLER_IMAGE)
-    # os.system("sudo docker build -f computing_worker_node.Dockerfile ../.. -t "
-    #                              + jupiter_config.WORKER_COMPUTING_IMAGE)
-    # os.system("sudo docker push " + jupiter_config.WORKER_COMPUTING_IMAGE)
+    os.system("sudo docker build -f home_compute.Dockerfile ../.. -t "
+                             + jupiter_config.PRICING_HOME_COMPUTE)
+    os.system("sudo docker push " + jupiter_config.PRICING_HOME_COMPUTE)
+  
+    os.system("sudo docker build -f worker_compute.Dockerfile ../.. -t "
+                                 + jupiter_config.WORKER_COMPUTE_IMAGE)
+    os.system("sudo docker push " + jupiter_config.WORKER_COMPUTE_IMAGE)
 
-    # only required for non-DAG tasks (Tera detectors and DFT detectors)
-    # print(jupiter_config.APP_OPTION)
-    # if jupiter_config.APP_OPTION == 'coded':
-
-    #   dc.write_circe_controller_nondag(username = jupiter_config.USERNAME,
-    #                   password = jupiter_config.PASSWORD,
-    #                   app_file = jupiter_config.APP_NAME,
-    #                   ports = " ".join(port_list_worker),
-    #                   pricing_option = jupiter_config.pricing_option)
-    #   dc.write_circe_worker_nondag(username = jupiter_config.USERNAME,
-    #                     password = jupiter_config.PASSWORD,
-    #                     app_file = jupiter_config.APP_NAME,
-    #                     ports = " ".join(port_list_worker),
-    #                     pricing_option = jupiter_config.pricing_option)
-    
-    #   os.system("sudo docker build -f controller_nondag_node.Dockerfile ../.. -t "
-    #                              + jupiter_config.NONDAG_CONTROLLER_IMAGE)
-    #   os.system("sudo docker push " + jupiter_config.NONDAG_CONTROLLER_IMAGE)
-
-    #   os.system("sudo docker build -f nondag_worker.Dockerfile ../.. -t "
-    #                              + jupiter_config.NONDAG_WORKER_IMAGE)
-    #   os.system("sudo docker push " + jupiter_config.NONDAG_WORKER_IMAGE)
-
-      
-
-
-    # os.system("rm *.Dockerfile")
 if __name__ == '__main__':
-    build_push_pricing_circe()
+    build_push_decoupled_pricing_circe()

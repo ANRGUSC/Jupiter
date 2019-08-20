@@ -192,6 +192,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         print('Decoupled Pricing evaluation')
         print(pricing)
         k8s_decoupled_pricing_circe_scheduler(dag,profiler_ips,execution_ips,app_name)
+        # k8s_decoupled_pricing_circe_scheduler(profiler_ips,app_name)
     else:
         print('Pricing evaluation')
         print(pricing)

@@ -220,15 +220,20 @@ def set_globals():
 
 
     """pricing CIRCE home and worker images"""
-    global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTING_IMAGE
+    global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTE_IMAGE
 
     PRICING_HOME_IMAGE      = 'docker.io/anrg/%s_circe_home:%s' %(pricing_option,APP_OPTION)
     WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:%s' %(pricing_option,APP_OPTION)
-    WORKER_COMPUTING_IMAGE  = 'docker.io/anrg/%s_circe_computing:%s' %(pricing_option,APP_OPTION)
+    WORKER_COMPUTE_IMAGE  = 'docker.io/anrg/%s_circe_computing:%s' %(pricing_option,APP_OPTION)
+
+    global PRICING_HOME_CONTROLLER, PRICING_HOME_COMPUTE
+    PRICING_HOME_CONTROLLER = 'docker.io/anrg/%s_circe_home_controller:%s' %(pricing_option,APP_OPTION)
+    PRICING_HOME_COMPUTE    = 'docker.io/anrg/%s_circe_home_compute:%s' %(pricing_option,APP_OPTION)
+
 
     global NONDAG_CONTROLLER_IMAGE,NONDAG_WORKER_IMAGE # only required for non-DAG tasks (teradetectors and dft)
     NONDAG_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_nondag:%s' %(pricing_option,APP_OPTION)
-    NONDAG_WORKER_IMAGE = 'docker.io/anrg/%s_circe_nondag_worker:%s' %(pricing_option,APP_OPTION)
+    NONDAG_WORKER_IMAGE     = 'docker.io/anrg/%s_circe_nondag_worker:%s' %(pricing_option,APP_OPTION)
     
     """CIRCE home and worker images for execution profiler"""
     global HOME_IMAGE, WORKER_IMAGE

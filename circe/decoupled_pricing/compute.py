@@ -24,7 +24,6 @@ import _thread
 import threading
 import csv
 from pymongo import MongoClient
-import pandas as pd
 import time
 import requests
 from watchdog.observers import Observer
