@@ -48,6 +48,8 @@ spec:
           value: {all_profiler_ips}
         - name: HOME_PROFILER_IP
           value: {home_profiler_ip}
+        - name: COMPUTE_HOME_IP
+          value: {compute_home_ip}
 """
 
 def write_decoupled_pricing_controller_home_specs(**kwargs):

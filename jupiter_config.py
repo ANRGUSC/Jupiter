@@ -167,10 +167,10 @@ def set_globals():
     # APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
     # APP_OPTION              = 'dag'
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
-    APP_NAME                  = 'app_specific_files/dummy_app'
-    APP_OPTION                = 'dummy'
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
+    # APP_NAME                  = 'app_specific_files/dummy_app'
+    # APP_OPTION                = 'dummy'
 
 
     # HOME_CHILD                = 'distribute'
@@ -178,10 +178,10 @@ def set_globals():
     # APP_NAME                  = 'app_specific_files/dummy_app_combined'
     # APP_OPTION                = 'combined'
 
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummycpu30/'
-    # APP_NAME                  = 'app_specific_files/dummycpu30'
-    # APP_OPTION                = 'dummycpu30'
+    HOME_CHILD                = 'task0'
+    APP_PATH                  = HERE  + 'app_specific_files/dummycpu30/'
+    APP_NAME                  = 'app_specific_files/dummycpu30'
+    APP_OPTION                = 'dummycpu30'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'

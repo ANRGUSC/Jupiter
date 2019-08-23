@@ -1,0 +1,39 @@
+Starting home or master node
+starting the main thread on port
+Nodes {'node3': '10.106.80.102:6100', 'node6': '10.111.204.98:6100', 'node5': '10.103.172.122:6100', 'node2': '10.103.51.110:6100', 'node4': '10.108.144.254:6100', 'node7': '10.104.66.10:6100'}
+Max task number  7
+starting the main thread on port 8888
+------- Init tasks
+init_tasks {'node2': ['task0']}
+----------- Control relation
+control_relation {'task0': ['task1', 'task2', 'task3', 'task4'], 'task2': ['task5', 'task6']}
+ * Serving Flask app "master" (lazy loading)
+ * Environment: production
+   WARNING: Do not use the development server in a production environment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+0
+ * Running on http://0.0.0.0:8888/ (Press CTRL+C to quit)
+--------------- Init thread
+Assign the first task based on the input file
+0
+Receive mapping from the workers
+10.244.2.125 - - [20/Aug/2019 17:56:32] "GET /recv_mapping?mapping=task0&node=node2 HTTP/1.1" 200 -
+Assign task task0 to node node2
+Receive mapping from the workers
+10.244.3.206 - - [20/Aug/2019 17:56:33] "GET /recv_mapping?node=node3&mapping=task4 HTTP/1.1" 200 -
+Receive mapping from the workers
+10.244.4.209 - - [20/Aug/2019 17:56:33] "GET /recv_mapping?mapping=task3&node=node4 HTTP/1.1" 200 -
+10.244.5.205 - - [20/Aug/2019 17:56:33] "GET /recv_mapping?node=node5&mapping=task1 HTTP/1.1" 200 -
+Receive mapping from the workers
+Receive mapping from the workers
+10.244.7.204 - - [20/Aug/2019 17:56:34] "GET /recv_mapping?mapping=task2&node=node7 HTTP/1.1" 200 -
+Receive mapping from the workers
+10.244.2.125 - - [20/Aug/2019 17:56:34] "GET /recv_mapping?mapping=task2&node=node7 HTTP/1.1" 200 -
+Receive mapping from the workers
+10.244.4.209 - - [20/Aug/2019 17:56:35] "GET /recv_mapping?mapping=task5&node=node4 HTTP/1.1" 200 -
+Receive mapping from the workers
+10.244.6.205 - - [20/Aug/2019 17:56:35] "GET /recv_mapping?mapping=task6&node=node6 HTTP/1.1" 200 -
+7
+{'task0': 1, 'task3': 1, 'task2': 1, 'task1': 1, 'task6': 1, 'task4': 1, 'task5': 1}
+All task allocations are done! Great News!
