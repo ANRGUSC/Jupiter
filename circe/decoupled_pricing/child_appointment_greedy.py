@@ -27,6 +27,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import paho.mqtt.client as mqtt
 import socket
+from apscheduler.schedulers.background import BackgroundScheduler
+import pyinotify
 
 app = Flask(__name__)
 
@@ -49,7 +51,7 @@ def prepare_global():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global network_map, FLASK_PORT, FLASK_SVC, MONGO_SVC_PORT, nodes, node_count, master_host, debug
+    global network_map, FLASK_SVC, MONGO_SVC_PORT, nodes, node_count, master_host, debug, FLASK_PORT
 
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
@@ -120,43 +122,9 @@ def prepare_global():
     print(BOKEH_PORT)
     print(BOKEH)
 
+    global first_task
+    first_task  = 'task0' #fix later
 
-    # for line in application:
-    #     line = line.strip()
-    #     items = line.split()
-
-    #     parent = items[0]
-    #     if parent == items[3] or items[3] == "home":
-    #         continue
-
-    #     children[parent] = items[3:]
-    #     for child in items[3:]:
-    #         if child in parents.keys():
-    #             parents[child].append(parent)
-    #         else:
-    #             parents[child] = [parent]
-
-    # print("application",application)
-    # print("children",children)
-    # print("parents" ,parents)
-    # for key in parents:
-    #     parent = parents[key]
-    #     if len(parent) == 1:
-    #         if parent[0] in control_relation:
-    #             control_relation[parent[0]].append(key)
-    #         else:
-    #             control_relation[parent[0]] = [key]
-    #     if len(parent) > 1:
-    #         flag = False
-    #         for p in parent:
-    #             if p in control_relation:
-    #                 control_relation[p].append(key)
-    #                 flag = True
-    #                 break
-    #         if not flag:
-    #             control_relation[parent[0]] = [key]
-
-    # print("control_relation" ,control_relation)
 
 def init_task_topology():
     """
@@ -213,16 +181,22 @@ def assign_task():
     try:
 
         task_name = request.args.get('task_name')
+        parent_name = request.args.get('parent_name')
         # print('---------------')
-        # print('I am assigned the task')
-        # print(task_name)
+        print('I am assigned the task '+task_name+' by parent '+ parent_name)
+        print(local_mapping)
+        print(local_children)
+
         local_mapping[task_name] = False
+        print(local_mapping)
+        print(task_name)
+        print(node_name)
         res = call_send_mapping(task_name, node_name)
-        # print(res)
-        # print('---------------')
+        print(res)
+        print('---------------')
         print('All my current tasks')
         print(local_mapping)
-        # print('---------------')
+        print('---------------')
         
         print('*******************')
         if len(control_relation[task_name])>0:
@@ -234,7 +208,9 @@ def assign_task():
                 if task not in local_children.keys():
                     # print(task)
                     local_children[task] = False
-                    write_file(local_responsibility + "/" + task, 'TODO', "w+")
+                    t = time.time()
+                    content = 'TODO '+ str(t)+'\n'
+                    write_file(local_responsibility + "/" + task, content, "w+")
         else:
             print('No children tasks for this task')
         print('*******************')
@@ -245,15 +221,20 @@ def assign_task():
         return "not ok"
 app.add_url_rule('/assign_task', 'assign_task', assign_task)
 
-# def kill_thread():
-#     """assign kill thread as True
-#     """
-#     global kill_flag
-#     print('-------------- kill flag')
-#     print(kill_flag)
-#     kill_flag = True
-#     return "ok"
-# app.add_url_rule('/kill_thread', 'kill_thread', kill_thread)
+def trigger_restart():
+    try:
+        print('Trigger retart')
+        time_info = request.args.get('trigger_restart')
+        print(time_info)
+        print('Delete all local information')
+        local_mapping.clear()
+        local_children.clear()
+        return "ok"
+    except Exception as e:
+        print(e)
+        return "not ok"
+app.add_url_rule('/trigger_restart', 'trigger_restart', trigger_restart)
+
 
 def assign_task_to_remote(assigned_node, task_name):
     """Assign task to remote node
@@ -268,7 +249,7 @@ def assign_task_to_remote(assigned_node, task_name):
     try:
         print('Assign children task to the remote node')
         url = "http://" + nodes[assigned_node] + "/assign_task"
-        params = {'task_name': task_name}
+        params = {'parent_name':node_name,'task_name': task_name}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
@@ -287,8 +268,9 @@ def write_file(file_name, content, mode):
         - mode (str): write mode 
     """
     file = open(file_name, mode)
-    for line in content:
-        file.write(line + "\n")
+    # for line in content:
+    #     file.write(line + "\n")
+    file.write(content + "\n")
     file.close()
 
 def call_send_mapping(mapping, node):
@@ -312,68 +294,72 @@ def call_send_mapping(mapping, node):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        print('=====')
+        print(local_mapping)
         local_mapping[mapping] = True
     except Exception as e:
-        return "Announce the mapping to the master host failed"
-    return res
+        print(e)
+        print("Announce the mapping to the master host failed")
+        return 'not ok'
+    return 'ok'
 
-class Watcher:
-    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'task_responsibility')
+# class Watcher:
+#     DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'task_responsibility')
 
-    def __init__(self):
-        self.observer = Observer()
+#     def __init__(self):
+#         self.observer = Observer()
 
-    def run(self):
-        """
-        Monitoring ``INPUT`` folder for the incoming files.
+#     def run(self):
+#         """
+#         Monitoring ``INPUT`` folder for the incoming files.
         
-        At the moment you have to manually place input files into the ``INPUT`` folder (which is under ``centralized_scheduler_with_task_profiler``):
+#         At the moment you have to manually place input files into the ``INPUT`` folder (which is under ``centralized_scheduler_with_task_profiler``):
         
-            .. code-block:: bash
+#             .. code-block:: bash
         
-                mv 1botnet.ipsum input/
+#                 mv 1botnet.ipsum input/
         
-        Once the file is there, it sends the file to the node performing the first task.
-        """
+#         Once the file is there, it sends the file to the node performing the first task.
+#         """
 
-        event_handler = Handler()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
-        self.observer.start()
+#         event_handler = Handler()
+#         self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
+#         self.observer.start()
 
-class Handler(FileSystemEventHandler):
-    """
-        Handling the event when there is a new file generated in ``INPUT`` folder
-    """
+# class Handler(FileSystemEventHandler):
+#     """
+#         Handling the event when there is a new file generated in ``INPUT`` folder
+#     """
 
-    @staticmethod
-    def on_any_event(event):
-        """
-        Whenever there is a new input file in ``INPUT`` folder, the function:
+#     @staticmethod
+#     def on_any_event(event):
+#         """
+#         Whenever there is a new input file in ``INPUT`` folder, the function:
 
-        - Log the time the file is created
+#         - Log the time the file is created
 
-        - Start the connection to the first scheduled node
+#         - Start the connection to the first scheduled node
 
-        - Copy the newly created file to the ``INPUT`` folder of the first scheduled node
+#         - Copy the newly created file to the ``INPUT`` folder of the first scheduled node
         
-        Args:
-            event (FileSystemEventHandler): monitored event
-        """
+#         Args:
+#             event (FileSystemEventHandler): monitored event
+#         """
 
-        if event.is_directory:
-            return None
+#         if event.is_directory:
+#             return None
 
-        elif event.event_type == 'created':
+#         elif event.event_type == 'created':
 
-            print("Received file as input - %s." % event.src_path)
-            new_task = os.path.split(event.src_path)[-1]
-            # print(new_task)
-            _thread.start_new_thread(assign_children_task,(new_task,))
+#             print("Received file as input - %s." % event.src_path)
+#             new_task = os.path.split(event.src_path)[-1]
+#             # print(new_task)
+#             _thread.start_new_thread(assign_children_task,(new_task,))
 
 
 def assign_children_task(children_task):
     print('Starting assigning process for the children task')
-    # print(children_task)
+
     while True:
         if is_network_profile_data_ready and is_resource_data_ready:
             break
@@ -395,7 +381,8 @@ def assign_children_task(children_task):
         status = assign_task_to_remote(assign_to_node, children_task)
         if status == "ok":
             local_children[children_task] = assign_to_node
-            call_send_mapping(children_task,assign_to_node)
+    return
+            # call_send_mapping(children_task,assign_to_node)
 
 def get_most_suitable_node(file_size):
     """Calculate network delay + resource delay
@@ -410,6 +397,10 @@ def get_most_suitable_node(file_size):
     weight_network = 1
     weight_cpu = 1
     weight_memory = 1
+
+    # print('Input profiling information')
+    # print(network_profile_data)
+    # print(resource_data)
 
     valid_nodes = []
 
@@ -561,7 +552,7 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
         network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
                                                             'c': float(params[2]), 'ip': record['Destination[IP]']}
     print('Network information has already been provided')
-    # print(network_profile_data)
+    print(network_profile_data)
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
@@ -615,6 +606,96 @@ def cal_file_size(file_path):
         file_info = os.stat(file_path)
         return file_info.st_size * 0.008
 
+# def get_updated_network_profile():
+#     """Get updated network information from the network profilers
+#     """
+#     #print('Retrieve network information info')
+#     network_info = dict()        
+#     try:
+#         client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
+#         db = client_mongo.droplet_network_profiler
+#         collection = db.collection_names(include_system_collections=False)
+#         num_nb = len(collection)-1
+#         if num_nb == -1:
+#             print('--- Network profiler mongoDB not yet prepared')
+#             return network_info
+#         num_rows = db[self_profiler_ip].count() 
+#         if num_rows < num_nb:
+#             print('--- Network profiler regression info not yet loaded into MongoDB!')
+#             return network_info
+#         logging =db[self_profiler_ip].find().limit(num_nb)  
+#         for record in logging:
+#             # Source ID, Source IP, Destination ID, Destination IP, Parameters
+#             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
+        
+#         return network_info
+#     except Exception as e:
+#         print("Network request failed. Will try again, details: " + str(e))
+#         return -1
+        
+# def get_updated_resource_profile():
+#     """Requesting resource profiler data using flask for its corresponding profiler node
+#     """
+#     #print("----- Get updated resource profile information") 
+#     resource_info = [] 
+#     try:
+#         for c in range(0,num_retries):
+
+#             #print("http://" + self_profiler_ip + ":" + str(FLASK_SVC) + "/all")
+#             r = requests.get("http://" + self_profiler_ip + ":" + str(FLASK_SVC) + "/all")
+#             result = r.json()
+#             if len(result) != 0:
+#                 resource_info=result
+#                 break
+#             time.sleep(1)
+
+#         if c == num_retries:
+#             print("Exceeded maximum try times.")
+
+#         # print("Resource profiles: ", resource_info)
+#         return resource_info
+
+#     except Exception as e:
+#         print("Resource request failed. Will try again, details: " + str(e))
+#         return -1
+
+def schedule_update_profiling(interval):
+    """
+    Schedulete the assignment update every interval
+    
+    Args:
+        interval (int): chosen interval (minutes)
+    
+    """
+    sched = BackgroundScheduler()
+    get_network_data = get_network_data_mapping()
+    get_resource_data = get_resource_data_mapping()
+    sched.add_job(get_network_data,'interval',[my_profiler_ip, MONGO_SVC_PORT,network_map],id='network_profiling', minutes=interval, replace_existing=True)
+    sched.add_job(get_resource_data,'interval', id='resource_profiling', minutes=interval, replace_existing=True)
+    sched.start()
+
+class MonitorRecv(multiprocessing.Process):
+    def __init__(self):
+        multiprocessing.Process.__init__(self)
+
+    def run(self):
+        """
+        Start Flask server
+        """
+        print("Flask server started")
+        app.run(host='0.0.0.0', port=FLASK_PORT)
+
+class MyEventHandler(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
+    """
+
+    def process_IN_CLOSE_WRITE(self, event):
+        print("CREATE CLOSE event:", event.pathname)
+        t = time.time()
+        print(t)
+        new_task = os.path.split(event.pathname)[-1]
+        _thread.start_new_thread(assign_children_task,(new_task,))
+
 def main():
     """
         - Prepare global information
@@ -643,10 +724,7 @@ def main():
 
     
     
-    get_network_data = get_network_data_mapping()
-    get_resource_data = get_resource_data_mapping()
-    # while init_folder() != "ok":  # Initialize the local folers
-    #     pass
+    
 
     global local_mapping, local_children,local_responsibility, manager
     manager = Manager()
@@ -657,17 +735,39 @@ def main():
     os.mkdir(local_responsibility)
 
     init_task_topology()
-    # Get resource data
-    _thread.start_new_thread(get_resource_data, ())
 
-    # Get network profile data
-    _thread.start_new_thread(get_network_data, (my_profiler_ip, MONGO_SVC_PORT,network_map))
+    web_server = MonitorRecv()
+    web_server.start()
 
-    #monitor Task responsibility folder for the incoming tasks
-    w = Watcher()
-    w.run()
+    global get_network_data, get_resource_data
+    # get_network_data = get_network_data_mapping()
+    # get_resource_data = get_resource_data_mapping()
+    
+    # Get one time resource data
+    # _thread.start_new_thread(get_resource_data, ())
+    # Get one time network profile data
+    # _thread.start_new_thread(get_network_data, (my_profiler_ip, MONGO_SVC_PORT,network_map))
 
-    app.run(host='0.0.0.0', port=int(FLASK_PORT))
+    # #monitor Task responsibility folder for the incoming tasks
+    # w = Watcher()
+    # w.run()
+
+    # app.run(host='0.0.0.0', port=int(FLASK_PORT))
+
+    update_interval = 3
+    _thread.start_new_thread(schedule_update_profiling,(update_interval,))
+    # watch manager
+    wm = pyinotify.WatchManager()
+    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'task_responsibility')
+
+    wm.add_watch(DIRECTORY_TO_WATCH, pyinotify.ALL_EVENTS, rec=True)
+    print('starting the process\n')
+    # event handler
+    eh = MyEventHandler()
+    # notifier
+    notifier = pyinotify.Notifier(wm, eh)
+
+    notifier.loop()
 
 
 if __name__ == '__main__':

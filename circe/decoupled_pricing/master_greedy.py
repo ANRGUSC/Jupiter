@@ -114,7 +114,15 @@ def prepare_global():
     print("Max task number ", MAX_TASK_NUMBER)
     del application[0]
 
-    assignments = {}
+    # assignments = {}
+
+    global compute_home_host
+    compute_home_host = os.environ['COMPUTE_HOME_IP']+':'+ str(FLASK_SVC)
+    print('***Compute home host information')
+    print(compute_home_host)
+
+    global node_name 
+    node_name = os.environ['SELF_NAME']
 
 
 def recv_task_assign_info():
@@ -144,7 +152,6 @@ def recv_mapping():
         print('Receive mapping from the workers')
         node = request.args.get('node')
         mapping = request.args.get("mapping")
-
         to_be_write = []
         items = re.split(r'#', mapping)
         for _, p in enumerate(items):
@@ -161,25 +168,56 @@ def recv_mapping():
 
         write_file("local/input_to_CIRCE.txt", to_be_write, "a+")
     except Exception as e:
+        print('Receive mapping from the workers failed')
         print(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_mapping', 'recv_mapping', recv_mapping)
 
-def return_assignment():
-    """
-    Return mapping assignments which have been finished at the current time of request.
+
+def announce_mapping_to_homecompute():
+    try:
+        print('Announce full mapping to compute home node')
+        print(assignments)  
+        tmp_assignments = ",".join(("{}:{}".format(*i) for i in assignments.items()))
+        url = "http://" + compute_home_host + "/announce_mapping"
+        params = {'assignments': tmp_assignments}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print('Announce full mapping to compute home node failed')
+        print(e)
+        return "not ok"
+    return res
+
+def trigger_restart(flask_info):
+    try:
+        print('Trigger retart')
+        url = "http://" + flask_info + "/trigger_restart"
+        t = time.time()
+        params = {'trigger_restart': t}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print('Trigger restart failed')
+        print(e)
+        return "not ok"
+    return res
     
-    Returns:
-        json: mapping assignments
-    """
-    print("Recieved request for current mapping. Current mappings done:", len(assignments))
-    if len(assignments) == MAX_TASK_NUMBER:
-        print(assignments)
-        return json.dumps(assignments)
-    else:
-        return json.dumps(dict())
-app.add_url_rule('/', 'return_assignment', return_assignment)
+def restart_mapping_process():
+    print('Restart the mapping process')
+    for node in nodes:
+        print(nodes[node])
+        trigger_restart(nodes[node])
+    print('Send the first task to the first node')
+    _thread.start_new_thread(init_thread, ())
+
 
 def assign_task_to_remote(assigned_node, task_name):
     """
@@ -197,7 +235,7 @@ def assign_task_to_remote(assigned_node, task_name):
         url = "http://" + nodes[assigned_node] + "/assign_task"
         # print(url)
         # print(task_name)
-        params = {'task_name': task_name}
+        params = {'parent_name':node_name,'task_name': task_name}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
@@ -209,34 +247,12 @@ def assign_task_to_remote(assigned_node, task_name):
     return res
 
 
-# def call_kill_thread(node):
-#     """
-#     When all the assignments are done, kill all running thread
-    
-#     Args:
-#         node (str): information of the node to be killed
-    
-#     Returns:
-#         str: request if sucessful, ``not ok`` otherwise
-#     """
-#     try:
-#         url = "http://" + nodes[node] + "/kill_thread"
-#         req = urllib.request.Request(url=url)
-#         res = urllib.request.urlopen(req)
-#         res = res.read()
-#         res = res.decode('utf-8')
-#     except Exception as e:
-#         print(e)
-#         return "not ok"
-#     return res
-
-
 
 def init_thread():
     """
     Assign the first task
     """
-    time.sleep(60)
+    time.sleep(10)
     print('--------------- Init thread')
     for key in init_tasks:
         # print(key)
@@ -247,7 +263,7 @@ def init_thread():
                 output("Assign task %s to node %s" % (task, key))
             else:
                 output("Assign task %s to node %s failed" % (task, key))
-
+    return
 
 def monitor_task_status():
     """
@@ -256,20 +272,21 @@ def monitor_task_status():
 
     killed = 0
     while True:
+        print('Monitoring task status')
         print(len(assigned_tasks))
+        print(assignments)
         if len(assigned_tasks) == MAX_TASK_NUMBER:
-            print(assigned_tasks)
             print("All task allocations are done! Great News!")
-            break
-        #     for node in nodes:
-        #         res = call_kill_thread(node)
-        #         if res != "ok":
-        #             output("Kill node thread failed: " + str(node))
-        #         else:
-        #             killed += 1
-        # if killed == MAX_TASK_NUMBER:
-        #     break
-        time.sleep(60)
+            print("Announce assignment information to the compute home node")
+            announce_mapping_to_homecompute()
+            print('Delete full mapping information')
+            assignments.clear()
+            assigned_tasks.clear()
+            restart_mapping_process()
+            
+        else:
+            print('Waiting for task mapping to be finished!!!!')
+            time.sleep(60)
 
 
 

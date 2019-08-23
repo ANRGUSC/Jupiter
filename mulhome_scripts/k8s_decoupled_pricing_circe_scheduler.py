@@ -128,7 +128,7 @@ def check_status_circe_compute(app_name):
 
 
 # if __name__ == '__main__':
-def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name):
+def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_service_ips):
     """
         Deploy WAVE in the system. 
     """
@@ -282,7 +282,8 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name):
                                              serv_ip = service_ips['home'],
                                              profiler_ip = profiler_ips['home'],
                                              all_profiler_ips = all_profiler_ips,
-                                             home_profiler_ip = home_profiler_str)
+                                             home_profiler_ip = home_profiler_str,
+                                             compute_home_ip = compute_service_ips['home'])
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 
@@ -355,8 +356,8 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
         print(key)
         all_profiler_ips = all_profiler_ips + ':'+ profiler_ips[key]
         all_profiler_nodes = all_profiler_nodes +':'+ key
-        home_name =app_name+"-compute"+key
-        home_body = write_decoupled_pricing_circe_service_specs(name = home_name,label = home_name)
+        home_name =app_name+"-"+key
+        home_body = write_decoupled_pricing_circe_compute_service_specs(name = home_name)
         ser_resp = api.create_namespaced_service(namespace, home_body)
         print("Home service created. status = '%s'" % str(ser_resp.status))
 
@@ -389,8 +390,8 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
         """
 
         
-        pod_name = app_name+"-compute"+node
-        body = write_decoupled_pricing_circe_service_specs(name = pod_name,label = pod_name)
+        pod_name = app_name+"-"+node
+        body = write_decoupled_pricing_circe_compute_service_specs(name = pod_name)
 
         # Call the Kubernetes API to create the service
         ser_resp = api.create_namespaced_service(namespace, body)
@@ -445,7 +446,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
         """
             Generate the yaml description of the required deployment for WAVE workers
         """
-        pod_name = app_name+"-compute"+i
+        pod_name = app_name+"-"+i
         #print(pod_name)
         dep = write_decoupled_circe_compute_worker_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTE_IMAGE,
                                          host = nodes[i][0], node_name = i,
@@ -474,7 +475,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     print('-------- Start home node')
 
     for key in homes:
-        home_name =app_name+"-compute" + key
+        home_name =app_name+"-" + key
         home_dep = write_decoupled_circe_compute_home_specs(name=home_name,image = jupiter_config.PRICING_HOME_COMPUTE, 
                                     host = jupiter_config.HOME_NODE, 
                                     child = jupiter_config.HOME_CHILD,
@@ -492,8 +493,8 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
         print("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
+    return service_ips
 
 def k8s_decoupled_pricing_circe_scheduler(dag_info , profiler_ips, execution_ips,app_name):
-
-    k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name)
-    k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips,app_name)
+    compute_service_ips = k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips,app_name)
+    k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_service_ips)

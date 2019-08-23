@@ -59,13 +59,13 @@ def build_push_decoupled_pricing_circe():
                                           pricing_option = jupiter_config.pricing_option)
 
 
-    # cmd = "sudo docker build -f %s ../../ -t %s"%(home_file,jupiter_config.PRICING_HOME_CONTROLLER)
-    # os.system(cmd)
-    # os.system("sudo docker push " + jupiter_config.PRICING_HOME_CONTROLLER)
+    cmd = "sudo docker build -f %s ../../ -t %s"%(home_file,jupiter_config.PRICING_HOME_CONTROLLER)
+    os.system(cmd)
+    os.system("sudo docker push " + jupiter_config.PRICING_HOME_CONTROLLER)
     
-    # cmd = "sudo docker build -f %s ../../ -t %s"%(worker_file,jupiter_config.WORKER_CONTROLLER_IMAGE)
-    # os.system(cmd)
-    # os.system("sudo docker push " + jupiter_config.WORKER_CONTROLLER_IMAGE)
+    cmd = "sudo docker build -f %s ../../ -t %s"%(worker_file,jupiter_config.WORKER_CONTROLLER_IMAGE)
+    os.system(cmd)
+    os.system("sudo docker push " + jupiter_config.WORKER_CONTROLLER_IMAGE)
 
     port_list_home, port_list_worker = prepare_global_info()
 
