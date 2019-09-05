@@ -73,6 +73,9 @@ def k8s_profiler_scheduler():
     """
         Deploy DRUPE in the system. 
     """
+    print('Starting to deploy DRUPE')
+    start_time = time.time()
+
     jupiter_config.set_globals()
 
 
@@ -226,8 +229,14 @@ def k8s_profiler_scheduler():
 
             pprint(service_ips)
     
-    return(service_ips)
+    
 
+    pprint(service_ips)
+    print('Successfully deploy DRUPE ')
+    end_time = time.time()
+    deploy_time = end_time - start_time
+    print('Time to deploy DRUPE '+ str(deploy_time))
+    return(service_ips)
 
 if __name__ == '__main__':
     k8s_profiler_scheduler()

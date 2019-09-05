@@ -21,6 +21,8 @@ spec:
       labels:
         app: {name}
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: {host}
       containers:
       - name: {name}
         image: {image}

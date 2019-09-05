@@ -34,9 +34,9 @@ RUN mkdir -p /centralized_scheduler/sample_input
 RUN mkdir -p /home/darpa/apps/data
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
-ADD app_specific_files/network_monitoring_app/sample_input/ /centralized_scheduler/sample_input/
-ADD app_specific_files/network_monitoring_app/configuration.txt  /centralized_scheduler/dag.txt
+ADD app_specific_files/dummyapp50/scripts/ /centralized_scheduler/
+ADD app_specific_files/dummyapp50/sample_input/ /centralized_scheduler/sample_input/
+ADD app_specific_files/dummyapp50/configuration.txt  /centralized_scheduler/dag.txt
 
 ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py

@@ -52,7 +52,7 @@ def build_push_integrated_pricing_circe():
     print(jupiter_config.USERNAME)
     print(jupiter_config.PRICING_HOME_IMAGE)
     print(jupiter_config.WORKER_CONTROLLER_IMAGE)
-    print(jupiter_config.WORKER_COMPUTING_IMAGE )
+    print(jupiter_config.WORKER_COMPUTE_IMAGE )
     print(jupiter_config.pricing_option)
 
     dc.write_circe_home_docker(username = jupiter_config.USERNAME,
@@ -73,8 +73,8 @@ def build_push_integrated_pricing_circe():
     os.system("sudo docker push " + jupiter_config.PRICING_HOME_IMAGE)
   
     os.system("sudo docker build -f computing_worker_node.Dockerfile ../.. -t "
-                                 + jupiter_config.WORKER_COMPUTING_IMAGE)
-    os.system("sudo docker push " + jupiter_config.WORKER_COMPUTING_IMAGE)
+                                 + jupiter_config.WORKER_COMPUTE_IMAGE)
+    os.system("sudo docker push " + jupiter_config.WORKER_COMPUTE_IMAGE)
 
     # only required for non-DAG tasks (Tera detectors and DFT detectors)
     print(jupiter_config.APP_OPTION)

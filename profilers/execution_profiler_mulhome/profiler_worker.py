@@ -165,7 +165,7 @@ def main():
         task_module[task]=(taskmodule)
 
 
-    print('{0:<16s} {1:<15s} {2:<5s} \n'.format('task', 'time (sec)', 'output_data (Kbit)'))
+    # print('{0:<16s} {1:<15s} {2:<5s} \n'.format('task', 'time (sec)', 'output_data (Kbit)'))
     ## write results in a text file
     myfile = open(os.path.join(os.path.dirname(__file__), 'profiler_'+nodename+'.txt'), "w")
     myfile.write('task,time(sec),output_data (Kbit)\n')

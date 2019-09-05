@@ -12,7 +12,7 @@ from dockerfile_parse import DockerfileParser
 ############################################ WORKER DOCKER TEMPLATE #########################################################
 
 template_worker ="""\
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 RUN apt-get -yqq update
 
@@ -27,9 +27,15 @@ RUN apt-get install iproute2 -y
 
 RUN apt-get install -y openssh-server
 RUN echo '{username}:{password}' | chpasswd
-RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN service ssh restart
+
+# RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+# RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+# RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+
 
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
@@ -42,6 +48,8 @@ ADD profilers/execution_profiler_mulhome/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
 RUN mkdir -p /home/darpa/apps/data
+
+RUN apt-get install stress
 
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
@@ -76,7 +84,7 @@ template_home ="""\
 # **     Read license file in main directory for more details
 
 # Instructions copied from - https://hub.docker.com/_/python/
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 # Install required libraries
 RUN apt-get -yqq update
@@ -100,15 +108,21 @@ RUN pip3 install -r requirements.txt
 
 # Authentication
 RUN echo '{username}:{password}' | chpasswd
-RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN service ssh restart
+
+#RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 # Prepare MongoDB
-RUN mkdir -p /mongodb/data
+# RUN mkdir -p /mongodb/data
+RUN mkdir -p /data/db
 RUN mkdir -p /mongodb/log
+RUN sed -i -e 's/bind_ip = 127.0.0.1/bind_ip =  127\.0\.0\.1, 0\.0\.0\.0/g' /etc/mongodb.conf
 
 ADD profilers/execution_profiler_mulhome/central_mongod /central_mongod
 RUN chmod +x /central_mongod

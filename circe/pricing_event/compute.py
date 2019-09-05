@@ -406,7 +406,8 @@ def get_updated_network_profile():
         if num_rows < num_nb:
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
-        logging =db[self_profiler_ip].find().limit(num_nb)  
+        # logging =db[self_profiler_ip].find().limit(num_nb)
+        logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)  
         # print(logging)
         for record in logging:
             # print(record)

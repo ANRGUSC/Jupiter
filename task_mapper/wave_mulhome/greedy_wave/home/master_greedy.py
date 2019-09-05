@@ -209,27 +209,6 @@ def assign_task_to_remote(assigned_node, task_name):
     return res
 
 
-# def call_kill_thread(node):
-#     """
-#     When all the assignments are done, kill all running thread
-    
-#     Args:
-#         node (str): information of the node to be killed
-    
-#     Returns:
-#         str: request if sucessful, ``not ok`` otherwise
-#     """
-#     try:
-#         url = "http://" + nodes[node] + "/kill_thread"
-#         req = urllib.request.Request(url=url)
-#         res = urllib.request.urlopen(req)
-#         res = res.read()
-#         res = res.decode('utf-8')
-#     except Exception as e:
-#         print(e)
-#         return "not ok"
-#     return res
-
 
 
 def init_thread():
@@ -260,16 +239,11 @@ def monitor_task_status():
         if len(assigned_tasks) == MAX_TASK_NUMBER:
             print(assigned_tasks)
             print("All task allocations are done! Great News!")
+            end_time = time.time()
+            deploy_time = end_time - starting_time
+            print('Time to finish WAVE mapping '+ str(deploy_time))
             break
-        #     for node in nodes:
-        #         res = call_kill_thread(node)
-        #         if res != "ok":
-        #             output("Kill node thread failed: " + str(node))
-        #         else:
-        #             killed += 1
-        # if killed == MAX_TASK_NUMBER:
-        #     break
-        time.sleep(60)
+        time.sleep(2)
 
 
 
@@ -375,6 +349,10 @@ def main():
         - Start thread to watch directory: ``local/task_responsibility``
         - Start thread to monitor task mapping status
     """
+    global starting_time
+    print('Starting to run WAVE mapping')
+    starting_time = time.time()
+
     prepare_global()
 
     print("starting the main thread on port", FLASK_PORT)

@@ -96,6 +96,7 @@ def check_status_exec_profiler_workers(app_name):
     This function prints out all the workers that are not running.
     If all the workers are running: return ``True``; else return ``False``.
     """
+
     jupiter_config.set_globals()
     
     path1 = jupiter_config.HERE + 'nodes.txt'
@@ -150,6 +151,9 @@ def k8s_exec_scheduler(app_name):
     """
         This script deploys execution profiler in the system. 
     """
+    print('Starting to deploy execution profiler')
+    start_time = time.time()
+    
     jupiter_config.set_globals()
 
     global configs, taskmap, path1, path2
@@ -379,6 +383,11 @@ def k8s_exec_scheduler(app_name):
     # pprint(service_ips)
 
 
+    pprint(service_ips)
+    print('Successfully deploy execution profiler ')
+    end_time = time.time()
+    deploy_time = end_time - start_time
+    print('Time to deploy execution profiler '+ str(deploy_time))
 
     return(service_ips)
 

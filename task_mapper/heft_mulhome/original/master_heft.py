@@ -136,7 +136,8 @@ def main():
         - Check whether the input TGFF file has been generated
         - Assign random master and slaves for now
     """
-
+    print('Starting to run HEFT mapping')
+    starting_time = time.time()
 
     global node_info, MAX_TASK_NUMBER, FLASK_PORT, MONGO_SVC_PORT, assignments
 
@@ -172,8 +173,11 @@ def main():
     
     while True:
         if os.path.isfile(tgff_file):
+            print(' File TGFF was generated!!!')
             heft_scheduler = heft_dup.HEFT(tgff_file)
+            print('Start the HEFT scheduler')
             heft_scheduler.run()
+            print('Output of HEFT scheduler')
             heft_scheduler.output_file(output_file)
             assignments = heft_scheduler.output_assignments()
             print('Assign random master and slaves')
@@ -182,6 +186,12 @@ def main():
             heft_scheduler.display_result()
             print(assignments)
             t = time.time()
+            if len(assignments) == MAX_TASK_NUMBER:
+                print('Successfully finish HEFT mapping ')
+                end_time = time.time()
+                deploy_time = end_time - starting_time
+                print('Time to finish HEFT mapping '+ str(deploy_time))
+        
             if BOKEH == 1:
                 assgn = ' '.join('{}:{}:{}'.format(key, val,t) for key, val in assignments.items())
                 msg = "mappings "+ assgn

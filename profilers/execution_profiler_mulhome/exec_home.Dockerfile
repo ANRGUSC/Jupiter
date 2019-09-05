@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 RUN apt-get -yqq update
 
@@ -13,9 +13,15 @@ RUN apt-get install iproute2 -y
 
 RUN apt-get install -y openssh-server
 RUN echo 'root:PASSWORD' | chpasswd
-RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN service ssh restart
+
+# RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+# RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+# RUN sed -i 's/#PermitRootLogin yes/PermitRootLogin yes/' /etc/ssh/sshd_config
+
+
 
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
@@ -29,12 +35,14 @@ RUN pip3 install -r requirements.txt
 
 RUN mkdir -p /home/darpa/apps/data
 
+RUN apt-get install stress
+
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/dummy_app/scripts/ /centralized_scheduler/
-COPY app_specific_files/dummy_app/sample_input /centralized_scheduler/sample_input
+ADD app_specific_files/dummyapp300/scripts/ /centralized_scheduler/
+COPY app_specific_files/dummyapp300/sample_input /centralized_scheduler/sample_input
 
-ADD app_specific_files/dummy_app/configuration.txt /centralized_scheduler/DAG.txt
+ADD app_specific_files/dummyapp300/configuration.txt /centralized_scheduler/DAG.txt
 
 ADD profilers/execution_profiler_mulhome/profiler_worker.py /centralized_scheduler/profiler.py
 

@@ -18,10 +18,13 @@ import os
 import jupiter_config
 #from utilities import *
 import utilities
+import time
 
 def check_status_waves(app_name):
     """Verify if all the WAVE home and workers have been deployed and UP in the system.
     """
+    
+
     jupiter_config.set_globals()
 
 
@@ -77,6 +80,9 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     """
         Deploy WAVE in the system. 
     """
+    print('Starting to deploy WAVW')
+    start_time = time.time()
+
     jupiter_config.set_globals()
 
     """
@@ -232,3 +238,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     print("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
+    print('Successfully deploy WAVE')
+    end_time = time.time()
+    deploy_time = end_time - start_time
+    print('Time to deploy WAVE '+ str(deploy_time))
