@@ -130,6 +130,9 @@ def main():
         - Assign random master and slaves for now
     """
 
+    print('Starting to run HEFT mapping')
+    starting_time = time.time()
+
     global node_info, MAX_TASK_NUMBER, FLASK_PORT, MONGO_SVC_PORT, assignments
 
     NODE_NAMES = os.environ["NODE_NAMES"]
@@ -167,6 +170,11 @@ def main():
                 assignments[non_tasks[i]] = node_info[randint(1,num_nodes)] 
             heft_scheduler.display_result()
             print(assignments)
+            if len(assignments) == MAX_TASK_NUMBER:
+                print('Successfully finish HEFT mapping ')
+                end_time = time.time()
+                deploy_time = end_time - starting_time
+                print('Time to finish HEFT modified mapping '+ str(deploy_time))
             break;
         else:
             print('No input TGFF file found!')

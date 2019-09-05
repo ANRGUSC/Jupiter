@@ -45,57 +45,57 @@ def demo_help(server,port,topic,msg):
     client.publish(topic, msg,qos=1)
     client.disconnect()
 
-def define_cluster(all_node_geo,num):
-    #num: select k neighbors near the node based on shorted distance
-    distance = {}
-    distance[('lon','tor')] = 8
-    distance[('lon','fra')] = 1.5
-    distance[('lon','sgp')] = 13
-    distance[('lon','blr')] = 10
-    distance[('lon','ams')] = 1
-    distance[('lon','sfo')] = 11
-    distance[('lon','nyc')] = 8
-    distance[('tor','fra')] = 8.5
-    distance[('tor','sgp')] = 20.5
-    distance[('tor','blr')] = 19.5 
-    distance[('tor','ams')] = 7
-    distance[('tor','sfo')] = 5
-    distance[('tor','nyc')] = 1.5
-    distance[('fra','sgp')] = 12.5
-    distance[('fra','blr')] = 9.5
-    distance[('fra','ams')] = 1
-    distance[('fra','sfo')] = 11
-    distance[('fra','nyc')] = 8.5
-    distance[('sgp','blr')] = 4.5 
-    distance[('sgp','ams')] = 13
-    distance[('sgp','sfo')] = 16.5
-    distance[('sgp','nyc')] = 18.5
-    distance[('blr','ams')] = 12
-    distance[('blr','sfo')] = 22
-    distance[('blr','nyc')] = 19.5
-    distance[('ams','sfo')] = 10.5
-    distance[('ams','nyc')] = 8
-    distance[('nyc','sfo')] = 5.5
+# def define_cluster(all_node_geo,num):
+#     #num: select k neighbors near the node based on shorted distance
+#     distance = {}
+#     distance[('lon','tor')] = 8
+#     distance[('lon','fra')] = 1.5
+#     distance[('lon','sgp')] = 13
+#     distance[('lon','blr')] = 10
+#     distance[('lon','ams')] = 1
+#     distance[('lon','sfo')] = 11
+#     distance[('lon','nyc')] = 8
+#     distance[('tor','fra')] = 8.5
+#     distance[('tor','sgp')] = 20.5
+#     distance[('tor','blr')] = 19.5 
+#     distance[('tor','ams')] = 7
+#     distance[('tor','sfo')] = 5
+#     distance[('tor','nyc')] = 1.5
+#     distance[('fra','sgp')] = 12.5
+#     distance[('fra','blr')] = 9.5
+#     distance[('fra','ams')] = 1
+#     distance[('fra','sfo')] = 11
+#     distance[('fra','nyc')] = 8.5
+#     distance[('sgp','blr')] = 4.5 
+#     distance[('sgp','ams')] = 13
+#     distance[('sgp','sfo')] = 16.5
+#     distance[('sgp','nyc')] = 18.5
+#     distance[('blr','ams')] = 12
+#     distance[('blr','sfo')] = 22
+#     distance[('blr','nyc')] = 19.5
+#     distance[('ams','sfo')] = 10.5
+#     distance[('ams','nyc')] = 8
+#     distance[('nyc','sfo')] = 5.5
 
-    # reg = ['lon','tor','fra','sgp','blr','ams','sfo','nyc']
-    reg = all_node_geo.keys()
-    connected = {}
-    for city in reg:
-        pairs = [k for k,v in distance.items() if k[0]==city or k[1]==city]
-        nb = dict((k, distance[k]) for k in pairs)
-        neigbors = nsmallest(num, nb, key = nb.get)
-        for item in neigbors:
-            connected[item] = 1
-            connected[(item[1],item[0])] = 1
+#     # reg = ['lon','tor','fra','sgp','blr','ams','sfo','nyc']
+#     reg = all_node_geo.keys()
+#     connected = {}
+#     for city in reg:
+#         pairs = [k for k,v in distance.items() if k[0]==city or k[1]==city]
+#         nb = dict((k, distance[k]) for k in pairs)
+#         neigbors = nsmallest(num, nb, key = nb.get)
+#         for item in neigbors:
+#             connected[item] = 1
+#             connected[(item[1],item[0])] = 1
 
-    cluster = {}
-    for geo in all_node_geo:
-        cluster[geo] = all_node_geo[geo]
-        nbs = [k[1] for k,v in connected.items() if v==1 and (k[0]==geo)]
-        for nb in nbs:
-            if nb in all_node_geo:
-                cluster[geo].extend(all_node_geo[nb])
-    return cluster
+#     cluster = {}
+#     for geo in all_node_geo:
+#         cluster[geo] = all_node_geo[geo]
+#         nbs = [k[1] for k,v in connected.items() if v==1 and (k[0]==geo)]
+#         for nb in nbs:
+#             if nb in all_node_geo:
+#                 cluster[geo].extend(all_node_geo[nb])
+#     return cluster
 
 
 def prepare_global():
@@ -797,28 +797,28 @@ def main():
     total_assign_child = manager.dict()
     
 
-    global all_node_geo, cluster, mygeo
-    all_node_geo_info = os.environ['ALL_NODES_GEO']
-    mygeo = os.environ['MY_GEO']
-    mygeo = mygeo.split('-')[-1][0:3]
-    info = all_node_geo_info.split('$')
-    all_node_geo = dict()
-    for geo in info:
-        g = geo.split(':')[0]
-        all_node_geo[g] = []
-        tmp = geo.split(':')[1].split('#')
-        for t in tmp:
-            all_node_geo[g].append(t)
+    # global all_node_geo, cluster, mygeo
+    # all_node_geo_info = os.environ['ALL_NODES_GEO']
+    # mygeo = os.environ['MY_GEO']
+    # mygeo = mygeo.split('-')[-1][0:3]
+    # info = all_node_geo_info.split('$')
+    # all_node_geo = dict()
+    # for geo in info:
+    #     g = geo.split(':')[0]
+    #     all_node_geo[g] = []
+    #     tmp = geo.split(':')[1].split('#')
+    #     for t in tmp:
+    #         all_node_geo[g].append(t)
 
-    cluster = define_cluster(all_node_geo,3)
+    # cluster = define_cluster(all_node_geo,3)
 
-    global myneighbors
-    myneighbors = set(cluster[mygeo])
+    # global myneighbors
+    # myneighbors = set(cluster[mygeo])
 
-    for node in myneighbors:
-        total_assign_child[node] = 0
+    # for node in myneighbors:
+    #     total_assign_child[node] = 0
 
-    myneighbors.remove(node_name)
+    # myneighbors.remove(node_name)
     # print('--------------My neighbors')
     # print(myneighbors)
 

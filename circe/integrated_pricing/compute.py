@@ -42,8 +42,8 @@ def tic():
 
 def toc(t):
     texec = time.time() - t
-    # print('Execution time is:'+str(texec))
-    return texec
+    print('Execution time is:'+str(texec))
+    
 
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
@@ -341,7 +341,7 @@ def send_assignment_info(node_ip,task_name,best_node):
         print("Announce my current best computing node " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/receive_assignment_info"
         assignment_info = self_name+"#"+task_name + "#"+best_node
-        # print(assignment_info)
+        print('The best node for '+self_name +' task '+task_name + ' is '+best_node)
         params = {'assignment_info': assignment_info}
         params = urllib.parse.urlencode(params)
         # print(params)
@@ -371,7 +371,8 @@ def push_assignment_map():
         # print(all_computing_nodes)
         # print(task)
 
-        best_node = predict_best_node(task)
+        # best_node = predict_best_node(task)
+        best_node = new_predict_best_node(task)
         # print(best_node)
         # print('----')
         # print(self_name)
@@ -449,11 +450,12 @@ def update_global_assignment():
         print('Not yet fully loaded local information')
     else: 
         print('Fully loaded information')
+        print(global_task_node_map)
         for home in home_ids:
             for task in top_order_task:
                 # print('--------------')
                 # print(task)
-                # print(global_task_node_map)
+                
                 # print(last_tasks_map[task])
                 if task==first_task:
                     global_task_node_map[home,first_task]=local_task_node_map[home,first_task]
@@ -473,7 +475,7 @@ def update_global_assignment():
                         # print(chosen_prev)
                         global_task_node_map[home,task] = local_task_node_map[chosen_prev,task]
 
-        print(global_task_node_map)
+        # print(global_task_node_map)
 
 def receive_assignment_info():
     """
@@ -482,12 +484,14 @@ def receive_assignment_info():
     try:
         # print('Receive assignment info')
         assignment_info = request.args.get('assignment_info').split('#')
-        # print("Received assignment info")
+        print("Received assignment info")
         task_list = assignment_info[1].split(':')
         best_list = assignment_info[2].split(':')
-        for task in task_list:
-            for best_node in best_list:
-                local_task_node_map[assignment_info[0],task] = best_node
+        # print(assignment_info[0])
+        # print(task_list)
+        # print(best_list)
+        for idx,task in enumerate(task_list):
+            local_task_node_map[assignment_info[0],task] = best_list[idx]
         # print(local_task_node_map)
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
@@ -574,11 +578,22 @@ def get_updated_network_profile():
         if num_rows < num_nb:
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
-        logging =db[self_profiler_ip].find().limit(num_nb)  
+        # logging =db[self_profiler_ip].find().limit(num_nb)
+        logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)  
+        # print('------------')
+        # print(logging)
         for record in logging:
+            print(record)
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
         
+        # print('Number of neighbors')
+        # print(num_nb)
+        print('Retrieve network information')
+        print(network_info)
+        # for item in network_info:
+            # print(item)
+            # print(network_info[item])
         return network_info
     except Exception as e:
         print("Network request failed. Will try again, details: " + str(e))
@@ -676,37 +691,50 @@ def price_aggregate():
         price['network'] = dict()
         # print(tasks)
         # print(network_info)
-        
+
         for task in tasks:
+
             # print(task)
             if task in home_ids: continue
             if task in super_tasks: continue 
             if task in non_tasks: continue 
-            test_output = execution_info[task][1]
+            # test_output = execution_info[task][1] ///////// execution information
+            test_output = sample_size
+
+
+            print('Price aggregation')
             # print(test_output)
             tmp_price = sys.maxsize
             tmp_node = -1
             for node in network_info:
                 # print(test_output)
                 # print('==')
+                # print(home_ids)
+                # print(home_ips)
                 # print(node)
-                # print(network_info[node])
-                computing_params = network_info[node].split(' ')
-                # print('====')
-                # print(computing_params)
-                computing_params = [float(x) for x in computing_params]
-                # print(computing_params)
-                p = (computing_params[0] * test_output * test_output) + (computing_params[1] * test_output) + computing_params[2]
-                # print('update my network price')
-                # print(node)
-                # print(p)
-                my_task_price_net[(task,node)] = p
-                if p < tmp_price:
-                    tmp_price = p
-                    tmp_node = node
-            # print('---')
-            # print(tmp_price)
-            # print(tmp_node)
+                if node in home_ids:
+                    # print('Not consider home nodes')
+                    pass
+                else:
+                    # print(network_info[node])
+                    computing_params = network_info[node].split(' ')
+                    # print('====')
+                    # print(computing_params)
+                    computing_params = [float(x) for x in computing_params]
+                    
+                    p = (computing_params[0] * test_output * test_output) + (computing_params[1] * test_output) + computing_params[2]
+                    # print('------')
+                    # print('update my network price')
+                    # print(computing_params)
+                    # print(p)
+                    # print('-----')
+                    # print(node)
+                    # print(p)
+                    my_task_price_net[(task,node)] = p
+                    if p < tmp_price:
+                        tmp_price = p
+                        tmp_node = node
+
             price['network'][task] = str(tmp_price)
             # local_task_node_map[task] = tmp_node #next best compute for a specific task on my node #network only
         # print(price['network'])
@@ -730,7 +758,7 @@ def receive_price_info():
     """
     try:
         pricing_info = request.args.get('pricing_info').split('#')
-        # print("Received pricing info")
+        print("Received pricing info")
         # print(pricing_info)
         #Network, CPU, Memory, Queue
         node_name = pricing_info[0]
@@ -742,7 +770,7 @@ def receive_price_info():
         for price in price_net_info:
             task_price_net[node_name,price.split(':')[0]] = float(price.split(':')[1])
 
-        # print('Check price updated interval ')
+        # print(task_price_net)
         pass_time[node_name] = TimedValue()
 
 
@@ -752,6 +780,72 @@ def receive_price_info():
 
     return "ok"
 app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info) 
+
+
+def new_predict_best_node(task_name):
+    w_net = 1 # Network profiling: longer time, higher price
+    w_cpu = 1 # Resource profiling : larger cpu resource, lower price
+    w_mem = 1 # Resource profiling : larger mem resource, lower price
+    w_queue = 1 # Queue : currently 0
+    best_node = -1
+
+    task_price_network= dict()
+    for (source, task), price in task_price_net.items():
+        # print('***')
+        # print(source)
+        if task == task_name:
+            # print('hehehehe')
+            # print(source)
+            # print(dest)
+            # print(task_price_net[source,dest])
+            task_price_network[source]= float(task_price_net[source,task])
+
+    
+    min_value = sys.maxsize
+
+    for tmp_node_name in task_price_network:
+        cur_delay = task_price_network[tmp_node_name]
+        if cur_delay < min_value:
+            min_value = cur_delay
+
+    threshold = 15
+    valid_nodes = []
+    # get all the nodes that satisfy: time < tmin * threshold
+    for tmp_node_name in task_price_network:
+        if task_price_network[tmp_node_name] < min_value * threshold:
+            valid_nodes.append(tmp_node_name)
+
+    # print('Valid nodes')
+    # print(valid_nodes)
+
+    task_price_summary = dict()
+    min_value = sys.maxsize
+    result_node_name = ''
+    for item in valid_nodes:
+        tmp_net = task_price_network[item]
+        tmp_cpu = sys.maxsize
+        tmp_memory = sys.maxsize
+
+        task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
+    
+    print('Task price summary')
+    print(task_price_summary)
+    # print(task_price_cpu)
+    # print(task_price_mem)
+    # print(task_price_network)
+    # print(task_price_queue)
+    # print(task_price_net)
+    try:
+        best_node = min(task_price_summary,key=task_price_summary.get)
+        print('Best node for '+task_name + ' is ' +best_node)
+        return best_node
+    except Exception as e:
+        print('Task price summary is not ready yet.....') 
+        print(e)
+        return -1
+    
+
+
 
 
 def predict_best_node(task_name):
@@ -1150,14 +1244,18 @@ class Handler1(FileSystemEventHandler):
              
             print("Received file as output - %s." % event.src_path)
 
+            t1 = tic()
 
             new_file = os.path.split(event.src_path)[-1]
+
+
 
             if '_' in new_file:
                 temp_name = new_file.split('_')[0]
             else:
                 temp_name = new_file.split('.')[0]
-
+            toc(t1)
+            print('---------11')
             
             ts = time.time()
             
@@ -1166,10 +1264,17 @@ class Handler1(FileSystemEventHandler):
                 runtime_receiver_log.write(s)
                 runtime_receiver_log.flush()
 
+            t1 = tic()
             # print(event.src_path.split('#'))
             task_name = event.src_path.split('/')[-3]
             home_id = event.src_path.split('/')[-2]
+
+            toc(t1)
+            print('---------12')
+            t1 = tic()
             input_name = retrieve_input_finish(task_name, temp_name)
+            toc(t1)
+            print('---------13')
             # print('!!!!!!!!!!!!!!!!!------------------')
             # print(home_id)
             # print(task_name)
@@ -1178,7 +1283,7 @@ class Handler1(FileSystemEventHandler):
             # runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
             # # print(input_name)
             # send_runtime_profile_computingnode(runtime_info,task_name,home_id)
-
+            t1 = tic()
             key = (home_id,task_name,input_name)
             # print('#############')
             # print(next_mul)
@@ -1199,15 +1304,24 @@ class Handler1(FileSystemEventHandler):
             # print(next_tasks_map[task_name][0])
             if next_tasks_map[task_name][0] in home_ids: 
                 print('----- next step is home')
+                t1 = tic()
                 #send runtime info
                 
                 runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
                 # print(input_name)
                 send_runtime_profile_computingnode(runtime_info,task_name,home_id)
                 transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)   
+                toc(t1)
+                print('---------14')
             else:
                 print('----- next step is not home')
                 # print(task_node_map)
+                t1 = tic()
+                while len(global_task_node_map)==0:
+                    print('Global task mapping is not loaded')
+                    time.sleep(1)
+                # print(global_task_node_map)
+                # print(next_tasks_map)
                 next_hosts = [global_task_node_map[home_id,x] for x in next_tasks_map[task_name]]
                 # print(next_hosts)
                 # print(global_task_node_map)
@@ -1222,8 +1336,11 @@ class Handler1(FileSystemEventHandler):
                 # print(flag)
 
                 # print('Sending the output files to the corresponding destinations')
+                toc(t1)
+                print('---------15')
                 if flag=='true': 
                     print('not wait, send')
+                    t1 = tic()
                     # send runtime info
                     runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
                     # print(input_name)
@@ -1243,9 +1360,12 @@ class Handler1(FileSystemEventHandler):
                             # print(cmd)
                             # os.system(cmd)
                             copyfile(event.src_path, destinations[idx])
+                    toc(t1)
+                    print('---------16')
                 else:
                     #it will wait the output files and start putting them into queue, send frst output to first listed child, ....
                     print('wait')
+                    t1 = tic()
                     if key not in files_mul:
                         files_mul[key] = [event.src_path]
                     else:
@@ -1276,7 +1396,9 @@ class Handler1(FileSystemEventHandler):
                                 # # print(cmd)
                                 # os.system(cmd)
                                 copyfile(files_mul[key][idx],destinations)
-
+                    toc(t1)
+                    print('---------17')
+                toc(t1)
 
 #for INPUT folder
 class Watcher(multiprocessing.Process):
@@ -1317,6 +1439,8 @@ class Handler(FileSystemEventHandler):
         elif event.event_type == 'created':
 
             print("Received file as input - %s." % event.src_path)
+
+
 
             new_file = os.path.split(event.src_path)[-1]
             if '_' in new_file:
@@ -1480,7 +1604,7 @@ def main():
     global first_task
     first_task  = 'task0' #fix later
 
-    update_interval = 2
+    update_interval = 1
 
     prepare_global_info()
 
@@ -1508,7 +1632,11 @@ def main():
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    
+    global sample_file, sample_size
+    sample_file= '/centralized_scheduler/1botnet.ipsum'
+    sample_size = cal_file_size(sample_file)
+    # print('Sample size')
+    # print(sample_size)
     
 
     web_server = MonitorRecv()

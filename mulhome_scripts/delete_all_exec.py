@@ -13,10 +13,14 @@ from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
+import time
 
 def delete_all_exec(app_name):
     """Tear down all execution profiler deployments.
     """
+    print('Starting to teardown execution profiler')
+    start_time = time.time()
+
     jupiter_config.set_globals()
     
     """
@@ -237,6 +241,10 @@ def delete_all_exec(app_name):
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running
+    print('Successfully teardown execution profiler ')
+    end_time = time.time()
+    teardown_time = end_time - start_time
+    print('Time to teardown execution profiler'+ str(teardown_time))
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 

@@ -131,7 +131,8 @@ def k8s_jupiter_deploy(app_id,app_name,port):
 
         #Start the task to node mapper
 
-        if pricing == 0: #original non-pricing
+        if pricing == 0 or  pricing == 1 or pricing == 2 : #original non-pricing
+            print('Start the task to node mapper')
             task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
             """
@@ -182,7 +183,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
     #Start CIRCE
     if pricing == 0: #original non-pricing
         print('Non pricing evaluation')
-        k8s_circe_scheduler(dag,schedule,app_name)
+        # k8s_circe_scheduler(dag,schedule,app_name)
     elif pricing == 3: #integrated pricing
         print('Integrated Pricing evaluation')
         print(pricing)
@@ -274,6 +275,8 @@ def redeploy_system(app_id,app_name,port):
         print('*************************')
 
 
+        print('Starting to start HEFT mapping') #all input information was provided
+        start_time = time.time()
         #Start the task to node mapper
         task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
@@ -303,8 +306,13 @@ def redeploy_system(app_id,app_name,port):
                         break
             except:
                 print("Will retry to get the mapping for " + app_name)
-                time.sleep(30)
+                time.sleep(2)
         pprint(mapping)
+
+        print('Successfully get the mapping')
+        end_time = time.time()
+        deploy_time = end_time - start_time
+        print('Time to retrive HEFT mapping'+ str(deploy_time))
 
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
@@ -414,6 +422,6 @@ def main():
         for idx,appname in enumerate(app_list):
             print(appname)
             _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],num_runs,num_samples))
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port = 5001)
 if __name__ == '__main__':
     main()

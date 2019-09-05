@@ -8,7 +8,8 @@
 service ssh start
 
 echo 'Installing and starting mongodb'
-/central_mongod start
+#/central_mongod start
+mongod --bind_ip_all &
 
 cp sample_input/1botnet.ipsum generated_files/25botnet.ipsum
 # cp sample_input/dummyapp1_1botnet.ipsum generated_files/

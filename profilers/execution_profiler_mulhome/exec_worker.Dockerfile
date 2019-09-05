@@ -3,7 +3,7 @@
 # **     Read license file in main directory for more details
 
 # Instructions copied from - https://hub.docker.com/_/python/
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 # Install required libraries
 RUN apt-get -yqq update
@@ -27,15 +27,21 @@ RUN pip3 install -r requirements.txt
 
 # Authentication
 RUN echo 'root:PASSWORD' | chpasswd
-RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN service ssh restart
+
+#RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+
 # SSH login fix. Otherwise user is kicked off after login
 RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 # Prepare MongoDB
-RUN mkdir -p /mongodb/data
+# RUN mkdir -p /mongodb/data
+RUN mkdir -p /data/db
 RUN mkdir -p /mongodb/log
+RUN sed -i -e 's/bind_ip = 127.0.0.1/bind_ip =  127\.0\.0\.1, 0\.0\.0\.0/g' /etc/mongodb.conf
 
 ADD profilers/execution_profiler_mulhome/central_mongod /central_mongod
 RUN chmod +x /central_mongod
@@ -48,12 +54,12 @@ RUN mkdir -p /centralized_scheduler/profiler_files_processed
 
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/dummy_app/scripts/ /centralized_scheduler/
-COPY app_specific_files/dummy_app/sample_input /centralized_scheduler/sample_input
+ADD app_specific_files/dummyapp300/scripts/ /centralized_scheduler/
+COPY app_specific_files/dummyapp300/sample_input /centralized_scheduler/sample_input
 RUN mkdir -p /home/darpa/apps/data
 
 
-ADD app_specific_files/dummy_app/configuration.txt /centralized_scheduler/DAG.txt
+ADD app_specific_files/dummyapp300/configuration.txt /centralized_scheduler/DAG.txt
 
 ADD profilers/execution_profiler_mulhome/start_home.sh /centralized_scheduler/start.sh
 ADD mulhome_scripts/keep_alive.py /centralized_scheduler/keep_alive.py

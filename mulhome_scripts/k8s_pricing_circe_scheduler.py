@@ -12,7 +12,7 @@ from os import path
 from multiprocessing import Process
 from write_pricing_circe_service_specs import *
 from write_pricing_circe_specs import *
-from write_decoupled_pricing_circe_specs import *
+# from write_decoupled_pricing_circe_specs import *
 import yaml
 from kubernetes import client, config
 from pprint import *
@@ -202,7 +202,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         all_profiler_ips = all_profiler_ips + ':'+ profiler_ips[key]
         all_profiler_nodes = all_profiler_nodes +':'+ key
         home_name =app_name+"-"+key
-        home_body = write_circe_service_specs(name = home_name)
+        home_body = write_pricing_circe_service_specs(name = home_name)
         ser_resp = api.create_namespaced_service(namespace, home_body)
         print("Home service created. status = '%s'" % str(ser_resp.status))
 
@@ -240,7 +240,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         """
         pod_name = app_name+"-"+task
 
-        body = write_circe_service_specs(name = pod_name)
+        body = write_pricing_circe_service_specs(name = pod_name)
 
         # Call the Kubernetes API to create the service
         ser_resp = api.create_namespaced_service(namespace, body)
@@ -273,7 +273,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
         
         pod_name = app_name+"-"+node
-        body = write_circe_service_specs(name = pod_name)
+        body = write_pricing_circe_service_specs(name = pod_name)
 
         # Call the Kubernetes API to create the service
         ser_resp = api.create_namespaced_service(namespace, body)
@@ -330,7 +330,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         """
         pod_name = app_name+"-"+i
         #print(pod_name)
-        dep = write_circe_computing_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTING_IMAGE,
+        dep = write_circe_computing_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTE_IMAGE,
                                          host = nodes[i][0], all_node = all_node,
                                          node_name = i,
                                          all_node_ips = all_node_ips,
@@ -471,6 +471,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
                                     all_profiler_ips = all_profiler_ips,
                                     all_profiler_nodes = all_profiler_nodes,
                                     dir = '{}')
+        
         resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
         print("Home deployment created. status = '%s'" % str(resp.status))
 
@@ -544,7 +545,7 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
         all_profiler_ips = all_profiler_ips + ':'+ profiler_ips[key]
         all_profiler_nodes = all_profiler_nodes +':'+ key
         home_name =app_name+"-"+key
-        home_body = write_circe_service_specs(name = home_name)
+        home_body = write_pricing_circe_service_specs(name = home_name)
         ser_resp = api.create_namespaced_service(namespace, home_body)
         print("Home service created. status = '%s'" % str(ser_resp.status))
 
@@ -578,7 +579,7 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
 
         
         pod_name = app_name+"-"+node
-        body = write_circe_service_specs(name = pod_name)
+        body = write_pricing_circe_service_specs(name = pod_name)
 
         # Call the Kubernetes API to create the service
         ser_resp = api.create_namespaced_service(namespace, body)
@@ -635,7 +636,7 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
         """
         pod_name = app_name+"-"+i
         #print(pod_name)
-        dep = write_integrated_circe_computing_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTING_IMAGE,
+        dep = write_integrated_circe_computing_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTE_IMAGE,
                                          host = nodes[i][0], node_name = i,
                                          # all_node = all_node,
                                          # all_node_ips = all_node_ips,

@@ -75,7 +75,7 @@ def recv_mapping():
         # print("Received flask message:", worker_node, msg, ts)
 
         print("Received flask message:", worker_node, msg, ts)
-        print(last_tasks)
+        # print(last_tasks)
         if msg == 'start':
             start_time[worker_node].append(ts)
         else:
@@ -116,14 +116,15 @@ def receive_assignment_info():
     try:
         # print('Receive assignment info')
         assignment_info = request.args.get('assignment_info').split('#')
-        # print("Received assignment info")
+        print("Received assignment info")
         task_list = assignment_info[1].split(':')
         best_list = assignment_info[2].split(':')
+        # print(assignment_info[0])
         # print(task_list)
         # print(best_list)
-        for task in task_list:
-            for best_node in best_list:
-                local_task_node_map[(assignment_info[0],task)] = best_node
+        for idx,task in enumerate(task_list):
+            local_task_node_map[assignment_info[0],task] = best_list[idx]
+        # print(local_task_node_map)
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
         return "not ok" 
@@ -158,8 +159,10 @@ def push_assignment_map():
     """
     print('Updated assignment periodically')
     for task in tasks:
-        best_node = predict_best_node(task)
+        # best_node = predict_best_node(task)
+        best_node = new_predict_best_node(task)
         local_task_node_map[my_task,task] = best_node
+
     task_list = ''
     best_list = ''
     t0 = 0
@@ -462,6 +465,7 @@ def receive_price_info():
         for price in price_net_info:
             task_price_net[node_name,price.split(':')[0]] = float(price.split(':')[1])
         # print('Check price updated interval ')
+        # print(task_price_net)
         pass_time[node_name] = TimedValue()
         
 
@@ -549,12 +553,94 @@ class Handler1(FileSystemEventHandler):
             print("execution time is: ", exec_times)
            
 
+def new_predict_best_node(task_name):
+    w_net = 1 # Network profiling: longer time, higher price
+    w_cpu = 1 # Resource profiling : larger cpu resource, lower price
+    w_mem = 1 # Resource profiling : larger mem resource, lower price
+    w_queue = 1 # Queue : currently 0
+    best_node = -1
+
+    task_price_network= dict()
+    if task_name == first_task:
+        print('------------------- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
+        print(task_name)
+        print(task_price_net)
+        print(my_task)
+   
+
+    for (source, dest), price in task_price_net.items():
+        # print('***')
+        if source==my_task:
+            task_price_network[dest]= float(task_price_net[source,dest])
+
+    print('&&&&&&&&&&&&&&')
+    print(task_price_network)
+    
+    min_value = sys.maxsize
+
+    # print('=============')
+    # print(task_price_network)
+    for tmp_node_name in task_price_network:
+        cur_delay = task_price_network[tmp_node_name]
+        # print(cur_delay)
+        if cur_delay < min_value:
+            min_value = cur_delay
+
+    threshold = 15
+    valid_nodes = []
+    # print(min_value)
+    # a = min_value * threshold
+    # print(a)
+
+    # get all the nodes that satisfy: time < tmin * threshold
+    for tmp_node_name in task_price_network:
+        if task_price_network[tmp_node_name] < min_value * threshold:
+            valid_nodes.append(tmp_node_name)
+
+    # print('Valid nodes')
+    # # print(task_name)
+    # # print(valid_nodes)
+    # # print(task_price_net)
+
+    
+
+    # print(valid_nodes)
+
+    task_price_summary = dict()
+    min_value = sys.maxsize
+    result_node_name = ''
+    # print('!!!!!!!!!!!!!!')
+    # print(task_price_cpu)
+    # print(task_price_mem)
+    # print(task_price_network)
+    for item in valid_nodes:
+        # print('&&&&')
+        # print(item)
+        tmp_net = task_price_network[item]
+        tmp_cpu = sys.maxsize
+        tmp_memory = sys.maxsize
+
+        task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
+    
+    print('Task price summary')
+    print(task_price_summary)
+    
+
+    try:
+        best_node = min(task_price_summary,key=task_price_summary.get)
+        print('Best node for '+task_name + ' is ' +best_node)
+        return best_node
+    except Exception as e:
+        print('Task price summary is not ready yet.....') 
+        print(e)
+        return -1
+
 def predict_best_node(task_name):
     # print('***************************************************')
     # print('Select the current best node')
     w_net = 1 # Network profiling: longer time, higher price
-    w_cpu = 100000 # Resource profiling : larger cpu resource, lower price
-    w_mem = 100000 # Resource profiling : larger mem resource, lower price
+    w_cpu = 1 # Resource profiling : larger cpu resource, lower price
+    w_mem = 1 # Resource profiling : larger mem resource, lower price
     w_queue = 1 # Queue : currently 0
     
     best_node = -1
@@ -660,13 +746,15 @@ class Handler(FileSystemEventHandler):
             print("start time is: ", start_times)
             new_file_name = os.path.split(event.src_path)[-1]
 
-            while first_task not in global_task_node_map:
+        
+            while first_task not in global_task_node_map or global_task_node_map[first_task]==-1:
                 print('Not yet update global task mapping information')
-                time.sleep(2)
-
+                print(global_task_node_map)
+                time.sleep(1)
+            
             IP = node_ip_map[global_task_node_map[first_task]]
-            # print('Send file to the first node')
-            # print(global_task_node_map[first_task])
+            print('Send file to the first node')
+            print(global_task_node_map[first_task])
         
             source = event.src_path
             destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)
@@ -767,11 +855,11 @@ def main():
     
     global tasks, task_order, super_tasks, non_tasks
     tasks, task_order, super_tasks, non_tasks = get_taskmap()
-    print('----------- TASKS INFO')
-    print(tasks)
-    print(task_order)
-    print(super_tasks)
-    print(non_tasks)
+    # print('----------- TASKS INFO')
+    # print(tasks)
+    # print(task_order)
+    # print(super_tasks)
+    # print(non_tasks)
 
 
 
@@ -889,8 +977,6 @@ def main():
     # print(next_tasks_map)
 
 
-    
-
     global last_tasks
     last_tasks = set()
     for task in dag_info[1]:
@@ -904,7 +990,7 @@ def main():
 
 
 
-    update_interval = 2
+    update_interval = 1
     _thread.start_new_thread(schedule_update_price,(update_interval,))
     _thread.start_new_thread(schedule_update_assignment,(update_interval,))
     time.sleep(10)  

@@ -24,7 +24,7 @@ import _thread
 import threading
 import csv
 from pymongo import MongoClient
-import pandas as pd
+# import pandas as pd
 import time
 import requests
 from watchdog.observers import Observer
@@ -427,7 +427,8 @@ def get_updated_network_profile():
         if num_rows < num_nb:
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
-        logging =db[self_profiler_ip].find().limit(num_nb)  
+        # logging =db[self_profiler_ip].find().limit(num_nb)  
+        logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)
         # print(logging)
         for record in logging:
             # print(record)
@@ -877,7 +878,13 @@ class Handler1(FileSystemEventHandler):
                 transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)   
             else:
                 # print('----- next step is not home')
-                # print(task_node_map)
+                print(task_node_map)
+                print(len(profiler_nodes))
+                while len(task_node_map)<len(profiler_nodes):
+                    print('Not yet loaded assignment')
+                    print(task_node_map)
+                    print(len(task_node_map))
+                    time.sleep(1)
                 next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
                 next_IPs   = [computing_ip_map[x] for x in next_hosts]
                 

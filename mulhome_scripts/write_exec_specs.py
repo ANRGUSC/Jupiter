@@ -52,6 +52,8 @@ template_home = """
           labels:
             app: {name}
         spec:
+          nodeSelector:
+            kubernetes.io/hostname: {host}
           containers:
           - name: {name}
             imagePullPolicy: Always

@@ -173,20 +173,31 @@ def set_globals():
     # APP_OPTION                = 'dummy'
 
 
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/stress_app/'
+    # APP_NAME                  = 'app_specific_files/stress_app'
+    # APP_OPTION                = 'stress'
+
+
     # HOME_CHILD                = 'distribute'
     # APP_PATH                  = HERE  + 'app_specific_files/dummy_app_combined/'
     # APP_NAME                  = 'app_specific_files/dummy_app_combined'
     # APP_OPTION                = 'combined'
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummycpu30/'
-    APP_NAME                  = 'app_specific_files/dummycpu30'
-    APP_OPTION                = 'dummycpu30'
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummycpu30/'
+    # APP_NAME                  = 'app_specific_files/dummycpu30'
+    # APP_OPTION                = 'dummycpu30'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
     # APP_NAME                  = 'app_specific_files/dummyapp30'
     # APP_OPTION                = 'dummy30'
+
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/stressapp30/'
+    # APP_NAME                  = 'app_specific_files/stressapp30'
+    # APP_OPTION                = 'stress30'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp50/'
@@ -204,9 +215,15 @@ def set_globals():
     # APP_OPTION                = 'dummy150'
 
     # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp300/'
-    # APP_NAME                  = 'app_specific_files/dummyapp300'
-    # APP_OPTION                = 'dummy300'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp200/'
+    # APP_NAME                  = 'app_specific_files/dummyapp200'
+    # APP_OPTION                = 'dummy200'
+
+
+    HOME_CHILD                = 'task0'
+    APP_PATH                  = HERE  + 'app_specific_files/dummyapp300/'
+    APP_NAME                  = 'app_specific_files/dummyapp300'
+    APP_OPTION                = 'dummy300'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp500/'

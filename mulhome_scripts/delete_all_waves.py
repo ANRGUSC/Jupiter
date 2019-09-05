@@ -13,10 +13,14 @@ from kubernetes.client.rest import ApiException
 import jupiter_config
 #from utilities import *
 import utilities
+import time
 
 def delete_all_waves(app_name):
     """Tear down all WAVE deployments.
     """
+    print('Starting to teardown WAVE')
+    start_time = time.time()
+
     
     jupiter_config.set_globals()
 
@@ -107,6 +111,10 @@ def delete_all_waves(app_name):
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running     
+    print('Successfully teardown WAVE ')
+    end_time = time.time()
+    teardown_time = end_time - start_time
+    print('Time to teardown WAVE'+ str(teardown_time))
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 

@@ -13,10 +13,13 @@ from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
+import time
 
 def delete_all_heft(app_name):
     """Tear down all HEFT deployments.
     """
+    print('Starting to teardown HEFT')
+    start_time = time.time()
     jupiter_config.set_globals()
     
     """
@@ -102,6 +105,10 @@ def delete_all_heft(app_name):
         print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running
+    print('Successfully teardown HEFT ')
+    end_time = time.time()
+    teardown_time = end_time - start_time
+    print('Time to teardown HEFT'+ str(teardown_time))
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 

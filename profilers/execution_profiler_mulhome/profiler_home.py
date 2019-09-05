@@ -166,6 +166,9 @@ def main():
         -   Start Waiting For Incoming Statistics from the Worker Execution Profilers. Once a File arrives at the ``profiling_folder`` immediately process it and move it to the ``profiling_folder_processed`` to keep track of processed files
     """
     ## Load all the confuguration
+    print('Starting to run execution profiler')
+    starting_time = time.time()
+
     HERE     = path.abspath(path.dirname(__file__)) + "/"
     INI_PATH = HERE + 'jupiter_config.ini'
 
@@ -330,7 +333,7 @@ def main():
     profiling_folder_processed = '/centralized_scheduler/profiler_files_processed/'
 
     recv_file_count = 0
-    while 1:
+    while recv_file_count<len(profilers_ips):
 
         list_files = os.listdir(profiling_folder) # dir is your directory path
 
@@ -348,9 +351,19 @@ def main():
                 print("Some Exception")
 
         print("Number of execution profiling files : " + str(recv_file_count))
+        if recv_file_count == len(profilers_ips):
+            print('Successfully finish execution profiler ')
+            end_time = time.time()
+            deploy_time = end_time - starting_time
+            print('Time to finish execution profiler '+ str(deploy_time))
+            break
         time.sleep(60)
 
+    
 
+    while 1:
+        print("Finish execution profiling : " + str(recv_file_count))
+        time.sleep(60)
 
 if __name__ == '__main__':
     main()

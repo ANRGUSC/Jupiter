@@ -169,6 +169,7 @@ def evaluate_stress(num_nodes):
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
     num_stress = math.floor(file_count/3)
+    num_stress = 1
     print(num_stress)
     requested = False
     print('---- Generate random input files')
@@ -275,9 +276,10 @@ if __name__ == '__main__':
     time.sleep(60)
     print('Start copying sample files for evaluation')
 
-    # evaluate_sequential()
-    num_nodes = 1
-    evaluate_stress(num_nodes)
+    evaluate_sequential()
+    
+    # num_nodes = 5
+    # evaluate_stress(num_nodes)
     
 
     # global num_apps, num_samples

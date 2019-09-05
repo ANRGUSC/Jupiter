@@ -25,6 +25,8 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
     """
         This script deploys HEFT in the system. 
     """
+    print('Starting to deploy HEFT')
+    start_time = time.time()
     jupiter_config.set_globals()
 
     """
@@ -100,7 +102,10 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
     print("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
-
+    print('Successfully deploy HEFT')
+    end_time = time.time()
+    deploy_time = end_time - start_time
+    print('Time to deploy HEFT '+ str(deploy_time))
 if __name__ == '__main__':
     # ips = {}
     # ips['home'] = '127.0.0.1'

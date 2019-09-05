@@ -564,6 +564,9 @@ class Handler1(FileSystemEventHandler):
                 # print(task_node_map)
 
                 print(global_task_node_map)
+                while len(global_task_node_map)==0:
+                    print('Global task mapping is not loaded')
+                    time.sleep(1)
                 next_hosts = [global_task_node_map[home_id,x] for x in next_tasks_map[task_name]]
                 # print(next_hosts)
                 # print(global_task_node_map)
@@ -675,11 +678,12 @@ class Handler(FileSystemEventHandler):
             print("Received file as input - %s." % event.src_path)
 
             new_file = os.path.split(event.src_path)[-1]
+            print(new_file)
             if '_' in new_file:
                 file_name = new_file.split('_')[0]
             else:
                 file_name = new_file.split('.')[0]
-
+            print(file_name)
             ts = time.time()
             # task_name = new_file.split('#')[2]
             # home_id = new_file.split('#')[1]
@@ -687,6 +691,7 @@ class Handler(FileSystemEventHandler):
             task_name = event.src_path.split('/')[-3]
             
             input_name = retrieve_input_enter(task_name, file_name)
+            print(input_name)
             runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
             key = (home_id,task_name,input_name)
             send_runtime_profile_computingnode(runtime_info,task_name,home_id)
@@ -695,11 +700,13 @@ class Handler(FileSystemEventHandler):
             
             flag = dag[task_name][0] 
             task_flag = dag[task_name][1] 
-            # print('&&&&&&&&&&&&&&&&&&&&')
-            # print(dag[task_name])
-            # print(flag)
-            # print(key)
-            # print(task_mul)
+            print('---------------')
+            print(file_name)
+            print(task_name)
+            print(flag)
+            print(task_flag)
+            print(key)
+            print(task_mul)
 
             if key not in task_mul:
                 task_mul[key] = [new_file]
@@ -709,8 +716,8 @@ class Handler(FileSystemEventHandler):
                 task_mul[key] = task_mul[key] + [new_file]
                 count_mul[key]=count_mul[key]-1
 
-            # print('^^^^^^^^^^^^^^^')
-            # print(count_mul[key])
+            print('^^^^^^^^^^^^^^^')
+            print(count_mul[key])
             if count_mul[key] == 0: # enough input files
                 incoming_file = task_mul[key]
                 # print('^^^^^^^^^^^^^2')

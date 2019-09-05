@@ -13,11 +13,13 @@ from kubernetes.client.rest import ApiException
 import jupiter_config
 # from utilities import *
 import utilities
-
+import time
 def delete_all_profilers():
     """Tear down all DRUPE deployments.
     """
-    
+    print('Starting to teardown DRUPE')
+    start_time = time.time()
+
     jupiter_config.set_globals()
 
     """
@@ -101,6 +103,10 @@ def delete_all_profilers():
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running
+        print('Successfully teardown DRUPE ')
+        end_time = time.time()
+        teardown_time = end_time - start_time
+        print('Time to teardown DRUPE'+ str(teardown_time))
 
 if __name__ == '__main__':
     delete_all_profilers()

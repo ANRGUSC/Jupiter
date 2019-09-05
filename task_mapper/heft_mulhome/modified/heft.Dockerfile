@@ -13,6 +13,8 @@ RUN apt-get install -y mosquitto-clients
 # Install required python libraries
 ADD task_mapper/heft_mulhome/original/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
+
+RUN pip2 install --upgrade pip
 RUN pip2 install -r requirements.txt
 
 
@@ -37,8 +39,8 @@ ADD mulhome_scripts/keep_alive.py /heft/keep_alive.py
 
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh
-ADD app_specific_files/dummyapp30/configuration.txt  /heft/dag.txt
-ADD app_specific_files/dummyapp30/scripts/config.json /heft/config.json
+ADD app_specific_files/dummyapp200/configuration.txt  /heft/dag.txt
+ADD app_specific_files/dummyapp200/scripts/config.json /heft/config.json
 
 WORKDIR /heft/
 

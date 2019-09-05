@@ -107,7 +107,7 @@ def write_circe_home_specs(**kwargs):
                                     **kwargs)
 
     dep = yaml.load(specific_yaml)
-    return 
+    return dep
 
 
 

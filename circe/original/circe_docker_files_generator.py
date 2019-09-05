@@ -46,6 +46,9 @@ RUN mkdir -p /input
 RUN mkdir -p /output
 #RUN mkdir -p /runtime
 
+
+RUN apt-get install stress
+
 # Add input files
 COPY  {app_file}/sample_input /sample_input
 
