@@ -33,10 +33,23 @@ import _thread
 import threading
 import numpy as np
 from apscheduler.schedulers.background import BackgroundScheduler
+import paho.mqtt.client as mqtt
 
 
 
 app = Flask(__name__)
+
+def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
@@ -128,7 +141,8 @@ app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info
 def default_best_node():
     """select the current best node
     """
-    # print('Select the current best node')
+    print('Select the current best node')
+    starttime = time.time()
     w_net = 1 # Network profiling: longer time, higher price
     w_cpu = 1 # Resource profiling : larger cpu resource, lower price
     w_mem = 1 # Resource profiling : larger mem resource, lower price
@@ -226,7 +240,12 @@ def default_best_node():
                 #print(task_price_summary)
                 best_node = min(task_price_summary,key=task_price_summary.get)
                 # print(best_node)
-                task_node_map[self_task] = best_node   
+                task_node_map[self_task] = best_node
+                mappinglatency = time.time() - starttime   
+                if BOKEH==5:    
+                    topic = 'mappinglatency_%s'%(app_option)
+                    msg = 'mappinglatency pricepushcontroller%s updatemybestmap %f %s\n'%(self_task,mappinglatency,app_name)
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         else:
             print('Task price summary is not ready yet.....') 
         
@@ -254,14 +273,6 @@ def update_best_node():
     except:
         print('Not yet receive best compute node assignment!')
 
-def schedule_update_price(interval):
-    """
-        Send controller id node mapping to all the computing nodes
-    """
-    sched = BackgroundScheduler()
-    sched.add_job(update_best_node,'interval',id='push_id', minutes=interval, replace_existing=True)
-    sched.start()
-
 def send_controller_info(node_ip):
     """Send my task controller information to the compute node
     
@@ -288,6 +299,10 @@ def push_controller_map():
     time.sleep(90)
     for computing_ip in all_computing_ips:
         send_controller_info(computing_ip)
+    if BOKEH==5:    
+        topic = 'msgoverhead_controller%s'%(self_task)
+        msg = 'msgoverhead pricepushcontroller%s pushcontroller %d \n'%(self_task,len(all_computing_ips))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
     
@@ -331,6 +346,10 @@ def send_assignment_info(node_ip):
         res = res.read()
         # print(res)
         res = res.decode('utf-8')
+        if BOKEH==5:    
+            topic = 'msgoverhead_controller%s'%(self_task)
+            msg = 'msgoverhead pricepushcontroller%s updatebest 1\n'%(self_task)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         print("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
         print(e)
@@ -367,6 +386,10 @@ def announce_best_assignment_to_child():
     for child_ip in child_nodes_ip_dag:
         # print(child_ip)
         update_assignment_info_to_child(child_ip)   
+    if BOKEH==5:    
+        topic = 'msgoverhead_controller%s'%(self_task)
+        msg = 'msgoverhead pricepushcontroller%s sendassignmentchild %d\n'%(self_task,len(child_nodes_ip_dag))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def push_first_assignment_map():
     """Waiting for the first assignment
@@ -377,7 +400,6 @@ def push_first_assignment_map():
     while self_task not in task_node_map:
         # print(task_node_map)
         default_best_node()
-        # push_assignment_map()
         print('Waiting for first best assignment for my task' + self_task)
         time.sleep(10) 
     
@@ -391,30 +413,29 @@ def push_assignment_map():
     """
     # print('Updated assignment periodically')
     default_best_node()
-    # print(task_node_map)
-    # print(self_task)
-    # print(all_computing_ips)
-    # print(all_computing_nodes)
-    if self_task in task_node_map:
-        # print('*********************************************')
-        # print('update compute nodes')
-        # print(all_computing_nodes)
-        for computing_ip in all_computing_ips:
-            send_assignment_info(computing_ip)
-        # print('*********************************************')
-        # print('home nodes')
-        # print(home_ips)
-        # print(home_ids)
-        for home_ip in home_ips:
-            send_assignment_info(home_ip)
-        # print('*********************************************')
-        # print('controller non_dag')
-        # print(controller_nondag)
-        for controller_ip in controller_ip_nondag:
-            send_assignment_info(controller_ip)
-        announce_best_assignment_to_child()
-    else:
-        print('Current best computing node not yet assigned!')
+    update_best_node()
+    announce_best_assignment_to_child()
+    
+    # if self_task in task_node_map:
+    #     # print('*********************************************')
+    #     # print('update compute nodes')
+    #     # print(all_computing_nodes)
+    #     for computing_ip in all_computing_ips:
+    #         send_assignment_info(computing_ip)
+    #     # print('*********************************************')
+    #     # print('home nodes')
+    #     # print(home_ips)
+    #     # print(home_ids)
+    #     for home_ip in home_ips:
+    #         send_assignment_info(home_ip)
+    #     # print('*********************************************')
+    #     # print('controller non_dag')
+    #     # print(controller_nondag)
+    #     for controller_ip in controller_ip_nondag:
+    #         send_assignment_info(controller_ip)
+        # announce_best_assignment_to_child()
+    # else:
+    #     print('Current best computing node not yet assigned!')
 
 def schedule_update_assignment(interval):
     """
@@ -583,6 +604,16 @@ def main():
     RUNTIME = int(config['CONFIG']['RUNTIME'])
     TRANSFER = int(config['CONFIG']['TRANSFER'])
 
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+
+    global app_name,app_option
+    app_name = os.environ['APP_NAME']
+    app_option = os.environ['APP_OPTION']
+
+
     if TRANSFER == 0:
         transfer_type = 'scp'
 
@@ -731,7 +762,6 @@ def main():
     
     _thread.start_new_thread(push_controller_map,())
     _thread.start_new_thread(push_first_assignment_map,())
-    _thread.start_new_thread(schedule_update_price,(update_interval,))
     _thread.start_new_thread(schedule_update_assignment,(update_interval,))
 
     web_server = MonitorRecv()

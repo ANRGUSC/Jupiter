@@ -139,6 +139,7 @@ class mq():
 
 
 
+
 def retrieve_tasks(dag_info_file):
     config_file = open(dag_info_file,'r')
     dag_size = int(config_file.readline())
@@ -289,7 +290,7 @@ global OUTFNAME, SERVER_IP, SUBSCRIPTIONS, DAG_PATH,NODE_PATH
 OUTFNAME = 'demo_original.html'
 SERVER_IP = "127.0.0.1"
 SUBSCRIPTIONS = 'JUPITER'
-DAG_PATH = 'configuration_100.txt'
+DAG_PATH = '../app_specific_files/dummy_app/configuration.txt'
 NODE_PATH = '../nodes.txt'
 
 global start_time, finish_time, total_time, offset, input_num
@@ -317,7 +318,7 @@ num_tasks = len(tasks)
 doc = curdoc()
 doc.title = 'CIRCE Visualization'
 
-m = mq(outfname=OUTFNAME,subs=SUBSCRIPTIONS,server = SERVER_IP,port=1883,timeout=60,looptimeout=1)
+m = mq(outfname=OUTFNAME,subs=SUBSCRIPTIONS,server = SERVER_IP,port=1883,timeout=60,looptimeout=1,nodes=tasks)
 
 ###################################################################################################################################
 

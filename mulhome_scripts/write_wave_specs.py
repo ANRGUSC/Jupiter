@@ -47,6 +47,10 @@ spec:
           value: {all_profiler_ips}
         - name: HOME_PROFILER_IP
           value: {home_profiler_ip}
+        - name: APP_NAME
+          value: {app_name}
+        - name: APP_OPTION
+          value: {app_option}
 """
 
 def write_wave_specs(**kwargs):

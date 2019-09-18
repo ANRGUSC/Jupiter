@@ -124,9 +124,20 @@ def get_taskmap():
     print("non tasks", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
-def demo_help(server,port,topic,msg):
+def old_demo_help(server,port,topic,msg):
     client = mqtt.Client()
     client.connect(server, port,60)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
+def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
     client.publish(topic, msg,qos=1)
     client.disconnect()
 
@@ -165,10 +176,12 @@ def main():
     configuration_path='/heft/dag.txt'
     profiler_ip,exec_home_ip,num_nodes,network_map,node_list = get_global_info()
 
-    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH, app_name,app_option
     BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
     BOKEH = int(config['OTHER']['BOKEH'])
+    app_name = os.environ['APP_NAME']
+    app_option = os.environ['APP_OPTION']
 
     
     while True:
@@ -191,16 +204,23 @@ def main():
                 end_time = time.time()
                 deploy_time = end_time - starting_time
                 print('Time to finish HEFT mapping '+ str(deploy_time))
+
+            print('**********')
+            print(BOKEH)
+            if BOKEH==5:
+                topic = 'mappinglatency_%s'%(app_option)
+                msg = 'mappinglatency originalheft %s %f \n' %(app_name,deploy_time)
+                demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         
             if BOKEH == 1:
                 assgn = ' '.join('{}:{}:{}'.format(key, val,t) for key, val in assignments.items())
                 msg = "mappings "+ assgn
-                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                old_demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
 
             break;
         else:
             print('No input TGFF file found!')
-            time.sleep(15)
+            time.sleep(5)
 
     app.run(host='0.0.0.0', port = int(FLASK_PORT)) # TODO?
 

@@ -14,6 +14,9 @@ from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
 
+def write_file(filename,message):
+    with open(filename,'a') as f:
+        f.write(message)
 
 def delete_all_pricing_circe(app_name):
     """Tear down all CIRCE deployments.
@@ -29,6 +32,19 @@ def delete_all_pricing_circe(app_name):
 
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes = k8s_get_nodes(path2)
+
+    print('Starting to teardown pricing CIRCE')
+    if jupiter_config.BOKEH == 5:
+        latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
+        start_time = time.time()
+        if jupiter_config.PRICING == 1:
+            msg = 'PRICEpush teardownstart %f \n'%(start_time)
+        elif jupiter_config.PRICING == 2:
+            msg = 'PRICEevent teardownstart %f \n'%(start_time)
+        elif jupiter_config.PRICING == 4:
+            msg = 'PRICEdecoupled teardownstart %f \n'%(start_time)
+        write_file(latency_file,msg)
+
 
     """
         This loads the kubernetes instance configuration.
@@ -213,6 +229,19 @@ def delete_all_pricing_circe(app_name):
             del_resp_2 = api_2.delete_namespaced_service(pod_name, namespace, v1_delete_options)
             #del_resp_2 = api_2.delete_namespaced_service(pod_name, namespace)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
+
+    print('Successfully teardown pricing CIRCE ')
+    if jupiter_config.BOKEH == 5:
+        end_time = time.time()
+        if jupiter_config.PRICING == 1:
+            msg = 'PRICEpush teardownend %f \n'%(start_time)
+        elif jupiter_config.PRICING == 2:
+            msg = 'PRICEevent teardownend %f \n'%(start_time)
+        elif jupiter_config.PRICING == 4:
+            msg = 'PRICEdecoupled teardownend %f \n'%(start_time)
+        write_file(latency_file,msg)
+        teardown_time = end_time - start_time
+        print('Time to teardown CIRCE'+ str(teardown_time))  
 if __name__ == '__main__':
     app_name = 'dummy1'
     delete_all_pricing_circe(app_name)

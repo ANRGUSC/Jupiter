@@ -34,15 +34,16 @@ import _thread
 from apscheduler.schedulers.background import BackgroundScheduler
 from pymongo import MongoClient
 import numpy as np
+import paho.mqtt.client as mqtt
 
 
 
 
 
 # End-to-end metrics
-start_times = []
-end_times = []
-exec_times = []
+start_times = dict()
+end_times = dict()
+exec_times = dict()
 count = 0
 
 app = Flask(__name__)
@@ -73,6 +74,18 @@ def toc(t):
     #print('Execution time is:'+str(texec))
     return texec
 
+def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
+
 
 def return_output_files():
     """
@@ -101,6 +114,9 @@ def request_best_assignment(home_id,task_name,file_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        if BOKEH==5:    
+            msg = 'msgoverhead priceeventhome requestbest 1 %s %s\n'%(home_id,task_name)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
         # txec = toc(t)
         # bottleneck['requestassignment'].append(txec)
         # # print(np.mean(bottleneck['requestassignment']))
@@ -343,17 +359,22 @@ def get_updated_network_profile():
             return network_info
         logging =db[self_profiler_ip].find().limit(num_nb)  
         # print(logging)
+        c = 0
         for record in logging:
             # print(record)
             # print(ip_profilers_map)
             # print(record['Destination[IP]'])
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
+            c=c+1
         # txec = toc(t)
         # bottleneck['getnetwork'].append(txec)
         # # print(np.mean(bottleneck['getnetwork']))
         # print('***************************************************')
         
+        if BOKEH==5:
+            msg = 'msgoverhead priceeventhome networkdata %d\n'%(c)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
         return network_info
     except Exception as e:
         print("Network request failed. Will try again, details: " + str(e))
@@ -460,6 +481,10 @@ def announce_price(task_controller_ip, price):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+
+        if BOKEH==5:
+            msg = 'msgoverhead priceeventhome announceprice %d\n'%(len(price['network']))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
         # txec = toc(t)
         # bottleneck['announceprice'].append(txec)
         # # print(np.mean(bottleneck['announceprice']))
@@ -524,15 +549,31 @@ class MyHandler(PatternMatchingEventHandler):
             path/to/observed/file
         """
         # the file will be processed there
-        if event.event_type == 'created':
-            end_times.append(time.time())
-            print("ending time is: ", end_times)
-            print("starting time is: ", start_times)
-            exec_times.append(end_times[count] - start_times[count])
+        # if event.event_type == 'created':
+        #     end_times.append(time.time())
+        #     print("ending time is: ", end_times)
+        #     print("starting time is: ", start_times)
+        #     exec_times.append(end_times[count] - start_times[count])
 
+        #     print("execution time is: ", exec_times)
+        #     # global count: number of output files
+        #     count+=1
+        if event.event_type == 'created':
+            print("Received file as output - %s." % event.src_path) 
+            # print(event.src_path, event.event_type)  # print now only for degug
+            outputfile = event.src_path.split('/')[-1].split('_')[0]
+
+            # print(outputfile)
+            end_times[outputfile] = time.time()
+            
+            # print("ending time is: ", end_times)
+            exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
             print("execution time is: ", exec_times)
-            # global count: number of output files
-            count+=1
+
+            if BOKEH == 5:
+                print(appname)
+                msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+                demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
     def on_modified(self, event):
         self.process(event)
@@ -599,8 +640,12 @@ class Handler(FileSystemEventHandler):
                 runtime_receiver_log.write(s)
                 runtime_receiver_log.flush()
 
-            start_times.append(time.time())
+            # start_times.append(time.time())
+            inputfile = event.src_path.split('/')[-1]
+            t = time.time()
+            start_times[inputfile] = t
             print("start time is: ", start_times)
+
             new_file_name = os.path.split(event.src_path)[-1]
 
             update_best[first_task,new_file_name]= False
@@ -682,7 +727,7 @@ def main():
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    global FLASK_DOCKER, FLASK_SVC, MONGO_SVC, username, password, ssh_port, num_retries, first_task
+    global FLASK_DOCKER, FLASK_SVC, MONGO_SVC, username, password, ssh_port, num_retries, first_task,appname, appoption
 
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC      = int(config['PORT']['FLASK_SVC'])
@@ -692,6 +737,13 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     first_task  = os.environ['CHILD_NODES']
+    appname = os.environ['APPNAME']
+    appoption = os.environ['APPOPTION']
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
 
     update_interval = 3
 

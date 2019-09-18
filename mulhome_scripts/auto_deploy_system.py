@@ -183,7 +183,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
     #Start CIRCE
     if pricing == 0: #original non-pricing
         print('Non pricing evaluation')
-        # k8s_circe_scheduler(dag,schedule,app_name)
+        k8s_circe_scheduler(dag,schedule,app_name)
     elif pricing == 3: #integrated pricing
         print('Integrated Pricing evaluation')
         print(pricing)

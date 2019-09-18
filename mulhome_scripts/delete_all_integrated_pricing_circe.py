@@ -14,6 +14,9 @@ from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
 
+def write_file(filename,message):
+    with open(filename,'a') as f:
+        f.write(message)
 
 def delete_all_integrated_pricing_circe(app_name):
     """Tear down all CIRCE deployments.
@@ -29,6 +32,13 @@ def delete_all_integrated_pricing_circe(app_name):
 
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes = k8s_get_nodes(path2)
+
+    print('Starting to teardown integrated pricing CIRCE')
+    if jupiter_config.BOKEH == 5:
+        latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
+        start_time = time.time()
+        msg = 'PRICEintegrated teardownstart %f \n'%(start_time)
+        write_file(latency_file,msg)
 
     """
         This loads the kubernetes instance configuration.
@@ -161,6 +171,14 @@ def delete_all_integrated_pricing_circe(app_name):
             del_resp_2 = api_2.delete_namespaced_service(pod_name, namespace, v1_delete_options)
             #del_resp_2 = api_2.delete_namespaced_service(pod_name, namespace)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
+
+    print('Successfully teardown integrated CIRCE ')
+    if jupiter_config.BOKEH == 5:
+        end_time = time.time()
+        msg = 'PRICEintegrated teardownend %f \n'%(end_time)
+        write_file(latency_file,msg)
+        teardown_time = end_time - start_time
+        print('Time to teardown PRICEING CIRCE'+ str(teardown_time)) 
 if __name__ == '__main__':
     jupiter_config.set_globals() 
     app_name = jupiter_config.APP_OPTION

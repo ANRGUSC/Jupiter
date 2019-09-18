@@ -249,9 +249,9 @@ def recv_mapping():
         total_assign_child[node] = total_assign_child[node]+1
         announce_count_assigned()
 
-        if BOKEH==3:
-            msg = 'overhead wavehome taskassign 1 %s %s \n'%(node,mapping)
-            demo_help(BOKEH_SERVER,BOKEH_PORT,"overhead_home",msg)
+        if BOKEH==3 or BOKEH==5:
+            msg = 'msgoverhead balancewavehome receivetaskassign 1 %s %s \n'%(node,mapping)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
 
         to_be_write = []
         items = re.split(r'#', mapping)
@@ -336,9 +336,9 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==3:
-            msg = 'overhead wavehome assignfirst 1 \n'
-            demo_help(BOKEH_SERVER,BOKEH_PORT,"overhead_home",msg)
+        if BOKEH==3 or BOKEH==5:
+            msg = 'msgoverhead balancewavehome assignfirst 1 \n'
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         print(e)
         return "not ok"

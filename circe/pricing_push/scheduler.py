@@ -33,14 +33,15 @@ import urllib
 import _thread
 from apscheduler.schedulers.background import BackgroundScheduler
 from pymongo import MongoClient
+import paho.mqtt.client as mqtt
 
 
 
 
 # End-to-end metrics
-start_times = []
-end_times = []
-exec_times = []
+start_times = dict()
+end_times = dict()
+exec_times = dict()
 count = 0
 
 app = Flask(__name__)
@@ -56,6 +57,18 @@ rt_finish_time = defaultdict(list)
 rt_enter_time_computingnode = defaultdict(list)
 rt_exec_time_computingnode = defaultdict(list)
 rt_finish_time_computingnode = defaultdict(list)
+
+def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 #@app.route('/recv_monitor_data')
 def recv_mapping():
@@ -143,81 +156,6 @@ def update_controller_map():
     return "ok"
 app.add_url_rule('/update_controller_map', 'update_controller_map', update_controller_map)
 
-# def recv_runtime_profile():
-#     """
-
-#     Receiving run-time profiling information for every task (task name, start time stats, waiting time stats, end time stats)
-    
-#     Raises:
-#         Exception: failed processing in Flask
-#     """
-
-#     global rt_enter_time
-#     global rt_exec_time
-#     global rt_finish_time
-
-#     try:
-#         worker_node = request.args.get('work_node')
-#         msg = request.args.get('msg').split()
-        
-
-#         # print("Received flask message:", worker_node, msg[0],msg[1], msg[2])
-
-#         if msg[0] == 'rt_enter':
-#             rt_enter_time[(worker_node,msg[1])] = float(msg[2])
-#         elif msg[0] == 'rt_exec' :
-#             rt_exec_time[(worker_node,msg[1])] = float(msg[2])
-#         else: #rt_finish
-#             rt_finish_time[(worker_node,msg[1])] = float(msg[2])
-
-#             print('----------------------------')
-#             print("Worker node: "+ worker_node)
-#             print("Input file : "+ msg[1])
-#             print("Total duration time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
-#             print("Waiting time:" + str(rt_exec_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
-#             print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
-            
-#             print('----------------------------')  
-
-#             if worker_node == "globalfusion" or "task4":
-#                 # Per task stats:
-#                 print('********************************************') 
-#                 print("Runtime profiling info:")
-#                 """
-#                     - Worker node: task name
-#                     - Input file: input files
-#                     - Enter time: time the input file enter the queue
-#                     - Execute time: time the input file is processed
-#                     - Finish time: time the output file is generated
-#                     - Elapse time: total time since the input file is created till the output file is created
-#                     - Duration time: total execution time of the task
-#                     - Waiting time: total time since the input file is created till it is processed
-#                 """
-#                 log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks.txt'), "w")
-#                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
-#                 print(s)
-#                 log_file.write(s)
-#                 for k, v in rt_enter_time.items():
-#                     worker, file = k
-#                     if k in rt_finish_time:
-#                         elapse = rt_finish_time[k]-v
-#                         duration = rt_finish_time[k]-rt_exec_time[k]
-#                         waiting = rt_exec_time[k]-v
-#                         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
-#                         print(s)
-#                         log_file.write(s)
-#                         log_file.flush()
-
-#                 log_file.close()
-#                 print('********************************************')
-
-                
-#     except Exception as e:
-#         print("Bad reception or failed processing in Flask for runtime profiling")
-#         print(e)
-#         return "not ok"
-#     return "ok"
-# app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
 
 
 def recv_runtime_profile_computingnode():
@@ -391,7 +329,9 @@ def get_updated_network_profile():
         logging =db[self_profiler_ip].find().limit(num_nb)  
         # print(logging)
         # print('---------------------')
+        c = 0
         for record in logging:
+            c = c+1
             # print('---')
             # print(record)
             # print(ip_profilers_map)
@@ -399,6 +339,10 @@ def get_updated_network_profile():
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
         
+        if BOKEH==5:
+            msg = 'msgoverhead pricepushhome networkdata %d\n'%(c)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
+
         return network_info
     except Exception as e:
         print("Network request failed. Will try again, details: " + str(e))
@@ -496,6 +440,10 @@ def announce_price(task_controller_ip, price):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+
+        if BOKEH==5:
+            msg = 'msgoverhead pricepushhome announceprice %d\n'%(len(price['network']))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         print("Sending price message to flask server on controller node FAILED!!!")
         print(e)
@@ -517,26 +465,26 @@ def schedule_update_price(interval):
     sched.add_job(push_updated_price,'interval',id='push_price', minutes=interval, replace_existing=True)
     sched.start()
 
-def update_assignment_info_child(node_ip):
-    """Update my best assigned compute node to the node given its IP
+# def update_assignment_info_child(node_ip):
+#     """Update my best assigned compute node to the node given its IP
     
-    Args:
-        node_ip (str): IP of the node
-    """
-    try:
-        # print("Announce my current best computing node " + node_ip)
-        url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_assignment_info_child"
-        assignment_info = self_task + "#"+task_node_summary[self_task]
-        params = {'assignment_info': assignment_info}
-        params = urllib.parse.urlencode(params)
-        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        res = urllib.request.urlopen(req)
-        res = res.read()
-        res = res.decode('utf-8')
-    except Exception as e:
-        print("Sending assignment message to flask server on child controller nodes FAILED!!!")
-        print(e)
-        return "not ok"
+#     Args:
+#         node_ip (str): IP of the node
+#     """
+#     try:
+#         # print("Announce my current best computing node " + node_ip)
+#         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_assignment_info_child"
+#         assignment_info = self_task + "#"+task_node_summary[self_task]
+#         params = {'assignment_info': assignment_info}
+#         params = urllib.parse.urlencode(params)
+#         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+#         res = urllib.request.urlopen(req)
+#         res = res.read()
+#         res = res.decode('utf-8')
+#     except Exception as e:
+#         print("Sending assignment message to flask server on child controller nodes FAILED!!!")
+#         print(e)
+#         return "not ok"
 
 def receive_best_assignment():
     """
@@ -603,15 +551,33 @@ class MyHandler(PatternMatchingEventHandler):
             path/to/observed/file
         """
         # the file will be processed there
-        if event.event_type == 'created':
-            end_times.append(time.time())
-            print("ending time is: ", end_times)
-            print("starting time is: ", start_times)
-            exec_times.append(end_times[count] - start_times[count])
+        # if event.event_type == 'created':
+        #     print('Received file as output '+event.src_path)
 
+        #     end_times.append(time.time())
+        #     print("ending time is: ", end_times)
+        #     print("starting time is: ", start_times)
+        #     exec_times.append(end_times[count] - start_times[count])
+
+        #     print("execution time is: ", exec_times)
+        #     # global count: number of output files
+        #     count+=1
+        if event.event_type == 'created':
+            print("Received file as output - %s." % event.src_path) 
+            # print(event.src_path, event.event_type)  # print now only for degug
+            outputfile = event.src_path.split('/')[-1].split('_')[0]
+
+            # print(outputfile)
+            end_times[outputfile] = time.time()
+            
+            # print("ending time is: ", end_times)
+            exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
             print("execution time is: ", exec_times)
-            # global count: number of output files
-            count+=1
+
+            if BOKEH == 5:
+                print(appname)
+                msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+                demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
     def on_modified(self, event):
         self.process(event)
@@ -676,10 +642,15 @@ class Handler(FileSystemEventHandler):
                 runtime_receiver_log.write(s)
                 runtime_receiver_log.flush()
 
-            start_times.append(time.time())
+            # start_times.append(time.time())
+            inputfile = event.src_path.split('/')[-1]
+            t = time.time()
+            start_times[inputfile] = t
             print("start time is: ", start_times)
             new_file_name = os.path.split(event.src_path)[-1]
-
+            print('********')
+            print(inputfile)
+            print(new_file_name)
 
             print(first_task)
             print(task_node_summary)
@@ -739,7 +710,7 @@ def main():
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    global FLASK_DOCKER, FLASK_SVC, MONGO_SVC, username, password, ssh_port, num_retries, first_task
+    global FLASK_DOCKER, FLASK_SVC, MONGO_SVC, username, password, ssh_port, num_retries, first_task, appname, appoption
 
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC      = int(config['PORT']['FLASK_SVC'])
@@ -749,6 +720,14 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     first_task  = os.environ['CHILD_NODES']
+    appname = os.environ['APPNAME']
+    appoption = os.environ['APPOPTION']
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+
 
     global task_node_summary, controllers_id_map
     manager = Manager()

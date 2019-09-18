@@ -35,7 +35,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from pymongo import MongoClient
 import datetime
 import json
-
+import paho.mqtt.client as mqtt
 
 
 
@@ -55,6 +55,18 @@ rt_finish_time = defaultdict(list)
 rt_enter_time_computingnode = defaultdict(list)
 rt_exec_time_computingnode = defaultdict(list)
 rt_finish_time_computingnode = defaultdict(list)
+
+def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 
 def announce_mapping():
@@ -89,6 +101,10 @@ def announce_mapping_to_workers():
             res = urllib.request.urlopen(req)
             res = res.read()
             res = res.decode('utf-8')
+        if BOKEH==5:    
+            topic = 'msgoverhead_home'
+            msg = 'msgoverhead pricedecoupledcomputehome announcemapping %d\n'%(len(all_compute_host))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         print('Announce full mapping to compute home node failed')
         print(e)
@@ -301,6 +317,11 @@ class Handler1(FileSystemEventHandler):
             end_times[outputfile] = time.time()
             exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
             print("execution time is: ", exec_times)
+
+            if BOKEH == 5:
+                print(appname)
+                msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+                demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
            
 class Watcher(multiprocessing.Process):
     DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
@@ -496,7 +517,7 @@ def main():
 
 
 
-    global FLASK_DOCKER, FLASK_SVC, MONGO_SVC, username, password, ssh_port, num_retries, first_task
+    global FLASK_DOCKER, FLASK_SVC, MONGO_SVC, username, password, ssh_port, num_retries, first_task, appname, appoption
 
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC      = int(config['PORT']['FLASK_SVC'])
@@ -506,6 +527,13 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     first_task  = os.environ['CHILD_NODES']
+    appname = os.environ['APPNAME']
+    appoption = os.environ['APPOPTION']
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
 
     global manager
     manager = Manager()

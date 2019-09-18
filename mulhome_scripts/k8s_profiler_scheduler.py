@@ -69,12 +69,15 @@ def check_status_profilers():
 
     return result
 
+def write_file(filename,message,mode):
+    with open(filename,mode) as f:
+        f.write(message)
 def k8s_profiler_scheduler(): 
     """
         Deploy DRUPE in the system. 
     """
-    print('Starting to deploy DRUPE')
-    start_time = time.time()
+    
+
 
     jupiter_config.set_globals()
 
@@ -86,8 +89,23 @@ def k8s_profiler_scheduler():
     home_ids = ''
     nexthost_ips = ''
     nexthost_names = ''
+    path1 = jupiter_config.APP_PATH + 'configuration.txt'
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = utilities.k8s_get_nodes(path2)
+    dag_info = utilities.k8s_read_dag(path1)
+    node_list, homes = utilities.k8s_get_nodes_worker(path2)
+    
+    dag = dag_info[1]
+
+    print('Starting to deploy DRUPE')
+    if jupiter_config.BOKEH == 5:
+        try:
+            os.mkdir('../users/exp8_data/overhead_latency/')
+        except:
+            print('Folder already existed')
+        latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
+        start_time = time.time()
+        msg = 'DRUPE deploystart %f \n'%(start_time)
+        write_file(latency_file,msg,'w')
 
 
     """
@@ -107,6 +125,7 @@ def k8s_profiler_scheduler():
     """
     api = client.CoreV1Api()
     k8s_beta = client.ExtensionsV1beta1Api()
+    nodes = utilities.k8s_get_nodes(path2)
 
     # first_task = dag_info[0]
     # dag = dag_info[1]
@@ -233,9 +252,12 @@ def k8s_profiler_scheduler():
 
     pprint(service_ips)
     print('Successfully deploy DRUPE ')
-    end_time = time.time()
-    deploy_time = end_time - start_time
-    print('Time to deploy DRUPE '+ str(deploy_time))
+    if jupiter_config.BOKEH == 5:
+        end_time = time.time()
+        msg = 'DRUPE deployend %f \n'%(end_time)
+        write_file(latency_file,msg,'a')
+        deploy_time = end_time - start_time
+        print('Time to deploy DRUPE '+ str(deploy_time))
     return(service_ips)
 
 if __name__ == '__main__':

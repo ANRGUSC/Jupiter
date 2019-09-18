@@ -34,6 +34,7 @@ import _thread
 from apscheduler.schedulers.background import BackgroundScheduler
 from pymongo import MongoClient
 import datetime
+import paho.mqtt.client as mqtt
 
 
 
@@ -54,6 +55,18 @@ rt_finish_time = defaultdict(list)
 rt_enter_time_computingnode = defaultdict(list)
 rt_exec_time_computingnode = defaultdict(list)
 rt_finish_time_computingnode = defaultdict(list)
+
+def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 def recv_mapping():
     """
@@ -148,6 +161,9 @@ def send_assignment_info(node_ip,task_name,best_node):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        if BOKEH==5:    
+            msg = 'msgoverhead priceintegrated%s updatebest 1\n'%(my_id)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,'msgoverhead_home',msg)
     except Exception as e:
         print("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
         print(e)
@@ -158,6 +174,7 @@ def push_assignment_map():
     """Update assignment periodically
     """
     print('Updated assignment periodically')
+    starttime = time.time()
     for task in tasks:
         # best_node = predict_best_node(task)
         best_node = new_predict_best_node(task)
@@ -176,6 +193,12 @@ def push_assignment_map():
     task_list = task_list[1:]
     best_list = best_list[1:]
     if t0 == len(tasks):
+        localmappingtime = time.time()-starttime
+        if BOKEH==5:    
+            topic = 'mappinglatency_%s'%(appoption)
+            msg = 'mappinglatency priceintegratedhome updatelocalmapping %f %s\n'%(localmappingtime,appname)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+            
         for computing_ip in all_computing_ips:
             # print(computing_ip)
             send_assignment_info(computing_ip,task_list,best_list)
@@ -208,7 +231,13 @@ def schedule_update_global(interval):
 
 def update_global_assignment():
     print('Trying to update global assignment')
+    starttime = time.time()
     global_task_node_map[first_task] = local_task_node_map[my_task,first_task]
+    globalmappingtime = time.time()-starttime
+    if BOKEH==5:    
+        topic = 'mappinglatency_%s'%(appoption)
+        msg = 'mappinglatency priceintegratedhome updateglobalmapping %f %s\n'%(globalmappingtime,appname)
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
 def recv_runtime_profile_computingnode():
@@ -368,10 +397,17 @@ def get_updated_network_profile():
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
         logging =db[self_profiler_ip].find().limit(num_nb)  
+
+        c = 0
         for record in logging:
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
+            c = c+1
         
+        if BOKEH==5:
+            msg = 'msgoverhead priceintegrated%s networkdata %d\n'%(my_id,c)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
+
         return network_info
     except Exception as e:
         print("Network request failed. Will try again, details: " + str(e))
@@ -551,6 +587,11 @@ class Handler1(FileSystemEventHandler):
             end_times[outputfile] = time.time()
             exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
             print("execution time is: ", exec_times)
+
+            if BOKEH == 5:
+                print(appname)
+                msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+                demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
            
 
 def new_predict_best_node(task_name):
@@ -635,45 +676,45 @@ def new_predict_best_node(task_name):
         print(e)
         return -1
 
-def predict_best_node(task_name):
-    # print('***************************************************')
-    # print('Select the current best node')
-    w_net = 1 # Network profiling: longer time, higher price
-    w_cpu = 1 # Resource profiling : larger cpu resource, lower price
-    w_mem = 1 # Resource profiling : larger mem resource, lower price
-    w_queue = 1 # Queue : currently 0
+# def predict_best_node(task_name):
+#     # print('***************************************************')
+#     # print('Select the current best node')
+#     w_net = 1 # Network profiling: longer time, higher price
+#     w_cpu = 1 # Resource profiling : larger cpu resource, lower price
+#     w_mem = 1 # Resource profiling : larger mem resource, lower price
+#     w_queue = 1 # Queue : currently 0
     
-    best_node = -1
-    task_price_network= dict()
+#     best_node = -1
+#     task_price_network= dict()
     
-    for (source, task), price in task_price_net.items():
-        if task == task_name:
-            task_price_network[source]= float(task_price_net[source,task])
+#     for (source, task), price in task_price_net.items():
+#         if task == task_name:
+#             task_price_network[source]= float(task_price_net[source,task])
     
-    task_price_network[my_task] = 0 #the same node
+#     task_price_network[my_task] = 0 #the same node
 
-    if len(task_price_network.keys())>1: #net(node,home) not exist
-        task_price_summary = dict()
+#     if len(task_price_network.keys())>1: #net(node,home) not exist
+#         task_price_summary = dict()
         
-        for item, p in task_price_cpu.items():
-            if item in home_ids: continue
-            # check time pass
-            # print('Check passing time------------------')
-            # print(pass_time.keys())
-            test = pass_time[item].__call__()
-            # print(test)
-            if test==True: 
-                task_price_network[item] = float('Inf')
-            task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
+#         for item, p in task_price_cpu.items():
+#             if item in home_ids: continue
+#             # check time pass
+#             # print('Check passing time------------------')
+#             # print(pass_time.keys())
+#             test = pass_time[item].__call__()
+#             # print(test)
+#             if test==True: 
+#                 task_price_network[item] = float('Inf')
+#             task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
         
-        # print('Summary cost')
-        # print(task_price_summary)
-        best_node = min(task_price_summary,key=task_price_summary.get)
-        # print('Best node for '+task_name)
-        # print(best_node)
-    else:
-        print('Task price summary is not ready yet.....') 
-    return best_node
+#         # print('Summary cost')
+#         # print(task_price_summary)
+#         best_node = min(task_price_summary,key=task_price_summary.get)
+#         # print('Best node for '+task_name)
+#         # print(best_node)
+#     else:
+#         print('Task price summary is not ready yet.....') 
+#     return best_node
 
 class Watcher(multiprocessing.Process):
     DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
@@ -863,7 +904,7 @@ def main():
 
 
 
-    global FLASK_DOCKER, FLASK_SVC, MONGO_SVC, username, password, ssh_port, num_retries, first_task
+    global FLASK_DOCKER, FLASK_SVC, MONGO_SVC, username, password, ssh_port, num_retries, first_task,appname, appoption
 
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC      = int(config['PORT']['FLASK_SVC'])
@@ -873,6 +914,13 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     first_task  = os.environ['CHILD_NODES']
+    appname = os.environ['APPNAME']
+    appoption = os.environ['APPOPTION']
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
 
     global manager
     manager = Manager()

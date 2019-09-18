@@ -37,7 +37,6 @@ from collections import defaultdict
 
 app = Flask(__name__)
 
-
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
   

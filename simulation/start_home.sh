@@ -11,4 +11,4 @@ service ssh start
 #python3 -u cpu_test.py 
 
 echo 'Automatically run the stress test'
-python3 -u cpu_test.py
+python3 -u keep_alive.py

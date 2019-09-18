@@ -28,9 +28,29 @@ from os import path
 import configparser
 import requests
 import time
+import _thread
+import psutil
+import paho.mqtt.client as mqtt
 
 
 sys.path.append("../")
+
+def demo_help(server,port,topic,msg):
+    try:
+        print('Sending demo')
+        print(topic)
+        print(msg)
+        username = 'anrgusc'
+        password = 'anrgusc'
+        client = mqtt.Client()
+        client.username_pw_set(username,password)
+        client.connect(server, port,300)
+        client.publish(topic, msg,qos=1)
+        client.disconnect()
+    except Exception as e:
+        print('Sending demo failed')
+        print(e)
+    
 
 def does_file_exist_in_dir(path):
     """Check if file exist in directory
@@ -43,6 +63,27 @@ def does_file_exist_in_dir(path):
     """
 
     return any(isfile(join(path, i)) for i in listdir(path))
+
+def schedule_bokeh_profiling(interval):
+    """
+    Schedulete the assignment update every interval
+    
+    Args:
+        interval (int): chosen interval (minutes)
+    
+    """
+    sched = BackgroundScheduler()
+    sched.add_job(announce_profiling,'interval',id='assign_id', seconds=interval, replace_existing=True)
+    sched.start()
+
+def announce_profiling():
+    cur_cpu = psutil.cpu_percent() / psutil.cpu_count()
+    cur_mem = psutil.virtual_memory().percent#used
+    cur_time = time.time()
+    topic = 'poweroverhead_%s'%(SELF_NAME)
+    msg = 'poweroverhead %s cpu %f memory %f timestamp %d \n' %(SELF_NAME,cur_cpu,cur_mem,cur_time)
+    demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
 
 
 class droplet_measurement():
@@ -342,6 +383,26 @@ def main():
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
     SELF_IP = os.environ["SELF_IP"]
     HOME_IP = os.environ["HOME_IP"]
+
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH, BOKEH_INTERVAL, SELF_NAME
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+    BOKEH_INTERVAL = int(config['OTHER']['BOKEH_INTERVAL'])
+    SELF_NAME = os.environ['SELF_NAME']
+
+    print('Bokeh information')
+    print(BOKEH_SERVER)
+    print(BOKEH_PORT)
+    print(BOKEH)
+    print(BOKEH_INTERVAL)
+    print(SELF_NAME)
+
+
+    if BOKEH==4 or BOKEH==5:
+        print('Start sending profiling information (CPU,mem) to the bokeh server')
+        _thread.start_new_thread(schedule_bokeh_profiling,(BOKEH_INTERVAL,))
 
     # watch manager
     wm = pyinotify.WatchManager()

@@ -23,6 +23,7 @@ import csv
 import configparser
 from os import path
 from functools import wraps
+import paho.mqtt.client as mqtt
 
 
 app = Flask(__name__)
@@ -32,6 +33,16 @@ app = Flask(__name__)
 
 network_info = []
 execution_info = []
+
+
+def demo_help(server,port,topic,msg):
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 def get_global_info():
     """Get all information of profilers (network profilers, execution profilers)
@@ -55,6 +66,12 @@ def get_global_info():
     home_profiler = os.environ['HOME_PROFILER_IP'].split(' ')
     home_profiler_nodes = [x.split(':')[0] for x in home_profiler]
     home_profiler_ip = [x.split(':')[1] for x in home_profiler]
+
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
     # print('----------------- ^^^^^^^^^^^')
     # print(home_profiler)
     # print(home_profiler_nodes)
@@ -114,6 +131,11 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
     with open('/heft/execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
+
+    if BOKEH==5:
+        n = num_profilers*len(logging)
+        msg = 'msgoverhead balancehefthome resourcedata %d\n'%(n)
+        demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     return
 
 
@@ -180,6 +202,11 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
     with open('/heft/network_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(network_info)
+
+    if BOKEH==5:
+        n = len(profiler_ip)*num_nb
+        msg = 'msgoverhead balancehefthome networkdata %d\n'%(n)
+        demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     return
 
 if __name__ == '__main__':

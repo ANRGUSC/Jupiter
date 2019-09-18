@@ -30,9 +30,13 @@ import socket
 from apscheduler.schedulers.background import BackgroundScheduler
 import pyinotify
 
+
 app = Flask(__name__)
 
 def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -255,6 +259,10 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        if BOKEH==5:
+            topic = 'msgoverhead_%s'%(node_name)
+            msg = 'msgoverhead pricedecoupledcontroller%s assignremote 1 %s %s \n' %(node_name,task_name,assigned_node)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception:
         return "not ok"
     return res
@@ -297,6 +305,10 @@ def call_send_mapping(mapping, node):
         print('=====')
         print(local_mapping)
         local_mapping[mapping] = True
+        if BOKEH ==5: 
+            topic = 'msgoverhead_%s'%(node_name)
+            msg = 'msgoverhead pricedecoupledcontroller%s announcehome 1 %s %s \n' %(node_name,node,mapping)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         print(e)
         print("Announce the mapping to the master host failed")
@@ -560,6 +572,11 @@ def get_resource_data_drupe():
     print("Got profiler data from http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC))
     print("Resource profiles: ", json.dumps(result))
 
+    if BOKEH==5:
+        topic = 'msgoverhead_%s'%(node_name)
+        msg = 'msgoverhead pricedecoupled%s resourcedata 1 \n' %(node_name)
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
 
 def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     """Collect the network profile from local MongoDB peer
@@ -587,7 +604,7 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     print(logging)
 
 
-    
+    c = 0
     for record in logging:
         # Destination ID -> Parameters(a,b,c) , Destination IP
         
@@ -601,11 +618,17 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
         print(params)
         network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
                                                             'c': float(params[2]), 'ip': record['Destination[IP]']}
+        c = c+1
     print('Network information has already been provided')
     print(network_profile_data)
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
+
+    if BOKEH==5:
+        topic = 'msgoverhead_%s'%(node_name)
+        msg = 'msgoverhead pricedecoupledcontroller%s networkdata %d \n' %(node_name,c)
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
 
