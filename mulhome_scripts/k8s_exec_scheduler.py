@@ -146,13 +146,17 @@ def check_status_exec_profiler_workers(app_name):
 
     return result
 
+def write_file(filename,message):
+    with open(filename,'a') as f:
+        f.write(message)
+
 # if __name__ == '__main__':
 def k8s_exec_scheduler(app_name):
     """
         This script deploys execution profiler in the system. 
     """
-    print('Starting to deploy execution profiler')
-    start_time = time.time()
+
+
     
     jupiter_config.set_globals()
 
@@ -165,6 +169,7 @@ def k8s_exec_scheduler(app_name):
     path2 = jupiter_config.HERE + 'nodes.txt'
 
     dag_info = utilities.k8s_read_dag(path1)
+    nodes, homes = utilities.k8s_get_nodes_worker(path2)
 
     """
         This loads the kubernetes instance configuration.
@@ -189,6 +194,15 @@ def k8s_exec_scheduler(app_name):
     dag = dag_info[1]
     # hosts
     service_ips = {}; #list of all service IPs
+
+
+
+    print('Starting to deploy execution profiler')
+    if jupiter_config.BOKEH == 5:
+        latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+        start_time = time.time()
+        msg = 'Executionprofiler deploystart %f \n'%(start_time)
+        write_file(latency_file,msg)
 
     """
         First create the home node's service.
@@ -247,8 +261,8 @@ def k8s_exec_scheduler(app_name):
     all_node = ':'.join(service_ips.keys())
     print(all_node)
 
-    #nodes = utilities.k8s_get_nodes(path2)
-    nodes, homes = utilities.k8s_get_nodes_worker(path2)
+    
+    
     allprofiler_ips =''
     allprofiler_names = ''
 
@@ -385,9 +399,12 @@ def k8s_exec_scheduler(app_name):
 
     pprint(service_ips)
     print('Successfully deploy execution profiler ')
-    end_time = time.time()
-    deploy_time = end_time - start_time
-    print('Time to deploy execution profiler '+ str(deploy_time))
+    if jupiter_config.BOKEH == 5:
+        end_time = time.time()
+        msg = 'Executionprofiler deployend %f \n'%(end_time)
+        write_file(latency_file,msg)
+        deploy_time = end_time - start_time
+        print('Time to deploy execution profiler '+ str(deploy_time))
 
     return(service_ips)
 

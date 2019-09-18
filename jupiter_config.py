@@ -62,7 +62,8 @@ def set_globals():
     FLASK_DOCKER            = config['PORT']['FLASK_DOCKER']
     FLASK_CIRCE             = config['PORT']['FLASK_CIRCE']
 
-    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    global BOKEH,BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH = int(config['OTHER']['BOKEH'])
     BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
     BOKEH = int(config['OTHER']['BOKEH'])
@@ -167,10 +168,10 @@ def set_globals():
     # APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
     # APP_OPTION              = 'dag'
 
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
-    # APP_NAME                  = 'app_specific_files/dummy_app'
-    # APP_OPTION                = 'dummy'
+    HOME_CHILD                = 'task0'
+    APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
+    APP_NAME                  = 'app_specific_files/dummy_app'
+    APP_OPTION                = 'dummy'
 
 
     # HOME_CHILD                = 'task0'
@@ -220,10 +221,10 @@ def set_globals():
     # APP_OPTION                = 'dummy200'
 
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummyapp300/'
-    APP_NAME                  = 'app_specific_files/dummyapp300'
-    APP_OPTION                = 'dummy300'
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp300/'
+    # APP_NAME                  = 'app_specific_files/dummyapp300'
+    # APP_OPTION                = 'dummy300'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp500/'

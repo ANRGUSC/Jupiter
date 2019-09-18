@@ -14,7 +14,17 @@ from socket import gethostbyname, gaierror
 import json
 import datetime
 import configparser
+import paho.mqtt.client as mqtt
 
+
+def demo_help(server,port,topic,msg):
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 def convert_bytes(num):
     """Convert bytes to Kbit as required by HEFT
@@ -128,6 +138,11 @@ def main():
     TRANSFER = int(config['CONFIG']['TRANSFER'])
     # print(TRANSFER)
 
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+
     ## create the task list in the order of execution
     task_order = []
     tasks_info = open(os.path.join(os.path.dirname(__file__), 'DAG.txt'), "r")
@@ -227,6 +242,10 @@ def main():
 
     if path.isfile(local_profiler_path):
         transfer_data(master_IP,username,password,local_profiler_path, remote_path)
+        if BOKEH==5:
+            topic = "msgoverhead_%s"%(nodename)
+            msg = 'msgoverhead executionprofiler sendexecinfo %d\n'%(len(tasks))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     else:
         print('No Runtime data file exists...')
 

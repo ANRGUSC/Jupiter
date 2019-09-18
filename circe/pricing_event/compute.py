@@ -24,7 +24,7 @@ import _thread
 import threading
 import csv
 from pymongo import MongoClient
-import pandas as pd
+# import pandas as pd
 import time
 import requests
 from watchdog.observers import Observer
@@ -35,6 +35,7 @@ from readconfig import read_config
 import numpy as np
 from collections import defaultdict
 from shutil import copyfile
+import paho.mqtt.client as mqtt
 
 app = Flask(__name__)
 
@@ -49,6 +50,19 @@ def toc(t):
     texec = time.time() - t
     # print('Execution time is:'+str(texec))
     return texec
+
+def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
+
 
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
@@ -346,14 +360,22 @@ def update_exec_profile_file():
             print('Execution information for the current node is not ready!!!')
             time.sleep(5)
 
+
+    c = 0
     for record in logging:
         # Node ID, Task, Execution Time, Output size
         info_to_csv=[record['Task'],record['Duration [sec]'],str(record['Output File [Kbit]'])]
         execution_info.append(info_to_csv)
+        c+=1
     print('Execution information has already been provided')
     with open('execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
+
+    if BOKEH==5:    
+        topic = 'msgoverhead_%s'%(self_name)
+        msg = 'msgoverhead priceeventcompute%s updateexec %d\n'%(self_name,c)
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     # txec = toc(t)
     # bottleneck['executioninfo'].append(txec)
     # print(np.mean(bottleneck['executioninfo']))
@@ -409,16 +431,23 @@ def get_updated_network_profile():
         # logging =db[self_profiler_ip].find().limit(num_nb)
         logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)  
         # print(logging)
+        c = 0
         for record in logging:
             # print(record)
             # print(ip_profilers_map)
             # print(record['Destination[IP]'])
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
+            c+=1
         # txec = toc(t)
         # bottleneck['netinfo'].append(txec)
         # print(np.mean(bottleneck['netinfo']))
         # print('***************************************************')
+
+        if BOKEH==5:    
+            topic = 'msgoverhead_%s'%(self_name)
+            msg = 'msgoverhead priceeventcompute%s updatenetwork %d\n'%(self_name,c)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return network_info
     except Exception as e:
         print("Network request failed. Will try again, details: " + str(e))
@@ -450,7 +479,12 @@ def get_updated_resource_profile():
         # bottleneck['resourceinfo'].append(txec)
         # print(np.mean(bottleneck['resourceinfo']))
         # print('***************************************************')
-        # print("Resource profiles: ", resource_info)
+        print("Resource profiles: ", resource_info)
+        print(len(resource_info))
+        if BOKEH==5:    
+            topic = 'msgoverhead_%s'%(self_name)
+            msg = 'msgoverhead priceeventcompute%s updateresource %d\n'%(self_name,len(resource_info))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return resource_info
 
     except Exception as e:
@@ -613,6 +647,10 @@ def push_updated_price():
         price = price_aggregate(task)
         # print(price)
         announce_price(controllers_ip_map[task], price)
+
+    if BOKEH==5:    
+        topic = 'msgoverhead_%s'%(self_name)
+        msg = 'msgoverhead priceeventcompute%s pushprice %d\n'%(self_name,len(task_controllers))
 
     
 def schedule_update_price(interval):
@@ -851,6 +889,13 @@ def request_best_assignment(home_id,task_name,file_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+
+        if BOKEH==5:    
+            topic = 'msgoverhead_%s'%(self_name)
+            msg = 'msgoverhead priceeventcompute%s requestbest 1\n'%(self_name)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
+
         # txec = toc(t)
         # bottleneck['reequestassign'].append(txec)
         # print(np.mean(bottleneck['requestassign']))
@@ -1262,6 +1307,11 @@ def main():
     MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
     FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
 
     update_interval = 3
 

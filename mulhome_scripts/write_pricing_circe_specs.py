@@ -54,6 +54,10 @@ spec:
           value: {child}
         - name: CHILD_NODES_IPS
           value: {child_ips}
+        - name: APPNAME
+          value: {appname}
+        - name: APPOPTION
+          value: {appoption}
         - name: TASK
           value: {name}
         - name: ALL_COMPUTING_NODES
@@ -416,6 +420,7 @@ def write_circe_specs_non_dag_tasks(**kwargs):
                       jupiter_config.MONGO_DOCKER)
 
 
+
 template_computing_worker = """
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -498,6 +503,7 @@ def write_circe_computing_specs(**kwargs):
     dep = yaml.load(specific_yaml)
     return dep
 
+## integrated pricing
 template_integrated_computing_worker = """
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -540,7 +546,10 @@ spec:
           value: {home_node_ip}
         - name: CHILD_NODES
           value: {child}
-
+        - name: APPNAME
+          value: {appname}
+        - name: APPOPTION
+          value: {appoption}
 """
 
 def write_integrated_circe_computing_specs(**kwargs):
@@ -601,6 +610,10 @@ spec:
           value: {child_ips}
         - name: TASK
           value: {name}
+        - name: APPNAME
+          value: {appname}
+        - name: APPOPTION
+          value: {appoption}
         - name: ALL_COMPUTING_NODES
           value: {all_computing_nodes}
         - name: ALL_COMPUTING_IPS
@@ -703,6 +716,10 @@ template_controller_worker = """
               value: {all_computing_ips}
             - name: FIRST_TASK
               value: {first_task}
+            - name: APP_NAME
+              value: {app_name}
+            - name: APP_OPTION
+              value: {app_option}
           nodeSelector:
             kubernetes.io/hostname: {host}
           restartPolicy: Always

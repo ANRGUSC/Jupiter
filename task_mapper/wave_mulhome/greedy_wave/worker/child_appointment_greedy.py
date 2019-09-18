@@ -274,6 +274,10 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        if BOKEH==5:
+            topic = 'msgoverhead_%s'%(node_name)
+            msg = 'msgoverhead greedywave%s assignremote 1 %s %s \n' %(node_name,task_name,assigned_node)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception:
         return "not ok"
     return res
@@ -313,6 +317,10 @@ def call_send_mapping(mapping, node):
         res = res.read()
         res = res.decode('utf-8')
         local_mapping[mapping] = True
+        if BOKEH ==5: 
+            topic = 'msgoverhead_%s'%(node_name)
+            msg = 'msgoverhead greedywave%s announcehome 1 %s %s \n' %(node_name,node,mapping)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         return "Announce the mapping to the master host failed"
     return res
@@ -644,6 +652,10 @@ def get_resource_data_drupe():
 
     print("Got profiler data from http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC))
     print("Resource profiles: ", json.dumps(result))
+    if BOKEH==5:
+        topic = 'msgoverhead_%s'%(node_name)
+        msg = 'msgoverhead greedywave%s resourcedata %d \n' %(node_name,len(myneighbors))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
 def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
@@ -680,6 +692,12 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
+
+    if BOKEH==5:
+        topic = 'msgoverhead_%s'%(node_name)
+        msg = 'msgoverhead greedywave%s networkdata %d \n' %(node_name,len(myneighbors))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+    
 
 
 

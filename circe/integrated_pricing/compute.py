@@ -34,6 +34,7 @@ from readconfig import read_config
 from shutil import copyfile
 import datetime
 from collections import defaultdict 
+import paho.mqtt.client as mqtt
 
 app = Flask(__name__)
 
@@ -43,6 +44,18 @@ def tic():
 def toc(t):
     texec = time.time() - t
     print('Execution time is:'+str(texec))
+
+def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
     
 
 def k8s_read_dag(dag_info_file):
@@ -352,6 +365,10 @@ def send_assignment_info(node_ip,task_name,best_node):
         res = res.read()
         # print(res)
         res = res.decode('utf-8')
+        if BOKEH==5:    
+            topic = 'msgoverhead_%s'%(self_name)
+            msg = 'msgoverhead priceintegrated%s updatebest 1\n'%(self_name)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         print("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
         print(e)
@@ -365,6 +382,7 @@ def push_assignment_map():
     """Update assignment periodically
     """
     print('Updated assignment periodically')
+    starttime = time.time()
     for task in tasks:
         # print('*********************************************')
         # print('update compute nodes')
@@ -396,6 +414,13 @@ def push_assignment_map():
     best_list = best_list[1:]
     
     if t0 == len(tasks):
+        localmappingtime = time.time()-starttime
+        if BOKEH==5:    
+            topic = 'mappinglatency_%s'%(appoption)
+            msg = 'mappinglatency priceintegratedcompute%s updatelocalmapping %f %s\n'%(self_name,localmappingtime,appname)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+            starttime = time.time()
+
         for computing_ip in combined_ips:
             # print(computing_ip)
             send_assignment_info(computing_ip,task_list,best_list)
@@ -444,6 +469,7 @@ def schedule_update_global(interval):
 
 def update_global_assignment():
     print('Trying to update global assignment')
+    starttime = time.time()
     m = (len(computing_nodes)+1)*len(tasks) # (all_compute & home,all_task)
     a = dict(local_task_node_map)
     if len(a)<m:
@@ -475,6 +501,11 @@ def update_global_assignment():
                         # print(chosen_prev)
                         global_task_node_map[home,task] = local_task_node_map[chosen_prev,task]
 
+    globalmappingtime = time.time()-starttime
+    if BOKEH==5:    
+        topic = 'mappinglatency_%s'%(appoption)
+        msg = 'mappinglatency priceintegratedcompute%s updateglobalmapping %f %s\n'%(self_name,globalmappingtime,appname)
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         # print(global_task_node_map)
 
 def receive_assignment_info():
@@ -525,15 +556,21 @@ def update_exec_profile_file():
             print('Execution information for the current node is not ready!!!')
             time.sleep(5)
 
+    c = 0
     for record in logging:
         # Node ID, Task, Execution Time, Output size
         # print(record)
         info_to_csv=[record['Task'],record['Duration [sec]'],str(record['Output File [Kbit]'])]
         execution_info.append(info_to_csv)
+        c = c+1
     print('Execution information has already been provided')
     with open('execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
+    if BOKEH==5:    
+        topic = 'msgoverhead_%s'%(self_name)
+        msg = 'msgoverhead priceintegratedcompute%s updateexec %d\n'%(self_name,c)
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     return
 
 
@@ -582,15 +619,20 @@ def get_updated_network_profile():
         logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)  
         # print('------------')
         # print(logging)
+        c=0
         for record in logging:
             print(record)
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
-        
+            c = c+1
         # print('Number of neighbors')
         # print(num_nb)
         print('Retrieve network information')
         print(network_info)
+        if BOKEH==5:    
+            topic = 'msgoverhead_%s'%(self_name)
+            msg = 'msgoverhead priceintegratedcompute%s updatenetwork %d\n'%(self_name,c)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         # for item in network_info:
             # print(item)
             # print(network_info[item])
@@ -617,6 +659,11 @@ def get_updated_resource_profile():
 
         if c == num_retries:
             print("Exceeded maximum try times.")
+
+        if BOKEH==5:    
+            topic = 'msgoverhead_%s'%(self_name)
+            msg = 'msgoverhead priceintegratedcompute%s updateresource %d\n'%(self_name,len(resource_info))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
         # print("Resource profiles: ", resource_info)
         return resource_info
@@ -994,6 +1041,11 @@ def announce_price(price):
             # print('-------------6')
             res = res.read()
             res = res.decode('utf-8')
+
+            if BOKEH==5:    
+                topic = 'msgoverhead_%s'%(self_name)
+                msg = 'msgoverhead priceintegratedcompute%s updateprice 1\n'%(self_name)
+                demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
             # print('------------3')
         except Exception as e:
             print("Sending price message to flask server on other compute nodes FAILED!!!")
@@ -1601,6 +1653,15 @@ def main():
     FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH, appname, appoption
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+
+    appname = os.environ['APPNAME']
+    appoption = os.environ['APPOPTION']
+    
+
     global first_task
     first_task  = 'task0' #fix later
 
@@ -1635,6 +1696,8 @@ def main():
     global sample_file, sample_size
     sample_file= '/centralized_scheduler/1botnet.ipsum'
     sample_size = cal_file_size(sample_file)
+
+
     # print('Sample size')
     # print(sample_size)
     
@@ -1647,6 +1710,7 @@ def main():
 
 
     _thread.start_new_thread(schedule_update_price,(update_interval,))
+    
     _thread.start_new_thread(schedule_update_assignment,(update_interval,))
     time.sleep(30)
     _thread.start_new_thread(schedule_update_global,(update_interval,))

@@ -39,40 +39,6 @@ def add_ports(dep, app_specific_flag, *args):
   return dep
 
 
-# template_home = """
-# apiVersion: extensions/v1beta1
-# kind: Deployment
-# metadata:
-#   name: {name}
-# spec:
-#   template:
-#     metadata:
-#       labels:
-#         app: {name}
-#     spec:
-#       nodeSelector:
-#         kubernetes.io/hostname: {host}
-#       containers:
-#       - name: {name}
-#         image: {image}
-#         imagePullPolicy: Always
-#         ports:
-#         - containerPort: {ssh_port}
-#         - containerPort: {flask_port}
-#         env:
-#         - name: CHILD_NODES
-#           value: {child}
-#         - name: CHILD_NODES_IPS
-#           value: {child_ips}
-#         - name: ALL_SIM
-#           value: {all_sim}
-#         - name: ALL_SIM_IPS
-#           value: {all_sim_ips}
-#         - name: TASK
-#           value: home
-#       restartPolicy: Always
-# """
-
 template_home = """
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -100,6 +66,10 @@ spec:
           value: {child_ips}
         - name: TASK
           value: home
+        - name: APPNAME
+          value: {appname}
+        - name: APPOPTION
+          value: {appoption}
       restartPolicy: Always
 """
 

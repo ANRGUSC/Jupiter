@@ -36,6 +36,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import cProfile
 import numpy as np
 from collections import defaultdict
+import paho.mqtt.client as mqtt
 
 
 
@@ -53,6 +54,19 @@ def toc(t):
     texec = time.time() - t
     # print('Execution time is:'+str(texec))
     return texec
+
+def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
+
 
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
@@ -149,6 +163,7 @@ app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info
 def default_best_node(source_node):
     print('***************************************************')
     print('Select the current best node')
+    starttime = time.time()
     # t = tic()
     w_net = 1 # Network profiling: longer time, higher price
     w_cpu = 100000 # Resource profiling : larger cpu resource, lower price
@@ -221,6 +236,11 @@ def default_best_node(source_node):
         # print('Summary cost')
         # print(task_price_summary)
         best_node = min(task_price_summary,key=task_price_summary.get)
+        mappinglatency = time.time() - starttime   
+        if BOKEH==5:    
+            topic = 'mappinglatency_%s'%(app_option)
+            msg = 'mappinglatency priceeventcontroller%s updatemybestmap %f %s\n'%(self_task,mappinglatency,app_name)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         # print(best_node)
 
         # txec = toc(t)
@@ -292,6 +312,11 @@ def announce_best_assignment(home_id,best_node, source_node, file_name,source_ke
         # print(res)
         res = res.read()
         res = res.decode('utf-8')
+
+        if BOKEH==5:    
+            topic = 'msgoverhead_controller%s'%(self_task)
+            msg = 'msgoverhead priceeventcontroller%s announcebest 1 %s\n'%(self_task,source_node)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         # print(res)
 
         # txec = toc(t)
@@ -351,6 +376,10 @@ def push_controller_map():
         # print(computing_ip)
         send_controller_info(computing_ip)
         # print(time.time()-t1)
+    if BOKEH==5:    
+        topic = 'msgoverhead_controller%s'%(self_task)
+        msg = 'msgoverhead priceeventcontroller%s pushcontroller %d \n'%(self_task,len(all_computing_ips))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     # txec = toc(t)
     print('***************************************************')
 
@@ -469,6 +498,10 @@ def main():
     RUNTIME = int(config['CONFIG']['RUNTIME'])
     TRANSFER = int(config['CONFIG']['TRANSFER'])
 
+    global app_name,app_option
+    app_name = os.environ['APP_NAME']
+    app_option = os.environ['APP_OPTION']
+
     if TRANSFER == 0:
         transfer_type = 'scp'
 
@@ -537,6 +570,11 @@ def main():
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
     all_nodes = all_computing_nodes + home_ids
     all_nodes_ips = all_computing_ips + home_ips
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
 
     # print(all_nodes)
     # print(super_tasks)

@@ -19,12 +19,23 @@ import configparser
 from os import path
 import multiprocessing
 from multiprocessing import Process, Manager
+import paho.mqtt.client as mqtt
 
 
 
 app = Flask(__name__)
 
-
+def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 def read_file(file_name):
     """
@@ -116,6 +127,14 @@ def prepare_global():
 
     assignments = {}
 
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH, app_name,app_option
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+    app_name = os.environ['APP_NAME']
+    app_option = os.environ['APP_OPTION']
+
+
 
 def recv_task_assign_info():
     """
@@ -144,6 +163,7 @@ def recv_mapping():
         print('Receive mapping from the workers')
         node = request.args.get('node')
         mapping = request.args.get("mapping")
+
 
         to_be_write = []
         items = re.split(r'#', mapping)
@@ -203,6 +223,9 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        if BOKEH==5:
+            msg = 'msgoverhead greedywavehome assignfirst 1 \n'
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         print(e)
         return "not ok"
@@ -242,8 +265,12 @@ def monitor_task_status():
             end_time = time.time()
             deploy_time = end_time - starting_time
             print('Time to finish WAVE mapping '+ str(deploy_time))
+            if BOKEH==5:
+                topic = 'mappinglatency_%s'%(app_option)
+                msg = 'mappinglatency greedywave %s %f \n' %(app_name,deploy_time)
+                demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
             break
-        time.sleep(2)
+        time.sleep(5)
 
 
 

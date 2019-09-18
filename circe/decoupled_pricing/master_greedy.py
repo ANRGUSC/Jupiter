@@ -19,12 +19,24 @@ import configparser
 from os import path
 import multiprocessing
 from multiprocessing import Process, Manager
+import paho.mqtt.client as mqtt
 
 
 
 app = Flask(__name__)
 
 
+def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 def read_file(file_name):
     """
@@ -63,6 +75,13 @@ def prepare_global():
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
     MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH, app_name, app_option
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+    app_name = os.environ['APP_NAME']
+    app_option = os.environ['APP_OPTION']
 
     print("starting the main thread on port")
 
@@ -187,6 +206,9 @@ def announce_mapping_to_homecompute():
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        if BOKEH==5:
+            msg = 'msgoverhead pricedecoupledcontrollerhome announcehomecompute 1 \n'
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         print('Announce full mapping to compute home node failed')
         print(e)
@@ -215,6 +237,9 @@ def restart_mapping_process():
     for node in nodes:
         print(nodes[node])
         trigger_restart(nodes[node])
+    if BOKEH==5:
+        msg = 'msgoverhead pricedecoupledcontrollerhome triggerrestart %d\n'%(len(nodes))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     print('Send the first task to the first node')
     _thread.start_new_thread(init_thread, ())
 
@@ -241,6 +266,9 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        if BOKEH==5:
+            msg = 'msgoverhead pricedecoupledcontrollerhome assignfirst 1 \n'
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         print(e)
         return "not ok"
@@ -265,7 +293,7 @@ def init_thread():
                 output("Assign task %s to node %s failed" % (task, key))
     return
 
-def monitor_task_status():
+def monitor_task_status(starting_time):
     """
     Monitor task allocation status and print notification if all task allocations are done
     """
@@ -277,16 +305,27 @@ def monitor_task_status():
         print(assignments)
         if len(assigned_tasks) == MAX_TASK_NUMBER:
             print("All task allocations are done! Great News!")
+            end_time = time.time()
+            print(starting_time)
+            deploy_time = end_time - starting_time
+            print('Time to finish WAVE mapping '+ str(deploy_time))
+            if BOKEH==5:
+                topic = 'mappinglatency_%s'%(app_option)
+                msg = 'mappinglatency pricedecoupled %s %f \n' %(app_name,deploy_time)
+                demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
             print("Announce assignment information to the compute home node")
             announce_mapping_to_homecompute()
             print('Delete full mapping information')
             assignments.clear()
             assigned_tasks.clear()
             restart_mapping_process()
+            starting_time = time.time()
+            print(starting_time)
             
         else:
             print('Waiting for task mapping to be finished!!!!')
-            time.sleep(60)
+            time.sleep(5)
 
 
 
@@ -392,13 +431,17 @@ def main():
         - Start thread to watch directory: ``local/task_responsibility``
         - Start thread to monitor task mapping status
     """
+    global starting_time
+    print('Starting to run WAVE mapping')
+    starting_time = time.time()
+    print(starting_time)
     prepare_global()
 
     print("starting the main thread on port", FLASK_PORT)
 
     init_task_topology()
     _thread.start_new_thread(init_thread, ())
-    _thread.start_new_thread(monitor_task_status, ())
+    _thread.start_new_thread(monitor_task_status, (starting_time,))
     app.run(host='0.0.0.0', port=int(FLASK_PORT))
 
 if __name__ == '__main__':

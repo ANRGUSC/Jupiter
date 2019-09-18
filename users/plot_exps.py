@@ -1,9 +1,25 @@
+__author__ = "Quynh Nguyen and Bhaskar Krishnamachari"
+__copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
+__license__ = "GPL"
+__version__ = "2.1"
+
 import matplotlib.pyplot as plt
 from collections import OrderedDict
 import os
 from statistics import mean 
 import networkx as nx
 from heapq import nsmallest
+import sys
+import shutil
+import time
+sys.path.append("../")
+import jupiter_config
+sys.path.append("../mulhome_scripts/")
+import utilities
+import pandas as pd
+
+
+### Results at : https://docs.google.com/presentation/d/1tUOp1AOqo_860HVYYpcATOGrR5aKRfKB5jV3bRT4m88/edit?pli=1#slide=id.g62ba74cb4d_1_4
 
 
 def plot_nodes():
@@ -186,7 +202,136 @@ def exp4():
                 f.write("%s" % item)
 
 
+def exp67():
+    jupiter_config.set_globals()
+
+    # path1 = jupiter_config.APP_PATH + 'configuration.txt'
+    # path2 = jupiter_config.HERE + 'nodes.txt'
+    # path1 = '../app_specific_files/dummy_app/configuration.txt'
+    # path2 = '../nodes_test.txt'
+
+
+    # dag_info = utilities.k8s_read_dag(path1)
+    # nodes = utilities.k8s_get_nodes(path2)
+    # dag = dag_info[1]
+    # N = len(nodes)
+    # M = len(dag)
+
+    path2 = '../nodes.txt'
+    nodes = utilities.k8s_get_nodes(path2)
+    N = 106
+    M = 201
+
+    overhead_latency_file = 'exp8_data/overheadlatency/system_latency_N%d_M%d.log'%(N,M)
+    print(overhead_latency_file)
+
+    time_stamp = {}
+    with open(overhead_latency_file) as f:
+        lines = f.readlines()
+        for line in lines:
+            info = line.strip().split(' ')
+            key = (info[0],info[1])
+            if key not in time_stamp:
+                time_stamp[key] = [float(info[2])]
+            else:
+                time_stamp[key].append(float(info[2]))
+            
+    # print(time_stamp)
+
+    power_overhead_folder = 'exp8_data/poweroverhead'
+    power = {}
+    c = 0
+    for node in nodes:
+        log_file = '%s/M%d/%s_N%d_M%d.log'%(power_overhead_folder,M,node,N,M)
+        # log_file = '%s/%s_N%d_M%d.log'%(power_overhead_folder,node,N,M)
+        print(log_file)
+        with open(log_file) as f:
+            lines = f.readlines()
+            for line in lines:
+                info = line.strip().split(' ')
+                power[c] = [node,float(info[7]),float(info[3]),float(info[5])]
+                c = c+1
+
+    #Order: DRUPE - WAVE - CIRCE - EP - HEFT - CIRCE
+    # DRUPE
+    # t1 = time_stamp[('DRUPE','deploystart')][0]
+    t2 = time_stamp[('WAVE','deploystart')][0]
+    t3 = time_stamp[('CIRCE','deploystart')][0]
+    t4 = time_stamp[('WAVE','teardownend')][0]
+    t5 = time_stamp[('Executionprofiler','deploystart')][0]
+    t6 = time_stamp[('HEFT','deploystart')][0]
+    t7 = time_stamp[('CIRCE','deploystart')][1]
+    t8 = time_stamp[('CIRCE','teardownend')][1]
+
+
+    
+    
+    powerDF = pd.DataFrame.from_dict(power,orient='index')
+    powerDF.columns = ['node', 'timestamp', 'cpu','memory']
+    powerDF['type'] = powerDF.apply(lambda row: row['node'][0:4], axis=1)
+    ntype = ['home','node']
+    cpu_list = {}
+    mem_list = {}
+
+
+    for nt in ntype:
+        # cpu_list[0,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t1) & (powerDF['timestamp']<=t2),'cpu']
+        # mem_list[0,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t1) & (powerDF['timestamp']<=t2),'memory']
+        cpu_list[1,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t2) & (powerDF['timestamp']<=t3),'cpu']
+        mem_list[1,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t2) & (powerDF['timestamp']<=t3),'memory']
+        cpu_list[2,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t3) & (powerDF['timestamp']<=t4),'cpu']
+        mem_list[2,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t3) & (powerDF['timestamp']<=t4),'memory']
+        cpu_list[3,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t5) & (powerDF['timestamp']<=t6),'cpu']
+        mem_list[3,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t5) & (powerDF['timestamp']<=t6),'memory']
+        cpu_list[4,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t6) & (powerDF['timestamp']<=t7),'cpu']
+        mem_list[4,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t6) & (powerDF['timestamp']<=t7),'memory']
+        cpu_list[5,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t7) & (powerDF['timestamp']<=t8),'cpu']
+        mem_list[5,nt] = powerDF.loc[(powerDF['type']==nt) & (powerDF['timestamp']>=t7) & (powerDF['timestamp']<=t8),'memory']
+
+
+    # Stage 1: [t1,t2] DRUPE 
+    # Stage 2: [t2,t3] DRUPE + WAVE
+    # Stage 3: [t3,t4] DRUPE + WAVE + CIRCE
+    # Stage 4: [t5,t6] DRUPE + EP
+    # Stage 5: [t6,t7] DRUPE + EP + HEFT
+    # Stage 6: [t7,t8] DRUPE + EP + HEFT + CIRCE
+    # Node type: 'home' or workers('node')
+    
+    print('------- CPU HOME ---------')
+    nt = 'home'
+    # print('DRUPE :'+ str(mean(cpu_list[0,nt])))
+    print('DRUPE + WAVE :' + str(mean(cpu_list[1,nt])))
+    print('DRUPE + WAVE + CIRCE :' + str(mean(cpu_list[2,nt])))
+    print('DRUPE + EP :' +str(mean(cpu_list[3,nt])))
+    print('DRUPE + EP + HEFT : ' +str(mean(cpu_list[4,nt])))
+    print('DRUPE + EP + HEFT + CIRCE :' +str(mean(cpu_list[5,nt])))
+    print('------- CPU WORKERS ---------')
+    nt = 'node'
+    # print('DRUPE : '+ str(mean(cpu_list[0,nt])))
+    print('DRUPE + WAVE :' + str(mean(cpu_list[1,nt])))
+    print('DRUPE + WAVE + CIRCE :' + str(mean(cpu_list[2,nt])))
+    print('DRUPE + EP :' +str(mean(cpu_list[3,nt])))
+    print('DRUPE + EP + HEFT :' +str(mean(cpu_list[4,nt])))
+    print('DRUPE + EP + HEFT + CIRCE :' +str(mean(cpu_list[5,nt])))
+    print('------- MEM HOME ---------')
+    nt = 'home'
+    # print('DRUPE :'+ str(mean(mem_list[0,nt])))
+    print('DRUPE + WAVE :' + str(mean(mem_list[1,nt])))
+    print('DRUPE + WAVE + CIRCE :'+ str(mean(mem_list[2,nt])))
+    print('DRUPE + EP :' +str(mean(mem_list[3,nt])))
+    print('DRUPE + EP + HEFT :' +str(mean(mem_list[4,nt])))
+    print('DRUPE + EP + HEFT + CIRCE: ' +str(mean(mem_list[5,nt])))
+    print('------- MEM WORKERS ---------')
+    nt = 'node'
+    # print('DRUPE :'+ str(mean(mem_list[0,nt])))
+    print('DRUPE + WAVE :' + str(mean(mem_list[1,nt])))
+    print('DRUPE + WAVE + CIRCE :' + str(mean(mem_list[2,nt])))
+    print('DRUPE + EP :' +str(mean(mem_list[3,nt])))
+    print('DRUPE + EP + HEFT :' +str(mean(mem_list[4,nt])))
+    print('DRUPE + EP + HEFT + CIRCE: ' +str(mean(mem_list[5,nt])))
+    
+
+
 if __name__ == '__main__':
-      # plot_clusters(3)
-      exp4()
+    exp67()
 

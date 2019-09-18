@@ -31,6 +31,7 @@ import configparser
 import numpy as np
 from collections import defaultdict
 import paho.mqtt.client as mqtt
+import jupiter_config
 
 global bottleneck
 bottleneck = defaultdict(list)
@@ -67,6 +68,9 @@ rt_exec_time = defaultdict(list)
 rt_finish_time = defaultdict(list)
 
 def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -336,14 +340,15 @@ class MyHandler(PatternMatchingEventHandler):
             exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
             print("execution time is: ", exec_times)
 
-            if BOKEH == 2:
-                appname = outputfile.split('-')[0]
-                msg = 'makespan '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) 
-                demo_help(BOKEH_SERVER,BOKEH_PORT,appname,msg)
+            if BOKEH == 2: #used for combined_app with distribute script
+                app_name = outputfile.split('-')[0]
+                msg = 'makespan '+ app_name + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) 
+                demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
 
-            #exec_times.append(end_times[count] - start_times[count])
-            # end_times.append(time.time())
-            # count+=1
+            if BOKEH == 5:
+                print(appname)
+                msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+                demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
     def on_modified(self, event):
         self.process(event)
@@ -410,7 +415,8 @@ class Handler(FileSystemEventHandler):
                 runtime_receiver_log.flush()
 
             inputfile = event.src_path.split('/')[-1]
-            start_times[inputfile] = time.time()
+            t = time.time()
+            start_times[inputfile] = t
             # start_times.append(time.time())
             print("start time is: ", start_times)
             new_file_name = os.path.split(event.src_path)[-1]
@@ -439,9 +445,12 @@ def main():
     config.read(INI_PATH)
 
     # Prepare transfer-runtime file:
-    global runtime_sender_log, RUNTIME,TRANSFER, transfer_type
+    global runtime_sender_log, RUNTIME,TRANSFER, transfer_type, appname,appoption
+
     RUNTIME = int(config['CONFIG']['RUNTIME'])
     TRANSFER = int(config['CONFIG']['TRANSFER'])
+    appname = os.environ['APPNAME']
+    appoption = os.environ['APPOPTION']
 
     if TRANSFER == 0:
         transfer_type = 'scp'

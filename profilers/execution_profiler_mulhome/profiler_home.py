@@ -20,7 +20,16 @@ import _thread
 import datetime
 import shutil
 import configparser
+import paho.mqtt.client as mqtt
 
+def demo_help(server,port,topic,msg):
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 class MyEventHandler(pyinotify.ProcessEvent):
 
@@ -187,6 +196,11 @@ def main():
     global TRANSFER
     TRANSFER = int(config['CONFIG']['TRANSFER'])
 
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+
 
     nodename = 'home'
     print(nodename)
@@ -313,12 +327,20 @@ def main():
         # print(ptFile1)
         # print(i)
 
+
         try:
             print("start the profiler in ", i)
             r = requests.get("http://"+i+":" + str(EXC_FPORT))
             result = r.json()
         except:
             print("Some Exception")
+
+
+    if BOKEH==5:
+        msg = 'msgoverhead executionprofiler sendsample %d\n'%(len(profilers_ips))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
+        msg = 'msgoverhead executionprofiler startprofiler %d\n'%(len(profilers_ips))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
 
 
 

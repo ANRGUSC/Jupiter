@@ -50,6 +50,10 @@ spec:
           value: {home_profiler_ip}
         - name: COMPUTE_HOME_IP
           value: {compute_home_ip}
+        - name: APP_OPTION
+          value: {app_option}
+        - name: APP_NAME
+          value: {app_name}
 """
 
 def write_decoupled_pricing_controller_home_specs(**kwargs):
@@ -260,6 +264,10 @@ spec:
           value: {child_ips}
         - name: TASK
           value: {name}
+        - name: APPNAME
+          value: {appname}
+        - name: APPOPTION
+          value: {appoption}
         - name: ALL_COMPUTING_NODES
           value: {all_computing_nodes}
         - name: ALL_COMPUTING_IPS

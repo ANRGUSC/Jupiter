@@ -15,11 +15,14 @@ import jupiter_config
 import utilities
 import time
 
+def write_file(filename,message):
+    with open(filename,'a') as f:
+        f.write(message)
+
 def delete_all_waves(app_name):
     """Tear down all WAVE deployments.
     """
-    print('Starting to teardown WAVE')
-    start_time = time.time()
+    
 
     
     jupiter_config.set_globals()
@@ -29,6 +32,15 @@ def delete_all_waves(app_name):
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes = utilities.k8s_get_nodes(path1)
+    path2 = jupiter_config.APP_PATH + 'configuration.txt'
+    dag_info = utilities.k8s_read_config(path2)
+    dag = dag_info[1]
+    print('Starting to teardown WAVE')
+    if jupiter_config.BOKEH == 5:
+        latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
+        start_time = time.time()
+        msg = 'WAVE teardownstart %f \n'%(start_time)
+        write_file(latency_file,msg)
 
     """
         This loads the kubernetes instance configuration.
@@ -112,9 +124,12 @@ def delete_all_waves(app_name):
 
         # At this point you should not have any of the profiler related service, pod, or deployment running     
     print('Successfully teardown WAVE ')
-    end_time = time.time()
-    teardown_time = end_time - start_time
-    print('Time to teardown WAVE'+ str(teardown_time))
+    if jupiter_config.BOKEH == 5:
+        end_time = time.time()
+        msg = 'WAVE teardownend %f \n'%(end_time)
+        write_file(latency_file,msg)
+        teardown_time = end_time - start_time
+        print('Time to teardown WAVE'+ str(teardown_time))
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 
