@@ -167,7 +167,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
 
     print('Starting to deploy pricing CIRCE')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
         start_time = time.time()
         if jupiter_config.PRICING == 1:
@@ -497,7 +497,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     pprint(service_ips)
 
     print('Starting to teardown pricing CIRCE')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
         end_time = time.time()
         if jupiter_config.PRICING == 1:
@@ -533,7 +533,7 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
     dag = dag_info[1]
 
     print('Starting to deploy integrated CIRCE')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
         start_time = time.time()
         msg = 'PRICEintegrated deploystart %f \n'%(start_time)
@@ -720,7 +720,7 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
     pprint(service_ips)
 
     print('Successfully deploy integrated Pricing CIRCE')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'PRICEintegrated deployend %f \n'%(end_time)
         write_file(latency_file,msg)

@@ -34,7 +34,7 @@ def delete_all_pricing_circe(app_name):
     nodes = k8s_get_nodes(path2)
 
     print('Starting to teardown pricing CIRCE')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
         start_time = time.time()
         if jupiter_config.PRICING == 1:
@@ -231,7 +231,7 @@ def delete_all_pricing_circe(app_name):
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
     print('Successfully teardown pricing CIRCE ')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         end_time = time.time()
         if jupiter_config.PRICING == 1:
             msg = 'PRICEpush teardownend %f \n'%(start_time)

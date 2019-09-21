@@ -36,7 +36,7 @@ def delete_all_profilers():
     dag = dag_info[1]
 
     print('Starting to teardown DRUPE')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
         start_time = time.time()
         msg = 'DRUPE teardownstart %f \n'%(start_time)
@@ -118,7 +118,7 @@ def delete_all_profilers():
 
         # At this point you should not have any of the profiler related service, pod, or deployment running
     print('Successfully teardown DRUPE ')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'DRUPE teardownend %f \n'%(end_time)
         write_file(latency_file,msg)

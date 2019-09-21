@@ -51,6 +51,8 @@ spec:
           value: {app_name}
         - name: APP_OPTION
           value: {app_option}
+        - name: CHILD_NODES
+          value: {child}
 """
 
 def write_wave_specs(**kwargs):

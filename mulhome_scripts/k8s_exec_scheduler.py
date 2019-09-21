@@ -198,7 +198,7 @@ def k8s_exec_scheduler(app_name):
 
 
     print('Starting to deploy execution profiler')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
         start_time = time.time()
         msg = 'Executionprofiler deploystart %f \n'%(start_time)
@@ -399,7 +399,7 @@ def k8s_exec_scheduler(app_name):
 
     pprint(service_ips)
     print('Successfully deploy execution profiler ')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'Executionprofiler deployend %f \n'%(end_time)
         write_file(latency_file,msg)
