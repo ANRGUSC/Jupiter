@@ -36,7 +36,7 @@ def delete_all_exec(app_name):
     node_list, homes = utilities.k8s_get_nodes_worker(path2)
 
     print('Starting to teardown execution profiler')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
         start_time = time.time()
         msg = 'Executionprofiler teardownstart %f \n'%(start_time)
@@ -254,7 +254,7 @@ def delete_all_exec(app_name):
 
         # At this point you should not have any of the profiler related service, pod, or deployment running
     print('Successfully teardown execution profiler ')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'Executionprofiler teardownend %f \n'%(end_time)
         write_file(latency_file,msg)

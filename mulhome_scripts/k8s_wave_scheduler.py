@@ -101,7 +101,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     dag = dag_info[1]
 
     print('Starting to deploy WAVE')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
         start_time = time.time()
         msg = 'WAVE deploystart %f \n'%(start_time)
@@ -216,6 +216,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
                                              all_profiler_ips = all_profiler_ips,
                                              home_profiler_ip = home_profiler_str,
                                              app_name = app_name,
+                                             child = jupiter_config.HOME_CHILD,
                                              app_option = jupiter_config.APP_OPTION)
             # # pprint(dep)
             # # Call the Kubernetes API to create the deployment
@@ -248,6 +249,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
                                              profiler_ip = profiler_ips['home'],
                                              all_profiler_ips = all_profiler_ips,
                                              home_profiler_ip = home_profiler_str,
+                                             child = jupiter_config.HOME_CHILD,
                                              app_name = app_name,
                                              app_option = jupiter_config.APP_OPTION)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
@@ -255,7 +257,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
 
     pprint(service_ips)
     print('Successfully deploy WAVE')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'WAVE deployend %f \n'%(end_time)
         write_file(latency_file,msg)

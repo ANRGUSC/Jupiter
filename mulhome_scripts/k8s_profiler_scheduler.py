@@ -97,7 +97,7 @@ def k8s_profiler_scheduler():
     dag = dag_info[1]
 
     print('Starting to deploy DRUPE')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         try:
             os.mkdir('../users/exp8_data/overhead_latency/')
         except:
@@ -252,7 +252,7 @@ def k8s_profiler_scheduler():
 
     pprint(service_ips)
     print('Successfully deploy DRUPE ')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'DRUPE deployend %f \n'%(end_time)
         write_file(latency_file,msg,'a')

@@ -54,6 +54,8 @@ spec:
           value: {app_option}
         - name: APP_NAME
           value: {app_name}
+        - name: CHILD_NODES
+          value: {child}
 """
 
 def write_decoupled_pricing_controller_home_specs(**kwargs):
@@ -126,6 +128,8 @@ spec:
           value: {all_profiler_ips}
         - name: HOME_PROFILER_IP
           value: {home_profiler_ip}
+        - name: CHILD_NODES
+          value: {child}
 """
 
 def write_decoupled_pricing_controller_worker_specs(**kwargs):

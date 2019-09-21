@@ -36,7 +36,7 @@ def delete_all_circe(app_name):
     node_list, homes = utilities.k8s_get_nodes_worker(path2)
 
     print('Starting to teardown CIRCE')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
         start_time = time.time()
         msg = 'CIRCE teardownstart %f \n'%(start_time)
@@ -174,7 +174,7 @@ def delete_all_circe(app_name):
         print("Service Deleted. status='%s'" % str(del_resp_2.status))  
 
     print('Successfully teardown CIRCE ')
-    if jupiter_config.BOKEH == 5:
+    if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'CIRCE teardownend %f \n'%(end_time)
         write_file(latency_file,msg)

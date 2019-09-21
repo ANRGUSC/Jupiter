@@ -250,6 +250,7 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
                                              home_name = home_name,
                                              serv_ip = service_ips[i],
                                              profiler_ip = profiler_ips[i],
+                                             child = jupiter_config.HOME_CHILD,
                                              all_profiler_ips = all_profiler_ips,
                                              home_profiler_ip = home_profiler_str)
             # # pprint(dep)
@@ -284,6 +285,7 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
                                              all_profiler_ips = all_profiler_ips,
                                              home_profiler_ip = home_profiler_str,
                                              compute_home_ip = compute_service_ips['home'],
+                                             child = jupiter_config.HOME_CHILD,
                                              app_name = app_name,
                                              app_option =jupiter_config.APP_OPTION)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
