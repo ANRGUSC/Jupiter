@@ -15,6 +15,7 @@ COPY circe/decoupled_pricing/start_home_controller.sh /start.sh
 
 ADD app_specific_files/dummy_app/configuration.txt DAG/DAG_application.txt
 ADD app_specific_files/dummy_app/input_node.txt DAG
+ADD app_specific_files/dummy_app/sample_input /
 
 ADD jupiter_config.ini /jupiter_config.ini
 

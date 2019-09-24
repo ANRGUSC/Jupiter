@@ -28,7 +28,7 @@ def set_globals():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
     """User input for scheduler information"""
-    global STATIC_MAPPING, SCHEDULER, TRANSFER, PROFILER, RUNTIME, PRICING, SIM
+    global STATIC_MAPPING, SCHEDULER, TRANSFER, PROFILER, RUNTIME, PRICING
 
     STATIC_MAPPING          = int(config['CONFIG']['STATIC_MAPPING'])
     # scheduler option chosen from SCHEDULER_LIST
@@ -41,8 +41,6 @@ def set_globals():
     RUNTIME                 = int(config['CONFIG']['RUNTIME'])
     # Using pricing or original scheme
     PRICING                 = int(config['CONFIG']['PRICING'])
-    # simulation
-    SIM                     = int(config['CONFIG']['SIM'])
 
 
     """Authorization information in the containers"""
@@ -70,7 +68,7 @@ def set_globals():
     
 
     """Modules path of Jupiter"""
-    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, SIM_PATH
+    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH
 
     # default network and resource profiler: DRUPE
     # default wave mapper: random wave
@@ -80,7 +78,6 @@ def set_globals():
     HEFT_PATH               = HERE + 'task_mapper/heft_mulhome/original/'
     WAVE_PATH               = HERE + 'task_mapper/wave_mulhome/random_wave/'
     SCRIPT_PATH             = HERE + 'scripts/'
-    SIM_PATH                = HERE + 'simulation/'
 
     global heft_option, wave_option
     heft_option             = 'original'    
@@ -95,18 +92,18 @@ def set_globals():
         print('Task mapper: Wave greedy (original) selected')
         WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave/'
         wave_option         = 'greedy'
-    elif SCHEDULER == int(config['SCHEDULER_LIST']['HEFT_MODIFIED']):
-        print('Task mapper: Heft modified selected')
-        HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/modified/'   
-        heft_option         = 'heftmodified'
-    elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY_MODIFIED']):
+    elif SCHEDULER == int(config['SCHEDULER_LIST']['HEFT_BALANCE']):
+        print('Task mapper: Heft load balanced selected')
+        HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/heft_balance/'   
+        heft_option         = 'heftbalance'
+    elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY_BALANCE']):
         print('Task mapper: Wave greedy (group of neighbors & load balanced) selected')
         WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave_balance/'   
-        wave_option         = 'greedymodified'
+        wave_option         = 'greedybalance'
     else: 
         print('Task mapper: Heft original selected')
 
-    global pricing_option, profiler_option, sim_option
+    global pricing_option, profiler_option
 
     pricing_option          = 'original' #original pricing
     profiler_option         = 'multiple_home'
@@ -114,10 +111,10 @@ def set_globals():
     if PRICING == int(config['PRICING_LIST']['NONPRICING']): #non-pricing
         pricing_option      = 'original'
         print('Non pricing scheme selected')
-    if PRICING == int(config['PRICING_LIST']['PUSH_MULTIPLEHOME']):#multiple home (push circe)
+    if PRICING == int(config['PRICING_LIST']['PUSH_PRICING']):#multiple home (push circe)
         pricing_option      = 'pricing_push'
         print('Pricing pushing scheme selected')
-    if PRICING == int(config['PRICING_LIST']['DRIVEN_MULTIPLEHOME']):#multiple home, pricing (event-driven circe)
+    if PRICING == int(config['PRICING_LIST']['EVENT_PRICING']):#multiple home, pricing (event-driven circe)
         pricing_option      = 'pricing_event'
         print('Pricing event driven scheme selected')
     if PRICING == int(config['PRICING_LIST']['INTERGRATED_PRICING']): #new-pricing
@@ -130,16 +127,12 @@ def set_globals():
 
     CIRCE_PATH              = HERE + 'circe/%s/'%(pricing_option)
 
-    sim_option              = 'nosimulation'
-    if SIM == int(config['SIM_LIST']['CPU']):
-        sim_option          = 'cpu'
-
 
 
     # print('CIRCE path-------------------------------------------')
     # print(CIRCE_PATH)
     """Kubernetes required information"""
-    global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE, SIM_NAMESPACE
+    global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 
     KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
@@ -284,10 +277,7 @@ def set_globals():
     global HEFT_IMAGE
 
     HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s'%(heft_option,APP_OPTION)
-
-    global SIM_IMAGE
-
-    SIM_IMAGE               = 'docker.io/anrg/%s_sim:v0'%(sim_option)         
+       
 
     
 

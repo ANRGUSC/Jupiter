@@ -47,8 +47,8 @@ RUN mkdir -p /network_profiling/generated_test
 RUN mkdir -p /network_profiling/received_test
 
 # Prepare resource profiling code
-RUN mkdir -p /resource_profiling
-ADD profilers/network_resource_profiler_mulhome/home/resource_profiling_files/ /resource_profiling/
+# RUN mkdir -p /resource_profiling
+# ADD profilers/network_resource_profiler_mulhome/home/resource_profiling_files/ /resource_profiling/
 
 
 # Prepare network profiling code

@@ -120,11 +120,11 @@ def file_size(file_path):
         file_info = os.stat(file_path)
         return convert_bytes(file_info.st_size)
 
-def transfer_data_scp(IP,user,pword,source, destination):
+def transfer_data_scp(ID,user,pword,source, destination):
     """Transfer data using SCP
     
     Args:
-        IP (str): destination IP address
+        ID (str): destination ID
         user (str): username
         pword (str): password
         source (str): source file path
@@ -136,8 +136,9 @@ def transfer_data_scp(IP,user,pword,source, destination):
     retry = 0
     while retry < num_retries:
         try:
-            # print(IP)
-            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+            nodeIP = combined_ip_map[ID]
+            print(nodeIP)
+            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user,nodeIP, destination)
             os.system(cmd)
             print('data transfer complete\n')
             break
@@ -147,23 +148,23 @@ def transfer_data_scp(IP,user,pword,source, destination):
             retry += 1
 
 
-def transfer_data(IP,user,pword,source, destination):
+def transfer_data(ID,user,pword,source, destination):
     """Transfer data with given parameters
     
     Args:
-        IP (str): destination IP 
+        ID (str): destination ID 
         user (str): destination username
         pword (str): destination password
         source (str): source file path
         destination (str): destination file path
     """
-    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
     print(msg)
     
     if TRANSFER == 0:
-        return transfer_data_scp(IP,user,pword,source, destination)
+        return transfer_data_scp(ID,user,pword,source, destination)
 
-    return transfer_data_scp(IP,user,pword,source, destination) #default
+    return transfer_data_scp(ID,user,pword,source, destination) #default
 
 def main():
     """
@@ -312,31 +313,33 @@ def main():
     allprofiler_names = os.environ['ALL_PROFILERS_NAMES'].split(':')
     ptFile = "/centralized_scheduler/generated_files/"
     ptFile1 = "/centralized_scheduler/"
+    profilers_ips = profilers_ips[1:]
+    allprofiler_names= allprofiler_names[1:]
 
-
+    global ip_profilers_map, profilers_ip_map
+    ip_profilers_map = dict(zip(profilers_ips, allprofiler_names))
+    profilers_ip_map = dict(zip(allprofiler_names, profilers_ips))
+ 
+    global combined_ip_map
+    combined_ip_map = dict(zip(allprofiler_names, profilers_ips))
     """
         Transfer the Intermdiate Files Tt all the Workers. 
     """
-    for itr in range(1, len(profilers_ips)):
-        i = profilers_ips[itr]
-        print("Sending data to ", allprofiler_names[itr])
-        transfer_data(i,username,password,ptFile, ptFile1)
-        # print(password)
-        # print(ssh_port)
-        # print(ptFile)
-        # print(ptFile1)
-        # print(i)
-
-
+    for node in allprofiler_names:
+        print('----------------------------------')
+        print("Sending data to execution worker of ", node)
+        transfer_data(node,username,password,ptFile, ptFile1)
         try:
-            print("start the profiler in ", i)
-            r = requests.get("http://"+i+":" + str(EXC_FPORT))
+            print("start the profiler in ", node)
+            print(profilers_ip_map[node])
+            r = requests.get("http://"+profilers_ip_map[node]+":" + str(EXC_FPORT))
             result = r.json()
-        except:
-            print("Some Exception")
+        except Exception as e:
+            print("Exception in sending data")
+            print(e)
 
 
-    if BOKEH==5:
+    if BOKEH==3:
         msg = 'msgoverhead executionprofiler sendsample %d\n'%(len(profilers_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
         msg = 'msgoverhead executionprofiler startprofiler %d\n'%(len(profilers_ips))

@@ -49,8 +49,8 @@ RUN mkdir -p /network_profiling/scheduling
 
 
 # Prepare resource profiling code
-RUN mkdir -p /resource_profiler
-ADD profilers/network_resource_profiler_mulhome/worker/resource_profiler.py /resource_profiler/resource_profiler.py
+# RUN mkdir -p /resource_profiler
+# ADD profilers/network_resource_profiler_mulhome/worker/resource_profiler.py /resource_profiler/resource_profiler.py
 
 #Running docker
 ADD profilers/network_resource_profiler_mulhome/worker/start.sh /network_profiling/start.sh

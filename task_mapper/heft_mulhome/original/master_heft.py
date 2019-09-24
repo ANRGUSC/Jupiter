@@ -207,7 +207,7 @@ def main():
 
             print('**********')
             print(BOKEH)
-            if BOKEH==5:
+            if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)
                 msg = 'mappinglatency originalheft %s %f \n' %(app_name,deploy_time)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)

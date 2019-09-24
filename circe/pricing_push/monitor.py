@@ -144,8 +144,8 @@ def default_best_node():
     print('Select the current best node')
     starttime = time.time()
     w_net = 1 # Network profiling: longer time, higher price
-    w_cpu = 1 # Resource profiling : larger cpu resource, lower price
-    w_mem = 1 # Resource profiling : larger mem resource, lower price
+    w_cpu = 100000 # Resource profiling : larger cpu resource, lower price
+    w_mem = 100000 # Resource profiling : larger mem resource, lower price
     w_queue = 1 # Queue : currently 0
     best_node = -1
     task_price_network= dict()
@@ -242,7 +242,7 @@ def default_best_node():
                 # print(best_node)
                 task_node_map[self_task] = best_node
                 mappinglatency = time.time() - starttime   
-                if BOKEH==5:    
+                if BOKEH==3:    
                     topic = 'mappinglatency_%s'%(app_option)
                     msg = 'mappinglatency pricepushcontroller%s updatemybestmap %f %s\n'%(self_task,mappinglatency,app_name)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -299,7 +299,7 @@ def push_controller_map():
     time.sleep(90)
     for computing_ip in all_computing_ips:
         send_controller_info(computing_ip)
-    if BOKEH==5:    
+    if BOKEH==3:    
         topic = 'msgoverhead_controller%s'%(self_task)
         msg = 'msgoverhead pricepushcontroller%s pushcontroller %d \n'%(self_task,len(all_computing_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -346,7 +346,7 @@ def send_assignment_info(node_ip):
         res = res.read()
         # print(res)
         res = res.decode('utf-8')
-        if BOKEH==5:    
+        if BOKEH==3:    
             topic = 'msgoverhead_controller%s'%(self_task)
             msg = 'msgoverhead pricepushcontroller%s updatebest 1\n'%(self_task)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -380,13 +380,13 @@ def update_assignment_info_to_child(node_ip):
 def announce_best_assignment_to_child():
     """Announce my current best assignment to all my children tasks
     """
-    # print('Announce best assignment to my children')
+    print('Announce best assignment to my children')
     # print(child_nodes_dag)
-    # print(child_nodes_ip_dag)
+    print(child_nodes_ip_dag)
     for child_ip in child_nodes_ip_dag:
         # print(child_ip)
         update_assignment_info_to_child(child_ip)   
-    if BOKEH==5:    
+    if BOKEH==3:    
         topic = 'msgoverhead_controller%s'%(self_task)
         msg = 'msgoverhead pricepushcontroller%s sendassignmentchild %d\n'%(self_task,len(child_nodes_ip_dag))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -406,7 +406,9 @@ def push_first_assignment_map():
     print('Sucessfully assign the first best computing node')
     # print(task_node_map)
     update_best_node()
-    announce_best_assignment_to_child()
+    print(child_nodes)
+    if 'home' not in child_nodes:
+        announce_best_assignment_to_child()
 
 def push_assignment_map():
     """Update assignment periodically
@@ -414,7 +416,9 @@ def push_assignment_map():
     # print('Updated assignment periodically')
     default_best_node()
     update_best_node()
-    announce_best_assignment_to_child()
+    print(child_nodes)
+    if 'home' not in child_nodes:
+        announce_best_assignment_to_child()
     
     # if self_task in task_node_map:
     #     # print('*********************************************')

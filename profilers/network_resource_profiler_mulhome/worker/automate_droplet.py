@@ -31,9 +31,62 @@ import time
 import _thread
 import psutil
 import paho.mqtt.client as mqtt
+from multiprocessing import Process, Manager
+
 
 
 sys.path.append("../")
+
+def retrieve_resource():
+    mem = psutil.virtual_memory().percent
+    cpu = psutil.cpu_percent()/ psutil.cpu_count()
+    t = time.time()
+    return mem,cpu,t
+
+def schedule_monitor_resource(interval):
+    """
+    Schedulete the assignment update every interval
+    
+    Args:
+        interval (int): chosen interval (minutes)
+    
+    """
+    sched = BackgroundScheduler()
+    sched.add_job(monitor_local_resources_EMA,'interval',id='assign_id', minutes=interval, replace_existing=True)
+    sched.start()
+
+def monitor_local_resources_EMA():
+    """
+    Obtain local resource stats (CPU, Memory usage and the lastest timestamp) from local node and store it to the variable ``local_resources``
+    Using Exponential moving average
+    """
+    
+    print('Updating local resource stats (EMA)')
+    num_periods = 10 # EMA 10 periods
+    cur_mem,cur_cpu,cur_time = retrieve_resource()
+    if resource_profiling["count"] < (num_periods+1):
+        resource_profiling["memory"] = (cur_mem + resource_profiling['memory'] * resource_profiling['count']) / (resource_profiling['count'] + 1)
+        resource_profiling["cpu"] = (cur_cpu + resource_profiling['cpu'] * resource_profiling['count']) / (resource_profiling['count'] + 1)
+    else:
+        resource_profiling["memory"] = (cur_mem - resource_profiling["memory"])*(2/(num_periods+1)) + resource_profiling["memory"]
+        resource_profiling["cpu"] = (cur_cpu - resource_profiling["cpu"])*(2/(num_periods+1)) + resource_profiling["cpu"]
+    resource_profiling['count'] += 1
+    resource_profiling['last_update'] = datetime.datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')
+
+    try:
+        logging  = resource_db[SELF_IP]
+        # print(logging)
+        new_log  = {'memory' : resource_profiling['memory'],
+                    'cpu'    : resource_profiling['cpu'],
+                    'count'  : resource_profiling['count'],
+                    'last_update': resource_profiling['last_update']
+                    }
+        resource_id   = logging.insert_one(new_log).inserted_id
+        # print(resource_id)
+    except Exception as e:
+        print('Error logging resource profiling information')
+        print(e)
+        
 
 def demo_help(server,port,topic,msg):
     try:
@@ -77,9 +130,7 @@ def schedule_bokeh_profiling(interval):
     sched.start()
 
 def announce_profiling():
-    cur_cpu = psutil.cpu_percent() / psutil.cpu_count()
-    cur_mem = psutil.virtual_memory().percent#used
-    cur_time = time.time()
+    cur_mem,cur_cpu,cur_time = retrieve_resource()
     topic = 'poweroverhead_%s'%(SELF_NAME)
     msg = 'poweroverhead %s cpu %f memory %f timestamp %d \n' %(SELF_NAME,cur_cpu,cur_mem,cur_time)
     demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -359,7 +410,7 @@ def main():
     """Start watching process for ``scheduling`` folder.
     """
 
-    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER, HOME_IP
+    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER, HOME_IP, SELF_IP
 
     # Load all the confuguration
     INI_PATH = '/network_profiling/jupiter_config.ini'
@@ -399,8 +450,24 @@ def main():
     print(BOKEH_INTERVAL)
     print(SELF_NAME)
 
+    ## Resource profiling
+    global manager,resource_profiling
+    manager = Manager()
+    resource_profiling = manager.dict()
+    resource_profiling['count'] = 0
+    resource_profiling['cpu'] = 0
+    resource_profiling['memory'] = 0
+    resource_profiling['last_update'] = None
+    num_periods = 10
+    interval = 1
 
-    if BOKEH==4 or BOKEH==5:
+    global resource_client, resource_db
+    resource_client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+    resource_db = resource_client['central_resource_profiler']
+    resource_db.create_collection(SELF_IP, capped=True, size = 100000, max=1000)
+
+
+    if BOKEH==3:
         print('Start sending profiling information (CPU,mem) to the bokeh server')
         _thread.start_new_thread(schedule_bokeh_profiling,(BOKEH_INTERVAL,))
 
@@ -412,6 +479,8 @@ def main():
     eh = MyEventHandler()
     # notifier
     notifier = pyinotify.Notifier(wm, eh)
+
+    _thread.start_new_thread(schedule_monitor_resource,(interval,))
 
     notifier.loop()
 

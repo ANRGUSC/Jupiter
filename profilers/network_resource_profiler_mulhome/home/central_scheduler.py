@@ -30,8 +30,60 @@ import numpy as np
 import psutil
 import paho.mqtt.client as mqtt
 import _thread
+from multiprocessing import Process, Manager
 
 app = Flask(__name__)
+
+def retrieve_resource():
+    mem = psutil.virtual_memory().percent
+    cpu = psutil.cpu_percent()/ psutil.cpu_count()
+    t = time.time()
+    return mem,cpu,t
+
+def schedule_monitor_resource(interval):
+    """
+    Schedulete the assignment update every interval
+    
+    Args:
+        interval (int): chosen interval (minutes)
+    
+    """
+    sched = BackgroundScheduler()
+    sched.add_job(monitor_local_resources_EMA,'interval',id='assign_id', minutes=interval, replace_existing=True)
+    sched.start()
+
+def monitor_local_resources_EMA():
+    """
+    Obtain local resource stats (CPU, Memory usage and the lastest timestamp) from local node and store it to the variable ``local_resources``
+    Using Exponential moving average
+    """
+    num_periods = 10
+    
+    print('Updating local resource stats (EMA)')
+    cur_mem,cur_cpu,cur_time = retrieve_resource()
+    if resource_profiling["count"] < (num_periods+1):
+        resource_profiling["memory"] = (cur_mem + resource_profiling['memory'] * resource_profiling['count']) / (resource_profiling['count'] + 1)
+        resource_profiling["cpu"] = (cur_cpu + resource_profiling['cpu'] * resource_profiling['count']) / (resource_profiling['count'] + 1)
+    else:
+        resource_profiling["memory"] = (cur_mem - resource_profiling["memory"])*(2/(num_periods+1)) + resource_profiling["memory"]
+        resource_profiling["cpu"] = (cur_cpu - resource_profiling["cpu"])*(2/(num_periods+1)) + resource_profiling["cpu"]
+    resource_profiling['count'] += 1
+    resource_profiling['last_update'] = datetime.datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')
+
+    try:
+        logging  = resource_db[self_ip]
+        # print(logging)
+        new_log  = {'memory' : resource_profiling['memory'],
+                    'cpu'    : resource_profiling['cpu'],
+                    'count'  : resource_profiling['count'],
+                    'last_update': resource_profiling['last_update']
+                    }
+        resource_id   = logging.insert_one(new_log).inserted_id
+        # print(resource_id)
+    except Exception as e:
+        print('Error logging resource profiling information')
+        print(e)
+        
 
 def demo_help(server,port,topic,msg):
     try:
@@ -505,10 +557,30 @@ def main():
     print(BOKEH_INTERVAL)
     print(SELF_NAME)
 
+    ## Resource profiling
+    global manager,resource_profiling
+    manager = Manager()
+    resource_profiling = manager.dict()
+    resource_profiling['count'] = 0
+    resource_profiling['cpu'] = 0
+    resource_profiling['memory'] = 0
+    resource_profiling['last_update'] = None
+    num_periods = 10
+    interval = 1
 
-    if BOKEH==4 or BOKEH==5:
+    global resource_client, resource_db
+    resource_client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+    resource_db = resource_client['central_resource_profiler']
+    resource_db.create_collection(self_ip, capped=True, size = 100000,max=1000)
+
+    if BOKEH==3:
         print('Step 7: Start sending profiling information (CPU,mem) to the bokeh server')
         _thread.start_new_thread(schedule_bokeh_profiling,(BOKEH_INTERVAL,))
+
+    _thread.start_new_thread(schedule_monitor_resource,(interval,))
+
+
+    
 
 
     app.run(host='0.0.0.0', port=FLASK_DOCKER) #run this web application on 0.0.0.0 and default port is 5000

@@ -35,6 +35,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from pymongo import MongoClient
 import datetime
 import paho.mqtt.client as mqtt
+import pyinotify
 
 
 
@@ -84,8 +85,6 @@ def recv_mapping():
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg')
         ts = time.time()
-
-        # print("Received flask message:", worker_node, msg, ts)
 
         print("Received flask message:", worker_node, msg, ts)
         # print(last_tasks)
@@ -161,7 +160,7 @@ def send_assignment_info(node_ip,task_name,best_node):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==5:    
+        if BOKEH==3:    
             msg = 'msgoverhead priceintegrated%s updatebest 1\n'%(my_id)
             demo_help(BOKEH_SERVER,BOKEH_PORT,'msgoverhead_home',msg)
     except Exception as e:
@@ -194,7 +193,7 @@ def push_assignment_map():
     best_list = best_list[1:]
     if t0 == len(tasks):
         localmappingtime = time.time()-starttime
-        if BOKEH==5:    
+        if BOKEH==3:    
             topic = 'mappinglatency_%s'%(appoption)
             msg = 'mappinglatency priceintegratedhome updatelocalmapping %f %s\n'%(localmappingtime,appname)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -234,7 +233,7 @@ def update_global_assignment():
     starttime = time.time()
     global_task_node_map[first_task] = local_task_node_map[my_task,first_task]
     globalmappingtime = time.time()-starttime
-    if BOKEH==5:    
+    if BOKEH==3:    
         topic = 'mappinglatency_%s'%(appoption)
         msg = 'mappinglatency priceintegratedhome updateglobalmapping %f %s\n'%(globalmappingtime,appname)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -319,11 +318,11 @@ def recv_runtime_profile_computingnode():
     return "ok"
 app.add_url_rule('/recv_runtime_profile_computingnode', 'recv_runtime_profile_computingnode', recv_runtime_profile_computingnode)
 
-def transfer_data_scp(IP,user,pword,source, destination):
+def transfer_data_scp(ID,user,pword,source, destination):
     """Transfer data using SCP
     
     Args:
-        IP (str): destination IP address
+        IP (str): destination ID
         user (str): username
         pword (str): password
         source (str): source file path
@@ -336,7 +335,8 @@ def transfer_data_scp(IP,user,pword,source, destination):
     ts = -1
     while retry < num_retries:
         try:
-            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+            nodeIP = combined_ip_map[ID]
+            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
             print('data transfer complete\n')
             ts = time.time()
@@ -355,24 +355,24 @@ def transfer_data_scp(IP,user,pword,source, destination):
 
     
 
-def transfer_data(IP,user,pword,source, destination):
+def transfer_data(ID,user,pword,source, destination):
     """Transfer data with given parameters
     
     Args:
-        IP (str): destination IP 
+        IP (str): destination ID
         user (str): destination username
         pword (str): destination password
         source (str): source file path
         destination (str): destination file path
     """
-    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
     # print(msg)
     
 
     if TRANSFER == 0:
-        return transfer_data_scp(IP,user,pword,source, destination)
+        return transfer_data_scp(ID,user,pword,source, destination)
 
-    return transfer_data_scp(IP,user,pword,source, destination) #default
+    return transfer_data_scp(ID,user,pword,source, destination) #default
 
 
 
@@ -396,7 +396,7 @@ def get_updated_network_profile():
         if num_rows < num_nb:
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
-        logging =db[self_profiler_ip].find().limit(num_nb)  
+        logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb) 
 
         c = 0
         for record in logging:
@@ -404,7 +404,7 @@ def get_updated_network_profile():
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c = c+1
         
-        if BOKEH==5:
+        if BOKEH==3:
             msg = 'msgoverhead priceintegrated%s networkdata %d\n'%(my_id,c)
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
 
@@ -542,56 +542,23 @@ class MonitorRecv(multiprocessing.Process):
         print("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
-#for OUTPUT folder 
-class Watcher1():
-    
-    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
-
-    def __init__(self):
-        multiprocessing.Process.__init__(self)
-        self.observer = Observer()
-
-    def run(self):
-        """
-            Continuously watching the ``OUTPUT`` folder, if there is a new file created for the current task, copy the file to the corresponding ``INPUT`` folder of the next task in the scheduled node
-        """
-        event_handler = Handler1()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
-        self.observer.start()
-        try:
-            while True:
-                time.sleep(1)
-        except:
-            self.observer.stop()
-            print("Error")
-
-        self.observer.join()
-
-class Handler1(FileSystemEventHandler):
+class Handler1(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
+    """
 
 
+    def process_IN_CLOSE_WRITE(self, event):
+        print("Received file as output - %s." % event.pathname)
+        outputfile = event.pathname.split('/')[-1].split('_')[0]
 
-    @staticmethod
-    def on_any_event(event):
-        """
-            Check for any event in the ``OUTPUT`` folder
-        """
-        if event.is_directory:
-            return None
+        end_times[outputfile] = time.time()
+        exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
+        print("execution time is: ", exec_times)
 
-        elif event.event_type == 'created':
-             
-            print("Received file as output - %s." % event.src_path)
-            outputfile = event.src_path.split('/')[-1].split('_')[0]
-
-            end_times[outputfile] = time.time()
-            exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
-            print("execution time is: ", exec_times)
-
-            if BOKEH == 5:
-                print(appname)
-                msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
-                demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
+        if BOKEH == 3:
+            print(appname)
+            msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+            demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
            
 
 def new_predict_best_node(task_name):
@@ -716,90 +683,41 @@ def new_predict_best_node(task_name):
 #         print('Task price summary is not ready yet.....') 
 #     return best_node
 
-class Watcher(multiprocessing.Process):
-    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
 
-    def __init__(self):
-        multiprocessing.Process.__init__(self)
-        self.observer = Observer()
 
-    def run(self):
-        """
-        Monitoring ``INPUT`` folder for the incoming files.
-        
-        You can manually place input files into the ``INPUT`` folder (which is under ``centralized_scheduler_with_task_profiler``):
-        
-            .. code-block:: bash
-        
-                mv 1botnet.ipsum input/
-        
-        Once the file is there, it sends the file to the node performing the first task.
-        """
 
-        event_handler = Handler()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
-        self.observer.start()
-        try:
-            while True:
-                time.sleep(1)
-        except:
-            self.observer.stop()
-            print("Error")
-
-        self.observer.join()
-
-class Handler(FileSystemEventHandler):
-    """
-        Handling the event when there is a new file generated in ``INPUT`` folder
+class Handler(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
     """
 
-    @staticmethod
-    def on_any_event(event):
-        """
-        Whenever there is a new input file in ``INPUT`` folder, the function:
 
-        - Log the time the file is created
+    def process_IN_CLOSE_WRITE(self, event):
+        print("Received file as input - %s." % event.pathname)
+        if RUNTIME == 1:   
+            ts = time.time() 
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.pathname,ts)
+            runtime_receiver_log.write(s)
+            runtime_receiver_log.flush()
 
-        - Start the connection to the first scheduled node
+        inputfile = event.pathname.split('/')[-1]
+        start_times[inputfile] = time.time()
+        # start_times.append(time.time())
+        print("start time is: ", start_times)
+        new_file_name = os.path.split(event.pathname)[-1]
 
-        - Copy the newly created file to the ``INPUT`` folder of the first scheduled node
+    
+        while first_task not in global_task_node_map or global_task_node_map[first_task]==-1:
+            print('Not yet update global task mapping information')
+            print(global_task_node_map)
+            time.sleep(1)
         
-        Args:
-            event (FileSystemEventHandler): monitored event
-        """
-
-        if event.is_directory:
-            return None
-
-        elif event.event_type == 'created':
-
-            print("Received file as input - %s." % event.src_path)
-
-            if RUNTIME == 1:   
-                ts = time.time() 
-                s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.src_path,ts)
-                runtime_receiver_log.write(s)
-                runtime_receiver_log.flush()
-
-            inputfile = event.src_path.split('/')[-1]
-            start_times[inputfile] = time.time()
-            # start_times.append(time.time())
-            print("start time is: ", start_times)
-            new_file_name = os.path.split(event.src_path)[-1]
-
-        
-            while first_task not in global_task_node_map or global_task_node_map[first_task]==-1:
-                print('Not yet update global task mapping information')
-                print(global_task_node_map)
-                time.sleep(1)
-            
-            IP = node_ip_map[global_task_node_map[first_task]]
-            print('Send file to the first node')
-            print(global_task_node_map[first_task])
-        
-            source = event.src_path
-            destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)
-            transfer_data(IP,username, password,source, destination)
+        # IP = node_ip_map[global_task_node_map[first_task]]
+        print('Send file to the first node')
+        print(global_task_node_map[first_task])
+    
+        source = event.pathname
+        destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)
+        transfer_data(global_task_node_map[first_task],username, password,source, destination)
             
 def get_taskmap():
     """Get the task map from ``config.json`` and ``dag.txt`` files.
@@ -983,6 +901,12 @@ def main():
     home_ips = [x.split(':')[1] for x in home_nodes]
     home_ip_map = dict(zip(home_ids, home_ips))
 
+    global combined_ip_map,combined_ips,combined_nodes
+
+    combined_nodes = home_ids + all_computing_nodes
+    combined_ips = home_ips + all_computing_ips
+    combined_ip_map = dict(zip(combined_nodes,combined_ips))
+
     # print('***********')
     # print(my_id)
     
@@ -1045,13 +969,21 @@ def main():
     _thread.start_new_thread(schedule_update_global,(update_interval,))
     _thread.start_new_thread(start_evaluate,())
     
-    #monitor INPUT folder for the incoming files
-    w = Watcher()
-    w.start()
+    wm = pyinotify.WatchManager()
+    input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
+    wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
+    print('starting the input monitoring process\n')
+    eh = Handler()
+    notifier = pyinotify.ThreadedNotifier(wm, eh)
+    notifier.start()
 
-    #monitor OUTPUT in this process
-    w1=Watcher1()
-    w1.run()
+    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+    wm1 = pyinotify.WatchManager()
+    wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
+    print('starting the output monitoring process\n')
+    eh1 = Handler1()
+    notifier1= pyinotify.Notifier(wm1, eh1)
+    notifier1.loop()
 
 
 
