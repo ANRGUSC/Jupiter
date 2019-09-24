@@ -333,7 +333,7 @@ def assign_task_to_remote(assigned_node, task_name):
         # print(res)
         #
 
-        if BOKEH==3 or BOKEH==5:
+        if BOKEH==3:
             topic = 'msgoverhead_%s'%(node_name)
             msg = 'msgoverhead %s assignremote 1 %s %s \n' %(node_name,task_name,assigned_node)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -397,7 +397,7 @@ def call_send_mapping(mapping, node):
         res = res.decode('utf-8')
         local_mapping[mapping] = True
 
-        if BOKEH==3 or BOKEH ==5: 
+        if BOKEH==3: 
             topic = 'msgoverhead_%s'%(node_name)
             msg = 'msgoverhead %s announcehome 1 %s %s \n' %(node_name,node,mapping)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -664,7 +664,7 @@ def get_resource_data_drupe():
 
     print("Got profiler data from http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC))
     # print("Resource profiles: ", json.dumps(result))
-    if BOKEH==3 or BOKEH==5:
+    if BOKEH==3:
         topic = 'msgoverhead_%s'%(node_name)
         msg = 'msgoverhead %s resourcedata %d \n' %(node_name,len(myneighbors))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -702,7 +702,7 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
 
-    if BOKEH==3 or BOKEH==5:
+    if BOKEH==3:
         topic = 'msgoverhead_%s'%(node_name)
         msg = 'msgoverhead %s networkdata %d \n' %(node_name,len(myneighbors))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)

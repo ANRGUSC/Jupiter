@@ -132,7 +132,7 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
 
-    if BOKEH==5:
+    if BOKEH==3:
         n = num_profilers*len(logging)
         msg = 'msgoverhead balancehefthome resourcedata %d\n'%(n)
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
@@ -186,7 +186,7 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             time.sleep(60)
             num_rows = db[ip[1]].count()
-        logging =db[ip[1]].find().limit(num_nb)
+        logging = db[ip[1]].find().skip(db.collection.count() - num_nb)
     
         for record in logging:
             # print(record)
@@ -203,7 +203,7 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(network_info)
 
-    if BOKEH==5:
+    if BOKEH==3:
         n = len(profiler_ip)*num_nb
         msg = 'msgoverhead balancehefthome networkdata %d\n'%(n)
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)

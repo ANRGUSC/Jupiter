@@ -169,8 +169,6 @@ def default_best_node(source_node):
     w_cpu = 100000 # Resource profiling : larger cpu resource, lower price
     w_mem = 100000 # Resource profiling : larger mem resource, lower price
     w_queue = 1 # Queue : currently 0
-    # print('-----------------Current ratio')
-    # print(w_mem)
     best_node = -1
     task_price_network= dict()
     # print('----------')
@@ -237,7 +235,7 @@ def default_best_node(source_node):
         # print(task_price_summary)
         best_node = min(task_price_summary,key=task_price_summary.get)
         mappinglatency = time.time() - starttime   
-        if BOKEH==5:    
+        if BOKEH==3:    
             topic = 'mappinglatency_%s'%(app_option)
             msg = 'mappinglatency priceeventcontroller%s updatemybestmap %f %s\n'%(self_task,mappinglatency,app_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -256,6 +254,7 @@ def predict_best_node(source_node):
     """
     #if PRICE_OPTION ==0: #default
     best_node = default_best_node(source_node)
+    print(best_node)
     return best_node
 
 def receive_best_assignment_request():
@@ -313,7 +312,7 @@ def announce_best_assignment(home_id,best_node, source_node, file_name,source_ke
         res = res.read()
         res = res.decode('utf-8')
 
-        if BOKEH==5:    
+        if BOKEH==3:    
             topic = 'msgoverhead_controller%s'%(self_task)
             msg = 'msgoverhead priceeventcontroller%s announcebest 1 %s\n'%(self_task,source_node)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -376,7 +375,7 @@ def push_controller_map():
         # print(computing_ip)
         send_controller_info(computing_ip)
         # print(time.time()-t1)
-    if BOKEH==5:    
+    if BOKEH==3:    
         topic = 'msgoverhead_controller%s'%(self_task)
         msg = 'msgoverhead priceeventcontroller%s pushcontroller %d \n'%(self_task,len(all_computing_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)

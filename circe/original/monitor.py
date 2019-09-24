@@ -32,19 +32,8 @@ import numpy as np
 from collections import defaultdict
 import paho.mqtt.client as mqtt
 import socket
+import pyinotify
 
-
-global bottleneck
-bottleneck = defaultdict(list)
-
-
-def tic():
-    return time.time()
-
-def toc(t):
-    texec = time.time() - t
-    print('Execution time is:'+str(texec))
-    return texec
 
 
 def send_monitor_data(msg):
@@ -119,11 +108,11 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def transfer_data_scp(IP,user,pword,source, destination):
+def transfer_data_scp(ID,user,pword,source, destination):
     """Transfer data using SCP
     
     Args:
-        IP (str): destination IP address
+        ID (str): destination ID
         user (str): username
         pword (str): password
         source (str): source file path
@@ -139,7 +128,8 @@ def transfer_data_scp(IP,user,pword,source, destination):
     ts = -1
     while retry < num_retries:
         try:
-            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+            nodeIP = combined_ip_map[ID]
+            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
             print('data transfer complete\n')
             ts = time.time()
@@ -160,24 +150,24 @@ def transfer_data_scp(IP,user,pword,source, destination):
         runtime_sender_log.write(s)
         runtime_sender_log.flush()
 
-def transfer_data(IP,user,pword,source, destination):
+def transfer_data(ID,user,pword,source, destination):
     """Transfer data with given parameters
     
     Args:
-        IP (str): destination IP 
+        IP (str): destination IP
         user (str): destination username
         pword (str): destination password
         source (str): source file path
         destination (str): destination file path
     """
-    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
     # print(msg)
     
 
     if TRANSFER == 0:
-        return transfer_data_scp(IP,user,pword,source, destination)
+        return transfer_data_scp(ID,user,pword,source, destination)
 
-    return transfer_data_scp(IP,user,pword,source, destination) #default
+    return transfer_data_scp(ID,user,pword,source, destination) #default
 
 def multicast_data_scp(IP_list,user_list,pword_list,source, destination):
     """Transfer data using SCP to multiple nodes
@@ -239,114 +229,131 @@ def demo_help(server,port,topic,msg):
     client.publish(topic, msg,qos=1)
     client.disconnect()
 
-#for OUTPUT folder 
-class Watcher1():
-    
-    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+class Handler1(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
+    """
 
-    def __init__(self):
-        multiprocessing.Process.__init__(self)
-        self.observer = Observer()
 
-    def run(self):
+    def process_IN_CLOSE_WRITE(self, event):
+        print("Received file as output - %s." % event.pathname)
+        
         """
-            Continuously watching the ``OUTPUT`` folder, if there is a new file created for the current task, copy the file to the corresponding ``INPUT`` folder of the next task in the scheduled node
+            Save the time when a output file is available. This is taken as the end time of the task.
+            The output time is stored in the file central_scheduler/runtime/droplet_runtime_output_(%node name)
         """
-        event_handler = Handler1()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
-        self.observer.start()
-        try:
-            while True:
-                time.sleep(5)
-        except:
-            self.observer.stop()
-            print("Error")
+        new_file = os.path.split(event.pathname)[-1]
 
-        self.observer.join()
+        if '_' in new_file:
+            temp_name = new_file.split('_')[0]
+        else:
+            temp_name = new_file.split('.')[0]
+        # with open(runtime_file, 'a') as f:
+        #     line = 'created_output, %s, %s, %s, %s\n' % (node_name, taskname, temp_name, execution_end_time)
+        #     f.write(line)
+        
 
-class Handler1(FileSystemEventHandler):
+        global files_out
 
+        #based on flag2 decide whether to send one output to all children or different outputs to different children in
+        #order given in the config file
+        flag2 = sys.argv[2]
 
-    @staticmethod
-    def on_any_event(event):
-        """
-            Check for any event in the ``OUTPUT`` folder
-        """
-        if event.is_directory:
-            return None
-
-        elif event.event_type == 'created':
-
-            # print('***************************************************')
-            
-            
-             
-            print("Received file as output - %s." % event.src_path)
-            # t = tic()
-
-            #Runtime profiler (finished_time)
-            
-            """
-                Save the time when a output file is available. This is taken as the end time of the task.
-                The output time is stored in the file central_scheduler/runtime/droplet_runtime_output_(%node name)
-            """
-            # execution_end_time = datetime.datetime.utcnow()
-            # pathrun = '/centralized_scheduler/runtime/'
-            # runtime_file = os.path.join(pathrun,'droplet_runtime_output_' + node_name)
-
-            # t1 = time.time()
-            new_file = os.path.split(event.src_path)[-1]
-
-            if '_' in new_file:
-                temp_name = new_file.split('_')[0]
-            else:
-                temp_name = new_file.split('.')[0]
-            # with open(runtime_file, 'a') as f:
-            #     line = 'created_output, %s, %s, %s, %s\n' % (node_name, taskname, temp_name, execution_end_time)
-            #     f.write(line)
-            
-
-            global files_out
-
-            #based on flag2 decide whether to send one output to all children or different outputs to different children in
-            #order given in the config file
-            flag2 = sys.argv[2]
-
-            #if you are sending the final output back to scheduler
-            # print(time.time()-t1)
-            # t1 = time.time()
-            
+        #if you are sending the final output back to scheduler
+        # print(time.time()-t1)
+        # t1 = time.time()
+        
+        ts = time.time()
+        # print('====')
+        # print(sys.argv)
+        # print(flag2)
+        # print(taskname)
+        # print('====2')
+        if taskname == 'distribute':
+            print('This is the distribution point')
+            # send runtime profiling information
             ts = time.time()
-            # print('====')
+            runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+            send_runtime_profile(runtime_info)
+            if BOKEH == 1:
+                runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+            # print(new_file)
+            # print(temp_name)
+            appname = temp_name.split('-')[0]
+            # print(appname)
+            source = event.pathname
             # print(sys.argv)
+            next_node = appname+'-task0'
+            # print(sys.argv.index(next_node))
+            idx = sys.argv.index(next_node)
+            next_task = sys.argv[idx]
+            # IPaddr = sys.argv[idx+1]
+            user = sys.argv[idx+2]
+            password=sys.argv[idx+3]
+            destination = os.path.join('/centralized_scheduler', 'input', new_file)
+            transfer_data(next_task,user,password,source, destination)
+        elif sys.argv[3] == 'home':
+            print('Next node is home')
+            # send runtime profiling information
+            ts = time.time()
+            runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+            send_runtime_profile(runtime_info)
+            if BOKEH == 1:
+                runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+
+            if BOKEH == 0:
+                msg = taskname + " ends"
+                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+            
+            # IPaddr = sys.argv[4]
+            user = sys.argv[5]
+            password=sys.argv[6]
+            source = event.pathname
+            destination = os.path.join('/output', new_file)
+            transfer_data('home',user,password,source, destination)
+            
+
+        elif flag2 == 'true':
             # print(flag2)
-            # print(taskname)
-            # print('====2')
-            if taskname == 'distribute':
-                print('This is the distribution point')
-                # send runtime profiling information
-                ts = time.time()
-                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)
-                if BOKEH == 1:
-                    runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-                # print(new_file)
-                # print(temp_name)
-                appname = temp_name.split('-')[0]
-                # print(appname)
-                source = event.src_path
-                # print(sys.argv)
-                next_node = appname+'-task0'
-                # print(sys.argv.index(next_node))
-                idx = sys.argv.index(next_node)
-                IPaddr = sys.argv[idx+1]
-                user = sys.argv[idx+2]
-                password=sys.argv[idx+3]
+            # print('----- True')
+            # send runtime profiling information
+            ts = time.time()
+            runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+            send_runtime_profile(runtime_info)
+            if BOKEH == 1:
+                runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+
+            if BOKEH == 0:
+                msg = taskname + " ends"
+                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+            
+
+            for i in range(3, len(sys.argv)-1,4):
+                cur_task = sys.argv[i]
+                # IPaddr = sys.argv[i+1]
+                user = sys.argv[i+2]
+                password = sys.argv[i+3]
+                source = event.pathname
                 destination = os.path.join('/centralized_scheduler', 'input', new_file)
-                transfer_data(IPaddr,user,password,source, destination)
-            elif sys.argv[3] == 'home':
-                print('Next node is home')
+                transfer_data(cur_task,user,password,source, destination)
+
+        else:
+            # print(flag2)
+            # print('====== False')
+            num_child = (len(sys.argv) - 4) / 4
+            files_out.append(new_file)
+
+            # print(sys.argv)
+            # print(len(sys.argv))
+            # print(num_child)
+            # print(files_out)
+            # print(len(files_out))
+            # print(len(files_out) == num_child)
+
+            if (len(files_out) == num_child):
+
                 # send runtime profiling information
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
@@ -354,233 +361,123 @@ class Handler1(FileSystemEventHandler):
                 if BOKEH == 1:
                     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-
                 if BOKEH == 0:
                     msg = taskname + " ends"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
-                
-                IPaddr = sys.argv[4]
-                user = sys.argv[5]
-                password=sys.argv[6]
-                source = event.src_path
-                destination = os.path.join('/output', new_file)
-                transfer_data(IPaddr,user,password,source, destination)
-                
-
-            elif flag2 == 'true':
-                # print(flag2)
-                # print('----- True')
-                # send runtime profiling information
-                ts = time.time()
-                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)
-                if BOKEH == 1:
-                    runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-
-                if BOKEH == 0:
-                    msg = taskname + " ends"
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
-                
+                    
 
                 for i in range(3, len(sys.argv)-1,4):
-                    IPaddr = sys.argv[i+1]
+                    myfile = files_out.pop(0)
+                    event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
+                    cur_task = sys.argv[i]
+                    # IPaddr = sys.argv[i+1]
                     user = sys.argv[i+2]
                     password = sys.argv[i+3]
-                    source = event.src_path
-                    destination = os.path.join('/centralized_scheduler', 'input', new_file)
-                    transfer_data(IPaddr,user,password,source, destination)
+                    source = event_path
+                    destination = os.path.join('/centralized_scheduler','input', myfile)
+                    transfer_data(cur_task,user,password,source, destination)
 
-            else:
-                # print(flag2)
-                # print('====== False')
-                num_child = (len(sys.argv) - 4) / 4
-                files_out.append(new_file)
-
-                # print(sys.argv)
-                # print(len(sys.argv))
-                # print(num_child)
-                # print(files_out)
-                # print(len(files_out))
-                # print(len(files_out) == num_child)
-
-                if (len(files_out) == num_child):
-
-                    # send runtime profiling information
-                    ts = time.time()
-                    runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                    send_runtime_profile(runtime_info)
-                    if BOKEH == 1:
-                        runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                        demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-                    if BOKEH == 0:
-                        msg = taskname + " ends"
-                        demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
-                        
-
-                    for i in range(3, len(sys.argv)-1,4):
-                        myfile = files_out.pop(0)
-                        event_path = os.path.join(''.join(os.path.split(event.src_path)[:-1]), myfile)
-                        IPaddr = sys.argv[i+1]
-                        user = sys.argv[i+2]
-                        password = sys.argv[i+3]
-                        source = event_path
-                        destination = os.path.join('/centralized_scheduler','input', myfile)
-                        transfer_data(IPaddr,user,password,source, destination)
-
-                    files_out=[]
-
-            # print(time.time()-t1)
-
-            # txec = toc(t)
-            # bottleneck['receiveoutput'].append(txec)
-            # print(np.mean(bottleneck['receiveoutput']))
-            # print('***************************************************')
+                files_out=[]
 
 
-#for INPUT folder
-class Watcher(multiprocessing.Process):
 
-    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
-    
-    def __init__(self):
-        multiprocessing.Process.__init__(self)
-        self.observer = Observer()
+class Handler(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
+    """
 
-    def run(self):
+
+    def process_IN_CLOSE_WRITE(self, event):
+        print("Received file as input - %s." % event.pathname)
+
+        new_file = os.path.split(event.pathname)[-1]
+
+
         """
-            Continuously watching the ``INPUT`` folder.
-            When file in the input folder is received, based on the DAG info imported previously, it either waits for more input files, or  perform the current task on the current node.
+            Save the time when an input file is available. This is taken as the start time of the task.
+            The output time is stored in the file central_scheduler/runtime/droplet_runtime_input_(%node name)
         """
         
-        event_handler = Handler()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
-        self.observer.start()
-        try:
-            while True:
-                time.sleep(5)
-        except:
-            self.observer.stop()
-            print("Error")
-
-        self.observer.join()
-
-class Handler(FileSystemEventHandler):
-
-    @staticmethod
-    def on_any_event(event):
-        if event.is_directory:
-            return None
-
-        elif event.event_type == 'created':
-
-            # print('***************************************************')
-            print("Received file as input - %s." % event.src_path)
-            # t = tic()
-            new_file = os.path.split(event.src_path)[-1]
+        new_file = os.path.split(event.pathname)[-1]
+        if '_' in new_file:
+            temp_name = new_file.split('_')[0]
+        else:
+            temp_name = new_file.split('.')[0]
 
 
-            """
-                Save the time when an input file is available. This is taken as the start time of the task.
-                The output time is stored in the file central_scheduler/runtime/droplet_runtime_input_(%node name)
-            """
-            
-            new_file = os.path.split(event.src_path)[-1]
-            if '_' in new_file:
-                temp_name = new_file.split('_')[0]
-            else:
-                temp_name = new_file.split('.')[0]
+        queue_mul.put(new_file)
+        print(new_file)
+        
+        ts = time.time()
+        if RUNTIME == 1:
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,event.pathname,ts)
+            runtime_receiver_log.write(s)
+            runtime_receiver_log.flush()
 
+        """
+            Save the time the input file enters the queue
+        """
+        filename = new_file
+        global filenames
 
-            queue_mul.put(new_file)
-            print(new_file)
-            
+        if len(filenames) == 0:
+            runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
+            send_runtime_profile(runtime_info)
+            if BOKEH == 1:
+                runtimebk = 'rt_enter '+ taskname+' '+ temp_name+ ' '+str(ts)
+                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+
+        flag1 = sys.argv[1]
+        print(flag1)
+
+        # t1 = time.time()
+        if flag1 == "1":
+
+            # Start msg
+            print('Option1')
             ts = time.time()
-            if RUNTIME == 1:
-                s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,event.src_path,ts)
-                runtime_receiver_log.write(s)
-                runtime_receiver_log.flush()
+            runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+            send_runtime_profile(runtime_info)  
+            if BOKEH == 1:
+                runtimebk = 'rt_exec '+ taskname + ' '+temp_name+ ' '+str(ts)
+                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+            if BOKEH == 0:
+                msg = taskname + " starts"
+                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                
+            print('Option11')
+            inputfile=queue_mul.get()
+            input_path = os.path.split(event.pathname)[0]
+            output_path = os.path.join(os.path.split(input_path)[0],'output')
+            print('Option12')
+            dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
+            dag_task.start()
+            dag_task.join()
+           
+        else:
+            print('Option2')
+            filenames.append(queue_mul.get())
+            if (len(filenames) == int(flag1)):
 
-            """
-                Save the time the input file enters the queue
-            """
-            filename = new_file
-            global filenames
-
-            if len(filenames) == 0:
-                runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)
-                if BOKEH == 1:
-                    runtimebk = 'rt_enter '+ taskname+' '+ temp_name+ ' '+str(ts)
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-
-            flag1 = sys.argv[1]
-            print(flag1)
-
-            # t1 = time.time()
-            if flag1 == "1":
-    
-                # Start msg
-                print('Option1')
+                #start msg
+                print('Option 2 continue')
                 ts = time.time()
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)  
+                send_runtime_profile(runtime_info)
+                
+                print('Option21')
                 if BOKEH == 1:
-                    runtimebk = 'rt_exec '+ taskname + ' '+temp_name+ ' '+str(ts)
+                    runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
                 if BOKEH == 0:
                     msg = taskname + " starts"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
-                    
-                print('Option11')
-                inputfile=queue_mul.get()
-                input_path = os.path.split(event.src_path)[0]
+                input_path = os.path.split(event.pathname)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
-                print('Option12')
-                dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
+                print('Option22')
+                dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
                 dag_task.start()
                 dag_task.join()
-                # ts = time.time()
-                # runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                # send_runtime_profile(runtime_info)
-                # print('Option13')
-                # if BOKEH == 1:
-                #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-                # # end msg
-            else:
-                print('Option2')
-                filenames.append(queue_mul.get())
-                if (len(filenames) == int(flag1)):
-
-                    #start msg
-                    print('Option 2 continue')
-                    ts = time.time()
-                    runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-                    send_runtime_profile(runtime_info)
-                    
-                    print('Option21')
-                    if BOKEH == 1:
-                        runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
-                        demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-                    if BOKEH == 0:
-                        msg = taskname + " starts"
-                        demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
-                    input_path = os.path.split(event.src_path)[0]
-                    output_path = os.path.join(os.path.split(input_path)[0],'output')
-                    print('Option22')
-                    dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
-                    dag_task.start()
-                    dag_task.join()
-                    filenames = []
-                    # ts = time.time()
-                    # runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-                    # send_runtime_profile(runtime_info)
-                    # print('Option23')
-                    # if BOKEH == 1:
-                    #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                    #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-
+                filenames = []
 
 
 
@@ -663,9 +560,16 @@ def main():
     print(BOKEH)
 
 
-    # global client
-    # client = mqtt.Client()
-    # client.connect(BOKEH_SERVER, BOKEH_PORT,300)
+    print('Mapping information')
+    global combined_ip_map 
+    combined_ip_map = dict()
+    for i in range(3, len(sys.argv)-1,4):
+        node = sys.argv[i]
+        IPaddr = sys.argv[i+1]
+        user = sys.argv[i+2]
+        password = sys.argv[i+3]
+        combined_ip_map[node] = IPaddr
+    print(combined_ip_map)
 
 
     print('Taskmapping information')
@@ -674,13 +578,22 @@ def main():
         print('Monitor INPUT & OUTPUT')
         queue_mul=multiprocessing.Queue()
 
-        #monitor INPUT as another process
-        w=Watcher()
-        w.start()
 
-        #monitor OUTPUT in this process
-        w1=Watcher1()
-        w1.run()
+        wm = pyinotify.WatchManager()
+        input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
+        wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
+        print('starting the input monitoring process\n')
+        eh = Handler()
+        notifier = pyinotify.ThreadedNotifier(wm, eh)
+        notifier.start()
+
+        output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+        wm1 = pyinotify.WatchManager()
+        wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
+        print('starting the output monitoring process\n')
+        eh1 = Handler1()
+        notifier1= pyinotify.Notifier(wm1, eh1)
+        notifier1.loop()
     else:
         print('Task Mapping information')
         print(taskmap[2:])

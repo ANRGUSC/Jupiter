@@ -20,6 +20,10 @@ from os import path
 import multiprocessing
 from multiprocessing import Process, Manager
 import paho.mqtt.client as mqtt
+from functools import wraps
+from pymongo import MongoClient
+from flask import Flask, request
+import requests
 
 
 
@@ -74,6 +78,8 @@ def prepare_global():
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
     MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
+
+
 
     print("starting the main thread on port")
 
@@ -133,6 +139,53 @@ def prepare_global():
     BOKEH = int(config['OTHER']['BOKEH'])
     app_name = os.environ['APP_NAME']
     app_option = os.environ['APP_OPTION']
+
+    global my_profiler_ip, network_map, PROFILER
+    PROFILER = int(config['CONFIG']['PROFILER'])
+    my_profiler_ip = os.environ['PROFILER']
+
+    tmp_nodes_for_convert={}
+    network_map = {}
+
+    #Get nodes to self_ip mapping
+    for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
+        if name == "":
+            continue
+        nodes[name] = node_ip + ":" + str(FLASK_SVC)
+        node_count += 1
+
+    #Get nodes to profiler_ip mapping
+    for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
+        if name == "":
+            continue
+        #First get mapping like {node: profiler_ip}, and later convert it to {profiler_ip: node}
+        tmp_nodes_for_convert[name] = node_ip
+
+    # network_map is a dict that contains node names and profiler ips mapping
+    network_map = {v: k for k, v in tmp_nodes_for_convert.items()}
+    print('---- Network map')
+    print(network_map)
+
+    global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
+
+    
+    threshold = 15
+    resource_data = {}
+    is_resource_data_ready = False
+    network_profile_data = {}
+    is_network_profile_data_ready = False
+
+    global first_task
+    first_task = os.environ['CHILD_NODES']
+
+    global home_profiler_ip
+    home_profiler = os.environ['HOME_PROFILER_IP'].split(' ')
+    home_profiler_ip = [x.split(':')[1] for x in home_profiler]
+
+    global profiler_ips 
+    profiler_ips = os.environ['ALL_PROFILERS'].split(':')
+    profiler_ips = profiler_ips[1:]
+
 
 
 
@@ -213,7 +266,7 @@ def assign_task_to_remote(assigned_node, task_name):
         str: request if sucessful, ``not ok`` otherwise
     """
     try:
-        print('Assign the first task based on the input file')
+        print('Assign the first task')
         url = "http://" + nodes[assigned_node] + "/assign_task"
         # print(url)
         # print(task_name)
@@ -223,7 +276,7 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==5:
+        if BOKEH==3:
             msg = 'msgoverhead greedywavehome assignfirst 1 \n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
@@ -265,7 +318,7 @@ def monitor_task_status():
             end_time = time.time()
             deploy_time = end_time - starting_time
             print('Time to finish WAVE mapping '+ str(deploy_time))
-            if BOKEH==5:
+            if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)
                 msg = 'mappinglatency greedywave %s %f \n' %(app_name,deploy_time)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -291,6 +344,259 @@ def write_file(file_name, content, mode):
     file.close()
     #lock.release()
 
+def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
+    """Collect the network profile from local MongoDB peer
+    """
+    print('Check My Network Profiler IP: '+my_profiler_ip)
+    client_mongo = MongoClient('mongodb://'+my_profiler_ip+':'+str(MONGO_SVC_PORT)+'/')
+    db = client_mongo.droplet_network_profiler
+    collection = db.collection_names(include_system_collections=False)
+    num_nb = len(collection)-1
+    print(num_nb)
+    while num_nb==-1:
+        print('--- Network profiler mongoDB not yet prepared')
+        time.sleep(60)
+        collection = db.collection_names(include_system_collections=False)
+        num_nb = len(collection)-1
+    print('--- Number of neighbors: '+str(num_nb))
+    num_rows = db[my_profiler_ip].count()
+    print(num_rows)
+    while num_rows < num_nb:
+        print('--- Network profiler regression info not yet loaded into MongoDB!')
+        time.sleep(60)
+        num_rows = db[my_profiler_ip].count()
+    # logging =db[my_profiler_ip].find().limit(num_nb)
+    logging =db[my_profiler_ip].find().skip(db[my_profiler_ip].count()-num_nb)
+    for record in logging:
+        # Destination ID -> Parameters(a,b,c) , Destination IP
+        # print('-------')
+        # print(record['Destination[IP]'])
+        # print(home_profiler_ip)
+        if record['Destination[IP]'] in home_profiler_ip: continue
+        params = re.split(r'\s+', record['Parameters'])
+        network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
+                                                            'c': float(params[2]), 'ip': record['Destination[IP]']}
+    print('Network information has already been provided')
+    print(network_profile_data)
+
+    global is_network_profile_data_ready
+    is_network_profile_data_ready = True
+
+    if BOKEH==3:
+        topic = 'msgoverhead_%s'%(node_name)
+        msg = 'msgoverhead greedywave%s networkdata %d \n' %(node_name,len(myneighbors))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
+def profilers_mapping_decorator(f):
+    """General Mapping decorator function
+    """
+    @wraps(f)
+    def profiler_mapping(*args, **kwargs):
+      return f(*args, **kwargs)
+    return profiler_mapping
+
+def get_resource_data_drupe(MONGO_SVC_PORT):
+    """Collect the resource profile from local MongoDB peer
+    """
+
+    print('----------------------')
+    print(profiler_ips)
+    for profiler_ip in profiler_ips:
+        print('Check Resource Profiler IP: '+profiler_ip)
+        client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(MONGO_SVC_PORT)+'/')
+        db = client_mongo.central_resource_profiler
+        collection = db.collection_names(include_system_collections=False)
+        logging =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
+        for record in logging:
+            print(record)
+            print(network_map[profiler_ip])
+            resource_data[network_map[profiler_ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
+
+    print('Resource information has already been provided')
+    print(resource_data)
+    global is_resource_data_ready
+    is_resource_data_ready = True
+
+    if BOKEH==3:
+        topic = 'msgoverhead_%s'%(node_name)
+        msg = 'msgoverhead greedywave%s resourcedata %d \n' %(node_name,len(profiler_ips))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+        
+
+# def get_resource_data_drupe():
+#     """Collect resource profiling information
+#     """
+#     print("Starting resource profile collection thread")
+#     # Requsting resource profiler data using flask for its corresponding profiler node
+#     try_resource_times = 0
+#     while True:
+#         time.sleep(60)
+#         try:
+#             if try_resource_times >= 10:
+#                 print("Exceeded maximum try times, break.")
+#                 break
+#             r = requests.get("http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC) + "/all")
+#             print(r)
+#             result = r.json()
+#             print(result)
+#             if len(result) != 0:
+#                 break
+#             else:
+#                 try_resource_times += 1
+#         except Exception as e:
+#             print("Resource request failed. Will try again, details: " + str(e))
+#             try_resource_times += 1
+#     print(result)
+#     global resource_data
+#     resource_data = result
+
+#     global is_resource_data_ready
+#     is_resource_data_ready = True
+
+#     print("Got profiler data from http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC))
+#     print("Resource profiles: ", json.dumps(result))
+#     if BOKEH==3:
+#         topic = 'msgoverhead_%s'%(node_name)
+#         msg = 'msgoverhead greedywave%s resourcedata %d \n' %(node_name,len(myneighbors))
+#         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
+
+
+def get_network_data_mapping():
+    """Mapping the chosen TA2 module (network monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        PROFILER (str): specified from ``jupiter_config.ini``
+    
+    Returns:
+        TYPE: corresponding network function
+    """
+    if PROFILER==0: 
+        return profilers_mapping_decorator(get_network_data_drupe)
+    return profilers_mapping_decorator(get_network_data_drupe)
+
+def get_resource_data_mapping():
+    """Mapping the chosen TA2 module (resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+    
+    Args:
+        PROFILER (str): specified from ``jupiter_config.ini``
+    
+    Returns:
+        TYPE: corresponding resource function
+    """
+    if PROFILER==0: 
+        return profilers_mapping_decorator(get_resource_data_drupe)
+    return profilers_mapping_decorator(get_resource_data_drupe)
+
+def get_most_suitable_node(file_size):
+    """Calculate network delay + resource delay
+    
+    Args:
+        file_size (int): file_size
+    
+    Returns:
+        str: result_node_name - assigned node for the current task
+    """
+    print('Trying to get the most suitable node')
+    weight_network = 1
+    weight_cpu = 1
+    weight_memory = 1
+
+    print('Input profiling information')
+    print(network_profile_data)
+    print(resource_data)
+
+    valid_nodes = []
+    min_value = sys.maxsize
+
+    valid_net_data = dict()
+    for tmp_node_name in network_profile_data:
+        data = network_profile_data[tmp_node_name]
+        delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
+        print('DEBUG')
+        print(file_size)
+        print(data)
+        # network_profile_data[tmp_node_name]['delay'] = delay
+        valid_net_data[tmp_node_name] = delay
+        if delay < min_value:
+            min_value = delay
+
+
+    # print('-------------- Network')
+    # print(network_profile_data)
+
+    # get all the nodes that satisfy: time < tmin * threshold
+    # for _, item in enumerate(network_profile_data):
+    #     if network_profile_data[item]['delay'] < min_value * threshold:
+    #         valid_nodes.append(item)
+
+    for item in valid_net_data:
+        if valid_net_data[item] < min_value * threshold:
+            valid_nodes.append(item)
+
+
+    print('Valid nodes')
+    print(valid_nodes)
+
+    print('Network profile data')
+    print(network_profile_data)
+
+    min_value = sys.maxsize
+    result_node_name = ''
+
+    task_price_summary = dict()
+
+    for item in valid_nodes:
+        # print(item)
+        # tmp_value = network_profile_data[item]['delay']
+        tmp_value = valid_net_data[item]
+
+        # tmp_cpu = 10000
+        # tmp_memory = 10000
+        tmp_cpu = sys.maxsize
+        tmp_memory = sys.maxsize
+        if item in resource_data.keys():
+            print(item)
+            # print(resource_data[item])
+            tmp_cpu = resource_data[item]['cpu']
+            tmp_memory = resource_data[item]['memory']
+
+        tmp_cost = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
+
+        task_price_summary[item] = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
+        print('-----')
+        print(tmp_value)
+        print(tmp_cpu)
+        print(tmp_memory)
+        print('-----')
+        if  tmp_cost < min_value:
+            min_value = tmp_cost
+            result_node_name = item
+
+    print('Task price summary')
+    print(task_price_summary)
+
+    try:
+        best_node = min(task_price_summary,key=task_price_summary.get)
+        print('Best node for is ' +best_node)
+        return best_node
+    except Exception as e:
+        print('Task price summary is not ready yet.....') 
+        print(e)
+        return -1
+
+def cal_file_size(file_path):
+    """Return the file size in bytes
+    
+    Args:
+        file_path (str): The file path
+    
+    Returns:
+        float: file size in bytes
+    """
+    if os.path.isfile(file_path):
+        file_info = os.stat(file_path)
+        return file_info.st_size * 0.008
 
 def init_task_topology():
     """
@@ -300,18 +606,33 @@ def init_task_topology():
         - Write control relations to ``DAG/parent_controller.txt``
     """
 
-    input_nodes = read_file("DAG/input_node.txt")
-    del input_nodes[0]
-    for line in input_nodes:
-        line = line.strip()
-        items = line.split()
-        task = items[0]
+    # input_nodes = read_file("DAG/input_node.txt")
+    # del input_nodes[0]
+    # for line in input_nodes:
+    #     line = line.strip()
+    #     items = line.split()
+    #     task = items[0]
 
-        for node in items[1:]:
-            if node in init_tasks.keys():
-                init_tasks[node].append(task)
-            else:
-                init_tasks[node] = [task]
+    #     for node in items[1:]:
+    #         if node in init_tasks.keys():
+    #             init_tasks[node].append(task)
+    #         else:
+    #             init_tasks[node] = [task]
+
+    print('First task')
+    print(first_task)
+    sample_file = '/1botnet.ipsum'
+    sample_size = cal_file_size(sample_file)
+    print(sample_size)
+
+    assign_to_node = -1
+    while assign_to_node==-1:
+        assign_to_node = get_most_suitable_node(sample_size)
+        time.sleep(60)
+    print(assign_to_node)
+    init_tasks[assign_to_node] = [first_task]
+
+
 
     print('------- Init tasks')
     print("init_tasks" ,init_tasks)
@@ -382,7 +703,17 @@ def main():
 
     prepare_global()
 
+
+
     print("starting the main thread on port", FLASK_PORT)
+
+    get_network_data = get_network_data_mapping()
+    get_resource_data = get_resource_data_mapping()
+
+    _thread.start_new_thread(get_resource_data, (MONGO_SVC,))
+
+    # Get network profile data
+    _thread.start_new_thread(get_network_data, (my_profiler_ip, MONGO_SVC,network_map))
 
     init_task_topology()
     _thread.start_new_thread(init_thread, ())

@@ -120,6 +120,10 @@ def prepare_global():
     print(BOKEH_PORT)
     print(BOKEH)
 
+    global profiler_ips 
+    profiler_ips = os.environ['ALL_PROFILERS'].split(':')
+    profiler_ips = profiler_ips[1:]
+
 
     # for line in application:
     #     line = line.strip()
@@ -274,7 +278,7 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==5:
+        if BOKEH==3:
             topic = 'msgoverhead_%s'%(node_name)
             msg = 'msgoverhead greedywave%s assignremote 1 %s %s \n' %(node_name,task_name,assigned_node)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -317,7 +321,7 @@ def call_send_mapping(mapping, node):
         res = res.read()
         res = res.decode('utf-8')
         local_mapping[mapping] = True
-        if BOKEH ==5: 
+        if BOKEH == 3: 
             topic = 'msgoverhead_%s'%(node_name)
             msg = 'msgoverhead greedywave%s announcehome 1 %s %s \n' %(node_name,node,mapping)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -621,41 +625,67 @@ def output(msg):
     if debug:
         print(msg)
 
-
-def get_resource_data_drupe():
-    """Collect resource profiling information
+def get_resource_data_drupe(MONGO_SVC_PORT):
+    """Collect the resource profile from local MongoDB peer
     """
-    print("Starting resource profile collection thread")
-    # Requsting resource profiler data using flask for its corresponding profiler node
-    try_resource_times = 0
-    while True:
-        time.sleep(60)
-        try:
-            if try_resource_times >= 10:
-                print("Exceeded maximum try times, break.")
-                break
-            r = requests.get("http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC) + "/all")
-            result = r.json()
-            # print(result)
-            if len(result) != 0:
-                break
-            else:
-                try_resource_times += 1
-        except Exception as e:
-            print("Resource request failed. Will try again, details: " + str(e))
-            try_resource_times += 1
-    global resource_data
-    resource_data = result
 
+    print('----------------------')
+    print(profiler_ips)
+    for profiler_ip in profiler_ips:
+        print('Check Resource Profiler IP: '+profiler_ip)
+        client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(MONGO_SVC_PORT)+'/')
+        db = client_mongo.central_resource_profiler
+        collection = db.collection_names(include_system_collections=False)
+        logging =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
+        for record in logging:
+            print(record)
+            print(network_map[profiler_ip])
+            resource_data[network_map[profiler_ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
+
+    print('Resource information has already been provided')
+    print(resource_data)
     global is_resource_data_ready
     is_resource_data_ready = True
 
-    print("Got profiler data from http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC))
-    print("Resource profiles: ", json.dumps(result))
-    if BOKEH==5:
+    if BOKEH==3:
         topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead greedywave%s resourcedata %d \n' %(node_name,len(myneighbors))
+        msg = 'msgoverhead greedywave%s resourcedata %d \n' %(node_name,len(profiler_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
+# def get_resource_data_drupe():
+#     """Collect resource profiling information
+#     """
+#     print("Starting resource profile collection thread")
+#     # Requsting resource profiler data using flask for its corresponding profiler node
+#     try_resource_times = 0
+#     while True:
+#         time.sleep(60)
+#         try:
+#             if try_resource_times >= 10:
+#                 print("Exceeded maximum try times, break.")
+#                 break
+#             r = requests.get("http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC) + "/all")
+#             result = r.json()
+#             # print(result)
+#             if len(result) != 0:
+#                 break
+#             else:
+#                 try_resource_times += 1
+#         except Exception as e:
+#             print("Resource request failed. Will try again, details: " + str(e))
+#             try_resource_times += 1
+#     global resource_data
+#     resource_data = result
+
+#     global is_resource_data_ready
+#     is_resource_data_ready = True
+
+#     print("Got profiler data from http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC))
+#     print("Resource profiles: ", json.dumps(result))
+#     if BOKEH==3:
+#         topic = 'msgoverhead_%s'%(node_name)
+#         msg = 'msgoverhead greedywave%s resourcedata %d \n' %(node_name,len(myneighbors))
+#         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
 def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
@@ -693,7 +723,7 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
 
-    if BOKEH==5:
+    if BOKEH==3:
         topic = 'msgoverhead_%s'%(node_name)
         msg = 'msgoverhead greedywave%s networkdata %d \n' %(node_name,len(myneighbors))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -791,7 +821,8 @@ def main():
 
     init_task_topology()
     # Get resource data
-    _thread.start_new_thread(get_resource_data, ())
+    # _thread.start_new_thread(get_resource_data, ())
+    _thread.start_new_thread(get_resource_data, (MONGO_SVC_PORT,))
 
     # Get network profile data
     _thread.start_new_thread(get_network_data, (my_profiler_ip, MONGO_SVC_PORT,network_map))

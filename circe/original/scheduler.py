@@ -33,18 +33,7 @@ from collections import defaultdict
 import paho.mqtt.client as mqtt
 import jupiter_config
 
-global bottleneck
-bottleneck = defaultdict(list)
-
-def tic():
-    return time.time()
-
-def toc(t):
-    texec = time.time() - t
-    print('Execution time is:'+str(texec))
-    return texec
-
-
+import pyinotify
 
 
 # End-to-end metrics
@@ -238,11 +227,11 @@ class MonitorRecv(multiprocessing.Process):
         print("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
-def transfer_data_scp(IP,user,pword,source, destination):
+def transfer_data_scp(ID,user,pword,source, destination):
     """Transfer data using SCP
     
     Args:
-        IP (str): destination IP address
+        IP (str): destination ID
         user (str): username
         pword (str): password
         source (str): source file path
@@ -258,7 +247,8 @@ def transfer_data_scp(IP,user,pword,source, destination):
     ts = -1
     while retry < num_retries:
         try:
-            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+            nodeIP = combined_ip_map[ID]
+            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
             print('data transfer complete\n')
             ts = time.time()
@@ -281,37 +271,40 @@ def transfer_data_scp(IP,user,pword,source, destination):
 
     
 
-def transfer_data(IP,user,pword,source, destination):
+def transfer_data(ID,user,pword,source, destination):
     """Transfer data with given parameters
     
     Args:
-        IP (str): destination IP 
+        IP (str): destination ID 
         user (str): destination username
         pword (str): destination password
         source (str): source file path
         destination (str): destination file path
     """
-    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
+    msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
     # print(msg)
     
 
     if TRANSFER == 0:
-        return transfer_data_scp(IP,user,pword,source, destination)
+        return transfer_data_scp(ID,user,pword,source, destination)
 
-    return transfer_data_scp(IP,user,pword,source, destination) #default
+    return transfer_data_scp(ID,user,pword,source, destination) #default
 
 
-class MyHandler(PatternMatchingEventHandler):
+class MyHandler(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
     """
-    Handling the event when there is a new file generated in ``OUTPUT`` folder
-    """
 
-    def process(self, event):
-        """
-        Log the time the file is created and calculate the execution time whenever there is an event.
+
+    def process_IN_CLOSE_WRITE(self, event):
+        """On every node, whenever there is scheduling information sent from the central network profiler:
+            - Connect the database
+            - Scheduling measurement procedure
+            - Scheduling regression procedure
+            - Start the schedulers
         
         Args:
-            event: event to be watched for the ``OUTPUT`` folder
+            event (ProcessEvent): a new file is created
         """
 
         global start_times
@@ -319,119 +312,67 @@ class MyHandler(PatternMatchingEventHandler):
         global exec_times
         global count
 
-        """
-        event.event_type
-            'modified' | 'created' | 'moved' | 'deleted'
-        event.is_directory
-            True | False
-        event.src_path
-            path/to/observed/file
-        """
-        # the file will be processed there
-        if event.event_type == 'created':
-            print("Received file as output - %s." % event.src_path) 
-            # print(event.src_path, event.event_type)  # print now only for degug
-            outputfile = event.src_path.split('/')[-1].split('_')[0]
+        print("Received file as output - %s." % event.pathname) 
+        # print(event.src_path, event.event_type)  # print now only for degug
+        outputfile = event.pathname.split('/')[-1].split('_')[0]
 
-            # print(outputfile)
-            end_times[outputfile] = time.time()
-            
-            # print("ending time is: ", end_times)
-            exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
-            print("execution time is: ", exec_times)
-
-            if BOKEH == 2: #used for combined_app with distribute script
-                app_name = outputfile.split('-')[0]
-                msg = 'makespan '+ app_name + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) 
-                demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
-
-            if BOKEH == 5:
-                print(appname)
-                msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
-                demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
-
-    def on_modified(self, event):
-        self.process(event)
-
-    def on_created(self, event):
-        self.process(event)
-
-
-class Watcher:
-    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
-
-    def __init__(self):
-        self.observer = Observer()
-
-    def run(self):
-        """
-        Monitoring ``INPUT`` folder for the incoming files.
+        # print(outputfile)
+        end_times[outputfile] = time.time()
         
-        You can manually place input files into the ``INPUT`` folder (which is under ``centralized_scheduler_with_task_profiler\``):
-        
-            .. code-block:: bash
-        
-                mv 1botnet.ipsum input/
-        
-        Once the file is there, it sends the file to the node performing the first task.
-        """
+        # print("ending time is: ", end_times)
+        exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
+        print("execution time is: ", exec_times)
 
-        event_handler = Handler()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
-        self.observer.start()
+        if BOKEH == 2: #used for combined_app with distribute script
+            app_name = outputfile.split('-')[0]
+            msg = 'makespan '+ app_name + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) 
+            demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
 
-class Handler(FileSystemEventHandler):
-    """
-        Handling the event when there is a new file generated in ``INPUT`` folder
+        if BOKEH == 3:
+            print(appname)
+            msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+            demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
+
+class Handler(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
     """
 
-    @staticmethod
-    def on_any_event(event):
-        """
-        Whenever there is a new input file in ``INPUT`` folder, the function:
 
-        - Log the time the file is created
-
-        - Start the connection to the first scheduled node
-
-        - Copy the newly created file to the ``INPUT`` folder of the first scheduled node
+    def process_IN_CLOSE_WRITE(self, event):
+        """On every node, whenever there is scheduling information sent from the central network profiler:
+            - Connect the database
+            - Scheduling measurement procedure
+            - Scheduling regression procedure
+            - Start the schedulers
         
         Args:
-            event (FileSystemEventHandler): monitored event
+            event (ProcessEvent): a new file is created
         """
 
-        if event.is_directory:
-            return None
+        print("Received file as input - %s." % event.pathname)  
 
-        elif event.event_type == 'created':
+        if RUNTIME == 1:   
+            ts = time.time() 
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.pathname,ts)
+            runtime_receiver_log.write(s)
+            runtime_receiver_log.flush()
 
-            # print('***************************************************')
-            print("Received file as input - %s." % event.src_path)  
-
-            if RUNTIME == 1:   
-                ts = time.time() 
-                s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.src_path,ts)
-                runtime_receiver_log.write(s)
-                runtime_receiver_log.flush()
-
-            inputfile = event.src_path.split('/')[-1]
-            t = time.time()
-            start_times[inputfile] = t
-            # start_times.append(time.time())
-            print("start time is: ", start_times)
-            new_file_name = os.path.split(event.src_path)[-1]
+        inputfile = event.pathname.split('/')[-1]
+        t = time.time()
+        start_times[inputfile] = t
+        # start_times.append(time.time())
+        print("start time is: ", start_times)
+        new_file_name = os.path.split(event.pathname)[-1]
 
 
-            #This part should be optimized to avoid hardcoding IP, user and password
-            #of the first task node
-            IP = os.environ['CHILD_NODES_IPS']
-            source = event.src_path
-            destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
-            transfer_data(IP,username, password,source, destination)
-        
-        # bottleneck['receiveinput'].append(txec)
-        # print(np.mean(bottleneck['receiveinput']))
-        # print('***************************************************')
+        #This part should be optimized to avoid hardcoding IP, user and password
+        #of the first task node
+        # IP = os.environ['CHILD_NODES_IPS']
+        ID = os.environ['CHILD_NODES']
+        source = event.pathname
+        destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
+        transfer_data(ID,username, password,source, destination)
+
 def main():
     """
         -   Read configurations (DAG info, node info) from ``nodes.txt`` and ``configuration.txt``
@@ -479,6 +420,10 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 
+    global combined_ip_map
+    combined_ip_map = dict()
+    combined_ip_map[os.environ['CHILD_NODES']]= os.environ['CHILD_NODES_IPS']
+
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
     dag_info = read_config(path1,path2)
@@ -507,28 +452,25 @@ def main():
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
     BOKEH = int(config['OTHER']['BOKEH'])
 
-
-    #monitor INPUT folder for the incoming files
-    w = Watcher()
-    w.run()
-
     web_server = MonitorRecv()
     web_server.start()
 
-    print("Starting the output monitoring system:")
-    observer = Observer()
-    observer.schedule(MyHandler(), path=os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/'))
-    observer.start()
+    # watch manager
+    wm = pyinotify.WatchManager()
+    input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
+    wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
+    print('starting the input monitoring process\n')
+    eh = Handler()
+    notifier = pyinotify.ThreadedNotifier(wm, eh)
+    notifier.start()
 
-    try:
-        while True:
-            time.sleep(1)
-    except KeyboardInterrupt:
-        observer.stop()
-
-    observer.join()
-
-
+    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+    wm1 = pyinotify.WatchManager()
+    wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
+    print('starting the output monitoring process\n')
+    eh1 = MyHandler()
+    notifier1= pyinotify.Notifier(wm1, eh1)
+    notifier1.loop()
     
     
 if __name__ == '__main__':

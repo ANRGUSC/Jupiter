@@ -167,28 +167,29 @@ if __name__ == '__main__':
     #     _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,1883,300,1,node_log))
 
     ## Collect message overhead # pricing
-    # exp_folder = main_folder+'/'+folder_list[1] 
-    # for node in nodes:
-    #     node_log = '%s/N%dM%d/%s_%s_N%d_M%d.log'%(exp_folder,N,M,option,node,N,M)
-    #     cur_sub = 'msgoverhead_%s'%(node)
-    #     print(cur_sub)
-    #     print(node_log)
-    #     _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,1883,300,1,node_log))
-    # for task in tasks:
-    #     task_log = '%s/N%dM%d/%s_controller%s_N%d_M%d.log'%(exp_folder,N,M,option,task,N,M)
-    #     cur_sub = 'msgoverhead_controller%s'%(task)
-    #     print(cur_sub)
-    #     print(task_log)
-    #     _thread.start_new_thread(collector,(task,cur_sub,SERVER_IP,1883,300,1,task_log))
+    exp_folder = main_folder+'/'+folder_list[1] 
+    for node in nodes:
+        node_log = '%s/N%dM%d/%s_%s_N%d_M%d.log'%(exp_folder,N,M,option,node,N,M)
+        cur_sub = 'msgoverhead_%s'%(node)
+        print(cur_sub)
+        print(node_log)
+        _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,1883,300,1,node_log))
+    for task in tasks:
+        task_log = '%s/N%dM%d/%s_controller%s_N%d_M%d.log'%(exp_folder,N,M,option,task,N,M)
+        cur_sub = 'msgoverhead_controller%s'%(task)
+        print(cur_sub)
+        print(task_log)
+        _thread.start_new_thread(collector,(task,cur_sub,SERVER_IP,1883,300,1,task_log))
 
     ## Collect mapping latency 
-    exp_folder = main_folder+'/'+folder_list[3]
-    mapping_log = '%s/N%dM%d/%s_N%d_M%d.log'%(exp_folder,N,M,option,N,M)
-    print(mapping_log)
-    cur_app = jupiter_config.APP_OPTION
-    cur_sub = 'mappinglatency_%s'%(cur_app)
-    print(cur_sub)
-    _thread.start_new_thread(collector,(cur_app,cur_sub,SERVER_IP,1883,300,1,mapping_log))
+    # exp_folder = main_folder+'/'+folder_list[3]
+    # mapping_log = '%s/N%dM%d/%s_N%d_M%d.log'%(exp_folder,N,M,option,N,M)
+    # print(mapping_log)
+    # cur_app = jupiter_config.APP_OPTION
+    # cur_sub = 'mappinglatency_%s'%(cur_app)
+    # print(cur_sub)
+    # SERVER_IP = '192.168.1.234'
+    # _thread.start_new_thread(collector,(cur_app,cur_sub,SERVER_IP,1883,300,1,mapping_log))
 
 
 

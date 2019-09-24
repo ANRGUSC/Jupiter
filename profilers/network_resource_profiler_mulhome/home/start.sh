@@ -67,12 +67,8 @@ for ((i = 0; i < ${#nodes[@]}; i++)); do
     echo $INPUT_ARGS_2 >> /resource_profiling/ip_path
 done
 
-cat /resource_profiling/ip_path
-
 echo 'Generate the list of links'
 python3 -u /network_profiling/generate_link_list.py
-
-python3 -u /resource_profiling/job.py &
 
 echo 'Automatically run the central network scheduler'
 python3 -u /network_profiling/central_scheduler.py &

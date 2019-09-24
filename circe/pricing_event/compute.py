@@ -37,6 +37,8 @@ from collections import defaultdict
 from shutil import copyfile
 import paho.mqtt.client as mqtt
 
+import pyinotify
+
 app = Flask(__name__)
 
 global bottleneck
@@ -179,6 +181,11 @@ def prepare_global_info():
 
     computing_nodes = os.environ['ALL_COMPUTING_NODES'].split(':')
     computing_ips = os.environ['ALL_COMPUTING_IPS'].split(':')
+
+    global combined_ip_map
+    combined_nodes = home_ids + computing_nodes
+    combined_ips = home_ips + computing_ips
+    combined_ip_map = dict(zip(combined_nodes,combined_ips))
 
     global tasks, task_order, super_tasks, non_tasks
     tasks, task_order, super_tasks, non_tasks = get_taskmap()
@@ -372,7 +379,7 @@ def update_exec_profile_file():
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
 
-    if BOKEH==5:    
+    if BOKEH==3:    
         topic = 'msgoverhead_%s'%(self_name)
         msg = 'msgoverhead priceeventcompute%s updateexec %d\n'%(self_name,c)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -444,7 +451,7 @@ def get_updated_network_profile():
         # print(np.mean(bottleneck['netinfo']))
         # print('***************************************************')
 
-        if BOKEH==5:    
+        if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceeventcompute%s updatenetwork %d\n'%(self_name,c)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -454,42 +461,67 @@ def get_updated_network_profile():
         return -1
 
 def get_updated_resource_profile():
-    """Requesting resource profiler data using flask for its corresponding profiler node
+    """Collect the resource profile from local MongoDB peer
     """
-
-    print("----- Get updated resource profile information") 
-    resource_info = [] 
+    resource_info = {}
     try:
-        # print('***************************************************')
-        # t = tic()
-        for c in range(0,num_retries):
-            t1 = time.time()
-            #print("http://" + self_profiler_ip + ":" + str(FLASK_SVC) + "/all")
-            r = requests.get("http://" + self_profiler_ip + ":" + str(FLASK_SVC) + "/all")
-            result = r.json()
-            if len(result) != 0:
-                resource_info=result
-                break
-            time.sleep(1)
-            # print(time.time()-t1)
+        for ip in profiler_ip:
+            print('Check Resource Profiler IP: '+ip)
+            client_mongo = MongoClient('mongodb://'+ip+':'+str(MONGO_SVC)+'/')
+            db = client_mongo.central_resource_profiler
+            collection = db.collection_names(include_system_collections=False)
+            logging =db[ip].find().skip(db[ip].count()-1)
+            for record in logging:
+                resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
-        if c == num_retries:
-            print("Exceeded maximum try times.")
-        # txec = toc(t)
-        # bottleneck['resourceinfo'].append(txec)
-        # print(np.mean(bottleneck['resourceinfo']))
-        # print('***************************************************')
         print("Resource profiles: ", resource_info)
         print(len(resource_info))
-        if BOKEH==5:    
+        if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceeventcompute%s updateresource %d\n'%(self_name,len(resource_info))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return resource_info
-
     except Exception as e:
         print("Resource request failed. Will try again, details: " + str(e))
         return -1
+
+# def get_updated_resource_profile():
+#     """Requesting resource profiler data using flask for its corresponding profiler node
+#     """
+
+#     print("----- Get updated resource profile information") 
+#     resource_info = [] 
+#     try:
+#         # print('***************************************************')
+#         # t = tic()
+#         for c in range(0,num_retries):
+#             t1 = time.time()
+#             #print("http://" + self_profiler_ip + ":" + str(FLASK_SVC) + "/all")
+#             r = requests.get("http://" + self_profiler_ip + ":" + str(FLASK_SVC) + "/all")
+#             result = r.json()
+#             if len(result) != 0:
+#                 resource_info=result
+#                 break
+#             time.sleep(1)
+#             # print(time.time()-t1)
+
+#         if c == num_retries:
+#             print("Exceeded maximum try times.")
+#         # txec = toc(t)
+#         # bottleneck['resourceinfo'].append(txec)
+#         # print(np.mean(bottleneck['resourceinfo']))
+#         # print('***************************************************')
+#         print("Resource profiles: ", resource_info)
+#         print(len(resource_info))
+#         if BOKEH==3:    
+#             topic = 'msgoverhead_%s'%(self_name)
+#             msg = 'msgoverhead priceeventcompute%s updateresource %d\n'%(self_name,len(resource_info))
+#             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+#         return resource_info
+
+#     except Exception as e:
+#         print("Resource request failed. Will try again, details: " + str(e))
+#         return -1
 
 def price_aggregate(task_name):
     """Calculate price required to perform the task based on network information, resource information, execution information and task queue size and sample size
@@ -522,10 +554,11 @@ def price_aggregate(task_name):
         print(' Retrieve all input information: ')
         # t = tic()
         execution_info = get_updated_execution_profile()
-        resource_info = get_updated_resource_profile()
-        # print(resource_info)
+        # print(execution_info)
         network_info = get_updated_network_profile()
         # print(network_info)
+        resource_info = get_updated_resource_profile()
+        # print(resource_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         
         
@@ -648,7 +681,7 @@ def push_updated_price():
         # print(price)
         announce_price(controllers_ip_map[task], price)
 
-    if BOKEH==5:    
+    if BOKEH==3:    
         topic = 'msgoverhead_%s'%(self_name)
         msg = 'msgoverhead priceeventcompute%s pushprice %d\n'%(self_name,len(task_controllers))
 
@@ -697,11 +730,11 @@ def transfer_mapping_decorator(TRANSFER=0):
         function: chosen transfer method
     """
     
-    def transfer_data_scp(IP,user,pword,source, destination):
+    def transfer_data_scp(ID,user,pword,source, destination):
         """Transfer data using SCP
         
         Args:
-            IP (str): destination IP address
+            IP (str): destination ID
             user (str): destination username
             pword (str): destination password
             source (str): source file path
@@ -721,7 +754,8 @@ def transfer_mapping_decorator(TRANSFER=0):
         ts = -1
         while retry < num_retries:
             try:
-                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
+                nodeIP = combined_ip_map[ID]
+                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
                 os.system(cmd)
                 print('data transfer complete\n')
                 ts = time.time()
@@ -747,11 +781,11 @@ def transfer_mapping_decorator(TRANSFER=0):
     return transfer_data_scp
 
 @transfer_mapping_decorator
-def transfer_data(IP,user,pword,source, destination):
+def transfer_data(ID,user,pword,source, destination):
     """Transfer data with given parameters
     
     Args:
-        IP (str): destination IP 
+        IP (str): destination ID
         user (str): destination username
         pword (str): destination password
         source (str): source file path
@@ -890,7 +924,7 @@ def request_best_assignment(home_id,task_name,file_name):
         res = res.read()
         res = res.decode('utf-8')
 
-        if BOKEH==5:    
+        if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceeventcompute%s requestbest 1\n'%(self_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -937,342 +971,251 @@ def receive_best_assignment():
     return "ok"
 app.add_url_rule('/receive_best_assignment', 'receive_best_assignment', receive_best_assignment)
 
-#for OUTPUT folder 
-class Watcher1():
-    
-    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
 
-    def __init__(self):
-        multiprocessing.Process.__init__(self)
-        self.observer = Observer()
 
-    def run(self):
+class Handler1(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
+    """
+
+
+    def process_IN_CLOSE_WRITE(self, event):
+        """On every node, whenever there is scheduling information sent from the central network profiler:
+            - Connect the database
+            - Scheduling measurement procedure
+            - Scheduling regression procedure
+            - Start the schedulers
+        
+        Args:
+            event (ProcessEvent): a new file is created
         """
-            Continuously watching the ``OUTPUT`` folder, if there is a new file created for the current task, copy the file to the corresponding ``INPUT`` folder of the next task in the scheduled node
-        """
-        event_handler = Handler1()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
-        self.observer.start()
-        try:
-            while True:
-                time.sleep(1)
-        except:
-            self.observer.stop()
-            print("Error")
+        print("Received file as output - %s." % event.pathname)
+        new_file = os.path.split(event.pathname)[-1]
 
-        self.observer.join()
+        if '_' in new_file:
+            temp_name = new_file.split('_')[0]
+        else:
+            temp_name = new_file.split('.')[0]
 
-class Handler1(FileSystemEventHandler):
+        
+        ts = time.time()
+        
+        # print(time.time()-t1)
+        # t1 = time.time()
+        if RUNTIME == 1:
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,event.pathname,ts)
+            runtime_receiver_log.write(s)
+            runtime_receiver_log.flush()
 
-
-    @staticmethod
-    def on_any_event(event):
-        """
-            Check for any event in the ``OUTPUT`` folder
-        """
-        if event.is_directory:
-            return None
-
-        elif event.event_type == 'created':
-             
-            # print('***************************************************')
-            print("Received file as output - %s." % event.src_path)
-            # t = tic()
-
-            # t1 = time.time()
-            new_file = os.path.split(event.src_path)[-1]
-
-            if '_' in new_file:
-                temp_name = new_file.split('_')[0]
-            else:
-                temp_name = new_file.split('.')[0]
-
+        task_name = event.pathname.split('/')[-3]
+        home_id = event.pathname.split('/')[-2]
+        # print(task_name)
+        # print(home_id)
+        input_name = retrieve_input_finish(task_name, temp_name)
+        # print('????????????????')
+        # print(input_name)
+        runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
+        # print(time.time()-t1)
+        # t1 = time.time()
+        send_runtime_profile_computingnode(runtime_info,task_name,home_id)
+        # print(time.time()-t1)
+        # t1 = time.time()
+        key = (home_id,task_name,input_name)
+        # print('#############')
+        # print(next_mul)
+        flag = next_mul[key][0]
+        # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        # print(new_file)
+        # print(next_tasks_map)
+        # print(next_tasks_map[task_name])
+        # print(flag)
+        # print(time.time()-t1)
+        # t1 = time.time()
+        if next_tasks_map[task_name][0] in home_ids: # next node is HOME
+            print('----- next step is home')
+            transfer_data(home_id,username,password,event.pathname, "/output/"+new_file)   
+            # print(time.time()-t1)
+            # t1 = time.time() 
+        else: #next node is another compute node
+            # print('----- next step is not home')
+            # print(next_tasks_map[task_name])
+            # print(len(next_tasks_map[task_name]))
+            # print('Sending the output files to the corresponding destinations')
             
-            ts = time.time()
-            
+            for next_task in next_tasks_map[task_name]:
+                # print(next_task)
+                # print(super_tasks)
+                # print(non_tasks)
+                # print(next_task in super_tasks)      
+                # print(next_task in non_tasks)  
+                # print(next_task in super_tasks or non_tasks)
+                if next_task in super_tasks or next_task in non_tasks: 
+                    print('next task is non DAG')
+                    continue
+                while not update_best[home_id,next_task,input_name]:
+                    request_best_assignment(home_id,next_task,input_name)
+                    print('--- waiting for computing node assignment')
+                    time.sleep(1)
             # print(time.time()-t1)
             # t1 = time.time()
-            if RUNTIME == 1:
-                s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,event.src_path,ts)
-                runtime_receiver_log.write(s)
-                runtime_receiver_log.flush()
+            # print('---------- Now what')
+            # print(computing_ip_map)
+            # print(task_node_map)
 
-            task_name = event.src_path.split('/')[-3]
-            home_id = event.src_path.split('/')[-2]
-            # print(task_name)
-            # print(home_id)
-            input_name = retrieve_input_finish(task_name, temp_name)
-            # print('????????????????')
-            # print(input_name)
-            runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
-            # print(time.time()-t1)
-            # t1 = time.time()
-            send_runtime_profile_computingnode(runtime_info,task_name,home_id)
-            # print(time.time()-t1)
-            # t1 = time.time()
-            key = (home_id,task_name,input_name)
-            # print('#############')
-            # print(next_mul)
-            flag = next_mul[key][0]
-            # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-            # print(new_file)
-            # print(next_tasks_map)
+            next_hosts = []
+            next_IPs = []
+
+            # print('--------------------')
+            for next_task in next_tasks_map[task_name]:
+                # print(next_task)
+                if next_task in super_tasks or next_task in non_tasks: 
+                    # print('next task is non DAG')
+                    next_hosts.append(next_task)
+                    next_IPs.append(controllers_ip_map[next_task])
+                else:
+                    tmp_host = task_node_map[home_id,next_task,input_name]
+                    # print('next task is DAGssss')
+                    # print(tmp_host)
+                    next_hosts.append(tmp_host)  
+                    next_IPs.append(computing_ip_map[tmp_host]) 
+
+
+            # print(task_node_map[home_id,next_task,input_name])
+            # # print(task_node_summary[home_id,next_task,input_name])
+            # next_hosts =  [task_node_map[home_id,x,input_name] for x in next_tasks_map[task_name]]
+            # # next_hosts =  [task_node_summary[home_id,x,input_name] for x in next_tasks_map[task_name]]
+            # next_IPs   = [computing_ip_map[x] for x in next_hosts]
+
+            # print('**************!!!!!!!!!!!!!!!!!!!!!')
             # print(next_tasks_map[task_name])
             # print(flag)
-            # print(time.time()-t1)
-            # t1 = time.time()
-            if next_tasks_map[task_name][0] in home_ids: # next node is HOME
-                print('----- next step is home')
-                transfer_data(home_ip_map[home_id],username,password,event.src_path, "/output/"+new_file)   
-                # print(time.time()-t1)
-                # t1 = time.time() 
-            else: #next node is another compute node
-                # print('----- next step is not home')
-                # print(next_tasks_map[task_name])
-                # print(len(next_tasks_map[task_name]))
-                # print('Sending the output files to the corresponding destinations')
-                
-                for next_task in next_tasks_map[task_name]:
-                    # print(next_task)
-                    # print(super_tasks)
-                    # print(non_tasks)
-                    # print(next_task in super_tasks)      
-                    # print(next_task in non_tasks)  
-                    # print(next_task in super_tasks or non_tasks)
-                    if next_task in super_tasks or next_task in non_tasks: 
-                        print('next task is non DAG')
-                        continue
-                    while not update_best[home_id,next_task,input_name]:
-                        request_best_assignment(home_id,next_task,input_name)
-                        print('--- waiting for computing node assignment')
-                        time.sleep(1)
+
+            if flag=='true': # same output to all of the children task
+                # print(flag)
+                # print(type(flag))
+                # print('same output to all of the children task')
+                destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
+                # destinations = ["/centralized_scheduler/input/" +new_file+"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
+                #destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
+                # print(destinations)
+                for idx,host in enumerate(next_hosts):
+                    # print('----')
+                    # print(ip)
+                    # print(destinations[idx])
+                    if self_ip!=combined_ip_map[host]:
+                        # print('different')
+                        # print(event.src_path)
+                        # print(destinations[idx])
+                        transfer_data(host,username,password,event.pathname, destinations[idx])
+                    else:
+                        # cmd = "cp %s %s"%(event.src_path,destinations[idx])
+                        # print(cmd)
+                        # os.system(cmd)
+                        # print('same')
+                        # print(event.src_path)
+                        # print(destinations[idx])
+                        copyfile(event.pathname, destinations[idx])
                 # print(time.time()-t1)
                 # t1 = time.time()
-                # print('---------- Now what')
-                # print(computing_ip_map)
-                # print(task_node_map)
+            else: #each output file to each of the next children task
+                # print('each output file to each of the next children task')
+                if key not in files_mul:
+                    files_mul[key] = [event.pathname]
+                else:
+                    files_mul[key] = files_mul[key] + [event.pathname]
+                # print(files_mul[key])
+                # print(time.time()-t1)
+                # t1 = time.time()
 
-                next_hosts = []
-                next_IPs = []
-
-                # print('--------------------')
-                for next_task in next_tasks_map[task_name]:
-                    # print(next_task)
-                    if next_task in super_tasks or next_task in non_tasks: 
-                        # print('next task is non DAG')
-                        next_hosts.append(next_task)
-                        next_IPs.append(controllers_ip_map[next_task])
-                    else:
-                        tmp_host = task_node_map[home_id,next_task,input_name]
-                        # print('next task is DAGssss')
-                        # print(tmp_host)
-                        next_hosts.append(tmp_host)  
-                        next_IPs.append(computing_ip_map[tmp_host]) 
-
-
-                # print(task_node_map[home_id,next_task,input_name])
-                # # print(task_node_summary[home_id,next_task,input_name])
-                # next_hosts =  [task_node_map[home_id,x,input_name] for x in next_tasks_map[task_name]]
-                # # next_hosts =  [task_node_summary[home_id,x,input_name] for x in next_tasks_map[task_name]]
-                # next_IPs   = [computing_ip_map[x] for x in next_hosts]
-
-                # print('**************!!!!!!!!!!!!!!!!!!!!!')
-                # print(next_tasks_map[task_name])
-                # print(flag)
-
-                if flag=='true': # same output to all of the children task
-                    # print(flag)
-                    # print(type(flag))
-                    # print('same output to all of the children task')
-                    destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
-                    # destinations = ["/centralized_scheduler/input/" +new_file+"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
-                    #destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
-                    # print(destinations)
-                    for idx,ip in enumerate(next_IPs):
-                        # print('----')
-                        # print(ip)
-                        # print(destinations[idx])
-                        if self_ip!=ip:
+                if len(files_mul[key]) == len(next_hosts):
+                    for idx,host in enumerate(next_hosts):
+                        # print(files_mul[key][idx])
+                        # print(next_tasks_map[task_name][idx])
+                        current_file = files_mul[key][idx].split('/')[-1]
+                        # print(current_file)
+                        # destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
+                        destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
+                        #destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id
+                        # print(destinations)
+                        if self_ip!=combined_ip_map[host]:
                             # print('different')
-                            # print(event.src_path)
-                            # print(destinations[idx])
-                            transfer_data(ip,username,password,event.src_path, destinations[idx])
-                        else:
-                            # cmd = "cp %s %s"%(event.src_path,destinations[idx])
-                            # print(cmd)
+                            # print(files_mul[key][idx])
+                            transfer_data(host,username,password,files_mul[key][idx], destinations)
+                        else: 
+                            # cmd = "cp %s %s"%(files_mul[key][idx],destinations)
+                            # # print(cmd)
                             # os.system(cmd)
                             # print('same')
-                            # print(event.src_path)
-                            # print(destinations[idx])
-                            copyfile(event.src_path, destinations[idx])
-                    # print(time.time()-t1)
-                    # t1 = time.time()
-                else: #each output file to each of the next children task
-                    # print('each output file to each of the next children task')
-                    if key not in files_mul:
-                        files_mul[key] = [event.src_path]
-                    else:
-                        files_mul[key] = files_mul[key] + [event.src_path]
-                    # print(files_mul[key])
-                    # print(time.time()-t1)
-                    # t1 = time.time()
-
-                    if len(files_mul[key]) == len(next_IPs):
-                        for idx,ip in enumerate(next_IPs):
                             # print(files_mul[key][idx])
-                            # print(next_tasks_map[task_name][idx])
-                            current_file = files_mul[key][idx].split('/')[-1]
-                            # print(current_file)
-                            # destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
-                            destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
-                            #destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id
-                            # print(destinations)
-                            if self_ip!=ip:
-                                # print('different')
-                                # print(files_mul[key][idx])
-                                transfer_data(ip,username,password,files_mul[key][idx], destinations)
-                            else: 
-                                # cmd = "cp %s %s"%(files_mul[key][idx],destinations)
-                                # # print(cmd)
-                                # os.system(cmd)
-                                # print('same')
-                                # print(files_mul[key][idx])
-                                copyfile(files_mul[key][idx],destinations)
-                    # print(time.time()-t1)
-             
-            # txec = toc(t)
-            # bottleneck['receiveoutput'].append(txec)
-            # # print(np.mean(bottleneck['receiveoutput']))
-            # print('***************************************************')
+                            copyfile(files_mul[key][idx],destinations)
 
-#for INPUT folder
-class Watcher(multiprocessing.Process):
+class Handler(pyinotify.ProcessEvent):
+    """Setup the event handler for all the events
+    """
 
-    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
-    
-    def __init__(self):
-        multiprocessing.Process.__init__(self)
-        self.observer = Observer()
 
-    def run(self):
-        """
-            Continuously watching the ``INPUT`` folder.
-            When file in the input folder is received, based on the DAG info imported previously, it either waits for more input files, or issue pricing request to all the computing nodes in the system.
-        """
+    def process_IN_CLOSE_WRITE(self, event):
+        """On every node, whenever there is scheduling information sent from the central network profiler:
+            - Connect the database
+            - Scheduling measurement procedure
+            - Scheduling regression procedure
+            - Start the schedulers
         
-        event_handler = Handler()
-        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
-        self.observer.start()
-        try:
-            while True:
-                time.sleep(1)
-        except:
-            self.observer.stop()
-            print("Error")
+        Args:
+            event (ProcessEvent): a new file is created
+        """
+        print("Received file as input - %s." % event.pathname)
+        new_file = os.path.split(event.pathname)[-1]
+        if '_' in new_file:
+            file_name = new_file.split('_')[0]
+        else:
+            file_name = new_file.split('.')[0]
 
-        self.observer.join()
+        ts = time.time()
+        home_id = event.pathname.split('/')[-2]
+        task_name = event.pathname.split('/')[-3]
 
-class Handler(FileSystemEventHandler):
+        input_name = retrieve_input_enter(task_name, file_name)
 
-    @staticmethod
-    def on_any_event(event):
-        
+        runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
+        key = (home_id,task_name,input_name)
 
-        if event.is_directory:
-            return None
+        send_runtime_profile_computingnode(runtime_info,task_name,home_id)
 
-        elif event.event_type == 'created':
+        for next_task in next_tasks_map[task_name]:
+            update_best[home_id,next_task,input_name]= False
+        flag = dag[task_name][0] 
+        task_flag = dag[task_name][1] 
 
-            # print('***************************************************')
-            print("Received file as input - %s." % event.src_path)
-            # t = tic()
+        if key not in task_mul:
+            task_mul[key] = [new_file]
+            count_mul[key]= int(flag)-1
+            size_mul[key] = cal_file_size(event.pathname)
+            next_mul[key] = [task_flag]
 
-            # t1 = time.time()
-            new_file = os.path.split(event.src_path)[-1]
-            if '_' in new_file:
-                file_name = new_file.split('_')[0]
+        else:
+            task_mul[key] = task_mul[key] + [new_file]
+            count_mul[key]=count_mul[key]-1
+            size_mul[key] = size_mul[key] + cal_file_size(event.pathname)
+
+
+        if count_mul[key] == 0: # enough input files
+            incoming_file = task_mul[key]
+            if len(incoming_file)==1: 
+                filenames = incoming_file[0]
             else:
-                file_name = new_file.split('.')[0]
+                filenames = incoming_file
 
-            ts = time.time()
-            # print(time.time()-t1)
-            # t1 = time.time()
-            # print('***************************************^^^^^^^^^^^')
+            queue_mul[key] = False 
             
-            # print(file_name)
-            # home_id = new_file.split('#')[1]
-            # task_name = new_file.split('#')[2]
-            # print(new_file)
-            # print(event.src_path.split('/'))
-            home_id = event.src_path.split('/')[-2]
-            task_name = event.src_path.split('/')[-3]
-            # print(home_id)
-            # print(task_name)
-            input_name = retrieve_input_enter(task_name, file_name)
-            # print('???????????')
-            # print(input_name)
-            runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
-            key = (home_id,task_name,input_name)
-            # print(time.time()-t1)
-            # t1 = time.time()
-            send_runtime_profile_computingnode(runtime_info,task_name,home_id)
-            # print(time.time()-t1)
-            # t1 = time.time()
-            # print(next_tasks_map)
-            # print(next_tasks_map[task_name])
-            for next_task in next_tasks_map[task_name]:
-                update_best[home_id,next_task,input_name]= False
-            flag = dag[task_name][0] 
-            task_flag = dag[task_name][1] 
-            # print('&&&&&&&&&&&&&&&&&&&&')
-            # print(dag[task_name])
-            # print(flag)
-            # print(time.time()-t1)
-            # t1 = time.time()
 
-            if key not in task_mul:
-                task_mul[key] = [new_file]
-                count_mul[key]= int(flag)-1
-                size_mul[key] = cal_file_size(event.src_path)
-                next_mul[key] = [task_flag]
-                # print(time.time()-t1)
-                # t1 = time.time()
-            else:
-                task_mul[key] = task_mul[key] + [new_file]
-                count_mul[key]=count_mul[key]-1
-                size_mul[key] = size_mul[key] + cal_file_size(event.src_path)
-                # print(time.time()-t1)
-                # t1 = time.time()
+            input_path = os.path.split(event.pathname)[0]
+            output_path = input_path.replace("input","output")
 
-            if count_mul[key] == 0: # enough input files
-                incoming_file = task_mul[key]
-                if len(incoming_file)==1: 
-                    filenames = incoming_file[0]
-                else:
-                    filenames = incoming_file
-                # print(time.time()-t1)
-                # t1 = time.time()
-                # print('Add task to the processing queue')
-                queue_mul[key] = False 
+            execute_task(home_id,task_name,input_name, filenames, input_path, output_path)
+
+            queue_mul[key] = True
                 
 
-                input_path = os.path.split(event.src_path)[0]
-                output_path = input_path.replace("input","output")
-                # output_path = os.path.join(os.path.split(input_path)[0],'output')
-                #output_path = os.path.join(output_path,task_name,home_id)
-
-                # print(output_path)
-                # print(time.time()-t1)
-                # t1 = time.time()
-                # print('!!!!!!!!!')
-                # print(input_name)
-                execute_task(home_id,task_name,input_name, filenames, input_path, output_path)
-                # print(time.time()-t1)
-                queue_mul[key] = True
-            # txec = toc(t)
-            # bottleneck['receiveinput'].append(txec)
-            # # print(np.mean(bottleneck['receiveinput']))
-            # print('***************************************************')
                 
 
 class MonitorRecv(multiprocessing.Process):
@@ -1355,13 +1298,22 @@ def main():
     _thread.start_new_thread(schedule_update_price,(update_interval,))
     # Update pricing information every interval
 
-    #monitor INPUT as another process
-    w=Watcher()
-    w.start()
+    # watch manager
+    wm = pyinotify.WatchManager()
+    input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
+    wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
+    print('starting the input monitoring process\n')
+    eh = Handler()
+    notifier = pyinotify.ThreadedNotifier(wm, eh)
+    notifier.start()
 
-    #monitor OUTPUT in this process
-    w1=Watcher1()
-    w1.run()
+    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+    wm1 = pyinotify.WatchManager()
+    wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
+    print('starting the output monitoring process\n')
+    eh1 = Handler1()
+    notifier1= pyinotify.Notifier(wm1, eh1)
+    notifier1.loop()
 
     
     
