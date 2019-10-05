@@ -241,6 +241,8 @@ def default_best_node():
                 best_node = min(task_price_summary,key=task_price_summary.get)
                 # print(best_node)
                 task_node_map[self_task] = best_node
+                print('My best node is:')
+                print(best_node)
                 mappinglatency = time.time() - starttime   
                 if BOKEH==3:    
                     topic = 'mappinglatency_%s'%(app_option)
@@ -312,7 +314,7 @@ def update_assignment_info_child():
     """
     
     try:
-        # print("Update best assignment info from parents")
+        print("Update best assignment info from parents")
         assignment_info = request.args.get('assignment_info').split('#')
         # print("Received assignment info")
         task_node_map[assignment_info[0]] = assignment_info[1]
@@ -332,7 +334,7 @@ def send_assignment_info(node_ip):
         node_ip (str): IP of the node
     """
     try:
-        # print("Announce my current best computing node " + node_ip)
+        print("Announce my current best computing node " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/receive_assignment_info"
         assignment_info = self_task + "#"+task_node_map[self_task]
         # print(assignment_info)
@@ -362,7 +364,7 @@ def update_assignment_info_to_child(node_ip):
         node_ip (str): IP of my children task
     """
     try:
-        # print("Announce my current best computing node to children " + node_ip)
+        print("Announce my current best computing node to children " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_assignment_info_child"
         assignment_info = self_task + "#"+task_node_map[self_task]
         #print(assignment_info)
@@ -413,7 +415,7 @@ def push_first_assignment_map():
 def push_assignment_map():
     """Update assignment periodically
     """
-    # print('Updated assignment periodically')
+    print('Updated assignment periodically')
     default_best_node()
     update_best_node()
     print(child_nodes)

@@ -153,8 +153,9 @@ class droplet_measurement():
         self.regions    = []
         self.scheduling_file    = dir_scheduler
         self.measurement_script = os.path.join(os.getcwd(),'droplet_scp_time_transfer')
-        self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
-        self.db = self.client_mongo.droplet_network_profiler
+        # self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+        # self.db = self.client_mongo.droplet_network_profiler
+        self.db = client_mongo.droplet_network_profiler
         
     def do_add_host(self, file_hosts):
         """This function reads the ``scheduler.txt`` file to add other droplets info 
@@ -215,7 +216,7 @@ class droplet_regression():
     """This class is used for the regression of the collected data
     """
     def __init__(self):
-        self.client_mongo = None
+        # self.client_mongo = None
         self.db           = None
         self.my_host      = None
         self.my_region    = None
@@ -224,8 +225,9 @@ class droplet_regression():
         self.parameters_file = 'parameters_%s'%(sys.argv[1])
         self.dir_remote      = dir_remote_central
         self.scheduling_file = dir_scheduler
-        self.client_mongo    = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
-        self.db = self.client_mongo.droplet_network_profiler
+        # self.client_mongo    = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+        # self.db = self.client_mongo.droplet_network_profiler
+        self.db = client_mongo.droplet_network_profiler
         self.username = username
         self.password = password
         self.central_IPs = HOME_IP.split(':')
@@ -449,6 +451,9 @@ def main():
     print(BOKEH)
     print(BOKEH_INTERVAL)
     print(SELF_NAME)
+
+    global client_mongo 
+    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
 
     ## Resource profiling
     global manager,resource_profiling

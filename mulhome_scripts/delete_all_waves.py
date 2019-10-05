@@ -37,7 +37,7 @@ def delete_all_waves(app_name):
     dag = dag_info[1]
     print('Starting to teardown WAVE')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
+        latency_file = '../users/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
         start_time = time.time()
         msg = 'WAVE teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)
