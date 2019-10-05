@@ -31,6 +31,9 @@ import socket
 app = Flask(__name__)
 
 def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()

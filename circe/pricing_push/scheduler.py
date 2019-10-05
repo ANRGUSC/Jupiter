@@ -128,7 +128,7 @@ def receive_assignment_info():
     """
     try:
         assignment_info = request.args.get('assignment_info').split('#')
-        # print("-----------Received assignment info")
+        print("-----------Received assignment info")
         task_node_summary[assignment_info[0]] = assignment_info[1]
         # print(task_node_summary)
 

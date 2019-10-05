@@ -175,7 +175,7 @@ def do_update_quadratic():
     from each of the worker droplets in the ``parameters/`` folder. If any a file exists, it updates the mongodb.
     """
     print('Update quadratic parameters from other nodes')
-    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/') 
+    # client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/') 
     db = client_mongo.central_network_profiler
     parameters_folder = os.path.join(os.getcwd(),'parameters')
     logging = db['quadratic_parameters']
@@ -210,8 +210,9 @@ class droplet_measurement():
         self.regions    = []
         self.scheduling_file    = "scheduling/%s/scheduling.txt"%(self_ip)
         self.measurement_script = os.path.join(os.getcwd(),'droplet_scp_time_transfer')
-        self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
-        self.db = self.client_mongo.droplet_network_profiler
+        # self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+        # self.db = self.client_mongo.droplet_network_profiler
+        self.db = client_mongo.droplet_network_profiler
         
     def do_add_host(self, file_hosts):
         """This function reads the ``scheduler.txt`` file to add other droplets info 
@@ -244,9 +245,11 @@ class droplet_measurement():
             bash_script = self.measurement_script + " " +self.username + "@" + self.hosts[idx]
             bash_script = bash_script + " " + str(random_size)
 
-            #print(bash_script)
+            print(self.measurement_script)
+            print(bash_script)
             proc = subprocess.Popen(bash_script, shell = True, stdout = subprocess.PIPE)
             tmp = proc.stdout.read().strip().decode("utf-8")
+            print(tmp)
             results = tmp.split(" ")[1]
             #print(results)
 
@@ -273,7 +276,7 @@ class droplet_regression():
     """This class is used for the regression of the collected data
     """
     def __init__(self):
-        self.client_mongo = None
+        # self.client_mongo = None
         self.db           = None
         self.my_host      = None
         self.my_region    = None
@@ -281,8 +284,9 @@ class droplet_regression():
         self.regions      = []
         self.parameters_file = 'parameters_%s'%(self_ip)
         self.scheduling_file = "scheduling/%s/scheduling.txt"%(self_ip)
-        self.client_mongo    = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
-        self.db = self.client_mongo.droplet_network_profiler
+        # self.client_mongo    = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+        # self.db = self.client_mongo.droplet_network_profiler
+        self.db = client_mongo.droplet_network_profiler
         self.username = username
         self.password = password
         self.central_IPs = HOME_IP.split(':')
@@ -459,13 +463,16 @@ def main():
     if not os.path.exists(scheduling_folder):
         os.makedirs(scheduling_folder)
 
+    global client_mongo
+    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+
     # write central profiler info where each node should send their data
     # with open(source_central_file, 'w') as f:
     #     line = self_ip+ " " + username + " " + password
     #     f.write(line)
     
     print('Step 1: Create the central database ')
-    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+    # client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
     db = client_mongo['central_network_profiler']
     buffer_size = len(df_links.index) * 100
     db.create_collection('quadratic_parameters', capped = True, size = 100000, max = buffer_size)
@@ -503,7 +510,6 @@ def main():
 
 
 
-    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
     db = client_mongo['droplet_network_profiler']
     filename = "scheduling/%s/scheduling.txt"%(self_ip)
     c = 0

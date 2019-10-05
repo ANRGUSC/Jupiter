@@ -383,8 +383,8 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     is_network_profile_data_ready = True
 
     if BOKEH==3:
-        topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead greedywave%s networkdata %d \n' %(node_name,len(myneighbors))
+        topic = 'msgoverhead_home'
+        msg = 'msgoverhead greedywave%s networkdata %d \n' %('home',len(myneighbors))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def profilers_mapping_decorator(f):
@@ -418,8 +418,8 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
     is_resource_data_ready = True
 
     if BOKEH==3:
-        topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead greedywave%s resourcedata %d \n' %(node_name,len(profiler_ips))
+        topic = 'msgoverhead_home'
+        msg = 'msgoverhead greedywave%s resourcedata %d \n' %('home',len(profiler_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         
 

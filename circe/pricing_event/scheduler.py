@@ -277,6 +277,7 @@ def transfer_data_scp(ID,user,pword,source, destination):
     while retry < num_retries:
         try:
             nodeIP = combined_ip_map[ID]
+            print(nodeIP)
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
             print('data transfer complete\n')
@@ -622,6 +623,8 @@ class Handler(pyinotify.ProcessEvent):
 
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)
+        print('------')
+        print(task_node_summary[first_task,new_file_name])
         transfer_data(task_node_summary[first_task,new_file_name],username, password,source, destination)
 
 

@@ -18,6 +18,9 @@ import paho.mqtt.client as mqtt
 
 
 def demo_help(server,port,topic,msg):
+    print('Sending demo')
+    print(topic)
+    print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()

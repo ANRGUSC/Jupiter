@@ -126,7 +126,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
 
     print('Starting to deploy CIRCE dispatcher')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+        latency_file = '../users/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
         start_time = time.time()
         msg = 'CIRCE deploystart %f \n'%(start_time)
         write_file(latency_file,msg)

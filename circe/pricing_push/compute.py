@@ -348,6 +348,7 @@ def receive_assignment_info():
         Receive corresponding best nodes from the corresponding computing node
     """
     try:
+        print('Receive assignment information from task controllers')
         assignment_info = request.args.get('assignment_info').split('#')
         # print("Received assignment info")
         task_node_map[assignment_info[0]] = assignment_info[1]
@@ -435,27 +436,27 @@ def get_updated_execution_profile():
 def get_updated_network_profile():
     """Get updated network information from the network profilers
     """
-    #print('Retrieve network information info')
+    print('Retrieve network information info')
     network_info = dict()        
     try:
         client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
-        # print(collection)
+        print(collection)
         # print(num_nb)
         # print(self_profiler_ip)
         if num_nb == -1:
             print('--- Network profiler mongoDB not yet prepared')
             return network_info
         num_rows = db[self_profiler_ip].count() 
-        # print(num_rows)
+        print(num_rows)
         if num_rows < num_nb:
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
         # logging =db[self_profiler_ip].find().limit(num_nb)  
         logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)
-        # print(logging)
+        print(logging)
         c = 0 
         for record in logging:
             # print(record)
@@ -465,6 +466,8 @@ def get_updated_network_profile():
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c=c+1
         
+        print('Checking BOKEH')
+        print(BOKEH)
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead pricepushcompute%s updatenetwork %d\n'%(self_name,c)
@@ -632,7 +635,7 @@ def announce_price(task_controller_ip, price):
     """
     try:
 
-        # print("Announce my price")
+        print("Announce my price")
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
         pricing_info = self_name+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
         for node in price['network']:

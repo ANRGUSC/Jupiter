@@ -231,9 +231,10 @@ def default_best_node(source_node):
             task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
             # print(task_price_summary[item])
         
-        # print('Summary cost')
-        # print(task_price_summary)
+        print('Summary cost')
+        print(task_price_summary)
         best_node = min(task_price_summary,key=task_price_summary.get)
+        print(best_node)
         mappinglatency = time.time() - starttime   
         if BOKEH==3:    
             topic = 'mappinglatency_%s'%(app_option)
@@ -260,7 +261,7 @@ def predict_best_node(source_node):
 def receive_best_assignment_request():
     try:
         # print('***************************************************')
-        # print("------ Receive request of best assignment")
+        print("------ Receive request of best assignment")
         # t = tic()
         home_id = request.args.get('home_id')
         source_node = request.args.get('node_name')

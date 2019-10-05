@@ -37,7 +37,7 @@ def delete_all_exec(app_name):
 
     print('Starting to teardown execution profiler')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../users/exp8_data/overhead_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
+        latency_file = '../users/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
         start_time = time.time()
         msg = 'Executionprofiler teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)
