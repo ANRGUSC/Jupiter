@@ -179,6 +179,7 @@ class droplet_measurement():
         """This function pick a random file size, send the file to all of the neighbors and log the transfer time in the local Mongo database.
         """
         for idx in range (0, len(self.hosts)):
+            print('Probing random messages')
             random_size = random.choice(self.file_size)
             local_path  = '%s/%s_test_%dK'%(self.dir_local,self.my_host,random_size)
             remote_path = '%s'%(self.dir_remote)  

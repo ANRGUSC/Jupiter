@@ -202,13 +202,13 @@ class droplet_measurement():
         self.username   = username
         self.password   = password
         self.file_size  = [1,10,100,1000,10000]
-        self.dir_local  = "generated_test"
-        self.dir_remote = "networkprofiling/received_test"
+        self.dir_local  = dir_local
+        self.dir_remote = dir_remote
         self.my_host    = None
         self.my_region  = None
         self.hosts      = []
         self.regions    = []
-        self.scheduling_file    = "scheduling/%s/scheduling.txt"%(self_ip)
+        self.scheduling_file    = dir_scheduler
         self.measurement_script = os.path.join(os.getcwd(),'droplet_scp_time_transfer')
         # self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
         # self.db = self.client_mongo.droplet_network_profiler
@@ -235,8 +235,8 @@ class droplet_measurement():
     def do_log_measurement(self):
         """This function pick a random file size, send the file to all of the neighbors and log the transfer time in the local Mongo database.
         """
-
         for idx in range (0, len(self.hosts)):
+            print('Probing random messages')
             random_size = random.choice(self.file_size)
             local_path  = '%s/%s_test_%dK'%(self.dir_local,self.my_host,random_size)
             remote_path = '%s'%(self.dir_remote)  
@@ -245,13 +245,11 @@ class droplet_measurement():
             bash_script = self.measurement_script + " " +self.username + "@" + self.hosts[idx]
             bash_script = bash_script + " " + str(random_size)
 
-            print(self.measurement_script)
             print(bash_script)
             proc = subprocess.Popen(bash_script, shell = True, stdout = subprocess.PIPE)
             tmp = proc.stdout.read().strip().decode("utf-8")
-            print(tmp)
             results = tmp.split(" ")[1]
-            #print(results)
+            print(results)
 
             mins = float(results.split("m")[0])      # Get the minute part of the elapsed time
             secs = float(results.split("m")[1][:-1]) # Get the second potion of the elapsed time
@@ -283,7 +281,8 @@ class droplet_regression():
         self.hosts        = []
         self.regions      = []
         self.parameters_file = 'parameters_%s'%(self_ip)
-        self.scheduling_file = "scheduling/%s/scheduling.txt"%(self_ip)
+        self.dir_remote      = dir_remote_central
+        self.scheduling_file = dir_scheduler
         # self.client_mongo    = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
         # self.db = self.client_mongo.droplet_network_profiler
         self.db = client_mongo.droplet_network_profiler
@@ -291,7 +290,6 @@ class droplet_regression():
         self.password = password
         self.central_IPs = HOME_IP.split(':')
         self.central_IPs = self.central_IPs[1:]
-
        
         # Read the info regarding the central profiler
         # with open('central.txt','r') as f:
@@ -345,7 +343,7 @@ class droplet_regression():
             quadratic  = np.polyfit(df['X'],df['Y'],2)
             parameters = " ".join(str(x) for x in quadratic)
             cur_time   = datetime.datetime.utcnow()
-            #print(parameters)
+            print(parameters)
             
             new_reg = { "Source[IP]"       : self.my_host,
                         "Source[Reg]"      : self.my_region,
@@ -369,12 +367,29 @@ class droplet_regression():
             writer = csv.writer(f)
             writer.writerows(reg_data)
 
+    def do_send_parameters(self):
+        """This function sends the local regression data to the central profiler
+        """
+        print('Send to central nodes')
+        print(self.central_IPs)
+        for central_IP in self.central_IPs:
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            client.connect(central_IP, username = self.username,
+                                password = self.password, port = ssh_port)
+            local_path  = os.path.join(os.getcwd(),self.parameters_file)
+            remote_path = '%s'%(self.dir_remote)
+            scp = SCPClient(client.get_transport())
+            scp.put(local_path, remote_path)
+            scp.close()
+
 
 def regression_job():
     """Scheduling regression process every 10 minutes
     """
     print('Log regression every 10 minutes ....')
     d = droplet_regression()
+    print(d.scheduling_file)
     d.do_add_host(d.scheduling_file)
     d.do_regression()
     
@@ -386,6 +401,27 @@ def measurement_job():
     d = droplet_measurement()
     d.do_add_host(d.scheduling_file)
     d.do_log_measurement()
+
+def prepare_database(filename):
+    """Connect to MongoDB server, prepare the database ``droplet_network_profiler`` at every node
+    
+    Args:
+        filename (str): info file having the node's name/IP address
+    """
+
+    client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+    db = client['droplet_network_profiler']
+    c = 0
+    with open(filename, 'r') as f:
+        next(f)
+        for line in f:
+            c =c+1
+            ip, region = line.split(',')
+            db.create_collection(ip, capped=True, size=10000, max=10)
+    with open(filename, 'r') as f:
+        first_line = f.readline()
+        ip, region = first_line.split(',')
+        db.create_collection(ip, capped=True, size=100000, max=c*100)
 
 def main():
     """
@@ -421,12 +457,15 @@ def main():
 
     HOME_IP = os.environ["HOME_IP"]
 
-    global dir_remote, self_ip, filename
-    dir_remote   = '/network_profiling/scheduling/'
-    #dir_remote_profiler  =  '/network_profiling/'
+    global dir_remote, dir_local, dir_scheduler, dir_remote_central, self_ip, filename
     self_ip = os.environ['SELF_IP']
-    #source_central_file  = '/network_profiling/central_%s.txt'%(self_ip)
-
+    dir_remote         = '/network_profiling/scheduling/'
+    dir_local          = "generated_test"
+    dir_remote_central = "/network_profiling/parameters"
+    dir_scheduler      = "scheduling/%s/scheduling.txt"%(self_ip)
+    
+    
+    
     nodes_file = 'central_input/nodes.txt'
     homes_list = dict()
     node_list = dict()
@@ -466,11 +505,7 @@ def main():
     global client_mongo
     client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
 
-    # write central profiler info where each node should send their data
-    # with open(source_central_file, 'w') as f:
-    #     line = self_ip+ " " + username + " " + password
-    #     f.write(line)
-    
+
     print('Step 1: Create the central database ')
     # client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
     db = client_mongo['central_network_profiler']
@@ -510,22 +545,9 @@ def main():
 
 
 
-    db = client_mongo['droplet_network_profiler']
     filename = "scheduling/%s/scheduling.txt"%(self_ip)
-    c = 0
-    #print(filename)
-    with open(filename, 'r') as f:
-        next(f)
-        for line in f:
-            #print(line)
-            c =c+1
-            ip, region = line.split(',')
-            db.create_collection(ip, capped=True, size=10000, max=10)
-    with open(filename, 'r') as f:
-        first_line = f.readline()
-        ip, region = first_line.split(',')
-        #print(ip)
-        db.create_collection(ip, capped=True, size=100000, max=c*100)
+    print(filename)
+    prepare_database(filename)
         
     print('Step 3: Scheduling updating the central database')
     # create the folder for each droplet/node to report the local data to

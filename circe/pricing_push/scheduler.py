@@ -310,15 +310,15 @@ def get_updated_network_profile():
     Returns:
         TYPE: Description
     """
-    #print('Retrieve network information info')
+    print('Retrieve network information info')
     network_info = dict()        
     try:
         client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
-        # print(collection)
-        # print(num_nb)
+        print(collection)
+        print(num_nb)
         # print(self_profiler_ip)
         if num_nb == -1:
             print('--- Network profiler mongoDB not yet prepared')
@@ -329,7 +329,7 @@ def get_updated_network_profile():
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
         logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)  
-        # print(logging)
+        print(logging)
         # print('---------------------')
         c = 0
         for record in logging:
@@ -340,6 +340,8 @@ def get_updated_network_profile():
             # print(record['Destination[IP]'])
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
+
+        print(network_info)
         
         if BOKEH==3:
             msg = 'msgoverhead pricepushhome networkdata %d\n'%(c)
@@ -387,7 +389,7 @@ def price_estimate():
 
     try:
         
-        # print(' Retrieve all input information: ')
+        print(' Retrieve all input information: ')
         network_info = get_updated_network_profile()
         # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')

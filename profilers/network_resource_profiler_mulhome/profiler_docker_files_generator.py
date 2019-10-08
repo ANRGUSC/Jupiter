@@ -63,8 +63,8 @@ RUN mkdir -p /network_profiling/received_test
 
 
 # Prepare network profiling code
-ADD profilers/network_resource_profiler_mulhome/worker/droplet_generate_random_files /network_profiling/droplet_generate_random_files
-ADD profilers/network_resource_profiler_mulhome/worker/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
+ADD profilers/network_resource_profiler_mulhome/home/droplet_generate_random_files /network_profiling/droplet_generate_random_files
+ADD profilers/network_resource_profiler_mulhome/home/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
 RUN chmod +x /network_profiling/droplet_scp_time_transfer
 RUN chmod +x /network_profiling/droplet_generate_random_files
 
