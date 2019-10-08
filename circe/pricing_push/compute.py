@@ -562,20 +562,20 @@ def price_aggregate(task_name):
 
     try:
         
-        #print(' Retrieve all input information: ')
+        print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        # print('--------------')
-        # print(resource_info)
-        # print('--------------2')
-        # print(execution_info)
+        print('--------------')
+        print(resource_info)
+        print('--------------2')
+        print(execution_info)
         network_info = get_updated_network_profile()
-        # print('--------------3')
-        # print(network_info)
+        print('--------------3')
+        print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         
         
-        # print('----- Calculating price:')
+        print('----- Calculating price:')
         # print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
@@ -594,10 +594,10 @@ def price_aggregate(task_name):
                     price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
         # print(price['queue'])
 
-        # print('--- Network cost:----------- ')
+        print('--- Network cost:----------- ')
         # print(task_name)
         test_output = execution_info[task_name][1]
-        # print(test_output)
+        print(test_output)
 
         price['network'] = dict()
         for node in network_info:
@@ -614,8 +614,8 @@ def price_aggregate(task_name):
             # print(node)
             price['network'][node] = p
             
-        # print(price['network'])
-        # print('-----------------')
+        print(price['network'])
+        print('-----------------')
         print('Overall price:')
         print(price)
         return price
@@ -907,10 +907,10 @@ class Handler1(pyinotify.ProcessEvent):
             # print('----- next step is home')
             transfer_data(home_id,username,password,event.pathname, "/output/"+new_file)   
         else:
-            # print('----- next step is not home')
+            print('----- next step is not home')
             print(task_node_map)
-            print(len(profiler_nodes))
-            while len(task_node_map)<len(profiler_nodes):
+            print(len(tasks))
+            while len(task_node_map)<len(tasks)+1:#include home
                 print('Not yet loaded assignment')
                 print(task_node_map)
                 time.sleep(1)
