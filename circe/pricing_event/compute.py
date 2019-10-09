@@ -961,6 +961,7 @@ def receive_best_assignment():
             update_best[home_id,task_name,file_name] = True
         else:
             update_best[home_id,task_name,file_name] = False
+        print(update_best[home_id,task_name,file_name])
         # txec = toc(t)
         # bottleneck['receiveassign'].append(txec)
         # print(np.mean(bottleneck['receiveassign']))
@@ -1054,12 +1055,21 @@ class Handler1(pyinotify.ProcessEvent):
                 if next_task in super_tasks or next_task in non_tasks: 
                     print('next task is non DAG')
                     continue
-                while not update_best[home_id,next_task,input_name]:
+                while (not update_best[home_id,next_task,input_name]) or (task_node_map[home_id,next_task,input_name]=='-1'):
                     request_best_assignment(home_id,next_task,input_name)
                     print('--- waiting for computing node assignment')
-                    print(update_best)
+                    print(task_node_map)
+                    b = (task_node_map[home_id,next_task,input_name]=='-1')
+                    print(b)
+                    print('---2')
+                    c = not update_best[home_id,next_task,input_name]
+                    print(c)
+                    a = b or c
+                    print(a)
+                    print('------- 3')
+                    # print(update_best)
                     time.sleep(1)
-                # print(task_node_map)
+                print(task_node_map[home_id,next_task,input_name])
             # print(time.time()-t1)
             # t1 = time.time()
             print('---------- Now what')

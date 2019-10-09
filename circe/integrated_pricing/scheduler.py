@@ -230,13 +230,17 @@ def schedule_update_global(interval):
 
 def update_global_assignment():
     print('Trying to update global assignment')
-    starttime = time.time()
-    global_task_node_map[first_task] = local_task_node_map[my_task,first_task]
-    globalmappingtime = time.time()-starttime
-    if BOKEH==3:    
-        topic = 'mappinglatency_%s'%(appoption)
-        msg = 'mappinglatency priceintegratedhome updateglobalmapping %f %s\n'%(globalmappingtime,appname)
-        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+    try
+        starttime = time.time()
+        global_task_node_map[first_task] = local_task_node_map[my_task,first_task]
+        globalmappingtime = time.time()-starttime
+        if BOKEH==3:    
+            topic = 'mappinglatency_%s'%(appoption)
+            msg = 'mappinglatency priceintegratedhome updateglobalmapping %f %s\n'%(globalmappingtime,appname)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+    except Exception e:
+        print('Local task node mapping not yet available')
+        print(e)
 
 
 def recv_runtime_profile_computingnode():
@@ -617,10 +621,10 @@ def new_predict_best_node(task_name):
     task_price_summary = dict()
     min_value = sys.maxsize
     result_node_name = ''
-    # print('!!!!!!!!!!!!!!')
-    # print(task_price_cpu)
-    # print(task_price_mem)
-    # print(task_price_network)
+    print('!!!!!!!!!!!!!!')
+    print(task_price_cpu)
+    print(task_price_mem)
+    print(task_price_network)
     for item in valid_nodes:
         # print('&&&&')
         # print(item)
