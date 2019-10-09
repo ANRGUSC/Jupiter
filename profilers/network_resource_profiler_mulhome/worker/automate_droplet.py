@@ -364,7 +364,7 @@ class MyEventHandler(pyinotify.ProcessEvent):
         d = droplet_regression()
         d.do_add_host(d.scheduling_file)
         d.do_regression()
-        d.do_send_parameters()
+        # d.do_send_parameters()
 
     def measurement_job(self):
         """Scheduling logging measurement process every minute
