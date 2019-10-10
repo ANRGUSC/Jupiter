@@ -230,7 +230,7 @@ def schedule_update_global(interval):
 
 def update_global_assignment():
     print('Trying to update global assignment')
-    try
+    try:
         starttime = time.time()
         global_task_node_map[first_task] = local_task_node_map[my_task,first_task]
         globalmappingtime = time.time()-starttime
@@ -238,7 +238,7 @@ def update_global_assignment():
             topic = 'mappinglatency_%s'%(appoption)
             msg = 'mappinglatency priceintegratedhome updateglobalmapping %f %s\n'%(globalmappingtime,appname)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
-    except Exception e:
+    except Exception as e:
         print('Local task node mapping not yet available')
         print(e)
 
@@ -493,7 +493,7 @@ def receive_price_info():
     """
     try:
         pricing_info = request.args.get('pricing_info').split('#')
-        # print("Received pricing info")
+        print("Received pricing info")
         #Network, CPU, Memory, Queue
         node_name = pricing_info[0]
 
@@ -505,7 +505,10 @@ def receive_price_info():
         for price in price_net_info:
             task_price_net[node_name,price.split(':')[0]] = float(price.split(':')[1])
         # print('Check price updated interval ')
-        # print(task_price_net)
+        print(task_price_net)
+        print(task_price_cpu)
+        print(task_price_mem)
+        print(task_price_queue)
         pass_time[node_name] = TimedValue()
         
 
@@ -560,7 +563,7 @@ class Handler1(pyinotify.ProcessEvent):
         print("execution time is: ", exec_times)
 
         if BOKEH == 3:
-            print(appname)
+            # print(appname)
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
            
@@ -572,62 +575,44 @@ def new_predict_best_node(task_name):
     w_queue = 1 # Queue : currently 0
     best_node = -1
 
-    task_price_network= dict()
-    if task_name == first_task:
-        print('------------------- AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA')
-        print(task_name)
-        print(task_price_net)
-        print(my_task)
-   
+    print('Current input price')
+    print(task_price_cpu)
+    print(len(task_price_cpu.keys()))
+    print(task_price_mem)
+    print(len(task_price_mem.keys()))
+    print(task_price_queue)
+    print(len(task_price_queue.keys()))
+    print(task_price_net)
+    print(len(task_price_net.keys()))
 
+    task_price_network= dict()
+   
     for (source, dest), price in task_price_net.items():
         # print('***')
         if source==my_task:
             task_price_network[dest]= float(task_price_net[source,dest])
-
-    print('&&&&&&&&&&&&&&')
-    print(task_price_network)
     
     min_value = sys.maxsize
 
-    # print('=============')
-    # print(task_price_network)
     for tmp_node_name in task_price_network:
         cur_delay = task_price_network[tmp_node_name]
-        # print(cur_delay)
         if cur_delay < min_value:
             min_value = cur_delay
 
     threshold = 15
     valid_nodes = []
-    # print(min_value)
-    # a = min_value * threshold
-    # print(a)
 
     # get all the nodes that satisfy: time < tmin * threshold
     for tmp_node_name in task_price_network:
         if task_price_network[tmp_node_name] < min_value * threshold:
             valid_nodes.append(tmp_node_name)
 
-    # print('Valid nodes')
-    # # print(task_name)
-    # # print(valid_nodes)
-    # # print(task_price_net)
-
-    
-
-    # print(valid_nodes)
-
     task_price_summary = dict()
     min_value = sys.maxsize
     result_node_name = ''
-    print('!!!!!!!!!!!!!!')
-    print(task_price_cpu)
-    print(task_price_mem)
-    print(task_price_network)
+    print('Valid nodes')
+    print(valid_nodes)
     for item in valid_nodes:
-        # print('&&&&')
-        # print(item)
         tmp_net = task_price_network[item]
         tmp_cpu = sys.maxsize
         tmp_memory = sys.maxsize
@@ -890,8 +875,7 @@ def main():
     profiler_nodes = [info.split(":") for info in profiler_nodes]
     profiler_nodes = profiler_nodes[0][1:]
     ip_profilers_map = dict(zip(profiler_ip, profiler_nodes))
-    # print('############')
-    # print(ip_profilers_map)
+
 
     my_id = os.environ['TASK']
     my_task = my_id.split('-')[1]
@@ -911,16 +895,11 @@ def main():
     combined_ips = home_ips + all_computing_ips
     combined_ip_map = dict(zip(combined_nodes,combined_ips))
 
-    # print('***********')
-    # print(my_id)
-    
-
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
     dag_info = read_config(path1,path2)
 
     #get DAG and home machine info
-    # first_task = dag_info[0]
     dag = dag_info[1]
     hosts=dag_info[2]
     first_flag = dag_info[1][first_task][1]
@@ -947,10 +926,6 @@ def main():
         global_task_node_map[home_id]  = home_id
         next_tasks_map[home_id] = [os.environ['CHILD_NODES']]
         last_tasks_map[os.environ['CHILD_NODES']].append(home_id)
-
-    # print('Last and next')
-    # print(last_tasks_map)
-    # print(next_tasks_map)
 
 
     global last_tasks

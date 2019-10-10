@@ -678,8 +678,11 @@ def get_updated_resource_profile():
             print('Check Resource Profiler IP: '+ip)
             client_mongo = MongoClient('mongodb://'+ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.central_resource_profiler
+            print(db)
             collection = db.collection_names(include_system_collections=False)
+            print(collection)
             logging =db[ip].find().skip(db[ip].count()-1)
+            print(logging)
             for record in logging:
                 resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
@@ -722,7 +725,7 @@ def price_aggregate():
 
     try:
         
-        #print(' Retrieve all input information: ')
+        print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
         print('--------------')
@@ -857,6 +860,17 @@ def new_predict_best_node(task_name):
     w_mem = 1 # Resource profiling : larger mem resource, lower price
     w_queue = 1 # Queue : currently 0
     best_node = -1
+
+    print('Current input price')
+    print(task_price_cpu)
+    print(len(task_price_cpu.keys()))
+    print(task_price_mem)
+    print(len(task_price_mem.keys()))
+    print(task_price_queue)
+    print(len(task_price_queue.keys()))
+    print(task_price_net)
+    print(len(task_price_net.keys()))
+
 
     task_price_network= dict()
     for (source, task), price in task_price_net.items():
