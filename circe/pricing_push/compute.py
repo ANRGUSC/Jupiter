@@ -696,6 +696,7 @@ def execute_task(home_id,task_name,file_name, filenames, input_path, output_path
         input_path (str): input file path
         output_path (str): output file path
     """
+    print('Execute the task')
     ts = time.time()
     runtime_info = 'rt_exec '+ file_name+ ' '+str(ts)
     send_runtime_profile_computingnode(runtime_info,task_name,home_id)
@@ -910,16 +911,21 @@ class Handler1(pyinotify.ProcessEvent):
             print('----- next step is not home')
             print(task_node_map)
             print(len(tasks))
-            while len(task_node_map)<len(tasks)+1:#include home
-                print('Not yet loaded assignment')
-                print(task_node_map)
-                time.sleep(1)
+            for next_task in next_tasks_map[task_name]:
+                print(next_task)
+                while next_task not in task_node_map:
+                    print('Not yet loaded assignment')
+                    print(task_node_map)
+                    time.sleep(1)
+
+            print('Loaded all required assignment')
+
             next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
             # next_IPs   = [computing_ip_map[x] for x in next_hosts]
 
             # print('Sending the output files to the corresponding destinations')
             if flag=='true': 
-                #send a single output of the task to all its children 
+                print('send a single output of the task to all its children') 
                 destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
                 for idx,host in enumerate(next_hosts):
                     if self_ip!=combined_ip_map[host]: # different node
@@ -928,10 +934,16 @@ class Handler1(pyinotify.ProcessEvent):
                         copyfile(event.pathname, destinations[idx])
             else:
                 #it will wait the output files and start putting them into queue, send frst output to first listed child, ....
+                print('wai for all the input files')
                 if key not in files_mul:
                     files_mul[key] = [event.pathname]
                 else:
                     files_mul[key] = files_mul[key] + [event.pathname]
+                print('====')
+                print(files_mul)
+                print(key)
+                print(len(files_mul[key]))
+                print(next_hosts)
                 if len(files_mul[key]) == len(next_hosts):
                     for idx,host in enumerate(next_hosts):
                         current_file = files_mul[key][idx].split('/')[-1]
@@ -989,7 +1001,10 @@ class Handler(pyinotify.ProcessEvent):
             count_mul[key]=count_mul[key]-1
             size_mul[key] = size_mul[key] + cal_file_size(event.pathname)
 
+        print(task_mul)
+
         if count_mul[key] == 0: # enough input files
+            print('Enough input files')
             incoming_file = task_mul[key]
 
             if len(incoming_file)==1: 
