@@ -685,7 +685,7 @@ def main():
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
     BOKEH = int(config['OTHER']['BOKEH'])
 
-    update_interval = 3
+    update_interval = 1
 
     global task_node_summary, controllers_id_map, update_best
     manager = Manager()

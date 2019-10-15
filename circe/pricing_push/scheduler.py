@@ -699,7 +699,7 @@ def main():
     web_server = MonitorRecv()
     web_server.start()
 
-    update_interval = 3
+    update_interval = 1
     _thread.start_new_thread(schedule_update_price,(update_interval,))
 
     # watch manager

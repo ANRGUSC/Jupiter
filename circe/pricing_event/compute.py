@@ -1059,14 +1059,14 @@ class Handler1(pyinotify.ProcessEvent):
                     request_best_assignment(home_id,next_task,input_name)
                     print('--- waiting for computing node assignment')
                     print(task_node_map)
-                    b = (task_node_map[home_id,next_task,input_name]=='-1')
-                    print(b)
-                    print('---2')
-                    c = not update_best[home_id,next_task,input_name]
-                    print(c)
-                    a = b or c
-                    print(a)
-                    print('------- 3')
+                    # b = (task_node_map[home_id,next_task,input_name]=='-1')
+                    # print(b)
+                    # print('---2')
+                    # c = not update_best[home_id,next_task,input_name]
+                    # print(c)
+                    # a = b or c
+                    # print(a)
+                    # print('------- 3')
                     # print(update_best)
                     time.sleep(1)
                 print(task_node_map[home_id,next_task,input_name])
@@ -1137,11 +1137,11 @@ class Handler1(pyinotify.ProcessEvent):
                 # print(time.time()-t1)
                 # t1 = time.time()
             else: #each output file to each of the next children task
-                print('each output file to each of the next children task')
                 if key not in files_mul:
                     files_mul[key] = [event.pathname]
                 else:
                     files_mul[key] = files_mul[key] + [event.pathname]
+                print('checking enough output files in queue')
                 print(files_mul[key])
                 print(next_hosts)
                 # print(time.time()-t1)
@@ -1151,6 +1151,7 @@ class Handler1(pyinotify.ProcessEvent):
                     for idx,host in enumerate(next_hosts):
                         # print(files_mul[key][idx])
                         # print(next_tasks_map[task_name][idx])
+                        print('send each output file to each of the next children task')
                         current_file = files_mul[key][idx].split('/')[-1]
                         # print(current_file)
                         # destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
@@ -1277,7 +1278,7 @@ def main():
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
     BOKEH = int(config['OTHER']['BOKEH'])
 
-    update_interval = 3
+    update_interval = 1
 
     prepare_global_info()
 
