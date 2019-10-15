@@ -182,7 +182,7 @@ def prepare_global_info():
     combined_ips = home_ips + computing_ips
     combined_ip_map = dict(zip(combined_nodes,combined_ips))
 
-    global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map, task_node_map
+    global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map, task_node_map, local_task_node_map
 
     manager = Manager()
     task_mul = manager.dict() # list of incoming tasks and files
@@ -193,6 +193,7 @@ def prepare_global_info():
     files_mul = manager.dict()
     controllers_id_map = manager.dict()
     task_node_map = manager.dict()
+    local_task_node_map = manager.dict()
 
     global home_node_host_ports, dag
     home_node_host_ports = dict()
@@ -905,7 +906,7 @@ class Handler1(pyinotify.ProcessEvent):
         flag = next_mul[key][0]
 
         if next_tasks_map[task_name][0] in home_ids: 
-            # print('----- next step is home')
+            print('----- next step is home')
             transfer_data(home_id,username,password,event.pathname, "/output/"+new_file)   
         else:
             print('----- next step is not home')
@@ -916,6 +917,7 @@ class Handler1(pyinotify.ProcessEvent):
                 while next_task not in task_node_map:
                     print('Not yet loaded assignment')
                     print(task_node_map)
+                    print(next_task)
                     time.sleep(1)
 
             print('Loaded all required assignment')
@@ -934,23 +936,24 @@ class Handler1(pyinotify.ProcessEvent):
                         copyfile(event.pathname, destinations[idx])
             else:
                 #it will wait the output files and start putting them into queue, send frst output to first listed child, ....
-                print('wai for all the input files')
+                print('wait for all the output files')
                 if key not in files_mul:
                     files_mul[key] = [event.pathname]
                 else:
                     files_mul[key] = files_mul[key] + [event.pathname]
                 print('====')
-                print(files_mul)
-                print(key)
-                print(len(files_mul[key]))
+                print(files_mul[key])
                 print(next_hosts)
                 if len(files_mul[key]) == len(next_hosts):
+                    print('Enough output files to transfer')
                     for idx,host in enumerate(next_hosts):
                         current_file = files_mul[key][idx].split('/')[-1]
                         destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
                         if self_ip!=combined_ip_map[host]:
+                            print('transfer file to remote node')
                             transfer_data(host,username,password,files_mul[key][idx], destinations)
                         else: 
+                            print('copy file')
                             copyfile(files_mul[key][idx],destinations)
             
 class Handler(pyinotify.ProcessEvent):
@@ -1059,7 +1062,7 @@ def main():
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
     BOKEH = int(config['OTHER']['BOKEH'])
 
-    update_interval = 3
+    update_interval = 1
 
     prepare_global_info()
 

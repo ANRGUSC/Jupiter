@@ -505,10 +505,10 @@ def receive_price_info():
         for price in price_net_info:
             task_price_net[node_name,price.split(':')[0]] = float(price.split(':')[1])
         # print('Check price updated interval ')
-        print(task_price_net)
-        print(task_price_cpu)
-        print(task_price_mem)
-        print(task_price_queue)
+        # print(task_price_net)
+        # print(task_price_cpu)
+        # print(task_price_mem)
+        # print(task_price_queue)
         pass_time[node_name] = TimedValue()
         
 
@@ -575,15 +575,15 @@ def new_predict_best_node(task_name):
     w_queue = 1 # Queue : currently 0
     best_node = -1
 
-    print('Current input price')
-    print(task_price_cpu)
-    print(len(task_price_cpu.keys()))
-    print(task_price_mem)
-    print(len(task_price_mem.keys()))
-    print(task_price_queue)
-    print(len(task_price_queue.keys()))
-    print(task_price_net)
-    print(len(task_price_net.keys()))
+    # print('Current input price')
+    # print(task_price_cpu)
+    # print(len(task_price_cpu.keys()))
+    # print(task_price_mem)
+    # print(len(task_price_mem.keys()))
+    # print(task_price_queue)
+    # print(len(task_price_queue.keys()))
+    # print(task_price_net)
+    # print(len(task_price_net.keys()))
 
     task_price_network= dict()
    

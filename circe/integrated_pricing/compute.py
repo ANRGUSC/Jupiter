@@ -229,11 +229,11 @@ def prepare_global_info():
 
     global tasks, task_order, super_tasks, non_tasks
     tasks, task_order, super_tasks, non_tasks = get_taskmap()
-    print('----------- TASKS INFO')
-    print(tasks)
-    print(task_order)
-    print(super_tasks)
-    print(non_tasks)
+    # print('----------- TASKS INFO')
+    # print(tasks)
+    # print(task_order)
+    # print(super_tasks)
+    # print(non_tasks)
 
     # for task in tasks:
     #     my_task_price_net[task] = dict()    
@@ -542,7 +542,7 @@ def update_exec_profile_file():
         except:
             print('Error connection')
             time.sleep(5)
-    print(client_mongo)
+    # print(client_mongo)
     while not available_data:
         try:
             logging =db[self_name].find()
@@ -551,8 +551,8 @@ def update_exec_profile_file():
             print('Execution information for the current node is not ready!!!')
             time.sleep(5)
 
-    print(available_data)
-    print(logging)
+    # print(available_data)
+    # print(logging)
     c = 0
     for record in logging:
         # Node ID, Task, Execution Time, Output size
@@ -618,14 +618,14 @@ def get_updated_network_profile():
         # print(logging)
         c=0
         for record in logging:
-            print(record)
+            # print(record)
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c = c+1
         # print('Number of neighbors')
         # print(num_nb)
         print('Retrieve network information')
-        print(network_info)
+        # print(network_info)
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceintegratedcompute%s updatenetwork %d\n'%(self_name,c)
@@ -678,16 +678,16 @@ def get_updated_resource_profile():
             print('Check Resource Profiler IP: '+ip)
             client_mongo = MongoClient('mongodb://'+ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.central_resource_profiler
-            print(db)
+            # print(db)
             collection = db.collection_names(include_system_collections=False)
-            print(collection)
+            # print(collection)
             logging =db[ip].find().skip(db[ip].count()-1)
-            print(logging)
+            # print(logging)
             for record in logging:
                 resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
         print("Resource profiles: ", resource_info)
-        print(len(resource_info))
+        # print(len(resource_info))
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceintegratedcompute%s updateresource %d\n'%(self_name,len(resource_info))
@@ -728,13 +728,13 @@ def price_aggregate():
         print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        print('--------------')
-        print(resource_info)
-        print('--------------2')
-        print(execution_info)
+        # print('--------------')
+        # print(resource_info)
+        # print('--------------2')
+        # print(execution_info)
         network_info = get_updated_network_profile()
-        print('--------------3')
-        print(network_info)
+        # print('--------------3')
+        # print(network_info)
         # test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         
         
@@ -861,15 +861,15 @@ def new_predict_best_node(task_name):
     w_queue = 1 # Queue : currently 0
     best_node = -1
 
-    print('Current input price')
-    print(task_price_cpu)
-    print(len(task_price_cpu.keys()))
-    print(task_price_mem)
-    print(len(task_price_mem.keys()))
-    print(task_price_queue)
-    print(len(task_price_queue.keys()))
-    print(task_price_net)
-    print(len(task_price_net.keys()))
+    # print('Current input price')
+    # print(task_price_cpu)
+    # print(len(task_price_cpu.keys()))
+    # print(task_price_mem)
+    # print(len(task_price_mem.keys()))
+    # print(task_price_queue)
+    # print(len(task_price_queue.keys()))
+    # print(task_price_net)
+    # print(len(task_price_net.keys()))
 
 
     task_price_network= dict()
@@ -1336,7 +1336,8 @@ class Handler1(pyinotify.ProcessEvent):
 
             next_hosts = [global_task_node_map[home_id,x] for x in next_tasks_map[task_name]]
             # next_IPs   = [computing_ip_map[x] for x in next_hosts]
-            
+            print('*********')
+            print(next_hosts)
             if flag=='true': 
                 print('not wait, send')
                 # send runtime info
@@ -1350,6 +1351,7 @@ class Handler1(pyinotify.ProcessEvent):
                     else: # same node
                         copyfile(event.pathname, destinations[idx])
             else:
+                print('Wait until enough output files')
                 if key not in files_mul:
                     files_mul[key] = [event.pathname]
                 else:
@@ -1357,6 +1359,7 @@ class Handler1(pyinotify.ProcessEvent):
 
                 if len(files_mul[key]) == len(next_hosts):
                     # send runtime info on finishing the task 
+                    print('Enough output files')
                     runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
                     # print(input_name)
                     send_runtime_profile_computingnode(runtime_info,task_name,home_id)

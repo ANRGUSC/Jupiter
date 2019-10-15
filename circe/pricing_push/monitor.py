@@ -197,14 +197,14 @@ def default_best_node():
         # print(task_price_cpu.keys())
         # print(len(task_price_network.keys()))
         # print(len(task_price_cpu.keys()))
-        # print('CPU utilization')
-        # print(task_price_cpu)
-        # print('Memory utilization')
-        # print(task_price_mem)
-        # print('Queue cost')
-        # print(task_price_queue)
-        # print('Network cost')
-        # print(task_price_network)
+        print('CPU utilization')
+        print(task_price_cpu)
+        print('Memory utilization')
+        print(task_price_mem)
+        print('Queue cost')
+        print(task_price_queue)
+        print('Network cost')
+        print(task_price_network)
         # print(task_price_network.keys())
         if len(task_price_network.keys())>1: #net(node,home) not exist
             
@@ -234,8 +234,8 @@ def default_best_node():
                 # print(task_price_summary[item])
             # print('------------3')
             
-            # print('Summary cost')
-            # print(task_price_summary)
+            print('Summary cost')
+            print(task_price_summary)
             if task_price_summary:
                 #print(task_price_summary)
                 best_node = min(task_price_summary,key=task_price_summary.get)
@@ -696,7 +696,7 @@ def main():
 
 
 
-    update_interval = 3 
+    update_interval = 1
 
     global dest_node_host_port_list
     dest_node_host_port_list = [ip + ":" + str(FLASK_SVC) for ip in all_computing_ips]

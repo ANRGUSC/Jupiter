@@ -267,13 +267,20 @@ def receive_best_assignment_request():
         source_node = request.args.get('node_name')
         file_name = request.args.get('file_name')
         source_key = request.args.get('key')
-        # print('***')
-        # print(home_id)
-        # print(source_node)
-        # print(file_name)
-        # print(source_key)
-        best_node = predict_best_node(source_node)
-        # print(best_node)
+        print('***')
+        print(home_id)
+        print(source_node)
+        print(file_name)
+        print(source_key)
+        key = (home_id,file_name)
+        if key in task_node_summary and task_node_summary[key]!=-1:
+            print('Already existed in task node mapping')
+            best_node = task_node_summary[key]
+        else:
+            print('Not yet existed in task node mapping')
+            best_node = predict_best_node(source_node)
+            task_node_summary[key] = best_node
+        print(best_node)
         # print('******')
         # txec = toc(t)
         # bottleneck['receiveassign'].append(txec)
@@ -293,7 +300,7 @@ app.add_url_rule('/receive_best_assignment_request', 'receive_best_assignment_re
 def announce_best_assignment(home_id,best_node, source_node, file_name,source_key):
     try:
         # print('***************************************************')
-        # print("Announce the best computing node for my task:" + self_task)
+        print("Announce the best computing node for my task " + self_task+ " is " + best_node)
         # t = tic()
         # print(node_ip_map)
         # print(source_node)
@@ -630,7 +637,7 @@ def main():
     pass_time = dict()
 
     # Set up default value for task_node_summary: the task controller will perform the tasks also
-    task_node_summary['current_best_node'] = self_id
+    # task_node_summary['current_best_node'] = self_id
 
     
 

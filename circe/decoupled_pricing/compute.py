@@ -665,8 +665,8 @@ def main():
     global first_task
     first_task  = 'task0' #fix later
 
-    update_interval = 2
-
+    update_interval = 1
+    
     prepare_global_info()
 
     # Prepare transfer-runtime file:
