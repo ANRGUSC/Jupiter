@@ -71,6 +71,31 @@ def demo_help(server,port,topic,msg):
     client.publish(topic, msg,qos=1)
     client.disconnect()
 
+def announce_input(input_file, input_time):
+    """
+    Raises:
+        Exception: request if successful, ``not ok`` if failed
+    """
+    try:
+        print('Announce input file to all compute worker node')
+        for compute_host in all_compute_host:
+            url = "http://" + compute_host + "/announce_input_worker"
+            params = {'home_id':my_id,'input_file': input_file, 'input_time':input_time}
+            params = urllib.parse.urlencode(params)
+            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+            res = urllib.request.urlopen(req)
+            res = res.read()
+            res = res.decode('utf-8')
+        if BOKEH==3:    
+            topic = 'msgoverhead_home'
+            msg = 'msgoverhead priceintegratedcomputehome announceinput %d\n'%(len(all_compute_host))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+    except Exception as e:
+        print('Announce input files to compute nodes failed')
+        print(e)
+        return "not ok"
+    return res
+
 #@app.route('/recv_monitor_data')
 def recv_mapping():
     """
@@ -574,6 +599,9 @@ class Handler(pyinotify.ProcessEvent):
         print("start time is: ", start_times)
         new_file_name = os.path.split(event.pathname)[-1]
 
+        input_file = inputfile.split('.')[0]
+        announce_input(input_file, t)
+
         while not task_node_summary:
             print('task node summary not yet available!!!')
             time.sleep(2)
@@ -648,12 +676,13 @@ def main():
     task_node_summary = manager.dict()
     controllers_id_map = manager.dict()
 
-    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag,my_id, controller_ip_map, all_controller_nodes, all_controller_ips,my_task, self_profiler_ip, ip_profilers_map
+    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag,my_id, controller_ip_map, all_controller_nodes, all_controller_ips,my_task, self_profiler_ip, ip_profilers_map,all_compute_host
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
     num_computing_nodes = len(all_computing_nodes)
     node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
+    all_compute_host = [x+':'+str(FLASK_SVC) for x in all_computing_ips]
 
     all_controller_nodes = os.environ["ALL_NODES"].split(":")
     all_controller_ips = os.environ["ALL_NODES_IPS"].split(":")

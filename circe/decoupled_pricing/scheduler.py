@@ -89,14 +89,20 @@ def announce_mapping():
 app.add_url_rule('/announce_mapping', 'announce_mapping', announce_mapping)
 
 
+
+
+
+
 def announce_mapping_to_workers():
     try:
         print('Announce full mapping to all compute worker node')
         tmp_assignments = ",".join(("{}:{}".format(*i) for i in global_task_node_map.items()))
+
+        t = time.time()
         for compute_host in all_compute_host:
             url = "http://" + compute_host + "/announce_mapping_worker"
             # print(tmp_assignments)
-            params = {'home_id':my_id,'assignments': tmp_assignments}
+            params = {'home_id':my_id,'assignments': tmp_assignments,'mapping_time':t}
             params = urllib.parse.urlencode(params)
             req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
             res = urllib.request.urlopen(req)
@@ -294,6 +300,31 @@ class Handler1(pyinotify.ProcessEvent):
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
            
 
+def announce_input(input_file, input_time):
+    """
+    Raises:
+        Exception: request if successful, ``not ok`` if failed
+    """
+    try:
+        print('Announce input file to all compute worker node')
+        for compute_host in all_compute_host:
+            url = "http://" + compute_host + "/announce_input_worker"
+            params = {'home_id':my_id,'input_file': input_file, 'input_time':input_time}
+            params = urllib.parse.urlencode(params)
+            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+            res = urllib.request.urlopen(req)
+            res = res.read()
+            res = res.decode('utf-8')
+        if BOKEH==3:    
+            topic = 'msgoverhead_home'
+            msg = 'msgoverhead pricedecoupledcomputehome announceinput %d\n'%(len(all_compute_host))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+    except Exception as e:
+        print('Announce input files to compute nodes failed')
+        print(e)
+        return "not ok"
+    return res
+
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
     """
@@ -308,7 +339,10 @@ class Handler(pyinotify.ProcessEvent):
             runtime_receiver_log.flush()
 
         inputfile = event.pathname.split('/')[-1]
-        start_times[inputfile] = time.time()
+        t = time.time()
+        start_times[inputfile] = t
+        input_file = inputfile.split('.')[0]
+        announce_input(input_file, t)
         # start_times.append(time.time())
         print("start time is: ", start_times)
         new_file_name = os.path.split(event.pathname)[-1]
@@ -320,6 +354,7 @@ class Handler(pyinotify.ProcessEvent):
             # print(global_task_node_map)
             print('Not yet update global task mapping information')
             time.sleep(2)
+
 
         # print('Updated global task mapping information')
         # IP = node_ip_map[global_task_node_map[first_task]]
@@ -463,13 +498,11 @@ def main():
     global start_times
     global end_times
     global exec_times
-    
 
     # End-to-end metrics
     start_times = manager.dict()
     end_times = manager.dict()
     exec_times = manager.dict()
-
     
     
 
@@ -517,7 +550,7 @@ def main():
     for task in dag_info[1]:
         if 'home' in dag_info[1][task]:
             last_tasks.add(task)
-    
+
 
     web_server = MonitorRecv()
     web_server.start()

@@ -632,6 +632,32 @@ def new_predict_best_node(task_name):
         print(e)
         return -1
 
+def announce_input(input_file, input_time):
+    """
+    Raises:
+        Exception: request if successful, ``not ok`` if failed
+    """
+    try:
+        print('Announce input file to all compute worker node')
+        for compute_host in all_compute_host:
+            url = "http://" + compute_host + "/announce_input_worker"
+            params = {'home_id':my_id,'input_file': input_file, 'input_time':input_time}
+            params = urllib.parse.urlencode(params)
+            req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+            res = urllib.request.urlopen(req)
+            res = res.read()
+            res = res.decode('utf-8')
+        if BOKEH==3:    
+            topic = 'msgoverhead_home'
+            msg = 'msgoverhead priceintegratedcomputehome announceinput %d\n'%(len(all_compute_host))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+    except Exception as e:
+        print('Announce input files to compute nodes failed')
+        print(e)
+        return "not ok"
+    return res
+
+
 # def predict_best_node(task_name):
 #     # print('***************************************************')
 #     # print('Select the current best node')
@@ -689,7 +715,11 @@ class Handler(pyinotify.ProcessEvent):
             runtime_receiver_log.flush()
 
         inputfile = event.pathname.split('/')[-1]
-        start_times[inputfile] = time.time()
+        t = time.time()
+        start_times[inputfile] = t
+
+        input_file = inputfile.split('.')[0]
+        announce_input(input_file, t)
         # start_times.append(time.time())
         print("start time is: ", start_times)
         new_file_name = os.path.split(event.pathname)[-1]
@@ -856,12 +886,14 @@ def main():
     
     
 
-    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag,my_id, controller_ip_map, all_controller_nodes, all_controller_ips,my_task, self_profiler_ip, ip_profilers_map
+    global all_computing_nodes,all_computing_ips, node_ip_map, first_flag,my_id, controller_ip_map, all_controller_nodes, all_controller_ips,my_task, self_profiler_ip, ip_profilers_map, all_compute_host
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")
     num_computing_nodes = len(all_computing_nodes)
     node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
+
+    all_compute_host = [x+':'+str(FLASK_SVC) for x in all_computing_ips]
 
     # all_controller_nodes = os.environ["ALL_NODES"].split(":")
     # all_controller_ips = os.environ["ALL_NODES_IPS"].split(":")

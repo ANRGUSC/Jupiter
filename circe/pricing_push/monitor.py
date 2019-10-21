@@ -144,8 +144,10 @@ def default_best_node():
     print('Select the current best node')
     starttime = time.time()
     w_net = 1 # Network profiling: longer time, higher price
-    w_cpu = 100000 # Resource profiling : larger cpu resource, lower price
-    w_mem = 100000 # Resource profiling : larger mem resource, lower price
+    # w_cpu = 100000 # Resource profiling : larger cpu resource, lower price
+    # w_mem = 100000 # Resource profiling : larger mem resource, lower price
+    w_cpu = 1 # Resource profiling : larger cpu resource, lower price
+    w_mem = 1 # Resource profiling : larger mem resource, lower price
     w_queue = 1 # Queue : currently 0
     best_node = -1
     task_price_network= dict()

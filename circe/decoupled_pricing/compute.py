@@ -166,6 +166,13 @@ def prepare_global_info():
     global global_task_node_map
     global_task_node_map = manager.dict()
 
+
+    global start_times, mapping_times, mapping_input_id
+    start_times = manager.dict()
+    mapping_times = manager.list()
+    mapping_input_id = manager.dict()
+
+
     global home_node_host_ports, dag
     home_node_host_ports = dict()
     # print('--------- CHECK')
@@ -277,17 +284,49 @@ def prepare_global_info():
                 cmd = "mkdir centralized_scheduler/input/"+task+"/" + home_id
                 os.system(cmd)
 
+  
+  
+def announce_input_worker():
+    try:
+        print('Receive input announcement from the home node')
+        tmp_file = request.args.get('input_file')
+        tmp_time = request.args.get('input_time')
+        tmp_info = request.args.get('home_id')
+        tmp_home = tmp_info.split('-')[1]
+        print('Current mapping list')
+        print(mapping_times)
+        print("Received input announcement from home compute")
+        start_times[(tmp_home,tmp_file)] = tmp_time
+        print(start_times)
+        mapping_input_id[(tmp_home,tmp_file)] = len(mapping_times)-1 #ID of last mapping
+        print(mapping_input_id)
+
+    except Exception as e:
+        print("Received mapping announcement from controller failed")
+        print(e)
+        return "not ok"
+    return "ok"
+app.add_url_rule('/announce_input_worker', 'announce_input_worker', announce_input_worker)
 
 def announce_mapping_worker():
     try:
         tmp_assignments = request.args.get('assignments')
         tmp_info = request.args.get('home_id')
         tmp_home = tmp_info.split('-')[1]
+        tmp_time = request.args.get('mapping_time')
         print("Received mapping announcement from home compute")
         tmp = tmp_assignments.split(',')
+
+        print('Mapping time')
+        mapping_times.append(tmp_time)
+        print(mapping_times)
+
         for task in tmp:
-            global_task_node_map[tmp_home,task.split(':')[0]]=task.split(':')[1]
+            global_task_node_map[len(mapping_times)-1,tmp_home,task.split(':')[0]]=task.split(':')[1]
         print(global_task_node_map)
+
+        
+
     except Exception as e:
         print("Received mapping announcement from controller failed")
         print(e)
@@ -513,7 +552,9 @@ class Handler1(pyinotify.ProcessEvent):
             while len(global_task_node_map)==0:
                 print('Global task mapping is not loaded')
                 time.sleep(1)
-            next_hosts = [global_task_node_map[home_id,x] for x in next_tasks_map[task_name]]
+            print('Current mapping input list')
+            print(mapping_input_id[(home_id,input_name)])
+            next_hosts = [global_task_node_map[mapping_input_id[(home_id,input_name)],home_id,x] for x in next_tasks_map[task_name]]
             # next_IPs   = [computing_ip_map[x] for x in next_hosts]
             
             # print('Sending the output files to the corresponding destinations')
@@ -694,7 +735,7 @@ def main():
         #Node_name, Transfer_Type, Source_path , Time_stamp
 
     
-    
+
 
     web_server = MonitorRecv()
     web_server.start()
