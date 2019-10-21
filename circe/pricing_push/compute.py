@@ -34,6 +34,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from readconfig import read_config
 from shutil import copyfile
 import paho.mqtt.client as mqtt
+import collections
 
 import pyinotify
 
@@ -195,6 +196,14 @@ def prepare_global_info():
     task_node_map = manager.dict()
     local_task_node_map = manager.dict()
 
+    global count_mapping_mul
+    count_mapping_mul = manager.Value('i', 0)
+
+    global start_times, mapping_times, mapping_input_id
+    start_times = manager.dict()
+    mapping_times = manager.list()
+    mapping_input_id = manager.dict()
+
     global home_node_host_ports, dag
     home_node_host_ports = dict()
     # print('--------- CHECK')
@@ -252,7 +261,7 @@ def prepare_global_info():
     last_tasks_map[os.environ['CHILD_NODES']] = []
     for home_id in home_ids:
         last_tasks_map[home_id] = last_tasks_map['home'] 
-        task_node_map[home_id]  = home_id
+        task_node_map[0,home_id]  = home_id
         next_tasks_map[home_id] = [os.environ['CHILD_NODES']]
         last_tasks_map[os.environ['CHILD_NODES']].append(home_id)
 
@@ -260,7 +269,7 @@ def prepare_global_info():
     for task in task_controllers:
         # print(task)
         if task in super_tasks:
-            task_node_map[task] = task    
+            task_node_map[0,task] = task    
     # print('DEBUG NEXT LAST-----------')
     # print(next_tasks_map)
     # print(last_tasks_map)
@@ -324,7 +333,27 @@ def prepare_global_info():
 
     # print(task_module)
 
-    
+def announce_input_worker():
+    try:
+        print('Receive input announcement from the home node')
+        tmp_file = request.args.get('input_file')
+        tmp_time = request.args.get('input_time')
+        tmp_info = request.args.get('home_id')
+        tmp_home = tmp_info.split('-')[1]
+        print('Current mapping list')
+        print(mapping_times)
+        print("Received input announcement from home compute")
+        start_times[(tmp_home,tmp_file)] = tmp_time
+        print(start_times)
+        mapping_input_id[(tmp_home,tmp_file)] = count_mapping_mul #ID of last mapping
+        print(mapping_input_id)
+
+    except Exception as e:
+        print("Received mapping announcement from controller failed")
+        print(e)
+        return "not ok"
+    return "ok"
+app.add_url_rule('/announce_input_worker', 'announce_input_worker', announce_input_worker)
 
 def update_controller_map():
     """
@@ -352,7 +381,15 @@ def receive_assignment_info():
         print('Receive assignment information from task controllers')
         assignment_info = request.args.get('assignment_info').split('#')
         # print("Received assignment info")
-        task_node_map[assignment_info[0]] = assignment_info[1]
+        print(task_node_map)
+        tmp_counter=collections.Counter(k[0] for k in task_node_map)
+        print(tmp_counter)
+        tmp_cnt = tmp_counter[count_mapping_mul]
+        print(tmp_cnt)
+        if tmp_cnt == len(tasks):#enough mapping information for one round
+            count_mapping_mul = count_mapping_mul+1
+        print(count_mapping_mul)
+        task_node_map[count_mapping_mul,assignment_info[0]] = assignment_info[1]
         # print(task_node_map)
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
@@ -914,7 +951,10 @@ class Handler1(pyinotify.ProcessEvent):
             print(len(tasks))
             for next_task in next_tasks_map[task_name]:
                 print(next_task)
-                while next_task not in task_node_map:
+                print(mapping_input_id[(home_id,input_name)])
+                print(mapping_input_id[(home_id,input_name)].value)
+                print(task_node_map[mapping_input_id[(home_id,input_name)].value,task_name])
+                while next_task not in task_node_map[mapping_input_id[(home_id,input_name)].value,task_name]:
                     print('Not yet loaded assignment')
                     print(task_node_map)
                     print(next_task)
@@ -922,7 +962,7 @@ class Handler1(pyinotify.ProcessEvent):
 
             print('Loaded all required assignment')
 
-            next_hosts =  [task_node_map[x] for x in next_tasks_map[task_name]]
+            next_hosts =  [task_node_map[mapping_input_id[(home_id,input_name)].value,x] for x in next_tasks_map[task_name]]
             # next_IPs   = [computing_ip_map[x] for x in next_hosts]
 
             # print('Sending the output files to the corresponding destinations')

@@ -202,6 +202,11 @@ def prepare_global_info():
     controllers_id_map = manager.dict()
     pass_time = manager.dict()
 
+    global start_times, mapping_times, mapping_input_id
+    start_times = manager.dict()
+    mapping_times = manager.list()
+    mapping_input_id = manager.dict()
+
     global local_task_node_map, global_task_node_map
     local_task_node_map = manager.dict()
     global_task_node_map = manager.dict()
@@ -336,6 +341,7 @@ def prepare_global_info():
 
     # print(task_module)
 
+
     
 # NEW: update assignment 
 def send_assignment_info(node_ip,task_name,best_node):
@@ -466,11 +472,16 @@ def update_global_assignment():
     starttime = time.time()
     m = (len(computing_nodes)+1)*len(tasks) # (all_compute & home,all_task)
     a = dict(local_task_node_map)
+    print(m)
+    print(len(a))
     if len(a)<m:
         print('Not yet fully loaded local information')
     else: 
         print('Fully loaded information')
         print(global_task_node_map)
+        print('Mapping time')
+        mapping_times.append(time.time())
+        print(mapping_times)
         for home in home_ids:
             for task in top_order_task:
                 # print('--------------')
@@ -478,24 +489,26 @@ def update_global_assignment():
                 
                 # print(last_tasks_map[task])
                 if task==first_task:
-                    global_task_node_map[home,first_task]=local_task_node_map[home,first_task]
+                    global_task_node_map[len(mapping_times)-1,home,first_task]=local_task_node_map[home,first_task]
                 else:
                     if len(last_tasks_map[task])==1:
-                        prev_node = global_task_node_map[home,last_tasks_map[task][0]]
-                        global_task_node_map[home,task] = local_task_node_map[prev_node,task]
+                        prev_node = global_task_node_map[len(mapping_times)-1,home,last_tasks_map[task][0]]
+                        global_task_node_map[len(mapping_times)-1,home,task] = local_task_node_map[prev_node,task]
                     else:
                         tmp_node_list =[]
                         for prev_task in last_tasks_map[task]:
-                            prev_node = global_task_node_map[home,prev_task]
+                            prev_node = global_task_node_map[len(mapping_times)-1,home,prev_task]
                         last_tasks_map[task].sort()
                         # print(last_tasks_map[task])
                         chosen_task = last_tasks_map[task][0]
-                        chosen_prev = global_task_node_map[home,chosen_task]
+                        chosen_prev = global_task_node_map[len(mapping_times)-1,home,chosen_task]
                         # print(chosen_task)
                         # print(chosen_prev)
-                        global_task_node_map[home,task] = local_task_node_map[chosen_prev,task]
+                        global_task_node_map[len(mapping_times)-1,home,task] = local_task_node_map[chosen_prev,task]
 
     globalmappingtime = time.time()-starttime
+
+
     if BOKEH==3:    
         topic = 'mappinglatency_%s'%(appoption)
         msg = 'mappinglatency priceintegratedcompute%s updateglobalmapping %f %s\n'%(self_name,globalmappingtime,appname)
@@ -1293,6 +1306,28 @@ def retrieve_input_finish(task_name, file_name):
     # print('***************************************************')
     return input_name
 
+def announce_input_worker():
+    try:
+        print('Receive input announcement from the home node')
+        tmp_file = request.args.get('input_file')
+        tmp_time = request.args.get('input_time')
+        tmp_info = request.args.get('home_id')
+        tmp_home = tmp_info.split('-')[1]
+        print('Current mapping list')
+        print(mapping_times)
+        print("Received input announcement from home compute")
+        start_times[(tmp_home,tmp_file)] = tmp_time
+        print(start_times)
+        mapping_input_id[(tmp_home,tmp_file)] = len(mapping_times)-1 #ID of last mapping
+        print(mapping_input_id)
+
+    except Exception as e:
+        print("Received mapping announcement from controller failed")
+        print(e)
+        return "not ok"
+    return "ok"
+app.add_url_rule('/announce_input_worker', 'announce_input_worker', announce_input_worker)
+
 
 class Handler1(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
@@ -1330,11 +1365,15 @@ class Handler1(pyinotify.ProcessEvent):
             transfer_data(home_id,username,password,event.pathname, "/output/"+new_file)   
         else:
             print('----- next step is not home')
+            print(global_task_node_map)
             while len(global_task_node_map)==0:
                 print('Global task mapping is not loaded')
                 time.sleep(1)
 
-            next_hosts = [global_task_node_map[home_id,x] for x in next_tasks_map[task_name]]
+            print('Current mapping input list')
+            print(mapping_input_id[(home_id,input_name)])
+
+            next_hosts = [global_task_node_map[mapping_input_id[(home_id,input_name)],home_id,x] for x in next_tasks_map[task_name]]
             # next_IPs   = [computing_ip_map[x] for x in next_hosts]
             print('*********')
             print(next_hosts)
