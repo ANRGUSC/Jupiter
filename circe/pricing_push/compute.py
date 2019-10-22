@@ -399,7 +399,7 @@ def receive_assignment_info():
         if tmp_cnt == len(tasks):#enough mapping information for one round
             count_mapping_mul = count_mapping_mul+1
         print(count_mapping_mul)
-        task_node_map[count_mapping_mul,assignment_info[0]] = assignment_info[1]
+        task_node_map[count_mapping_mul.value,assignment_info[0]] = assignment_info[1]
         # print(task_node_map)
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
@@ -960,22 +960,23 @@ class Handler1(pyinotify.ProcessEvent):
             print(task_node_map)
             print(len(tasks))
             for next_task in next_tasks_map[task_name]:
+                print('*********')
                 print(next_task)
-                print(mapping_input_id[(home_id,input_name)].value)
-                next_key = (mapping_input_id[(home_id,input_name)].value,next_task)
+                print(mapping_input_id[(home_id,input_name)])
+                next_key = (mapping_input_id[(home_id,input_name)],next_task)
                 print(next_key)
                 while next_key not in task_node_map:
                     print('Not yet loaded assignment')
                     print(task_node_map)
-                    print(next_task)
+                    print(next_key)
                     time.sleep(1)
 
             print('Loaded all required assignment')
 
-            next_hosts =  [task_node_map[mapping_input_id[(home_id,input_name)].value,x] for x in next_tasks_map[task_name]]
+            next_hosts =  [task_node_map[mapping_input_id[(home_id,input_name)],x] for x in next_tasks_map[task_name]]
             # next_IPs   = [computing_ip_map[x] for x in next_hosts]
 
-            # print('Sending the output files to the corresponding destinations')
+            print('Sending the output files to the corresponding destinations')
             if flag=='true': 
                 print('send a single output of the task to all its children') 
                 destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
@@ -996,7 +997,10 @@ class Handler1(pyinotify.ProcessEvent):
                 print(next_hosts)
                 if len(files_mul[key]) == len(next_hosts):
                     print('Enough output files to transfer')
+                    print(len(next_hosts))
+
                     for idx,host in enumerate(next_hosts):
+                        print('!!!!!!!!!!')
                         current_file = files_mul[key][idx].split('/')[-1]
                         destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
                         if self_ip!=combined_ip_map[host]:
