@@ -137,9 +137,9 @@ def set_globals():
     KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
     # Namespaces
-    DEPLOYMENT_NAMESPACE    = 'quynh-circe'
+    DEPLOYMENT_NAMESPACE    = 'quynh2-circe'
     PROFILER_NAMESPACE      = 'quynh-profiler'
-    MAPPER_NAMESPACE        = 'quynh-mapper'
+    MAPPER_NAMESPACE        = 'quynh2-mapper'
     EXEC_NAMESPACE          = 'quynh-exec'
 
     """ Node file path and first task information """

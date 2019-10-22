@@ -198,6 +198,8 @@ def prepare_global_info():
 
     global count_mapping_mul
     count_mapping_mul = manager.Value('i', 0)
+    print('------------------- Count mapping')
+    print(count_mapping_mul.value)
 
     global start_times, mapping_times, mapping_input_id
     start_times = manager.dict()
@@ -334,6 +336,7 @@ def prepare_global_info():
     # print(task_module)
 
 def announce_input_worker():
+    global count_mapping_mul
     try:
         print('Receive input announcement from the home node')
         tmp_file = request.args.get('input_file')
@@ -345,7 +348,7 @@ def announce_input_worker():
         print("Received input announcement from home compute")
         start_times[(tmp_home,tmp_file)] = tmp_time
         print(start_times)
-        mapping_input_id[(tmp_home,tmp_file)] = count_mapping_mul #ID of last mapping
+        mapping_input_id[(tmp_home,tmp_file)] = count_mapping_mul.value #ID of last mapping
         print(mapping_input_id)
 
     except Exception as e:
@@ -377,14 +380,21 @@ def receive_assignment_info():
     """
         Receive corresponding best nodes from the corresponding computing node
     """
+    global count_mapping_mul
     try:
         print('Receive assignment information from task controllers')
         assignment_info = request.args.get('assignment_info').split('#')
         # print("Received assignment info")
         print(task_node_map)
-        tmp_counter=collections.Counter(k[0] for k in task_node_map)
+        tmp_counter = dict()
+        for k, v in task_node_map.items():
+            if (k[0]) in tmp_counter:
+                tmp_counter[k[0]] += 1
+            else:
+                tmp_counter[k[0]] = 1
         print(tmp_counter)
-        tmp_cnt = tmp_counter[count_mapping_mul]
+        print(count_mapping_mul)
+        tmp_cnt = tmp_counter[count_mapping_mul.value]
         print(tmp_cnt)
         if tmp_cnt == len(tasks):#enough mapping information for one round
             count_mapping_mul = count_mapping_mul+1
@@ -951,10 +961,10 @@ class Handler1(pyinotify.ProcessEvent):
             print(len(tasks))
             for next_task in next_tasks_map[task_name]:
                 print(next_task)
-                print(mapping_input_id[(home_id,input_name)])
                 print(mapping_input_id[(home_id,input_name)].value)
-                print(task_node_map[mapping_input_id[(home_id,input_name)].value,task_name])
-                while next_task not in task_node_map[mapping_input_id[(home_id,input_name)].value,task_name]:
+                next_key = (mapping_input_id[(home_id,input_name)].value,next_task)
+                print(next_key)
+                while next_key not in task_node_map:
                     print('Not yet loaded assignment')
                     print(task_node_map)
                     print(next_task)
