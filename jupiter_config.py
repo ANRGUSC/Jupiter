@@ -193,20 +193,20 @@ def set_globals():
     # APP_NAME                  = 'app_specific_files/stresscpuapp10'
     # APP_OPTION                = 'stresscpu10'
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
-    APP_NAME                  = 'app_specific_files/dummyapp30'
-    APP_OPTION                = 'dummy30'
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
+    # APP_NAME                  = 'app_specific_files/dummyapp30'
+    # APP_OPTION                = 'dummy30'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp50/'
     # APP_NAME                  = 'app_specific_files/dummyapp50'
     # APP_OPTION                = 'dummy50'
 
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp100/'
-    # APP_NAME                  = 'app_specific_files/dummyapp100'
-    # APP_OPTION                = 'dummy100'
+    HOME_CHILD                = 'task0'
+    APP_PATH                  = HERE  + 'app_specific_files/dummyapp100/'
+    APP_NAME                  = 'app_specific_files/dummyapp100'
+    APP_OPTION                = 'dummy100'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp150/'

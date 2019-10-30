@@ -401,7 +401,7 @@ def main():
     circe_port = int(jupiter_config.FLASK_CIRCE)
     
     
-    num_samples = 2
+    num_samples = 10
     num_runs = 1
     num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]
@@ -422,6 +422,6 @@ def main():
         for idx,appname in enumerate(app_list):
             print(appname)
             _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],num_runs,num_samples))
-    app.run(host='0.0.0.0', port = 5099)
+    app.run(host='0.0.0.0', port = 5066)
 if __name__ == '__main__':
     main()

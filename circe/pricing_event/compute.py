@@ -381,7 +381,7 @@ def update_exec_profile_file():
 
     if BOKEH==3:    
         topic = 'msgoverhead_%s'%(self_name)
-        msg = 'msgoverhead priceeventcompute%s updateexec %d\n'%(self_name,c)
+        msg = 'msgoverhead priceevent compute%s updateexec %d\n'%(self_name,c)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     # txec = toc(t)
     # bottleneck['executioninfo'].append(txec)
@@ -453,7 +453,7 @@ def get_updated_network_profile():
 
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceeventcompute%s updatenetwork %d\n'%(self_name,c)
+            msg = 'msgoverhead priceevent compute%s updatenetwork %d\n'%(self_name,c)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return network_info
     except Exception as e:
@@ -478,7 +478,7 @@ def get_updated_resource_profile():
         print(len(resource_info))
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceeventcompute%s updateresource %d\n'%(self_name,len(resource_info))
+            msg = 'msgoverhead priceevent compute%s updateresource %d\n'%(self_name,len(resource_info))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return resource_info
     except Exception as e:
@@ -683,7 +683,7 @@ def push_updated_price():
 
     if BOKEH==3:    
         topic = 'msgoverhead_%s'%(self_name)
-        msg = 'msgoverhead priceeventcompute%s pushprice %d\n'%(self_name,len(task_controllers))
+        msg = 'msgoverhead priceevent compute%s pushprice %d\n'%(self_name,len(task_controllers))
 
     
 def schedule_update_price(interval):
@@ -926,7 +926,7 @@ def request_best_assignment(home_id,task_name,file_name):
 
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceeventcompute%s requestbest 1\n'%(self_name)
+            msg = 'msgoverhead priceevent compute%s requestbest 1\n'%(self_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 

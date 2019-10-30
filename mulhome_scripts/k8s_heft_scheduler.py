@@ -46,7 +46,7 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
 
     print('Starting to deploy HEFT')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../users/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
         start_time = time.time()
         msg = 'HEFT deploystart %f \n'%(start_time)
         write_file(latency_file,msg)

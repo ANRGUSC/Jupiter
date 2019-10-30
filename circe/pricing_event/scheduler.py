@@ -103,7 +103,7 @@ def request_best_assignment(home_id,task_name,file_name):
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:    
-            msg = 'msgoverhead priceeventhome requestbest 1 %s %s\n'%(home_id,task_name)
+            msg = 'msgoverhead priceevent home requestbest 1 %s %s\n'%(home_id,task_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
         # txec = toc(t)
         # bottleneck['requestassignment'].append(txec)
@@ -343,7 +343,7 @@ def get_updated_resource_profile():
     print(len(resource_info))
     if BOKEH==3:    
         topic = 'msgoverhead_%s'%(self_name)
-        msg = 'msgoverhead priceeventcompute%s updateresource %d\n'%(self_name,len(resource_info))
+        msg = 'msgoverhead priceevent compute%s updateresource %d\n'%(self_name,len(resource_info))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     return resource_info
     
@@ -388,7 +388,7 @@ def get_updated_network_profile():
         # print('***************************************************')
         
         if BOKEH==3:
-            msg = 'msgoverhead priceeventhome networkdata %d\n'%(c)
+            msg = 'msgoverhead priceevent home networkdata %d\n'%(c)
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
         return network_info
     except Exception as e:
@@ -498,7 +498,7 @@ def announce_price(task_controller_ip, price):
         res = res.decode('utf-8')
 
         if BOKEH==3:
-            msg = 'msgoverhead priceeventhome announceprice %d\n'%(len(price['network']))
+            msg = 'msgoverhead priceevent home announceprice %d\n'%(len(price['network']))
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
         # txec = toc(t)
         # bottleneck['announceprice'].append(txec)

@@ -33,9 +33,9 @@ def delete_all_decoupled_pricing_circe(app_name):
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes = k8s_get_nodes(path2)
 
-    print('Starting to teardown integrated pricing CIRCE')
+    print('Starting to teardown decoupled pricing CIRCE')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../users/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
+        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
         start_time = time.time()
         msg = 'PRICEintegrated teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)
@@ -237,6 +237,7 @@ def delete_all_decoupled_pricing_circe(app_name):
         write_file(latency_file,msg)
         teardown_time = end_time - start_time
         print('Time to teardown PRICEING CIRCE'+ str(teardown_time)) 
+
 if __name__ == '__main__':
     jupiter_config.set_globals() 
     app_name = jupiter_config.APP_OPTION

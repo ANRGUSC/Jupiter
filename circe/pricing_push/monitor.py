@@ -248,7 +248,7 @@ def default_best_node():
                 mappinglatency = time.time() - starttime   
                 if BOKEH==3:    
                     topic = 'mappinglatency_%s'%(app_option)
-                    msg = 'mappinglatency pricepushcontroller%s updatemybestmap %f %s\n'%(self_task,mappinglatency,app_name)
+                    msg = 'mappinglatency pricepush controller%s %s %f\n'%(self_task,app_name,mappinglatency)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         else:
             print('Task price summary is not ready yet.....') 
@@ -305,7 +305,7 @@ def push_controller_map():
         send_controller_info(computing_ip)
     if BOKEH==3:    
         topic = 'msgoverhead_controller%s'%(self_task)
-        msg = 'msgoverhead pricepushcontroller%s pushcontroller %d \n'%(self_task,len(all_computing_ips))
+        msg = 'msgoverhead pricepush controller%s pushcontroller %d \n'%(self_task,len(all_computing_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
@@ -352,7 +352,7 @@ def send_assignment_info(node_ip):
         res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_controller%s'%(self_task)
-            msg = 'msgoverhead pricepushcontroller%s updatebest 1\n'%(self_task)
+            msg = 'msgoverhead pricepush controller%s updatebest 1\n'%(self_task)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         print("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
@@ -392,7 +392,7 @@ def announce_best_assignment_to_child():
         update_assignment_info_to_child(child_ip)   
     if BOKEH==3:    
         topic = 'msgoverhead_controller%s'%(self_task)
-        msg = 'msgoverhead pricepushcontroller%s sendassignmentchild %d\n'%(self_task,len(child_nodes_ip_dag))
+        msg = 'msgoverhead pricepush controller%s sendassignmentchild %d\n'%(self_task,len(child_nodes_ip_dag))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def push_first_assignment_map():

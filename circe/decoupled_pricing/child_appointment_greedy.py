@@ -267,7 +267,7 @@ def assign_task_to_remote(assigned_node, task_name):
         res = res.decode('utf-8')
         if BOKEH==3:
             topic = 'msgoverhead_%s'%(node_name)
-            msg = 'msgoverhead pricedecoupledcontroller%s assignremote 1 %s %s \n' %(node_name,task_name,assigned_node)
+            msg = 'msgoverhead pricedecoupled controller%s assignremote 1 %s %s \n' %(node_name,task_name,assigned_node)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception:
         return "not ok"
@@ -313,7 +313,7 @@ def call_send_mapping(mapping, node):
         local_mapping[mapping] = True
         if BOKEH ==5: 
             topic = 'msgoverhead_%s'%(node_name)
-            msg = 'msgoverhead pricedecoupledcontroller%s announcehome 1 %s %s \n' %(node_name,node,mapping)
+            msg = 'msgoverhead pricedecoupled controller%s announcehome 1 %s %s \n' %(node_name,node,mapping)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         print(e)
@@ -660,7 +660,7 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
 
     if BOKEH==3:
         topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead pricedecoupledcontroller%s networkdata %d \n' %(node_name,c)
+        msg = 'msgoverhead pricedecoupled controller%s networkdata %d \n' %(node_name,c)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 

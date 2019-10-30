@@ -197,7 +197,7 @@ def prepare_global_info():
     local_task_node_map = manager.dict()
 
     global count_mapping_mul
-    count_mapping_mul = manager.Value('i', 0)
+    count_mapping_mul = manager.Value('i', 1)
     print('------------------- Count mapping')
     print(count_mapping_mul.value)
 
@@ -263,15 +263,16 @@ def prepare_global_info():
     last_tasks_map[os.environ['CHILD_NODES']] = []
     for home_id in home_ids:
         last_tasks_map[home_id] = last_tasks_map['home'] 
-        task_node_map[0,home_id]  = home_id
+        task_node_map[home_id,0]  = home_id
         next_tasks_map[home_id] = [os.environ['CHILD_NODES']]
         last_tasks_map[os.environ['CHILD_NODES']].append(home_id)
 
 
+    print(task_controllers)
     for task in task_controllers:
-        # print(task)
+        print(task)
         if task in super_tasks:
-            task_node_map[0,task] = task    
+            task_node_map[task,0] = task    
     # print('DEBUG NEXT LAST-----------')
     # print(next_tasks_map)
     # print(last_tasks_map)
@@ -388,18 +389,30 @@ def receive_assignment_info():
         print(task_node_map)
         tmp_counter = dict()
         for k, v in task_node_map.items():
-            if (k[0]) in tmp_counter:
-                tmp_counter[k[0]] += 1
+            if (k[1]) in tmp_counter:
+                tmp_counter[k[1]] += 1
             else:
-                tmp_counter[k[0]] = 1
+                tmp_counter[k[1]] = 1
         print(tmp_counter)
-        print(count_mapping_mul)
-        tmp_cnt = tmp_counter[count_mapping_mul.value]
-        print(tmp_cnt)
-        if tmp_cnt == len(tasks):#enough mapping information for one round
-            count_mapping_mul = count_mapping_mul+1
-        print(count_mapping_mul)
-        task_node_map[count_mapping_mul.value,assignment_info[0]] = assignment_info[1]
+        print(count_mapping_mul.value)
+        if count_mapping_mul.value in tmp_counter:
+            cur_tasks = tmp_counter[count_mapping_mul.value]
+            print(cur_tasks)
+            if cur_tasks == len(tasks):#enough mapping information for one round
+                count_mapping_mul.value = count_mapping_mul.value+1
+            print('######')
+            print(assignment_info[0])
+            print(task_node_map)
+            check = [k[1] for k,v in task_node_map.items() if k[0]==assignment_info[0]]
+            print(check)
+            if len(check)==0:
+                task_node_map[assignment_info[0],1] = assignment_info[1]
+            else: 
+                task_node_map[assignment_info[0],max(check)+1] = assignment_info[1]
+        else:#in the beginning
+            task_node_map[assignment_info[0],1] = assignment_info[1]
+        # print(count_mapping_mul)
+        # task_node_map[assignment_info[0],count_mapping_mul.value] = assignment_info[1]
         # print(task_node_map)
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
@@ -452,7 +465,7 @@ def update_exec_profile_file():
         writer.writerows(execution_info)
     if BOKEH==3:    
         topic = 'msgoverhead_%s'%(self_name)
-        msg = 'msgoverhead pricepushcompute%s updateexec %d\n'%(self_name,c)
+        msg = 'msgoverhead pricepush compute%s updateexec %d\n'%(self_name,c)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     return
 
@@ -518,7 +531,7 @@ def get_updated_network_profile():
         print(BOKEH)
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead pricepushcompute%s updatenetwork %d\n'%(self_name,c)
+            msg = 'msgoverhead pricepush compute%s updatenetwork %d\n'%(self_name,c)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return network_info
     except Exception as e:
@@ -543,7 +556,7 @@ def get_updated_resource_profile():
         print(len(resource_info))
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead pricepushcompute%s updateresource %d\n'%(self_name,len(resource_info))
+            msg = 'msgoverhead pricepush compute%s updateresource %d\n'%(self_name,len(resource_info))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return resource_info
     except Exception as e:
@@ -963,7 +976,7 @@ class Handler1(pyinotify.ProcessEvent):
                 print('*********')
                 print(next_task)
                 print(mapping_input_id[(home_id,input_name)])
-                next_key = (mapping_input_id[(home_id,input_name)],next_task)
+                next_key = (next_task,mapping_input_id[(home_id,input_name)])
                 print(next_key)
                 while next_key not in task_node_map:
                     print('Not yet loaded assignment')
@@ -973,7 +986,7 @@ class Handler1(pyinotify.ProcessEvent):
 
             print('Loaded all required assignment')
 
-            next_hosts =  [task_node_map[mapping_input_id[(home_id,input_name)],x] for x in next_tasks_map[task_name]]
+            next_hosts =  [task_node_map[x,mapping_input_id[(home_id,input_name)]] for x in next_tasks_map[task_name]]
             # next_IPs   = [computing_ip_map[x] for x in next_hosts]
 
             print('Sending the output files to the corresponding destinations')

@@ -35,7 +35,7 @@ def delete_all_integrated_pricing_circe(app_name):
 
     print('Starting to teardown integrated pricing CIRCE')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../users/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
+        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
         start_time = time.time()
         msg = 'PRICEintegrated teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)

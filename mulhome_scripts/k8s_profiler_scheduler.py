@@ -99,10 +99,10 @@ def k8s_profiler_scheduler():
     print('Starting to deploy DRUPE')
     if jupiter_config.BOKEH == 3:
         try:
-            os.mkdir('../users/exp8_data/summary_latency/')
+            os.mkdir('../stats/exp8_data/summary_latency/')
         except:
             print('Folder already existed')
-        latency_file = '../users/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
+        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
         start_time = time.time()
         msg = 'DRUPE deploystart %f \n'%(start_time)
         write_file(latency_file,msg,'w')

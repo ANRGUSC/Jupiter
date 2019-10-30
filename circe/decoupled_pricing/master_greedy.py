@@ -259,7 +259,7 @@ def announce_mapping_to_homecompute():
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:
-            msg = 'msgoverhead pricedecoupledcontrollerhome announcehomecompute 1 \n'
+            msg = 'msgoverhead pricedecoupled controllerhome announcehomecompute 1 \n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         print('Announce full mapping to compute home node failed')
@@ -278,6 +278,7 @@ def trigger_restart(flask_info):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        print(res)
     except Exception as e:
         print('Trigger restart failed')
         print(e)
@@ -290,7 +291,7 @@ def restart_mapping_process():
         print(nodes[node])
         trigger_restart(nodes[node])
     if BOKEH==3:
-        msg = 'msgoverhead pricedecoupledcontrollerhome triggerrestart %d\n'%(len(nodes))
+        msg = 'msgoverhead pricedecoupled controllerhome triggerrestart %d\n'%(len(nodes))
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     print('Send the first task to the first node')
     _thread.start_new_thread(init_thread, ())
@@ -319,7 +320,7 @@ def assign_task_to_remote(assigned_node, task_name):
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:
-            msg = 'msgoverhead pricedecoupledcontrollerhome assignfirst 1 \n'
+            msg = 'msgoverhead pricedecoupled controllerhome assignfirst 1 \n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         print(e)
@@ -363,7 +364,7 @@ def monitor_task_status(starting_time):
             print('Time to finish WAVE mapping '+ str(deploy_time))
             if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)
-                msg = 'mappinglatency pricedecoupled %s %f \n' %(app_name,deploy_time)
+                msg = 'mappinglatency pricedecoupled controllerhome %s %f \n' %(app_name,deploy_time)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
             print("Announce assignment information to the compute home node")
@@ -438,7 +439,7 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
 
     if BOKEH==3:
         topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead pricedecoupledcontrollerhome%s networkdata %d \n' %(node_name,len(myneighbors))
+        msg = 'msgoverhead pricedecoupled controllerhome%s networkdata %d \n' %(node_name,len(myneighbors))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def profilers_mapping_decorator(f):
@@ -474,7 +475,7 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
 
     if BOKEH==3:
         topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead pricedecoupledcontrollerhome%s resourcedata %d \n' %(node_name,len(profiler_ips))
+        msg = 'msgoverhead pricedecoupled controllerhome%s resourcedata %d \n' %(node_name,len(profiler_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def get_network_data_mapping():

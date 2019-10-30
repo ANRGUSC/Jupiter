@@ -99,14 +99,18 @@ if __name__ == '__main__':
     NODE_PATH = jupiter_config.HERE + 'nodes.txt'
     nodes = k8s_get_nodes(NODE_PATH)
     
-    print(nodes)
+    # print(nodes)
     N = len(nodes)
     DAG_PATH = jupiter_config.APP_PATH + 'configuration.txt'
     tasks,tasksid = retrieve_tasks(DAG_PATH)
-    print(tasks)
+    # print(tasks)
     M = len(tasks)
 
-    main_folder = 'exp8_data'
+    print('Input information')
+    print(N)
+    print(M)
+
+    main_folder = '../stats/exp8_data'
     folder_list= ['makespan','msg_overhead','power_overhead','mapping_latency','summary_latency']
     try:
         os.mkdir(main_folder)
@@ -119,8 +123,9 @@ if __name__ == '__main__':
     
     try:
         for folder in folder_list:
-            task_folder = main_folder+'/'+folder+'/N%dM%d'%(N,M)
-            os.mkdir(task_folder)
+            if folder!='summary_latency':
+                task_folder = main_folder+'/'+folder+'/N%dM%d'%(N,M)
+                os.mkdir(task_folder)
     except:
         print('Subfolder already existed')
 
@@ -162,17 +167,17 @@ if __name__ == '__main__':
 
 
     ## Collect message overhead # nonpricing
-    exp_folder = main_folder+'/'+folder_list[1]
-    for node in nodes:
-        node_log = '%s/N%dM%d/%s_%s_N%d_M%d.log'%(exp_folder,N,M,option,node,N,M)
-        cur_sub = 'msgoverhead_%s'%(node)
-        print(cur_sub)
-        _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,node_log))
+    # exp_folder = main_folder+'/'+folder_list[1]
+    # for node in nodes:
+    #     node_log = '%s/N%dM%d/%s_%s_N%d_M%d.log'%(exp_folder,N,M,option,node,N,M)
+    #     cur_sub = 'msgoverhead_%s'%(node)
+    #     print(cur_sub)
+    #     _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,node_log))
 
     ## Collect message overhead # pricing
     exp_folder = main_folder+'/'+folder_list[1] 
     for node in nodes:
-        node_log = '%s/N%dM%d/%s_%s_N%d_M%d.log'%(exp_folder,N,M,option,node,N,M)
+        node_log = '%s/N%dM%d/%s_%s_N%d_M%d'%(exp_folder,N,M,option,node,N,M)
         cur_sub = 'msgoverhead_%s'%(node)
         print(cur_sub)
         print(node_log)
