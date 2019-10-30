@@ -34,9 +34,9 @@ import pyinotify
 app = Flask(__name__)
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -193,26 +193,26 @@ def assign_task():
         task_name = request.args.get('task_name')
         parent_name = request.args.get('parent_name')
         # print('---------------')
-        print('I am assigned the task '+task_name+' by parent '+ parent_name)
-        print(local_mapping)
-        print(local_children)
+        # print('I am assigned the task '+task_name+' by parent '+ parent_name)
+        # print(local_mapping)
+        # print(local_children)
 
         local_mapping[task_name] = False
-        print(local_mapping)
-        print(task_name)
-        print(node_name)
+        # print(local_mapping)
+        # print(task_name)
+        # print(node_name)
         res = call_send_mapping(task_name, node_name)
-        print(res)
-        print('---------------')
-        print('All my current tasks')
-        print(local_mapping)
-        print('---------------')
+        # print(res)
+        # print('---------------')
+        # print('All my current tasks')
+        # print(local_mapping)
+        # print('---------------')
         
-        print('*******************')
+        # print('*******************')
         if len(control_relation[task_name])>0:
             print('I am responsible for the next children tasks')
             # print(control_relation[task_name])
-            print(local_children)
+            # print(local_children)
             for task in control_relation[task_name]:
                 # print(task)
                 if task not in local_children.keys():
@@ -235,7 +235,7 @@ def trigger_restart():
     try:
         print('Trigger retart')
         time_info = request.args.get('trigger_restart')
-        print(time_info)
+        # print(time_info)
         print('Delete all local information')
         local_mapping.clear()
         local_children.clear()
@@ -308,8 +308,8 @@ def call_send_mapping(mapping, node):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        print('=====')
-        print(local_mapping)
+        # print('=====')
+        # print(local_mapping)
         local_mapping[mapping] = True
         if BOKEH ==5: 
             topic = 'msgoverhead_%s'%(node_name)
@@ -416,9 +416,9 @@ def get_most_suitable_node(file_size):
     weight_cpu = 1
     weight_memory = 1
 
-    print('Input profiling information')
-    print(network_profile_data)
-    print(resource_data)
+    # print('Input profiling information')
+    # print(network_profile_data)
+    # print(resource_data)
 
     valid_nodes = []
     min_value = sys.maxsize
@@ -427,10 +427,9 @@ def get_most_suitable_node(file_size):
     for tmp_node_name in network_profile_data:
         data = network_profile_data[tmp_node_name]
         delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
-        print('DEBUG')
-        print(file_size)
-        print(data)
-        # network_profile_data[tmp_node_name]['delay'] = delay
+        # print('DEBUG')
+        # print(file_size)
+        # print(data)
         valid_net_data[tmp_node_name] = delay
         if delay < min_value:
             min_value = delay
@@ -449,11 +448,11 @@ def get_most_suitable_node(file_size):
             valid_nodes.append(item)
 
 
-    print('Valid nodes')
-    print(valid_nodes)
+    # print('Valid nodes')
+    # print(valid_nodes)
 
-    print('Network profile data')
-    print(network_profile_data)
+    # print('Network profile data')
+    # print(network_profile_data)
 
     min_value = sys.maxsize
     result_node_name = ''
@@ -470,7 +469,7 @@ def get_most_suitable_node(file_size):
         tmp_cpu = sys.maxsize
         tmp_memory = sys.maxsize
         if item in resource_data.keys():
-            print(item)
+            # print(item)
             # print(resource_data[item])
             tmp_cpu = resource_data[item]['cpu']
             tmp_memory = resource_data[item]['memory']
@@ -478,11 +477,11 @@ def get_most_suitable_node(file_size):
         tmp_cost = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
 
         task_price_summary[item] = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
-        print('-----')
-        print(tmp_value)
-        print(tmp_cpu)
-        print(tmp_memory)
-        print('-----')
+        # print('-----')
+        # print(tmp_value)
+        # print(tmp_cpu)
+        # print(tmp_memory)
+        # print('-----')
         if  tmp_cost < min_value:
             min_value = tmp_cost
             result_node_name = item
@@ -587,8 +586,8 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
     """Collect the resource profile from local MongoDB peer
     """
 
-    print('----------------------')
-    print(profiler_ips)
+    # print('----------------------')
+    # print(profiler_ips)
     for profiler_ip in profiler_ips:
         print('Check Resource Profiler IP: '+profiler_ip)
         client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(MONGO_SVC_PORT)+'/')
@@ -596,12 +595,12 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
         collection = db.collection_names(include_system_collections=False)
         logging =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
         for record in logging:
-            print(record)
-            print(network_map[profiler_ip])
+            # print(record)
+            # print(network_map[profiler_ip])
             resource_data[network_map[profiler_ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
-    print('Resource information has already been provided')
-    print(resource_data)
+    # print('Resource information has already been provided')
+    # print(resource_data)
     global is_resource_data_ready
     is_resource_data_ready = True
 
@@ -633,8 +632,8 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     # logging =db[my_profiler_ip].find().limit(num_nb)
     logging =db[my_profiler_ip].find().skip(db[my_profiler_ip].count()-num_nb)
 
-    print('Retrieve network information')
-    print(logging)
+    # print('Retrieve network information')
+    # print(logging)
 
 
     c = 0
@@ -646,14 +645,14 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
 
         if record['Destination[IP]'] in home_profiler_ip: continue
         params = re.split(r'\s+', record['Parameters'])
-        print('-------')
-        print(record)
-        print(params)
+        # print('-------')
+        # print(record)
+        # print(params)
         network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
                                                             'c': float(params[2]), 'ip': record['Destination[IP]']}
         c = c+1
     print('Network information has already been provided')
-    print(network_profile_data)
+    # print(network_profile_data)
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
@@ -798,7 +797,7 @@ class MyEventHandler(pyinotify.ProcessEvent):
     def process_IN_CLOSE_WRITE(self, event):
         print("CREATE CLOSE event:", event.pathname)
         t = time.time()
-        print(t)
+        # print(t)
         new_task = os.path.split(event.pathname)[-1]
         _thread.start_new_thread(assign_children_task,(new_task,))
 

@@ -40,9 +40,9 @@ import paho.mqtt.client as mqtt
 app = Flask(__name__)
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -179,7 +179,7 @@ def default_best_node():
         source_node = task_node_map[temp_parents[0]]
         # source_node = task_node_map[last_tasks_map[self_task][0]]
         print('Current best compute node of parent tasks')
-        print(source_node)
+        # print(source_node)
         # print('DEBUG')
         # print(task_price_net)
         for (source, dest), price in task_price_net.items():
@@ -200,13 +200,13 @@ def default_best_node():
         # print(len(task_price_network.keys()))
         # print(len(task_price_cpu.keys()))
         print('CPU utilization')
-        print(task_price_cpu)
+        # print(task_price_cpu)
         print('Memory utilization')
-        print(task_price_mem)
+        # print(task_price_mem)
         print('Queue cost')
-        print(task_price_queue)
+        # print(task_price_queue)
         print('Network cost')
-        print(task_price_network)
+        # print(task_price_network)
         # print(task_price_network.keys())
         if len(task_price_network.keys())>1: #net(node,home) not exist
             
@@ -237,7 +237,7 @@ def default_best_node():
             # print('------------3')
             
             print('Summary cost')
-            print(task_price_summary)
+            # print(task_price_summary)
             if task_price_summary:
                 #print(task_price_summary)
                 best_node = min(task_price_summary,key=task_price_summary.get)
@@ -386,7 +386,7 @@ def announce_best_assignment_to_child():
     """
     print('Announce best assignment to my children')
     # print(child_nodes_dag)
-    print(child_nodes_ip_dag)
+    # print(child_nodes_ip_dag)
     for child_ip in child_nodes_ip_dag:
         # print(child_ip)
         update_assignment_info_to_child(child_ip)   
@@ -410,7 +410,7 @@ def push_first_assignment_map():
     print('Sucessfully assign the first best computing node')
     # print(task_node_map)
     update_best_node()
-    print(child_nodes)
+    # print(child_nodes)
     if 'home' not in child_nodes:
         announce_best_assignment_to_child()
 
@@ -420,7 +420,7 @@ def push_assignment_map():
     print('Updated assignment periodically')
     default_best_node()
     update_best_node()
-    print(child_nodes)
+    # print(child_nodes)
     if 'home' not in child_nodes:
         announce_best_assignment_to_child()
     

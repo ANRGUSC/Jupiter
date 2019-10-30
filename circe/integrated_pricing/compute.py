@@ -40,9 +40,9 @@ import pyinotify
 app = Flask(__name__)
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -289,8 +289,8 @@ def prepare_global_info():
         for dest in tasks[src]:
             graph.addEdge(src,dest) 
     top_order_task = graph.topologicalSort() 
-    print('Graph')
-    print(top_order_task)
+    # print('Graph')
+    # print(top_order_task)
 
     last_tasks_map[os.environ['CHILD_NODES']] = []
     for home_id in home_ids:
@@ -354,7 +354,7 @@ def send_assignment_info(node_ip,task_name,best_node):
         print("Announce my current best computing node " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/receive_assignment_info"
         assignment_info = self_name+"#"+task_name + "#"+best_node
-        print('The best node for '+self_name +' task '+task_name + ' is '+best_node)
+        # print('The best node for '+self_name +' task '+task_name + ' is '+best_node)
         params = {'assignment_info': assignment_info}
         params = urllib.parse.urlencode(params)
         # print(params)
@@ -472,16 +472,16 @@ def update_global_assignment():
     starttime = time.time()
     m = (len(computing_nodes)+1)*len(tasks) # (all_compute & home,all_task)
     a = dict(local_task_node_map)
-    print(m)
-    print(len(a))
+    # print(m)
+    # print(len(a))
     if len(a)<m:
         print('Not yet fully loaded local information')
     else: 
         print('Fully loaded information')
-        print(global_task_node_map)
+        # print(global_task_node_map)
         print('Mapping time')
         mapping_times.append(time.time())
-        print(mapping_times)
+        # print(mapping_times)
         for home in home_ids:
             for task in top_order_task:
                 # print('--------------')
@@ -1314,12 +1314,12 @@ def announce_input_worker():
         tmp_info = request.args.get('home_id')
         tmp_home = tmp_info.split('-')[1]
         print('Current mapping list')
-        print(mapping_times)
+        # print(mapping_times)
         print("Received input announcement from home compute")
         start_times[(tmp_home,tmp_file)] = tmp_time
-        print(start_times)
+        # print(start_times)
         mapping_input_id[(tmp_home,tmp_file)] = len(mapping_times)-1 #ID of last mapping
-        print(mapping_input_id)
+        # print(mapping_input_id)
 
     except Exception as e:
         print("Received mapping announcement from controller failed")
@@ -1365,18 +1365,18 @@ class Handler1(pyinotify.ProcessEvent):
             transfer_data(home_id,username,password,event.pathname, "/output/"+new_file)   
         else:
             print('----- next step is not home')
-            print(global_task_node_map)
+            # print(global_task_node_map)
             while len(global_task_node_map)==0:
                 print('Global task mapping is not loaded')
                 time.sleep(1)
 
             print('Current mapping input list')
-            print(mapping_input_id[(home_id,input_name)])
+            # print(mapping_input_id[(home_id,input_name)])
 
             next_hosts = [global_task_node_map[mapping_input_id[(home_id,input_name)],home_id,x] for x in next_tasks_map[task_name]]
             # next_IPs   = [computing_ip_map[x] for x in next_hosts]
-            print('*********')
-            print(next_hosts)
+            # print('*********')
+            # print(next_hosts)
             if flag=='true': 
                 print('not wait, send')
                 # send runtime info
