@@ -1,1 +1,0 @@
-python3 collect_power_overhead.py

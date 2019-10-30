@@ -110,7 +110,7 @@ def announce_mapping_to_workers():
             res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_home'
-            msg = 'msgoverhead pricedecoupledcomputehome announcemapping %d\n'%(len(all_compute_host))
+            msg = 'msgoverhead pricedecoupled computehome announcemapping %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         print('Announce full mapping to compute home node failed')
@@ -317,7 +317,7 @@ def announce_input(input_file, input_time):
             res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_home'
-            msg = 'msgoverhead pricedecoupledcomputehome announceinput %d\n'%(len(all_compute_host))
+            msg = 'msgoverhead pricedecoupled computehome announceinput %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         print('Announce input files to compute nodes failed')
@@ -506,7 +506,7 @@ def main():
     
     
 
-    global all_computing_nodes,all_computing_ips, node_ip_map,my_id,my_task, first_flag, all_compute_host
+    global all_computing_nodes,all_computing_ips, node_ip_map,my_id,my_task, first_flag, all_compute_host,num_computing_nodes
 
     all_computing_nodes = os.environ["ALL_COMPUTING_NODES"].split(":")
     all_computing_ips = os.environ["ALL_COMPUTING_IPS"].split(":")

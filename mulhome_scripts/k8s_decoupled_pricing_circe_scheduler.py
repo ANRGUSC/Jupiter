@@ -126,6 +126,9 @@ def check_status_circe_compute(app_name):
     return result
 
 
+def write_file(filename,message):
+    with open(filename,'a') as f:
+        f.write(message)
 
 # if __name__ == '__main__':
 def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_service_ips):
@@ -143,6 +146,7 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
     pprint(nodes)
+
 
     """
         This loads the kubernetes instance configuration.
@@ -293,6 +297,15 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
 
     pprint(service_ips)
 
+    # print('Successfully deploy CIRCE dispatcher')
+    # if jupiter_config.BOKEH == 3:
+    #     latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+    #     end_time = time.time()
+    #     msg = 'CIRCE decoupled deployend %f \n'%(end_time)
+    #     write_file(latency_file,msg)
+    #     deploy_time = end_time - start_time
+    #     print('Time to deploy CIRCE '+ str(deploy_time))
+
 def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips,app_name):
     """
     This script deploys CIRCE in the system. 
@@ -314,6 +327,14 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path1)
     pprint(nodes)
+
+
+    print('Starting to deploy decoupled CIRCE dispatcher')
+    # if jupiter_config.BOKEH == 3:
+    #     latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+    #     start_time = time.time()
+    #     msg = 'CIRCE decoupled deploystart %f \n'%(start_time)
+    #     write_file(latency_file,msg)
 
 
     configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))

@@ -240,7 +240,7 @@ def default_best_node(source_node):
         mappinglatency = time.time() - starttime   
         if BOKEH==3:    
             topic = 'mappinglatency_%s'%(app_option)
-            msg = 'mappinglatency priceeventcontroller%s updatemybestmap %f %s\n'%(self_task,mappinglatency,app_name)
+            msg = 'mappinglatency priceevent controller%s %s %f\n'%(self_task,app_name,mappinglatency)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         # print(best_node)
 
@@ -324,7 +324,7 @@ def announce_best_assignment(home_id,best_node, source_node, file_name,source_ke
 
         if BOKEH==3:    
             topic = 'msgoverhead_controller%s'%(self_task)
-            msg = 'msgoverhead priceeventcontroller%s announcebest 1 %s\n'%(self_task,source_node)
+            msg = 'msgoverhead priceevent controller%s announcebest 1 %s\n'%(self_task,source_node)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         # print(res)
 
@@ -387,7 +387,7 @@ def push_controller_map():
         # print(time.time()-t1)
     if BOKEH==3:    
         topic = 'msgoverhead_controller%s'%(self_task)
-        msg = 'msgoverhead priceeventcontroller%s pushcontroller %d \n'%(self_task,len(all_computing_ips))
+        msg = 'msgoverhead priceevent controller%s pushcontroller %d \n'%(self_task,len(all_computing_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     # txec = toc(t)
     print('***************************************************')

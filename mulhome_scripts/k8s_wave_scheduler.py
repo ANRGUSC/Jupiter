@@ -102,7 +102,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
 
     print('Starting to deploy WAVE')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../users/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
         start_time = time.time()
         msg = 'WAVE deploystart %f \n'%(start_time)
         write_file(latency_file,msg)
