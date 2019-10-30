@@ -32,9 +32,9 @@ app = Flask(__name__)
 
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -249,7 +249,7 @@ app.add_url_rule('/recv_mapping', 'recv_mapping', recv_mapping)
 def announce_mapping_to_homecompute():
     try:
         print('Announce full mapping to compute home node')
-        print(assignments)  
+        # print(assignments)  
         tmp_assignments = ",".join(("{}:{}".format(*i) for i in assignments.items()))
         url = "http://" + compute_home_host + "/announce_mapping"
         params = {'assignments': tmp_assignments}
@@ -278,7 +278,7 @@ def trigger_restart(flask_info):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        print(res)
+        # print(res)
     except Exception as e:
         print('Trigger restart failed')
         print(e)
@@ -288,7 +288,7 @@ def trigger_restart(flask_info):
 def restart_mapping_process():
     print('Restart the mapping process')
     for node in nodes:
-        print(nodes[node])
+        # print(nodes[node])
         trigger_restart(nodes[node])
     if BOKEH==3:
         msg = 'msgoverhead pricedecoupled controllerhome triggerrestart %d\n'%(len(nodes))
@@ -354,12 +354,12 @@ def monitor_task_status(starting_time):
     killed = 0
     while True:
         print('Monitoring task status')
-        print(len(assigned_tasks))
+        # print(len(assigned_tasks))
         print(assignments)
         if len(assigned_tasks) == MAX_TASK_NUMBER:
             print("All task allocations are done! Great News!")
             end_time = time.time()
-            print(starting_time)
+            # print(starting_time)
             deploy_time = end_time - starting_time
             print('Time to finish WAVE mapping '+ str(deploy_time))
             if BOKEH==3:
@@ -374,7 +374,7 @@ def monitor_task_status(starting_time):
             assigned_tasks.clear()
             restart_mapping_process()
             starting_time = time.time()
-            print(starting_time)
+            # print(starting_time)
             
         else:
             print('Waiting for task mapping to be finished!!!!')
@@ -455,8 +455,8 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
     """Collect the resource profile from local MongoDB peer
     """
 
-    print('----------------------')
-    print(profiler_ips)
+    # print('----------------------')
+    # print(profiler_ips)
     for profiler_ip in profiler_ips:
         print('Check Resource Profiler IP: '+profiler_ip)
         client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(MONGO_SVC_PORT)+'/')
@@ -464,8 +464,8 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
         collection = db.collection_names(include_system_collections=False)
         logging =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
         for record in logging:
-            print(record)
-            print(network_map[profiler_ip])
+            # print(record)
+            # print(network_map[profiler_ip])
             resource_data[network_map[profiler_ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
     print('Resource information has already been provided')
@@ -546,21 +546,21 @@ def get_most_suitable_node(file_size):
     weight_cpu = 1
     weight_memory = 1
 
-    print('Input profiling information')
-    print(network_profile_data)
-    print(resource_data)
+    # print('Input profiling information')
+    # print(network_profile_data)
+    # print(resource_data)
 
     valid_nodes = []
     min_value = sys.maxsize
 
     valid_net_data = dict()
     for tmp_node_name in network_profile_data:
-        print('*****')
-        print(tmp_node_name)
+        # print('*****')
+        # print(tmp_node_name)
         data = network_profile_data[tmp_node_name]
-        print('DEBUG')
-        print(file_size)
-        print(data)
+        # print('DEBUG')
+        # print(file_size)
+        # print(data)
         delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
         
         # network_profile_data[tmp_node_name]['delay'] = delay
@@ -603,7 +603,7 @@ def get_most_suitable_node(file_size):
         tmp_cpu = sys.maxsize
         tmp_memory = sys.maxsize
         if item in resource_data.keys():
-            print(item)
+            # print(item)
             # print(resource_data[item])
             tmp_cpu = resource_data[item]['cpu']
             tmp_memory = resource_data[item]['memory']
@@ -611,11 +611,11 @@ def get_most_suitable_node(file_size):
         tmp_cost = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
 
         task_price_summary[item] = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
-        print('-----')
-        print(tmp_value)
-        print(tmp_cpu)
-        print(tmp_memory)
-        print('-----')
+        # print('-----')
+        # print(tmp_value)
+        # print(tmp_cpu)
+        # print(tmp_memory)
+        # print('-----')
         if  tmp_cost < min_value:
             min_value = tmp_cost
             result_node_name = item
@@ -653,17 +653,17 @@ def init_task_topology():
     #         else:
     #             init_tasks[node] = [task]
 
-    print('First task')
-    print(first_task)
+    # print('First task')
+    # print(first_task)
     sample_file = '/1botnet.ipsum'
     sample_size = cal_file_size(sample_file)
-    print(sample_size)
+    # print(sample_size)
 
     assign_to_node = -1
     while assign_to_node==-1:
         assign_to_node = get_most_suitable_node(sample_size)
         time.sleep(60)
-    print(assign_to_node)
+    # print(assign_to_node)
     init_tasks[assign_to_node] = [first_task]
 
     print('------- Init tasks')
@@ -732,7 +732,7 @@ def main():
     global starting_time
     print('Starting to run WAVE mapping')
     starting_time = time.time()
-    print(starting_time)
+    # print(starting_time)
     prepare_global()
 
     print("starting the main thread on port", FLASK_PORT)

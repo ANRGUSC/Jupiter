@@ -49,9 +49,9 @@ def toc(t):
     return texec
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -198,8 +198,8 @@ def prepare_global_info():
 
     global count_mapping_mul
     count_mapping_mul = manager.Value('i', 1)
-    print('------------------- Count mapping')
-    print(count_mapping_mul.value)
+    # print('------------------- Count mapping')
+    # print(count_mapping_mul.value)
 
     global start_times, mapping_times, mapping_input_id
     start_times = manager.dict()
@@ -268,9 +268,9 @@ def prepare_global_info():
         last_tasks_map[os.environ['CHILD_NODES']].append(home_id)
 
 
-    print(task_controllers)
+    # print(task_controllers)
     for task in task_controllers:
-        print(task)
+        # print(task)
         if task in super_tasks:
             task_node_map[task,0] = task    
     # print('DEBUG NEXT LAST-----------')
@@ -345,12 +345,12 @@ def announce_input_worker():
         tmp_info = request.args.get('home_id')
         tmp_home = tmp_info.split('-')[1]
         print('Current mapping list')
-        print(mapping_times)
+        # print(mapping_times)
         print("Received input announcement from home compute")
         start_times[(tmp_home,tmp_file)] = tmp_time
-        print(start_times)
+        # print(start_times)
         mapping_input_id[(tmp_home,tmp_file)] = count_mapping_mul.value #ID of last mapping
-        print(mapping_input_id)
+        # print(mapping_input_id)
 
     except Exception as e:
         print("Received mapping announcement from controller failed")
@@ -386,25 +386,25 @@ def receive_assignment_info():
         print('Receive assignment information from task controllers')
         assignment_info = request.args.get('assignment_info').split('#')
         # print("Received assignment info")
-        print(task_node_map)
+        # print(task_node_map)
         tmp_counter = dict()
         for k, v in task_node_map.items():
             if (k[1]) in tmp_counter:
                 tmp_counter[k[1]] += 1
             else:
                 tmp_counter[k[1]] = 1
-        print(tmp_counter)
-        print(count_mapping_mul.value)
+        # print(tmp_counter)
+        # print(count_mapping_mul.value)
         if count_mapping_mul.value in tmp_counter:
             cur_tasks = tmp_counter[count_mapping_mul.value]
-            print(cur_tasks)
+            # print(cur_tasks)
             if cur_tasks == len(tasks):#enough mapping information for one round
                 count_mapping_mul.value = count_mapping_mul.value+1
-            print('######')
-            print(assignment_info[0])
-            print(task_node_map)
+            # print('######')
+            # print(assignment_info[0])
+            # print(task_node_map)
             check = [k[1] for k,v in task_node_map.items() if k[0]==assignment_info[0]]
-            print(check)
+            # print(check)
             if len(check)==0:
                 task_node_map[assignment_info[0],1] = assignment_info[1]
             else: 
@@ -504,20 +504,20 @@ def get_updated_network_profile():
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
-        print(collection)
+        # print(collection)
         # print(num_nb)
         # print(self_profiler_ip)
         if num_nb == -1:
             print('--- Network profiler mongoDB not yet prepared')
             return network_info
         num_rows = db[self_profiler_ip].count() 
-        print(num_rows)
+        # print(num_rows)
         if num_rows < num_nb:
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
         # logging =db[self_profiler_ip].find().limit(num_nb)  
         logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)
-        print(logging)
+        # print(logging)
         c = 0 
         for record in logging:
             # print(record)
@@ -527,8 +527,8 @@ def get_updated_network_profile():
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c=c+1
         
-        print('Checking BOKEH')
-        print(BOKEH)
+        # print('Checking BOKEH')
+        # print(BOKEH)
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead pricepush compute%s updatenetwork %d\n'%(self_name,c)
@@ -553,7 +553,7 @@ def get_updated_resource_profile():
                 resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
         print("Resource profiles: ", resource_info)
-        print(len(resource_info))
+        # print(len(resource_info))
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead pricepush compute%s updateresource %d\n'%(self_name,len(resource_info))
@@ -626,13 +626,13 @@ def price_aggregate(task_name):
         print(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
-        print('--------------')
-        print(resource_info)
-        print('--------------2')
-        print(execution_info)
+        # print('--------------')
+        # print(resource_info)
+        # print('--------------2')
+        # print(execution_info)
         network_info = get_updated_network_profile()
-        print('--------------3')
-        print(network_info)
+        # print('--------------3')
+        # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         
         
@@ -658,7 +658,7 @@ def price_aggregate(task_name):
         print('--- Network cost:----------- ')
         # print(task_name)
         test_output = execution_info[task_name][1]
-        print(test_output)
+        # print(test_output)
 
         price['network'] = dict()
         for node in network_info:
@@ -675,8 +675,8 @@ def price_aggregate(task_name):
             # print(node)
             price['network'][node] = p
             
-        print(price['network'])
-        print('-----------------')
+        # print(price['network'])
+        # print('-----------------')
         print('Overall price:')
         print(price)
         return price
@@ -970,18 +970,18 @@ class Handler1(pyinotify.ProcessEvent):
             transfer_data(home_id,username,password,event.pathname, "/output/"+new_file)   
         else:
             print('----- next step is not home')
-            print(task_node_map)
-            print(len(tasks))
+            # print(task_node_map)
+            # print(len(tasks))
             for next_task in next_tasks_map[task_name]:
-                print('*********')
-                print(next_task)
-                print(mapping_input_id[(home_id,input_name)])
+                # print('*********')
+                # print(next_task)
+                # print(mapping_input_id[(home_id,input_name)])
                 next_key = (next_task,mapping_input_id[(home_id,input_name)])
-                print(next_key)
+                # print(next_key)
                 while next_key not in task_node_map:
                     print('Not yet loaded assignment')
-                    print(task_node_map)
-                    print(next_key)
+                    # print(task_node_map)
+                    # print(next_key)
                     time.sleep(1)
 
             print('Loaded all required assignment')
@@ -1005,15 +1005,15 @@ class Handler1(pyinotify.ProcessEvent):
                     files_mul[key] = [event.pathname]
                 else:
                     files_mul[key] = files_mul[key] + [event.pathname]
-                print('====')
-                print(files_mul[key])
-                print(next_hosts)
+                # print('====')
+                # print(files_mul[key])
+                # print(next_hosts)
                 if len(files_mul[key]) == len(next_hosts):
                     print('Enough output files to transfer')
-                    print(len(next_hosts))
+                    # print(len(next_hosts))
 
                     for idx,host in enumerate(next_hosts):
-                        print('!!!!!!!!!!')
+                        # print('!!!!!!!!!!')
                         current_file = files_mul[key][idx].split('/')[-1]
                         destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
                         if self_ip!=combined_ip_map[host]:
@@ -1071,10 +1071,11 @@ class Handler(pyinotify.ProcessEvent):
             count_mul[key]=count_mul[key]-1
             size_mul[key] = size_mul[key] + cal_file_size(event.pathname)
 
-        print(task_mul)
+        # print(task_mul)
 
         if count_mul[key] == 0: # enough input files
-            print('Enough input files')
+            
+            ('Enough input files')
             incoming_file = task_mul[key]
 
             if len(incoming_file)==1: 

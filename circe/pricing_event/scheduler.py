@@ -63,9 +63,9 @@ rt_exec_time_computingnode = defaultdict(list)
 rt_finish_time_computingnode = defaultdict(list)
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -277,7 +277,7 @@ def transfer_data_scp(ID,user,pword,source, destination):
     while retry < num_retries:
         try:
             nodeIP = combined_ip_map[ID]
-            print(nodeIP)
+            # print(nodeIP)
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
             print('data transfer complete\n')
@@ -326,8 +326,8 @@ def get_updated_resource_profile():
     """Collect the resource profile from local MongoDB peer
     """
 
-    print('----------------------')
-    print(profiler_ip)
+    # print('----------------------')
+    # print(profiler_ip)
     for ip in profiler_ip:
         print('Check Resource Profiler IP: '+ip)
         client_mongo = MongoClient('mongodb://'+ip+':'+str(MONGO_SVC)+'/')
@@ -335,12 +335,12 @@ def get_updated_resource_profile():
         collection = db.collection_names(include_system_collections=False)
         logging =db[ip].find().skip(db[ip].count()-1)
         for record in logging:
-            print(record)
-            print(ip_profilers_map[ip])
+            # print(record)
+            # print(ip_profilers_map[ip])
             resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
     print("Resource profiles: ", resource_info)
-    print(len(resource_info))
+    # print(len(resource_info))
     if BOKEH==3:    
         topic = 'msgoverhead_%s'%(self_name)
         msg = 'msgoverhead priceevent compute%s updateresource %d\n'%(self_name,len(resource_info))
@@ -576,7 +576,7 @@ class MyHandler(pyinotify.ProcessEvent):
             demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
 
         if BOKEH == 3:
-            print(appname)
+            # print(appname)
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
@@ -606,7 +606,7 @@ class Handler(pyinotify.ProcessEvent):
         inputfile = event.pathname.split('/')[-1]
         t = time.time()
         start_times[inputfile] = t
-        print("start time is: ", start_times)
+        # print("start time is: ", start_times)
 
         new_file_name = os.path.split(event.pathname)[-1]
 
@@ -623,8 +623,8 @@ class Handler(pyinotify.ProcessEvent):
 
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)
-        print('------')
-        print(task_node_summary[first_task,new_file_name])
+        # print('------')
+        # print(task_node_summary[first_task,new_file_name])
         transfer_data(task_node_summary[first_task,new_file_name],username, password,source, destination)
 
 

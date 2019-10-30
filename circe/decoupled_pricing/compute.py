@@ -188,11 +188,11 @@ def prepare_global_info():
 
     global tasks, task_order, super_tasks, non_tasks
     tasks, task_order, super_tasks, non_tasks = get_taskmap()
-    print('----------- TASKS INFO')
-    print(tasks)
-    print(task_order)
-    print(super_tasks)
-    print(non_tasks)
+    # print('----------- TASKS INFO')
+    # print(tasks)
+    # print(task_order)
+    # print(super_tasks)
+    # print(non_tasks)
 
     # for task in tasks:
     #     my_task_price_net[task] = dict()    
@@ -293,13 +293,13 @@ def announce_input_worker():
         tmp_time = request.args.get('input_time')
         tmp_info = request.args.get('home_id')
         tmp_home = tmp_info.split('-')[1]
-        print('Current mapping list')
-        print(mapping_times)
+        # print('Current mapping list')
+        # print(mapping_times)
         print("Received input announcement from home compute")
         start_times[(tmp_home,tmp_file)] = tmp_time
-        print(start_times)
+        # print(start_times)
         mapping_input_id[(tmp_home,tmp_file)] = len(mapping_times)-1 #ID of last mapping
-        print(mapping_input_id)
+        # print(mapping_input_id)
 
     except Exception as e:
         print("Received mapping announcement from controller failed")
@@ -317,13 +317,13 @@ def announce_mapping_worker():
         print("Received mapping announcement from home compute")
         tmp = tmp_assignments.split(',')
 
-        print('Mapping time')
+        # print('Mapping time')
         mapping_times.append(tmp_time)
-        print(mapping_times)
+        # print(mapping_times)
 
         for task in tmp:
             global_task_node_map[len(mapping_times)-1,tmp_home,task.split(':')[0]]=task.split(':')[1]
-        print(global_task_node_map)
+        # print(global_task_node_map)
 
         
 
@@ -548,12 +548,12 @@ class Handler1(pyinotify.ProcessEvent):
             print('----- next step is not home')
             # print(task_node_map)
 
-            print(global_task_node_map)
+            # print(global_task_node_map)
             while len(global_task_node_map)==0:
                 print('Global task mapping is not loaded')
                 time.sleep(1)
             print('Current mapping input list')
-            print(mapping_input_id[(home_id,input_name)])
+            # print(mapping_input_id[(home_id,input_name)])
             next_hosts = [global_task_node_map[mapping_input_id[(home_id,input_name)],home_id,x] for x in next_tasks_map[task_name]]
             # next_IPs   = [computing_ip_map[x] for x in next_hosts]
             
@@ -616,18 +616,18 @@ class Handler(pyinotify.ProcessEvent):
 
 
         new_file = os.path.split(event.pathname)[-1]
-        print(new_file)
+        # print(new_file)
         if '_' in new_file:
             file_name = new_file.split('_')[0]
         else:
             file_name = new_file.split('.')[0]
-        print(file_name)
+        # print(file_name)
         ts = time.time()
         home_id = event.pathname.split('/')[-2]
         task_name = event.pathname.split('/')[-3]
         
         input_name = retrieve_input_enter(task_name, file_name)
-        print(input_name)
+        # print(input_name)
         runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
         key = (home_id,task_name,input_name)
         send_runtime_profile_computingnode(runtime_info,task_name,home_id)

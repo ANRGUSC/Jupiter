@@ -58,9 +58,9 @@ rt_exec_time_computingnode = defaultdict(list)
 rt_finish_time_computingnode = defaultdict(list)
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -611,7 +611,7 @@ def new_predict_best_node(task_name):
     min_value = sys.maxsize
     result_node_name = ''
     print('Valid nodes')
-    print(valid_nodes)
+    # print(valid_nodes)
     for item in valid_nodes:
         tmp_net = task_price_network[item]
         tmp_cpu = sys.maxsize
@@ -620,7 +620,7 @@ def new_predict_best_node(task_name):
         task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
     
     print('Task price summary')
-    print(task_price_summary)
+    # print(task_price_summary)
     
 
     try:
@@ -727,12 +727,12 @@ class Handler(pyinotify.ProcessEvent):
     
         while first_task not in global_task_node_map or global_task_node_map[first_task]==-1:
             print('Not yet update global task mapping information')
-            print(global_task_node_map)
+            # print(global_task_node_map)
             time.sleep(1)
         
         # IP = node_ip_map[global_task_node_map[first_task]]
         print('Send file to the first node')
-        print(global_task_node_map[first_task])
+        # print(global_task_node_map[first_task])
     
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)

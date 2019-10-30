@@ -58,9 +58,9 @@ rt_exec_time_computingnode = defaultdict(list)
 rt_finish_time_computingnode = defaultdict(list)
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -295,7 +295,7 @@ class Handler1(pyinotify.ProcessEvent):
         print("execution time is: ", exec_times)
 
         if BOKEH==3:
-            print(appname)
+            # print(appname)
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
            
@@ -344,11 +344,11 @@ class Handler(pyinotify.ProcessEvent):
         input_file = inputfile.split('.')[0]
         announce_input(input_file, t)
         # start_times.append(time.time())
-        print("start time is: ", start_times)
+        # print("start time is: ", start_times)
         new_file_name = os.path.split(event.pathname)[-1]
 
         
-        print(global_task_node_map)
+        # print(global_task_node_map)
         while first_task not in global_task_node_map:
             # print(first_task)
             # print(global_task_node_map)
@@ -417,7 +417,7 @@ def get_taskmap():
     return tasks, task_order, super_tasks, non_tasks
 
 def start_evaluate():
-    time.sleep(120)
+    # time.sleep(120)
     print('Start the evaluation process')
     os.system('python3 evaluate.py &')
 

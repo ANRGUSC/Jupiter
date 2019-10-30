@@ -54,9 +54,9 @@ def toc(t):
     return texec
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -466,7 +466,7 @@ def get_updated_resource_profile():
     resource_info = {}
     try:
         for ip in profiler_ip:
-            print('Check Resource Profiler IP: '+ip)
+            # print('Check Resource Profiler IP: '+ip)
             client_mongo = MongoClient('mongodb://'+ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.central_resource_profiler
             collection = db.collection_names(include_system_collections=False)
@@ -475,7 +475,7 @@ def get_updated_resource_profile():
                 resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
         print("Resource profiles: ", resource_info)
-        print(len(resource_info))
+        # print(len(resource_info))
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceevent compute%s updateresource %d\n'%(self_name,len(resource_info))
@@ -641,7 +641,7 @@ def announce_price(task_controller_ip, price):
             # print(price['network'][node])
             pricing_info = pricing_info + "$"+node+"%"+str(price['network'][node])
         # print(time.time()-t1)
-        print(pricing_info)
+        # print(pricing_info)
         # t1 = time.time()
         params = {'pricing_info':pricing_info}
         # print(time.time()-t1)
@@ -954,14 +954,14 @@ def receive_best_assignment():
         best_computing_node = request.args.get('best_computing_node')
         task_node_map[home_id,task_name,file_name] = best_computing_node
         # task_node_summary[home_id,task_name,file_name] = best_computing_node
-        print(task_name)
-        print(best_computing_node)
+        # print(task_name)
+        # print(best_computing_node)
         # print(task_node_summary)
         if best_computing_node!=-1:
             update_best[home_id,task_name,file_name] = True
         else:
             update_best[home_id,task_name,file_name] = False
-        print(update_best[home_id,task_name,file_name])
+        # print(update_best[home_id,task_name,file_name])
         # txec = toc(t)
         # bottleneck['receiveassign'].append(txec)
         # print(np.mean(bottleneck['receiveassign']))
@@ -1058,7 +1058,7 @@ class Handler1(pyinotify.ProcessEvent):
                 while (not update_best[home_id,next_task,input_name]) or (task_node_map[home_id,next_task,input_name]=='-1'):
                     request_best_assignment(home_id,next_task,input_name)
                     print('--- waiting for computing node assignment')
-                    print(task_node_map)
+                    # print(task_node_map)
                     # b = (task_node_map[home_id,next_task,input_name]=='-1')
                     # print(b)
                     # print('---2')
@@ -1069,12 +1069,12 @@ class Handler1(pyinotify.ProcessEvent):
                     # print('------- 3')
                     # print(update_best)
                     time.sleep(1)
-                print(task_node_map[home_id,next_task,input_name])
+                # print(task_node_map[home_id,next_task,input_name])
             # print(time.time()-t1)
             # t1 = time.time()
-            print('---------- Now what')
-            print(computing_ip_map)
-            print(task_node_map)
+            # print('---------- Now what')
+            # print(computing_ip_map)
+            # print(task_node_map)
 
             next_hosts = []
             next_IPs = []
@@ -1116,7 +1116,7 @@ class Handler1(pyinotify.ProcessEvent):
                 destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
                 # destinations = ["/centralized_scheduler/input/" +new_file+"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
                 #destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
-                print(destinations)
+                # print(destinations)
                 for idx,host in enumerate(next_hosts):
                     # print('----')
                     # print(ip)
@@ -1142,8 +1142,8 @@ class Handler1(pyinotify.ProcessEvent):
                 else:
                     files_mul[key] = files_mul[key] + [event.pathname]
                 print('checking enough output files in queue')
-                print(files_mul[key])
-                print(next_hosts)
+                # print(files_mul[key])
+                # print(next_hosts)
                 # print(time.time()-t1)
                 # t1 = time.time()
 
@@ -1157,7 +1157,7 @@ class Handler1(pyinotify.ProcessEvent):
                         # destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
                         destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
                         #destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id
-                        print(destinations)
+                        # print(destinations)
                         if self_ip!=combined_ip_map[host]:
                             print('different')
                             # print(files_mul[key][idx])

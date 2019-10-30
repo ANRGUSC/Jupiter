@@ -60,9 +60,9 @@ rt_exec_time_computingnode = defaultdict(list)
 rt_finish_time_computingnode = defaultdict(list)
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -120,7 +120,7 @@ def recv_mapping():
             start_time[worker_node].append(ts)
         else:
             end_time[worker_node].append(ts)
-            print(worker_node + " takes time:" + str(end_time[worker_node][-1] - start_time[worker_node][-1]))
+            # print(worker_node + " takes time:" + str(end_time[worker_node][-1] - start_time[worker_node][-1]))
             if worker_node == "globalfusion":
                 # Per task stats:
                 print("Start time stats:", start_time)
@@ -342,8 +342,8 @@ def get_updated_network_profile():
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
-        print(collection)
-        print(num_nb)
+        # print(collection)
+        # print(num_nb)
         # print(self_profiler_ip)
         if num_nb == -1:
             print('--- Network profiler mongoDB not yet prepared')
@@ -354,7 +354,7 @@ def get_updated_network_profile():
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
         logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)  
-        print(logging)
+        # print(logging)
         # print('---------------------')
         c = 0
         for record in logging:
@@ -366,7 +366,7 @@ def get_updated_network_profile():
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
 
-        print(network_info)
+        # print(network_info)
         
         if BOKEH==3:
             msg = 'msgoverhead pricepush home networkdata %d\n'%(c)
@@ -563,7 +563,7 @@ class MyHandler(pyinotify.ProcessEvent):
         print("execution time is: ", exec_times)
 
         if BOKEH == 3:
-            print(appname)
+            # print(appname)
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 

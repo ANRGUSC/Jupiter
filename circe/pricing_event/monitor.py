@@ -56,9 +56,9 @@ def toc(t):
     return texec
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -233,8 +233,8 @@ def default_best_node(source_node):
             task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
             # print(task_price_summary[item])
         
-        print('Summary cost')
-        print(task_price_summary)
+        print('Best node')
+        # print(task_price_summary)
         best_node = min(task_price_summary,key=task_price_summary.get)
         print(best_node)
         mappinglatency = time.time() - starttime   
@@ -257,7 +257,7 @@ def predict_best_node(source_node):
     """
     #if PRICE_OPTION ==0: #default
     best_node = default_best_node(source_node)
-    print(best_node)
+    # print(best_node)
     return best_node
 
 def receive_best_assignment_request():
@@ -269,11 +269,11 @@ def receive_best_assignment_request():
         source_node = request.args.get('node_name')
         file_name = request.args.get('file_name')
         source_key = request.args.get('key')
-        print('***')
-        print(home_id)
-        print(source_node)
-        print(file_name)
-        print(source_key)
+        # print('***')
+        # print(home_id)
+        # print(source_node)
+        # print(file_name)
+        # print(source_key)
         key = (home_id,file_name)
         if key in task_node_summary and task_node_summary[key]!=-1:
             print('Already existed in task node mapping')
@@ -282,7 +282,7 @@ def receive_best_assignment_request():
             print('Not yet existed in task node mapping')
             best_node = predict_best_node(source_node)
             task_node_summary[key] = best_node
-        print(best_node)
+        # print(best_node)
         # print('******')
         # txec = toc(t)
         # bottleneck['receiveassign'].append(txec)
