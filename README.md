@@ -150,14 +150,19 @@ Step by step instructions to set up Jupiter on a private network provided by Sea
 
 ## Applications:
 
- Jupiter accepts pipelined computations described in a form of a Graph where the main task flow is represented as a Directed
- Acyclic Graph (DAG). Thus, one should be able separate the graph into two pieces, the DAG part and non-DAG part. Jupiter
- requires that each task in the DAG part of the graph to be written as a Python function in a separate file under the scripts
- folder. On the other hand the non-DAG tasks can be either Python function or a shell script with any number of arguments,
- located under the scripts folder.
+Jupiter accepts pipelined computations described in a form of a Graph where the main task flow is represented as a Directed
+Acyclic Graph (DAG). Thus, one should be able separate the graph into two pieces, the DAG part and non-DAG part. Jupiter
+requires that each task in the DAG part of the graph to be written as a Python function in a separate file under the scripts
+folder. On the other hand the non-DAG tasks can be either Python function or a shell script with any number of arguments,
+located under the scripts folder.
 
- As an example, please refer to our codes available for an application called the Coded Network Anomaly Detection ([Coded
- DNAD](https://github.com/ANRGUSC/Coded-DNAD)). This is an application customized for the Jupiter Orchestrator.
+As an example, please refer to our codes available for the following applications customized for the Jupiter Orchestrator:
+
+1) Coded Network Anomaly Detection ([Coded DNAD](https://github.com/ANRGUSC/Coded-DNAD))
+2) Multi-Camera Processing DAG ([MCP DAG](https://github.com/ANRGUSC/MCPDAG))
+3) Automatic-DAG-Generator([Dummy DAG](https://github.com/ANRGUSC/Automatic-DAG-Generator))
+
+
 
 ## Visualization
 
