@@ -632,8 +632,8 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
     """Collect the resource profile from local MongoDB peer
     """
 
-    print('----------------------')
-    print(profiler_ips)
+    # print('----------------------')
+    # print(profiler_ips)
     for profiler_ip in profiler_ips:
         print('Check Resource Profiler IP: '+profiler_ip)
         client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(MONGO_SVC_PORT)+'/')

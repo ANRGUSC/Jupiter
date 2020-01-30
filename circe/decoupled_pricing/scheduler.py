@@ -96,6 +96,7 @@ app.add_url_rule('/announce_mapping', 'announce_mapping', announce_mapping)
 def announce_mapping_to_workers():
     try:
         print('Announce full mapping to all compute worker node')
+        print(global_task_node_map)
         tmp_assignments = ",".join(("{}:{}".format(*i) for i in global_task_node_map.items()))
 
         t = time.time()
@@ -358,8 +359,8 @@ class Handler(pyinotify.ProcessEvent):
 
         # print('Updated global task mapping information')
         # IP = node_ip_map[global_task_node_map[first_task]]
-        # print('Send file to the first node')
-        # print(global_task_node_map[first_task])
+        print('Send file to the first node')
+        print(global_task_node_map[first_task])
     
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)

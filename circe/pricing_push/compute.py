@@ -350,7 +350,8 @@ def announce_input_worker():
         start_times[(tmp_home,tmp_file)] = tmp_time
         # print(start_times)
         mapping_input_id[(tmp_home,tmp_file)] = count_mapping_mul.value #ID of last mapping
-        # print(mapping_input_id)
+        print(mapping_input_id)
+        print(count_mapping_mul.value)
 
     except Exception as e:
         print("Received mapping announcement from controller failed")
@@ -394,7 +395,7 @@ def receive_assignment_info():
             else:
                 tmp_counter[k[1]] = 1
         # print(tmp_counter)
-        # print(count_mapping_mul.value)
+        print(count_mapping_mul.value)
         if count_mapping_mul.value in tmp_counter:
             cur_tasks = tmp_counter[count_mapping_mul.value]
             # print(cur_tasks)
@@ -411,7 +412,7 @@ def receive_assignment_info():
                 task_node_map[assignment_info[0],max(check)+1] = assignment_info[1]
         else:#in the beginning
             task_node_map[assignment_info[0],1] = assignment_info[1]
-        # print(count_mapping_mul)
+        print(count_mapping_mul)
         # task_node_map[assignment_info[0],count_mapping_mul.value] = assignment_info[1]
         # print(task_node_map)
     except Exception as e:
@@ -627,12 +628,12 @@ def price_aggregate(task_name):
         execution_info = get_updated_execution_profile()
         resource_info = get_updated_resource_profile()
         # print('--------------')
-        # print(resource_info)
+        print(resource_info)
         # print('--------------2')
-        # print(execution_info)
+        print(execution_info)
         network_info = get_updated_network_profile()
         # print('--------------3')
-        # print(network_info)
+        print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         
         
@@ -970,7 +971,7 @@ class Handler1(pyinotify.ProcessEvent):
             transfer_data(home_id,username,password,event.pathname, "/output/"+new_file)   
         else:
             print('----- next step is not home')
-            # print(task_node_map)
+            print(task_node_map)
             # print(len(tasks))
             for next_task in next_tasks_map[task_name]:
                 # print('*********')
@@ -986,10 +987,15 @@ class Handler1(pyinotify.ProcessEvent):
 
             print('Loaded all required assignment')
 
+            print(mapping_input_id)
+            print(mapping_input_id[(home_id,input_name)])
+            print(next_tasks_map[task_name])
+            print(task_node_map)
             next_hosts =  [task_node_map[x,mapping_input_id[(home_id,input_name)]] for x in next_tasks_map[task_name]]
             # next_IPs   = [computing_ip_map[x] for x in next_hosts]
 
             print('Sending the output files to the corresponding destinations')
+            print(next_hosts)
             if flag=='true': 
                 print('send a single output of the task to all its children') 
                 destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
@@ -1013,11 +1019,12 @@ class Handler1(pyinotify.ProcessEvent):
                     # print(len(next_hosts))
 
                     for idx,host in enumerate(next_hosts):
-                        # print('!!!!!!!!!!')
+                        print(next_tasks_map[task_name][idx])
                         current_file = files_mul[key][idx].split('/')[-1]
                         destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
                         if self_ip!=combined_ip_map[host]:
                             print('transfer file to remote node')
+                            print(host)
                             transfer_data(host,username,password,files_mul[key][idx], destinations)
                         else: 
                             print('copy file')
