@@ -60,9 +60,9 @@ rt_exec_time_computingnode = defaultdict(list)
 rt_finish_time_computingnode = defaultdict(list)
 
 def demo_help(server,port,topic,msg):
-    # print('Sending demo')
-    # print(topic)
-    # print(msg)
+    print('Sending demo')
+    print(topic)
+    print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()

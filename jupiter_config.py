@@ -161,10 +161,10 @@ def set_globals():
     # APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
     # APP_OPTION              = 'dag'
 
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
-    # APP_NAME                  = 'app_specific_files/dummy_app'
-    # APP_OPTION                = 'dummy'
+    HOME_CHILD                = 'task0'
+    APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
+    APP_NAME                  = 'app_specific_files/dummy_app'
+    APP_OPTION                = 'dummy'
 
 
     # HOME_CHILD                = 'task0'
@@ -184,8 +184,8 @@ def set_globals():
     # APP_OPTION                = 'dummycpu30'
 
     # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/stresscpuapp30/'
-    # APP_NAME                  = 'app_specific_files/stresscpuapp30'
+    # APP_PATH                  = HERE  + 'app_specific_files/stresscpu30/'
+    # APP_NAME                  = 'app_specific_files/stresscpu30'
     # APP_OPTION                = 'stresscpu30'
 
     # HOME_CHILD                = 'task0'
@@ -203,10 +203,15 @@ def set_globals():
     # APP_NAME                  = 'app_specific_files/dummyapp50'
     # APP_OPTION                = 'dummy50'
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummyapp100/'
-    APP_NAME                  = 'app_specific_files/dummyapp100'
-    APP_OPTION                = 'dummy100'
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp100/'
+    # APP_NAME                  = 'app_specific_files/dummyapp100'
+    # APP_OPTION                = 'dummy100'
+
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/newdummyapp100/'
+    # APP_NAME                  = 'app_specific_files/newdummyapp100'
+    # APP_OPTION                = 'dummy100'
 
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp150/'
@@ -233,6 +238,31 @@ def set_globals():
     # APP_PATH                  = HERE  + 'app_specific_files/dummyapp800/'
     # APP_NAME                  = 'app_specific_files/dummyapp800'
     # APP_OPTION                = 'dummy800'
+
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/ccrapp002/'
+    # APP_NAME                  = 'app_specific_files/ccrapp002'
+    # APP_OPTION                = 'ccr002' 
+
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/ccrapp02/'
+    # APP_NAME                  = 'app_specific_files/ccrapp02'
+    # APP_OPTION                = 'ccr02'
+
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/ccrapp2/'
+    # APP_NAME                  = 'app_specific_files/ccrapp2'
+    # APP_OPTION                = 'ccr2'
+
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/ccrapp20/'
+    # APP_NAME                  = 'app_specific_files/ccrapp20'
+    # APP_OPTION                = 'ccr20'
+
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/ccrapp200/'
+    # APP_NAME                  = 'app_specific_files/ccrapp200'
+    # APP_OPTION                = 'ccr200'
 
 
     """pricing CIRCE home and worker images"""

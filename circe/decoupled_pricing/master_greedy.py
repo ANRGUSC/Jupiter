@@ -439,7 +439,7 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
 
     if BOKEH==3:
         topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead pricedecoupled controllerhome%s networkdata %d \n' %(node_name,len(myneighbors))
+        msg = 'msgoverhead pricedecoupled controllerhome%s networkdata %d \n' %(node_name,num_nb)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def profilers_mapping_decorator(f):

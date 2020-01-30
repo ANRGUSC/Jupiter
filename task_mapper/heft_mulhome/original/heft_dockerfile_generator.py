@@ -19,6 +19,7 @@ RUN apt-get -yqq install python python-pip python-dev python3-pip python3-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y openssh-server sshpass nano virtualenv supervisor
 RUN apt-get install -y vim
+RUN apt-get update
 RUN apt-get install -y mosquitto-clients
 
 # Install required python libraries

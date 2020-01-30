@@ -324,7 +324,7 @@ def announce_best_assignment(home_id,best_node, source_node, file_name,source_ke
 
         if BOKEH==3:    
             topic = 'msgoverhead_controller%s'%(self_task)
-            msg = 'msgoverhead priceevent controller%s announcebest 1 %s\n'%(self_task,source_node)
+            msg = 'msgoverhead priceevent controller%s announcebest %s 1\n'%(self_task,source_node)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         # print(res)
 

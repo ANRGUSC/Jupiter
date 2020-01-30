@@ -298,8 +298,13 @@ def announce_input_worker():
         print("Received input announcement from home compute")
         start_times[(tmp_home,tmp_file)] = tmp_time
         # print(start_times)
-        mapping_input_id[(tmp_home,tmp_file)] = len(mapping_times)-1 #ID of last mapping
-        # print(mapping_input_id)
+        print(global_task_node_map)
+        print(mapping_times)
+        if len(mapping_times)==0: 
+            mapping_input_id[(tmp_home,tmp_file)] = 0
+        else:
+            mapping_input_id[(tmp_home,tmp_file)] = len(mapping_times)-1 #ID of last mapping
+        print(mapping_input_id)
 
     except Exception as e:
         print("Received mapping announcement from controller failed")
@@ -553,11 +558,17 @@ class Handler1(pyinotify.ProcessEvent):
                 print('Global task mapping is not loaded')
                 time.sleep(1)
             print('Current mapping input list')
-            # print(mapping_input_id[(home_id,input_name)])
+            print(global_task_node_map)
+            print(mapping_times)
+            print(mapping_input_id)
+            print(home_id)
+            print(input_name)
+            print(mapping_input_id[(home_id,input_name)])
             next_hosts = [global_task_node_map[mapping_input_id[(home_id,input_name)],home_id,x] for x in next_tasks_map[task_name]]
             # next_IPs   = [computing_ip_map[x] for x in next_hosts]
             
-            # print('Sending the output files to the corresponding destinations')
+            print('Sending the output files to the corresponding destinations')
+            print(next_hosts)
             if flag=='true': 
                 print('not wait, send')
                 # send runtime info
@@ -574,8 +585,10 @@ class Handler1(pyinotify.ProcessEvent):
                     #     copyfile(event.pathname, destinations[idx])
                 for idx,host in enumerate(next_hosts):
                     if self_ip!=combined_ip_map[host]: # different node
+                        print('different node')
                         transfer_data(host,username,password,event.pathname, destinations[idx])
                     else: # same node
+                        print('same node')
                         copyfile(event.pathname, destinations[idx])
             else:
                 #it will wait the output files and start putting them into queue, send frst output to first listed child, ....
