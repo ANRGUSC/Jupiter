@@ -157,7 +157,7 @@ def transfer_data(ID,user,pword,source, destination):
     """Transfer data with given parameters
     
     Args:
-        IP (str): destination IP
+        ID (str): destination ID
         user (str): destination username
         pword (str): destination password
         source (str): source file path
@@ -172,35 +172,35 @@ def transfer_data(ID,user,pword,source, destination):
 
     return transfer_data_scp(ID,user,pword,source, destination) #default
 
-def transfer_multicast_data_scp(IP_list,user_list,pword_list,source, destination):
+def transfer_multicast_data_scp(ID_list,user_list,pword_list,source, destination):
     """Transfer data using SCP to multiple nodes
     
     Args:
-        IP (str): destination IP address list
-        user (str): username list
-        pword (str): password list
+        ID_list (str): destination ID list
+        user_list (str): username list
+        pword_list (str): password list
         source (str): source file path 
         destination (str): destination file path
     """
-    for idx in range(len(IP_list)): 
-        _thread.start_new_thread(transfer_data_scp,(IP_list[idx],user_list[idx],pword_list[idx],source, destination,))
+    for idx in range(len(ID_list)): 
+        _thread.start_new_thread(transfer_data_scp,(ID_list[idx],user_list[idx],pword_list[idx],source, destination,))
 
-def transfer_multicast_data(IP_list,user_list,pword_list,source, destination):
+def transfer_multicast_data(ID_list,user_list,pword_list,source, destination):
     """Transfer data with given parameters
     
     Args:
-        IP (str): destination IP 
+        ID_list (str): destination ID list 
         user (str): destination username
         pword (str): destination password
         source (str): source file path
         destination (str): destination file path
     """
-    for idx in range(len(IP_list)):
-        msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP_list[idx],user_list[idx],pword_list[idx],source, destination)
+    for idx in range(len(ID_list)):
+        msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID_list[idx],user_list[idx],pword_list[idx],source, destination)
         print(msg)
     if TRANSFER==0:
         print('Multicast all the files')
-        transfer_multicast_data_scp(IP_list,user_list,pword_list,source, destination)
+        transfer_multicast_data_scp(ID_list,user_list,pword_list,source, destination)
     
 
 def demo_help(server,port,topic,msg):
