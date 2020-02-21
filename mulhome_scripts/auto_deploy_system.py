@@ -133,7 +133,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
 
         if pricing == 0 or  pricing == 1 or pricing == 2 : #original non-pricing
             print('Start the task to node mapper')
-            # task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
+            task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
             """
                 Make sure you run kubectl proxy --port=8080 on a terminal.
