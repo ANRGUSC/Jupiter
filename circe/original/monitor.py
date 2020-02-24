@@ -450,6 +450,8 @@ class Handler(pyinotify.ProcessEvent):
         else:
             print('Option2')
             filenames.append(queue_mul.get())
+            print(len(filenames))
+            print(str(flag1))
             if (len(filenames) == int(flag1)):
 
                 #start msg
@@ -527,6 +529,9 @@ def main():
     global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
 
     configs = json.load(open('/centralized_scheduler/config.json'))
+    print(configs)
+    print(configs["taskname_map"])
+    print(len(sys.argv))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
     taskname = taskmap[0]
     # print(taskname)

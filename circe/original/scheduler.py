@@ -371,6 +371,8 @@ class Handler(pyinotify.ProcessEvent):
         ID = os.environ['CHILD_NODES']
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
+        print('----')
+        print(ID)
         transfer_data(ID,username, password,source, destination)
 
 def main():
