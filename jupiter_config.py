@@ -166,10 +166,20 @@ def set_globals():
     # APP_NAME                  = 'app_specific_files/dummy_app'
     # APP_OPTION                = 'dummy'
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummy_app_multicast/'
-    APP_NAME                  = 'app_specific_files/dummy_app_multicast'
-    APP_OPTION                = 'dummymulticast'
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app_multicast/'
+    # APP_NAME                  = 'app_specific_files/dummy_app_multicast'
+    # APP_OPTION                = 'dummymulticast'
+
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/dummydupapp/'
+    # APP_NAME                  = 'app_specific_files/dummydupapp'
+    # APP_OPTION                = 'dummydupapp'
+
+    HOME_CHILD                = 'taskdistribute'
+    APP_PATH                  = HERE  + 'app_specific_files/dummydupapp6/'
+    APP_NAME                  = 'app_specific_files/dummydupapp6'
+    APP_OPTION                = 'dummydupapp'
 
 
     # HOME_CHILD                = 'task0'

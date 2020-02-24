@@ -358,10 +358,9 @@ def main():
     profiling_folder_processed = '/centralized_scheduler/profiler_files_processed/'
 
     recv_file_count = 0
-    while recv_file_count<len(profilers_ips):
+    while recv_file_count<(len(profilers_ips)+1):
 
         list_files = os.listdir(profiling_folder) # dir is your directory path
-
         for file_path in list_files:
             try:
                 print('--- Add execution info from file: '+ file_path)
@@ -376,7 +375,7 @@ def main():
                 print("Some Exception")
 
         print("Number of execution profiling files : " + str(recv_file_count))
-        if recv_file_count == len(profilers_ips):
+        if recv_file_count == (len(profilers_ips)+1):
             print('Successfully finish execution profiler ')
             end_time = time.time()
             deploy_time = end_time - starting_time
