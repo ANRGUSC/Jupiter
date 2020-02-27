@@ -71,8 +71,8 @@ There are some provided tutorials:
 - Step by step instructions to set up Jupiter on a private network provided by Sean Griffin (Raytheon BBN Technologies): `private network setup`
 
 .. _set up k8s on DO: https://www.youtube.com/watch?v=A5G0PpVcce0&feature=youtu.be
-.. _Jupiter deployment on DO: https://jupiter.readthedocs.io/en/latest/Jdeploy.html
-.. _private network setup: images/Jupiter_setup.pdf
+.. _Jupiter deployment on DO:  https://www.youtube.com/watch?v=k41m3CLvRjw
+.. _private network setup: https://github.com/ANRGUSC/Jupiter/blob/develop/tutorial/Jupiter_setup.pdf
 
 
 
