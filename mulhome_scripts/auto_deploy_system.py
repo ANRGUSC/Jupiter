@@ -17,6 +17,7 @@ from k8s_pricing_circe_scheduler import *
 from k8s_decoupled_pricing_circe_scheduler import *
 from k8s_exec_scheduler import *
 from k8s_heft_scheduler import *
+from k8s_stream_scheduler import *
 from pprint import *
 import jupiter_config
 import requests
@@ -199,6 +200,8 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         print(pricing)
         k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
 
+    print('Deploy data streamer')
+    k8s_stream_scheduler(dag,app_name)
 
     print("The Jupiter Deployment is Successful!")
 
