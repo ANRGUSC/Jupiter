@@ -61,17 +61,19 @@ As an example, please refer to our codes available for the following application
 
 In order to integrate one specific application into Jupiter, please refer to our documentation regarding Applications. 
 
-Tutorials:
+Tutorials
 ==========
 
 There are some provided tutorials:
 
 - Set up kubernetes cluster on Digital Ocean: `set up k8s on DO`_
-- Deploy Jupiter on Digital Ocean: `deploy Jupiter on DO`_
-- Step by step instructions to set up Jupiter on a private network provided by Sean Griffin (Raytheon BBN Technologies): [deploy Jupiter in a private network](images/Jupiter_setup.pdf)
+- Deploy Jupiter on Digital Ocean: `Jupiter deployment on DO`_
+- Step by step instructions to set up Jupiter on a private network provided by Sean Griffin (Raytheon BBN Technologies): `private network setup`
 
 .. _set up k8s on DO: https://www.youtube.com/watch?v=A5G0PpVcce0&feature=youtu.be
-.. _deploy Jupiter on DO: https://jupiter.readthedocs.io/en/latest/Jdeploy.html
+.. _Jupiter deployment on DO: https://jupiter.readthedocs.io/en/latest/Jdeploy.html
+.. _private network setup: images/Jupiter_setup.pdf
+
 
 
 
