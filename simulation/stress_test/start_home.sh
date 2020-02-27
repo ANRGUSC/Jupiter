@@ -7,8 +7,8 @@
 
 service ssh start
 
-# echo 'Automatically run the CPU checking'
-#python3 -u cpu_test.py 
+echo 'Automatically run the CPU checking'
+python3 -u cpu_test.py 
 
 echo 'Automatically run the stress test'
 python3 -u keep_alive.py

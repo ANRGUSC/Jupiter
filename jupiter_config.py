@@ -19,6 +19,16 @@ def get_home_node(file_name):
         line = file.readline().split()
     return line[1]
 
+def get_datasources(file_name):
+    datasources = {}
+    node_file = open(file_name, "r")
+    for line in node_file:
+        node_line = line.strip().split(" ")
+        datasources.setdefault(node_line[0], [])
+        for i in range(1, len(node_line)):
+          datasources[node_line[0]].append(node_line[i])
+    return datasources
+
 def set_globals():
     """Set global configuration information
     """
@@ -68,7 +78,7 @@ def set_globals():
     
 
     """Modules path of Jupiter"""
-    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH
+    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH
 
     # default network and resource profiler: DRUPE
     # default wave mapper: random wave
@@ -78,6 +88,7 @@ def set_globals():
     HEFT_PATH               = HERE + 'task_mapper/heft_mulhome/original/'
     WAVE_PATH               = HERE + 'task_mapper/wave_mulhome/random_wave/'
     SCRIPT_PATH             = HERE + 'scripts/'
+    STREAM_PATH             = HERE + 'simulation/data_sources/'
 
     global heft_option, wave_option
     heft_option             = 'original'    
@@ -126,6 +137,7 @@ def set_globals():
 
 
     CIRCE_PATH              = HERE + 'circe/%s/'%(pricing_option)
+    
 
 
 
@@ -143,9 +155,10 @@ def set_globals():
     EXEC_NAMESPACE          = 'quynh-exec'
 
     """ Node file path and first task information """
-    global HOME_NODE, HOME_CHILD
+    global HOME_NODE, HOME_CHILD, STREAM_NODE
 
     HOME_NODE               = get_home_node(HERE + 'nodes.txt')
+    STREAM_NODE             = get_datasources(HERE + 'nodes.txt')
     #HOME_CHILD              = 'sample_ingress_task1'
 
     """Application Information"""
@@ -297,10 +310,11 @@ def set_globals():
     NONDAG_WORKER_IMAGE     = 'docker.io/anrg/%s_circe_nondag_worker:%s' %(pricing_option,APP_OPTION)
     
     """CIRCE home and worker images for execution profiler"""
-    global HOME_IMAGE, WORKER_IMAGE
+    global HOME_IMAGE, WORKER_IMAGE, STREAM_IMAGE
 
     HOME_IMAGE              = 'docker.io/anrg/circe_home:%s'%(APP_OPTION)
     WORKER_IMAGE            = 'docker.io/anrg/circe_worker:%s'%(APP_OPTION)
+    STREAM_IMAGE              = 'docker.io/anrg/stream_home:%s'%(APP_OPTION)
 
     """DRUPE home and worker images"""
     global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
