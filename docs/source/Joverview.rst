@@ -68,11 +68,12 @@ There are some provided tutorials:
 
 - Set up kubernetes cluster on Digital Ocean: `set up k8s on DO`_
 - Deploy Jupiter on Digital Ocean: `Jupiter deployment on DO`_
-- Step by step instructions to set up Jupiter on a private network provided by Sean Griffin (Raytheon BBN Technologies): `private network setup`
+- Step by step instructions to set up Jupiter on a private network provided by Sean Griffin (Raytheon BBN Technologies): `private network setup`_
 
 .. _set up k8s on DO: https://www.youtube.com/watch?v=A5G0PpVcce0&feature=youtu.be
 .. _Jupiter deployment on DO:  https://www.youtube.com/watch?v=k41m3CLvRjw
 .. _private network setup: https://github.com/ANRGUSC/Jupiter/blob/develop/tutorial/Jupiter_setup.pdf
+
 
 
 
