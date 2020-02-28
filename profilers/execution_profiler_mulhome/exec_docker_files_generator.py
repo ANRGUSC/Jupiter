@@ -141,6 +141,7 @@ RUN mkdir -p /home/darpa/apps/data
 
 
 ADD {app_file}/configuration.txt /centralized_scheduler/DAG.txt
+ADD nodes.txt /centralized_scheduler/nodes.txt
 
 ADD profilers/execution_profiler_mulhome/start_home.sh /centralized_scheduler/start.sh
 ADD mulhome_scripts/keep_alive.py /centralized_scheduler/keep_alive.py

@@ -209,6 +209,11 @@ def main():
     client_mongo = MongoClient('mongodb://localhost:'+ str(MONGO_PORT) +'/')
     db = client_mongo['execution_profiler']
 
+    num_profiling_files = 0
+    profiling_folder = '/centralized_scheduler/profiler_files'
+    profiling_folder_processed = '/centralized_scheduler/profiler_files_processed/'
+
+
 
     ## create the task list in the order of execution
     task_order = []
@@ -244,13 +249,10 @@ def main():
         modules.append(taskmodule)
         task_module[task]=(taskmodule)
 
-    ## write results in a text file
-    myfile = open(os.path.join(os.path.dirname(__file__), 'profiler_'+nodename+'.txt'), "w")
-    myfile.write('task,time(sec),output_data (Kbit)\n')
-    # print('task order:')
-    # print(task_order)
 
     ## execute each task and get the timing and data size
+    myfile = open(os.path.join(os.path.dirname(__file__), 'profiler_'+nodename+'.txt'), "w")
+    myfile.write('task,time(sec),output_data (Kbit)\n')
 
     count = 0
     for task in task_order:
@@ -283,6 +285,41 @@ def main():
     myfile.close()
 
     print('Finish printing out the execution information')
+
+    ## data sources
+    datasources = []
+    num_files = 0
+    with open(os.path.join(os.path.dirname(__file__), 'nodes.txt'), "r") as nFile:
+        for line in nFile:
+            node_line = line.strip().split(" ")
+            num_files = num_files+1
+            if node_line[0].startswith('datasource'):
+                datasources.append(node_line[0])
+
+
+    print(datasources)
+    for ds in datasources:
+        print(ds)
+        src_path = os.path.join(os.path.dirname(__file__), 'profiler_'+ds+'.txt')
+        myfile = open(src_path, "w")
+        myfile.write('task,time(sec),output_data (Kbit)\n')
+
+        ## write results in a text file
+        
+
+        BIG_NUM = '100000000000000'
+        for task in task_order:
+            mytime = int(BIG_NUM) 
+            sum_output_data = int(BIG_NUM) 
+            line=task+','+str(mytime)+ ','+ str(sum_output_data) + '\n'
+            myfile.write(line)
+            myfile.flush()
+        myfile.close()
+
+        update_mongo(src_path)
+        processed_file = os.path.join(profiling_folder_processed,'profiler_'+ds+'.txt')
+        shutil.move(src_path,  processed_file)
+
     print('Starting to send the output file back to the master node')
 
 
@@ -353,12 +390,12 @@ def main():
     ## move it to the profiling_folder_processed to keep track of processed files
 
     print('Watching the incoming execution profiler files')
-    num_profiling_files = 0
-    profiling_folder = '/centralized_scheduler/profiler_files'
-    profiling_folder_processed = '/centralized_scheduler/profiler_files_processed/'
+    
+    ## Copy profiler files for data sources:
+
 
     recv_file_count = 0
-    while recv_file_count<(len(profilers_ips)+1):
+    while recv_file_count<num_files:
 
         list_files = os.listdir(profiling_folder) # dir is your directory path
         for file_path in list_files:
@@ -375,7 +412,7 @@ def main():
                 print("Some Exception")
 
         print("Number of execution profiling files : " + str(recv_file_count))
-        if recv_file_count == (len(profilers_ips)+1):
+        if recv_file_count == num_files:
             print('Successfully finish execution profiler ')
             end_time = time.time()
             deploy_time = end_time - starting_time
