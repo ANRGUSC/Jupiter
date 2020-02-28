@@ -201,7 +201,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
 
     print('Deploy data streamer')
-    k8s_stream_scheduler(dag,app_name)
+    k8s_stream_scheduler(app_name)
 
     print("The Jupiter Deployment is Successful!")
 

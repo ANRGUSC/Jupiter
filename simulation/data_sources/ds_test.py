@@ -110,7 +110,7 @@ def main():
     combined_ip_map[os.environ['CHILD_NODES']]= os.environ['CHILD_NODES_IPS']
     
     print('Starting to generate the streaming files')
-    interval = 120
+    interval = 60
     data_path = "generated_stream"
     _thread.start_new_thread(gen_stream_data,(interval,data_path,))  
 
@@ -122,6 +122,7 @@ def main():
     eh = Handler()
     notifier = pyinotify.ThreadedNotifier(wm, eh)
     notifier.start()
+    notifier.loop()
 
  
 
