@@ -17,7 +17,7 @@ from watchdog.events import FileSystemEventHandler
 import time
 import os
 import json
-from multiprocessing import Process
+from multiprocessing import Process, Manager
 from readconfig import read_config
 from socket import gethostbyname, gaierror, error
 
@@ -36,25 +36,7 @@ import jupiter_config
 import pyinotify
 
 
-# End-to-end metrics
-start_times = dict()
-end_times = dict()
-exec_times = dict()
-count = 0
-
 app = Flask(__name__)
-
-@app.route('/')
-def hello():
-    return 'Hello, World!'
-
-# Per task times
-start_time = defaultdict(list)
-end_time = defaultdict(list)
-
-rt_enter_time = defaultdict(list)
-rt_exec_time = defaultdict(list)
-rt_finish_time = defaultdict(list)
 
 def demo_help(server,port,topic,msg):
     print('Sending demo')
@@ -67,6 +49,34 @@ def demo_help(server,port,topic,msg):
     client.connect(server, port,300)
     client.publish(topic, msg,qos=1)
     client.disconnect()
+
+def recv_datasource():
+    """
+
+    Receiving run-time profiling information from WAVE/HEFT for every task (task name, start time stats, end time stats)
+    
+    Raises:
+        Exception: failed processing in Flask
+    """
+    global start_times, end_times
+    try:
+        # print('Receive final runtime profiling')
+        filename = request.args.get('filename')
+        filetype = request.args.get('filetype')
+        ts = request.args.get('time')
+
+        print("Received flask message:", filename, filetype,ts)
+        if filetype == 'input':
+            start_times[filename]=float(ts)
+        else:
+            end_times[filename]=float(ts)
+        
+    except Exception as e:
+        print("Bad reception or failed processing in Flask")
+        print(e)
+        return "not ok"
+    return "ok"
+app.add_url_rule('/recv_monitor_datasource', 'recv_datasource', recv_datasource)
 
 def recv_mapping():
     """
@@ -81,32 +91,19 @@ def recv_mapping():
     global end_time
 
     try:
-        # print('***************************************************')
-        # t = tic()
-        # print('Receive final runtime profiling')
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg')
         ts = time.time()
 
         print("Received flask message:", worker_node, msg, ts)
-        print(last_tasks)
         if msg == 'start':
             start_time[worker_node].append(ts)
         else:
             end_time[worker_node].append(ts)
-            # print(worker_node + " takes time:" + str(end_time[worker_node][-1] - start_time[worker_node][-1]))
             if worker_node in last_tasks:
-                # print(worker_node)
-            #if worker_node == "globalfusion":
-                # Per task stats:
                 print("Start time stats:", start_time)
                 print("End time stats:", end_time)
 
-
-        # txec = toc(t)
-        # bottleneck['receivefinalruntime'].append(txec)
-        # print(np.mean(bottleneck['receivefinalruntime']))
-        # print('***************************************************')
 
     except Exception as e:
         print("Bad reception or failed processing in Flask")
@@ -148,30 +145,16 @@ def recv_runtime_profile():
 
         # print("Received runtime message:", worker_node, msg[0],msg[1], msg[2])
         
-        # print(rt_enter_time)
-        # print(rt_exec_time)
-        # print(rt_finish_time)
-
         if msg[0] == 'rt_enter':
             rt_enter_time[(worker_node,msg[1])] = float(msg[2])
         elif msg[0] == 'rt_exec' :
             rt_exec_time[(worker_node,msg[1])] = float(msg[2])
         else: #rt_finish
             rt_finish_time[(worker_node,msg[1])] = float(msg[2])
-            # print('----------------------------')
-            # print("Worker node: "+ worker_node)
-            # print("Input file : "+ msg[1])
-            # print("Total duration time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
-            # print("Waiting time:" + str(rt_exec_time[(worker_node,msg[1])] - rt_enter_time[(worker_node,msg[1])]))
-            # print(worker_node + " execution time:" + str(rt_finish_time[(worker_node,msg[1])] - rt_exec_time[(worker_node,msg[1])]))
-            
-            # print('----------------------------') 
-            #if worker_node == "globalfusion" or "task4" or "task99":
             if worker_node in last_tasks:
                 # Per task stats:
                 print('********************************************') 
                 print("Received final output at home: Runtime profiling info:")
-                # print(worker_node)
                 """
                     - Worker node: task name
                     - Input file: input files
@@ -184,14 +167,9 @@ def recv_runtime_profile():
                 """
                 log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks.txt'), "w")
                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
-                # print(s)
                 log_file.write(s)
-                # print(rt_enter_time)
                 for k, v in rt_enter_time.items():
                     worker, file = k
-                    # print(worker)
-                    # print(file)
-                    # print(rt_finish_time)
                     if k in rt_finish_time:
                         elapse = rt_finish_time[k]-v
                         duration = rt_finish_time[k]-rt_exec_time[k]
@@ -238,11 +216,7 @@ def transfer_data_scp(ID,user,pword,source, destination):
         destination (str): destination file path
     """
     #Keep retrying in case the containers are still building/booting up on
-    #the child nodes.
-    # print('***************************************************')
-    # print('Transfer data')
-    # t = tic()
-    # print(IP)
+    #the child nodes
     retry = 0
     ts = -1
     while retry < num_retries:
@@ -260,10 +234,6 @@ def transfer_data_scp(ID,user,pword,source, destination):
             print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
-    # txec = toc(t)
-    # bottleneck['transfer'].append(txec)
-    # print(np.mean(bottleneck['transfer']))
-    # print('***************************************************')
     if retry == num_retries:
         s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,source,ts)
         runtime_sender_log.write(s)
@@ -307,8 +277,7 @@ class MyHandler(pyinotify.ProcessEvent):
             event (ProcessEvent): a new file is created
         """
 
-        global start_times
-        global end_times
+        global start_times, end_times
         global exec_times
         global count
 
@@ -319,11 +288,6 @@ class MyHandler(pyinotify.ProcessEvent):
         # print(outputfile)
         end_times[outputfile] = time.time()
         
-        print("starting times is:")
-        print(start_times)
-        print("ending time is: ")
-        print(end_times)
-        print(outputfile)
         exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
         print("execution time is: ", exec_times)
 
@@ -333,7 +297,6 @@ class MyHandler(pyinotify.ProcessEvent):
             demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
 
         if BOKEH == 3:
-            print(appname)
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
@@ -352,6 +315,7 @@ class Handler(pyinotify.ProcessEvent):
         Args:
             event (ProcessEvent): a new file is created
         """
+        global start_times, end_times
 
         print("Received file as input - %s." % event.pathname)  
 
@@ -364,10 +328,6 @@ class Handler(pyinotify.ProcessEvent):
         inputfile = event.pathname.split('/')[-1]
         t = time.time()
         start_times[inputfile] = t
-        # start_times.append(time.time())
-        print("start time is: ")
-        print(start_times)
-        print(inputfile)
         new_file_name = os.path.split(event.pathname)[-1]
 
 
@@ -377,8 +337,6 @@ class Handler(pyinotify.ProcessEvent):
         ID = os.environ['CHILD_NODES']
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
-        print('----')
-        print(ID)
         transfer_data(ID,username, password,source, destination)
 
 def main():
@@ -436,6 +394,22 @@ def main():
     path2 = 'nodes.txt'
     dag_info = read_config(path1,path2)
 
+    global manager
+    manager = Manager()
+
+    global start_times, end_times, exec_times
+    start_times = manager.dict()
+    end_times = manager.dict()
+    exec_times = manager.dict()
+    
+    global count, start_time,end_time, rt_enter_time, rt_exec_time, rt_finish_time
+    count = 0
+    start_time = defaultdict(list)
+    end_time = defaultdict(list)
+
+    rt_enter_time = defaultdict(list)
+    rt_exec_time = defaultdict(list)
+    rt_finish_time = defaultdict(list)
 
 
     #get DAG and home machine info
