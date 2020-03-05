@@ -19,6 +19,39 @@ import jupiter_config
 import utilities
 from kubernetes.client.rest import ApiException
 
+def get_service_circe(dag,app_name):
+    jupiter_config.set_globals()
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
+    api = client.CoreV1Api()
+
+    service_ips = {}
+    home_name =app_name+"-home"
+    try:
+        resp = api.read_namespaced_service(home_name, namespace)
+        service_ips['home'] = resp.spec.cluster_ip
+    except ApiException as e:
+        print(e)
+        print("Exception Occurred")
+
+    for key, value in dag.items():
+        task = key
+        nexthosts = ''
+ 
+        """
+            Generate the yaml description of the required service for each task
+        """
+        pod_name = app_name+"-"+task
+        try:
+            resp = api.read_namespaced_service(pod_name, namespace)
+            service_ips[task] = resp.spec.cluster_ip
+        except ApiException as e:
+            print(e)
+            print("Exception Occurred")
+    return service_ips
+
+
+
 
 def k8s_stream_scheduler(app_name):
     """
@@ -77,13 +110,16 @@ def k8s_stream_scheduler(app_name):
             print(e)
             print("Exception Occurred")
 
-
-        # print(service_ips)
+    circe_services = get_service_circe(dag,app_name)
+    # print(service_ips)
+    for i in datasources:
+        
         home_name =app_name+"-stream"+i
+
         home_dep = write_stream_home_specs(name=home_name,image = jupiter_config.STREAM_IMAGE, 
                                     host = jupiter_config.STREAM_NODE[i][0], 
                                     child = jupiter_config.HOME_CHILD,
-                                    child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
+                                    child_ips = circe_services.get(jupiter_config.HOME_CHILD), 
                                     appname = app_name,
                                     appoption = jupiter_config.APP_OPTION,
                                     dir = '{}',

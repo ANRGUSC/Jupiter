@@ -319,7 +319,11 @@ class MyHandler(pyinotify.ProcessEvent):
         # print(outputfile)
         end_times[outputfile] = time.time()
         
-        # print("ending time is: ", end_times)
+        print("starting times is:")
+        print(start_times)
+        print("ending time is: ")
+        print(end_times)
+        print(outputfile)
         exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
         print("execution time is: ", exec_times)
 
@@ -361,7 +365,9 @@ class Handler(pyinotify.ProcessEvent):
         t = time.time()
         start_times[inputfile] = t
         # start_times.append(time.time())
-        print("start time is: ", start_times)
+        print("start time is: ")
+        print(start_times)
+        print(inputfile)
         new_file_name = os.path.split(event.pathname)[-1]
 
 

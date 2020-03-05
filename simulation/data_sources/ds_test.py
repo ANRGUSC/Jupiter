@@ -12,15 +12,25 @@ import pyinotify
 import paramiko
 from scp import SCPClient
 import _thread
+from multiprocessing import Process
+import multiprocessing
+from flask import Flask, request
+import configparser
+
+app = Flask(__name__)
+
+start_times = dict()
+end_times = dict()
+exec_times = dict()
 
 def gen_stream_data(interval,data_path):
     while True:
         for i in range(0,interval):
+            # print('-- Waiting')
             time.sleep(1)
         print('--- Generate new file')
         bash_script = os.path.join(os.getcwd(),'generate_random_files')
         bash_script = bash_script+' '+os.environ['SELF_NAME']
-        print(bash_script)
         proc = subprocess.Popen(bash_script, shell = True, stdout = subprocess.PIPE)
         
 
@@ -36,10 +46,6 @@ def transfer_data_scp(ID,user,pword,source, destination):
     """
     #Keep retrying in case the containers are still building/booting up on
     #the child nodes.
-    # print('***************************************************')
-    # print('Transfer data')
-    # t = tic()
-    # print(IP)
     retry = 0
     ts = -1
     while retry < num_retries:
@@ -49,8 +55,9 @@ def transfer_data_scp(ID,user,pword,source, destination):
             os.system(cmd)
             print('data transfer complete\n')
             break
-        except:
-            print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+        except Exception as e:
+            print('SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            print(e)
             time.sleep(2)
             retry += 1
 
@@ -102,12 +109,41 @@ class Handler(pyinotify.ProcessEvent):
         ID = os.environ['CHILD_NODES']
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
+
+
         transfer_data(ID,username, password,source, destination)
 
+class MonitorRecv(multiprocessing.Process):
+    def __init__(self):
+        multiprocessing.Process.__init__(self)
+
+    def run(self):
+        """
+        Start Flask server
+        """
+        print("Flask server started")
+        app.run(host='0.0.0.0', port=FLASK_DOCKER)
+
 def main():
+    INI_PATH = '/jupiter_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    global FLASK_DOCKER,username, password, TRANSFER,num_retries,ssh_port
+    FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
+    username    = config['AUTH']['USERNAME']
+    password    = config['AUTH']['PASSWORD']
+    TRANSFER = int(config['CONFIG']['TRANSFER'])
+    num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+    ssh_port    = int(config['PORT']['SSH_SVC'])
+
+
     global combined_ip_map
     combined_ip_map = dict()
     combined_ip_map[os.environ['CHILD_NODES']]= os.environ['CHILD_NODES_IPS']
+
+    web_server = MonitorRecv()
+    web_server.start()
     
     print('Starting to generate the streaming files')
     interval = 60
@@ -120,8 +156,7 @@ def main():
     wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
     print('starting the input monitoring process\n')
     eh = Handler()
-    notifier = pyinotify.ThreadedNotifier(wm, eh)
-    notifier.start()
+    notifier = pyinotify.Notifier(wm, eh)
     notifier.loop()
 
  
