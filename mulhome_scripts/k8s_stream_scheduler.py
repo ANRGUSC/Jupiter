@@ -123,7 +123,8 @@ def k8s_stream_scheduler(app_name):
                                     appname = app_name,
                                     appoption = jupiter_config.APP_OPTION,
                                     dir = '{}',
-                                    self_name=i)
+                                    self_name=i,
+                                    home_node_ip = circe_services.get('home'))
 
         try:
             resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)

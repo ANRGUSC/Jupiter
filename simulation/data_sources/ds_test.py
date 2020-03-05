@@ -16,6 +16,7 @@ from multiprocessing import Process
 import multiprocessing
 from flask import Flask, request
 import configparser
+import urllib
 
 app = Flask(__name__)
 
@@ -110,6 +111,7 @@ class Handler(pyinotify.ProcessEvent):
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
 
+        send_monitor_data(inputfile,'input',t)
 
         transfer_data(ID,username, password,source, destination)
 
@@ -124,23 +126,56 @@ class MonitorRecv(multiprocessing.Process):
         print("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
+
+def send_monitor_data(filename,filetype,ts):
+    """
+    Sending message to flask server on home
+
+    Args:
+        msg (str): the message to be sent
+
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+
+    Raises:
+        Exception: if sending message to flask server on home is failed
+    """
+    try:
+        url = "http://" + home_node_host_port + "/recv_monitor_datasource"
+        params = {'filename': filename, "filetype": filetype,"time":ts}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        print("Sending message to flask server on home FAILED!!!")
+        print(e)
+        return "not ok"
+    return res
+
 def main():
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global FLASK_DOCKER,username, password, TRANSFER,num_retries,ssh_port
+    global FLASK_SVC,FLASK_DOCKER,username, password, TRANSFER,num_retries,ssh_port
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
     TRANSFER = int(config['CONFIG']['TRANSFER'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     ssh_port    = int(config['PORT']['SSH_SVC'])
+    FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
 
     global combined_ip_map
     combined_ip_map = dict()
     combined_ip_map[os.environ['CHILD_NODES']]= os.environ['CHILD_NODES_IPS']
+
+    global home_node_host_port
+    home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
+
 
     web_server = MonitorRecv()
     web_server.start()

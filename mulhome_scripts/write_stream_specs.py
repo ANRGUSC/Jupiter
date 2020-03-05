@@ -72,6 +72,8 @@ spec:
           value: {appoption}
         - name: SELF_NAME
           value: {self_name}
+        - name: HOME_NODE
+          value: {home_node_ip}
       restartPolicy: Always
 """
 

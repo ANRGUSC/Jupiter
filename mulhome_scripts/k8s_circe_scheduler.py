@@ -12,8 +12,6 @@ from os import path
 from multiprocessing import Process
 from write_circe_service_specs import *
 from write_circe_specs import *
-# from write_sim_service_specs import *
-# from write_sim_specs import *
 import yaml
 from kubernetes import client, config
 from pprint import *
