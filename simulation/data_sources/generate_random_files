@@ -16,7 +16,8 @@ my_name=$1
 file_size=$RANDOM
 now=$(date "+%s")   
 
-random_file=stream_$my_name"_"$now".txt"  # generate the file name
+# random_file=stream_$my_name"_"$now".txt"  # generate the file name
+random_file=$now$my_name"botnet.ipsum"  # generate the file name
 file_path=$PWD/generated_stream/$random_file
 
 echo 'Create file '$random_file
