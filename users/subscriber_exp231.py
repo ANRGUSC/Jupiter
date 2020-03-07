@@ -103,10 +103,6 @@ if __name__ == '__main__':
     OUTFNAME = 'users_management.html'
     SERVER_IP = "127.0.0.1"
 
-    # EXP = 'Experiment 2'
-    # folder = 'exp2'
-    # M = 1
-
     EXP = 'Experiment 3'
     folder = 'exp3'
     M = 5
@@ -115,8 +111,6 @@ if __name__ == '__main__':
 
     global userid,userapp,app_options
     app_options = get_app_list(APP_PATH_LIST)
-
-    print(app_options)
 
     N = int(len(app_options)/2)
     
@@ -130,7 +124,6 @@ if __name__ == '__main__':
             user_path = '%s/user%d'%(folder,cid)
             user_log = '%s/user%d/user%d.log'%(folder,cid,cid)
             user_id = 'U'+str(cid)
-            print(cid)
             cur_sub = cur_app
             
             if not os.path.isdir(user_path):

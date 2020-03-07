@@ -68,11 +68,7 @@ def evaluate_sequential():
     """
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
-    # src = "sample_input/1botnet.ipsum"
-    # dest = "input/1botnet.ipsum"
-    # file_count = 2
     print('---- Generate random input files')
-    # file_count = 2
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
@@ -95,14 +91,11 @@ def evaluate_stress(num_nodes):
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
     num_stress = math.floor(file_count/3)
-    print(num_stress)
     requested = False
     print('---- Generate random input files')
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
-        print('---- Generate random input files')
-        print(src)
         shutil.copyfile(src,dest)
         count = 0
         while 1:
@@ -127,7 +120,6 @@ def request_stress_test(num_nodes):
     for i in range(0,num_nodes):
         print('---------- Request stress on the following node: '+nodes[i])
         worker_node_host_port =  node_ips[i]+ ":" + str(FLASK_SVC)
-        print(worker_node_host_port)
         try:
             url = "http://" + worker_node_host_port + "/start_stress_test"
             params = {'msg': 'request stress test'}
@@ -169,19 +161,14 @@ class MyHandler(PatternMatchingEventHandler):
         """
         # the file will be processed there
         if event.event_type == 'created':
-            # print('***************************************************')
             print("Received file as output in evaluation - %s." % event.src_path)  
             filename = os.path.split(event.src_path)[-1]
             appname = filename.split('-')[0]
-            print(appname)
             curfile = filename.split('-')[1].split('botnet')[0]
-            print(curfile)
             curnum = int(curfile)+1
             if curnum < num_samples: 
                 newfile = 'sample_input/'+appname+'-'+str(curnum)+'botnet.ipsum'
-                print(newfile)
                 fileout ='input/'+appname+'-'+str(curnum)+'botnet.ipsum'
-                # print(fileout)
                 shutil.copyfile(newfile,fileout)
 
     def on_modified(self, event):
@@ -193,7 +180,6 @@ class MyHandler(PatternMatchingEventHandler):
 
 if __name__ == '__main__':
     my_id = os.environ['TASK']
-    print(my_id)
     n = my_id.split('home')
     
     num = 1
@@ -202,7 +188,6 @@ if __name__ == '__main__':
     sleep_time_default = 240
     sleep_time = sleep_time_default + (num-1)*120
     print('The delay to send sample files')
-    print(sleep_time)
     time.sleep(sleep_time)
     print('Start copying sample files for evaluation')
     evaluate_sequential()

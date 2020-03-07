@@ -317,10 +317,7 @@ def write_circe_nondag_specs(**kwargs):
 
     # insert your values
     jupiter_config.set_globals()
-    # for i in kwargs:
-    print(kwargs)
     specific_yaml = template_nondag.format(**kwargs)
-    print(specific_yaml)
     dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
     
     dep = add_ports(dep, 1, jupiter_config.SSH_DOCKER)

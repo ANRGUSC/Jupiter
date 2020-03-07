@@ -68,7 +68,6 @@ def evaluate_sequential():
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
     print('---- Generate random input files')
-    # file_count = 2
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
@@ -87,11 +86,8 @@ def evaluate_sequential():
 
 def evaluate_test():
     file_count = len(os.listdir("sample_input/"))
-    print(file_count)
     file_count_out = len(os.listdir("output/"))
-    print(file_count_out)
     for filepath in glob.iglob('sample_input/*.ipsum'):
-        print(filepath)
         filename = filepath.split('/')[1]
         dest = "input/"+filename
         print('---- Generate random input files')
@@ -106,9 +102,7 @@ def evaluate_test():
 
 def evaluate_combine(num_apps,num_samples):
     file_count = len(os.listdir("sample_input/"))
-    print(file_count)  
     file_count_out = len(os.listdir("output/")) 
-    print(file_count_out)
     count = 0
     for i in range(1,num_samples+1):
         print('---- Generate random input files')
@@ -121,9 +115,6 @@ def evaluate_combine(num_apps,num_samples):
         while 1:
             time.sleep(5)
             file_count_out = len(os.listdir("output/"))
-            print('-----Checking')
-            print(file_count_out)
-            print(count)
             if file_count_out ==  count:
                 print('Finishing all the current samples')
                 break
@@ -139,30 +130,19 @@ def evaluate_combine_app(num_apps,num_samples):
     outfile = set()
     while 1:
         time.sleep(10)
-        print('Generate more random input files')
-        print('------')
         for (dirpath, dirnames, filenames) in os.walk(output_folder):
             for filename in filenames:
                 input_file = filename.split('_')[0] 
-                # print(input_file)
                 if input_file not in outfile:
-                    # print(input_file)
                     appname = input_file.split('-')[0]
-                    # print(appname)
-                    # print(input_file.split('-')[1])
                     curfile = input_file.split('-')[1].split('botnet')[0]
-                    # print(curfile)
                     curnum = int(curfile)+1
                     if curnum >num_samples: continue
                     
                     newfile = 'sample_input/'+appname+'-'+str(curnum)+'botnet.ipsum'
-                    print(newfile)
                     fileout ='input/'+appname+'-'+str(curnum)+'botnet.ipsum'
-                    # print(fileout)
                     shutil.copyfile(newfile,fileout)
                     outfile.add(input_file)
-        print('------')
-        print(outfile)
 
 def evaluate_stress(num_nodes):
 
@@ -170,14 +150,12 @@ def evaluate_stress(num_nodes):
     file_count_out = len(os.listdir("output/"))
     num_stress = math.floor(file_count/3)
     num_stress = 1
-    print(num_stress)
     requested = False
     print('---- Generate random input files')
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
         print('---- Generate random input files')
-        print(src)
         shutil.copyfile(src,dest)
         count = 0
         while 1:
@@ -203,7 +181,6 @@ def request_stress_test(num_nodes):
     for i in range(0,num_nodes):
         print('---------- Request stress on the following node: '+nodes[i])
         worker_node_host_port =  node_ips[i]+ ":" + str(FLASK_SVC)
-        print(worker_node_host_port)
         try:
             url = "http://" + worker_node_host_port + "/start_stress_test"
             params = {'msg': 'request stress test'}
@@ -216,9 +193,6 @@ def request_stress_test(num_nodes):
             print("Sending message to flask server on workers FAILED!!!")
             print(e)
             
-    
-    
-
 class MyHandler(PatternMatchingEventHandler):
     """
     Handling the event when there is a new file generated in ``OUTPUT`` folder
@@ -247,19 +221,14 @@ class MyHandler(PatternMatchingEventHandler):
         """
         # the file will be processed there
         if event.event_type == 'created':
-            # print('***************************************************')
             print("Received file as output in evaluation - %s." % event.src_path)  
             filename = os.path.split(event.src_path)[-1]
             appname = filename.split('-')[0]
-            print(appname)
             curfile = filename.split('-')[1].split('botnet')[0]
-            print(curfile)
             curnum = int(curfile)+1
             if curnum < num_samples: 
                 newfile = 'sample_input/'+appname+'-'+str(curnum)+'botnet.ipsum'
-                print(newfile)
                 fileout ='input/'+appname+'-'+str(curnum)+'botnet.ipsum'
-                # print(fileout)
                 shutil.copyfile(newfile,fileout)
 
     def on_modified(self, event):
@@ -272,16 +241,11 @@ class MyHandler(PatternMatchingEventHandler):
         
 
 if __name__ == '__main__':
-    #evaluate_random()
     time.sleep(60)
     print('Start copying sample files for evaluation')
 
     evaluate_sequential()
     
-    # num_nodes = 5
-    # evaluate_stress(num_nodes)
-    
-
     # global num_apps, num_samples
     # num_apps = 100
     # num_samples = 10

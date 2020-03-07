@@ -100,11 +100,9 @@ if __name__ == '__main__':
     nodes = k8s_get_nodes(NODE_PATH)
     folder = 'poweroverhead'
     
-    print(nodes)
     N = len(nodes)
     DAG_PATH = jupiter_config.APP_PATH + 'configuration.txt'
     tasks,tasksid = retrieve_tasks(DAG_PATH)
-    print(tasks)
     M = len(tasks)
 
     try:

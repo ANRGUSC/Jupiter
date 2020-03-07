@@ -102,28 +102,15 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
         - task_list (list): (DAG) task list in the order of execution
         - tasks (list): DAG dictionary 
     """
-    # print('---------------')
-    # print(tgff_file)
-    # print(num_nodes)
-    # print(network_info)
-    # print(execution_info)
-    # print(node_list)
-    # print(task_list)
-    # print(tasks)
-    # print('---------------2')
     target = open(tgff_file, 'w')
     target.write('@TASK_GRAPH 0 {')
     target.write("\n")
     target.write('\tAPERIODIC')
     target.write("\n\n")
 
-    # print(task_list)
     task_map = ['t0_%d'%(i) for i in range(0,len(task_list))]
     task_ID_dict = dict(zip(task_list,range(0,len(task_list))))
     task_dict = dict(zip(task_list, task_map))
-    # print(task_dict)
-    # print(task_ID_dict)
-
     computation_matrix =[]
     for i in range(0, len(task_list)):
         task_times = [0 for i in range(num_nodes)]
@@ -132,30 +119,10 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
     task_size = {}
 
     # Read format: Node ID, Task, Execution Time, Output size
-    # print('DEBUG')
-    # print(computation_matrix)
-    # print(len(computation_matrix))
-    # print(len(computation_matrix[0]))
-    # print(execution_info)
     for row in execution_info:
-        # print('^^^^^^^^^^^^')
-        # print(row)
-        # print(row[2])
-        # print(row[3])
-        # print(task_size)
-        # print('^^^^^^^^^^^^')
-        # print(execution_info)
-        # print(task_ID_dict[row[1]])
-        # print(node_ids[row[0]])
-        # print(node_ids)
-        # print(node_info)
         computation_matrix[task_ID_dict[row[1]]][node_ids[row[0]] - 1] = int(float(row[2])*10) 
         #100000
         task_size[row[1]] = row[3]
-    #     print('^^^^^^^^^^^^2')
-    # print('>>>>>>>>>>>>>>>>>>>>')
-    # print(task_size)
-    # print(computation_matrix)
 
     for i in range(0,len(task_list)):
         line = "\tTASK %s\tTYPE %d \n" %(task_list[i], i)
@@ -201,11 +168,6 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
 
     num_task, task_names, num_node, comp_cost, rate, data, quaratic_profile = init(tgff_file)
     print('Checking the written information')
-    # print(num_task)
-    # print(comp_cost)
-    # print(rate)
-    # print(data)
-    # print(quaratic_profile)
 
     return
 
@@ -220,11 +182,6 @@ if __name__ == '__main__':
 
     configuration_path='/heft/dag.txt'
     profiler_ip,exec_home_ip,num_nodes,network_map,node_list = get_global_info()
-    # print(profiler_ip)
-    # print(exec_home_ip)
-    # print("Num nodes :" + str(num_nodes))
-    # print(network_map)
-    # print(node_list)
     tasks, task_order, super_tasks = get_taskmap()
 
     print('---------------------------------------------')
@@ -235,11 +192,9 @@ if __name__ == '__main__':
             with open('/heft/network_log.txt','r') as f:
                 reader = csv.reader(f)
                 network_info = list(reader)
-                #print(network_info)
             with open('/heft/execution_log.txt','r') as f:
                 reader = csv.reader(f)
                 execution_info = list(reader)
-                #print(execution_info)
             # fix non-DAG tasks (temporary approach)
             new_execution = []
             for row in execution_info:
@@ -250,7 +205,6 @@ if __name__ == '__main__':
                     if row[1] in super_tasks:
                         for node in node_list:
                             new_execution.append([node,row[1],row[2],row[3]]) # to copy the home profiler data for the non dag task for each processor.
-            #print(new_execution)
             create_input_heft(tgff_file,num_nodes,network_info,new_execution,node_list,task_order,tasks)
             break
         else:

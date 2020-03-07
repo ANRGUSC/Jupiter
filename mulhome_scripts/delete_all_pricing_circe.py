@@ -74,7 +74,6 @@ def delete_all_pricing_circe(app_name):
     """
     for key, value in dag.items():
 
-        print(key)
         pod_name = app_name+"-"+key
 
         # First check if there is a deployment existing with

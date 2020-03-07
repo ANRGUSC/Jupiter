@@ -16,7 +16,6 @@ from kubernetes import client, config
 from pprint import *
 import os
 import jupiter_config
-#from utilities import *
 import utilities
 import time
 
@@ -33,7 +32,6 @@ def check_status_waves(app_name):
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path1)
-    pprint(nodes)
 
     """
         This loads the kubernetes instance configuration.
@@ -95,7 +93,6 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
-    pprint(nodes)
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
     dag_info = utilities.k8s_read_dag(path1)
     dag = dag_info[1]
@@ -175,14 +172,6 @@ def k8s_wave_scheduler(profiler_ips,app_name):
             nexthost_ips = nexthost_ips + ':' + service_ips[i]
             nexthost_names = nexthost_names + ':' + i
             all_profiler_ips = all_profiler_ips + ':' + profiler_ips[i]
-    print(service_ips)
-    print(nexthost_ips)
-    print(nexthost_names)
-
-    print("####################################")
-    print(profiler_ips)
-    print("####################################")
-    print(all_profiler_ips)
 
     home_profiler_ips = {}
     for key in homes:
@@ -191,8 +180,6 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     home_profiler_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(home_profiler_ips.items()))
 
     for i in nodes:
-
-        # print nodes[i][0]
         
         """
             We check whether the node is a home / master.
@@ -218,7 +205,6 @@ def k8s_wave_scheduler(profiler_ips,app_name):
                                              app_name = app_name,
                                              child = jupiter_config.HOME_CHILD,
                                              app_option = jupiter_config.APP_OPTION)
-            # # pprint(dep)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
             print("Deployment created. status ='%s'" % str(resp.status))
@@ -234,8 +220,6 @@ def k8s_wave_scheduler(profiler_ips,app_name):
 
     home_name = app_name+'-home'
     label_name = app_name+'-wave_home'
-    print(profiler_ips)
-    print(service_ips)
 
 
     home_dep = write_wave_specs(name = home_name, label = label_name,

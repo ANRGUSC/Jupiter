@@ -27,7 +27,6 @@ exec_times = dict()
 def gen_stream_data(interval,data_path):
     while True:
         for i in range(0,interval):
-            # print('-- Waiting')
             time.sleep(1)
         print('--- Generate new file')
         bash_script = os.path.join(os.getcwd(),'generate_random_files')
@@ -74,7 +73,6 @@ def transfer_data(ID,user,pword,source, destination):
         destination (str): destination file path
     """
     msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
-    # print(msg)
     
 
     if TRANSFER == 0:
@@ -104,7 +102,6 @@ class Handler(pyinotify.ProcessEvent):
         inputfile = event.pathname.split('/')[-1]
         t = time.time()
         start_times[inputfile] = t
-        print("start time is: ", start_times)
         new_file_name = os.path.split(event.pathname)[-1]
 
         ID = os.environ['CHILD_NODES']
@@ -175,6 +172,10 @@ def main():
 
     global home_node_host_port
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
+
+    global all_nodes,all_nodes_ips
+    all_nodes = os.environ['ALL_NODES'].split(' ')
+    all_nodes_ips = os.environ['ALL_NODES_IPS'].split(' ')
 
 
     web_server = MonitorRecv()

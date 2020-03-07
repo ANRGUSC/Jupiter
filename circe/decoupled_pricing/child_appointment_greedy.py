@@ -34,9 +34,6 @@ import pyinotify
 app = Flask(__name__)
 
 def demo_help(server,port,topic,msg):
-    # print('Sending demo')
-    # print(topic)
-    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -90,10 +87,6 @@ def prepare_global():
     network_map = {v: k for k, v in tmp_nodes_for_convert.items()}
 
     master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
-    # print("Nodes", nodes)
-    # print(network_map)
-
-
 
     global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready, application
 
@@ -127,7 +120,6 @@ def prepare_global():
     print(BOKEH)
 
     # global first_task
-    # first_task  = 'task0' #fix later
     global first_task
     first_task = os.environ['CHILD_NODES']
 
@@ -159,10 +151,6 @@ def init_task_topology():
             else:
                 parents[child] = [parent]
 
-    # print(parents)
-    # print(child)
-    # for key in parents:
-    #     parent = parents[key]
     for key, value in sorted(parents.items()):
         parent = value
         if len(parent) == 1:
@@ -192,38 +180,19 @@ def assign_task():
 
         task_name = request.args.get('task_name')
         parent_name = request.args.get('parent_name')
-        # print('---------------')
-        # print('I am assigned the task '+task_name+' by parent '+ parent_name)
-        # print(local_mapping)
-        # print(local_children)
 
         local_mapping[task_name] = False
-        # print(local_mapping)
-        # print(task_name)
-        # print(node_name)
         res = call_send_mapping(task_name, node_name)
-        # print(res)
-        # print('---------------')
-        # print('All my current tasks')
-        # print(local_mapping)
-        # print('---------------')
-        
-        # print('*******************')
         if len(control_relation[task_name])>0:
             print('I am responsible for the next children tasks')
-            # print(control_relation[task_name])
-            # print(local_children)
             for task in control_relation[task_name]:
-                # print(task)
                 if task not in local_children.keys():
-                    # print(task)
                     local_children[task] = False
                     t = time.time()
                     content = 'TODO '+ str(t)+'\n'
                     write_file(local_responsibility + "/" + task, content, "w+")
         else:
             print('No children tasks for this task')
-        print('*******************')
         
         return "ok"
     except Exception as e:
@@ -235,7 +204,6 @@ def trigger_restart():
     try:
         print('Trigger retart')
         time_info = request.args.get('trigger_restart')
-        # print(time_info)
         print('Delete all local information')
         local_mapping.clear()
         local_children.clear()
@@ -282,8 +250,6 @@ def write_file(file_name, content, mode):
         - mode (str): write mode 
     """
     file = open(file_name, mode)
-    # for line in content:
-    #     file.write(line + "\n")
     file.write(content + "\n")
     file.close()
 
@@ -308,8 +274,6 @@ def call_send_mapping(mapping, node):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        # print('=====')
-        # print(local_mapping)
         local_mapping[mapping] = True
         if BOKEH ==5: 
             topic = 'msgoverhead_%s'%(node_name)
@@ -320,60 +284,6 @@ def call_send_mapping(mapping, node):
         print("Announce the mapping to the master host failed")
         return 'not ok'
     return 'ok'
-
-# class Watcher:
-#     DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'task_responsibility')
-
-#     def __init__(self):
-#         self.observer = Observer()
-
-#     def run(self):
-#         """
-#         Monitoring ``INPUT`` folder for the incoming files.
-        
-#         At the moment you have to manually place input files into the ``INPUT`` folder (which is under ``centralized_scheduler_with_task_profiler``):
-        
-#             .. code-block:: bash
-        
-#                 mv 1botnet.ipsum input/
-        
-#         Once the file is there, it sends the file to the node performing the first task.
-#         """
-
-#         event_handler = Handler()
-#         self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
-#         self.observer.start()
-
-# class Handler(FileSystemEventHandler):
-#     """
-#         Handling the event when there is a new file generated in ``INPUT`` folder
-#     """
-
-#     @staticmethod
-#     def on_any_event(event):
-#         """
-#         Whenever there is a new input file in ``INPUT`` folder, the function:
-
-#         - Log the time the file is created
-
-#         - Start the connection to the first scheduled node
-
-#         - Copy the newly created file to the ``INPUT`` folder of the first scheduled node
-        
-#         Args:
-#             event (FileSystemEventHandler): monitored event
-#         """
-
-#         if event.is_directory:
-#             return None
-
-#         elif event.event_type == 'created':
-
-#             print("Received file as input - %s." % event.src_path)
-#             new_task = os.path.split(event.src_path)[-1]
-#             # print(new_task)
-#             _thread.start_new_thread(assign_children_task,(new_task,))
-
 
 def assign_children_task(children_task):
     print('Starting assigning process for the children task')
@@ -400,7 +310,7 @@ def assign_children_task(children_task):
         if status == "ok":
             local_children[children_task] = assign_to_node
     return
-            # call_send_mapping(children_task,assign_to_node)
+            
 
 def get_most_suitable_node(file_size):
     """Calculate network delay + resource delay
@@ -416,10 +326,6 @@ def get_most_suitable_node(file_size):
     weight_cpu = 1
     weight_memory = 1
 
-    # print('Input profiling information')
-    # print(network_profile_data)
-    # print(resource_data)
-
     valid_nodes = []
     min_value = sys.maxsize
 
@@ -427,32 +333,13 @@ def get_most_suitable_node(file_size):
     for tmp_node_name in network_profile_data:
         data = network_profile_data[tmp_node_name]
         delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
-        # print('DEBUG')
-        # print(file_size)
-        # print(data)
         valid_net_data[tmp_node_name] = delay
         if delay < min_value:
             min_value = delay
 
-
-    # print('-------------- Network')
-    # print(network_profile_data)
-
-    # get all the nodes that satisfy: time < tmin * threshold
-    # for _, item in enumerate(network_profile_data):
-    #     if network_profile_data[item]['delay'] < min_value * threshold:
-    #         valid_nodes.append(item)
-
     for item in valid_net_data:
         if valid_net_data[item] < min_value * threshold:
             valid_nodes.append(item)
-
-
-    # print('Valid nodes')
-    # print(valid_nodes)
-
-    # print('Network profile data')
-    # print(network_profile_data)
 
     min_value = sys.maxsize
     result_node_name = ''
@@ -460,28 +347,16 @@ def get_most_suitable_node(file_size):
     task_price_summary = dict()
 
     for item in valid_nodes:
-        # print(item)
-        # tmp_value = network_profile_data[item]['delay']
         tmp_value = valid_net_data[item]
-
-        # tmp_cpu = 10000
-        # tmp_memory = 10000
         tmp_cpu = sys.maxsize
         tmp_memory = sys.maxsize
         if item in resource_data.keys():
-            # print(item)
-            # print(resource_data[item])
             tmp_cpu = resource_data[item]['cpu']
             tmp_memory = resource_data[item]['memory']
 
         tmp_cost = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
 
         task_price_summary[item] = weight_network*tmp_value + weight_cpu*tmp_cpu + weight_memory*tmp_memory
-        # print('-----')
-        # print(tmp_value)
-        # print(tmp_cpu)
-        # print(tmp_memory)
-        # print('-----')
         if  tmp_cost < min_value:
             min_value = tmp_cost
             result_node_name = item
@@ -497,24 +372,6 @@ def get_most_suitable_node(file_size):
         print('Task price summary is not ready yet.....') 
         print(e)
         return -1
-    
-
-    # if not result_node_name:
-    #     min_value = sys.maxsize
-    #     for item in resource_data:
-    #         tmp_cpu = resource_data[item]['cpu']
-    #         tmp_memory = resource_data[item]['memory']
-    #         tmp_cost = weight_cpu*tmp_cpu + weight_memory*tmp_memory
-    #         if  tmp_cost < min_value:
-    #             min_value = tmp_cost
-    #             result_node_name = item
-
-    # print('Result node name')
-    # print(result_node_name)
-    # if result_node_name:
-    #     network_profile_data[result_node_name]['c'] = 100000
-
-    # return result_node_name
 
 
 def read_file(file_name):
@@ -545,49 +402,10 @@ def output(msg):
     if debug:
         print(msg)
 
-
-# def get_resource_data_drupe():
-#     """Collect resource profiling information
-#     """
-#     print("Starting resource profile collection thread")
-#     # Requsting resource profiler data using flask for its corresponding profiler node
-#     try_resource_times = 0
-#     while True:
-#         time.sleep(60)
-#         try:
-#             if try_resource_times >= 10:
-#                 print("Exceeded maximum try times, break.")
-#                 break
-#             r = requests.get("http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC) + "/all")
-#             result = r.json()
-#             # print(result)
-#             if len(result) != 0:
-#                 break
-#             else:
-#                 try_resource_times += 1
-#         except Exception as e:
-#             print("Resource request failed. Will try again, details: " + str(e))
-#             try_resource_times += 1
-#     global resource_data
-#     resource_data = result
-
-#     global is_resource_data_ready
-#     is_resource_data_ready = True
-
-#     print("Got profiler data from http://" + os.environ['PROFILER'] + ":" + str(FLASK_SVC))
-#     print("Resource profiles: ", json.dumps(result))
-
-#     if BOKEH==3:
-#         topic = 'msgoverhead_%s'%(node_name)
-#         msg = 'msgoverhead pricedecoupled%s resourcedata 1 \n' %(node_name)
-#         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
-
 def get_resource_data_drupe(MONGO_SVC_PORT):
     """Collect the resource profile from local MongoDB peer
     """
 
-    # print('----------------------')
-    # print(profiler_ips)
     for profiler_ip in profiler_ips:
         print('Check Resource Profiler IP: '+profiler_ip)
         client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(MONGO_SVC_PORT)+'/')
@@ -595,12 +413,8 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
         collection = db.collection_names(include_system_collections=False)
         logging =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
         for record in logging:
-            # print(record)
-            # print(network_map[profiler_ip])
             resource_data[network_map[profiler_ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
-    # print('Resource information has already been provided')
-    # print(resource_data)
     global is_resource_data_ready
     is_resource_data_ready = True
 
@@ -629,30 +443,19 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
         print('--- Network profiler regression info not yet loaded into MongoDB!')
         time.sleep(60)
         num_rows = db[my_profiler_ip].count()
-    # logging =db[my_profiler_ip].find().limit(num_nb)
     logging =db[my_profiler_ip].find().skip(db[my_profiler_ip].count()-num_nb)
-
-    # print('Retrieve network information')
-    # print(logging)
 
 
     c = 0
     for record in logging:
         # Destination ID -> Parameters(a,b,c) , Destination IP
-        
-        # print(record['Destination[IP]'])
-        # print(home_profiler_ip)
 
         if record['Destination[IP]'] in home_profiler_ip: continue
         params = re.split(r'\s+', record['Parameters'])
-        # print('-------')
-        # print(record)
-        # print(params)
         network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
                                                             'c': float(params[2]), 'ip': record['Destination[IP]']}
         c = c+1
     print('Network information has already been provided')
-    # print(network_profile_data)
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
@@ -711,59 +514,6 @@ def cal_file_size(file_path):
         file_info = os.stat(file_path)
         return file_info.st_size * 0.008
 
-# def get_updated_network_profile():
-#     """Get updated network information from the network profilers
-#     """
-#     #print('Retrieve network information info')
-#     network_info = dict()        
-#     try:
-#         client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
-#         db = client_mongo.droplet_network_profiler
-#         collection = db.collection_names(include_system_collections=False)
-#         num_nb = len(collection)-1
-#         if num_nb == -1:
-#             print('--- Network profiler mongoDB not yet prepared')
-#             return network_info
-#         num_rows = db[self_profiler_ip].count() 
-#         if num_rows < num_nb:
-#             print('--- Network profiler regression info not yet loaded into MongoDB!')
-#             return network_info
-#         logging =db[self_profiler_ip].find().limit(num_nb)  
-#         for record in logging:
-#             # Source ID, Source IP, Destination ID, Destination IP, Parameters
-#             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
-        
-#         return network_info
-#     except Exception as e:
-#         print("Network request failed. Will try again, details: " + str(e))
-#         return -1
-        
-# def get_updated_resource_profile():
-#     """Requesting resource profiler data using flask for its corresponding profiler node
-#     """
-#     #print("----- Get updated resource profile information") 
-#     resource_info = [] 
-#     try:
-#         for c in range(0,num_retries):
-
-#             #print("http://" + self_profiler_ip + ":" + str(FLASK_SVC) + "/all")
-#             r = requests.get("http://" + self_profiler_ip + ":" + str(FLASK_SVC) + "/all")
-#             result = r.json()
-#             if len(result) != 0:
-#                 resource_info=result
-#                 break
-#             time.sleep(1)
-
-#         if c == num_retries:
-#             print("Exceeded maximum try times.")
-
-#         # print("Resource profiles: ", resource_info)
-#         return resource_info
-
-#     except Exception as e:
-#         print("Resource request failed. Will try again, details: " + str(e))
-#         return -1
-
 def schedule_update_profiling(interval):
     """
     Schedulete the assignment update every interval
@@ -812,7 +562,6 @@ def main():
     """
     
     prepare_global()
-    # print(control_relation)
 
     global node_name, node_id, FLASK_PORT, home_profiler_ip, home_profiler_nodes
 
@@ -827,9 +576,6 @@ def main():
     print("Node name:", node_name, "and id", node_id)
     print("Starting the main thread on port", FLASK_PORT)
 
-    
-    
-    
 
     global local_mapping, local_children,local_responsibility, manager
     manager = Manager()
@@ -845,19 +591,6 @@ def main():
     web_server.start()
 
     global get_network_data, get_resource_data
-    # get_network_data = get_network_data_mapping()
-    # get_resource_data = get_resource_data_mapping()
-    
-    # Get one time resource data
-    # _thread.start_new_thread(get_resource_data, ())
-    # Get one time network profile data
-    # _thread.start_new_thread(get_network_data, (my_profiler_ip, MONGO_SVC_PORT,network_map))
-
-    # #monitor Task responsibility folder for the incoming tasks
-    # w = Watcher()
-    # w.run()
-
-    # app.run(host='0.0.0.0', port=int(FLASK_PORT))
 
     update_interval = 1
     _thread.start_new_thread(schedule_update_profiling,(update_interval,))

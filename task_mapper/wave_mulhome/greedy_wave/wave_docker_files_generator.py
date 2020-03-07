@@ -102,7 +102,6 @@ def write_wave_home_docker(app_option=None,**kwargs):
         file_name = 'home_%s.Dockerfile'%(app_option)
     dfp = DockerfileParser(path=file_name)
     dfp.content =template_home.format(**kwargs)
-    # print(file_name)
     # print(dfp.content)
     return file_name
     

@@ -17,7 +17,6 @@ from pprint import *
 import os
 import jupiter_config
 from static_assignment import *
-#from utilities import *
 import utilities
 
 
@@ -126,6 +125,4 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
         deploy_time = end_time - start_time
         print('Time to deploy HEFT '+ str(deploy_time))
 if __name__ == '__main__':
-    # ips = {}
-    # ips['home'] = '127.0.0.1'
     k8s_heft_scheduler(profiler_ips,execution_ips)

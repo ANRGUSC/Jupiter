@@ -47,9 +47,6 @@ global OUTFNAME, SERVER_IP, DAG_PATH, EXP,folder
 OUTFNAME = 'users_management.html'
 SERVER_IP = "127.0.0.1"
 APP_PATH_LIST = '../app_specific_files/dummy_app_combined/dummy_app_list'
-# EXP = 'Experiment 2'
-# folder = 'exp2'
-# EXP = 'Experiment 2'
 EXP = 'Experiment 3'
 folder = 'exp3'
 EXP = 'Experiment 3'
@@ -61,7 +58,6 @@ app_options = get_app_list(APP_PATH_LIST)
 print(app_options)
 
 N = len(app_options)
-# M = 1 #exp2
 M = 5 #exp3
 cid = 1
 userid = []
@@ -73,24 +69,17 @@ for i in range(1,N+1):
         user_path = '%s/user%d'%(folder,cid)
         user_log = '%s/user%d/user%d.log'%(folder,cid,cid)
         user_id = 'U'+str(cid)
-        print(cid)
         cur_sub = cur_app
         userid.append(user_id)
         userapp.append(cur_app)
         cid = cid+1
 
-print(userid)
-print(userapp)
-
 global doc, data_table,source
-print(userid)
-print(userapp)
 source = ColumnDataSource(dict(user_id=userid,topics=userapp))
 columns = [TableColumn(field="user_id", title="User ID"),TableColumn(field="topics", title="Topics")]
 data_table = DataTable(source=source, columns=columns, width=1000, height=1000,selectable=True)
 ti = '%s - Subscriber Information'%(EXP)
 title1 = Div(text=ti,style={'font-size': '15pt', 'color': 'black','text-align': 'center'},width=400, height=20)
-#####################
 
 doc = curdoc()
 doc.title = 'Users management'

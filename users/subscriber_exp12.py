@@ -82,7 +82,6 @@ if __name__ == '__main__':
     global tasks,taskid,userid,usertask
     tasks,tasksid = retrieve_tasks(DAG_PATH)
     N = int(len(tasks)/2)+1
-    print(N)
     M = 5
     cid = int(len(tasks)/2)*M+1
     for i in range(N,len(tasks)+1):
@@ -94,7 +93,6 @@ if __name__ == '__main__':
             cur_sub = cur_task
             if not os.path.isdir(user_path):
                 os.makedirs(user_path, exist_ok=True)
-            print(cid)
             _thread.start_new_thread(subscriber,(cid,user_path,cur_sub,SERVER_IP,1883,300,1,user_log))
             cid = cid+1
 

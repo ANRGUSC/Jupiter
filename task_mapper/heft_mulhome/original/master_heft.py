@@ -42,7 +42,6 @@ def read_file(file_name):
 
 assignments = {}
 
-#@app.route('/')
 def return_assignment():
     """Return the current assignments have been done until the request time
     
@@ -197,7 +196,6 @@ def main():
             for i in range(0,len(non_tasks)):
                 assignments[non_tasks[i]] = node_info[randint(1,num_nodes)] 
             heft_scheduler.display_result()
-            print(assignments)
             t = time.time()
             if len(assignments) == MAX_TASK_NUMBER:
                 print('Successfully finish HEFT mapping ')
@@ -205,8 +203,6 @@ def main():
                 deploy_time = end_time - starting_time
                 print('Time to finish HEFT mapping '+ str(deploy_time))
 
-            print('**********')
-            print(BOKEH)
             if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)
                 msg = 'mappinglatency originalheft %s %f \n' %(app_name,deploy_time)

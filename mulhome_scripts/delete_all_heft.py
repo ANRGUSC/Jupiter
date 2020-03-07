@@ -5,7 +5,6 @@ __version__ = "3.0"
 
 import sys
 sys.path.append("../")
-# from utilities import *
 import utilities
 import yaml
 from kubernetes import client, config
@@ -60,7 +59,6 @@ def delete_all_heft(app_name):
             kubectl get pod -n "namespace name"
     """
     key = app_name+'-home'
-    print(key)
 
     # We have defined the namespace for deployments in jupiter_config
     namespace = jupiter_config.MAPPER_NAMESPACE

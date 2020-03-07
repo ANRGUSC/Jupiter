@@ -111,7 +111,9 @@ def k8s_stream_scheduler(app_name):
             print("Exception Occurred")
 
     circe_services = get_service_circe(dag,app_name)
-    # print(service_ips)
+    circe_nodes = ' '.join(circe_services.keys())
+    circe_nodes_ips = ' '.join(circe_services.values())
+    
     for i in datasources:
         
         home_name =app_name+"-stream"+i
@@ -124,7 +126,9 @@ def k8s_stream_scheduler(app_name):
                                     appoption = jupiter_config.APP_OPTION,
                                     dir = '{}',
                                     self_name=i,
-                                    home_node_ip = circe_services.get('home'))
+                                    home_node_ip = circe_services.get('home'),
+                                    all_nodes = circe_nodes,
+                                    all_nodes_ips = circe_nodes_ips)
 
         try:
             resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)

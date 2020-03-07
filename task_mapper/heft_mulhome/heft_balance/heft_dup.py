@@ -9,7 +9,7 @@ __author__ = "Ouyang Liduo, Quynh Nguyen, Aleksandra Knezevic, Pradipta Ghosh an
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.0"
-#from __future__ import division
+
 import create_input
 from create_input import init
 from copy import deepcopy
@@ -98,8 +98,6 @@ class HEFT:
         Returns:
             float: predicted transfer time
         """
-        # quaratic_profile[0]*x^2 + quaratic_profile[1]*x +c; x=file_size[Kbit]
-        # print(file_size,quaratic_profile)
         return (np.square(file_size)*quaratic_profile[0] + file_size*quaratic_profile[1] + quaratic_profile[2])
 
     def cal_avg_comm(self, task1, task2):
@@ -180,7 +178,6 @@ class HEFT:
                             break
                     else:
                         c = self.cal_comm_quadratic(self.data[pre.number][task.number],self.quaratic_profile[pre.processor_num][processor.number])
-                        #c = self.data[pre.number][task.number] / self.rate[pre.processor_num][processor.number]
                 else:
                     c = 0
                 if pre.aft + c > est:
@@ -188,8 +185,6 @@ class HEFT:
                     self.critical_pre_task_num = pre.number
 
                 #est = max(est, pre.aft + c)
-                #
-        # print(c)   
         #prepare the timeline of the tasks on the name exec node
         time_slots = []
         if len(processor.time_line) == 0:
