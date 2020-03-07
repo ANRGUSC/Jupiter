@@ -74,6 +74,10 @@ spec:
           value: {self_name}
         - name: HOME_NODE
           value: {home_node_ip}
+        - name: ALL_NODES
+          value: {all_nodes}
+        - name: ALL_NODES_IPS
+          value: {all_nodes_ips}
       restartPolicy: Always
 """
 

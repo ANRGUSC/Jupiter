@@ -6,7 +6,6 @@ __version__ = "3.0"
 import sys
 sys.path.append("../")
 
-#from utilities import *
 import utilities
 import yaml
 from kubernetes import client, config

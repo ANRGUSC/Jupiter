@@ -42,8 +42,6 @@ class experience():
         print('--------------')
         with open(self.user_log,'a') as f:
             f.write(message)
-            # f.write('\n')
-            # time.sleep(1)
 
 def retrieve_nodes(node_file):
     print(node_file)
@@ -71,7 +69,6 @@ if __name__ == '__main__':
 
 
     nodes = retrieve_nodes(NODE_PATH)
-    print(nodes)
 
     folder = 'exp4'
     if os.path.isdir(folder):

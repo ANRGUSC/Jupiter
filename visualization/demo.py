@@ -427,19 +427,12 @@ source8_df=source8.to_df()
 new_source8_df=source8.to_df()
 data_table4.on_change('source', lambda attr, old, new: update8())
 
-###################################################################################################################################
-
-###################################################################################################################################
 
 file = open(DAG_PATH, 'r')
 lines = file.readlines()
 lines.pop(0)
 nodes = get_dag_nodes(lines)
 links = get_dag_links(lines)
-print('----------')
-print(nodes)
-print(links)
-print('-------------')
 
 G = nx.DiGraph()
 G.add_nodes_from(nodes)
@@ -467,14 +460,6 @@ p1.add_tools(node_hover_tool, BoxZoomTool(), ResetTool())
 
 global graph
 graph = from_networkx(G, pos, scale=1, center=(0,0))
-
-# print("DEBUG data_source:")
-# print(graph.node_renderer.data_source)
-# print(graph.edge_renderer.data_source.data)
-# print("DEBUG keys:")
-# print(pos.keys())
-# print("DEBUG values:")
-# print(pos.values())
 
 
 colors = []

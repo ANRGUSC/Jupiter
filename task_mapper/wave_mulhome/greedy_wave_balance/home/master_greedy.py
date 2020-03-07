@@ -97,8 +97,6 @@ def prepare_global():
     print("Nodes", nodes)
 
     global node_id, debug
-    # global node_name
-    # node_name = ""
     node_id = -1
     
     debug = True
@@ -128,7 +126,6 @@ def prepare_global():
 
     application = read_file("DAG/DAG_application.txt")
     MAX_TASK_NUMBER = int(application[0])  # Total number of tasks in the DAG 
-    print("Max task number ", MAX_TASK_NUMBER)
     del application[0]
 
     assignments = {}
@@ -172,9 +169,6 @@ def recv_mapping():
             assignments[p] = node
             to_be_write.append(p + '\t' + node)
 
-        # print('-------------------')
-        # print(assignments)
-        # print('-------------------')
         if not os.path.exists("./local"):
             os.mkdir("./local")
 
@@ -189,11 +183,9 @@ def announce_count_assigned():
     print('Announce assigned counting information to the worker')
     for node in nodes:
         try:
-            # print(nodes[node])
             
             url = "http://" + nodes[node] + "/recv_count"
             count_info = '#'.join('{}:{}'.format(key, value) for key, value in total_assign_child.items())
-            # print(count_info)
             params = {"count_info": count_info}
             params = urllib.parse.urlencode(params)
             req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -213,7 +205,6 @@ def return_assignment():
         json: mapping assignments
     """
     print("Recieved request for current mapping. Current mappings done:", len(assignments))
-    print(assignments)
     if len(assignments) == MAX_TASK_NUMBER:
         print(assignments)
         return json.dumps(assignments)
@@ -237,10 +228,6 @@ def assign_task_to_remote(assigned_node, task_name):
     try:
         print('Assign the first task based on the input file')
         url = "http://" + nodes[assigned_node] + "/assign_task"
-        # print(url)
-        # print(task_name)
-        # print(nodes)
-        # print(nodes[assigned_node])
         params = {'task_name': task_name}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -261,9 +248,7 @@ def init_thread():
     Assign the first task
     """
     time.sleep(60)
-    print('--------------- Init thread')
     for key in init_tasks:
-        # print(key)
         tasks = init_tasks[key]
         for _, task in enumerate(tasks):
             res = assign_task_to_remote(key, task)
@@ -282,7 +267,6 @@ def monitor_task_status():
 
     killed = 0
     while True:
-        # print(len(assigned_tasks))
         if len(assigned_tasks) == MAX_TASK_NUMBER:
             print("All task allocations are done! Great News!")
             print(assignments)
@@ -301,12 +285,10 @@ def write_file(file_name, content, mode):
         - mode (str): write mode 
     """
 
-    #lock.acquire()
     file = open(file_name, mode)
     for line in content:
         file.write(line + "\n")
     file.close()
-    #lock.release()
 
 
 def init_task_topology():
@@ -348,12 +330,7 @@ def init_task_topology():
             else:
                 parents[child] = [parent]
 
-    # print(parents)
-    # print(child)
-
     for key, value in sorted(parents.items()):
-    # for key in parents:
-        # parent = parents[key]
         parent = value
         if len(parent) == 1:
             if parent[0] in control_relation:
@@ -397,11 +374,6 @@ def main():
     init_task_topology()
     _thread.start_new_thread(init_thread, ())
     _thread.start_new_thread(monitor_task_status, ())
-
-    # sched = BackgroundScheduler()
-    # sched.add_job(announce_count_assigned,'interval',id='announcement', seconds=1, replace_existing=True)
-
-    
 
     app.run(host='0.0.0.0', port=int(FLASK_PORT))
 

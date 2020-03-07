@@ -16,7 +16,6 @@ import yaml
 from kubernetes import client, config
 from pprint import *
 import jupiter_config
-#from utilities import *
 import utilities
 from kubernetes.client.rest import ApiException
     
@@ -129,17 +128,9 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
         msg = 'CIRCE deploystart %f \n'%(start_time)
         write_file(latency_file,msg)
 
-    # print('Simulation (stress test) information: ')
-    # sim_ips = retrieve_simulation_workers()
-    # print(sim_ips)
-    # all_sim = ':'.join(sim_ips.keys())
-    # all_sim_ips = ':'.join(sim_ips.values())
-
     service_ips = {}; #list of all service IPs
 
-    # """
-    # # #     First create the home node's service.
-    # # # """
+    # #     First create the home node's service.
     
     print('First create the home node service')
     home_name =app_name+"-home"
@@ -173,8 +164,6 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     count = 0
     for key, value in dag.items():
         task = key
-        print(task)
-        print(count)
         count = count+1
         nexthosts = ''
  
@@ -225,7 +214,6 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
         """
 
         count = count +1
-        # print(value)
         inputnum = str(value[0])
         flag = str(value[1])
 
@@ -238,10 +226,6 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             if i != 2:
                 next_svc = next_svc + ':'
             next_svc = next_svc + str(service_ips.get(value[i]))
-        # print("NEXT HOSTS")
-        # print(nexthosts)
-        # print("NEXT SVC")
-        # print(next_svc)
     
         pod_name = app_name+"-"+task
         #Generate the yaml description of the required deployment for each task

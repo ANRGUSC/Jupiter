@@ -19,7 +19,6 @@ from kubernetes.client.rest import ApiException
 
 from write_exec_service_specs import *
 from write_exec_specs import *
-#from utilities import *
 import utilities
 
 import sys, json
@@ -67,7 +66,6 @@ def check_status_exec_profiler(app_name):
     """
     result = True
     for key, value in dag.items():
-
         # First check if there is a deployment existing with
         # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
         # The label of kubernets are used to identify replicaset associate to each task
@@ -100,7 +98,6 @@ def check_status_exec_profiler_workers(app_name):
     jupiter_config.set_globals()
     
     path1 = jupiter_config.HERE + 'nodes.txt'
-    #nodes = utilities.k8s_get_nodes(path1)
     nodes, homes = utilities.k8s_get_nodes_worker(path1)
 
     """
@@ -151,7 +148,6 @@ def write_file(filename,message):
     with open(filename,'a') as f:
         f.write(message)
 
-# if __name__ == '__main__':
 def k8s_exec_scheduler(app_name):
     """
         This script deploys execution profiler in the system. 
@@ -191,19 +187,21 @@ def k8s_exec_scheduler(app_name):
     k8s_beta = client.ExtensionsV1beta1Api()
 
     #get DAG and home machine info
-    first_task = dag_info[0]
+    first_task = jupiter_config.HOME_CHILD
     dag = dag_info[1]
     # hosts
     service_ips = {}; #list of all service IPs
 
 
 
+
+
     print('Starting to deploy execution profiler')
-    if jupiter_config.BOKEH == 3:
-        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
-        start_time = time.time()
-        msg = 'Executionprofiler deploystart %f \n'%(start_time)
-        write_file(latency_file,msg)
+    # if jupiter_config.BOKEH == 3:
+    #     latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+    #     start_time = time.time()
+    #     msg = 'Executionprofiler deploystart %f \n'%(start_time)
+    #     write_file(latency_file,msg)
 
     """
         First create the home node's service.
@@ -233,7 +231,6 @@ def k8s_exec_scheduler(app_name):
     """
 
     for key, value in dag.items():
-
         task = key
         nexthosts = ''
 
@@ -299,7 +296,6 @@ def k8s_exec_scheduler(app_name):
     Start circe
     """
     for key, value in dag.items():
-
         task = key
         nexthosts = ''
         next_svc = ''
@@ -319,10 +315,10 @@ def k8s_exec_scheduler(app_name):
             if i != 2:
                 next_svc = next_svc + ':'
             next_svc = next_svc + str(service_ips.get(value[i]))
-        print("NEXT HOSTS")
-        print(nexthosts)
-        print("NEXT SVC")
-        print(next_svc)
+        # print("NEXT HOSTS")
+        # print(nexthosts)
+        # print("NEXT SVC")
+        # print(next_svc)
 
         if taskmap[key][1] == False:
             #Generate the yaml description of the required deployment for each task
@@ -344,24 +340,19 @@ def k8s_exec_scheduler(app_name):
 
     for i in nodes:
 
-        # print nodes[i][0]
-
         """
             We check whether the node is a scheduler.
             Since we do not run any task on the scheduler, we donot run any profiler on it as well.
         """
-        #if i != 'home':
 
         """
             Generate the yaml description of the required deployment for the profiles
         """
-        #print(i)
         if i.startswith('node'):
             pod_name = app_name+'-'+i
             dep = write_exec_specs(name = pod_name, label = pod_name + "exec_profiler", node_name = i, image = jupiter_config.EXEC_WORKER_IMAGE,
                                              host = nodes[i][0], home_node_ip = service_ips['home'],
                                              all_node = all_node,all_node_ips = all_node_ips)
-            # # pprint(dep)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
             print("Deployment created. status ='%s'" % str(resp.status))
@@ -397,23 +388,17 @@ def k8s_exec_scheduler(app_name):
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 
-    # pprint(service_ips)
-
-
-    pprint(service_ips)
     print('Successfully deploy execution profiler ')
-    if jupiter_config.BOKEH == 3:
-        end_time = time.time()
-        msg = 'Executionprofiler deployend %f \n'%(end_time)
-        write_file(latency_file,msg)
-        deploy_time = end_time - start_time
-        print('Time to deploy execution profiler '+ str(deploy_time))
+    # if jupiter_config.BOKEH == 3:
+    #     end_time = time.time()
+    #     msg = 'Executionprofiler deployend %f \n'%(end_time)
+    #     write_file(latency_file,msg)
+    #     deploy_time = end_time - start_time
+    #     print('Time to deploy execution profiler '+ str(deploy_time))
 
     return(service_ips)
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 
     app_name = jupiter_config.APP_OPTION
-    print('-------')
-    print(app_name)
     k8s_exec_scheduler(app_name)

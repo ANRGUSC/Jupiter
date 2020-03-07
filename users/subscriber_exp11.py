@@ -85,7 +85,6 @@ if __name__ == '__main__':
     N = int(len(tasks)/2)
     M = 5
     cid = 1
-    print(N)
     if os.path.isdir(folder):
         shutil.rmtree(folder)
     os.mkdir(folder)
@@ -97,7 +96,6 @@ if __name__ == '__main__':
             cur_sub = cur_task
             if not os.path.isdir(user_path):
                 os.makedirs(user_path, exist_ok=True)
-            print(cid)
             _thread.start_new_thread(subscriber,(cid,user_path,cur_sub,SERVER_IP,1883,300,1,user_log))
             cid = cid+1
 

@@ -11,7 +11,6 @@ from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
-# from utilities import *
 import utilities
 import time
 

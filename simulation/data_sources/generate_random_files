@@ -5,18 +5,14 @@
     **     Read license file in main directory for more details
 '
 
-# This script generate a set of random files to be used for network profiling.
+# This script generate a set of random files 
 # The list of file sized to be used are in KB  
-# The file names should follow certain format for the profiling scripts to work.
-# The format is  <source-ip>"_test_"<file size>"K"
-# For example, for a source ip of 100.10.10.1 with file size 10K,
-# the file name will be 100.10.10.1_test_10K
+
 
 my_name=$1
 file_size=$RANDOM
 now=$(date "+%s")   
 
-# random_file=stream_$my_name"_"$now".txt"  # generate the file name
 random_file=$now$my_name"botnet.ipsum"  # generate the file name
 file_path=$PWD/generated_stream/$random_file
 

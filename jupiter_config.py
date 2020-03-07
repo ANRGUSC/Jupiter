@@ -138,213 +138,83 @@ def set_globals():
 
     CIRCE_PATH              = HERE + 'circe/%s/'%(pricing_option)
     
-
-
-
-    # print('CIRCE path-------------------------------------------')
-    # print(CIRCE_PATH)
     """Kubernetes required information"""
     global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 
     KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
     # Namespaces
-    DEPLOYMENT_NAMESPACE    = 'quynh-circe'
-    PROFILER_NAMESPACE      = 'quynh-profiler'
-    MAPPER_NAMESPACE        = 'quynh-mapper'
-    EXEC_NAMESPACE          = 'quynh-exec'
+    DEPLOYMENT_NAMESPACE    = 'johndoe-circe'
+    PROFILER_NAMESPACE      = 'johndoe-profiler'
+    MAPPER_NAMESPACE        = 'johndoe-mapper'
+    EXEC_NAMESPACE          = 'johndoe-exec'
 
     """ Node file path and first task information """
     global HOME_NODE, HOME_CHILD, STREAM_NODE
 
     HOME_NODE               = get_home_node(HERE + 'nodes.txt')
     STREAM_NODE             = get_datasources(HERE + 'nodes.txt')
-    #HOME_CHILD              = 'sample_ingress_task1'
+    
 
     """Application Information"""
     global APP_PATH, APP_NAME, APP_OPTION
     
-    # HOME_CHILD              = 'localpro'
-    # APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app/'
-    # APP_NAME                = 'app_specific_files/network_monitoring_app'
-    # APP_OPTION              = 'coded'
-
-    # HOME_CHILD              = 'localpro'
-    # APP_PATH                = HERE  + 'app_specific_files/network_monitoring_app_dag/'
-    # APP_NAME                = 'app_specific_files/network_monitoring_app_dag'
-    # APP_OPTION              = 'dag'
 
     HOME_CHILD                = 'task0'
     APP_PATH                  = HERE  + 'app_specific_files/dummy_app/'
     APP_NAME                  = 'app_specific_files/dummy_app'
     APP_OPTION                = 'dummy'
 
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app_multicast/'
-    # APP_NAME                  = 'app_specific_files/dummy_app_multicast'
-    # APP_OPTION                = 'dummymulticast'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummydupapp/'
-    # APP_NAME                  = 'app_specific_files/dummydupapp'
-    # APP_OPTION                = 'dummydupapp'
-
-    # HOME_CHILD                = 'taskdistribute'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummydupapp6/'
-    # APP_NAME                  = 'app_specific_files/dummydupapp6'
-    # APP_OPTION                = 'dummydupapp'
-
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/stress_app/'
-    # APP_NAME                  = 'app_specific_files/stress_app'
-    # APP_OPTION                = 'stress'
-
-
-    # HOME_CHILD                = 'distribute'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummy_app_combined/'
-    # APP_NAME                  = 'app_specific_files/dummy_app_combined'
-    # APP_OPTION                = 'combined'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummycpu30/'
-    # APP_NAME                  = 'app_specific_files/dummycpu30'
-    # APP_OPTION                = 'dummycpu30'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/stresscpu30/'
-    # APP_NAME                  = 'app_specific_files/stresscpu30'
-    # APP_OPTION                = 'stresscpu30'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/stresscpuapp10/'
-    # APP_NAME                  = 'app_specific_files/stresscpuapp10'
-    # APP_OPTION                = 'stresscpu10'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp30/'
-    # APP_NAME                  = 'app_specific_files/dummyapp30'
-    # APP_OPTION                = 'dummy30'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp50/'
-    # APP_NAME                  = 'app_specific_files/dummyapp50'
-    # APP_OPTION                = 'dummy50'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp100/'
-    # APP_NAME                  = 'app_specific_files/dummyapp100'
-    # APP_OPTION                = 'dummy100'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/newdummyapp100/'
-    # APP_NAME                  = 'app_specific_files/newdummyapp100'
-    # APP_OPTION                = 'dummy100'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp150/'
-    # APP_NAME                  = 'app_specific_files/dummyapp150'
-    # APP_OPTION                = 'dummy150'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp200/'
-    # APP_NAME                  = 'app_specific_files/dummyapp200'
-    # APP_OPTION                = 'dummy200'
-
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp300/'
-    # APP_NAME                  = 'app_specific_files/dummyapp300'
-    # APP_OPTION                = 'dummy300'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp500/'
-    # APP_NAME                  = 'app_specific_files/dummyapp500'
-    # APP_OPTION                = 'dummy500'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/dummyapp800/'
-    # APP_NAME                  = 'app_specific_files/dummyapp800'
-    # APP_OPTION                = 'dummy800'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/ccrapp002/'
-    # APP_NAME                  = 'app_specific_files/ccrapp002'
-    # APP_OPTION                = 'ccr002' 
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/ccrapp02/'
-    # APP_NAME                  = 'app_specific_files/ccrapp02'
-    # APP_OPTION                = 'ccr02'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/ccrapp2/'
-    # APP_NAME                  = 'app_specific_files/ccrapp2'
-    # APP_OPTION                = 'ccr2'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/ccrapp20/'
-    # APP_NAME                  = 'app_specific_files/ccrapp20'
-    # APP_OPTION                = 'ccr20'
-
-    # HOME_CHILD                = 'task0'
-    # APP_PATH                  = HERE  + 'app_specific_files/ccrapp200/'
-    # APP_NAME                  = 'app_specific_files/ccrapp200'
-    # APP_OPTION                = 'ccr200'
-
 
     """pricing CIRCE home and worker images"""
     global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTE_IMAGE
 
-    PRICING_HOME_IMAGE      = 'docker.io/anrg/%s_circe_home:%s' %(pricing_option,APP_OPTION)
-    WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:%s' %(pricing_option,APP_OPTION)
-    WORKER_COMPUTE_IMAGE  = 'docker.io/anrg/%s_circe_computing:%s' %(pricing_option,APP_OPTION)
+    PRICING_HOME_IMAGE      = 'docker.io/johndoe/%s_circe_home:%s' %(pricing_option,APP_OPTION)
+    WORKER_CONTROLLER_IMAGE = 'docker.io/johndoe/%s_circe_controller:%s' %(pricing_option,APP_OPTION)
+    WORKER_COMPUTE_IMAGE  = 'docker.io/johndoe/%s_circe_computing:%s' %(pricing_option,APP_OPTION)
 
     global PRICING_HOME_CONTROLLER, PRICING_HOME_COMPUTE
-    PRICING_HOME_CONTROLLER = 'docker.io/anrg/%s_circe_home_controller:%s' %(pricing_option,APP_OPTION)
-    PRICING_HOME_COMPUTE    = 'docker.io/anrg/%s_circe_home_compute:%s' %(pricing_option,APP_OPTION)
+    PRICING_HOME_CONTROLLER = 'docker.io/johndoe/%s_circe_home_controller:%s' %(pricing_option,APP_OPTION)
+    PRICING_HOME_COMPUTE    = 'docker.io/johndoe/%s_circe_home_compute:%s' %(pricing_option,APP_OPTION)
 
 
     global NONDAG_CONTROLLER_IMAGE,NONDAG_WORKER_IMAGE # only required for non-DAG tasks (teradetectors and dft)
-    NONDAG_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_nondag:%s' %(pricing_option,APP_OPTION)
-    NONDAG_WORKER_IMAGE     = 'docker.io/anrg/%s_circe_nondag_worker:%s' %(pricing_option,APP_OPTION)
+    NONDAG_CONTROLLER_IMAGE = 'docker.io/johndoe/%s_circe_nondag:%s' %(pricing_option,APP_OPTION)
+    NONDAG_WORKER_IMAGE     = 'docker.io/johndoe/%s_circe_nondag_worker:%s' %(pricing_option,APP_OPTION)
     
     """CIRCE home and worker images for execution profiler"""
     global HOME_IMAGE, WORKER_IMAGE, STREAM_IMAGE
 
-    HOME_IMAGE              = 'docker.io/anrg/circe_home:%s'%(APP_OPTION)
-    WORKER_IMAGE            = 'docker.io/anrg/circe_worker:%s'%(APP_OPTION)
-    STREAM_IMAGE              = 'docker.io/anrg/stream_home:%s'%(APP_OPTION)
+    HOME_IMAGE              = 'docker.io/johndoe/circe_home:%s'%(APP_OPTION)
+    WORKER_IMAGE            = 'docker.io/johndoe/circe_worker:%s'%(APP_OPTION)
+    STREAM_IMAGE              = 'docker.io/johndoe/stream_home:%s'%(APP_OPTION)
 
     """DRUPE home and worker images"""
     global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
     
-    PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded'%(profiler_option)
-    PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded'%(profiler_option)
+    PROFILER_HOME_IMAGE     = 'docker.io/johndoe/%s_profiler_home:coded'%(profiler_option)
+    PROFILER_WORKER_IMAGE   = 'docker.io/johndoe/%s_profiler_worker:coded'%(profiler_option)
 
     """WAVE home and worker images"""
     global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
 
     #%s: random, v1: greedy
 
-    WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:%s' %(wave_option,profiler_option,APP_OPTION)
-    WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:%s' %(wave_option,profiler_option,APP_OPTION)
+    WAVE_HOME_IMAGE         = 'docker.io/johndoe/%s_%s_wave_home:%s' %(wave_option,profiler_option,APP_OPTION)
+    WAVE_WORKER_IMAGE       = 'docker.io/johndoe/%s_%s_wave_worker:%s' %(wave_option,profiler_option,APP_OPTION)
 
     """Execution profiler home and worker images"""
     global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-    EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s'%(profiler_option,APP_OPTION)
-    EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s'%(profiler_option,APP_OPTION)
+    EXEC_HOME_IMAGE         = 'docker.io/johndoe/%s_exec_home:%s'%(profiler_option,APP_OPTION)
+    EXEC_WORKER_IMAGE       = 'docker.io/johndoe/%s_exec_worker:%s'%(profiler_option,APP_OPTION)
 
     """HEFT docker image"""
     global HEFT_IMAGE
 
-    HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s'%(heft_option,APP_OPTION)
+    HEFT_IMAGE              = 'docker.io/johndoe/%s_heft:%s'%(heft_option,APP_OPTION)
        
-
-    
-
 
 
 if __name__ == '__main__':

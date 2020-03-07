@@ -5,8 +5,6 @@ __version__ = "4.0"
 
 import sys
 sys.path.append("../")
-
-#from utilities import *
 import utilities
 import yaml
 from kubernetes import client, config
@@ -52,10 +50,10 @@ def delete_all_stream(app_name):
 
     for datasource in datasources:
         print('Data source information')
-        print(datasource)
  
         #delete home deployment and service
         home_name =app_name+"-stream"+datasource
+        print(home_name)
         #home_name ="home"
         resp = None
         try:
@@ -104,4 +102,5 @@ def delete_all_stream(app_name):
 if __name__ == '__main__':
     jupiter_config.set_globals() 
     app_name = jupiter_config.APP_OPTION
+    app_name = app_name+'1'
     delete_all_stream(app_name)

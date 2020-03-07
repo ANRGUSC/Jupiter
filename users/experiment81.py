@@ -99,16 +99,10 @@ if __name__ == '__main__':
     NODE_PATH = jupiter_config.HERE + 'nodes.txt'
     nodes = k8s_get_nodes(NODE_PATH)
     
-    # print(nodes)
     N = len(nodes)
     DAG_PATH = jupiter_config.APP_PATH + 'configuration.txt'
     tasks,tasksid = retrieve_tasks(DAG_PATH)
-    # print(tasks)
     M = len(tasks)
-
-    print('Input information')
-    print(N)
-    print(M)
 
     main_folder = '../stats/exp8_data'
     folder_list= ['makespan','msg_overhead','power_overhead','mapping_latency','summary_latency']
@@ -154,7 +148,6 @@ if __name__ == '__main__':
     exp_folder = main_folder+'/'+folder_list[0]
     makespan_log = '%s/N%dM%d/%s_N%d_M%d.log'%(exp_folder,N,M,option,N,M)
     cur_app = jupiter_config.APP_OPTION
-    print(cur_app)
     _thread.start_new_thread(collector,(cur_app,cur_app,SERVER_IP,mqtt_port,mqtt_timeout,1,makespan_log))
     
     # Collect power overhead (CPU/ memory)

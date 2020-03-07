@@ -63,7 +63,6 @@ global tasks,taskid,userid,usertask
 tasks,tasksid = retrieve_tasks(DAG_PATH)
 
 
-#####################
 global doc, data_table,source
 N = len(tasks)
 M = 5
@@ -78,14 +77,12 @@ for i in range(1,N+1):
         userid.append(user_id)
         usertask.append(cur_task)
         cid = cid+1
-print(userid)
-print(usertask)
+
 source = ColumnDataSource(dict(user_id=userid,topics=usertask))
 columns = [TableColumn(field="user_id", title="User ID"),TableColumn(field="topics", title="Topics")]
 data_table = DataTable(source=source, columns=columns, width=1000, height=1000,selectable=True)
 ti = '%s - Subscriber Information'%(EXP)
 title1 = Div(text=ti,style={'font-size': '15pt', 'color': 'black','text-align': 'center'},width=400, height=20)
-#####################
 
 doc = curdoc()
 doc.title = 'Users management'

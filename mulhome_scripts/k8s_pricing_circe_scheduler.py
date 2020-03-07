@@ -12,12 +12,10 @@ from os import path
 from multiprocessing import Process
 from write_pricing_circe_service_specs import *
 from write_pricing_circe_specs import *
-# from write_decoupled_pricing_circe_specs import *
 import yaml
 from kubernetes import client, config
 from pprint import *
 import jupiter_config
-#from utilities import *
 import utilities
 
 import sys, json
@@ -147,8 +145,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         execution_ips : IP of execution profilers 
         app_name (str): application name
     """
-    print('INPUT PROFILERS')
-    print(profiler_ips)
     jupiter_config.set_globals()
     
     sys.path.append(jupiter_config.CIRCE_PATH)
@@ -157,7 +153,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path1)
-    pprint(nodes)
 
 
     #get DAG and home machine info
@@ -198,9 +193,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     """
     api = client.CoreV1Api()
     k8s_beta = client.ExtensionsV1beta1Api()
-
-    # mapping = [task+":"+dag_info[2][task] for task in dag_info[2].keys()]
-    # mapping_str = "#".join(mapping)
     service_ips = {}; #list of all service IPs including home and task controllers
     computing_service_ips = {}
     all_profiler_ips = ''
@@ -213,7 +205,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     """
 
     for key in homes:
-        print(key)
         all_profiler_ips = all_profiler_ips + ':'+ profiler_ips[key]
         all_profiler_nodes = all_profiler_nodes +':'+ key
         home_name =app_name+"-"+key
@@ -246,10 +237,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     for key, value in dag.items():
 
         task = key
-        print('---')
-        print(task)
-        
-        # all_current_nodes = all_current_nodes + task + ":" + currentnodes + "!"
         """
             Generate the yaml description of the required service for each task
         """
@@ -273,7 +260,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
 
-    print(all_node)
     print('-------- Create computing nodes service')
 
     """
@@ -307,14 +293,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     all_computing_ips = ':'.join(computing_service_ips.values())
     all_computing_nodes = ':'.join(computing_service_ips.keys())
 
-    # all_profiler_ips = all_profiler_ips[1:]
-    # all_profiler_nodes = all_profiler_nodes[1:]
-
-    # print(all_computing_nodes)
-    # print(all_computing_ips)
-    
-    
-
 
     """
     Start circe
@@ -333,7 +311,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
     for i in nodes:
 
-        # print nodes[i][0]
         
         """
             We check whether the node is a home / master.
@@ -344,7 +321,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
             Generate the yaml description of the required deployment for WAVE workers
         """
         pod_name = app_name+"-"+i
-        #print(pod_name)
         dep = write_circe_computing_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTE_IMAGE,
                                          host = nodes[i][0], all_node = all_node,
                                          node_name = i,
@@ -358,7 +334,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
                                          execution_home_ip = execution_ips['home'],
                                          home_node_ip = home_nodes_str,
                                          child = jupiter_config.HOME_CHILD)
-        #pprint(dep)
         # # Call the Kubernetes API to create the deployment
         resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
         print("Deployment created. status ='%s'" % str(resp.status))
@@ -373,9 +348,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
     """
         Start task controllers (DAG)
     """
-
-    print(dag_info)
-    print(service_ips)
 
     for key, value in dag.items():
 
@@ -402,17 +374,6 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
             if i != 2:
                 next_svc = next_svc + ':'
             next_svc = next_svc + str(service_ips.get(value[i]))
-        # print("NEXT HOSTS")
-        # print(nexthosts)
-        # print("NEXT SVC")
-        # print(next_svc)
-    
-        
-        #Generate the yaml description of the required deployment for each task
-        
-        # print('------------- Retrieve node ')
-        # print(task)
-        # print(dag_info[2][task])
 
         pod_name = app_name+"-"+task
 
@@ -458,10 +419,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
                 all_computing_nodes = all_computing_nodes,
                 all_computing_ips = all_computing_ips,
                 node_id = dag_info[2][key])
-            pprint(dep)
 
-        pprint(dep)
-        # # Call the Kubernetes API to create the deployment
         resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
         print("Deployment created. status = '%s'" % str(resp.status))
 
@@ -494,17 +452,15 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
         print("Home deployment created. status = '%s'" % str(resp.status))
 
-    pprint(service_ips)
-
     print('Starting to teardown pricing CIRCE')
-    if jupiter_config.BOKEH == 3:
-        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
-        end_time = time.time()
-        if jupiter_config.PRICING == 1:
-            msg = 'PRICEpush deployend %f \n'%(end_time)
-        elif jupiter_config.PRICING == 2:
-            msg = 'PRICEevent deployend %f \n'%(end_time)
-        write_file(latency_file,msg)
+    # if jupiter_config.BOKEH == 3:
+    #     latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+    #     end_time = time.time()
+    #     if jupiter_config.PRICING == 1:
+    #         msg = 'PRICEpush deployend %f \n'%(end_time)
+    #     elif jupiter_config.PRICING == 2:
+    #         msg = 'PRICEevent deployend %f \n'%(end_time)
+    #     write_file(latency_file,msg)
 
 def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ips,app_name):
     """
@@ -516,8 +472,6 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
         execution_ips : IP of execution profilers 
         app_name (str): application name
     """
-    print('INPUT PROFILERS')
-    print(profiler_ips)
     jupiter_config.set_globals()
     
     sys.path.append(jupiter_config.CIRCE_PATH)
@@ -526,19 +480,18 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
 
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path1)
-    pprint(nodes)
 
     #get DAG and home machine info
     first_task = dag_info[0]
     dag = dag_info[1]
 
     print('Starting to deploy integrated CIRCE')
-    if jupiter_config.BOKEH == 3:
-        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
-        start_time = time.time()
-        msg = 'PRICEintegrated deploystart %f \n'%(start_time)
-        write_file(latency_file,msg)
-
+    # if jupiter_config.BOKEH == 3:
+    #     latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+    #     start_time = time.time()
+    #     msg = 'PRICEintegrated deploystart %f \n'%(start_time)
+    #     write_file(latency_file,msg)
+# 
     configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
     taskmap = configs["taskname_map"]
     executionmap = configs["exec_profiler"]
@@ -562,10 +515,6 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
     api = client.CoreV1Api()
     k8s_beta = client.ExtensionsV1beta1Api()
 
-    
-    # hosts = temp_info[2] 
-    # mapping = [task+":"+dag_info[2][task] for task in dag_info[2].keys()]
-    # mapping_str = "#".join(mapping)
     service_ips = {}; #list of all service IPs including home and task controllers
     computing_service_ips = {}
     all_profiler_ips = ''
@@ -578,7 +527,6 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
     """
 
     for key in homes:
-        print(key)
         all_profiler_ips = all_profiler_ips + ':'+ profiler_ips[key]
         all_profiler_nodes = all_profiler_nodes +':'+ key
         home_name =app_name+"-"+key
@@ -635,15 +583,6 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
     all_computing_ips = ':'.join(computing_service_ips.values())
     all_computing_nodes = ':'.join(computing_service_ips.keys())
 
-    # all_profiler_ips = all_profiler_ips[1:]
-    # all_profiler_nodes = all_profiler_nodes[1:]
-
-    # print(all_computing_nodes)
-    # print(all_computing_ips)
-    
-    
-
-
     """
     Start circe
     """
@@ -659,10 +598,7 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
 
     home_nodes_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(home_nodes.items()))
 
-    for i in nodes:
-
-        # print nodes[i][0]
-        
+    for i in nodes:        
         """
             We check whether the node is a home / master.
             We do not run the controller on the master.
@@ -672,7 +608,6 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
             Generate the yaml description of the required deployment for WAVE workers
         """
         pod_name = app_name+"-"+i
-        #print(pod_name)
         dep = write_integrated_circe_computing_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTE_IMAGE,
                                          host = nodes[i][0], node_name = i,
                                          appname = app_name,
@@ -686,7 +621,6 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
                                          execution_home_ip = execution_ips['home'],
                                          home_node_ip = home_nodes_str,
                                          child = jupiter_config.HOME_CHILD)
-        #pprint(dep)
         # # Call the Kubernetes API to create the deployment
         resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
         print("Deployment created. status ='%s'" % str(resp.status))

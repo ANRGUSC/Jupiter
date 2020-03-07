@@ -93,7 +93,6 @@ def transfer_data(ID,user,pword,source, destination):
         destination (str): destination file path
     """
     msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
-    print(msg)
     
     if TRANSFER == 0:
         return transfer_data_scp(ID,user,pword,source, destination)
@@ -109,16 +108,6 @@ def main():
     """
     # Load all the confuguration
     
-    # configs  = json.load(open('/centralized_scheduler/config.json'))
-    # dag_flag = configs['exec_profiler']
-    # task_map = configs['taskname_map']
-    # nodename = os.environ['NODE_NAME']
-
-    # HERE     = path.abspath(path.dirname(__file__)) + "/"
-    # INI_PATH = HERE + 'jupiter_config.ini'
-    # config = configparser.ConfigParser()
-    # config.read(INI_PATH)
-
     print('Load all the configuration')
     configs  = json.load(open('/centralized_scheduler/config.json'))
     dag_flag = configs['exec_profiler']
@@ -130,18 +119,8 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-
-    # print('-----')
-    # print(configs)
-    # print(dag_flag)
-    # print(task_map)
-    # print(nodename)
-    # print(os.environ['ALL_NODES'])
-    # print('-----')
-
     global TRANSFER
     TRANSFER = int(config['CONFIG']['TRANSFER'])
-    # print(TRANSFER)
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH
     BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
@@ -172,53 +151,41 @@ def main():
             if data[i] != 'home' and dag_flag[data[i]] == True and task_map[data[i]][1] == True:
                 tasks[data[0]].append(data[i])
 
-    # print("tasks: ", tasks)
 
     ## import task modules, put then in a list and create task-module dictinary
     task_module = {}
     modules=[]
     for task in tasks.keys():
-        # print(task)
         os.environ['TASK'] = task
         taskmodule  = __import__(task)
         modules.append(taskmodule)
         task_module[task]=(taskmodule)
 
 
-    # print('{0:<16s} {1:<15s} {2:<5s} \n'.format('task', 'time (sec)', 'output_data (Kbit)'))
     ## write results in a text file
     myfile = open(os.path.join(os.path.dirname(__file__), 'profiler_'+nodename+'.txt'), "w")
     myfile.write('task,time(sec),output_data (Kbit)\n')
 
-    # print(task_order)
 
     #execute each task and get the timing and data size
     count = 0
     for task in task_order:
-        # print('----------------------')
         try :
 
             module = task_module.get(task)
             os.environ['TASK'] = task
-            # print(task)
-            print(count)
             count = count+1
 
             start_time = datetime.datetime.utcnow()
             filename = module.main()
-            # print('------------------------------------------------')
-            # print(filename)
             stop_time = datetime.datetime.utcnow()
             mytime = stop_time - start_time
             mytime = int(mytime.total_seconds())
 
 
             output_data = [file_size(fname) for fname in filename]
-            # print(output_data)
-            # print('------------------------------------------------')
             sum_output_data = sum(output_data) #current: summation of all output files
             line=task+','+str(mytime)+ ','+ str(sum_output_data) + '\n'
-            # print(line)
             myfile.write(line)
             myfile.flush()
 

@@ -53,9 +53,6 @@ def send_monitor_data(msg):
         Exception: if sending message to flask server on home is failed
     """
     try:
-        # print('***************************************************')
-        # t = tic()
-        # print("Sending monitor message", msg)
         url = "http://" + home_node_host_port + "/recv_monitor_data"
         params = {'msg': msg, "work_node": taskname}
         params = urllib.parse.urlencode(params)
@@ -63,10 +60,6 @@ def send_monitor_data(msg):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        # txec = toc(t)
-        # bottleneck['sendmsg'].append(txec)
-        # print(np.mean(bottleneck['sendmsg']))
-        # print('***************************************************')
     except Exception as e:
         print("Sending message to flask server on home FAILED!!!")
         print(e)
@@ -87,24 +80,13 @@ def send_runtime_profile(msg):
         Exception: if sending message to flask server on home is failed
     """
     try:
-    #     print('***************************************************')
-    #     t = tic()
-    #     print("Sending runtime message", msg)
         url = "http://" + home_node_host_port + "/recv_runtime_profile"
-        # print(url)
         params = {'msg': msg, "work_node": taskname}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        # print(req)
         res = urllib.request.urlopen(req)
-        # print(res)
         res = res.read()
         res = res.decode('utf-8')
-        # print(res)
-        # txec = toc(t)
-        # bottleneck['sendruntime'].append(txec)
-        # print(np.mean(bottleneck['sendruntime']))
-        # print('***************************************************')
     except Exception as e:
         print("Sending runtime profiling info to flask server on home FAILED!!!")
         print(e)
@@ -123,10 +105,6 @@ def transfer_data_scp(ID,user,pword,source, destination):
     """
     #Keep retrying in case the containers are still building/booting up on
     #the child nodes.
-    # print('***************************************************')
-    # print('Transfer data')
-    # t = tic()
-    # print(IP)
     retry = 0
     ts = -1
     while retry < num_retries:
@@ -144,10 +122,6 @@ def transfer_data_scp(ID,user,pword,source, destination):
             print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
-    # txec = toc(t)
-    # bottleneck['transfer'].append(txec)
-    # print(np.mean(bottleneck['transfer']))
-    # print('***************************************************')
     if retry == num_retries:
         s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,source,ts)
         runtime_sender_log.write(s)
@@ -164,9 +138,7 @@ def transfer_data(ID,user,pword,source, destination):
         destination (str): destination file path
     """
     msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
-    # print(msg)
     
-
     if TRANSFER == 0:
         return transfer_data_scp(ID,user,pword,source, destination)
 
@@ -197,7 +169,6 @@ def transfer_multicast_data(ID_list,user_list,pword_list,source, destination):
     """
     for idx in range(len(ID_list)):
         msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID_list[idx],user_list[idx],pword_list[idx],source, destination)
-        print(msg)
     if TRANSFER==0:
         print('Multicast all the files')
         transfer_multicast_data_scp(ID_list,user_list,pword_list,source, destination)
@@ -230,54 +201,31 @@ class Handler1(pyinotify.ProcessEvent):
             temp_name = new_file.split('_')[0]
         else:
             temp_name = new_file.split('.')[0]
-        # with open(runtime_file, 'a') as f:
-        #     line = 'created_output, %s, %s, %s, %s\n' % (node_name, taskname, temp_name, execution_end_time)
-        #     f.write(line)
-        
-
         global files_out
 
         #based on flag2 decide whether to send one output to all children or different outputs to different children in
         #order given in the config file
         flag2 = sys.argv[2]
-
-        #if you are sending the final output back to scheduler
-        # print(time.time()-t1)
-        # t1 = time.time()
-        
         ts = time.time()
-        # print('====')
-        # print(sys.argv)
-        # print(flag2)
-        # print(taskname)
-        # print('====2')
         if taskname == 'distribute':
             print('This is the distribution point')
-            # send runtime profiling information
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
             if BOKEH == 1:
                 runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-            # print(new_file)
-            # print(temp_name)
             appname = temp_name.split('-')[0]
-            # print(appname)
             source = event.pathname
-            # print(sys.argv)
             next_node = appname+'-task0'
-            # print(sys.argv.index(next_node))
             idx = sys.argv.index(next_node)
             next_task = sys.argv[idx]
-            # IPaddr = sys.argv[idx+1]
             user = sys.argv[idx+2]
             password=sys.argv[idx+3]
             destination = os.path.join('/centralized_scheduler', 'input', new_file)
             transfer_data(next_task,user,password,source, destination)
         elif sys.argv[3] == 'home':
             print('Next node is home')
-            # send runtime profiling information
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
@@ -289,7 +237,6 @@ class Handler1(pyinotify.ProcessEvent):
                 msg = taskname + " ends"
                 demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
             
-            # IPaddr = sys.argv[4]
             user = sys.argv[5]
             password=sys.argv[6]
             source = event.pathname
@@ -329,7 +276,6 @@ class Handler1(pyinotify.ProcessEvent):
 
             for i in range(3, len(sys.argv)-1,4):
                 cur_tasks.append(sys.argv[i])
-                # IPaddr = sys.argv[i+1]
                 users.append(sys.argv[i+2])
                 passwords.append(sys.argv[i+3])
                 
@@ -338,16 +284,7 @@ class Handler1(pyinotify.ProcessEvent):
             print('Flag is false -- using unicast')
             num_child = (len(sys.argv) - 4) / 4
             files_out.append(new_file)
-
-            # print(sys.argv)
-            # print(len(sys.argv))
-            # print(num_child)
-            # print(files_out)
-            # print(len(files_out))
-            # print(len(files_out) == num_child)
-
             if (len(files_out) == num_child):
-
                 # send runtime profiling information
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
@@ -359,12 +296,10 @@ class Handler1(pyinotify.ProcessEvent):
                     msg = taskname + " ends"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     
-
                 for i in range(3, len(sys.argv)-1,4):
                     myfile = files_out.pop(0)
                     event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
                     cur_task = sys.argv[i]
-                    # IPaddr = sys.argv[i+1]
                     user = sys.argv[i+2]
                     password = sys.argv[i+3]
                     source = event_path
@@ -378,7 +313,6 @@ class Handler1(pyinotify.ProcessEvent):
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
     """
-
 
     def process_IN_CLOSE_WRITE(self, event):
         print("Received file as input - %s." % event.pathname)
@@ -399,7 +333,6 @@ class Handler(pyinotify.ProcessEvent):
 
 
         queue_mul.put(new_file)
-        print(new_file)
         
         ts = time.time()
         if RUNTIME == 1:
@@ -419,15 +352,8 @@ class Handler(pyinotify.ProcessEvent):
             if BOKEH == 1:
                 runtimebk = 'rt_enter '+ taskname+' '+ temp_name+ ' '+str(ts)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-
         flag1 = sys.argv[1]
-        print(flag1)
-
-        # t1 = time.time()
         if flag1 == "1":
-
-            # Start msg
-            print('Option1')
             ts = time.time()
             runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)  
@@ -436,31 +362,20 @@ class Handler(pyinotify.ProcessEvent):
                 demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
             if BOKEH == 0:
                 msg = taskname + " starts"
-                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
-                
-            print('Option11')
+                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)                
             inputfile=queue_mul.get()
             input_path = os.path.split(event.pathname)[0]
             output_path = os.path.join(os.path.split(input_path)[0],'output')
-            print('Option12')
             dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
             dag_task.start()
             dag_task.join()
            
         else:
-            print('Option2')
             filenames.append(queue_mul.get())
-            print(len(filenames))
-            print(str(flag1))
             if (len(filenames) == int(flag1)):
-
-                #start msg
-                print('Option 2 continue')
                 ts = time.time()
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)
-                
-                print('Option21')
+                send_runtime_profile(runtime_info)           
                 if BOKEH == 1:
                     runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
@@ -469,7 +384,6 @@ class Handler(pyinotify.ProcessEvent):
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                 input_path = os.path.split(event.pathname)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
-                print('Option22')
                 dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
                 dag_task.start()
                 dag_task.join()
@@ -529,12 +443,8 @@ def main():
     global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
 
     configs = json.load(open('/centralized_scheduler/config.json'))
-    print(configs)
-    print(configs["taskname_map"])
-    print(len(sys.argv))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
     taskname = taskmap[0]
-    # print(taskname)
     if taskmap[1] == True:
         taskmodule = __import__(taskname)
 
@@ -553,13 +463,6 @@ def main():
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
     BOKEH = int(config['OTHER']['BOKEH'])
 
-    print('Bokeh information')
-    print(BOKEH_SERVER)
-    print(BOKEH_PORT)
-    print(BOKEH)
-
-
-    print('Mapping information')
     global combined_ip_map 
     combined_ip_map = dict()
     for i in range(3, len(sys.argv)-1,4):
@@ -568,13 +471,8 @@ def main():
         user = sys.argv[i+2]
         password = sys.argv[i+3]
         combined_ip_map[node] = IPaddr
-    print(combined_ip_map)
 
-
-    print('Taskmapping information')
-    print(taskmap[1])
     if taskmap[1] == True:
-        print('Monitor INPUT & OUTPUT')
         queue_mul=multiprocessing.Queue()
 
 
@@ -595,7 +493,6 @@ def main():
         notifier1.loop()
     else:
         print('Task Mapping information')
-        print(taskmap[2:])
         path_src = "/centralized_scheduler/" + taskname
         args = ' '.join(str(x) for x in taskmap[2:])
 
@@ -603,7 +500,6 @@ def main():
             cmd = "python3 -u " + path_src + ".py " + args          
         else:
             cmd = "sh " + path_src + ".sh " + args
-        print(cmd)
         os.system(cmd)
 
 if __name__ == '__main__':

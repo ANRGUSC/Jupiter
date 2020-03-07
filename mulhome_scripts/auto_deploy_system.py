@@ -297,20 +297,14 @@ def redeploy_system(app_id,app_name,port):
                 print("get the data from " + line)
                 time.sleep(5)
                 r = requests.get(line)
-                print(r)
                 mapping = r.json()
-                print(mapping)
                 data = json.dumps(mapping)
-                print(data)
-                # print(mapping)
-                # print(len(mapping))
                 if len(mapping) != 0:
                     if "status" not in data:
                         break
             except:
                 print("Will retry to get the mapping for " + app_name)
                 time.sleep(2)
-        pprint(mapping)
 
         print('Successfully get the mapping')
         end_time = time.time()
@@ -329,8 +323,6 @@ def redeploy_system(app_id,app_name,port):
     
     else:
         import static_assignment
-        # dag = static_assignment.dag
-        # schedule = static_assignment.schedule
 
     print('Network Profiling Information:')
     print(profiler_ips)
@@ -361,8 +353,6 @@ def check_finish_evaluation(app_name,port,num_samples):
             r = requests.get(line)
             num_files = r.json()
             data = int(json.dumps(num_files))
-            print(data)
-            print(num_samples)
             if data==num_samples:
                 print('Finish running all sample files!!!!!!!!')
                 break
@@ -389,7 +379,6 @@ def deploy_app_jupiter(app_id,app_name,port,num_runs,num_samples):
         check_finish_evaluation(app_name,port,num_samples)
         print('Finish one run !!!!!!!!!!!!!!!!!!!!!!')
         t = str(datetime.datetime.now())
-        print(t)            
         time.sleep(30)
         # redeploy_system(app_id,app_name,port)
     #teardown_system(app_name)

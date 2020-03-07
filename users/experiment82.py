@@ -99,16 +99,10 @@ if __name__ == '__main__':
     NODE_PATH = jupiter_config.HERE + 'nodes.txt'
     nodes = k8s_get_nodes(NODE_PATH)
     
-    # print(nodes)
     N = len(nodes)
     DAG_PATH = jupiter_config.APP_PATH + 'configuration.txt'
     tasks,tasksid = retrieve_tasks(DAG_PATH)
-    # print(tasks)
     M = len(tasks)
-
-    print('Input information')
-    print(N)
-    print(M)
 
     main_folder = '../stats/exp8_data'
     folder_list= ['makespan','msg_overhead','power_overhead','mapping_latency','summary_latency']
@@ -145,7 +139,6 @@ if __name__ == '__main__':
     elif jupiter_config.PRICING == 4:
         option = 'pricing_decoupled'
 
-    print(option)
 
     mqtt_port = 1883
     mqtt_timeout = 300

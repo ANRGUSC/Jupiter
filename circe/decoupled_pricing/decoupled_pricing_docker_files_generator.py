@@ -247,7 +247,6 @@ def write_decoupled_pricing_circe_compute_worker_docker(**kwargs):
     """
     dfp = DockerfileParser(path='worker_compute.Dockerfile')
     dfp.content =template_worker_compute.format(**kwargs)
-    # print(dfp.content)
 
 def write_decoupled_pricing_circe_compute_home_docker(**kwargs):
     """

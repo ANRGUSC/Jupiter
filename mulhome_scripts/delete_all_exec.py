@@ -5,7 +5,6 @@ __version__ = "2.1"
 
 import sys
 sys.path.append("../")
-#from utilities import *
 import utilities
 import yaml
 from kubernetes import client, config
@@ -72,9 +71,6 @@ def delete_all_exec(app_name):
 
         # First check if there is a deployment existing with
         # the name = key in the respective namespace
-        print(key)
-        print(value)
-
         pod_name = app_name+"-"+ key
         
         resp = None

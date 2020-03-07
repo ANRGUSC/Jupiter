@@ -177,25 +177,9 @@ def write_circe_deployment_specs(**kwargs):
 
     # insert your values
     jupiter_config.set_globals()
-    # for i in kwargs:
-    # print(kwargs)
     specific_yaml = template_worker.format(**kwargs)
-    # print(specific_yaml)
     dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
     
     dep = add_ports(dep, 1, jupiter_config.SSH_DOCKER)
 
     return dep
-    # jupiter_config.set_globals()
-
-    # INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
-    # config = configparser.ConfigParser()
-    # config.read(INI_PATH)
-
-    # specific_yaml = template_worker.format(ssh_port = jupiter_config.SSH_DOCKER, 
-    #                                 flask_port = jupiter_config.FLASK_DOCKER,
-    #                                 **kwargs)
-
-    # dep = yaml.load(specific_yaml)
-    # dep = add_ports(dep, 1, jupiter_config.SSH_DOCKER)
-    # return dep

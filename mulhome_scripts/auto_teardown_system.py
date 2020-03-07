@@ -81,7 +81,6 @@ def main():
     """
     jupiter_config.set_globals()
     app_name = jupiter_config.APP_OPTION
-    print(app_name)
     # delete_all_exec(app_name)
     # delete_all_profilers()
 
