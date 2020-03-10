@@ -312,6 +312,17 @@ Inside the application folder, there should be a ``app_config.ini`` file having 
     [SVC_PORT]
         PYTHON-PORT = 57021
 
+Input - File input_node.txt
+-----------------------------
+This file is used by WAVE algorithm and provides the information of the compute node for the first task. Format of this file is given (in this case, node2 will perform the first task):
+
+ +--------+----------+
+ | task   | node     |
+ +--------+----------+
+ | task0  | node2    |
+ +--------+----------+
+
+
 Input - File name_convert.txt
 -----------------------------
 
