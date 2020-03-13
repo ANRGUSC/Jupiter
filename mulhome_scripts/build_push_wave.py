@@ -23,15 +23,16 @@ def build_push_wave():
     import wave_docker_files_generator as dc 
     os.chdir(jupiter_config.WAVE_PATH)
 
-    dc.write_wave_home_docker(app_file = jupiter_config.APP_NAME, ports = jupiter_config.FLASK_DOCKER)
-    dc.write_wave_worker_docker(app_file = jupiter_config.APP_NAME, ports = jupiter_config.FLASK_DOCKER)
+    home_file = dc.write_wave_home_docker(app_file = jupiter_config.APP_NAME, ports = jupiter_config.FLASK_DOCKER)
+    worker_file = dc.write_wave_worker_docker(app_file = jupiter_config.APP_NAME, ports = jupiter_config.FLASK_DOCKER)
 
 
-
-    os.system("sudo docker build -f home.Dockerfile ../../../ -t " +jupiter_config.WAVE_HOME_IMAGE)
+    cmd = "sudo docker build -f %s ../../../ -t %s"%(home_file,jupiter_config.WAVE_HOME_IMAGE)
+    os.system(cmd)
     os.system("sudo docker push " + jupiter_config.WAVE_HOME_IMAGE)
     
-    os.system("sudo docker build -f worker.Dockerfile ../../../ -t " +jupiter_config.WAVE_WORKER_IMAGE)
+    cmd = "sudo docker build -f %s ../../../ -t %s"%(worker_file,jupiter_config.WAVE_WORKER_IMAGE)
+    os.system(cmd)
     os.system("sudo docker push " + jupiter_config.WAVE_WORKER_IMAGE)
 
 

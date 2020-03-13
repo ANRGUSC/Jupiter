@@ -21,6 +21,7 @@ RUN apt-get update
 RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev
 RUN apt-get -yqq install python3-pip python3-dev
 RUN pip3 install --upgrade pip
+RUN apt-get update
 RUN apt-get install -y openssh-server mongodb sshpass nano virtualenv supervisor
 
 # Install required python libraries
@@ -58,13 +59,13 @@ RUN mkdir -p /network_profiling/generated_test
 RUN mkdir -p /network_profiling/received_test
 
 # Prepare resource profiling code
-RUN mkdir -p /resource_profiling
-ADD profilers/network_resource_profiler_mulhome/home/resource_profiling_files/ /resource_profiling/
+# RUN mkdir -p /resource_profiling
+# ADD profilers/network_resource_profiler_mulhome/home/resource_profiling_files/ /resource_profiling/
 
 
 # Prepare network profiling code
-ADD profilers/network_resource_profiler_mulhome/worker/droplet_generate_random_files /network_profiling/droplet_generate_random_files
-ADD profilers/network_resource_profiler_mulhome/worker/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
+ADD profilers/network_resource_profiler_mulhome/home/droplet_generate_random_files /network_profiling/droplet_generate_random_files
+ADD profilers/network_resource_profiler_mulhome/home/droplet_scp_time_transfer /network_profiling/droplet_scp_time_transfer
 RUN chmod +x /network_profiling/droplet_scp_time_transfer
 RUN chmod +x /network_profiling/droplet_generate_random_files
 
@@ -75,7 +76,6 @@ RUN chmod +x /network_profiling/start.sh
 ADD jupiter_config.ini /network_profiling/jupiter_config.ini
 
 WORKDIR /network_profiling
-
 
 
 # tell the port number the container should expose
@@ -102,6 +102,7 @@ RUN apt-get update
 RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev
 RUN apt-get -yqq install python3-pip python3-dev
 RUN pip3 install --upgrade pip
+RUN apt-get update
 RUN apt-get install -y openssh-server mongodb net-tools sshpass nano virtualenv supervisor
 
 # Install required python libraries
@@ -141,8 +142,8 @@ RUN mkdir -p /network_profiling/scheduling
 
 
 # Prepare resource profiling code
-RUN mkdir -p /resource_profiler
-ADD profilers/network_resource_profiler_mulhome/worker/resource_profiler.py /resource_profiler/resource_profiler.py
+# RUN mkdir -p /resource_profiler
+# ADD profilers/network_resource_profiler_mulhome/worker/resource_profiler.py /resource_profiler/resource_profiler.py
 
 #Running docker
 ADD profilers/network_resource_profiler_mulhome/worker/start.sh /network_profiling/start.sh
@@ -152,6 +153,7 @@ ADD jupiter_config.ini /network_profiling/jupiter_config.ini
 
 
 WORKDIR /network_profiling
+
 # tell the port number the container should expose
 EXPOSE {ports}
 

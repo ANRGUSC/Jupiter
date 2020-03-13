@@ -16,12 +16,14 @@ from kubernetes import client, config
 from pprint import *
 import os
 import jupiter_config
-#from utilities import *
 import utilities
+import time
 
 def check_status_waves(app_name):
     """Verify if all the WAVE home and workers have been deployed and UP in the system.
     """
+    
+
     jupiter_config.set_globals()
 
 
@@ -30,7 +32,6 @@ def check_status_waves(app_name):
     """
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path1)
-    pprint(nodes)
 
     """
         This loads the kubernetes instance configuration.
@@ -71,12 +72,17 @@ def check_status_waves(app_name):
     return result
 
 
+def write_file(filename,message):
+    with open(filename,'a') as f:
+        f.write(message)
 
 # if __name__ == '__main__':
 def k8s_wave_scheduler(profiler_ips,app_name):
     """
         Deploy WAVE in the system. 
     """
+    
+
     jupiter_config.set_globals()
 
     """
@@ -87,7 +93,16 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
-    pprint(nodes)
+    path1 = jupiter_config.APP_PATH + 'configuration.txt'
+    dag_info = utilities.k8s_read_dag(path1)
+    dag = dag_info[1]
+
+    print('Starting to deploy WAVE')
+    if jupiter_config.BOKEH == 3:
+        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+        start_time = time.time()
+        msg = 'WAVE deploystart %f \n'%(start_time)
+        write_file(latency_file,msg)
 
     """
         This loads the kubernetes instance configuration.
@@ -157,14 +172,6 @@ def k8s_wave_scheduler(profiler_ips,app_name):
             nexthost_ips = nexthost_ips + ':' + service_ips[i]
             nexthost_names = nexthost_names + ':' + i
             all_profiler_ips = all_profiler_ips + ':' + profiler_ips[i]
-    print(service_ips)
-    print(nexthost_ips)
-    print(nexthost_names)
-
-    print("####################################")
-    print(profiler_ips)
-    print("####################################")
-    print(all_profiler_ips)
 
     home_profiler_ips = {}
     for key in homes:
@@ -173,8 +180,6 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     home_profiler_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(home_profiler_ips.items()))
 
     for i in nodes:
-
-        # print nodes[i][0]
         
         """
             We check whether the node is a home / master.
@@ -196,8 +201,10 @@ def k8s_wave_scheduler(profiler_ips,app_name):
                                              serv_ip = service_ips[i],
                                              profiler_ip = profiler_ips[i],
                                              all_profiler_ips = all_profiler_ips,
-                                             home_profiler_ip = home_profiler_str)
-            # # pprint(dep)
+                                             home_profiler_ip = home_profiler_str,
+                                             app_name = app_name,
+                                             child = jupiter_config.HOME_CHILD,
+                                             app_option = jupiter_config.APP_OPTION)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
             print("Deployment created. status ='%s'" % str(resp.status))
@@ -213,8 +220,8 @@ def k8s_wave_scheduler(profiler_ips,app_name):
 
     home_name = app_name+'-home'
     label_name = app_name+'-wave_home'
-    print(profiler_ips)
-    print(service_ips)
+
+
     home_dep = write_wave_specs(name = home_name, label = label_name,
                                 image = jupiter_config.WAVE_HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, all_node = nexthost_names,
@@ -225,8 +232,18 @@ def k8s_wave_scheduler(profiler_ips,app_name):
                                              serv_ip = service_ips['home'],
                                              profiler_ip = profiler_ips['home'],
                                              all_profiler_ips = all_profiler_ips,
-                                             home_profiler_ip = home_profiler_str)
+                                             home_profiler_ip = home_profiler_str,
+                                             child = jupiter_config.HOME_CHILD,
+                                             app_name = app_name,
+                                             app_option = jupiter_config.APP_OPTION)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
+    print('Successfully deploy WAVE')
+    if jupiter_config.BOKEH == 3:
+        end_time = time.time()
+        msg = 'WAVE deployend %f \n'%(end_time)
+        write_file(latency_file,msg)
+        deploy_time = end_time - start_time
+        print('Time to deploy WAVE '+ str(deploy_time))

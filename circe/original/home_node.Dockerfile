@@ -7,7 +7,7 @@ RUN apt-get install -y openssh-server mongodb
 ADD circe/original/requirements.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
 RUN pip3 install --upgrade pip
-RUN apt-get install -y sshpass nano 
+RUN apt-get install -y sshpass nano
 
 # Taken from quynh's network profiler
 RUN pip install cryptography
@@ -32,6 +32,9 @@ RUN mkdir -p /input
 RUN mkdir -p /output
 #RUN mkdir -p /runtime
 
+
+RUN apt-get install stress
+
 # Add input files
 COPY  app_specific_files/network_monitoring_app/sample_input /sample_input
 
@@ -43,6 +46,7 @@ ADD circe/original/readconfig.py /readconfig.py
 ADD circe/original/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
 ADD circe/original/evaluate.py /evaluate.py
+
 
 # Add the task speficific configuration files
 ADD app_specific_files/network_monitoring_app/configuration.txt /configuration.txt

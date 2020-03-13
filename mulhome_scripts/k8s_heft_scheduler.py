@@ -17,14 +17,19 @@ from pprint import *
 import os
 import jupiter_config
 from static_assignment import *
-#from utilities import *
 import utilities
 
+
+def write_file(filename,message):
+    with open(filename,'a') as f:
+        f.write(message)
 
 def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
     """
         This script deploys HEFT in the system. 
     """
+    
+
     jupiter_config.set_globals()
 
     """
@@ -34,6 +39,16 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
+    path1 = jupiter_config.APP_PATH + 'configuration.txt'
+    dag_info = utilities.k8s_read_dag(path1)
+    dag = dag_info[1]
+
+    print('Starting to deploy HEFT')
+    if jupiter_config.BOKEH == 3:
+        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+        start_time = time.time()
+        msg = 'HEFT deploystart %f \n'%(start_time)
+        write_file(latency_file,msg)
 
     """
         This loads the kubernetes instance configuration.
@@ -95,13 +110,19 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
                                 home_ip = home_ip,
                                 profiler_ips = profiler_ips_str,
                                 execution_home_ip = ex_profiler_ips['home'],
-                                home_profiler_ip = home_profiler_str)
+                                home_profiler_ip = home_profiler_str,
+                                app_name = app_name,
+                                app_option = jupiter_config.APP_OPTION)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
-
+    print('Successfully deploy HEFT')
+    if jupiter_config.BOKEH == 3:
+        end_time = time.time()
+        msg = 'HEFT deployend %f \n'%(end_time)
+        write_file(latency_file,msg)
+        deploy_time = end_time - start_time
+        print('Time to deploy HEFT '+ str(deploy_time))
 if __name__ == '__main__':
-    # ips = {}
-    # ips['home'] = '127.0.0.1'
     k8s_heft_scheduler(profiler_ips,execution_ips)

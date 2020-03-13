@@ -6,7 +6,6 @@ __version__ = "3.0"
 import sys
 sys.path.append("../")
 
-#from utilities import *
 import utilities
 import yaml
 from kubernetes import client, config
@@ -14,11 +13,16 @@ from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
+import time
 
+def write_file(filename,message):
+    with open(filename,'a') as f:
+        f.write(message)
 
 def delete_all_circe(app_name):
     """Tear down all CIRCE deployments.
     """
+    
     jupiter_config.set_globals()
     
     """
@@ -27,6 +31,17 @@ def delete_all_circe(app_name):
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
     dag_info = utilities.k8s_read_config(path1)
     dag = dag_info[1]
+    path2 = jupiter_config.HERE + 'nodes.txt'
+    node_list, homes = utilities.k8s_get_nodes_worker(path2)
+
+    print('Starting to teardown CIRCE')
+    if jupiter_config.BOKEH == 3:
+        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
+        start_time = time.time()
+        msg = 'CIRCE teardownstart %f \n'%(start_time)
+        write_file(latency_file,msg)
+
+
 
     """
         This loads the kubernetes instance configuration.
@@ -155,9 +170,18 @@ def delete_all_circe(app_name):
     if resp:
         del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace, v1_delete_options)
         #del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace=namespace)
-        print("Service Deleted. status='%s'" % str(del_resp_2.status))     
+        print("Service Deleted. status='%s'" % str(del_resp_2.status))  
+
+    print('Successfully teardown CIRCE ')
+    if jupiter_config.BOKEH == 3:
+        end_time = time.time()
+        msg = 'CIRCE teardownend %f \n'%(end_time)
+        write_file(latency_file,msg)
+        teardown_time = end_time - start_time
+        print('Time to teardown CIRCE'+ str(teardown_time))   
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 
-    app_name = jupiter_config.app_option
+    app_name = jupiter_config.APP_OPTION
+    app_name = app_name+'1'
     delete_all_circe(app_name)

@@ -1,0 +1,20 @@
+#!/bin/bash
+: '
+    ** Copyright (c) 2017, Autonomous Networks Research Group. All rights reserved.
+    **     contributor: Quynh Nguyen, Bhaskar Krishnamachari
+    **     Read license file in main directory for more details
+'
+
+# This script generate a set of random files 
+# The list of file sized to be used are in KB  
+
+
+my_name=$1
+file_size=$RANDOM
+now=$(date "+%s")   
+
+random_file=$now$my_name"botnet.ipsum"  # generate the file name
+file_path=$PWD/generated_stream/$random_file
+
+echo 'Create file '$random_file
+dd if=/dev/urandom of=$file_path bs=1K count=$file_size #KBytes
