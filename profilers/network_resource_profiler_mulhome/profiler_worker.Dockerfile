@@ -10,6 +10,7 @@ RUN apt-get update
 RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev
 RUN apt-get -yqq install python3-pip python3-dev
 RUN pip3 install --upgrade pip
+RUN apt-get update
 RUN apt-get install -y openssh-server mongodb net-tools sshpass nano virtualenv supervisor
 
 # Install required python libraries
@@ -49,8 +50,8 @@ RUN mkdir -p /network_profiling/scheduling
 
 
 # Prepare resource profiling code
-RUN mkdir -p /resource_profiler
-ADD profilers/network_resource_profiler_mulhome/worker/resource_profiler.py /resource_profiler/resource_profiler.py
+# RUN mkdir -p /resource_profiler
+# ADD profilers/network_resource_profiler_mulhome/worker/resource_profiler.py /resource_profiler/resource_profiler.py
 
 #Running docker
 ADD profilers/network_resource_profiler_mulhome/worker/start.sh /network_profiling/start.sh
@@ -60,6 +61,7 @@ ADD jupiter_config.ini /network_profiling/jupiter_config.ini
 
 
 WORKDIR /network_profiling
+
 # tell the port number the container should expose
 EXPOSE 22 27017 8888
 

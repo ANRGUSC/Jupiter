@@ -5,7 +5,6 @@ __version__ = "2.1"
 
 import sys
 sys.path.append("../")
-#from utilities import *
 import utilities
 import yaml
 from kubernetes import client, config
@@ -13,10 +12,17 @@ from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
+import time
+
+def write_file(filename,message):
+    with open(filename,'a') as f:
+        f.write(message)
 
 def delete_all_exec(app_name):
     """Tear down all execution profiler deployments.
     """
+    
+
     jupiter_config.set_globals()
     
     """
@@ -25,6 +31,15 @@ def delete_all_exec(app_name):
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
     dag_info = utilities.k8s_read_config(path1)
     dag = dag_info[1]
+    path2 = jupiter_config.HERE + 'nodes.txt'
+    node_list, homes = utilities.k8s_get_nodes_worker(path2)
+
+    print('Starting to teardown execution profiler')
+    if jupiter_config.BOKEH == 3:
+        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
+        start_time = time.time()
+        msg = 'Executionprofiler teardownstart %f \n'%(start_time)
+        write_file(latency_file,msg)
 
     """
         This loads the kubernetes instance configuration.
@@ -56,9 +71,6 @@ def delete_all_exec(app_name):
 
         # First check if there is a deployment existing with
         # the name = key in the respective namespace
-        print(key)
-        print(value)
-
         pod_name = app_name+"-"+ key
         
         resp = None
@@ -106,8 +118,8 @@ def delete_all_exec(app_name):
             del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace,v1_delete_options)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
-        # At this point you should not have any of the related service, pods, deployment running
-    #end for
+    #     # At this point you should not have any of the related service, pods, deployment running
+    # #end for
 
     home_name = app_name+'-home'
     #delete home deployment and service
@@ -237,8 +249,15 @@ def delete_all_exec(app_name):
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running
+    print('Successfully teardown execution profiler ')
+    if jupiter_config.BOKEH == 3:
+        end_time = time.time()
+        msg = 'Executionprofiler teardownend %f \n'%(end_time)
+        write_file(latency_file,msg)
+        teardown_time = end_time - start_time
+        print('Time to teardown execution profiler'+ str(teardown_time))
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 
-    app_name = jupiter_config.app_option
+    app_name = jupiter_config.APP_OPTION
     delete_all_exec(app_name)

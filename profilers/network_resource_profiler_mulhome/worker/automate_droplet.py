@@ -27,9 +27,79 @@ from os.path import isfile, join
 from os import path
 import configparser
 import requests
+import time
+import _thread
+import psutil
+import paho.mqtt.client as mqtt
+from multiprocessing import Process, Manager
+
 
 
 sys.path.append("../")
+
+def retrieve_resource():
+    mem = psutil.virtual_memory().percent
+    cpu = psutil.cpu_percent()/ psutil.cpu_count()
+    t = time.time()
+    return mem,cpu,t
+
+def schedule_monitor_resource(interval):
+    """
+    Schedulete the assignment update every interval
+    
+    Args:
+        interval (int): chosen interval (minutes)
+    
+    """
+    sched = BackgroundScheduler()
+    sched.add_job(monitor_local_resources_EMA,'interval',id='assign_id', minutes=interval, replace_existing=True)
+    sched.start()
+
+def monitor_local_resources_EMA():
+    """
+    Obtain local resource stats (CPU, Memory usage and the lastest timestamp) from local node and store it to the variable ``local_resources``
+    Using Exponential moving average
+    """
+    
+    print('Updating local resource stats (EMA)')
+    num_periods = 10 # EMA 10 periods
+    cur_mem,cur_cpu,cur_time = retrieve_resource()
+    if resource_profiling["count"] < (num_periods+1):
+        resource_profiling["memory"] = (cur_mem + resource_profiling['memory'] * resource_profiling['count']) / (resource_profiling['count'] + 1)
+        resource_profiling["cpu"] = (cur_cpu + resource_profiling['cpu'] * resource_profiling['count']) / (resource_profiling['count'] + 1)
+    else:
+        resource_profiling["memory"] = (cur_mem - resource_profiling["memory"])*(2/(num_periods+1)) + resource_profiling["memory"]
+        resource_profiling["cpu"] = (cur_cpu - resource_profiling["cpu"])*(2/(num_periods+1)) + resource_profiling["cpu"]
+    resource_profiling['count'] += 1
+    resource_profiling['last_update'] = datetime.datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')
+
+    try:
+        logging  = resource_db[SELF_IP]
+        new_log  = {'memory' : resource_profiling['memory'],
+                    'cpu'    : resource_profiling['cpu'],
+                    'count'  : resource_profiling['count'],
+                    'last_update': resource_profiling['last_update']
+                    }
+        resource_id   = logging.insert_one(new_log).inserted_id
+    except Exception as e:
+        print('Error logging resource profiling information')
+        print(e)
+        
+
+def demo_help(server,port,topic,msg):
+    try:
+        print('Sending demo')
+        username = 'anrgusc'
+        password = 'anrgusc'
+        client = mqtt.Client()
+        client.username_pw_set(username,password)
+        client.connect(server, port,300)
+        client.publish(topic, msg,qos=1)
+        client.disconnect()
+    except Exception as e:
+        print('Sending demo failed')
+        print(e)
+    
 
 def does_file_exist_in_dir(path):
     """Check if file exist in directory
@@ -42,6 +112,25 @@ def does_file_exist_in_dir(path):
     """
 
     return any(isfile(join(path, i)) for i in listdir(path))
+
+def schedule_bokeh_profiling(interval):
+    """
+    Schedulete the assignment update every interval
+    
+    Args:
+        interval (int): chosen interval (minutes)
+    
+    """
+    sched = BackgroundScheduler()
+    sched.add_job(announce_profiling,'interval',id='assign_id', seconds=interval, replace_existing=True)
+    sched.start()
+
+def announce_profiling():
+    cur_mem,cur_cpu,cur_time = retrieve_resource()
+    topic = 'poweroverhead_%s'%(SELF_NAME)
+    msg = 'poweroverhead %s cpu %f memory %f timestamp %d \n' %(SELF_NAME,cur_cpu,cur_mem,cur_time)
+    demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
 
 
 class droplet_measurement():
@@ -60,8 +149,7 @@ class droplet_measurement():
         self.regions    = []
         self.scheduling_file    = dir_scheduler
         self.measurement_script = os.path.join(os.getcwd(),'droplet_scp_time_transfer')
-        self.client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
-        self.db = self.client_mongo.droplet_network_profiler
+        self.db = client_mongo.droplet_network_profiler
         
     def do_add_host(self, file_hosts):
         """This function reads the ``scheduler.txt`` file to add other droplets info 
@@ -84,26 +172,22 @@ class droplet_measurement():
     def do_log_measurement(self):
         """This function pick a random file size, send the file to all of the neighbors and log the transfer time in the local Mongo database.
         """
-
         for idx in range (0, len(self.hosts)):
+            print('Probing random messages')
             random_size = random.choice(self.file_size)
             local_path  = '%s/%s_test_%dK'%(self.dir_local,self.my_host,random_size)
             remote_path = '%s'%(self.dir_remote)  
-            # print(random_size)
             # Run the measurement bash script     
             bash_script = self.measurement_script + " " +self.username + "@" + self.hosts[idx]
             bash_script = bash_script + " " + str(random_size)
 
-            print(bash_script)
             proc = subprocess.Popen(bash_script, shell = True, stdout = subprocess.PIPE)
             tmp = proc.stdout.read().strip().decode("utf-8")
             results = tmp.split(" ")[1]
-            print(results)
 
             mins = float(results.split("m")[0])      # Get the minute part of the elapsed time
             secs = float(results.split("m")[1][:-1]) # Get the second potion of the elapsed time
             elapsed = mins * 60 + secs
-            # print(elapsed)
             
             # Log the information in local mongodb
             cur_time = datetime.datetime.utcnow()
@@ -116,14 +200,12 @@ class droplet_measurement():
                         "File_Size[KB]"     : random_size,
                         "Transfer_Time[s]"  : elapsed}
             log_id   = logging.insert_one(new_log).inserted_id
-            # print(log_id)
 
 
 class droplet_regression():
     """This class is used for the regression of the collected data
     """
     def __init__(self):
-        self.client_mongo = None
         self.db           = None
         self.my_host      = None
         self.my_region    = None
@@ -132,20 +214,12 @@ class droplet_regression():
         self.parameters_file = 'parameters_%s'%(sys.argv[1])
         self.dir_remote      = dir_remote_central
         self.scheduling_file = dir_scheduler
-        self.client_mongo    = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
-        self.db = self.client_mongo.droplet_network_profiler
+        self.db = client_mongo.droplet_network_profiler
         self.username = username
         self.password = password
         self.central_IPs = HOME_IP.split(':')
         self.central_IPs = self.central_IPs[1:]
        
-        # Read the info regarding the central profiler
-        # with open('central.txt','r') as f:
-        #     line = f.read().split(' ')
-        #     self.central_IP = line[0]
-        #     self.username   = line[1]
-        #     self.password   = line[2]
-
     def do_add_host(self, file_hosts):
         """This function reads the ``scheduler.txt`` file to add other droplets info 
         
@@ -191,7 +265,6 @@ class droplet_regression():
             quadratic  = np.polyfit(df['X'],df['Y'],2)
             parameters = " ".join(str(x) for x in quadratic)
             cur_time   = datetime.datetime.utcnow()
-            print(parameters)
             
             new_reg = { "Source[IP]"       : self.my_host,
                         "Source[Reg]"      : self.my_region,
@@ -269,7 +342,7 @@ class MyEventHandler(pyinotify.ProcessEvent):
         d = droplet_regression()
         d.do_add_host(d.scheduling_file)
         d.do_regression()
-        d.do_send_parameters()
+        # d.do_send_parameters()
 
     def measurement_job(self):
         """Scheduling logging measurement process every minute
@@ -318,7 +391,7 @@ def main():
     """Start watching process for ``scheduling`` folder.
     """
 
-    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER, HOME_IP
+    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER, HOME_IP, SELF_IP
 
     # Load all the confuguration
     INI_PATH = '/network_profiling/jupiter_config.ini'
@@ -343,6 +416,45 @@ def main():
     SELF_IP = os.environ["SELF_IP"]
     HOME_IP = os.environ["HOME_IP"]
 
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH, BOKEH_INTERVAL, SELF_NAME
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
+    BOKEH_INTERVAL = int(config['OTHER']['BOKEH_INTERVAL'])
+    SELF_NAME = os.environ['SELF_NAME']
+
+    print('Bokeh information')
+    print(BOKEH_SERVER)
+    print(BOKEH_PORT)
+    print(BOKEH)
+    print(BOKEH_INTERVAL)
+    print(SELF_NAME)
+
+    global client_mongo 
+    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+
+    ## Resource profiling
+    global manager,resource_profiling
+    manager = Manager()
+    resource_profiling = manager.dict()
+    resource_profiling['count'] = 0
+    resource_profiling['cpu'] = 0
+    resource_profiling['memory'] = 0
+    resource_profiling['last_update'] = None
+    num_periods = 10
+    interval = 1
+
+    global resource_client, resource_db
+    resource_client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+    resource_db = resource_client['central_resource_profiler']
+    resource_db.create_collection(SELF_IP, capped=True, size = 100000, max=1000)
+
+
+    if BOKEH==3:
+        print('Start sending profiling information (CPU,mem) to the bokeh server')
+        _thread.start_new_thread(schedule_bokeh_profiling,(BOKEH_INTERVAL,))
+
     # watch manager
     wm = pyinotify.WatchManager()
     wm.add_watch('scheduling', pyinotify.ALL_EVENTS, rec=True)
@@ -351,6 +463,8 @@ def main():
     eh = MyEventHandler()
     # notifier
     notifier = pyinotify.Notifier(wm, eh)
+
+    _thread.start_new_thread(schedule_monitor_resource,(interval,))
 
     notifier.loop()
 

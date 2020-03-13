@@ -22,7 +22,9 @@ def prepare_global_info():
     INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
-
+    print(INI_PATH)
+    print(config)
+    print(config["DOCKER_PORT"])
     sys.path.append(jupiter_config.EXEC_PROFILER_PATH)
     
     port_list_home = []
@@ -51,22 +53,22 @@ def build_push_exec():
 
     os.chdir(jupiter_config.EXEC_PROFILER_PATH )
 
-    dc.write_exec_home_docker(username = jupiter_config.USERNAME,
+    home_file = dc.write_exec_home_docker(username = jupiter_config.USERNAME,
                      password = jupiter_config.PASSWORD,
                      app_file = jupiter_config.APP_NAME,
                      ports = " ".join(port_list_home))
 
-    dc.write_exec_worker_docker(username = jupiter_config.USERNAME,
+    worker_file = dc.write_exec_worker_docker(username = jupiter_config.USERNAME,
                      password = jupiter_config.PASSWORD,
                      app_file=jupiter_config.APP_NAME,
                      ports = " ".join(port_list_worker))
 
-    os.system("sudo docker build -f exec_home.Dockerfile ../.. -t "
-                                 + jupiter_config.EXEC_HOME_IMAGE)
+    cmd = "sudo docker build -f %s ../.. -t %s"%(home_file,jupiter_config.EXEC_HOME_IMAGE)
+    os.system(cmd)
     os.system("sudo docker push " + jupiter_config.EXEC_HOME_IMAGE)
 
-    os.system("sudo docker build -f exec_worker.Dockerfile ../.. -t "
-                                 + jupiter_config.EXEC_WORKER_IMAGE)
+    cmd = "sudo docker build -f %s ../.. -t %s"%(worker_file,jupiter_config.EXEC_WORKER_IMAGE)
+    os.system(cmd)
     os.system("sudo docker push " + jupiter_config.EXEC_WORKER_IMAGE)
 
 if __name__ == '__main__':

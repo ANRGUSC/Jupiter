@@ -50,6 +50,8 @@ spec:
       labels:
         app: {name}
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: {host}
       containers:
       - name: {name}
         image: {image}
@@ -64,9 +66,12 @@ spec:
           value: {child_ips}
         - name: TASK
           value: home
+        - name: APPNAME
+          value: {appname}
+        - name: APPOPTION
+          value: {appoption}
       restartPolicy: Always
 """
-
 
 def write_circe_home_specs(**kwargs):
     """
@@ -101,15 +106,11 @@ def write_circe_home_specs(**kwargs):
     dep = yaml.load(specific_yaml)
     return dep
 
-
 template_worker = """
 apiVersion: extensions/v1beta1
-kind: Deployment    
+kind: Deployment
 metadata:
   name: {name}
-  labels:
-    app: ssh
-    purpose: dag-demo
 spec:
   template:
     metadata:
@@ -118,13 +119,9 @@ spec:
     spec:
       containers:
       - name: {name}
-        imagePullPolicy: Always
         image: {image}
+        imagePullPolicy: Always
         env:
-        - name: FLAG
-          value: {flag}
-        - name: INPUTNUM
-          value: {inputnum}
         - name: CHILD_NODES
           value: {child}
         - name: CHILD_NODES_IPS
@@ -141,10 +138,15 @@ spec:
           value: {all_node}
         - name: ALL_NODES_IPS
           value: {all_node_ips}
+        - name: FLAG
+          value: "{flag}"
+        - name: INPUTNUM
+          value: "{inputnum}"
       nodeSelector:
         kubernetes.io/hostname: {host}
       restartPolicy: Always
 """
+
 
 def write_circe_deployment_specs(**kwargs):
     """
@@ -175,10 +177,7 @@ def write_circe_deployment_specs(**kwargs):
 
     # insert your values
     jupiter_config.set_globals()
-    # for i in kwargs:
-    print(kwargs)
     specific_yaml = template_worker.format(**kwargs)
-    print(specific_yaml)
     dep = yaml.load(specific_yaml, Loader=yaml.BaseLoader)
     
     dep = add_ports(dep, 1, jupiter_config.SSH_DOCKER)
