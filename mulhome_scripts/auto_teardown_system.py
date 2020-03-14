@@ -25,6 +25,8 @@ from k8s_get_service_ips import *
 from functools import wraps
 from delete_all_circe import *
 from delete_all_pricing_circe import *
+from delete_all_integrated_pricing_circe import *
+from delete_all_decoupled_pricing_circe import *
 from delete_all_waves import *
 from delete_all_heft import *
 from delete_all_exec import *
@@ -57,6 +59,10 @@ def teardown_system(app_name):
     if pricing == 0:
         print('Tear down all current Non-pricing CIRCE deployments')
         delete_all_circe(app_name)
+    elif pricing == 3:
+        delete_all_integrated_pricing_circe(app_name)
+    elif pricing == 4:
+        delete_all_decoupled_pricing_circe(app_name)
     else:
         print('Tear down all current Pricing CIRCE deployments')
         delete_all_pricing_circe(app_name)
@@ -74,8 +80,7 @@ def main():
         Deploy num_dags of the application specified by app_name
     """
     jupiter_config.set_globals()
-    app_name = jupiter_config.app_option
-    print(app_name)
+    app_name = jupiter_config.APP_OPTION
     # delete_all_exec(app_name)
     # delete_all_profilers()
 

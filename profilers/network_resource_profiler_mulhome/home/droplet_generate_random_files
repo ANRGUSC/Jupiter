@@ -1,0 +1,26 @@
+#!/bin/bash
+: '
+    ** Copyright (c) 2017, Autonomous Networks Research Group. All rights reserved.
+    **     contributor: Quynh Nguyen, Bhaskar Krishnamachari
+    **     Read license file in main directory for more details
+'
+
+# This script generate a set of random files to be used for network profiling.
+# The list of file sized to be used are in KB  
+# The file names should follow certain format for the profiling scripts to work.
+# The format is  <source-ip>"_test_"<file size>"K"
+# For example, for a source ip of 100.10.10.1 with file size 10K,
+# the file name will be 100.10.10.1_test_10K
+
+my_ip=$1
+
+declare -a file_size=(1 10 100 1000 10000);
+
+for i in "${file_size[@]}"
+do
+    random_file=$my_ip"_test_"$i"K"  # generate the file name
+    file_path=$PWD/generated_test/$random_file
+
+    echo 'Create file '$random_file
+    dd if=/dev/urandom of=$file_path bs=1K count=$i #KBytes
+done

@@ -339,7 +339,6 @@ def init_task_topology():
     del input_nodes[0]
     for line in input_nodes:
         line = line.strip()
-        # items = re.split(r'\t+', line)
         items = line.split()
         task = items[0]
 

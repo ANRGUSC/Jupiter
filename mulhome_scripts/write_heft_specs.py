@@ -39,6 +39,10 @@ spec:
           value: {home_ip}
         - name: HOME_PROFILER_IP
           value: {home_profiler_ip}
+        - name: APP_NAME
+          value: {app_name}
+        - name: APP_OPTION
+          value: {app_option}
 """
 
 def write_heft_specs(**kwargs):

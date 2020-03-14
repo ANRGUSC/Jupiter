@@ -55,6 +55,7 @@ def build_push_profiler():
     os.system("sudo docker build -f profiler_worker.Dockerfile ../.. -t "
                                  + jupiter_config.PROFILER_WORKER_IMAGE)
     os.system("sudo docker push " + jupiter_config.PROFILER_WORKER_IMAGE)
+    
 
 if __name__ == '__main__':
     prepare_global_info()

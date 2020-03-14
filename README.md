@@ -150,33 +150,42 @@ Step by step instructions to set up Jupiter on a private network provided by Sea
 
 ## Applications:
 
- Jupiter accepts pipelined computations described in a form of a Graph where the main task flow is represented as a Directed
- Acyclic Graph (DAG). Thus, one should be able separate the graph into two pieces, the DAG part and non-DAG part. Jupiter
- requires that each task in the DAG part of the graph to be written as a Python function in a separate file under the scripts
- folder. On the other hand the non-DAG tasks can be either Python function or a shell script with any number of arguments,
- located under the scripts folder.
+Jupiter accepts pipelined computations described in a form of a Graph where the main task flow is represented as a Directed
+Acyclic Graph (DAG). Thus, one should be able separate the graph into two pieces, the DAG part and non-DAG part. Jupiter
+requires that each task in the DAG part of the graph to be written as a Python function in a separate file under the scripts
+folder. On the other hand the non-DAG tasks can be either Python function or a shell script with any number of arguments,
+located under the scripts folder.
 
- As an example, please refer to our codes available for an application called the Coded Network Anomaly Detection ([Coded
- DNAD](https://github.com/ANRGUSC/Coded-DNAD)). This is an application customized for the Jupiter Orchestrator.
+As an example, please refer to our codes available for the following applications customized for the Jupiter Orchestrator:
+
+1) Coded Network Anomaly Detection ([Coded DNAD](https://github.com/ANRGUSC/Coded-DNAD))
+2) Multi-Camera Processing DAG ([MCP DAG](https://github.com/ANRGUSC/MCPDAG))
+3) Automatic-DAG-Generator([Dummy DAG](https://github.com/ANRGUSC/Automatic-DAG-Generator))
+
+
 
 ## Visualization
 
-The visualization tool for Jupiter is given [here](https://github.com/ANRGUSC/Jupiter_Visualization ). This tool generates an
+The visualization tool for Jupiter is given [here](https://github.com/ANRGUSC/Jupiter_Visualization). This tool generates an
 interactive plot to show the scheduling result of WAVE and the dispatcher mapping of CIRCE. To visualize your own application,
 make sure the format of your logs are in line with the input files of the tools. We will integrate this as a real-time
 visualization tool for Jupiter in the next release.  
 
 ## References
-[1] Quynh Nguyen, Pradipta Ghosh, and Bhaskar Krishnamachari, “End-to-End Network Performance Monitoring for Dispersed
-Computing“, International Conference on Computing, Networking and Communications, March 2018
+[1] Pradipta Ghosh, Quynh Nguyen, and Bhaskar Krishnamachari, [“Container Orchestration for Dispersed Computing“](https://anrg.usc.edu/www/wp-content/uploads/2019/10/Jupiter__Camera_Ready.pdf), 5th International Workshop on Container Technologies and Container Clouds (WOC ’19), December 9–13, 2019, Davis, CA, USA.
 
-[2] Aleksandra Knezevic, Quynh Nguyen, Jason A. Tran, Pradipta Ghosh, Pranav Sakulkar, Bhaskar Krishnamachari, and Murali
-Annavaram, “DEMO: CIRCE – A runtime scheduler for DAG-based dispersed computing,” The Second ACM/IEEE Symposium on Edge Computing
-(SEC) 2017. (poster)
+[2] Quynh Nguyen, Pradipta Ghosh, and Bhaskar Krishnamachari, [“End-to-End Network Performance Monitoring for Dispersed
+Computing“](http://anrg.usc.edu/www/papers/DispersedNetworkProfiler_ICNC2018.pdf), International Conference on Computing, Networking and Communications, March 2018
+
 
 [3] Pranav Sakulkar, Pradipta Ghosh, Aleksandra Knezevic, Jiatong Wang, Quynh Nguyen, Jason Tran, H.V. Krishna Giri Narra,
-Zhifeng Lin, Songze Li, Ming Yu, Bhaskar Krishnamachari, Salman Avestimehr, and Murali Annavaram, “WAVE: A Distributed Scheduling
-Framework for Dispersed Computing“, USC ANRG Technical Report, ANRG-2018-01.
+Zhifeng Lin, Songze Li, Ming Yu, Bhaskar Krishnamachari, Salman Avestimehr, and Murali Annavaram, [“WAVE: A Distributed Scheduling
+Framework for Dispersed Computing“](http://anrg.usc.edu/www/papers/wave_dispersed_computing_ANRGTechReport.pdf), USC ANRG Technical Report, ANRG-2018-01.
+
+[4] Aleksandra Knezevic, Quynh Nguyen, Jason A. Tran, Pradipta Ghosh, Pranav Sakulkar, Bhaskar Krishnamachari, and Murali
+Annavaram, [“DEMO: CIRCE – A runtime scheduler for DAG-based dispersed computing,”](http://anrg.usc.edu/www/papers/CIRCE__A_runtime_scheduler_for_DAG_based_dispersed_computing.pdf), The Second ACM/IEEE Symposium on Edge Computing
+(SEC) 2017. (poster)
+
 
 ## Acknowledgment
 This material is based upon work supported by Defense Advanced Research Projects Agency (DARPA) under Contract No. HR001117C0053.

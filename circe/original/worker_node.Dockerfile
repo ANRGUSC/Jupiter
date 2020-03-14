@@ -14,6 +14,9 @@ RUN apt-get install iproute2 -y
 RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
 RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
+RUN sudo apt update
+RUN apt-get install -y mosquitto-clients
+
 ADD circe/original/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
@@ -37,7 +40,7 @@ RUN mkdir -p /home/darpa/apps/data
 #ADD circe/original/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/network_monitoring_app/scripts/ /centralized_scheduler/
+ADD app_specific_files/dummydupapp6/scripts/ /centralized_scheduler/
 
 ADD jupiter_config.ini /jupiter_config.ini
 

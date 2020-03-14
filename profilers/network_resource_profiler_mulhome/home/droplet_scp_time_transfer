@@ -1,0 +1,36 @@
+#!/bin/bash
+: '
+    ** Copyright (c) 2017, Autonomous Networks Research Group. All rights reserved.
+    **     contributor: Pradipta Ghosh, Quynh Nguyen, Bhaskar Krishnamachari
+    **     Read license file in main directory for more details
+'
+
+# This script is used to time the file transfer duration using the scp tool
+# This script must be called with two arguments as follows:
+# $1: the remote server info. For example if the remote is 10.10.10.1, then $1 = root@10.10.10.1
+# $2: the file size to be sent which is used to choose from the generated random files.
+# This script also needs the IP of the sender node which is avaiable from
+# the environment variable $SELF_IP
+
+root_folder="$(dirname "$PWD")"
+source <(grep = jupiter_config.ini | sed 's/ *= */=/g')
+password=$PASSWORD
+ssh_port=$SSH_SVC
+
+echo "$PWD" >> droplet_measurement.log
+echo "$root_folder" >> droplet_measurement.log
+
+# the remote location to transfer the file
+remote_path=$1":/network_profiling/received_test"
+
+# The file names should follow certain format for the profiling scripts to work.
+# The format is  <source-ip>"_test_"<file size>"K"
+# For example, for a source ip of 100.10.10.1 with file size 10K,
+# the file name will be 100.10.10.1_test_10K
+RANDOM_SIZE=$2
+file_path=$PWD"/generated_test/"$SELF_IP"_test_"$RANDOM_SIZE"K"
+
+echo "Transmit from $file_path to $remote_path" >> droplet_measurement.log
+result=`(time sshpass -p $password scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P $ssh_port $file_path $remote_path) 2>&1 | grep real`
+echo "time sshpass -p $password scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -P $ssh_port $file_path $remote_path" >> droplet_measurement.log
+echo $result
