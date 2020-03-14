@@ -53,7 +53,7 @@ def k8s_read_config(configuration_file):
     return dag_info
 
 
-
+# Old k8s_read_dag - No home and datasources support
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
   
@@ -80,6 +80,38 @@ def k8s_read_dag(dag_info_file):
 
   dag_info.append(dag)
   return dag_info
+
+# Support home and datasources
+# def k8s_read_dag(dag_info_file):
+#   """read the dag from the file input
+  
+#   Args:
+#       dag_info_file (str): path of DAG file
+  
+#   Returns:
+#       dict: DAG information 
+#   """
+#   dag_info=[]
+#   config_file = open(dag_info_file,'r')
+#   dag_size = int(config_file.readline())
+
+#   dag={}
+#   c = 0
+#   for i, line in enumerate(config_file, 1):
+#       dag_line = line.strip().split(" ")
+#       # if i == 1:
+#       #     dag_info.append(dag_line[0])
+#       if (dag_line[0].startswith('home') | dag_line[0].startswith('datasource')): 
+#         dag_info.append(dag_line[0]
+          
+#       dag.setdefault(dag_line[0], [])
+#       for j in range(1,len(dag_line)):
+#           dag[dag_line[0]].append(dag_line[j])
+#       if i == dag_size:
+#           break
+
+#   dag_info.append(dag)
+#   return dag_info
 
 def k8s_get_nodes(node_info_file):
   """read the node info from the file input
@@ -123,6 +155,35 @@ def k8s_get_nodes_worker(node_info_file):
           nodes[node_line[0]].append(node_line[i])
   #print(nodes)
   return nodes, homes
+
+def k8s_get_all_elements(node_info_file):
+  """read the node info from the file input
+  
+  Args:
+      node_info_file (str): path of ``node.txt``
+  
+  Returns:
+      dict: node information 
+  """
+  nodes = {}
+  homes = {}
+  datasources = {}
+  node_file = open(node_info_file, "r")
+  for line in node_file:
+      node_line = line.strip().split(" ")
+      if node_line[0].startswith('home'): 
+        homes.setdefault(node_line[0], [])
+        for i in range(1, len(node_line)):
+          homes[node_line[0]].append(node_line[i])
+      elif node_line[0].startswith('datasource'):
+        datasources.setdefault(node_line[0], [])
+        for i in range(1, len(node_line)):
+          datasources[node_line[0]].append(node_line[i])
+      else:
+        nodes.setdefault(node_line[0], [])
+        for i in range(1, len(node_line)):
+            nodes[node_line[0]].append(node_line[i])
+  return nodes, homes,datasources
 
     
   
@@ -197,3 +258,8 @@ def k8s_get_nodes_homes_string(node_info_file):
         homes = homes + ":" + str(node_line[0])
       nodes = nodes + ":" + str(node_line[0])
   return nodes,homes
+
+if __name__ == '__main__':
+  dag_info_file = '../app_specific_files/dummy_datasources/configuration.txt'
+  dag_info = k8s_read_dag(dag_info_file)
+  

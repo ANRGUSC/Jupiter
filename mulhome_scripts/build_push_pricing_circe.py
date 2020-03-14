@@ -52,7 +52,7 @@ def build_push_pricing_circe():
     print(jupiter_config.USERNAME)
     print(jupiter_config.PRICING_HOME_IMAGE)
     print(jupiter_config.WORKER_CONTROLLER_IMAGE)
-    print(jupiter_config.WORKER_COMPUTING_IMAGE )
+    print(jupiter_config.WORKER_COMPUTE_IMAGE )
     print(jupiter_config.pricing_option)
 
     dc.write_circe_home_docker(username = jupiter_config.USERNAME,
@@ -80,8 +80,34 @@ def build_push_pricing_circe():
                                  + jupiter_config.WORKER_CONTROLLER_IMAGE)
     os.system("sudo docker push " + jupiter_config.WORKER_CONTROLLER_IMAGE)
     os.system("sudo docker build -f computing_worker_node.Dockerfile ../.. -t "
-                                 + jupiter_config.WORKER_COMPUTING_IMAGE)
-    os.system("sudo docker push " + jupiter_config.WORKER_COMPUTING_IMAGE)
+                                 + jupiter_config.WORKER_COMPUTE_IMAGE)
+    os.system("sudo docker push " + jupiter_config.WORKER_COMPUTE_IMAGE)
+
+    # only required for non-DAG tasks (Tera detectors and DFT detectors)
+    print(jupiter_config.APP_OPTION)
+    if jupiter_config.APP_OPTION == 'coded':
+
+      dc.write_circe_controller_nondag(username = jupiter_config.USERNAME,
+                      password = jupiter_config.PASSWORD,
+                      app_file = jupiter_config.APP_NAME,
+                      ports = " ".join(port_list_worker),
+                      pricing_option = jupiter_config.pricing_option)
+      dc.write_circe_worker_nondag(username = jupiter_config.USERNAME,
+                        password = jupiter_config.PASSWORD,
+                        app_file = jupiter_config.APP_NAME,
+                        ports = " ".join(port_list_worker),
+                        pricing_option = jupiter_config.pricing_option)
+    
+      os.system("sudo docker build -f controller_nondag_node.Dockerfile ../.. -t "
+                                 + jupiter_config.NONDAG_CONTROLLER_IMAGE)
+      os.system("sudo docker push " + jupiter_config.NONDAG_CONTROLLER_IMAGE)
+
+      os.system("sudo docker build -f nondag_worker.Dockerfile ../.. -t "
+                                 + jupiter_config.NONDAG_WORKER_IMAGE)
+      os.system("sudo docker push " + jupiter_config.NONDAG_WORKER_IMAGE)
+
+      
+
 
     # only required for non-DAG tasks (Tera detectors and DFT detectors)
     print(jupiter_config.app_option)

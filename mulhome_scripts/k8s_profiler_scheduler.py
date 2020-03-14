@@ -69,10 +69,16 @@ def check_status_profilers():
 
     return result
 
+def write_file(filename,message,mode):
+    with open(filename,mode) as f:
+        f.write(message)
 def k8s_profiler_scheduler(): 
     """
         Deploy DRUPE in the system. 
     """
+    
+
+
     jupiter_config.set_globals()
 
 
@@ -83,8 +89,23 @@ def k8s_profiler_scheduler():
     home_ids = ''
     nexthost_ips = ''
     nexthost_names = ''
+    path1 = jupiter_config.APP_PATH + 'configuration.txt'
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes = utilities.k8s_get_nodes(path2)
+    dag_info = utilities.k8s_read_dag(path1)
+    node_list, homes = utilities.k8s_get_nodes_worker(path2)
+    
+    dag = dag_info[1]
+
+    print('Starting to deploy DRUPE')
+    if jupiter_config.BOKEH == 3:
+        try:
+            os.mkdir('../stats/exp8_data/summary_latency/')
+        except:
+            print('Folder already existed')
+        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
+        start_time = time.time()
+        msg = 'DRUPE deploystart %f \n'%(start_time)
+        write_file(latency_file,msg,'w')
 
 
     """
@@ -104,20 +125,10 @@ def k8s_profiler_scheduler():
     """
     api = client.CoreV1Api()
     k8s_beta = client.ExtensionsV1beta1Api()
-
-    # first_task = dag_info[0]
-    # dag = dag_info[1]
-    # hosts = temp_info[2]
-    # print("hosts:")
-    # pprint(hosts)
-    # print(len(dag_info))
-    # pprint(dag_info[0])
-    # pprint(dag_info[1])
-    # pprint(dag_info[2])
+    nodes = utilities.k8s_get_nodes(path2)
     service_ips = {}; 
-    pprint(nodes)
 
-    # # get the list of nodes
+    # get the list of nodes
     # ret = v1.list_node()
 
     """
@@ -145,8 +156,6 @@ def k8s_profiler_scheduler():
     
         
     print('Home Profilers were created successfully!')
-    print(service_ips)
-    print(home_ips)
 
     for i in nodes:
 
@@ -179,8 +188,6 @@ def k8s_profiler_scheduler():
     print(nexthost_names)
 
     for i in nodes:
-
-        # print nodes[i][0]
         
         """
             We check whether the node is a scheduler.
@@ -188,9 +195,6 @@ def k8s_profiler_scheduler():
         """
         if i.startswith('home'):
             continue
-
-        #print(i)
-
         """
             Generate the yaml description of the required deployment for the profiles
         """
@@ -200,7 +204,6 @@ def k8s_profiler_scheduler():
                                          serv_ip = service_ips[i],
                                          home_ips = home_ips,
                                          home_ids = home_ids)
-        # # pprint(dep)
         # # Call the Kubernetes API to create the deployment
         resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
         print("Deployment created. status ='%s'" % str(resp.status))
@@ -212,7 +215,6 @@ def k8s_profiler_scheduler():
 
     for i in nodes:
         if i.startswith('home'):
-    # have to somehow make sure that the worker nodes are on and working by this time
             home_dep = write_profiler_specs(name = i, label = i+"profiler",
                                         image = jupiter_config.PROFILER_HOME_IMAGE, 
                                         host = jupiter_config.HOME_NODE, 
@@ -226,8 +228,17 @@ def k8s_profiler_scheduler():
 
             pprint(service_ips)
     
-    return(service_ips)
+    
 
+    pprint(service_ips)
+    print('Successfully deploy DRUPE ')
+    if jupiter_config.BOKEH == 3:
+        end_time = time.time()
+        msg = 'DRUPE deployend %f \n'%(end_time)
+        write_file(latency_file,msg,'a')
+        deploy_time = end_time - start_time
+        print('Time to deploy DRUPE '+ str(deploy_time))
+    return(service_ips)
 
 if __name__ == '__main__':
     k8s_profiler_scheduler()

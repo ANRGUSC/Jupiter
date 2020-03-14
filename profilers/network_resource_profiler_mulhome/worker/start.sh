@@ -15,9 +15,6 @@ echo '---------------Step 2 - Generating random test files--------------------'
 # echo $my_ip
 # The SELF_IP environment variable contains the ip of the k8 service
 /network_profiling/droplet_generate_random_files $SELF_IP
-
-echo '---------------Step 3 - Start the flask server --------------------'
-python3 -u /resource_profiler/resource_profiler.py &
 echo '-------------------------------------------------------------------'
 
 echo 'Step 4 -  Prepare MongoDB database, Automatically run measurement and regression script'
