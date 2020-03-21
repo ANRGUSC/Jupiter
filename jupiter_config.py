@@ -144,10 +144,10 @@ def set_globals():
     KUBECONFIG_PATH         = os.environ['KUBECONFIG']
 
     # Namespaces
-    DEPLOYMENT_NAMESPACE    = 'johndoe-circe'
-    PROFILER_NAMESPACE      = 'johndoe-profiler'
-    MAPPER_NAMESPACE        = 'johndoe-mapper'
-    EXEC_NAMESPACE          = 'johndoe-exec'
+    DEPLOYMENT_NAMESPACE    = 'zxc-circe'
+    PROFILER_NAMESPACE      = 'zxc-profiler'
+    MAPPER_NAMESPACE        = 'zxc-mapper'
+    EXEC_NAMESPACE          = 'zxc-exec'
 
     """ Node file path and first task information """
     global HOME_NODE, HOME_CHILD, STREAM_NODE
@@ -169,51 +169,51 @@ def set_globals():
     """pricing CIRCE home and worker images"""
     global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTE_IMAGE
 
-    PRICING_HOME_IMAGE      = 'docker.io/johndoe/%s_circe_home:%s' %(pricing_option,APP_OPTION)
-    WORKER_CONTROLLER_IMAGE = 'docker.io/johndoe/%s_circe_controller:%s' %(pricing_option,APP_OPTION)
-    WORKER_COMPUTE_IMAGE  = 'docker.io/johndoe/%s_circe_computing:%s' %(pricing_option,APP_OPTION)
+    PRICING_HOME_IMAGE      = 'docker.io/anrgusc/%s_circe_home:%s' %(pricing_option,APP_OPTION)
+    WORKER_CONTROLLER_IMAGE = 'docker.io/anrgusc/%s_circe_controller:%s' %(pricing_option,APP_OPTION)
+    WORKER_COMPUTE_IMAGE  = 'docker.io/anrgusc/%s_circe_computing:%s' %(pricing_option,APP_OPTION)
 
     global PRICING_HOME_CONTROLLER, PRICING_HOME_COMPUTE
-    PRICING_HOME_CONTROLLER = 'docker.io/johndoe/%s_circe_home_controller:%s' %(pricing_option,APP_OPTION)
-    PRICING_HOME_COMPUTE    = 'docker.io/johndoe/%s_circe_home_compute:%s' %(pricing_option,APP_OPTION)
+    PRICING_HOME_CONTROLLER = 'docker.io/anrgusc/%s_circe_home_controller:%s' %(pricing_option,APP_OPTION)
+    PRICING_HOME_COMPUTE    = 'docker.io/anrgusc/%s_circe_home_compute:%s' %(pricing_option,APP_OPTION)
 
 
     global NONDAG_CONTROLLER_IMAGE,NONDAG_WORKER_IMAGE # only required for non-DAG tasks (teradetectors and dft)
-    NONDAG_CONTROLLER_IMAGE = 'docker.io/johndoe/%s_circe_nondag:%s' %(pricing_option,APP_OPTION)
-    NONDAG_WORKER_IMAGE     = 'docker.io/johndoe/%s_circe_nondag_worker:%s' %(pricing_option,APP_OPTION)
+    NONDAG_CONTROLLER_IMAGE = 'docker.io/anrgusc/%s_circe_nondag:%s' %(pricing_option,APP_OPTION)
+    NONDAG_WORKER_IMAGE     = 'docker.io/anrgusc/%s_circe_nondag_worker:%s' %(pricing_option,APP_OPTION)
     
     """CIRCE home and worker images for execution profiler"""
     global HOME_IMAGE, WORKER_IMAGE, STREAM_IMAGE
 
-    HOME_IMAGE              = 'docker.io/johndoe/circe_home:%s'%(APP_OPTION)
-    WORKER_IMAGE            = 'docker.io/johndoe/circe_worker:%s'%(APP_OPTION)
-    STREAM_IMAGE              = 'docker.io/johndoe/stream_home:%s'%(APP_OPTION)
+    HOME_IMAGE              = 'docker.io/anrgusc/circe_home:%s'%(APP_OPTION)
+    WORKER_IMAGE            = 'docker.io/anrgusc/circe_worker:%s'%(APP_OPTION)
+    STREAM_IMAGE              = 'docker.io/anrgusc/stream_home:%s'%(APP_OPTION)
 
     """DRUPE home and worker images"""
     global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
     
-    PROFILER_HOME_IMAGE     = 'docker.io/johndoe/%s_profiler_home:coded'%(profiler_option)
-    PROFILER_WORKER_IMAGE   = 'docker.io/johndoe/%s_profiler_worker:coded'%(profiler_option)
+    PROFILER_HOME_IMAGE     = 'docker.io/anrgusc/%s_profiler_home:coded'%(profiler_option)
+    PROFILER_WORKER_IMAGE   = 'docker.io/anrgusc/%s_profiler_worker:coded'%(profiler_option)
 
     """WAVE home and worker images"""
     global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
 
     #%s: random, v1: greedy
 
-    WAVE_HOME_IMAGE         = 'docker.io/johndoe/%s_%s_wave_home:%s' %(wave_option,profiler_option,APP_OPTION)
-    WAVE_WORKER_IMAGE       = 'docker.io/johndoe/%s_%s_wave_worker:%s' %(wave_option,profiler_option,APP_OPTION)
+    WAVE_HOME_IMAGE         = 'docker.io/anrgusc/%s_%s_wave_home:%s' %(wave_option,profiler_option,APP_OPTION)
+    WAVE_WORKER_IMAGE       = 'docker.io/anrgusc/%s_%s_wave_worker:%s' %(wave_option,profiler_option,APP_OPTION)
 
     """Execution profiler home and worker images"""
     global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-    EXEC_HOME_IMAGE         = 'docker.io/johndoe/%s_exec_home:%s'%(profiler_option,APP_OPTION)
-    EXEC_WORKER_IMAGE       = 'docker.io/johndoe/%s_exec_worker:%s'%(profiler_option,APP_OPTION)
+    EXEC_HOME_IMAGE         = 'docker.io/anrgusc/%s_exec_home:%s'%(profiler_option,APP_OPTION)
+    EXEC_WORKER_IMAGE       = 'docker.io/anrgusc/%s_exec_worker:%s'%(profiler_option,APP_OPTION)
 
     """HEFT docker image"""
     global HEFT_IMAGE
 
-    HEFT_IMAGE              = 'docker.io/johndoe/%s_heft:%s'%(heft_option,APP_OPTION)
+    HEFT_IMAGE              = 'docker.io/anrgusc/%s_heft:%s'%(heft_option,APP_OPTION)
        
 
 
