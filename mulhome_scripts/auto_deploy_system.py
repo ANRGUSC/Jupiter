@@ -374,7 +374,7 @@ def main():
     """
     
     jupiter_config.set_globals()
-    app_name = jupiter_config.app_option
+    app_name = jupiter_config.APP_OPTION
     circe_port = int(jupiter_config.FLASK_CIRCE)
     
     
