@@ -282,6 +282,7 @@ def write_circe_computing_worker_docker(**kwargs):
     """
     dfp = DockerfileParser(path='computing_worker_node.Dockerfile')
     dfp.content =template_computing_worker.format(**kwargs)
+    # print(dfp.content)
 
 def write_circe_home_docker(**kwargs):
     """
@@ -296,6 +297,7 @@ def write_circe_controller_nondag(**kwargs):
     """
     dfp = DockerfileParser(path='controller_nondag_node.Dockerfile')
     dfp.content =template_nondag.format(**kwargs)
+    # print(dfp.content)
 
 def write_circe_worker_nondag(**kwargs):
     """
@@ -303,6 +305,7 @@ def write_circe_worker_nondag(**kwargs):
     """
     dfp = DockerfileParser(path='nondag_worker.Dockerfile')
     dfp.content =template_nondag_worker.format(**kwargs)
+    # print(dfp.content)
 
 
 if __name__ == '__main__':

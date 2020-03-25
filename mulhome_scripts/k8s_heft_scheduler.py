@@ -18,6 +18,9 @@ import os
 import jupiter_config
 from static_assignment import *
 import utilities
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 
 def write_file(filename,message):
@@ -43,7 +46,7 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
     dag_info = utilities.k8s_read_dag(path1)
     dag = dag_info[1]
 
-    print('Starting to deploy HEFT')
+    logging.debug('Starting to deploy HEFT')
     if jupiter_config.BOKEH == 3:
         latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
         start_time = time.time()
@@ -83,12 +86,12 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
 
     home_body = write_heft_service_specs(name = home_name, label = home_name)
     ser_resp = api.create_namespaced_service(namespace, home_body)
-    print("Home service created. status = '%s'" % str(ser_resp.status))
+    logging.debug("Home service created. status = '%s'" % str(ser_resp.status))
 
     try:
         resp = api.read_namespaced_service(home_name, namespace)
     except ApiException as e:
-        print("Exception Occurred")
+        logging.debug("Exception Occurred")
 
 
     service_ips[home_name] = resp.spec.cluster_ip
@@ -96,7 +99,7 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
     node_profiler_ips = profiler_ips.copy()
     home_profiler_ips = {}
     for key in homes:
-        print(key)
+        logging.debug(key)
         home_profiler_ips[key] = profiler_ips[key]
         del node_profiler_ips[key]
 
@@ -114,15 +117,15 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
                                 app_name = app_name,
                                 app_option = jupiter_config.APP_OPTION)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
-    print("Home deployment created. status = '%s'" % str(resp.status))
+    logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
-    print('Successfully deploy HEFT')
+    logging.debug('Successfully deploy HEFT')
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'HEFT deployend %f \n'%(end_time)
         write_file(latency_file,msg)
         deploy_time = end_time - start_time
-        print('Time to deploy HEFT '+ str(deploy_time))
+        logging.debug('Time to deploy HEFT '+ str(deploy_time))
 if __name__ == '__main__':
     k8s_heft_scheduler(profiler_ips,execution_ips)

@@ -32,16 +32,17 @@ import numpy as np
 from collections import defaultdict
 import paho.mqtt.client as mqtt
 import jupiter_config
-
+import logging
 import pyinotify
+
 
 
 app = Flask(__name__)
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    logging.debug('Sending demo')
+    logging.debug(topic)
+    logging.debug(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -60,20 +61,20 @@ def recv_datasource():
     """
     global start_times, end_times
     try:
-        # print('Receive final runtime profiling')
+        # logging.debug('Receive final runtime profiling')
         filename = request.args.get('filename')
         filetype = request.args.get('filetype')
         ts = request.args.get('time')
 
-        print("Received flask message:", filename, filetype,ts)
+        logging.debug("Received flask message: %s %s %s", filename, filetype,ts)
         if filetype == 'input':
             start_times[filename]=float(ts)
         else:
             end_times[filename]=float(ts)
         
     except Exception as e:
-        print("Bad reception or failed processing in Flask")
-        print(e)
+        logging.debug("Bad reception or failed processing in Flask")
+        logging.debug(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_monitor_datasource', 'recv_datasource', recv_datasource)
@@ -95,19 +96,19 @@ def recv_mapping():
         msg = request.args.get('msg')
         ts = time.time()
 
-        print("Received flask message:", worker_node, msg, ts)
+        logging.debug("Received flask message:%s %s %s", worker_node, msg, ts)
         if msg == 'start':
             start_time[worker_node].append(ts)
         else:
             end_time[worker_node].append(ts)
             if worker_node in last_tasks:
-                print("Start time stats:", start_time)
-                print("End time stats:", end_time)
+                logging.debug("Start time stats: %s", start_time)
+                logging.debug("End time stats: %s", end_time)
 
 
     except Exception as e:
-        print("Bad reception or failed processing in Flask")
-        print(e)
+        logging.debug("Bad reception or failed processing in Flask")
+        logging.debug(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_monitor_data', 'recv_mapping', recv_mapping)
@@ -120,7 +121,7 @@ def return_output_files():
         int: number of output files
     """
     num_files = len(os.listdir("output/"))
-    # print("Recieved request for number of output files. Current done:", num_files)
+    # logging.debug("Recieved request for number of output files. Current done:", num_files)
     return json.dumps(num_files)
 app.add_url_rule('/', 'return_output_files', return_output_files)
 
@@ -142,8 +143,6 @@ def recv_runtime_profile():
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg').split()
         
-
-        # print("Received runtime message:", worker_node, msg[0],msg[1], msg[2])
         
         if msg[0] == 'rt_enter':
             rt_enter_time[(worker_node,msg[1])] = float(msg[2])
@@ -153,8 +152,8 @@ def recv_runtime_profile():
             rt_finish_time[(worker_node,msg[1])] = float(msg[2])
             if worker_node in last_tasks:
                 # Per task stats:
-                print('********************************************') 
-                print("Received final output at home: Runtime profiling info:")
+                logging.debug('********************************************') 
+                logging.debug("Received final output at home: Runtime profiling info:")
                 """
                     - Worker node: task name
                     - Input file: input files
@@ -175,18 +174,18 @@ def recv_runtime_profile():
                         duration = rt_finish_time[k]-rt_exec_time[k]
                         waiting = rt_exec_time[k]-v
                         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
-                        print(s)
+                        logging.debug(s)
                         log_file.write(s)
                         log_file.flush()
 
                 log_file.close()
-                print('********************************************')
+                logging.debug('********************************************')
         
 
                 
     except Exception as e:
-        print("Bad reception or failed processing in Flask for runtime profiling")
-        print(e)
+        logging.debug("Bad reception or failed processing in Flask for runtime profiling")
+        logging.debug(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
@@ -202,7 +201,7 @@ class MonitorRecv(multiprocessing.Process):
         """
         Start Flask server
         """
-        print("Flask server started")
+        logging.debug("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
 def transfer_data_scp(ID,user,pword,source, destination):
@@ -224,14 +223,14 @@ def transfer_data_scp(ID,user,pword,source, destination):
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
-            print('data transfer complete\n')
+            logging.debug('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
         except:
-            print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
     if retry == num_retries:
@@ -252,7 +251,7 @@ def transfer_data(ID,user,pword,source, destination):
         destination (str): destination file path
     """
     msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
-    # print(msg)
+    # logging.debug(msg)
     
 
     if TRANSFER == 0:
@@ -281,15 +280,13 @@ class MyHandler(pyinotify.ProcessEvent):
         global exec_times
         global count
 
-        print("Received file as output - %s." % event.pathname) 
-        # print(event.src_path, event.event_type)  # print now only for degug
+        logging.debug("Received file as output - %s." % event.pathname) 
         outputfile = event.pathname.split('/')[-1].split('_')[0]
 
-        # print(outputfile)
         end_times[outputfile] = time.time()
         
         exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
-        print("execution time is: ", exec_times)
+        logging.debug("execution time is: %s", exec_times)
 
         if BOKEH == 2: #used for combined_app with distribute script
             app_name = outputfile.split('-')[0]
@@ -317,7 +314,7 @@ class Handler(pyinotify.ProcessEvent):
         """
         global start_times, end_times
 
-        print("Received file as input - %s." % event.pathname)  
+        logging.debug("Received file as input - %s." % event.pathname)  
 
         if RUNTIME == 1:   
             ts = time.time() 
@@ -346,6 +343,9 @@ def main():
         -   Whenever there is a new file showing up in ``INPUT`` folder, copy the file to the ``INPUT`` folder of the first scheduled node.
         -   Collect execution profiling information from the system.
     """
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
 
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
@@ -417,17 +417,12 @@ def main():
     dag = dag_info[1]
     hosts=dag_info[2]
 
-    # print("TASK1: ", dag_info[0])
-    # print("DAG: ", dag_info[1])
-    # print("HOSTS: ", dag_info[2])
-
     global last_tasks
     last_tasks = set()
     for task in dag_info[1]:
         if 'home' in dag_info[1][task]:
             last_tasks.add(task)
 
-    # print("LAST TASKS: ", last_tasks)
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH
     BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
@@ -441,7 +436,7 @@ def main():
     wm = pyinotify.WatchManager()
     input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
     wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
-    print('starting the input monitoring process\n')
+    logging.debug('starting the input monitoring process\n')
     eh = Handler()
     notifier = pyinotify.ThreadedNotifier(wm, eh)
     notifier.start()
@@ -449,7 +444,7 @@ def main():
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
     wm1 = pyinotify.WatchManager()
     wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
-    print('starting the output monitoring process\n')
+    logging.debug('starting the output monitoring process\n')
     eh1 = MyHandler()
     notifier1= pyinotify.Notifier(wm1, eh1)
     notifier1.loop()

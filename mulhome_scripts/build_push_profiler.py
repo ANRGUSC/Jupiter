@@ -7,6 +7,9 @@ import sys
 sys.path.append("../")
 import os
 import jupiter_config
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def prepare_global_info():
     """Read configuration information
@@ -22,7 +25,7 @@ def prepare_global_info():
     port_list.append(jupiter_config.SSH_DOCKER)
     port_list.append(jupiter_config.MONGO_DOCKER)
     port_list.append(jupiter_config.FLASK_DOCKER)
-    print('The list of ports to be exposed in the profiler dockers are ', " ".join(port_list))
+    logging.debug('The list of ports to be exposed in the profiler dockers are %s', " ".join(port_list))
 
     return port_list
 
@@ -37,7 +40,7 @@ def build_push_profiler():
 
     os.chdir(jupiter_config.NETR_PROFILER_PATH)
 
-    print(jupiter_config.NETR_PROFILER_PATH)
+    logging.debug(jupiter_config.NETR_PROFILER_PATH)
 
     dc.write_profiler_home_docker(username = jupiter_config.USERNAME,
                      password = jupiter_config.PASSWORD,

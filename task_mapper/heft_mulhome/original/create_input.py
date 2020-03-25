@@ -10,6 +10,8 @@ __version__ = "2.1"
 
 import re
 import os
+import logging
+
 
 
 
@@ -31,6 +33,9 @@ def init(filename):
         - list: file size transfer matrix
         - list: communication matrix
     """
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
 
     NODE_NAMES = os.environ["NODE_NAMES"]
     node_info = NODE_NAMES.split(":")
@@ -47,13 +52,13 @@ def init(filename):
     myline = f.readline()
     while myline.startswith('\tTASK'):
         num_of_tasks += 1
-        print(myline)
+        logging.debug(myline)
         name = myline.strip().split()[1]
         task_names.append(name)
-        #print(task_names)
+        #logging.debug(task_names)
         myline=f.readline()
-    print("task_names:", task_names)
-    #print 'Number of tasks = %d' % num_of_tasks
+    logging.debug("task_names: %s", task_names)
+    #logging.debug 'Number of tasks = %d' % num_of_tasks
 
     # Build a communication matrix
     data = [[-1 for i in range(num_of_tasks)] for i in range(num_of_tasks)]
@@ -65,7 +70,7 @@ def init(filename):
         data[i][j] = d
         line = f.readline()
     #for line in data:
-    #    print line
+    #    logging.debug line
 
 
     while not f.readline().startswith('@computation_cost'):
@@ -73,7 +78,7 @@ def init(filename):
 
     # Calculate the amount of processors
     num_of_processors = len(f.readline().split()) - 3
-    #print 'Number of processors = %d' % num_of_processors
+    #logging.debug 'Number of processors = %d' % num_of_processors
 
     # Build a computation matrix
     comp_cost = []
@@ -82,7 +87,7 @@ def init(filename):
         comp_cost.append(map(int, line.split()[-num_of_processors:]))
         line = f.readline()
     #for line in comp_cost:
-    #    print line
+    #    logging.debug line
 
     # Build a rate matrix
     rate = [[1 for i in range(num_of_processors)] for i in range(num_of_processors)]
@@ -94,7 +99,7 @@ def init(filename):
     while not f.readline().startswith('@quadratic'):
         pass
     line = f.readline()
-    #print(line)
+    #logging.debug(line)
     line = f.readline()
 
     while line.startswith('  '):
@@ -105,6 +110,6 @@ def init(filename):
         quaratic_profile[i-1][j-1] = tuple([a,b,c])
         line = f.readline()
 
-    print('==================')
-    # print(quaratic_profile)
+    logging.debug('==================')
+    # logging.debug(quaratic_profile)
     return [num_of_tasks, task_names, num_of_processors, comp_cost, rate, data, quaratic_profile]

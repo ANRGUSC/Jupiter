@@ -25,6 +25,8 @@ from pymongo import MongoClient
 import configparser
 from os import path
 from functools import wraps
+import logging
+
 
 
 
@@ -57,7 +59,7 @@ def prepare_global():
         nodes[node_name] = node_ip + ":" + str(FLASK_SVC)
         node_count +=  1
     master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
-    print("Nodes", nodes)
+    logging.debug("Nodes", nodes)
 
     node_id = -1
     node_name = ""
@@ -109,7 +111,7 @@ def init_folder():
         Exception: ``ok`` if successful, ``not ok`` otherwise
     """
 
-    print("Trying to initialize folders here")
+    logging.debug("Trying to initialize folders here")
     try:
         if not os.path.exists("./local"):
             os.mkdir("./local")
@@ -124,7 +126,7 @@ def init_folder():
             os.mkdir(local_responsibility)
         return "ok"
     except Exception:
-        print("Init folder fialed: Why??")
+        logging.debug("Init folder fialed: Why??")
         return "not ok"
 
 
@@ -285,10 +287,10 @@ def distribute():
                 assign_to_node = "node" + str(tmp_node_id)
                 items = re.split(r'\t+', line)
                 if items[0] in done_dict:
-                    print(items[0], "already assigned")
+                    logging.debug(items[0], "already assigned")
                     continue
 
-                print("Trying to assign", items[0], "to", assign_to_node)
+                logging.debug("Trying to assign", items[0], "to", assign_to_node)
                 status = assign_task_to_remote(assign_to_node, items[0])
                 if status == "ok":
                     output("Assign " + items[0] + " to " + assign_to_node + " successfully")
@@ -360,36 +362,36 @@ def read_file(file_name):
 
 
 def output(msg):
-    """if debug is True, print the msg
+    """if debug is True, logging.debug the msg
     
     Args:
-        msg (str): message to be printed
+        msg (str): message to be logging.debuged
     """
     if debug:
-        print(msg)
+        logging.debug(msg)
 
 
 def get_resource_data_drupe():
     """Collect resource profiling information
     """
 
-    print("Startig resource profile collection thread")
+    logging.debug("Startig resource profile collection thread")
     # Requsting resource profiler data using flask for its corresponding profiler node
     result = None
     while True:
         time.sleep(60)
-        # print("Get resource profiler data from http://"+os.environ['PROFILER']+ ":" + str(FLASK_SVC))
+        # logging.debug("Get resource profiler data from http://"+os.environ['PROFILER']+ ":" + str(FLASK_SVC))
         try:
             r = requests.get("http://"+os.environ['PROFILER']+":" + str(FLASK_SVC)+"/all")
             result = r.json()
             if len(result) != 0:
                 break
         except Exception:
-            print("Resource request failed. Will try again")
+            logging.debug("Resource request failed. Will try again")
 
     data=json.dumps(result)
-    print("Got profiler data from http://"+os.environ['PROFILER']+ ":" + str(FLASK_SVC))
-    print("Resource profiles:", data)
+    logging.debug("Got profiler data from http:// %s : %s",os.environ['PROFILER'],str(FLASK_SVC))
+    logging.debug("Resource profiles:", data)
 
 def profilers_mapping_decorator(f):
     """General Mapping decorator function
@@ -429,10 +431,10 @@ def get_network_data_drupe():
     """Collect the network profile from local MongoDB peer
     """
 
-    print('Collecting Network Monitoring Data from MongoDB')
+    logging.debug('Collecting Network Monitoring Data from MongoDB')
     client_mongo = MongoClient('mongodb://'+os.environ['PROFILER']+':'+str(MONGO_SVC)+'/')
     db = client_mongo.droplet_network_profiler
-    print(db[os.environ['PROFILER']])
+    logging.debug(db[os.environ['PROFILER']])
 
 def main():
     """
@@ -444,6 +446,10 @@ def main():
         - Start thread to thread to assign todo task to nodes
     """
 
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
+
     prepare_global()
 
     global node_name, node_id, FLASK_PORT
@@ -451,8 +457,8 @@ def main():
     node_name = os.environ['SELF_NAME']
     node_id = int(node_name.split("e")[-1])
 
-    print("Node name:", node_name, "and id", node_id)
-    print("Starting the main thread on port", FLASK_PORT)
+    logging.debug("Node name: %s and id %s", node_name, node_id)
+    logging.debug("Starting the main thread on port %s", FLASK_PORT)
 
     get_network_data = get_network_data_mapping()
     get_resource_data = get_resource_data_mapping()

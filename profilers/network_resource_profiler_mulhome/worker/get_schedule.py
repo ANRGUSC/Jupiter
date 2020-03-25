@@ -26,6 +26,9 @@ from os.path import isfile, join
 from os import path
 import configparser
 import requests
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 
 sys.path.append("../")
@@ -51,13 +54,13 @@ def main():
         time.sleep(10)
         try:
             for home_ip in home_ips:
-                print("get the schedule from http://"+ home_ip + ":" + str(FLASK_SVC))
+                logging.debug("get the schedule from http://"+ home_ip + ":" + str(FLASK_SVC))
                 line = "http://"+home_ip+":" + str(FLASK_SVC) + "/schedule/" + SELF_IP
                 r = requests.get(line).json()
                 if len(r):
                     flag_schedule = r["status"]
         except Exception as e:
-            print("Scheduler request failed. Will try again, details: " + str(e))
+            logging.debug("Scheduler request failed. Will try again, details: " + str(e))
 
 
 if __name__ == '__main__':

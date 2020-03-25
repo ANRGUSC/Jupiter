@@ -17,6 +17,9 @@ import multiprocessing
 from flask import Flask, request
 import configparser
 import urllib
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 app = Flask(__name__)
 
@@ -28,7 +31,7 @@ def gen_stream_data(interval,data_path):
     while True:
         for i in range(0,interval):
             time.sleep(1)
-        print('--- Generate new file')
+        logging.debug('--- Generate new file')
         bash_script = os.path.join(os.getcwd(),'generate_random_files')
         bash_script = bash_script+' '+os.environ['SELF_NAME']
         proc = subprocess.Popen(bash_script, shell = True, stdout = subprocess.PIPE)
@@ -53,11 +56,11 @@ def transfer_data_scp(ID,user,pword,source, destination):
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
-            print('data transfer complete\n')
+            logging.debug('data transfer complete\n')
             break
         except Exception as e:
-            print('SSH Connection refused or File transfer failed, will retry in 2 seconds')
-            print(e)
+            logging.debug('SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            logging.debug(e)
             time.sleep(2)
             retry += 1
 
@@ -96,7 +99,7 @@ class Handler(pyinotify.ProcessEvent):
             event (ProcessEvent): a new file is created
         """
 
-        print("Received file as input - %s." % event.pathname)  
+        logging.debug("Received file as input - %s." % event.pathname)  
 
 
         inputfile = event.pathname.split('/')[-1]
@@ -120,7 +123,7 @@ class MonitorRecv(multiprocessing.Process):
         """
         Start Flask server
         """
-        print("Flask server started")
+        logging.debug("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
 
@@ -146,8 +149,8 @@ def send_monitor_data(filename,filetype,ts):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        print("Sending message to flask server on home FAILED!!!")
-        print(e)
+        logging.debug("Sending message to flask server on home FAILED!!!")
+        logging.debug(e)
         return "not ok"
     return res
 
@@ -181,7 +184,7 @@ def main():
     web_server = MonitorRecv()
     web_server.start()
     
-    print('Starting to generate the streaming files')
+    logging.debug('Starting to generate the streaming files')
     interval = 60
     data_path = "generated_stream"
     _thread.start_new_thread(gen_stream_data,(interval,data_path,))  
@@ -190,7 +193,7 @@ def main():
     wm = pyinotify.WatchManager()
     input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'generated_stream/')
     wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
-    print('starting the input monitoring process\n')
+    logging.debug('starting the input monitoring process\n')
     eh = Handler()
     notifier = pyinotify.Notifier(wm, eh)
     notifier.loop()

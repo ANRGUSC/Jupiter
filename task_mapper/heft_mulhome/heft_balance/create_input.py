@@ -10,6 +10,9 @@ __version__ = "2.1"
 
 import re
 import os
+import logging
+
+
 
 
 
@@ -31,6 +34,8 @@ def init(filename):
         - list: file size transfer matrix
         - list: communication matrix
     """
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
 
     NODE_NAMES = os.environ["NODE_NAMES"]
     node_info = NODE_NAMES.split(":")
@@ -50,7 +55,7 @@ def init(filename):
         name = myline.strip().split()[1]
         task_names.append(name)
         myline=f.readline()
-    print("task_names:", task_names)
+    logging.debug("task_names: %s", task_names)
 
     # Build a communication matrix
     data = [[-1 for i in range(num_of_tasks)] for i in range(num_of_tasks)]

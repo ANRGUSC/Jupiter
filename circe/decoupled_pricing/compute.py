@@ -139,6 +139,8 @@ def prepare_global_info():
     
 
     global computing_nodes,computing_ips 
+    # task_controllers = os.environ['ALL_NODES'].split(':')
+    # task_controllers_ips = os.environ['ALL_NODES_IPS'].split(':')
     computing_nodes = os.environ['ALL_COMPUTING_NODES'].split(':')
     computing_ips = os.environ['ALL_COMPUTING_IPS'].split(':')
     node_ip_map = dict(zip(computing_nodes, computing_ips))
@@ -173,8 +175,11 @@ def prepare_global_info():
 
     global home_node_host_ports, dag
     home_node_host_ports = dict()
+    # print('--------- CHECK')
     for home_id in home_ids:
+        # print(home_id)
         home_node_host_ports[home_id] = home_ip_map[home_id] + ":" + str(FLASK_SVC)
+        # print(home_node_host_ports)
 
     dag_file = '/centralized_scheduler/dag.txt'
     dag_info = k8s_read_dag(dag_file)
@@ -183,14 +188,39 @@ def prepare_global_info():
 
     global tasks, task_order, super_tasks, non_tasks
     tasks, task_order, super_tasks, non_tasks = get_taskmap()
+    # print('----------- TASKS INFO')
+    # print(tasks)
+    # print(task_order)
+    # print(super_tasks)
+    # print(non_tasks)
+
+    # for task in tasks:
+    #     my_task_price_net[task] = dict()    
+
 
     global ip_profilers_map,profilers_ip_map, controllers_ip_map, computing_ip_map, profilers_ip_homes
+    # print('DEBUG')
+    # print(profiler_nodes)
+    # print(profiler_ip)
     
     ip_profilers_map = dict(zip(profiler_ip, profiler_nodes))
     profilers_ip_map = dict(zip(profiler_nodes, profiler_ip))
 
+    # print(home_nodes)
+    # print(home_ids)
+    # print(home_ips)
+    # print(profilers_ip_map)
+    # print(ip_profilers_map)
     profilers_ip_homes = [profilers_ip_map[x] for x in home_ids]
+
+    # controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
     computing_ip_map = dict(zip(computing_nodes, computing_ips))
+    
+    # for task in task_controllers:
+    #     if task in super_tasks:
+    #         computing_ip_map[task] = controllers_ip_map[task]
+
+
 
     global next_tasks_map,last_tasks_map
     next_tasks_map = dict()
@@ -263,8 +293,11 @@ def announce_input_worker():
         tmp_time = request.args.get('input_time')
         tmp_info = request.args.get('home_id')
         tmp_home = tmp_info.split('-')[1]
+        # print('Current mapping list')
+        # print(mapping_times)
         print("Received input announcement from home compute")
         start_times[(tmp_home,tmp_file)] = tmp_time
+        # print(start_times)
         print(global_task_node_map)
         print(mapping_times)
         if len(mapping_times)==0: 
@@ -289,10 +322,13 @@ def announce_mapping_worker():
         print("Received mapping announcement from home compute")
         tmp = tmp_assignments.split(',')
 
+        # print('Mapping time')
         mapping_times.append(tmp_time)
+        # print(mapping_times)
 
         for task in tmp:
             global_task_node_map[len(mapping_times)-1,tmp_home,task.split(':')[0]]=task.split(':')[1]
+        # print(global_task_node_map)
 
         
 
@@ -315,6 +351,8 @@ def execute_task(home_id,task_name,file_name, filenames, input_path, output_path
     ts = time.time()
     runtime_info = 'rt_exec '+ file_name+ ' '+str(ts)
     send_runtime_profile_computingnode(runtime_info,task_name,home_id)
+    # print('*** Perform the task!!!')
+    # print(task_name)
     dag_task = multiprocessing.Process(target=task_module[task_name].task, args=(filenames, input_path, output_path))
     dag_task.start()
     dag_task.join()
@@ -417,9 +455,34 @@ def retrieve_input_enter(task_name, file_name):
         task_name (str): task name
         file_name (str): name of the file enter at the INPUT folder
     """
+    # print('***************************************************')
+    # print('retrieve input name')
+    # t = tic()
+    # t1 = time.time()
+    # print(file_name)
+    # print(task_name)
+    # print(name_convert_in)
     suffix = name_convert_in[task_name]
+    # print(suffix)
+    # print(time.time()-t1)
+    # t1 = time.time()
+    # print(suffix)
+    # print(type(suffix))
     prefix = file_name.split(suffix)
+    # print(prefix)
+    # print(time.time()-t1)
+    # t1 = time.time()
+    # print('$$$$$$')
+    # print(file_name)
+    # print(suffix)
+    # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
+    # print(time.time()-t1)
+    # print(input_name)
+    # txec = toc(t)
+    # #bottleneck['retrieveinput'].append(txec)
+    # # print(np.mean(bottleneck['retrieveinput']))
+    # print('***************************************************')
     return input_name
 
 def retrieve_input_finish(task_name, file_name):
@@ -429,9 +492,20 @@ def retrieve_input_finish(task_name, file_name):
         task_name (str): task name
         file_name (str): name of the file output at the OUTPUT folder
     """
+    # print('***************************************************')
+    # print('retrieve finish name')
+    # print(file_name)
+    # print(name_convert_out)
     suffix = name_convert_out[task_name]
+    # print(suffix)
     prefix = file_name.split(suffix)
+    # print('$$$$$$')
+    # print(file_name)
+    # print(suffix)
+    # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
+    # print(input_name)
+    # print('***************************************************')
     return input_name
 
 
@@ -471,25 +545,44 @@ class Handler1(pyinotify.ProcessEvent):
             #send runtime info
             
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
+            # print(input_name)
             send_runtime_profile_computingnode(runtime_info,task_name,home_id)
+            # transfer_data(home_ip_map[home_id],username,password,event.pathname, "/output/"+new_file)
             transfer_data(home_id,username,password,event.pathname, "/output/"+new_file)   
         else:
             print('----- next step is not home')
+            # print(task_node_map)
+
+            # print(global_task_node_map)
             while len(global_task_node_map)==0:
                 print('Global task mapping is not loaded')
                 time.sleep(1)
             print('Current mapping input list')
+            print(global_task_node_map)
+            print(mapping_times)
+            print(mapping_input_id)
+            print(home_id)
+            print(input_name)
+            print(mapping_input_id[(home_id,input_name)])
             next_hosts = [global_task_node_map[mapping_input_id[(home_id,input_name)],home_id,x] for x in next_tasks_map[task_name]]
+            # next_IPs   = [computing_ip_map[x] for x in next_hosts]
             
             print('Sending the output files to the corresponding destinations')
             print(next_hosts)
             if flag=='true': 
                 print('not wait, send')
+                # send runtime info
                 runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
+                # print(input_name)
                 send_runtime_profile_computingnode(runtime_info,task_name,home_id)
 
                 #send a single output of the task to all its children 
                 destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
+                # for idx,ip in enumerate(next_IPs):
+                    # if self_ip!=ip: # different node
+                    #     transfer_data(ip,username,password,event.pathname, destinations[idx])
+                    # else: # same node
+                    #     copyfile(event.pathname, destinations[idx])
                 for idx,host in enumerate(next_hosts):
                     if self_ip!=combined_ip_map[host]: # different node
                         print('different node')
@@ -507,6 +600,7 @@ class Handler1(pyinotify.ProcessEvent):
                 if len(files_mul[key]) == len(next_hosts):
                     # send runtime info on finishing the task 
                     runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
+                    # print(input_name)
                     send_runtime_profile_computingnode(runtime_info,task_name,home_id)
 
                     for idx,host in enumerate(next_hosts):
@@ -516,6 +610,13 @@ class Handler1(pyinotify.ProcessEvent):
                             transfer_data(host,username,password,files_mul[key][idx], destinations)
                         else: 
                             copyfile(files_mul[key][idx],destinations)
+                    # for idx,ip in enumerate(next_IPs):
+                    #     current_file = files_mul[key][idx].split('/')[-1]
+                    #     destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
+                    #     if self_ip!=ip:
+                    #         transfer_data(ip,username,password,files_mul[key][idx], destinations)
+                    #     else: 
+                    #         copyfile(files_mul[key][idx],destinations)
 
 
 class Handler(pyinotify.ProcessEvent):
@@ -528,21 +629,34 @@ class Handler(pyinotify.ProcessEvent):
 
 
         new_file = os.path.split(event.pathname)[-1]
+        # print(new_file)
         if '_' in new_file:
             file_name = new_file.split('_')[0]
         else:
             file_name = new_file.split('.')[0]
+        # print(file_name)
         ts = time.time()
         home_id = event.pathname.split('/')[-2]
         task_name = event.pathname.split('/')[-3]
         
         input_name = retrieve_input_enter(task_name, file_name)
+        # print(input_name)
         runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
         key = (home_id,task_name,input_name)
         send_runtime_profile_computingnode(runtime_info,task_name,home_id)
 
+    
+            
         flag = dag[task_name][0] 
         task_flag = dag[task_name][1] 
+        # print('---------------')
+        # print(file_name)
+        # print(task_name)
+        # print(flag)
+        # print(task_flag)
+        # print(key)
+        # print(task_mul)
+
         if key not in task_mul:
             task_mul[key] = [new_file]
             count_mul[key]= int(flag)-1

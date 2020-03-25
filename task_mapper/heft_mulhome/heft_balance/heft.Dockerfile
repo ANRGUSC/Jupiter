@@ -28,19 +28,19 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 # Prepare heft files
 RUN mkdir -p heft
-ADD task_mapper/heft_mulhome/modified/start.sh /heft/start.sh
-ADD task_mapper/heft_mulhome/modified/master_heft.py  /heft/master.py
-ADD task_mapper/heft_mulhome/modified/heft_dup.py /heft/heft_dup.py
-ADD task_mapper/heft_mulhome/modified/create_input.py /heft/create_input.py
-ADD task_mapper/heft_mulhome/modified/read_input_heft.py /heft/read_input_heft.py
-ADD task_mapper/heft_mulhome/modified/write_input_heft.py /heft/write_input_heft.py
+ADD task_mapper/heft_mulhome/heft_balance/start.sh /heft/start.sh
+ADD task_mapper/heft_mulhome/heft_balance/master_heft.py  /heft/master.py
+ADD task_mapper/heft_mulhome/heft_balance/heft_dup.py /heft/heft_dup.py
+ADD task_mapper/heft_mulhome/heft_balance/create_input.py /heft/create_input.py
+ADD task_mapper/heft_mulhome/heft_balance/read_input_heft.py /heft/read_input_heft.py
+ADD task_mapper/heft_mulhome/heft_balance/write_input_heft.py /heft/write_input_heft.py
 ADD jupiter_config.ini /heft/jupiter_config.ini
 ADD mulhome_scripts/keep_alive.py /heft/keep_alive.py
 
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh
-ADD app_specific_files/dummyapp200/configuration.txt  /heft/dag.txt
-ADD app_specific_files/dummyapp200/scripts/config.json /heft/config.json
+ADD app_specific_files/dummy_app_multicast/configuration.txt  /heft/dag.txt
+ADD app_specific_files/dummy_app_multicast/scripts/config.json /heft/config.json
 
 WORKDIR /heft/
 

@@ -31,7 +31,7 @@ RUN mkdir -p /input
 RUN mkdir -p /output
 
 # Add input files
-COPY  app_specific_files/dummy_app/sample_input /sample_input
+COPY  app_specific_files/dummy_app_multicast/sample_input /sample_input
 
 # Add the mongodb scripts
 ADD circe/decoupled_pricing/runtime_profiler_mongodb /central_mongod
@@ -42,18 +42,18 @@ ADD jupiter_config.py /jupiter_config.py
 ADD circe/decoupled_pricing/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
-RUN echo app_specific_files/dummy_app/configuration.txt
-ADD app_specific_files/dummy_app/configuration.txt /configuration.txt
+RUN echo app_specific_files/dummy_app_multicast/configuration.txt
+ADD app_specific_files/dummy_app_multicast/configuration.txt /configuration.txt
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
 
 ADD circe/decoupled_pricing/start_home_compute.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
-ADD app_specific_files/dummy_app/name_convert.txt /centralized_scheduler/name_convert.txt
-ADD app_specific_files/dummy_app/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
-ADD app_specific_files/dummy_app/scripts/config.json /centralized_scheduler/config.json
-ADD app_specific_files/dummy_app/configuration.txt  /centralized_scheduler/dag.txt
+ADD app_specific_files/dummy_app_multicast/name_convert.txt /centralized_scheduler/name_convert.txt
+ADD app_specific_files/dummy_app_multicast/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD app_specific_files/dummy_app_multicast/scripts/config.json /centralized_scheduler/config.json
+ADD app_specific_files/dummy_app_multicast/configuration.txt  /centralized_scheduler/dag.txt
 
 WORKDIR /
 

@@ -38,6 +38,9 @@ from bokeh.models import Plot, Range1d, MultiLine, Circle, HoverTool, BoxZoomToo
 from bokeh.models.graphs import from_networkx
 from bokeh.transform import transform 
 from bokeh.models.transforms import CustomJSTransform 
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def get_dag_nodes(lines):
     nodes = []
@@ -50,7 +53,7 @@ def get_dag_links(lines):
     for i, line in enumerate(lines):
         arr = line.rstrip().split(" ")
         node = arr[0]
-        print(arr)
+        logging.debug(arr)
         if i < len(lines)-1:
             for i, each in enumerate(arr):
                 if i >= 3:
@@ -81,15 +84,15 @@ class mq():
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
         subres = client.subscribe(self.subs,qos=1)
-        print("Connected with result code "+str(rc))
+        logging.debug("Connected with result code "+str(rc))
 
 
     # The callback for when a PUBLISH message is received from the server.
     def on_message(self,client, userdata, msg):
         
         
-        print(self.start_messages)
-        print(self.end_messages)
+        logging.debug(self.start_messages)
+        logging.debug(self.end_messages)
 
 
         top_dag=[5.15, 4.15, 4.15, 4.15, 3.15, 3.15, 3.15, 3.15, 3.15, 3.15, 2.15,2.15,2.15,1.15]
@@ -103,9 +106,9 @@ class mq():
         global finish_time
         global total_time
 
-        print('--------------')
-        print(message)
-        print('--------------')
+        logging.debug('--------------')
+        logging.debug(message)
+        logging.debug('--------------')
         if message in start_messages:
             index = start_messages.index(message)
             topd,bottomd,leftd,rightd = top_dag[index],bottom_dag[index],left_dag[index],right_dag[index]
@@ -127,14 +130,14 @@ class mq():
             doc.add_next_tick_callback(partial(update3, top= topd, bottom=bottomd,left=leftd,right=rightd, color=color1[index]))
 
         elif message.startswith('mapping'):
-            print('---- Receive task mapping')
+            logging.debug('---- Receive task mapping')
             doc.add_next_tick_callback(partial(update5,new=message,old=source6_df,attr=source6.data))
             doc.add_next_tick_callback(partial(update4,new=message,old=source5_df,attr=data_table2.source))
         elif message.startswith('runtime'):
-            print('---- Receive runtime statistics')
+            logging.debug('---- Receive runtime statistics')
             doc.add_next_tick_callback(partial(update8,new=message,old=source8_df,attr=data_table4.source))
         elif message.startswith('global'):
-            print('-----Receive global information')
+            logging.debug('-----Receive global information')
             doc.add_next_tick_callback(partial(update7,new=message,old=source7_df,attr=data_table3.source))
 
 
@@ -496,8 +499,8 @@ p1.renderers.append(graph)
 # x, y = zip(*graph.layout_provider.graph_layout.values())
 # node_labels = nx.get_node_attributes(G, 'name')
 # #node_labels = graph.node_renderer.data_source.data['name']
-# print(node_labels)
-# print(graph.node_renderer.data_source.data['name'])
+# logging.debug(node_labels)
+# logging.debug(graph.node_renderer.data_source.data['name'])
 
 # source = ColumnDataSource({'x': x, 'y': y,
 #                            'task': tuple(node_labels)})

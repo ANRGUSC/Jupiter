@@ -176,7 +176,6 @@ def write_exec_worker_docker(app_option=None,**kwargs):
     dfp = DockerfileParser(path=file_name)
     dfp.content =template_worker.format(**kwargs)
     return file_name
-    # print(dfp.content)
 
 
 def write_exec_home_docker(app_option=None,**kwargs):

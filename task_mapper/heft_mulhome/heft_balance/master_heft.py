@@ -16,6 +16,9 @@ import json
 from random import randint
 import configparser
 from os import path
+import logging
+
+
 
 app = Flask(__name__)
 
@@ -48,8 +51,9 @@ def return_assignment():
     Returns:
         json: assignments of tasks and corresponding nodes
     """
-    print("Recieved request for current mapping. Current mappings done:", len(assignments))
-    print(assignments)
+    logging.debug("Recieved request for current mapping. Current mappings done: %d", len(assignments))
+    logging.debug("Current mappings are:")
+    logging.debug(assignments)
     if len(assignments) == MAX_TASK_NUMBER:
         return json.dumps(assignments)
     else:
@@ -117,10 +121,10 @@ def get_taskmap():
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].extend([data[i]])
-    print("tasks: ", tasks)
-    print("task order", task_order) #task_list
-    print("super tasks", super_tasks)
-    print("non tasks", non_tasks)
+    logging.debug("tasks: %s", tasks)
+    logging.debug("task order %s", task_order) #task_list
+    logging.debug("super tasks %s", super_tasks)
+    logging.debug("non tasks %s", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
 def main():
@@ -130,7 +134,11 @@ def main():
         - Assign random master and slaves for now
     """
 
-    print('Starting to run HEFT mapping')
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
+
+    logging.debug('Starting to run HEFT mapping')
     starting_time = time.time()
 
     global node_info, MAX_TASK_NUMBER, FLASK_PORT, MONGO_SVC_PORT, assignments
@@ -165,19 +173,19 @@ def main():
             heft_scheduler.run()
             heft_scheduler.output_file(output_file)
             assignments = heft_scheduler.output_assignments()
-            print('Assign random master and slaves')
+            logging.debug('Assign random master and slaves')
             for i in range(0,len(non_tasks)):
                 assignments[non_tasks[i]] = node_info[randint(1,num_nodes)] 
             heft_scheduler.display_result()
-            print(assignments)
+            logging.debug(assignments)
             if len(assignments) == MAX_TASK_NUMBER:
-                print('Successfully finish HEFT mapping ')
+                logging.debug('Successfully finish HEFT mapping ')
                 end_time = time.time()
                 deploy_time = end_time - starting_time
-                print('Time to finish HEFT modified mapping '+ str(deploy_time))
+                logging.debug('Time to finish HEFT modified mapping %s', str(deploy_time))
             break;
         else:
-            print('No input TGFF file found!')
+            logging.debug('No input TGFF file found!')
             time.sleep(15)
 
     app.run(host='0.0.0.0', port = int(FLASK_PORT)) # TODO?

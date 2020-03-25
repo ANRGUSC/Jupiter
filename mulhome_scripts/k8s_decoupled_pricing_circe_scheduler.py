@@ -16,6 +16,7 @@ from kubernetes import client, config
 from pprint import *
 import os
 import jupiter_config
+#from utilities import *
 import utilities
 import sys, json
 
@@ -215,6 +216,14 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
             nexthost_ips = nexthost_ips + ':' + service_ips[i]
             nexthost_names = nexthost_names + ':' + i
             all_profiler_ips = all_profiler_ips + ':' + profiler_ips[i]
+    print(service_ips)
+    print(nexthost_ips)
+    print(nexthost_names)
+
+    print("####################################")
+    print(profiler_ips)
+    print("####################################")
+    print(all_profiler_ips)
 
     home_profiler_ips = {}
     for key in homes:
@@ -264,6 +273,8 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
 
     home_name = app_name+'-controllerhome'
     label_name = app_name+'-controllerhome'
+    print(profiler_ips)
+    print(service_ips)
 
 
     home_dep = write_decoupled_pricing_controller_home_specs(name = home_name, label = label_name,
@@ -284,7 +295,9 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
     print("Home deployment created. status = '%s'" % str(resp.status))
 
-    print('Successfully deploy CIRCE dispatcher')
+    pprint(service_ips)
+
+    # print('Successfully deploy CIRCE dispatcher')
     # if jupiter_config.BOKEH == 3:
     #     latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
     #     end_time = time.time()
@@ -303,6 +316,8 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
         execution_ips : IP of execution profilers 
         app_name (str): application name
     """
+    print('INPUT PROFILERS')
+    print(profiler_ips)
     jupiter_config.set_globals()
     
     sys.path.append(jupiter_config.CIRCE_PATH)
@@ -311,6 +326,8 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
 
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path1)
+    pprint(nodes)
+
 
     print('Starting to deploy decoupled CIRCE dispatcher')
     # if jupiter_config.BOKEH == 3:
@@ -346,6 +363,9 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     #get DAG and home machine info
     first_task = dag_info[0]
     dag = dag_info[1]
+    # hosts = temp_info[2] 
+    # mapping = [task+":"+dag_info[2][task] for task in dag_info[2].keys()]
+    # mapping_str = "#".join(mapping)
     service_ips = {}; #list of all service IPs including home and task controllers
     computing_service_ips = {}
     all_profiler_ips = ''
@@ -358,6 +378,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     """
 
     for key in homes:
+        print(key)
         all_profiler_ips = all_profiler_ips + ':'+ profiler_ips[key]
         all_profiler_nodes = all_profiler_nodes +':'+ key
         home_name =app_name+"-"+key
@@ -406,12 +427,21 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
         except ApiException as e:
             print("Exception Occurred")
 
+        # print resp.spec.cluster_ip
         computing_service_ips[node] = resp.spec.cluster_ip
         all_profiler_ips = all_profiler_ips + ':' + profiler_ips[node]
         all_profiler_nodes = all_profiler_nodes + ':' + node
 
     all_computing_ips = ':'.join(computing_service_ips.values())
     all_computing_nodes = ':'.join(computing_service_ips.keys())
+
+    # all_profiler_ips = all_profiler_ips[1:]
+    # all_profiler_nodes = all_profiler_nodes[1:]
+
+    # print(all_computing_nodes)
+    # print(all_computing_ips)
+    
+    
 
 
     """
@@ -430,6 +460,8 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     home_nodes_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(home_nodes.items()))
 
     for i in nodes:
+
+        # print nodes[i][0]
         
         """
             We check whether the node is a home / master.
@@ -440,6 +472,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
             Generate the yaml description of the required deployment for WAVE workers
         """
         pod_name = app_name+"-"+i
+        #print(pod_name)
         dep = write_decoupled_circe_compute_worker_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTE_IMAGE,
                                          host = nodes[i][0], node_name = i,
                                          # all_node = all_node,

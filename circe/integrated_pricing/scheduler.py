@@ -58,6 +58,9 @@ rt_exec_time_computingnode = defaultdict(list)
 rt_finish_time_computingnode = defaultdict(list)
 
 def demo_help(server,port,topic,msg):
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -84,11 +87,16 @@ def recv_mapping():
         ts = time.time()
 
         print("Received flask message:", worker_node, msg, ts)
+        # print(last_tasks)
         if msg == 'start':
             start_time[worker_node].append(ts)
         else:
             end_time[worker_node].append(ts)
+            # print(worker_node + " takes time:" + str(end_time[worker_node][-1] - start_time[worker_node][-1]))
             if worker_node in last_tasks:
+                # print(worker_node)
+            #if worker_node == "globalfusion":
+                # Per task stats:
                 print("Start time stats:", start_time)
                 print("End time stats:", end_time)
 
@@ -118,12 +126,17 @@ def receive_assignment_info():
         Receive corresponding best nodes from the corresponding computing node
     """
     try:
+        # print('Receive assignment info')
         assignment_info = request.args.get('assignment_info').split('#')
         print("Received assignment info")
         task_list = assignment_info[1].split(':')
         best_list = assignment_info[2].split(':')
+        # print(assignment_info[0])
+        # print(task_list)
+        # print(best_list)
         for idx,task in enumerate(task_list):
             local_task_node_map[assignment_info[0],task] = best_list[idx]
+        # print(local_task_node_map)
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
         return "not ok" 
@@ -138,6 +151,7 @@ def send_assignment_info(node_ip,task_name,best_node):
         node_ip (str): IP of the node
     """
     try:
+        # print("Announce my current best computing node " + node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/receive_assignment_info"
         assignment_info = my_task+"#"+task_name + "#"+best_node
         params = {'assignment_info': assignment_info}
@@ -161,6 +175,7 @@ def push_assignment_map():
     print('Updated assignment periodically')
     starttime = time.time()
     for task in tasks:
+        # best_node = predict_best_node(task)
         best_node = new_predict_best_node(task)
         local_task_node_map[my_task,task] = best_node
 
@@ -184,6 +199,7 @@ def push_assignment_map():
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
             
         for computing_ip in all_computing_ips:
+            # print(computing_ip)
             send_assignment_info(computing_ip,task_list,best_list)
     else:
         print('Not yet assignment!')
@@ -244,6 +260,9 @@ def recv_runtime_profile_computingnode():
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg').split()
         task_name = request.args.get('task_name')
+        
+
+        # print("Received flask message:", worker_node, msg[0],msg[1], msg[2],task_name)
 
         if msg[0] == 'rt_enter':
             rt_enter_time_computingnode[(worker_node,task_name,msg[1])] = float(msg[2])
@@ -264,6 +283,7 @@ def recv_runtime_profile_computingnode():
             print('----------------------------')  
             if task_name in last_tasks:
                 # Per task stats:
+                # print(task_name)
                 print('********************************************') 
                 print("Received final output at home: Runtime profiling info:")
                 """
@@ -350,7 +370,9 @@ def transfer_data(ID,user,pword,source, destination):
         destination (str): destination file path
     """
     msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
+    # print(msg)
     
+
     if TRANSFER == 0:
         return transfer_data_scp(ID,user,pword,source, destination)
 
@@ -430,15 +452,22 @@ def price_estimate():
         - Execution information: execution_info
     """
 
-    try:        
+    try:
+        
+        # print(' Retrieve all input information: ')
         network_info = get_updated_network_profile()
+        # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
+        # print('--- Network cost:----------- ')
         price['network'] = dict()
         for node in network_info:
             computing_params = network_info[node].split(' ')
             computing_params = [float(x) for x in computing_params]
             p = (computing_params[0] * test_size * test_size) + (computing_params[1] * test_size) + computing_params[2]
             price['network'][node] = p
+            
+        # print('Overall price:')
+        # print(price)
         return price
              
     except:
@@ -472,10 +501,18 @@ def receive_price_info():
         task_price_mem[node_name] = float(pricing_info[2])
         task_price_queue[node_name] = float(pricing_info[3].split('$')[0])
         price_net_info = pricing_info[3].split('$')[1:]
+        # print(price_net_info)
         for price in price_net_info:
             task_price_net[node_name,price.split(':')[0]] = float(price.split(':')[1])
+        # print('Check price updated interval ')
+        # print(task_price_net)
+        # print(task_price_cpu)
+        # print(task_price_mem)
+        # print(task_price_queue)
         pass_time[node_name] = TimedValue()
         
+
+
     except Exception as e:
         print("Bad reception or failed processing in Flask for pricing announcement: "+ e) 
         return "not ok" 
@@ -526,6 +563,7 @@ class Handler1(pyinotify.ProcessEvent):
         print("execution time is: ", exec_times)
 
         if BOKEH == 3:
+            # print(appname)
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
            
@@ -537,9 +575,20 @@ def new_predict_best_node(task_name):
     w_queue = 1 # Queue : currently 0
     best_node = -1
 
+    # print('Current input price')
+    # print(task_price_cpu)
+    # print(len(task_price_cpu.keys()))
+    # print(task_price_mem)
+    # print(len(task_price_mem.keys()))
+    # print(task_price_queue)
+    # print(len(task_price_queue.keys()))
+    # print(task_price_net)
+    # print(len(task_price_net.keys()))
+
     task_price_network= dict()
    
     for (source, dest), price in task_price_net.items():
+        # print('***')
         if source==my_task:
             task_price_network[dest]= float(task_price_net[source,dest])
     
@@ -561,12 +610,19 @@ def new_predict_best_node(task_name):
     task_price_summary = dict()
     min_value = sys.maxsize
     result_node_name = ''
+    print('Valid nodes')
+    # print(valid_nodes)
     for item in valid_nodes:
         tmp_net = task_price_network[item]
         tmp_cpu = sys.maxsize
         tmp_memory = sys.maxsize
+
         task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
     
+    print('Task price summary')
+    # print(task_price_summary)
+    
+
     try:
         best_node = min(task_price_summary,key=task_price_summary.get)
         print('Best node for '+task_name + ' is ' +best_node)
@@ -602,6 +658,49 @@ def announce_input(input_file, input_time):
     return res
 
 
+# def predict_best_node(task_name):
+#     # print('***************************************************')
+#     # print('Select the current best node')
+#     w_net = 1 # Network profiling: longer time, higher price
+#     w_cpu = 1 # Resource profiling : larger cpu resource, lower price
+#     w_mem = 1 # Resource profiling : larger mem resource, lower price
+#     w_queue = 1 # Queue : currently 0
+    
+#     best_node = -1
+#     task_price_network= dict()
+    
+#     for (source, task), price in task_price_net.items():
+#         if task == task_name:
+#             task_price_network[source]= float(task_price_net[source,task])
+    
+#     task_price_network[my_task] = 0 #the same node
+
+#     if len(task_price_network.keys())>1: #net(node,home) not exist
+#         task_price_summary = dict()
+        
+#         for item, p in task_price_cpu.items():
+#             if item in home_ids: continue
+#             # check time pass
+#             # print('Check passing time------------------')
+#             # print(pass_time.keys())
+#             test = pass_time[item].__call__()
+#             # print(test)
+#             if test==True: 
+#                 task_price_network[item] = float('Inf')
+#             task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
+        
+#         # print('Summary cost')
+#         # print(task_price_summary)
+#         best_node = min(task_price_summary,key=task_price_summary.get)
+#         # print('Best node for '+task_name)
+#         # print(best_node)
+#     else:
+#         print('Task price summary is not ready yet.....') 
+#     return best_node
+
+
+
+
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
     """
@@ -621,12 +720,20 @@ class Handler(pyinotify.ProcessEvent):
 
         input_file = inputfile.split('.')[0]
         announce_input(input_file, t)
+        # start_times.append(time.time())
         print("start time is: ", start_times)
-        new_file_name = os.path.split(event.pathname)[-1]  
+        new_file_name = os.path.split(event.pathname)[-1]
+
+    
         while first_task not in global_task_node_map or global_task_node_map[first_task]==-1:
             print('Not yet update global task mapping information')
-            time.sleep(1)        
-        print('Send file to the first node')    
+            # print(global_task_node_map)
+            time.sleep(1)
+        
+        # IP = node_ip_map[global_task_node_map[first_task]]
+        print('Send file to the first node')
+        # print(global_task_node_map[first_task])
+    
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)
         transfer_data(global_task_node_map[first_task],username, password,source, destination)
@@ -673,6 +780,10 @@ def get_taskmap():
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].extend([data[i]])
+    # print("tasks: ", tasks)
+    # print("task order", task_order) #task_list
+    # print("super tasks", super_tasks)
+    # print("non tasks", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
 def start_evaluate():
@@ -688,7 +799,9 @@ def main():
         -   Collect execution profiling information from the system.
     """
 
+    ##
     ## Load all the confuguration
+    ##
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
@@ -720,6 +833,13 @@ def main():
     
     global tasks, task_order, super_tasks, non_tasks
     tasks, task_order, super_tasks, non_tasks = get_taskmap()
+    # print('----------- TASKS INFO')
+    # print(tasks)
+    # print(task_order)
+    # print(super_tasks)
+    # print(non_tasks)
+
+
 
     global FLASK_DOCKER, FLASK_SVC, MONGO_SVC, username, password, ssh_port, num_retries, first_task,appname, appoption
 
@@ -774,6 +894,10 @@ def main():
     node_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
 
     all_compute_host = [x+':'+str(FLASK_SVC) for x in all_computing_ips]
+
+    # all_controller_nodes = os.environ["ALL_NODES"].split(":")
+    # all_controller_ips = os.environ["ALL_NODES_IPS"].split(":")
+    # controller_ip_map = dict(zip(all_controller_nodes, all_controller_ips))
 
     profiler_ip = os.environ['ALL_PROFILERS'].split(' ')
     profiler_ip = [info.split(":") for info in profiler_ip]

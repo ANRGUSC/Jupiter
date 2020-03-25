@@ -8,7 +8,7 @@ sys.path.append("../")
 
 import os
 import jupiter_config
-
+import logging
 
 def prepare_global_info():
     """Read configuration information
@@ -24,7 +24,7 @@ def prepare_global_info():
     port_list = []
     port_list.append(jupiter_config.SSH_DOCKER)
     port_list.append(jupiter_config.FLASK_DOCKER)
-    print('The list of ports to be exposed in the heft dockers are ', " ".join(port_list))
+    logging.debug('The list of ports to be exposed in the heft dockers are %s', " ".join(port_list))
 
     return port_list
 

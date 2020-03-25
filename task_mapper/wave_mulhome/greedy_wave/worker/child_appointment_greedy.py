@@ -27,6 +27,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import paho.mqtt.client as mqtt
 import socket
+import logging
+
 
 app = Flask(__name__)
 
@@ -153,8 +155,8 @@ def init_task_topology():
                     break
             if not flag:
                 control_relation[parent[0]] = [key]
-    print('----------- Control relation')
-    print("control_relation" ,control_relation)
+    logging.debug('----------- Control relation')
+    logging.debug("control_relation" ,control_relation)
 
 def assign_task():
     """Request assigned node for a specific task, write task assignment in local file at ``local_responsibility/task_name``.
@@ -175,11 +177,11 @@ def assign_task():
                     local_children[task] = False
                     write_file(local_responsibility + "/" + task, 'TODO', "w+")
         else:
-            print('No children tasks for this task')
+            logging.debug('No children tasks for this task')
         
         return "ok"
     except Exception as e:
-        print(e)
+        logging.debug(e)
         return "not ok"
 app.add_url_rule('/assign_task', 'assign_task', assign_task)
 
@@ -194,7 +196,7 @@ def assign_task_to_remote(assigned_node, task_name):
         Exception: request if successful, ``not ok`` if failed
     """
     try:
-        print('Assign children task to the remote node')
+        logging.debug('Assign children task to the remote node')
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
         params = urllib.parse.urlencode(params)
@@ -236,7 +238,7 @@ def call_send_mapping(mapping, node):
         Exception: request if successful, ``not ok`` if failed
     """
     try:
-        print('Announce the mapping to the master host')
+        logging.debug('Announce the mapping to the master host')
         url = "http://" + master_host + "/recv_mapping"
         params = {'mapping': mapping, "node": node}
         params = urllib.parse.urlencode(params)
@@ -301,18 +303,18 @@ class Handler(FileSystemEventHandler):
 
         elif event.event_type == 'created':
 
-            print("Received file as input - %s." % event.src_path)
+            logging.debug("Received file as input - %s." % event.src_path)
             new_task = os.path.split(event.src_path)[-1]
             _thread.start_new_thread(assign_children_task,(new_task,))
 
 
 def assign_children_task(children_task):
-    print('Starting assigning process for the children task')
+    logging.debug('Starting assigning process for the children task')
     while True:
         if is_network_profile_data_ready and is_resource_data_ready:
             break
         else:
-            print("Waiting for the profiler data")
+            logging.debug("Waiting for the profiler data")
             time.sleep(100)
     res = False
     if 'app' in children_task:
@@ -323,9 +325,9 @@ def assign_children_task(children_task):
     sample_size = cal_file_size(sample_file)
     assign_to_node = get_most_suitable_node(sample_size)
     if not assign_to_node:
-        print("No suitable node found for assigning task: ", children_task)
+        logging.debug("No suitable node found for assigning task: ", children_task)
     else:
-        print("Trying to assign", children_task, "to", assign_to_node)
+        logging.debug("Trying to assign", children_task, "to", assign_to_node)
         status = assign_task_to_remote(assign_to_node, children_task)
         if status == "ok":
             local_children[children_task] = assign_to_node
@@ -341,7 +343,7 @@ def get_most_suitable_node(file_size):
     Returns:
         str: result_node_name - assigned node for the current task
     """
-    print('Trying to get the most suitable node')
+    logging.debug('Trying to get the most suitable node')
     weight_network = 1
     weight_cpu = 1
     weight_memory = 1
@@ -383,11 +385,11 @@ def get_most_suitable_node(file_size):
 
     try:
         best_node = min(task_price_summary,key=task_price_summary.get)
-        print('Best node for is ' +best_node)
+        logging.debug('Best node for is ' +best_node)
         return best_node
     except Exception as e:
-        print('Task price summary is not ready yet.....') 
-        print(e)
+        logging.debug('Task price summary is not ready yet.....') 
+        logging.debug(e)
         return -1
 
 def read_file(file_name):
@@ -410,28 +412,28 @@ def read_file(file_name):
 
 
 def output(msg):
-    """if debug is True, print the msg
+    """if debug is True, logging.debug the msg
     
     Args:
-        msg (str): message to be printed
+        msg (str): message to be logging.debuged
     """
     if debug:
-        print(msg)
+        logging.debug(msg)
 
 def get_resource_data_drupe(MONGO_SVC_PORT):
     """Collect the resource profile from local MongoDB peer
     """
 
     for profiler_ip in profiler_ips:
-        print('Check Resource Profiler IP: '+profiler_ip)
+        logging.debug('Check Resource Profiler IP: %s',profiler_ip)
         client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(MONGO_SVC_PORT)+'/')
         db = client_mongo.central_resource_profiler
         collection = db.collection_names(include_system_collections=False)
-        logging =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
-        for record in logging:
+        logdb =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
+        for record in logdb:
             resource_data[network_map[profiler_ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
-    print('Resource information has already been provided')
+    logging.debug('Resource information has already been provided')
     global is_resource_data_ready
     is_resource_data_ready = True
 
@@ -443,29 +445,29 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
 def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     """Collect the network profile from local MongoDB peer
     """
-    print('Check My Network Profiler IP: '+my_profiler_ip)
+    logging.debug('Check My Network Profiler IP: %s',my_profiler_ip)
     client_mongo = MongoClient('mongodb://'+my_profiler_ip+':'+MONGO_SVC_PORT+'/')
     db = client_mongo.droplet_network_profiler
     collection = db.collection_names(include_system_collections=False)
     num_nb = len(collection)-1
     while num_nb==-1:
-        print('--- Network profiler mongoDB not yet prepared')
+        logging.debug('--- Network profiler mongoDB not yet prepared')
         time.sleep(60)
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
     num_rows = db[my_profiler_ip].count()
     while num_rows < num_nb:
-        print('--- Network profiler regression info not yet loaded into MongoDB!')
+        logging.debug('--- Network profiler regression info not yet loaded into MongoDB!')
         time.sleep(60)
         num_rows = db[my_profiler_ip].count()
-    logging =db[my_profiler_ip].find().limit(num_nb)
-    for record in logging:
+    logdb =db[my_profiler_ip].find().skip(db[my_profiler_ip].count()-num_nb)
+    for record in logdb:
         # Destination ID -> Parameters(a,b,c) , Destination IP
         if record['Destination[IP]'] in home_profiler_ip: continue
         params = re.split(r'\s+', record['Parameters'])
         network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
                                                             'c': float(params[2]), 'ip': record['Destination[IP]']}
-    print('Network information has already been provided')
+    logging.debug('Network information has already been provided')
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
@@ -534,7 +536,9 @@ def main():
         - Start thread to watch directory: ``local/task_responsibility``
         - Start thread to thread to assign todo task to nodes
     """
-    
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
     prepare_global()
 
     global node_name, node_id, FLASK_PORT, home_profiler_ip, home_profiler_nodes
@@ -547,8 +551,8 @@ def main():
     home_profiler_ip = [x.split(':')[1] for x in home_profiler]
 
 
-    print("Node name:", node_name, "and id", node_id)
-    print("Starting the main thread on port", FLASK_PORT)
+    logging.debug("Node name: %s and id %s", node_name, node_id)
+    logging.debug("Starting the main thread on port %s", FLASK_PORT)
 
     
     
