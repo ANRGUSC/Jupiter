@@ -8,12 +8,15 @@ __version__ = "2.1"
 
 import pandas as pd
 import itertools
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def main():
     """
         Read ``central_input/nodes.txt`` to get the list of nodes and output combination of link lists in ``central_input/link_list.txt``.
     """
-    print('Preparing the link list text files')
+    logging.debug('Preparing the link list text files')
     input_node_info_file   = 'central_input/nodes.txt'
     output_link_list       = 'central_input/link_list.txt'
 

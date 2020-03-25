@@ -61,6 +61,9 @@ def evaluate_sequential():
 
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
+    # src = "sample_input/1botnet.ipsum"
+    # dest = "input/1botnet.ipsum"
+    # file_count = 2
     print('---- Generate random input files')
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
@@ -91,6 +94,7 @@ if __name__ == '__main__':
     sleep_time_default = 240
     sleep_time = sleep_time_default + (num-1)*120
     print('The delay to send sample files')
+    print(sleep_time)
     time.sleep(sleep_time)
     print('Start copying sample files for evaluation')
     evaluate_sequential()

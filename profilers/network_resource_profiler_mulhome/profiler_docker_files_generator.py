@@ -170,7 +170,6 @@ def write_profiler_worker_docker(**kwargs):
     """
     dfp = DockerfileParser(path='profiler_worker.Dockerfile')
     dfp.content =template_worker.format(**kwargs)
-    # print(dfp.content)
 
 
 def write_profiler_home_docker(**kwargs):

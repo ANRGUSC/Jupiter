@@ -24,6 +24,7 @@ import configparser
 from os import path
 from functools import wraps
 import paho.mqtt.client as mqtt
+import logging
 
 
 app = Flask(__name__)
@@ -90,7 +91,7 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
             db = client_mongo.execution_profiler
             conn = True
         except:
-            print('Error connection')
+            logging.debug('Error connection')
             time.sleep(60)
 
     while num_profilers < (num_nodes+1):
@@ -98,19 +99,19 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
             collection = db.collection_names(include_system_collections=False)
             num_profilers = len(collection)
         except Exception as e:
-            print('--- Execution profiler info not yet loaded into MongoDB!')
+            logging.debug('--- Execution profiler info not yet loaded into MongoDB!')
             time.sleep(60)
 
     for col in collection:
         if col in home_profiler_nodes:
             continue
-        logging =db[col].find()
-        for record in logging:
+        logdb =db[col].find()
+        for record in logdb:
             # Node ID, Task, Execution Time, Output size
             info_to_csv=[col,record['Task'],record['Duration [sec]'],str(record['Output File [Kbit]'])]
             execution_info.append(info_to_csv)
-    print('--------------------------------------------')
-    print('Execution information has already been provided')
+    logging.debug('--------------------------------------------')
+    logging.debug('Execution information has already been provided')
     with open('/heft/execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
@@ -152,30 +153,32 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
         - network_map (dict): mapping of node IPs and node names
     """
     for ip in profiler_ip:
-        print('Check Network Profiler IP: '+ip[0]+ '-' +ip[1])
+        logging.debug('Check Network Profiler IP: %s - %s',ip[0],ip[1])
         client_mongo = MongoClient('mongodb://'+ip[1]+':'+MONGO_SVC_PORT+'/')
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
         while num_nb==-1:
-            print('--- Network profiler mongoDB not yet prepared')
+            logging.debug('--- Network profiler mongoDB not yet prepared')
             time.sleep(60)
             collection = db.collection_names(include_system_collections=False)
             num_nb = len(collection)-1
         num_rows = db[ip[1]].count()
+
         while num_rows < num_nb:
-            print('--- Network profiler regression info not yet loaded into MongoDB!')
+            logging.debug('--- Network profiler regression info not yet loaded into MongoDB!')
             time.sleep(60)
             num_rows = db[ip[1]].count()
-        logging = db[ip[1]].find().skip(db.collection.count() - num_nb)
+
+        logdb = db[ip[1]].find().skip(db[ip[1]].count() - num_nb)
     
-        for record in logging:
+        for record in logdb:
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             if record['Destination[IP]'] in home_profiler_ip: 
                 continue
             info_to_csv=[network_map[record['Source[IP]']],record['Source[IP]'],network_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info.append(info_to_csv)
-    print('Network information has already been provided')
+    logging.debug('Network information has already been provided')
     with open('/heft/network_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(network_info)
@@ -193,6 +196,8 @@ if __name__ == '__main__':
         - Read network profiler information
         - Read execution Profiler Information
     """
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
 
     ## Load all the configuration
     HERE     = path.abspath(path.dirname(__file__)) + "/"
@@ -210,22 +215,22 @@ if __name__ == '__main__':
     global PROFILER
     PROFILER = int(config['CONFIG']['PROFILER'])
 
-    print('---------------------------------------------')
-    print('\n Step 1: Read task list from DAG file and global information \n')
+    logging.debug('---------------------------------------------')
+    logging.debug('\n Step 1: Read task list from DAG file and global information \n')
 
     configuration_path='/heft/dag.txt'
     global profiler_ip,exec_home_ip,num_nodes,network_map,node_list
     get_global_info()
 
-    print('------------------------------------------------------------')
-    print("\n Step 2: Read network profiler information : \n")
+    logging.debug('------------------------------------------------------------')
+    logging.debug("\n Step 2: Read network profiler information : \n")
 
     get_network_data = get_network_data_mapping()
     
     _thread.start_new_thread(get_network_data, (profiler_ip, MONGO_SVC_PORT,network_map))
 
-    print('------------------------------------------------------------')
-    print("\n Step 3: Read execution Profiler Information : \n")
+    logging.debug('------------------------------------------------------------')
+    logging.debug("\n Step 3: Read execution Profiler Information : \n")
     _thread.start_new_thread(get_exec_profile_data, (exec_home_ip, MONGO_SVC_PORT,num_nodes))
 
     while True:

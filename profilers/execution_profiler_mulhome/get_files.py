@@ -20,6 +20,9 @@ from os import path
 from flask import Flask, request, redirect, url_for
 from flask import send_from_directory
 import configparser
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 app = Flask(__name__)
 
@@ -31,7 +34,7 @@ def performance():
 	"""
 	data = {}
 	os.system("python3 -u profiler.py &")
-	print("Started the profiler")
+	logging.debug("Started the profiler")
 
 	js = json.dumps(data)
 	return js
@@ -51,7 +54,7 @@ def main():
 	
 	EXC_FPORT = config['PORT']['FLASK_DOCKER']
 
-	print("starting Flask")
+	logging.debug("starting Flask")
 	app.run(host='0.0.0.0', port = int(EXC_FPORT))
 
 if __name__ == '__main__':

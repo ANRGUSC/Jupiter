@@ -15,12 +15,15 @@ import json
 import datetime
 import configparser
 import paho.mqtt.client as mqtt
+import logging
+
+
 
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
-    print(topic)
-    print(msg)
+    logging.debug('Sending demo')
+    logging.debug(topic)
+    logging.debug(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -71,13 +74,13 @@ def transfer_data_scp(ID,user,pword,source, destination):
     while retry < num_retries:
         try:
             nodeIP = combined_ip_map[ID] #execution profiler worker IP
-            print(nodeIP)
+            logging.debug(nodeIP)
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user,nodeIP, destination)
             os.system(cmd)
-            print('data transfer complete\n')
+            logging.debug('data transfer complete\n')
             break
         except:
-            print('profiler_home.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            logging.debug('profiler_home.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
 
@@ -107,8 +110,11 @@ def main():
         -   send output file back to the scheduler machine
     """
     # Load all the confuguration
+
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
     
-    print('Load all the configuration')
+    logging.debug('Load all the configuration')
     configs  = json.load(open('/centralized_scheduler/config.json'))
     dag_flag = configs['exec_profiler']
     task_map = configs['taskname_map']
@@ -190,12 +196,12 @@ def main():
             myfile.flush()
 
         except Exception as e:
-            print(e)
+            logging.debug(e)
 
     myfile.close()
 
-    print('Finish printing out the execution information')
-    print('Starting to send the output file back to the master node')
+    logging.debug('Finish logging.debuging out the execution information')
+    logging.debug('Starting to send the output file back to the master node')
 
 
 
@@ -223,7 +229,7 @@ def main():
             msg = 'msgoverhead executionprofiler sendexecinfo %d\n'%(len(tasks))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     else:
-        print('No Runtime data file exists...')
+        logging.debug('No Runtime data file exists...')
 
 if __name__ == '__main__':
     main()

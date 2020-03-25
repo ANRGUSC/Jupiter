@@ -8,6 +8,9 @@ sys.path.append("../")
 import os
 import configparser
 import jupiter_config
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def prepare_global_info():
     """Read configuration information from ``app_config.ini``
@@ -25,7 +28,7 @@ def prepare_global_info():
     port_list_home = []
     port_list_home.append(jupiter_config.SSH_DOCKER)
     port_list_home.append(jupiter_config.FLASK_DOCKER)
-    print('The list of ports to be exposed in the sim home are ', " ".join(port_list_home))
+    logging.debug('The list of ports to be exposed in the sim home are %s', " ".join(port_list_home))
 
     return port_list_home
     

@@ -67,7 +67,11 @@ def evaluate_sequential():
     """
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
+    # src = "sample_input/1botnet.ipsum"
+    # dest = "input/1botnet.ipsum"
+    # file_count = 2
     print('---- Generate random input files')
+    # file_count = 2
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
@@ -95,6 +99,8 @@ def evaluate_stress(num_nodes):
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
+        print('---- Generate random input files')
+        print(src)
         shutil.copyfile(src,dest)
         count = 0
         while 1:
@@ -161,15 +167,19 @@ class MyHandler(PatternMatchingEventHandler):
         """
         # the file will be processed there
         if event.event_type == 'created':
+            # print('***************************************************')
             print("Received file as output in evaluation - %s." % event.src_path)  
             filename = os.path.split(event.src_path)[-1]
             appname = filename.split('-')[0]
+            print(appname)
             curfile = filename.split('-')[1].split('botnet')[0]
+            print(curfile)
             curnum = int(curfile)+1
             if curnum < num_samples: 
                 newfile = 'sample_input/'+appname+'-'+str(curnum)+'botnet.ipsum'
                 print(newfile)
                 fileout ='input/'+appname+'-'+str(curnum)+'botnet.ipsum'
+                # print(fileout)
                 shutil.copyfile(newfile,fileout)
 
     def on_modified(self, event):
@@ -190,6 +200,11 @@ if __name__ == '__main__':
     sleep_time_default = 240
     sleep_time = sleep_time_default + (num-1)*120
     print('The delay to send sample files')
+    print(sleep_time)
     time.sleep(sleep_time)
     print('Start copying sample files for evaluation')
     evaluate_sequential()
+    #evaluate_random()
+    # time.sleep(300)
+    # print('Start copying sample files for evaluation')
+    # evaluate_sequential()

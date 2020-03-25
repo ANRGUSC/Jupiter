@@ -12,8 +12,10 @@ from pprint import *
 from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
-#from utilities import *
 import utilities
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def get_all_profilers():
     """
@@ -64,10 +66,10 @@ def get_all_profilers():
         try:
             resp = api_2.read_namespaced_service(key, namespace)
         except ApiException as e:
-            print("Exception Occurred")
+            logging.debug("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            # print(resp.spec.cluster_ip)
+            # logging.debug(resp.spec.cluster_ip)
             mapping[key] = resp.spec.cluster_ip
 
     return mapping
@@ -126,10 +128,10 @@ def get_all_waves(app_name):
         try:
             resp = api_2.read_namespaced_service(pod_name, namespace)
         except ApiException as e:
-            print("Exception Occurred")
+            logging.debug("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            # print(resp.spec.cluster_ip)
+            # logging.debug(resp.spec.cluster_ip)
             mapping[key] = resp.spec.cluster_ip
     return mapping
         # At this point you should not have any of the profiler related service, pod, or deployment running
@@ -184,10 +186,10 @@ def get_all_execs(app_name):
     try:
         resp = api_2.read_namespaced_service(pod_name, namespace)
     except ApiException as e:
-        print("Exception Occurred")
+        logging.debug("Exception Occurred")
     # if a service is running, kill it
     if resp:
-        print(resp.spec.cluster_ip)
+        logging.debug(resp.spec.cluster_ip)
         mapping[key] = resp.spec.cluster_ip
 
     # At this point you should not have any of the profiler related service, pod, or deployment running
@@ -197,4 +199,4 @@ def get_all_execs(app_name):
 
 
 if __name__ == '__main__':
-    print(get_all_profilers())
+    logging.debug(get_all_profilers())

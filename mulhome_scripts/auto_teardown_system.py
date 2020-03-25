@@ -19,7 +19,6 @@ from pprint import *
 import jupiter_config
 import requests
 import json
-from pprint import *
 import utilities
 from k8s_get_service_ips import *
 from functools import wraps
@@ -38,6 +37,9 @@ import datetime
 from k8s_get_service_ips import *
 from functools import wraps
 import _thread
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 
 def teardown_system(app_name):
@@ -57,20 +59,20 @@ def teardown_system(app_name):
     """
     
     if pricing == 0:
-        print('Tear down all current Non-pricing CIRCE deployments')
+        logging.debug('Tear down all current Non-pricing CIRCE deployments')
         delete_all_circe(app_name)
     elif pricing == 3:
         delete_all_integrated_pricing_circe(app_name)
     elif pricing == 4:
         delete_all_decoupled_pricing_circe(app_name)
     else:
-        print('Tear down all current Pricing CIRCE deployments')
+        logging.debug('Tear down all current Pricing CIRCE deployments')
         delete_all_pricing_circe(app_name)
     if scheduler == 0 or scheduler==3: # HEFT
-        print('Tear down all current HEFT deployments')
+        logging.debug('Tear down all current HEFT deployments')
         delete_all_heft(app_name)
     else:# WAVE
-        print('Tear down all current WAVE deployments')
+        logging.debug('Tear down all current WAVE deployments')
         delete_all_waves(app_name)
 
 
@@ -89,7 +91,7 @@ def main():
     for num in range(1,num_dags+1):
         cur_app = app_name+str(num)
         app_list.append(cur_app)     
-    print(app_list)
+    logging.debug(app_list)
 
     for app_name in app_list:
         teardown_system(app_name)   

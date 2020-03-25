@@ -114,10 +114,13 @@ def recv_mapping():
         msg = request.args.get('msg')
         ts = time.time()
 
+        # print("Received flask message:", worker_node, msg, ts)
+
         if msg == 'start':
             start_time[worker_node].append(ts)
         else:
             end_time[worker_node].append(ts)
+            # print(worker_node + " takes time:" + str(end_time[worker_node][-1] - start_time[worker_node][-1]))
             if worker_node == "globalfusion":
                 # Per task stats:
                 print("Start time stats:", start_time)
@@ -150,7 +153,9 @@ def receive_assignment_info():
     """
     try:
         assignment_info = request.args.get('assignment_info').split('#')
+        print("-----------Received assignment info")
         task_node_summary[assignment_info[0]] = assignment_info[1]
+        # print(task_node_summary)
 
     except Exception as e:
         print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
@@ -165,6 +170,8 @@ def update_controller_map():
     """
     try:
         info = request.args.get('controller_id_map').split(':')
+        # print("--- Received controller info")
+        # print(info)
         #Task, Node
         controllers_id_map[info[0]] = info[1]
 
@@ -194,6 +201,10 @@ def recv_runtime_profile_computingnode():
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg').split()
         task_name = request.args.get('task_name')
+        
+
+        # print("Received flask message:", worker_node, msg[0],msg[1], msg[2],task_name)
+
         if msg[0] == 'rt_enter':
             rt_enter_time_computingnode[(worker_node,task_name,msg[1])] = float(msg[2])
         elif msg[0] == 'rt_exec' :
@@ -214,6 +225,7 @@ def recv_runtime_profile_computingnode():
 
             if task_name == "globalfusion" or "task4":
                 # Per task stats:
+                # print(task_name)
                 print('********************************************') 
                 print("Runtime profiling computing node info:")
                 """
@@ -232,6 +244,13 @@ def recv_runtime_profile_computingnode():
                 log_file.write(s)
                 for k, v in rt_enter_time_computingnode.items():
                     worker, task, file = k
+                    # print('***')
+                    # print(k)
+                    # print(v)
+                    # print(worker)
+                    # print(task)
+                    # print(file)
+                    # print(rt_finish_time_computingnode)
                     if k in rt_finish_time_computingnode:
                         elapse = rt_finish_time_computingnode[k]-v
                         duration = rt_finish_time_computingnode[k]-rt_exec_time_computingnode[k]
@@ -262,6 +281,8 @@ def transfer_data_scp(ID,user,pword,source, destination):
         source (str): source file path
         destination (str): destination file path
     """
+    #Keep retrying in case the containers are still building/booting up on
+    #the child nodes.
 
     retry = 0
     ts = -1
@@ -298,6 +319,7 @@ def transfer_data(ID,user,pword,source, destination):
         destination (str): destination file path
     """
     msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
+    # print(msg)
     
 
     if TRANSFER == 0:
@@ -320,20 +342,31 @@ def get_updated_network_profile():
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
+        # print(collection)
+        # print(num_nb)
+        # print(self_profiler_ip)
         if num_nb == -1:
             print('--- Network profiler mongoDB not yet prepared')
             return network_info
         num_rows = db[self_profiler_ip].count() 
+        # print(num_rows)
         if num_rows < num_nb:
             print('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
         logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)  
+        # print(logging)
+        # print('---------------------')
         c = 0
         for record in logging:
             c = c+1
+            # print('---')
+            # print(record)
+            # print(ip_profilers_map)
+            # print(record['Destination[IP]'])
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
 
+        # print(network_info)
         
         if BOKEH==3:
             msg = 'msgoverhead pricepush home networkdata %d\n'%(c)
@@ -383,13 +416,24 @@ def price_estimate():
         
         print(' Retrieve all input information: ')
         network_info = get_updated_network_profile()
+        # print(network_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
+        # print(test_size)
+        # print('--- Network cost:----------- ')
         price['network'] = dict()
         for node in network_info:
+            # print(network_info[node])
             computing_params = network_info[node].split(' ')
+            # print(computing_params)
             computing_params = [float(x) for x in computing_params]
+            # print(computing_params)
             p = (computing_params[0] * test_size * test_size) + (computing_params[1] * test_size) + computing_params[2]
+            # print(p)
+            # print(node)
             price['network'][node] = p
+            
+        # print(price['network'])
+        # print('-----------------')
         print('Overall price:')
         print(price)
         return price
@@ -410,11 +454,15 @@ def announce_price(task_controller_ip, price):
     """
     try:
 
+        # print("Announce my price")
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
         pricing_info = my_task+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
         for node in price['network']:
+            # print(node)
+            # print(price['network'][node])
             pricing_info = pricing_info + "$"+node+"%"+str(price['network'][node])
         
+        # print(pricing_info)
         params = {'pricing_info':pricing_info}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -452,11 +500,15 @@ def receive_best_assignment():
     """
     
     try:
+        # print("Received best assignment")
         home_id = request.args.get('home_id')
         task_name = request.args.get('task_name')
         file_name = request.args.get('file_name')
         best_computing_node = request.args.get('best_computing_node')
         task_node_summary[task_name,file_name] = best_computing_node
+        # print(task_name)
+        # print(best_computing_node)
+        # print(task_node_summary)
         update_best[task_name,file_name] = True
 
 
@@ -511,6 +563,7 @@ class MyHandler(pyinotify.ProcessEvent):
         print("execution time is: ", exec_times)
 
         if BOKEH == 3:
+            # print(appname)
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
@@ -553,6 +606,8 @@ class Handler(pyinotify.ProcessEvent):
             print('task node summary not yet available!!!')
             time.sleep(2)
             
+        # IP = node_ip_map[task_node_summary[first_task]]
+
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)
         transfer_data(task_node_summary[first_task],username, password,source, destination)
@@ -566,7 +621,9 @@ def main():
         -   Collect execution profiling information from the system.
     """
 
+    ##
     ## Load all the confuguration
+    ##
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
@@ -642,16 +699,24 @@ def main():
 
     global combined_ip_map
     combined_ip_map = dict(zip(all_computing_nodes, all_computing_ips))
+    # print('############')
+    # print(ip_profilers_map)
 
     my_id = os.environ['TASK']
     my_task = my_id.split('-')[1]
 
     self_profiler_ip = os.environ['SELF_PROFILER_IP']
 
+    # print('***********')
+    # print(my_id)
+    
+
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
     dag_info = read_config(path1,path2)
 
+    #get DAG and home machine info
+    # first_task = dag_info[0]
     dag = dag_info[1]
     hosts=dag_info[2]
     first_flag = dag_info[1][first_task][1]

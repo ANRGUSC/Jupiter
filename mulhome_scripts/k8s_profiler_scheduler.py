@@ -17,6 +17,9 @@ import os
 import jupiter_config
 from kubernetes.client.rest import ApiException
 import utilities 
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def check_status_profilers():
     """Verify if all the network profilers have been deployed and UP in the system.
@@ -57,15 +60,15 @@ def check_status_profilers():
         if resp.items:
             a=resp.items[0]
             if a.status.phase != "Running":
-                print("Pod Not Running", key)
+                logging.debug("Pod Not Running %s", key)
                 result = False
 
-            # print("Pod Deleted. status='%s'" % str(del_resp_2.status))
+            # logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
 
     if result:
-        print("All systems GOOOOO!!")
+        logging.debug("All systems GOOOOO!!")
     else:
-        print("Wait before trying again!!!!")
+        logging.debug("Wait before trying again!!!!")
 
     return result
 
@@ -96,12 +99,12 @@ def k8s_profiler_scheduler():
     
     dag = dag_info[1]
 
-    print('Starting to deploy DRUPE')
+    logging.debug('Starting to deploy DRUPE')
     if jupiter_config.BOKEH == 3:
         try:
             os.mkdir('../stats/exp8_data/summary_latency/')
         except:
-            print('Folder already existed')
+            logging.debug('Folder already existed')
         latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
         start_time = time.time()
         msg = 'DRUPE deploystart %f \n'%(start_time)
@@ -144,18 +147,18 @@ def k8s_profiler_scheduler():
         if i.startswith('home'):
             home_body = write_profiler_service_specs(name = i, label = i + "profiler")
             ser_resp = api.create_namespaced_service(namespace, home_body)
-            print("Home service created. status = '%s'" % str(ser_resp.status))
+            logging.debug("Home service created. status = '%s'" % str(ser_resp.status))
             try:
                 resp = api.read_namespaced_service(i, namespace)
                 service_ips[i] = resp.spec.cluster_ip
                 home_ids = home_ids + ':' + i
                 home_ips = home_ips + ':' + service_ips[i]
             except ApiException as e:
-                print(e)
-                print("Exception Occurred")
+                logging.debug(e)
+                logging.debug("Exception Occurred")
     
         
-    print('Home Profilers were created successfully!')
+    logging.debug('Home Profilers were created successfully!')
 
     for i in nodes:
 
@@ -170,22 +173,22 @@ def k8s_profiler_scheduler():
 
         try:
             ser_resp = api.create_namespaced_service(namespace, body)
-            print("Service created. status = '%s'" % str(ser_resp.status))
-            print(i)
+            logging.debug("Service created. status = '%s'" % str(ser_resp.status))
+            logging.debug(i)
             resp = api.read_namespaced_service(i, namespace)
         except ApiException as e:
-            print(e)
-            print("Exception Occurred")
+            logging.debug(e)
+            logging.debug("Exception Occurred")
 
-        # print resp.spec.cluster_ip
+        # logging.debug resp.spec.cluster_ip
         service_ips[i] = resp.spec.cluster_ip
         nexthost_ips = nexthost_ips + ':' + service_ips[i]
         nexthost_names = nexthost_names + ':' + i
 
-    print('Worker Profilers were created successfully!')
-    print(service_ips)
-    print(nexthost_ips)
-    print(nexthost_names)
+    logging.debug('Worker Profilers were created successfully!')
+    logging.debug(service_ips)
+    logging.debug(nexthost_ips)
+    logging.debug(nexthost_names)
 
     for i in nodes:
         
@@ -206,7 +209,7 @@ def k8s_profiler_scheduler():
                                          home_ids = home_ids)
         # # Call the Kubernetes API to create the deployment
         resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
-        print("Deployment created. status ='%s'" % str(resp.status))
+        logging.debug("Deployment created. status ='%s'" % str(resp.status))
             
     while 1:
         if check_status_profilers():
@@ -224,20 +227,20 @@ def k8s_profiler_scheduler():
                                                      home_ips = home_ips,
                                                      home_ids = home_ids)
             resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
-            print("Home deployment created. status = '%s'" % str(resp.status))
+            logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
             pprint(service_ips)
     
     
 
     pprint(service_ips)
-    print('Successfully deploy DRUPE ')
+    logging.debug('Successfully deploy DRUPE ')
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'DRUPE deployend %f \n'%(end_time)
         write_file(latency_file,msg,'a')
         deploy_time = end_time - start_time
-        print('Time to deploy DRUPE '+ str(deploy_time))
+        logging.debug('Time to deploy DRUPE '+ str(deploy_time))
     return(service_ips)
 
 if __name__ == '__main__':

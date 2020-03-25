@@ -16,6 +16,9 @@ import sys
 import numpy as np
 import configparser
 from os import path
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 
 
@@ -52,7 +55,7 @@ class central_query_statistics():
             quadratic = [float(x) for x in quadratic]
             predicted = np.square(file_size*8)*quadratic[0]+file_size*8*quadratic[1]+quadratic[2]#file_size[Bytes]
         except StopIteration:
-            print('No valid links')
+            logging.debug('No valid links')
             exit()
         return predicted
 
@@ -70,7 +73,7 @@ def main():
     MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
 
     if len(sys.argv)<3:
-        print('Please run the script as following: python central_query_statistics Source_Tag Destination_Tag FileSize[KB]')
+        logging.debug('Please run the script as following: python central_query_statistics Source_Tag Destination_Tag FileSize[KB]')
         exit()
     source = sys.argv[1]
     destination = sys.argv[2]
@@ -78,7 +81,7 @@ def main():
     d = central_query_statistics()
     predicted = d.do_query_quaratic(source,destination,file_size)
     msg = "Expected latency is %f [ms]" %predicted
-    print(msg)
+    logging.debug(msg)
     
 if __name__ == '__main__':
     main()

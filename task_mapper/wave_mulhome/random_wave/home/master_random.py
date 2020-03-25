@@ -20,9 +20,11 @@ import time
 from flask import Flask, request
 import configparser
 from os import path
+import logging
+import random
 
+logging.basicConfig(level = logging.DEBUG)
 
-print("starting the main thread on port")
 
 app = Flask(__name__)
 
@@ -49,13 +51,13 @@ def prepare_global():
     # Get ALL node info
     node_count = 0
     nodes = {}
-    for node_name, node_ip in zip(os.environ['ALL_NODES'].split(':'), os.environ['ALL_NODES_IPS'].split(':')):
-        if node_name == "":
+    for node_n, node_ip in zip(os.environ['ALL_NODES'].split(':'), os.environ['ALL_NODES_IPS'].split(':')):
+        if node_n == "":
             continue
-        nodes[node_name] = node_ip + ":" + str(FLASK_SVC)
+        nodes[node_n] = node_ip + ":" + str(FLASK_SVC)
         node_count +=  1
     master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
-    print("Nodes", nodes)
+    logging.debug("Nodes", nodes)
 
     global node_id, node_name, debug
 
@@ -85,7 +87,7 @@ def prepare_global():
 
     application = read_file("DAG/DAG_application.txt")
     MAX_TASK_NUMBER = int(application[0])  # Total number of tasks in the DAG 
-    print("Max task number ", MAX_TASK_NUMBER)
+    logging.debug("Max task number %d", MAX_TASK_NUMBER)
     del application[0]
 
     assignments = {}
@@ -155,8 +157,8 @@ def return_assignment():
         json: mapping assignments
     """
 
-    print("Recieved request for current mapping. Current mappings done:", len(assignments))
-    print(assignments)
+    logging.debug("Recieved request for current mapping. Current mappings done: %d", len(assignments))
+    logging.debug(assignments)
     if len(assignments) == MAX_TASK_NUMBER:
         return json.dumps(assignments) 
     else:
@@ -200,7 +202,7 @@ def call_recv_control(assigned_node, control):
     """
     try:
         url = "http://" + nodes[assigned_node] + "/recv_control"
-        print(url)
+        logging.debug(url)
         params = {'control': control}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -267,13 +269,13 @@ def init_thread():
 
 def monitor_task_status():
     """
-    Monitor task allocation status and print notification if all task allocations are done
+    Monitor task allocation status and logging.debug notification if all task allocations are done
     """
 
     killed = 0
     while True:
         if len(assigned_tasks) == MAX_TASK_NUMBER:
-            print("All task allocations are done! Great News!")
+            logging.debug("All task allocations are done! Great News!")
             for node in nodes:
                 res = call_kill_thread(node)
                 if res != "ok":
@@ -335,20 +337,27 @@ def init_task_topology():
         - Write control relations to ``DAG/parent_controller.txt``
     """
 
-    input_nodes = read_file("DAG/input_node.txt")
-    del input_nodes[0]
-    for line in input_nodes:
-        line = line.strip()
-        items = line.split()
-        task = items[0]
+    # Old: from input_node.txt
+    # input_nodes = read_file("DAG/input_node.txt")
+    # del input_nodes[0]
+    # for line in input_nodes:
+    #     line = line.strip()
+    #     items = line.split()
+    #     task = items[0]
 
-        for node in items[1:]:
-            if node in init_tasks.keys():
-                init_tasks[node].append(task)
-            else:
-                init_tasks[node] = [task]
+    #     for node in items[1:]:
+    #         if node in init_tasks.keys():
+    #             init_tasks[node].append(task)
+    #         else:
+    #             init_tasks[node] = [task]
+
+    # New: random -> remove file input_node.txt
+    assign_to_node = random.randint(1, node_count)
+
+    init_tasks[assign_to_node] = [first_task]
     
-    print("init_tasks",init_tasks)
+    ogging.debug('------- Init tasks')
+    logging.debug("init_tasks " ,init_tasks)
 
     for line in application:
         line = line.strip()
@@ -361,8 +370,8 @@ def init_task_topology():
 
         children[parent] = items[3:]
 
-        print(parent)
-        print(items[3:])
+        logging.debug(parent)
+        logging.debug(items[3:])
            
         for child in items[3:]:
             if child in parents.keys():
@@ -370,7 +379,7 @@ def init_task_topology():
             else:
                 parents[child] = [parent]
 
-    print("parents",parents)
+    logging.debug("parents",parents)
 
     for key in parents:
         parent = parents[key]
@@ -397,7 +406,7 @@ def init_task_topology():
             line = line + '\t' + child
         to_be_write.append(line)
 
-    print("control_relation",control_relation)
+    logging.debug("control_relation",control_relation)
     write_file("DAG/parent_controller.txt", to_be_write, "a+")
 
 
@@ -405,14 +414,14 @@ def init_task_topology():
 
 def output(msg):
     """
-    if debug is True, print the msg
+    if debug is True, logging.debug the msg
     
     Args:
-        msg (str): message to be printed
+        msg (str): message to be logging.debuged
     """
 
     if debug:
-        print(msg)
+        logging.debug(msg)
 
 def main():
     """
@@ -421,9 +430,16 @@ def main():
         - Start thread to watch directory: ``local/task_responsibility``
         - Start thread to monitor task mapping status
     """
+    global logging
+    logging.debug("starting the main thread on port")
+
+    global first_task
+    first_task = os.environ['CHILD_NODES']
+
+
     prepare_global()
 
-    print("starting the main thread on port", FLASK_PORT)
+    logging.debug("starting the main thread on port %d", FLASK_PORT)
 
     init_task_topology()
     _thread.start_new_thread(init_thread, ())

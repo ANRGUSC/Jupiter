@@ -58,6 +58,9 @@ rt_exec_time_computingnode = defaultdict(list)
 rt_finish_time_computingnode = defaultdict(list)
 
 def demo_help(server,port,topic,msg):
+    # print('Sending demo')
+    # print(topic)
+    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -75,6 +78,7 @@ def announce_mapping():
         tmp = tmp_assignments.split(',')
         for task in tmp:
             global_task_node_map[task.split(':')[0]]=task.split(':')[1]
+        # print(global_task_node_map)
         print("Sending global task information to all worker nodes")
         announce_mapping_to_workers()
     except Exception as e:
@@ -92,11 +96,13 @@ app.add_url_rule('/announce_mapping', 'announce_mapping', announce_mapping)
 def announce_mapping_to_workers():
     try:
         print('Announce full mapping to all compute worker node')
+        print(global_task_node_map)
         tmp_assignments = ",".join(("{}:{}".format(*i) for i in global_task_node_map.items()))
 
         t = time.time()
         for compute_host in all_compute_host:
             url = "http://" + compute_host + "/announce_mapping_worker"
+            # print(tmp_assignments)
             params = {'home_id':my_id,'assignments': tmp_assignments,'mapping_time':t}
             params = urllib.parse.urlencode(params)
             req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
@@ -146,6 +152,9 @@ def recv_runtime_profile_computingnode():
         msg = request.args.get('msg').split()
         task_name = request.args.get('task_name')
         
+
+        # print("Received flask message:", worker_node, msg[0],msg[1], msg[2],task_name)
+
         if msg[0] == 'rt_enter':
             rt_enter_time_computingnode[(worker_node,task_name,msg[1])] = float(msg[2])
         elif msg[0] == 'rt_exec' :
@@ -165,6 +174,7 @@ def recv_runtime_profile_computingnode():
             print('----------------------------')  
             if task_name in last_tasks:
                 # Per task stats:
+                # print(task_name)
                 print('********************************************') 
                 print("Received final output at home: Runtime profiling info:")
                 """
@@ -213,6 +223,8 @@ def transfer_data_scp(ID,user,pword,source, destination):
         source (str): source file path
         destination (str): destination file path
     """
+    #Keep retrying in case the containers are still building/booting up on
+    #the child nodes.
 
     retry = 0
     ts = -1
@@ -249,6 +261,7 @@ def transfer_data(ID,user,pword,source, destination):
         destination (str): destination file path
     """
     msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
+    # print(msg)
     
 
     if TRANSFER == 0:
@@ -283,6 +296,7 @@ class Handler1(pyinotify.ProcessEvent):
         print("execution time is: ", exec_times)
 
         if BOKEH==3:
+            # print(appname)
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
            
@@ -330,16 +344,29 @@ class Handler(pyinotify.ProcessEvent):
         start_times[inputfile] = t
         input_file = inputfile.split('.')[0]
         announce_input(input_file, t)
+        # start_times.append(time.time())
+        # print("start time is: ", start_times)
         new_file_name = os.path.split(event.pathname)[-1]
+
+        
+        # print(global_task_node_map)
         while first_task not in global_task_node_map:
+            # print(first_task)
+            # print(global_task_node_map)
             print('Not yet update global task mapping information')
             time.sleep(2)
 
+
+        # print('Updated global task mapping information')
+        # IP = node_ip_map[global_task_node_map[first_task]]
         print('Send file to the first node')
         print(global_task_node_map[first_task])
     
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)
+        # print(IP)
+        # print(destination)
+        # print(ssh_port)
         transfer_data(global_task_node_map[first_task],username, password,source, destination)
         
 def get_taskmap():
@@ -384,9 +411,14 @@ def get_taskmap():
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].extend([data[i]])
+    # print("tasks: ", tasks)
+    # print("task order", task_order) #task_list
+    # print("super tasks", super_tasks)
+    # print("non tasks", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
 def start_evaluate():
+    # time.sleep(120)
     print('Start the evaluation process')
     os.system('python3 evaluate.py &')
 
@@ -398,6 +430,9 @@ def main():
         -   Collect execution profiling information from the system.
     """
 
+    ##
+    ## Load all the confuguration
+    ##
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)

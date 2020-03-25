@@ -13,6 +13,9 @@ from kubernetes.client.rest import ApiException
 import jupiter_config
 import utilities
 import time
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def write_file(filename,message):
     with open(filename,'a') as f:
@@ -34,7 +37,7 @@ def delete_all_profilers():
     dag_info = utilities.k8s_read_config(path2)
     dag = dag_info[1]
 
-    print('Starting to teardown DRUPE')
+    logging.debug('Starting to teardown DRUPE')
     if jupiter_config.BOKEH == 3:
         latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
         start_time = time.time()
@@ -73,12 +76,12 @@ def delete_all_profilers():
         try:
             resp = api.read_namespaced_deployment(key, namespace)
         except ApiException as e:
-            print("Exception Occurred")
+            logging.debug("Exception Occurred")
 
         # if a deployment with the name = key exists in the namespace, delete it
         if resp:
             del_resp_0 = api.delete_namespaced_deployment(key, namespace, body)
-            print("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
+            logging.debug("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
         # Check if there is a replicaset running by using the label "app={key} + profiler" e.g, "app=node1profiler"
@@ -87,11 +90,11 @@ def delete_all_profilers():
         resp = api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
         # if a replicaset exist, delete it
         # pprint(resp)
-        # print resp.items[0].metadata.namespace
+        # logging.debug resp.items[0].metadata.namespace
         for i in resp.items:
             if i.metadata.namespace == namespace:
                 del_resp_1 = api.delete_namespaced_replica_set(i.metadata.name, namespace, body)
-                print("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
+                logging.debug("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
 
         # Check if there is a pod still running by using the label
         resp = None
@@ -100,7 +103,7 @@ def delete_all_profilers():
         # if a pod is running just delete it
         if resp.items:
             del_resp_2 = api_2.delete_namespaced_pod(resp.items[0].metadata.name, namespace, body)
-            print("Pod Deleted. status='%s'" % str(del_resp_2.status))
+            logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
 
         # Check if there is a service running by name = key
         resp = None
@@ -108,21 +111,21 @@ def delete_all_profilers():
         try:
             resp = api_2.read_namespaced_service(key, namespace)
         except ApiException as e:
-            print("Exception Occurred")
+            logging.debug("Exception Occurred")
         # if a service is running, kill it
         if resp:
             del_resp_2 = api_2.delete_namespaced_service(key, namespace,body)
             #del_resp_2 = api_2.delete_namespaced_service(key, namespace)
-            print("Service Deleted. status='%s'" % str(del_resp_2.status))
+            logging.debug("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running
-    print('Successfully teardown DRUPE ')
+    logging.debug('Successfully teardown DRUPE ')
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'DRUPE teardownend %f \n'%(end_time)
         write_file(latency_file,msg)
         teardown_time = end_time - start_time
-        print('Time to teardown DRUPE'+ str(teardown_time))
+        logging.debug('Time to teardown DRUPE'+ str(teardown_time))
 
 if __name__ == '__main__':
     delete_all_profilers()
