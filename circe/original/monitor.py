@@ -146,7 +146,7 @@ def transfer_data(ID,user,pword,source, destination):
 
     return transfer_data_scp(ID,user,pword,source, destination) #default
 
-def transfer_multicast_data_scp(ID_list,user_list,pword_list,source, destination):
+def transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destination_list):
     """Transfer data using SCP to multiple nodes
     
     Args:
@@ -157,9 +157,9 @@ def transfer_multicast_data_scp(ID_list,user_list,pword_list,source, destination
         destination (str): destination file path
     """
     for idx in range(len(ID_list)): 
-        _thread.start_new_thread(transfer_data_scp,(ID_list[idx],user_list[idx],pword_list[idx],source, destination,))
+        _thread.start_new_thread(transfer_data_scp,(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx],))
 
-def transfer_multicast_data(ID_list,user_list,pword_list,source, destination):
+def transfer_multicast_data(ID_list,user_list,pword_list,source_list, destination_list):
     """Transfer data with given parameters
     
     Args:
@@ -170,10 +170,10 @@ def transfer_multicast_data(ID_list,user_list,pword_list,source, destination):
         destination (str): destination file path
     """
     for idx in range(len(ID_list)):
-        msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID_list[idx],user_list[idx],pword_list[idx],source, destination)
+        msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx])
     if TRANSFER==0:
         logging.debug('Multicast all the files')
-        transfer_multicast_data_scp(ID_list,user_list,pword_list,source, destination)
+        transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destination_list)
     
 
 def demo_help(server,port,topic,msg):
@@ -247,7 +247,7 @@ class Handler1(pyinotify.ProcessEvent):
             
 
         elif flag2 == 'true':
-            logging.debug('Flag is true -- using multicast instead')
+            
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
@@ -270,20 +270,24 @@ class Handler1(pyinotify.ProcessEvent):
             #     transfer_data(cur_task,user,password,source, destination)
             
             # Using multicast
+            logging.debug('Using multicast instead')
             cur_tasks =[]
             users = []
             passwords = []
             source = event.pathname
             destination = os.path.join('/centralized_scheduler', 'input', new_file)
 
+
             for i in range(3, len(sys.argv)-1,4):
                 cur_tasks.append(sys.argv[i])
                 users.append(sys.argv[i+2])
                 passwords.append(sys.argv[i+3])
+
+            destinations = [destination] *len(cur_tasks)
+            sources = [source]*len(cur_tasks)
                 
-            transfer_multicast_data(cur_tasks,users,passwords,source, destination)
+            transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
         else:
-            logging.debug('Flag is false -- using unicast')
             num_child = (len(sys.argv) - 4) / 4
             files_out.append(new_file)
             if (len(files_out) == num_child):
@@ -298,16 +302,29 @@ class Handler1(pyinotify.ProcessEvent):
                     msg = taskname + " ends"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     
+                # Using unicast
+                # for i in range(3, len(sys.argv)-1,4):
+                #     myfile = files_out.pop(0)
+                #     event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
+                #     cur_task = sys.argv[i]
+                #     user = sys.argv[i+2]
+                #     password = sys.argv[i+3]
+                #     source = event_path
+                #     destination = os.path.join('/centralized_scheduler','input', myfile)
+                #     transfer_data(cur_task,user,password,source, destination)
+                
+                logging.debug('Using multicast instead')
+                cur_tasks =[]
+                users = []
+                passwords = []
                 for i in range(3, len(sys.argv)-1,4):
-                    myfile = files_out.pop(0)
-                    event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
-                    cur_task = sys.argv[i]
-                    user = sys.argv[i+2]
-                    password = sys.argv[i+3]
-                    source = event_path
-                    destination = os.path.join('/centralized_scheduler','input', myfile)
-                    transfer_data(cur_task,user,password,source, destination)
+                    cur_tasks.append(sys.argv[i])
+                    users.append(sys.argv[i+2])
+                    passwords.append(sys.argv[i+3])
+                destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in files_out]
+                sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in files_out]
 
+                transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
                 files_out=[]
 
 

@@ -84,7 +84,9 @@ def delete_all_waves(app_name):
 
         # if a deployment with the name = key exists in the namespace, delete it
         if resp:
-            del_resp_0 = api.delete_namespaced_deployment(pod_name, namespace, body)
+            # del_resp_0 = api.delete_namespaced_deployment(pod_name, namespace, body)
+            del_resp_0 = api.delete_namespaced_deployment(pod_name, namespace)
+
             logging.debug("Deployment '%s' Deleted. status='%s'" % (pod_name, str(del_resp_0.status)))
 
 
@@ -99,7 +101,9 @@ def delete_all_waves(app_name):
         # logging.debug resp.items[0].metadata.namespace
         for i in resp.items:
             if i.metadata.namespace == namespace:
-                del_resp_1 = api.delete_namespaced_replica_set(i.metadata.name, namespace, body)
+                # del_resp_1 = api.delete_namespaced_replica_set(i.metadata.name, namespace, body)
+                del_resp_1 = api.delete_namespaced_replica_set(i.metadata.name, namespace)
+
                 logging.debug("Relicaset '%s' Deleted. status='%s'" % (pod_name, str(del_resp_1.status)))
 
         # Check if there is a pod still running by using the label
@@ -108,7 +112,9 @@ def delete_all_waves(app_name):
         resp = api_2.list_namespaced_pod(namespace, label_selector = label)
         # if a pod is running just delete it
         if resp.items:
-            del_resp_2 = api_2.delete_namespaced_pod(resp.items[0].metadata.name, namespace, body)
+            # del_resp_2 = api_2.delete_namespaced_pod(resp.items[0].metadata.name, namespace, body)
+            del_resp_2 = api_2.delete_namespaced_pod(resp.items[0].metadata.name, namespace)
+
             logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
 
         # Check if there is a service running by name = key
@@ -120,8 +126,8 @@ def delete_all_waves(app_name):
             logging.debug("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            #del_resp_2 = api_2.delete_namespaced_service(pod_name, namespace)
-            del_resp_2 = api_2.delete_namespaced_service(pod_name, namespace,body)
+            del_resp_2 = api_2.delete_namespaced_service(pod_name, namespace)
+            # del_resp_2 = api_2.delete_namespaced_service(pod_name, namespace,body)
             logging.debug("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running     

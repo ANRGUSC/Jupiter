@@ -26,7 +26,7 @@ RUN apt-get install -y sshpass nano
 # Taken from quynh's network profiler
 RUN pip install cryptography
 
-
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -101,6 +101,7 @@ RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/{pricing_option}/requirements.txt /requirements.txt
 
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -165,6 +166,7 @@ RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/{pricing_option}/requirements.txt /requirements.txt
 
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -232,6 +234,7 @@ RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/{pricing_option}/requirements.txt /requirements.txt
 
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -296,6 +299,7 @@ RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/{pricing_option}/requirements.txt /requirements.txt
 
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -347,7 +351,6 @@ def write_circe_computing_worker_docker(**kwargs):
     """
     dfp = DockerfileParser(path='computing_worker_node.Dockerfile')
     dfp.content =template_computing_worker.format(**kwargs)
-    # print(dfp.content)
 
 def write_circe_controller_worker_docker(**kwargs):
     """
@@ -355,7 +358,6 @@ def write_circe_controller_worker_docker(**kwargs):
     """
     dfp = DockerfileParser(path='controller_worker_node.Dockerfile')
     dfp.content =template_controller_worker.format(**kwargs)
-    # print(dfp.content)
 
 
 def write_circe_home_docker(**kwargs):
@@ -371,7 +373,6 @@ def write_circe_controller_nondag(**kwargs):
     """
     dfp = DockerfileParser(path='controller_nondag_node.Dockerfile')
     dfp.content =template_nondag.format(**kwargs)
-    # print(dfp.content)
 
 def write_circe_worker_nondag(**kwargs):
     """
@@ -379,7 +380,6 @@ def write_circe_worker_nondag(**kwargs):
     """
     dfp = DockerfileParser(path='nondag_worker.Dockerfile')
     dfp.content =template_nondag_worker.format(**kwargs)
-    # print(dfp.content)
 
 
 if __name__ == '__main__':

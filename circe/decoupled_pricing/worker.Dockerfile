@@ -5,6 +5,7 @@ ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 ADD circe/decoupled_pricing/requirements_worker_controller.txt /requirements.txt
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
 COPY circe/decoupled_pricing/child_appointment_greedy.py /child_appointment.py

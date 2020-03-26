@@ -16,6 +16,7 @@ RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/decoupled_pricing/requirements_compute.txt /requirements.txt
 
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config

@@ -14,6 +14,8 @@ import shutil
 import os
 import random
 import time
+import logging
+
 
 
 def evaluate_random():
@@ -31,7 +33,7 @@ def evaluate_random():
             time.sleep(1)
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         shutil.copyfile(src,dest)
 
 def evaluate_interval(interval):
@@ -50,7 +52,7 @@ def evaluate_interval(interval):
             time.sleep(1)
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         shutil.copyfile(src,dest)
 
 def evaluate_sequential():
@@ -61,14 +63,11 @@ def evaluate_sequential():
 
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
-    # src = "sample_input/1botnet.ipsum"
-    # dest = "input/1botnet.ipsum"
-    # file_count = 2
-    print('---- Generate random input files')
+    logging.debug('---- Generate random input files')
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         shutil.copyfile(src,dest)
         count = 0
         while 1:
@@ -79,13 +78,16 @@ def evaluate_sequential():
                 break
 
 
-    print('---- Finish generating sequential input files')
+    logging.debug('---- Finish generating sequential input files')
     
 
 if __name__ == '__main__':
     #evaluate_random()
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
     my_id = os.environ['TASK']
-    print(my_id)
+    logging.debug(my_id)
     n = my_id.split('home')
     
     num = 1
@@ -93,8 +95,7 @@ if __name__ == '__main__':
         num = float(n[1])
     sleep_time_default = 240
     sleep_time = sleep_time_default + (num-1)*120
-    print('The delay to send sample files')
-    print(sleep_time)
+    logging.debug('The delay to send sample files')
     time.sleep(sleep_time)
-    print('Start copying sample files for evaluation')
+    logging.debug('Start copying sample files for evaluation')
     evaluate_sequential()

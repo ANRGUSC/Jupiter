@@ -4,6 +4,9 @@ __license__ = "GPL"
 __version__ = "2.0"
 
 import os
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def read_config(path1,path2):
     """
@@ -48,26 +51,17 @@ def read_config(path1,path2):
     for line in config_file:
         #get task, node IP, username and password
         myline = line.strip().split(" ")
-        print(myline)
+        logging.debug(myline)
         hosts.setdefault(myline[0],[])
         for j in range(0,2):
             if j==0:
                 hosts[myline[0]].append(myline[j])
             if j==1:
                 hosts[myline[0]].append(nodes.get(myline[1])[0])
-                #hosts[myline[0]].append(nodes.get(myline[1])[1])
-                #hosts[myline[0]].append(nodes.get(myline[1])[2])
-
-    print('-----------------')
-    print(nodes.get('home')[0])
 
     hosts.setdefault('home',[])
     hosts['home'].append('home')
     hosts['home'].append(nodes.get('home')[0])
-    #hosts['home'].append(nodes.get('home')[1])
-    #hosts['home'].append(nodes.get('home')[2])
-
-
 
     dag_info.append(hosts)
     return dag_info
