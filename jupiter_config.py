@@ -38,7 +38,7 @@ def set_globals():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
     """User input for scheduler information"""
-    global STATIC_MAPPING, SCHEDULER, TRANSFER, PROFILER, RUNTIME, PRICING
+    global STATIC_MAPPING, SCHEDULER, TRANSFER, PROFILER, RUNTIME, PRICING, DCOMP
 
     STATIC_MAPPING          = int(config['CONFIG']['STATIC_MAPPING'])
     # scheduler option chosen from SCHEDULER_LIST
@@ -51,6 +51,8 @@ def set_globals():
     RUNTIME                 = int(config['CONFIG']['RUNTIME'])
     # Using pricing or original scheme
     PRICING                 = int(config['CONFIG']['PRICING'])
+    # Using dcomp
+    DCOMP                   = int(config['CONFIG']['DCOMP'])
 
 
     """Authorization information in the containers"""
@@ -69,7 +71,7 @@ def set_globals():
     FLASK_SVC               = config['PORT']['FLASK_SVC']
     FLASK_DOCKER            = config['PORT']['FLASK_DOCKER']
     FLASK_CIRCE             = config['PORT']['FLASK_CIRCE']
-    FLASK_DEPLOY             = config['PORT']['FLASK_DEPLOY']
+    FLASK_DEPLOY            = config['PORT']['FLASK_DEPLOY']
 
     global BOKEH,BOKEH_SERVER, BOKEH_PORT, BOKEH
     BOKEH = int(config['OTHER']['BOKEH'])
@@ -136,8 +138,14 @@ def set_globals():
         pricing_option      = 'decoupled_pricing'
         print('Decoupled pricing scheme selected')
 
-
     CIRCE_PATH              = HERE + 'circe/%s/'%(pricing_option)
+
+    global cluster_option
+
+    cluster_option          = 'do'
+    if DCOMP == 1:
+        cluster_option      = 'dcomp'
+
     
     """Kubernetes required information"""
     global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
@@ -170,51 +178,51 @@ def set_globals():
     """pricing CIRCE home and worker images"""
     global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTE_IMAGE
 
-    PRICING_HOME_IMAGE      = 'docker.io/anrg/%s_circe_home:%s' %(pricing_option,APP_OPTION)
-    WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:%s' %(pricing_option,APP_OPTION)
-    WORKER_COMPUTE_IMAGE  = 'docker.io/anrg/%s_circe_computing:%s' %(pricing_option,APP_OPTION)
+    PRICING_HOME_IMAGE      = 'docker.io/anrg/%s_circe_home:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
+    WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
+    WORKER_COMPUTE_IMAGE  = 'docker.io/anrg/%s_circe_computing:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
 
     global PRICING_HOME_CONTROLLER, PRICING_HOME_COMPUTE
-    PRICING_HOME_CONTROLLER = 'docker.io/anrg/%s_circe_home_controller:%s' %(pricing_option,APP_OPTION)
-    PRICING_HOME_COMPUTE    = 'docker.io/anrg/%s_circe_home_compute:%s' %(pricing_option,APP_OPTION)
+    PRICING_HOME_CONTROLLER = 'docker.io/anrg/%s_circe_home_controller:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
+    PRICING_HOME_COMPUTE    = 'docker.io/anrg/%s_circe_home_compute:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
 
 
     global NONDAG_CONTROLLER_IMAGE,NONDAG_WORKER_IMAGE # only required for non-DAG tasks (teradetectors and dft)
-    NONDAG_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_nondag:%s' %(pricing_option,APP_OPTION)
-    NONDAG_WORKER_IMAGE     = 'docker.io/anrg/%s_circe_nondag_worker:%s' %(pricing_option,APP_OPTION)
+    NONDAG_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_nondag:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
+    NONDAG_WORKER_IMAGE     = 'docker.io/anrg/%s_circe_nondag_worker:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
     
     """CIRCE home and worker images for execution profiler"""
     global HOME_IMAGE, WORKER_IMAGE, STREAM_IMAGE
 
-    HOME_IMAGE              = 'docker.io/anrg/circe_home:%s'%(APP_OPTION)
-    WORKER_IMAGE            = 'docker.io/anrg/circe_worker:%s'%(APP_OPTION)
-    STREAM_IMAGE              = 'docker.io/anrg/stream_home:%s'%(APP_OPTION)
+    HOME_IMAGE              = 'docker.io/anrg/circe_home:%s_%s'%(APP_OPTION,cluster_option)
+    WORKER_IMAGE            = 'docker.io/anrg/circe_worker:%s_%s'%(APP_OPTION,cluster_option)
+    STREAM_IMAGE              = 'docker.io/anrg/stream_home:%s_%s'%(APP_OPTION,cluster_option)
 
     """DRUPE home and worker images"""
     global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
     
-    PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded'%(profiler_option)
-    PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded'%(profiler_option)
+    PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded_%s'%(profiler_option,cluster_option)
+    PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded_%s'%(profiler_option,cluster_option)
 
     """WAVE home and worker images"""
     global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
 
     #%s: random, v1: greedy
 
-    WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:%s' %(wave_option,profiler_option,APP_OPTION)
-    WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:%s' %(wave_option,profiler_option,APP_OPTION)
+    WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:%s_%s' %(wave_option,profiler_option,APP_OPTION,cluster_option)
+    WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:%s_%s' %(wave_option,profiler_option,APP_OPTION,cluster_option)
 
     """Execution profiler home and worker images"""
     global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-    EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s'%(profiler_option,APP_OPTION)
-    EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s'%(profiler_option,APP_OPTION)
+    EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s_%s'%(profiler_option,APP_OPTION,cluster_option)
+    EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s_%s'%(profiler_option,APP_OPTION,cluster_option)
 
     """HEFT docker image"""
     global HEFT_IMAGE
 
-    HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s'%(heft_option,APP_OPTION)
+    HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s_%s'%(heft_option,APP_OPTION,cluster_option)
        
 
 
