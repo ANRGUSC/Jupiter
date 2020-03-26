@@ -15,6 +15,7 @@ COPY task_mapper/wave_mulhome/random_wave/home/start.sh /
 
 ADD app_specific_files/dummy_app_multicast/configuration.txt DAG/DAG_application.txt
 ADD app_specific_files/dummy_app_multicast/input_node.txt DAG
+ADD app_specific_files/dummy_app_multicast/sample_input /
 
 ADD jupiter_config.ini /jupiter_config.ini
 

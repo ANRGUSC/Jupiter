@@ -12,6 +12,7 @@ RUN apt-get install -y sshpass nano
 RUN pip install cryptography
 
 RUN apt-get -yqq update
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config

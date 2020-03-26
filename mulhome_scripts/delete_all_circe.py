@@ -87,7 +87,9 @@ def delete_all_circe(app_name):
 
         # if a deployment with the name = key exists in the namespace, delete it
         if resp:
-            del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(pod_name, namespace, v1_delete_options)
+            # del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(pod_name, namespace, v1_delete_options)
+            del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(pod_name, namespace)
+
             logging.debug("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
@@ -100,7 +102,9 @@ def delete_all_circe(app_name):
         # logging.debug resp.items[0].metadata.namespace
         for i in resp.items:
             if i.metadata.namespace == namespace:
-                del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
+                del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace)
+
+                # del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
                 logging.debug("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
 
         # Check if there is a pod still running by using the label app={key}
@@ -109,7 +113,9 @@ def delete_all_circe(app_name):
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
         # if a pod is running just delete it
         if resp.items:
-            del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
+            del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace)
+
+            # del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
             logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
 
         # Check if there is a service running by name = task#
@@ -120,8 +126,8 @@ def delete_all_circe(app_name):
             logging.debug("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace, v1_delete_options)
-            #del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace)
+            # del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace, v1_delete_options)
+            del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace)
             logging.debug("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the related service, pods, deployment running
@@ -139,7 +145,9 @@ def delete_all_circe(app_name):
 
     # if home exists, delete it 
     if resp:
-        del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(home_name, namespace, v1_delete_options)
+        del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(home_name, namespace)
+
+        # del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(home_name, namespace, v1_delete_options)
         logging.debug("Deployment '%s' Deleted. status='%s'" % (home_name, str(del_resp_0.status)))
 
     # Check if there is a replicaset running by using the label app=home
@@ -152,7 +160,9 @@ def delete_all_circe(app_name):
     # logging.debug resp.items[0].metadata.namespace
     for i in resp.items:
         if i.metadata.namespace == namespace:
-            del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
+            del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace)
+
+            # del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
             logging.debug("Relicaset '%s' Deleted. status='%s'" % (home_name, str(del_resp_1.status)))
 
     # Check if there is a pod still running by using the label app='home'
@@ -160,7 +170,9 @@ def delete_all_circe(app_name):
     resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
     # if a pod is running just delete it
     if resp.items:
-        del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
+        del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace)
+
+        # del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
         logging.debug("Home pod Deleted. status='%s'" % str(del_resp_2.status))
 
     # Check if there is a service running by name = task#
@@ -171,8 +183,8 @@ def delete_all_circe(app_name):
         logging.debug("Exception Occurred")
     # if a service is running, kill it
     if resp:
-        del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace, v1_delete_options)
-        #del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace=namespace)
+        # del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace, v1_delete_options)
+        del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace=namespace)
         logging.debug("Service Deleted. status='%s'" % str(del_resp_2.status))  
 
     logging.debug('Successfully teardown CIRCE ')

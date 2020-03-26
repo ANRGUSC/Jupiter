@@ -24,7 +24,6 @@ import _thread
 import threading
 import csv
 from pymongo import MongoClient
-# import pandas as pd
 import time
 import requests
 from watchdog.observers import Observer
@@ -36,27 +35,13 @@ import numpy as np
 from collections import defaultdict
 from shutil import copyfile
 import paho.mqtt.client as mqtt
-
 import pyinotify
+import logging
+
 
 app = Flask(__name__)
 
-global bottleneck
-bottleneck = defaultdict(list)
-
-
-def tic():
-    return time.time()
-
-def toc(t):
-    texec = time.time() - t
-    # print('Execution time is:'+str(texec))
-    return texec
-
 def demo_help(server,port,topic,msg):
-    # print('Sending demo')
-    # print(topic)
-    # print(msg)
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -148,10 +133,10 @@ def get_taskmap():
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].extend([data[i]])
-    print("tasks: ", tasks)
-    print("task order", task_order) #task_list
-    print("super tasks", super_tasks)
-    print("non tasks", non_tasks)
+    logging.debug("tasks: %s", tasks)
+    logging.debug("task order %s", task_order) #task_list
+    logging.debug("super tasks %s", super_tasks)
+    logging.debug("non tasks %s", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
 
@@ -192,19 +177,9 @@ def prepare_global_info():
 
 
     global ip_profilers_map,profilers_ip_map, controllers_ip_map, computing_ip_map, profilers_ip_homes
-    # print('DEBUG')
-    # print(profiler_nodes)
-    # print(profiler_ip)
-    
 
     ip_profilers_map = dict(zip(profiler_ip, profiler_nodes))
     profilers_ip_map = dict(zip(profiler_nodes, profiler_ip))
-
-    # print(home_nodes)
-    # print(home_ids)
-    # print(home_ips)
-    # print(profilers_ip_map)
-    # print(ip_profilers_map)
     profilers_ip_homes = [profilers_ip_map[x] for x in home_ids]
 
     controllers_ip_map = dict(zip(task_controllers, task_controllers_ips))
@@ -220,9 +195,6 @@ def prepare_global_info():
             info = line.rstrip().split(' ')
             name_convert_out[info[0]] = info[1]
             name_convert_in[info[0]] = info[2]
-    # print('@@@@@@@@@@@@@@@@@@@@@@@@')
-    # print(name_convert_out)
-    # print(name_convert_in)
 
     global manager,task_mul, count_mul, queue_mul, size_mul,next_mul, files_mul, controllers_id_map, task_node_map, update_best,task_node_summary
 
@@ -236,15 +208,11 @@ def prepare_global_info():
     controllers_id_map = manager.dict()
     task_node_map = manager.dict()
     update_best = manager.dict()
-    # task_node_summary = manager.dict()
 
     global home_node_host_ports, dag
     home_node_host_ports = dict()
-    # print('--------- CHECK')
     for home_id in home_ids:
-        # print(home_id)
         home_node_host_ports[home_id] = home_ip_map[home_id] + ":" + str(FLASK_SVC)
-        # print(home_node_host_ports)
 
     dag_file = '/centralized_scheduler/dag.txt'
     dag_info = k8s_read_dag(dag_file)
@@ -254,7 +222,6 @@ def prepare_global_info():
     next_tasks_map = dict()
     last_tasks_map = dict()
 
-    # CHECK NON_DAG tasks
     global configs, taskmap
 
     configs = json.load(open('/centralized_scheduler/config.json'))
@@ -273,27 +240,13 @@ def prepare_global_info():
     last_tasks_map[os.environ['CHILD_NODES']] = []
     for home_id in home_ids:
         last_tasks_map[home_id] = last_tasks_map['home'] 
-        # task_node_map[home_id]  = home_id
         next_tasks_map[home_id] = [os.environ['CHILD_NODES']]
         last_tasks_map[os.environ['CHILD_NODES']].append(home_id)
 
-    # for task in task_controllers:
-    #     print(task)
-    #     if task in super_tasks:
-    #         task_node_map[task] = task    
-    # print('DEBUG NEXT LAST-----------')
-    # print(next_tasks_map)
-    # print(last_tasks_map)
-    # print(task_node_map)
-
-    print('Generating task folders for OUTPUT\n')
+    logging.debug('Generating task folders for OUTPUT\n')
     global task_module
     task_module = {}
-    # print(taskmap)
-    # print(execution_map)
     for task in dag:
-        # print(task)
-        # print(taskmap[task][1])
         if taskmap[task][1] and execution_map[task]: #DAG
             task_module[task] = __import__(task)
             cmd = "mkdir centralized_scheduler/output/"+task 
@@ -302,8 +255,7 @@ def prepare_global_info():
                 cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
                 os.system(cmd)
 
-    # print(task_module)
-    print('Generating task folders for INPUT\n')
+    logging.debug('Generating task folders for INPUT\n')
     for task in dag:
         if taskmap[task][1]: #DAG
             cmd = "mkdir centralized_scheduler/input/"+task 
@@ -312,28 +264,17 @@ def prepare_global_info():
                 cmd = "mkdir centralized_scheduler/input/"+task+"/" + home_id
                 os.system(cmd)
 
-    # print(task_module)
 
 def update_controller_map():
     """
         Update matching between task controllers and node, in case task controllers are crashed and redeployded
     """
     try:
-        # print('***************************************************')
-        # print('update controller map')
-        # t = tic()
         info = request.args.get('controller_id_map').split('#')
-        # print("--- Received controller info")
-        # print(info)
-        #Task, Node
         controllers_id_map[info[0]] = info[1]
-        # txec = toc(t)
-        # bottleneck['updatecontroller'].append(txec)
-        # print(np.mean(bottleneck['updatecontroller']))
-        # print('***************************************************')
 
     except Exception as e:
-        print("Bad reception or failed processing in Flask for controllers matching announcement: "+ e) 
+        logging.debug("Bad reception or failed processing in Flask for controllers matching announcement: %s",e) 
         return "not ok" 
 
     return "ok"
@@ -343,9 +284,6 @@ app.add_url_rule('/update_controller_map', 'update_controller_map', update_contr
 def update_exec_profile_file():
     """Update the execution profile from the home execution profiler's MongoDB and store it in text file.
     """
-    # print('***************************************************')
-    # print('Retrieve execution information info')
-    # t = tic()
     execution_info = []
     num_profilers = 0
     conn = False
@@ -356,25 +294,25 @@ def update_exec_profile_file():
             db = client_mongo.execution_profiler
             conn = True
         except:
-            print('Error connection')
+            logging.debug('Error connection')
             time.sleep(5)
 
     while not available_data:
         try:
-            logging =db[self_name].find()
+            logdb =db[self_name].find()
             available_data = True
         except:
-            print('Execution information for the current node is not ready!!!')
+            logging.debug('Execution information for the current node is not ready!!!')
             time.sleep(5)
 
 
     c = 0
-    for record in logging:
+    for record in logdb:
         # Node ID, Task, Execution Time, Output size
         info_to_csv=[record['Task'],record['Duration [sec]'],str(record['Output File [Kbit]'])]
         execution_info.append(info_to_csv)
         c+=1
-    print('Execution information has already been provided')
+    logging.debug('Execution information has already been provided')
     with open('execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
@@ -383,20 +321,12 @@ def update_exec_profile_file():
         topic = 'msgoverhead_%s'%(self_name)
         msg = 'msgoverhead priceevent compute%s updateexec %d\n'%(self_name,c)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
-    # txec = toc(t)
-    # bottleneck['executioninfo'].append(txec)
-    # print(np.mean(bottleneck['executioninfo']))
-    # print('***************************************************')
     return
 
 
 def get_updated_execution_profile():
     """Get updated execution information from the generated text file
     """
-    # print('***************************************************')
-    # print('----- Get updated execution information')
-    # t = tic()
-
     with open('execution_log.txt','r') as f:
         reader = csv.reader(f)
         execution = list(reader)
@@ -404,10 +334,6 @@ def get_updated_execution_profile():
     execution_info = {}
     for row in execution:
         execution_info[row[0]] = [float(row[1]),float(row[2])]
-    # txec = toc(t)
-    # bottleneck['readexec'].append(txec)
-    # print(np.mean(bottleneck['readexec']))
-    # print('***************************************************')
     return execution_info
 
 def get_updated_network_profile():
@@ -415,49 +341,33 @@ def get_updated_network_profile():
         Get updated network information from the network profilers
     """
    
-    print('Retrieve network information info')
+    logging.debug('Retrieve network information info')
     network_info = dict()        
     try:
-        # print('***************************************************')
-        # t = tic()
         client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
-        # print(collection)
-        # print(num_nb)
-        # print(self_profiler_ip)
         if num_nb == -1:
-            print('--- Network profiler mongoDB not yet prepared')
+            logging.debug('--- Network profiler mongoDB not yet prepared')
             return network_info
         num_rows = db[self_profiler_ip].count() 
-        # print(num_rows)
         if num_rows < num_nb:
-            print('--- Network profiler regression info not yet loaded into MongoDB!')
+            logging.debug('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
-        # logging =db[self_profiler_ip].find().limit(num_nb)
-        logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)  
-        # print(logging)
+        logdb =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)  
         c = 0
-        for record in logging:
-            # print(record)
-            # print(ip_profilers_map)
-            # print(record['Destination[IP]'])
+        for record in logdb:
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c+=1
-        # txec = toc(t)
-        # bottleneck['netinfo'].append(txec)
-        # print(np.mean(bottleneck['netinfo']))
-        # print('***************************************************')
-
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceevent compute%s updatenetwork %d\n'%(self_name,c)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return network_info
     except Exception as e:
-        print("Network request failed. Will try again, details: " + str(e))
+        logging.debug("Network request failed. Will try again, details: %s",str(e))
         return -1
 
 def get_updated_resource_profile():
@@ -466,7 +376,6 @@ def get_updated_resource_profile():
     resource_info = {}
     try:
         for ip in profiler_ip:
-            # print('Check Resource Profiler IP: '+ip)
             client_mongo = MongoClient('mongodb://'+ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.central_resource_profiler
             collection = db.collection_names(include_system_collections=False)
@@ -474,54 +383,14 @@ def get_updated_resource_profile():
             for record in logging:
                 resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
-        print("Resource profiles: ", resource_info)
-        # print(len(resource_info))
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceevent compute%s updateresource %d\n'%(self_name,len(resource_info))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return resource_info
     except Exception as e:
-        print("Resource request failed. Will try again, details: " + str(e))
+        logging.debug("Resource request failed. Will try again, details: %s",str(e))
         return -1
-
-# def get_updated_resource_profile():
-#     """Requesting resource profiler data using flask for its corresponding profiler node
-#     """
-
-#     print("----- Get updated resource profile information") 
-#     resource_info = [] 
-#     try:
-#         # print('***************************************************')
-#         # t = tic()
-#         for c in range(0,num_retries):
-#             t1 = time.time()
-#             #print("http://" + self_profiler_ip + ":" + str(FLASK_SVC) + "/all")
-#             r = requests.get("http://" + self_profiler_ip + ":" + str(FLASK_SVC) + "/all")
-#             result = r.json()
-#             if len(result) != 0:
-#                 resource_info=result
-#                 break
-#             time.sleep(1)
-#             # print(time.time()-t1)
-
-#         if c == num_retries:
-#             print("Exceeded maximum try times.")
-#         # txec = toc(t)
-#         # bottleneck['resourceinfo'].append(txec)
-#         # print(np.mean(bottleneck['resourceinfo']))
-#         # print('***************************************************')
-#         print("Resource profiles: ", resource_info)
-#         print(len(resource_info))
-#         if BOKEH==3:    
-#             topic = 'msgoverhead_%s'%(self_name)
-#             msg = 'msgoverhead priceeventcompute%s updateresource %d\n'%(self_name,len(resource_info))
-#             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
-#         return resource_info
-
-#     except Exception as e:
-#         print("Resource request failed. Will try again, details: " + str(e))
-#         return -1
 
 def price_aggregate(task_name):
     """Calculate price required to perform the task based on network information, resource information, execution information and task queue size and sample size
@@ -539,7 +408,6 @@ def price_aggregate(task_name):
     price['cpu'] = sys.maxsize
     price['memory'] = sys.maxsize
     price['queue'] = 0
-    # print(sys.maxsize)
 
     """
     Input information:
@@ -550,29 +418,16 @@ def price_aggregate(task_name):
     """
 
     try:
-        # print('***************************************************')
-        print(' Retrieve all input information: ')
-        # t = tic()
+        logging.debug(' Retrieve all input information: ')
         execution_info = get_updated_execution_profile()
-        # print(execution_info)
         network_info = get_updated_network_profile()
-        # print(network_info)
         resource_info = get_updated_resource_profile()
-        # print(resource_info)
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
-        
-        
-        # print('----- Calculating price:')
-        # print('--- Resource cost: ')
         price['memory'] = float(resource_info[self_name]["memory"])
         price['cpu'] = float(resource_info[self_name]["cpu"])
-        # print(price['memory'])
-        # print(price['cpu'])
-
-        # print('--- Queuing cost: ')
         if task_queue_size > 0: #not infinity 
             if len(queue_mul)==0:
-                print('empty queue, no tasks are waiting')
+                logging.debug('empty queue, no tasks are waiting')
             else:
                 queue_dict = dict(queue_mul)
                 queue_task = [k for k,v in queue_dict.items() if v == False]
@@ -581,40 +436,19 @@ def price_aggregate(task_name):
                 for idx,task_info in enumerate(queue_task):
                     #TO_DO: sum or max
                     price['queue'] = queue_cost + execution_info[task_info[0]][0]* queue_size[idx] / test_output
-        # print(price['queue'])
-
-        # print('--- Network cost:----------- ')
-        # print(execution_info)
-        # print(task_name)
-        # print(execution_info[task_name])
         test_output = execution_info[task_name][1]
-        # print(test_output)
-        # print(network_info)
-        # print(type(network_info))
         price['network'] = dict()
         for node in network_info:
-            # print(network_info[node])
             computing_params = network_info[node].split(' ')
-            # print(computing_params)
             computing_params = [float(x) for x in computing_params]
-            # print(computing_params)
             p = (computing_params[0] * test_output * test_output) + (computing_params[1] * test_output) + computing_params[2]
-            # print(p)
-            # print(node)
             price['network'][node] = p
-            
-        # print(price['network'])
-        # print('-----------------')
-        print('Overall price:')
-        print(price)
-        # txec = toc(t)
-        # bottleneck['priceagg'].append(txec)
-        # print(np.mean(bottleneck['priceagg']))
-        # print('***************************************************')
+        logging.debug('Overall price:')
+        logging.debug(price)
         return price
              
     except:
-        print('Error reading input information to calculate the price')
+        logging.debug('Error reading input information to calculate the price')
         
     return price
 
@@ -628,57 +462,30 @@ def announce_price(task_controller_ip, price):
             price: my current price
     """
     try:
-        # print('***************************************************')
-        print("Announce my price")
-        # t = tic()
-        # t1=time.time()
+        logging.debug("Announce my price")
         url = "http://" + task_controller_ip + ":" + str(FLASK_SVC) + "/receive_price_info"
         pricing_info = self_name+"#"+str(price['cpu'])+"#"+str(price['memory'])+"#"+str(price['queue'])
-        # print(time.time()-t1)
-        # t1 = time.time()
         for node in price['network']:
-            # print(node)
-            # print(price['network'][node])
             pricing_info = pricing_info + "$"+node+"%"+str(price['network'][node])
-        # print(time.time()-t1)
-        # print(pricing_info)
-        # t1 = time.time()
         params = {'pricing_info':pricing_info}
-        # print(time.time()-t1)
-        # t1 = time.time()
         params = urllib.parse.urlencode(params)
-        # print(time.time()-t1)
-        # t1 = time.time()
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        # print(time.time()-t1)
-        # t1 = time.time()
         res = urllib.request.urlopen(req)
-        # print(time.time()-t1)
-        # t1 = time.time()
         res = res.read()
         res = res.decode('utf-8')
-        # print(time.time()-t1)
-        # txec = toc(t)
-        # bottleneck['announceprice'].append(txec)
-        # print(np.mean(bottleneck['announceprice']))
-        # print('***************************************************')
     except Exception as e:
-        print("Sending price message to flask server on controller node FAILED!!!")
-        print(e)
+        logging.debug("Sending price message to flask server on controller node FAILED!!!")
+        logging.debug(e)
         return "not ok"
 
 def push_updated_price():
     """Push the update price to all the task controllers
     """
-    # print('Update price')
-    # print(task_controllers)
-    # print(home_ids)
     for idx,task in enumerate(task_controllers):
         if task in home_ids: continue
         if task in super_tasks: continue 
         if task in non_tasks: continue 
         price = price_aggregate(task)
-        # print(price)
         announce_price(controllers_ip_map[task], price)
 
     if BOKEH==3:    
@@ -705,94 +512,93 @@ def execute_task(home_id,task_name,file_name, filenames, input_path, output_path
         input_path (str): input file path
         output_path (str): output file path
     """
-    # print('***************************************************')
-    # print('Execute task')
-    # t = tic()
     ts = time.time()
     runtime_info = 'rt_exec '+ file_name+ ' '+str(ts)
     send_runtime_profile_computingnode(runtime_info,task_name,home_id)
     dag_task = multiprocessing.Process(target=task_module[task_name].task, args=(filenames, input_path, output_path))
     dag_task.start()
     dag_task.join()
-    # txec = toc(t)
-    # bottleneck['exectask'].append(txec)
-    # print(np.mean(bottleneck['exectask']))
-    # print('***************************************************')
-    
-    
-def transfer_mapping_decorator(TRANSFER=0):
-    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+  
+def transfer_data_scp(ID,user,pword,source, destination):
+    """Transfer data using SCP
     
     Args:
-        TRANSFER (int, optional): TRANSFER specified from ``jupiter_config.ini``, default method is SCP
-    
-    Returns:
-        function: chosen transfer method
+        ID (str): destination ID
+        user (str): username
+        pword (str): password
+        source (str): source file path
+        destination (str): destination file path
     """
-    
-    def transfer_data_scp(ID,user,pword,source, destination):
-        """Transfer data using SCP
-        
-        Args:
-            IP (str): destination ID
-            user (str): destination username
-            pword (str): destination password
-            source (str): source file path
-            destination (str): destination file path
-        """
-        #Keep retrying in case the containers are still building/booting up on
-        #the child nodes.
-        # print('***************************************************')
-        # print('Transfer data SCP')
-        # print(IP)
-        # print(user)
-        # print(pword)
-        # print(source)
-        # print(destination)
-        # t = tic()
-        retry = 0
-        ts = -1
-        while retry < num_retries:
-            try:
-                nodeIP = combined_ip_map[ID]
-                cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
-                os.system(cmd)
-                print('data transfer complete\n')
-                ts = time.time()
-                s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
-                runtime_sender_log.write(s)
-                runtime_sender_log.flush()
-                break
-            except:
-                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
-                time.sleep(1)
-                retry += 1
-        if retry == num_retries:
-            s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,source,ts)
+    #Keep retrying in case the containers are still building/booting up on
+    #the child nodes.
+    retry = 0
+    ts = -1
+    while retry < num_retries:
+        try:
+            nodeIP = combined_ip_map[ID]
+            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
+            os.system(cmd)
+            logging.debug('data transfer complete\n')
+            ts = time.time()
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
-        # txec = toc(t)
-        # bottleneck['transfer'].append(txec)
-        # print(np.mean(bottleneck['transfer']))
-        # print('***************************************************')
+            break
+        except:
+            logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            time.sleep(2)
+            retry += 1
+    if retry == num_retries:
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,source,ts)
+        runtime_sender_log.write(s)
+        runtime_sender_log.flush()
 
-    if TRANSFER==0:
-        return transfer_data_scp
-    return transfer_data_scp
-
-@transfer_mapping_decorator
 def transfer_data(ID,user,pword,source, destination):
     """Transfer data with given parameters
     
     Args:
-        IP (str): destination ID
+        ID (str): destination ID
         user (str): destination username
         pword (str): destination password
         source (str): source file path
         destination (str): destination file path
     """
-    msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(IP,user,pword,source, destination)
-    print(msg)
+    msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
+    
+    if TRANSFER == 0:
+        return transfer_data_scp(ID,user,pword,source, destination)
+
+    return transfer_data_scp(ID,user,pword,source, destination) #default
+
+def transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destination_list):
+    """Transfer data using SCP to multiple nodes
+    
+    Args:
+        ID_list (str): destination ID list
+        user_list (str): username list
+        pword_list (str): password list
+        source (str): source file path 
+        destination (str): destination file path
+    """
+    for idx in range(len(ID_list)): 
+        _thread.start_new_thread(transfer_data_scp,(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx],))
+
+def transfer_multicast_data(ID_list,user_list,pword_list,source_list, destination_list):
+    """Transfer data with given parameters
+    
+    Args:
+        ID_list (str): destination ID list 
+        user (str): destination username
+        pword (str): destination password
+        source (str): source file path
+        destination (str): destination file path
+    """
+    for idx in range(len(ID_list)):
+        msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx])
+    if TRANSFER==0:
+        logging.debug('Multicast all the files')
+        transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destination_list)
+    
 
 def send_runtime_profile_computingnode(msg,task_name,home_id):
     """
@@ -810,34 +616,16 @@ def send_runtime_profile_computingnode(msg,task_name,home_id):
         Exception: if sending message to flask server on home is failed
     """
     try:
-        # print('***************************************************')
-        # print("Sending message", msg)
-        # t = tic()
-        # t1 = time.time()
         url = "http://" + home_node_host_ports[home_id] + "/recv_runtime_profile_computingnode"
         params = {'msg': msg, "work_node": self_name, "task_name": task_name}
-        # print(time.time()-t1)
-        # t1 = time.time()
         params = urllib.parse.urlencode(params)
-        # print(time.time()-t1)
-        # t1 = time.time()
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        # print(time.time()-t1)
-        # t1 = time.time()
         res = urllib.request.urlopen(req)
-        # print(time.time()-t1)
-        # t1 = time.time()
         res = res.read()
         res = res.decode('utf-8')
-        # print(time.time()-t1)
-        # t1 = time.time()
-        # txec = toc(t)
-        # bottleneck['sendmsg'].append(txec)
-        # # print(np.mean(bottleneck['sendmsg']))
-        # print('***************************************************')
     except Exception as e:
-        print("Sending runtime profiling info to flask server on home FAILED!!!")
-        print(e)
+        logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
+        logging.debug(e)
         return "not ok"
     return res
 
@@ -848,34 +636,9 @@ def retrieve_input_enter(task_name, file_name):
         task_name (str): task name
         file_name (str): name of the file enter at the INPUT folder
     """
-    # print('***************************************************')
-    # print('retrieve input name')
-    # t = tic()
-    # t1 = time.time()
-    # print(file_name)
-    # print(task_name)
-    # print(name_convert_in)
     suffix = name_convert_in[task_name]
-    # print(suffix)
-    # print(time.time()-t1)
-    # t1 = time.time()
-    # print(suffix)
-    # print(type(suffix))
     prefix = file_name.split(suffix)
-    # print(prefix)
-    # print(time.time()-t1)
-    # t1 = time.time()
-    # print('$$$$$$')
-    # print(file_name)
-    # print(suffix)
-    # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    # print(time.time()-t1)
-    # print(input_name)
-    # txec = toc(t)
-    # bottleneck['retrieveinput'].append(txec)
-    # print(np.mean(bottleneck['retrieveinput']))
-    # sprint('***************************************************')
     return input_name
 
 def retrieve_input_finish(task_name, file_name):
@@ -885,20 +648,9 @@ def retrieve_input_finish(task_name, file_name):
         task_name (str): task name
         file_name (str): name of the file output at the OUTPUT folder
     """
-    # print('***************************************************')
-    # print('retrieve finish name')
-    # print(file_name)
-    # print(name_convert_out)
     suffix = name_convert_out[task_name]
-    # print(suffix)
     prefix = file_name.split(suffix)
-    # print('$$$$$$')
-    # print(file_name)
-    # print(suffix)
-    # print(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    # print(input_name)
-    # print('***************************************************')
     return input_name
 
 def request_best_assignment(home_id,task_name,file_name):
@@ -912,12 +664,9 @@ def request_best_assignment(home_id,task_name,file_name):
     
     """
     try:
-        # print('***************************************************')
-        print("Request the best computing node for the task" + task_name)
-        # t = tic()
+        logging.debug("Request the best computing node for the task %s",task_name)
         url = "http://" + controllers_ip_map[task_name] + ":" + str(FLASK_SVC) + "/receive_best_assignment_request"
         params = {'home_id':home_id,'node_name':self_name,'file_name':file_name,'key':self_name}
-        # print(params)
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
@@ -929,14 +678,9 @@ def request_best_assignment(home_id,task_name,file_name):
             msg = 'msgoverhead priceevent compute%s requestbest 1\n'%(self_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
-
-        # txec = toc(t)
-        # bottleneck['reequestassign'].append(txec)
-        # print(np.mean(bottleneck['requestassign']))
-        # print('***************************************************')
     except Exception as e:
-        print("Sending assignment request to flask server on controller node FAILED!!!")
-        print(e)
+        logging.debug("Sending assignment request to flask server on controller node FAILED!!!")
+        logging.debug(e)
         return "not ok"
 
 def receive_best_assignment():
@@ -945,31 +689,20 @@ def receive_best_assignment():
     """
     
     try:
-        # print('***************************************************')
-        print("Received best assignment")
-        # t = tic()
+        logging.debug("Received best assignment")
         home_id = request.args.get('home_id')
         task_name = request.args.get('task_name')
         file_name = request.args.get('file_name')
         best_computing_node = request.args.get('best_computing_node')
         task_node_map[home_id,task_name,file_name] = best_computing_node
-        # task_node_summary[home_id,task_name,file_name] = best_computing_node
-        # print(task_name)
-        # print(best_computing_node)
-        # print(task_node_summary)
         if best_computing_node!=-1:
             update_best[home_id,task_name,file_name] = True
         else:
             update_best[home_id,task_name,file_name] = False
-        # print(update_best[home_id,task_name,file_name])
-        # txec = toc(t)
-        # bottleneck['receiveassign'].append(txec)
-        # print(np.mean(bottleneck['receiveassign']))
-        # print('***************************************************')
 
     except Exception as e:
         update_best[home_id,task_name,file_name] = False
-        print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
+        logging.debug("Bad reception or failed processing in Flask for best assignment request: %s ",e) 
         return "not ok" 
 
     return "ok"
@@ -992,7 +725,7 @@ class Handler1(pyinotify.ProcessEvent):
         Args:
             event (ProcessEvent): a new file is created
         """
-        print("Received file as output - %s." % event.pathname)
+        logging.debug("Received file as output - %s" ,event.pathname)
         new_file = os.path.split(event.pathname)[-1]
 
         if '_' in new_file:
@@ -1002,9 +735,6 @@ class Handler1(pyinotify.ProcessEvent):
 
         
         ts = time.time()
-        
-        # print(time.time()-t1)
-        # t1 = time.time()
         if RUNTIME == 1:
             s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,event.pathname,ts)
             runtime_receiver_log.write(s)
@@ -1012,163 +742,87 @@ class Handler1(pyinotify.ProcessEvent):
 
         task_name = event.pathname.split('/')[-3]
         home_id = event.pathname.split('/')[-2]
-        # print(task_name)
-        # print(home_id)
         input_name = retrieve_input_finish(task_name, temp_name)
-        # print('????????????????')
-        # print(input_name)
         runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
-        # print(time.time()-t1)
-        # t1 = time.time()
         send_runtime_profile_computingnode(runtime_info,task_name,home_id)
-        # print(time.time()-t1)
-        # t1 = time.time()
         key = (home_id,task_name,input_name)
-        # print('#############')
-        # print(next_mul)
         flag = next_mul[key][0]
-        # print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
-        # print(new_file)
-        # print(next_tasks_map)
-        # print(next_tasks_map[task_name])
-        # print(flag)
-        # print(time.time()-t1)
-        # t1 = time.time()
         if next_tasks_map[task_name][0] in home_ids: # next node is HOME
-            print('----- next step is home')
+            logging.debug('----- next step is home')
             transfer_data(home_id,username,password,event.pathname, "/output/"+new_file)   
-            # print(time.time()-t1)
-            # t1 = time.time() 
         else: #next node is another compute node
-            print('----- next step is not home')
-            # print(next_tasks_map[task_name])
-            # print(len(next_tasks_map[task_name]))
-            print('Sending the output files to the corresponding destinations')
+            logging.debug('----- next step is not home')
+            logging.debug('Sending the output files to the corresponding destinations')
             
             for next_task in next_tasks_map[task_name]:
-                # print(next_task)
-                # print(super_tasks)
-                # print(non_tasks)
-                # print(next_task in super_tasks)      
-                # print(next_task in non_tasks)  
-                # print(next_task in super_tasks or non_tasks)
                 if next_task in super_tasks or next_task in non_tasks: 
-                    print('next task is non DAG')
+                    logging.debug('next task is non DAG')
                     continue
                 while (not update_best[home_id,next_task,input_name]) or (task_node_map[home_id,next_task,input_name]=='-1'):
                     request_best_assignment(home_id,next_task,input_name)
-                    print('--- waiting for computing node assignment')
-                    # print(task_node_map)
-                    # b = (task_node_map[home_id,next_task,input_name]=='-1')
-                    # print(b)
-                    # print('---2')
-                    # c = not update_best[home_id,next_task,input_name]
-                    # print(c)
-                    # a = b or c
-                    # print(a)
-                    # print('------- 3')
-                    # print(update_best)
+                    logging.debug('--- waiting for computing node assignment')
                     time.sleep(1)
-                # print(task_node_map[home_id,next_task,input_name])
-            # print(time.time()-t1)
-            # t1 = time.time()
-            # print('---------- Now what')
-            # print(computing_ip_map)
-            # print(task_node_map)
 
             next_hosts = []
             next_IPs = []
 
-            # print('--------------------')
             for next_task in next_tasks_map[task_name]:
-                # print(next_task)
                 if next_task in super_tasks or next_task in non_tasks: 
-                    # print('next task is non DAG')
                     next_hosts.append(next_task)
                     next_IPs.append(controllers_ip_map[next_task])
                 else:
                     tmp_host = task_node_map[home_id,next_task,input_name]
-                    # print('next task is DAGssss')
-                    # print(tmp_host)
-                    # print(home_id)
-                    # print(next_task)
-                    # print(input_name)
-                    # print(task_node_map)
-                    # print(tmp_host)
                     next_hosts.append(tmp_host)  
                     next_IPs.append(computing_ip_map[tmp_host]) 
 
-
-            # print(task_node_map[home_id,next_task,input_name])
-            # # print(task_node_summary[home_id,next_task,input_name])
-            # next_hosts =  [task_node_map[home_id,x,input_name] for x in next_tasks_map[task_name]]
-            # # next_hosts =  [task_node_summary[home_id,x,input_name] for x in next_tasks_map[task_name]]
-            # next_IPs   = [computing_ip_map[x] for x in next_hosts]
-
-            # print('**************!!!!!!!!!!!!!!!!!!!!!')
-            # print(next_tasks_map[task_name])
-            # print(flag)
-
             if flag=='true': # same output to all of the children task
-                # print(flag)
-                # print(type(flag))
-                print('same output to all of the children task')
+                logging.debug('same output to all of the children task')
+                
+                #unicast
+                # destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
+                # for idx,host in enumerate(next_hosts):
+                #     if self_ip!=combined_ip_map[host]:
+                #         transfer_data(host,username,password,event.pathname, destinations[idx])
+                #     else:
+                #         copyfile(event.pathname, destinations[idx])
+
+                # Using multicast
+                logging.debug('Using multicast instead')
                 destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
-                # destinations = ["/centralized_scheduler/input/" +new_file+"#"+home_id +"#"+x for x in next_tasks_map[task_name]]
-                #destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
-                # print(destinations)
-                for idx,host in enumerate(next_hosts):
-                    # print('----')
-                    # print(ip)
-                    # print(destinations[idx])
-                    if self_ip!=combined_ip_map[host]:
-                        # print('different')
-                        # print(event.src_path)
-                        # print(destinations[idx])
-                        transfer_data(host,username,password,event.pathname, destinations[idx])
-                    else:
-                        # cmd = "cp %s %s"%(event.src_path,destinations[idx])
-                        # print(cmd)
-                        # os.system(cmd)
-                        # print('same')
-                        # print(event.src_path)
-                        # print(destinations[idx])
-                        copyfile(event.pathname, destinations[idx])
-                # print(time.time()-t1)
-                # t1 = time.time()
+                users = [username]*len(destinations)
+                passwords = [password]*len(destinations)
+                sources = [event.pathname]*len(destinations)
+                transfer_multicast_data(next_hosts,users,passwords,sources, destinations)
+
             else: #each output file to each of the next children task
                 if key not in files_mul:
                     files_mul[key] = [event.pathname]
                 else:
                     files_mul[key] = files_mul[key] + [event.pathname]
-                print('checking enough output files in queue')
-                # print(files_mul[key])
-                # print(next_hosts)
-                # print(time.time()-t1)
-                # t1 = time.time()
+                logging.debug('checking enough output files in queue')
 
                 if len(files_mul[key]) == len(next_hosts):
-                    for idx,host in enumerate(next_hosts):
-                        # print(files_mul[key][idx])
-                        # print(next_tasks_map[task_name][idx])
-                        print('send each output file to each of the next children task')
-                        current_file = files_mul[key][idx].split('/')[-1]
-                        # print(current_file)
-                        # destinations = "/centralized_scheduler/input/" +current_file +"#"+home_id+"#"+next_tasks_map[task_name][idx]
-                        destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
-                        #destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id
-                        # print(destinations)
-                        if self_ip!=combined_ip_map[host]:
-                            print('different')
-                            # print(files_mul[key][idx])
-                            transfer_data(host,username,password,files_mul[key][idx], destinations)
-                        else: 
-                            # cmd = "cp %s %s"%(files_mul[key][idx],destinations)
-                            # # print(cmd)
-                            # os.system(cmd)
-                            print('same')
-                            # print(files_mul[key][idx])
-                            copyfile(files_mul[key][idx],destinations)
+                    # Unicast
+                    # for idx,host in enumerate(next_hosts):
+                    #     logging.debug('send each output file to each of the next children task')
+                    #     current_file = files_mul[key][idx].split('/')[-1]
+                    #     destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
+                    #     if self_ip!=combined_ip_map[host]:
+                    #         transfer_data(host,username,password,files_mul[key][idx], destinations)
+                    #     else: 
+                    #         copyfile(files_mul[key][idx],destinations)
+
+                    # Using multicast
+                    destinations = []
+                    logging.debug('Using multicast instead')
+                    for idx in range(0,len(next_hosts)):
+                        current_file = files_mul[key][idx].split('/')[-1]  
+                        cur_des =  "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file 
+                        destinations.append(cur_des) 
+                    users = [username]*len(destinations)
+                    passwords = [password]*len(destinations)
+                    sources = files_mul[key]
+                    transfer_multicast_data(next_hosts,users,passwords,sources, destinations)
 
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
@@ -1185,7 +839,7 @@ class Handler(pyinotify.ProcessEvent):
         Args:
             event (ProcessEvent): a new file is created
         """
-        print("Received file as input - %s." % event.pathname)
+        logging.debug("Received file as input - %s",event.pathname)
         new_file = os.path.split(event.pathname)[-1]
         if '_' in new_file:
             file_name = new_file.split('_')[0]
@@ -1248,15 +902,17 @@ class MonitorRecv(multiprocessing.Process):
         """
         Start Flask server
         """
-        print("Flask server started")
+        logging.debug("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER,threaded=True)
         # app.run(host='0.0.0.0', port=FLASK_DOCKER)
 def main():
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
     global dag_info
     path1 = 'centralized_scheduler/dag.txt'
     path2 = 'centralized_scheduler/nodes.txt'
     dag_info = read_config(path1,path2)
-    # print("DAG: ", dag_info[1])
 
     global username, password, ssh_port,num_retries, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER,task_queue_size
     # Load all the confuguration
@@ -1324,7 +980,7 @@ def main():
     wm = pyinotify.WatchManager()
     input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
     wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
-    print('starting the input monitoring process\n')
+    logging.debug('starting the input monitoring process\n')
     eh = Handler()
     notifier = pyinotify.ThreadedNotifier(wm, eh)
     notifier.start()
@@ -1332,7 +988,7 @@ def main():
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
     wm1 = pyinotify.WatchManager()
     wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
-    print('starting the output monitoring process\n')
+    logging.debug('starting the output monitoring process\n')
     eh1 = Handler1()
     notifier1= pyinotify.Notifier(wm1, eh1)
     notifier1.loop()

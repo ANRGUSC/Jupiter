@@ -16,9 +16,11 @@ from kubernetes import client, config
 from pprint import *
 import os
 import jupiter_config
-#from utilities import *
 import utilities
 import sys, json
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def check_status_circe_controllers(app_name):
     """Verify if all the WAVE home and workers have been deployed and UP in the system.
@@ -61,19 +63,19 @@ def check_status_circe_controllers(app_name):
         if resp.items:
             a=resp.items[0]
             if a.status.phase != "Running":
-                print("Pod Not Running", key)
+                logging.debug("Pod Not Running", key)
                 result = False
 
     if result:
-        print("All systems GOOOOO!!")
+        logging.debug("All systems GOOOOO!!")
     else:
-        print("Wait before trying again!!!!")
+        logging.debug("Wait before trying again!!!!")
 
     return result
 
 def check_status_circe_compute(app_name):
     """
-    This function prints out all the tasks that are not running.
+    This function logging.debugs out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
     """
 
@@ -113,15 +115,15 @@ def check_status_circe_compute(app_name):
         if resp.items:
             a=resp.items[0]
             if a.status.phase != "Running":
-                print("Pod Not Running", key)
+                logging.debug("Pod Not Running %s", key)
                 result = False
 
-            # print("Pod Deleted. status='%s'" % str(del_resp_2.status))
+            # logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
 
     if result:
-        print("All the computing nodes GOOOOO!!")
+        logging.debug("All the computing nodes GOOOOO!!")
     else:
-        print("Wait before trying again!!!!")
+        logging.debug("Wait before trying again!!!!")
 
     return result
 
@@ -181,12 +183,12 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
     home_label = app_name+'-controllerhome'
     home_body = write_decoupled_pricing_circe_service_specs(name = home_name, label = home_label)
     ser_resp = api.create_namespaced_service(namespace, home_body)
-    print("Home service created. status = '%s'" % str(ser_resp.status))
+    logging.debug("Home service created. status = '%s'" % str(ser_resp.status))
 
     try:
         resp = api.read_namespaced_service(home_name, namespace)
     except ApiException as e:
-        print("Exception Occurred")
+        logging.debug("Exception Occurred")
     
     service_ips['home'] = resp.spec.cluster_ip
     home_ip = service_ips['home']
@@ -205,25 +207,17 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
     
             try:
                 ser_resp = api.create_namespaced_service(namespace, body)
-                print("Service created. status = '%s'" % str(ser_resp.status))
-                print(i)
+                logging.debug("Service created. status = '%s'" % str(ser_resp.status))
+                logging.debug(i)
                 resp = api.read_namespaced_service(pod_name, namespace)
             except ApiException as e:
-                print("Exception Occurred")
+                logging.debug("Exception Occurred")
 
-            # print resp.spec.cluster_ip
+            # logging.debug resp.spec.cluster_ip
             service_ips[i] = resp.spec.cluster_ip
             nexthost_ips = nexthost_ips + ':' + service_ips[i]
             nexthost_names = nexthost_names + ':' + i
             all_profiler_ips = all_profiler_ips + ':' + profiler_ips[i]
-    print(service_ips)
-    print(nexthost_ips)
-    print(nexthost_names)
-
-    print("####################################")
-    print(profiler_ips)
-    print("####################################")
-    print(all_profiler_ips)
 
     home_profiler_ips = {}
     for key in homes:
@@ -233,7 +227,7 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
 
     for i in nodes:
 
-        # print nodes[i][0]
+        # logging.debug nodes[i][0]
         
         """
             We check whether the node is a home / master.
@@ -260,7 +254,7 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
             # # pprint(dep)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
-            print("Deployment created. status ='%s'" % str(resp.status))
+            logging.debug("Deployment created. status ='%s'" % str(resp.status))
             
 
 
@@ -273,8 +267,6 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
 
     home_name = app_name+'-controllerhome'
     label_name = app_name+'-controllerhome'
-    print(profiler_ips)
-    print(service_ips)
 
 
     home_dep = write_decoupled_pricing_controller_home_specs(name = home_name, label = label_name,
@@ -293,18 +285,16 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
                                              app_name = app_name,
                                              app_option =jupiter_config.APP_OPTION)
     resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
-    print("Home deployment created. status = '%s'" % str(resp.status))
+    logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
-    pprint(service_ips)
-
-    # print('Successfully deploy CIRCE dispatcher')
+    logging.debug('Successfully deploy CIRCE dispatcher')
     # if jupiter_config.BOKEH == 3:
     #     latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
     #     end_time = time.time()
     #     msg = 'CIRCE decoupled deployend %f \n'%(end_time)
     #     write_file(latency_file,msg)
     #     deploy_time = end_time - start_time
-    #     print('Time to deploy CIRCE '+ str(deploy_time))
+    #     logging.debug('Time to deploy CIRCE '+ str(deploy_time))
 
 def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips,app_name):
     """
@@ -316,8 +306,6 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
         execution_ips : IP of execution profilers 
         app_name (str): application name
     """
-    print('INPUT PROFILERS')
-    print(profiler_ips)
     jupiter_config.set_globals()
     
     sys.path.append(jupiter_config.CIRCE_PATH)
@@ -326,10 +314,8 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
 
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path1)
-    pprint(nodes)
 
-
-    print('Starting to deploy decoupled CIRCE dispatcher')
+    logging.debug('Starting to deploy decoupled CIRCE dispatcher')
     # if jupiter_config.BOKEH == 3:
     #     latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
     #     start_time = time.time()
@@ -363,33 +349,29 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     #get DAG and home machine info
     first_task = dag_info[0]
     dag = dag_info[1]
-    # hosts = temp_info[2] 
-    # mapping = [task+":"+dag_info[2][task] for task in dag_info[2].keys()]
-    # mapping_str = "#".join(mapping)
     service_ips = {}; #list of all service IPs including home and task controllers
     computing_service_ips = {}
     all_profiler_ips = ''
     all_profiler_nodes = ''
     
 
-    print('-------- First create the home node service')
+    logging.debug('-------- First create the home node service')
     """
         First create the home node's service.
     """
 
     for key in homes:
-        print(key)
         all_profiler_ips = all_profiler_ips + ':'+ profiler_ips[key]
         all_profiler_nodes = all_profiler_nodes +':'+ key
         home_name =app_name+"-"+key
         home_body = write_decoupled_pricing_circe_compute_service_specs(name = home_name)
         ser_resp = api.create_namespaced_service(namespace, home_body)
-        print("Home service created. status = '%s'" % str(ser_resp.status))
+        logging.debug("Home service created. status = '%s'" % str(ser_resp.status))
 
         try:
             resp = api.read_namespaced_service(home_name, namespace)
         except ApiException as e:
-            print("Exception Occurred")
+            logging.debug("Exception Occurred")
 
         service_ips[key] = resp.spec.cluster_ip
 
@@ -402,7 +384,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
             kubectl get replicaset -n "namespace name"
             kubectl get pod -n "namespace name"
     """ 
-    print('-------- Create computing nodes service')
+    logging.debug('-------- Create computing nodes service')
 
     """
         Create computing nodes' service
@@ -420,14 +402,13 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
 
         # Call the Kubernetes API to create the service
         ser_resp = api.create_namespaced_service(namespace, body)
-        print("Service created. status = '%s'" % str(ser_resp.status))
+        logging.debug("Service created. status = '%s'" % str(ser_resp.status))
     
         try:
             resp = api.read_namespaced_service(pod_name, namespace)
         except ApiException as e:
-            print("Exception Occurred")
+            logging.debug("Exception Occurred")
 
-        # print resp.spec.cluster_ip
         computing_service_ips[node] = resp.spec.cluster_ip
         all_profiler_ips = all_profiler_ips + ':' + profiler_ips[node]
         all_profiler_nodes = all_profiler_nodes + ':' + node
@@ -435,20 +416,12 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     all_computing_ips = ':'.join(computing_service_ips.values())
     all_computing_nodes = ':'.join(computing_service_ips.keys())
 
-    # all_profiler_ips = all_profiler_ips[1:]
-    # all_profiler_nodes = all_profiler_nodes[1:]
-
-    # print(all_computing_nodes)
-    # print(all_computing_ips)
-    
-    
-
 
     """
     Start circe
     """
 
-    print('---------  Start computing nodes')
+    logging.debug('---------  Start computing nodes')
     """
         Start computing nodes
     """
@@ -460,8 +433,6 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     home_nodes_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(home_nodes.items()))
 
     for i in nodes:
-
-        # print nodes[i][0]
         
         """
             We check whether the node is a home / master.
@@ -472,7 +443,6 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
             Generate the yaml description of the required deployment for WAVE workers
         """
         pod_name = app_name+"-"+i
-        #print(pod_name)
         dep = write_decoupled_circe_compute_worker_specs(name = pod_name, label =  pod_name, image = jupiter_config.WORKER_COMPUTE_IMAGE,
                                          host = nodes[i][0], node_name = i,
                                          # all_node = all_node,
@@ -489,7 +459,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
         #pprint(dep)
         # # Call the Kubernetes API to create the deployment
         resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
-        print("Deployment created. status ='%s'" % str(resp.status))
+        logging.debug("Deployment created. status ='%s'" % str(resp.status))
 
 
     while 1:
@@ -497,7 +467,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
             break
         time.sleep(30)
 
-    print('-------- Start home node')
+    logging.debug('-------- Start home node')
 
     for key in homes:
         home_name =app_name+"-" + key
@@ -515,7 +485,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
                                     all_profiler_nodes = all_profiler_nodes,
                                     dir = '{}')
         resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
-        print("Home deployment created. status = '%s'" % str(resp.status))
+        logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
     return service_ips

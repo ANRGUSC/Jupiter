@@ -16,6 +16,7 @@ RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/pricing_event/requirements.txt /requirements.txt
 
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -34,9 +35,9 @@ RUN mkdir -p /centralized_scheduler/sample_input
 RUN mkdir -p /home/darpa/apps/data
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/stresscpu30/scripts/ /centralized_scheduler/
-ADD app_specific_files/stresscpu30/sample_input/ /centralized_scheduler/sample_input/
-ADD app_specific_files/stresscpu30/configuration.txt  /centralized_scheduler/dag.txt
+ADD app_specific_files/dummy_app_multicast/scripts/ /centralized_scheduler/
+ADD app_specific_files/dummy_app_multicast/sample_input/ /centralized_scheduler/sample_input/
+ADD app_specific_files/dummy_app_multicast/configuration.txt  /centralized_scheduler/dag.txt
 
 ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py

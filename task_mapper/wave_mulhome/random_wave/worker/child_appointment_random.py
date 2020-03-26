@@ -1,14 +1,12 @@
 """
-.. note:: This is the main script to run in every worker node in the system for random WAVE.
+.. note:: This is the main script to run in every worker node for greedy WAVE.
 """
-__author__ = "Pranav Sakulkar, Jiatong Wang, Pradipta Ghosh, Quynh Nguyen, Bhaskar Krishnamachari"
+__author__ = "Quynh Nguyen, Pranav Sakulkar,  Jiatong Wang, Pradipta Ghosh,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.1"
-
+__version__ = "3.0"
 
 import json
-import random
 import re
 import threading
 import time
@@ -16,21 +14,34 @@ import os
 import sys
 import urllib
 import shutil
-
 import _thread
 from flask import Flask, request
 import requests
-import datetime
 from pymongo import MongoClient
 import configparser
 from os import path
 from functools import wraps
+import multiprocessing
+from multiprocessing import Process, Manager
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+import paho.mqtt.client as mqtt
+import socket
 import logging
-
-
+import random
 
 
 app = Flask(__name__)
+
+def demo_help(server,port,topic,msg):
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
+
 
 def prepare_global():
     """Prepare global information (Node info, relations between tasks)
@@ -41,44 +52,114 @@ def prepare_global():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host, node_id, node_name, debug
+    global network_map, FLASK_PORT, FLASK_SVC, MONGO_SVC_PORT, nodes, node_count, master_host, debug, node_list
+
     FLASK_PORT = int(config['PORT']['FLASK_DOCKER'])
     FLASK_SVC  = int(config['PORT']['FLASK_SVC'])
-    MONGO_SVC  = int(config['PORT']['MONGO_SVC'])
+    MONGO_SVC_PORT  = config['PORT']['MONGO_SVC']
 
-    global PROFILER
+    global my_profiler_ip, PROFILER
     PROFILER = int(config['CONFIG']['PROFILER'])
+    my_profiler_ip = os.environ['PROFILER']
 
-
-    # Get ALL node info
     node_count = 0
     nodes = {}
-    for node_name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
-        if node_name == "":
-            continue
-        nodes[node_name] = node_ip + ":" + str(FLASK_SVC)
-        node_count +=  1
-    master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
-    logging.debug("Nodes", nodes)
+    tmp_nodes_for_convert={}
+    network_map = {}
 
-    node_id = -1
-    node_name = ""
+    #Get nodes to self_ip mapping
+    for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
+        if name == "":
+            continue
+        nodes[name] = node_ip + ":" + str(FLASK_SVC)
+        node_count += 1
+
+    node_list = nodes.keys()
+
+    #Get nodes to profiler_ip mapping
+    for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
+        if name == "":
+            continue
+        #First get mapping like {node: profiler_ip}, and later convert it to {profiler_ip: node}
+        tmp_nodes_for_convert[name] = node_ip
+
+    # network_map is a dict that contains node names and profiler ips mapping
+    network_map = {v: k for k, v in tmp_nodes_for_convert.items()}
+
+    master_host = os.environ['HOME_IP'] + ":" + str(FLASK_SVC)
+    global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready, application
+
+    
+    threshold = 15
+    resource_data = {}
+    is_resource_data_ready = False
+    network_profile_data = {}
+    is_network_profile_data_ready = False
     debug = True
 
-    global control_relation, children, parents, init_tasks, local_children, local_mapping, local_responsibility
+    global control_relation, children, parents
 
     # control relations between tasks
     control_relation = {}
+    children = {}
+    parents = {}
 
-    local_children = "local/local_children.txt"
-    local_mapping = "local/local_mapping.txt"
-    local_responsibility = "local/task_responsibility"
+    global application
+    application = read_file("DAG/DAG_application.txt")
+    del application[0]
 
-    global lock, kill_flag
-    # lock for sync file operation
-    lock = threading.Lock()
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
+    BOKEH = int(config['OTHER']['BOKEH'])
 
-    kill_flag = False
+    global profiler_ips 
+    profiler_ips = os.environ['ALL_PROFILERS'].split(':')
+    profiler_ips = profiler_ips[1:]
+
+
+
+def init_task_topology():
+    """
+        - Read ``DAG/input_node.txt``, get inital task information for each node
+        - Read ``DAG/DAG_application.txt``, get parent list of child tasks
+        - Create the DAG
+        - Write control relations to ``DAG/parent_controller.txt``
+    """
+
+    for line in application:
+        line = line.strip()
+        items = line.split()
+
+        parent = items[0]
+        if parent == items[3] or items[3] == "home":
+            continue
+
+        children[parent] = items[3:]
+        for child in items[3:]:
+            if child in parents.keys():
+                parents[child].append(parent)
+            else:
+                parents[child] = [parent]
+
+    for key, value in sorted(parents.items()):
+        parent = value
+        if len(parent) == 1:
+            if parent[0] in control_relation:
+                control_relation[parent[0]].append(key)
+            else:
+                control_relation[parent[0]] = [key]
+        if len(parent) > 1:
+            flag = False
+            for p in parent:
+                if p in control_relation:
+                    control_relation[p].append(key)
+                    flag = True
+                    break
+            if not flag:
+                control_relation[parent[0]] = [key]
+    logging.debug('----------- Control relation')
+    logging.debug("control_relation" ,control_relation)
 
 def assign_task():
     """Request assigned node for a specific task, write task assignment in local file at ``local_responsibility/task_name``.
@@ -86,77 +167,26 @@ def assign_task():
     Raises:
         Exception: ``ok`` if successful, ``not ok`` if either the request or the writing is failed
     """
-
     try:
+
         task_name = request.args.get('task_name')
-        write_file(local_responsibility + "/" + task_name, [], "w+")
+
+        local_mapping[task_name] = False
+        res = call_send_mapping(task_name, node_name)
+
+        if len(control_relation[task_name])>0:
+            for task in control_relation[task_name]:
+                if task not in local_children.keys():
+                    local_children[task] = False
+                    write_file(local_responsibility + "/" + task, 'TODO', "w+")
+        else:
+            logging.debug('No children tasks for this task')
+        
         return "ok"
-    except Exception:
+    except Exception as e:
+        logging.debug(e)
         return "not ok"
 app.add_url_rule('/assign_task', 'assign_task', assign_task)
-
-def kill_thread():
-    """assign kill thread as True
-    """
-    global kill_flag
-    kill_flag = True
-    return "ok"
-app.add_url_rule('/kill_thread', 'kill_thread', kill_thread)
-
-def init_folder():
-    """
-    Initialize folders ``local`` and ``local_responsibility``, prepare ``local_children`` and ``local_mapping`` file.
-    
-    Raises:
-        Exception: ``ok`` if successful, ``not ok`` otherwise
-    """
-
-    logging.debug("Trying to initialize folders here")
-    try:
-        if not os.path.exists("./local"):
-            os.mkdir("./local")
-
-        if not os.path.exists(local_children):
-            write_file(local_children, [], "w+")
-
-        if not os.path.exists(local_mapping):
-            write_file(local_mapping, [], "w+")
-
-        if not os.path.exists(local_responsibility):
-            os.mkdir(local_responsibility)
-        return "ok"
-    except Exception:
-        logging.debug("Init folder fialed: Why??")
-        return "not ok"
-
-
-def recv_control():
-    """Get assigned control function, prepare file ``DAG/parent_controller.txt`` storing parent control information of tasks 
-    
-    Raises:
-        Exception: ``ok`` if successful, ``not ok`` otherwise
-    """
-
-    try:
-        control = request.args.get('control')
-        items = re.split(r'#', control)
-
-        to_be_write = []
-        for _, item in enumerate(items):
-            to_be_write.append(item.replace("__", "\t"))
-            tmp = re.split(r"__", item)
-            key = tmp[0]
-            del tmp[0]
-            control_relation[key] = tmp
-
-        if not os.path.exists("./DAG"):
-            os.mkdir("./DAG")
-
-        write_file("DAG/parent_controller.txt", to_be_write, "a+")
-    except Exception:
-        return "not ok"
-    return "ok"
-app.add_url_rule('/recv_control', 'recv_control', recv_control)
 
 def assign_task_to_remote(assigned_node, task_name):
     """Assign task to remote node
@@ -169,6 +199,7 @@ def assign_task_to_remote(assigned_node, task_name):
         Exception: request if successful, ``not ok`` if failed
     """
     try:
+        logging.debug('Assign children task to the remote node')
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
         params = urllib.parse.urlencode(params)
@@ -176,10 +207,26 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        if BOKEH==3:
+            topic = 'msgoverhead_%s'%(node_name)
+            msg = 'msgoverhead greedywave%s assignremote 1 %s %s \n' %(node_name,task_name,assigned_node)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception:
         return "not ok"
     return res
 
+def write_file(file_name, content, mode):
+    """Write the content to file
+    
+    Args:
+        - file_name (str): file path
+        - content (str): content to be written
+        - mode (str): write mode 
+    """
+    file = open(file_name, mode)
+    for line in content:
+        file.write(line + "\n")
+    file.close()
 
 def call_send_mapping(mapping, node):
     """
@@ -193,8 +240,8 @@ def call_send_mapping(mapping, node):
     Raises:
         Exception: request if successful, ``not ok`` if failed
     """
-
     try:
+        logging.debug('Announce the mapping to the master host')
         url = "http://" + master_host + "/recv_mapping"
         params = {'mapping': mapping, "node": node}
         params = urllib.parse.urlencode(params)
@@ -202,141 +249,100 @@ def call_send_mapping(mapping, node):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+        local_mapping[mapping] = True
+        if BOKEH == 3: 
+            topic = 'msgoverhead_%s'%(node_name)
+            msg = 'msgoverhead greedywave%s announcehome 1 %s %s \n' %(node_name,node,mapping)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
-        return "not ok"
+        return "Announce the mapping to the master host failed"
     return res
 
+class Watcher:
+    DIRECTORY_TO_WATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)),'task_responsibility')
 
+    def __init__(self):
+        self.observer = Observer()
 
-def watcher():
-    """- thread to watch directory: ``local/task_responsibility``
-       - Write tasks to ``local/local_children.txt`` and ``local/local_mapping.txt`` that appear under the watching folder
+    def run(self):
+        """
+        Monitoring ``INPUT`` folder for the incoming files.
+        
+        At the moment you have to manually place input files into the ``INPUT`` folder (which is under ``centralized_scheduler_with_task_profiler``):
+        
+            .. code-block:: bash
+        
+                mv 1botnet.ipsum input/
+        
+        Once the file is there, it sends the file to the node performing the first task.
+        """
+
+        event_handler = Handler()
+        self.observer.schedule(event_handler, self.DIRECTORY_TO_WATCH, recursive=True)
+        self.observer.start()
+
+class Handler(FileSystemEventHandler):
     """
-    pre_time = time.time()
-
-    tmp_mapping = ""
-    while True:
-        if kill_flag:
-            break
-
-        if not os.path.exists(local_responsibility):
-            time.sleep(1)
-            continue
-
-        tasks = scan_dir(local_responsibility)
-        output("Find tasks under task_responsibility: " + json.dumps(tasks))
-        for _, task in enumerate(tasks):
-            if task in control_relation.keys():
-                controlled = control_relation[task]
-                for _, t in enumerate(controlled):
-                    todo_task = t + "\tTODO"
-                    write_file(local_children, [todo_task], "a+")
-                    output("Write content to local_children.txt: " + todo_task)
-
-                write_file(local_mapping, [task], "a+")
-                if tmp_mapping != "":
-                    tmp_mapping = tmp_mapping + "#"
-                tmp_mapping = tmp_mapping + task
-
-                output("Write content to local_mapping.txt: " + task)
-            else:
-                write_file(local_mapping, [task], "a+")
-                if tmp_mapping != "":
-                    tmp_mapping = tmp_mapping + "#"
-                tmp_mapping = tmp_mapping + task
-
-                output("Write content to local_mapping.txt: " + task)
-
-        shutil.rmtree(local_responsibility)
-        os.mkdir(local_responsibility)
-
-        if time.time() - pre_time >= 60:
-            if tmp_mapping != "":
-                res = call_send_mapping(tmp_mapping, node_name)
-                if res != "ok":
-                    output("Send mapping content to master failed");
-                else:
-                    tmp_mapping = ""
-
-            pre_time = time.time()
-
-        time.sleep(10)
-
-
-def distribute():
-    """thread to assign todo task to remote nodes
+        Handling the event when there is a new file generated in ``INPUT`` folder
     """
-    done_dict = set()
+
+    @staticmethod
+    def on_any_event(event):
+        """
+        Whenever there is a new input file in ``INPUT`` folder, the function:
+
+        - Log the time the file is created
+
+        - Start the connection to the first scheduled node
+
+        - Copy the newly created file to the ``INPUT`` folder of the first scheduled node
+        
+        Args:
+            event (FileSystemEventHandler): monitored event
+        """
+
+        if event.is_directory:
+            return None
+
+        elif event.event_type == 'created':
+
+            logging.debug("Received file as input - %s." % event.src_path)
+            new_task = os.path.split(event.src_path)[-1]
+            _thread.start_new_thread(assign_children_task,(new_task,))
+
+
+def assign_children_task(children_task):
+    logging.debug('Starting assigning process for the children task')
     while True:
-        if kill_flag:
+        if is_network_profile_data_ready and is_resource_data_ready:
             break
-
-        if not os.path.exists(local_children):
-            time.sleep(1)
-            continue
-
-        lines = read_file(local_children)
-        for line in lines:
-            line = line.strip()
-            if "TODO" in line:
-                output("Find todo item: " + line)
-                tmp_node_id = random.randint(1, node_count)
-                while tmp_node_id == node_id and node_count > 1:
-                    tmp_node_id = random.randint(1, node_count)
-
-                assign_to_node = "node" + str(tmp_node_id)
-                items = re.split(r'\t+', line)
-                if items[0] in done_dict:
-                    logging.debug(items[0], "already assigned")
-                    continue
-
-                logging.debug("Trying to assign", items[0], "to", assign_to_node)
-                status = assign_task_to_remote(assign_to_node, items[0])
-                if status == "ok":
-                    output("Assign " + items[0] + " to " + assign_to_node + " successfully")
-                    done_dict.add(items[0])
-                else:
-                    output("Assign " + items[0] + " to " + assign_to_node + " failed")
-
-        time.sleep(10)
+        else:
+            logging.debug("Waiting for the profiler data")
+            time.sleep(100)
+    res = False
+    assign_to_node = get_random_node()
+    if not assign_to_node:
+        logging.debug("No suitable node found for assigning task: ", children_task)
+    else:
+        logging.debug("Trying to assign", children_task, "to", assign_to_node)
+        status = assign_task_to_remote(assign_to_node, children_task)
+        if status == "ok":
+            local_children[children_task] = assign_to_node
+            call_send_mapping(children_task,assign_to_node)
 
 
-def scan_dir(directory):
-    """Scan the directory, append all file names to list ``tasks``
+def get_random_node():
+    """Get random node
     
     Args:
-        directory (str): directory path
+        file_size (int): file_size
     
     Returns:
-        list: tasks - List of all file names in the directory
+        str: result_node_name - assigned node for the current task
     """
-    tasks = []
-    for file_name in os.listdir(directory):
-        tasks.append(file_name)
-    return tasks
-
-
-def create_file():
-    """Do nothing/ pass
-    """
-    pass
-
-
-def write_file(file_name, content, mode):
-    """Write the content to file
-    
-    Args:
-        - file_name (str): file path
-        - content (str): content to be written
-        - mode (str): write mode 
-    """
-
-    lock.acquire()
-    file = open(file_name, mode)
-    for line in content:
-        file.write(line + "\n")
-    file.close()
-    lock.release()
+    logging.debug('Assign random node')
+    best_node = random.choice(list(node_list))
+    return best_node
 
 
 def read_file(file_name):
@@ -348,8 +354,6 @@ def read_file(file_name):
     Returns:
         str: file_contents - all lines in a file
     """
-
-    lock.acquire()
     file_contents = []
     file = open(file_name)
     line = file.readline()
@@ -357,7 +361,6 @@ def read_file(file_name):
         file_contents.append(line)
         line = file.readline()
     file.close()
-    lock.release()
     return file_contents
 
 
@@ -370,28 +373,65 @@ def output(msg):
     if debug:
         logging.debug(msg)
 
-
-def get_resource_data_drupe():
-    """Collect resource profiling information
+def get_resource_data_drupe(MONGO_SVC_PORT):
+    """Collect the resource profile from local MongoDB peer
     """
 
-    logging.debug("Startig resource profile collection thread")
-    # Requsting resource profiler data using flask for its corresponding profiler node
-    result = None
-    while True:
-        time.sleep(60)
-        # logging.debug("Get resource profiler data from http://"+os.environ['PROFILER']+ ":" + str(FLASK_SVC))
-        try:
-            r = requests.get("http://"+os.environ['PROFILER']+":" + str(FLASK_SVC)+"/all")
-            result = r.json()
-            if len(result) != 0:
-                break
-        except Exception:
-            logging.debug("Resource request failed. Will try again")
+    for profiler_ip in profiler_ips:
+        logging.debug('Check Resource Profiler IP: %s',profiler_ip)
+        client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(MONGO_SVC_PORT)+'/')
+        db = client_mongo.central_resource_profiler
+        collection = db.collection_names(include_system_collections=False)
+        logdb =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
+        for record in logdb:
+            resource_data[network_map[profiler_ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
-    data=json.dumps(result)
-    logging.debug("Got profiler data from http:// %s : %s",os.environ['PROFILER'],str(FLASK_SVC))
-    logging.debug("Resource profiles:", data)
+    logging.debug('Resource information has already been provided')
+    global is_resource_data_ready
+    is_resource_data_ready = True
+
+    if BOKEH==3:
+        topic = 'msgoverhead_%s'%(node_name)
+        msg = 'msgoverhead greedywave%s resourcedata %d \n' %(node_name,len(profiler_ips))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
+def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
+    """Collect the network profile from local MongoDB peer
+    """
+    logging.debug('Check My Network Profiler IP: %s',my_profiler_ip)
+    client_mongo = MongoClient('mongodb://'+my_profiler_ip+':'+MONGO_SVC_PORT+'/')
+    db = client_mongo.droplet_network_profiler
+    collection = db.collection_names(include_system_collections=False)
+    num_nb = len(collection)-1
+    while num_nb==-1:
+        logging.debug('--- Network profiler mongoDB not yet prepared')
+        time.sleep(60)
+        collection = db.collection_names(include_system_collections=False)
+        num_nb = len(collection)-1
+    num_rows = db[my_profiler_ip].count()
+    while num_rows < num_nb:
+        logging.debug('--- Network profiler regression info not yet loaded into MongoDB!')
+        time.sleep(60)
+        num_rows = db[my_profiler_ip].count()
+    logdb =db[my_profiler_ip].find().skip(db[my_profiler_ip].count()-num_nb)
+    for record in logdb:
+        # Destination ID -> Parameters(a,b,c) , Destination IP
+        if record['Destination[IP]'] in home_profiler_ip: continue
+        params = re.split(r'\s+', record['Parameters'])
+        network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
+                                                            'c': float(params[2]), 'ip': record['Destination[IP]']}
+    logging.debug('Network information has already been provided')
+
+    global is_network_profile_data_ready
+    is_network_profile_data_ready = True
+
+    if BOKEH==3:
+        topic = 'msgoverhead_%s'%(node_name)
+        msg = 'msgoverhead greedywave%s networkdata %d \n' %(node_name,len(myneighbors))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+    
+
+
 
 def profilers_mapping_decorator(f):
     """General Mapping decorator function
@@ -427,14 +467,18 @@ def get_resource_data_mapping():
         return profilers_mapping_decorator(get_resource_data_drupe)
     return profilers_mapping_decorator(get_resource_data_drupe)
 
-def get_network_data_drupe():
-    """Collect the network profile from local MongoDB peer
+def cal_file_size(file_path):
+    """Return the file size in bytes
+    
+    Args:
+        file_path (str): The file path
+    
+    Returns:
+        float: file size in bytes
     """
-
-    logging.debug('Collecting Network Monitoring Data from MongoDB')
-    client_mongo = MongoClient('mongodb://'+os.environ['PROFILER']+':'+str(MONGO_SVC)+'/')
-    db = client_mongo.droplet_network_profiler
-    logging.debug(db[os.environ['PROFILER']])
+    if os.path.isfile(file_path):
+        file_info = os.stat(file_path)
+        return file_info.st_size * 0.008
 
 def main():
     """
@@ -445,37 +489,51 @@ def main():
         - Start thread to watch directory: ``local/task_responsibility``
         - Start thread to thread to assign todo task to nodes
     """
-
     global logging
     logging.basicConfig(level = logging.DEBUG)
 
-
     prepare_global()
 
-    global node_name, node_id, FLASK_PORT
+    global node_name, node_id, FLASK_PORT, home_profiler_ip, home_profiler_nodes
 
     node_name = os.environ['SELF_NAME']
     node_id = int(node_name.split("e")[-1])
 
+    home_profiler = os.environ['HOME_PROFILER_IP'].split(' ')
+    home_profiler_nodes = [x.split(':')[0] for x in home_profiler]
+    home_profiler_ip = [x.split(':')[1] for x in home_profiler]
+
+
     logging.debug("Node name: %s and id %s", node_name, node_id)
     logging.debug("Starting the main thread on port %s", FLASK_PORT)
 
+    
+    
     get_network_data = get_network_data_mapping()
     get_resource_data = get_resource_data_mapping()
 
-    while init_folder() != "ok": # Initialize the local folders
-        pass
+    global local_mapping, local_children,local_responsibility, manager
+    manager = Manager()
+    local_mapping = manager.dict()
+    local_children = manager.dict()
 
+    local_responsibility = "task_responsibility"
+    os.mkdir(local_responsibility)
+
+    init_task_topology()
     # Get resource data
-    _thread.start_new_thread(get_resource_data, ())
+    _thread.start_new_thread(get_resource_data, (MONGO_SVC_PORT,))
 
     # Get network profile data
-    _thread.start_new_thread(get_network_data, ())
+    _thread.start_new_thread(get_network_data, (my_profiler_ip, MONGO_SVC_PORT,network_map))
 
-    _thread.start_new_thread(watcher, ())
-    _thread.start_new_thread(distribute, ())
+    #monitor Task responsibility folder for the incoming tasks
+    w = Watcher()
+    w.run()
+
     app.run(host='0.0.0.0', port=int(FLASK_PORT))
 
-if __name__ == '__main__':
-    main()    
 
+if __name__ == '__main__':
+    main()
+    

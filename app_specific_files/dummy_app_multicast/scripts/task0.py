@@ -61,7 +61,7 @@ def task(filename,pathin,pathout):
 		file_size=[]
 		multicast[task_name]
 		if multicast[task_name]=='false':
-			print('Multicast is false')
+			print('not wait, send')
 			for idx,neighbor in enumerate(dest):
 				print(neighbor)
 				print(idx)
