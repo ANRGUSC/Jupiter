@@ -69,8 +69,8 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
         Get proper handles or pointers to the k8-python tool to call different functions.
     """
     api = client.CoreV1Api()
-    k8s_beta = client.ExtensionsV1beta1Api()
-
+    k8s_apps_v1 = client.AppsV1Api()
+    
     service_ips = {};
 
     """
@@ -116,7 +116,7 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
                                 home_profiler_ip = home_profiler_str,
                                 app_name = app_name,
                                 app_option = jupiter_config.APP_OPTION)
-    resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
+    resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
     logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)

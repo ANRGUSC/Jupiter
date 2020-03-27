@@ -67,21 +67,20 @@ def delete_all_heft(app_name):
     namespace = jupiter_config.MAPPER_NAMESPACE
 
     # Get proper handles or pointers to the k8-python tool to call different functions.
-    api = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
     body = client.V1DeleteOptions()
 
     # First check if there is a exisitng profiler deployment with
     # the name = key in the respective namespace
     resp = None
     try:
-        resp = api.read_namespaced_deployment(key, namespace)
+        resp = k8s_apps_v1.read_namespaced_deployment(key, namespace)
     except ApiException as e:
         logging.debug("Exception Occurred")
 
     # if a deployment with the name = key exists in the namespace, delete it
     if resp:
-        del_resp_0 = api.delete_namespaced_deployment(key, namespace)
-        # del_resp_0 = api.delete_namespaced_deployment(key, namespace, body)
+        del_resp_0 = k8s_apps_v1.delete_namespaced_deployment(key, namespace)
         logging.debug("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
@@ -89,16 +88,19 @@ def delete_all_heft(app_name):
     # The label of kubernets are used to identify replicaset associate to each task
     #labelname = "app=heft_" + key
     labelname = "app="+app_name+'-home'
-    resp = api.list_namespaced_replica_set(label_selector = labelname,namespace=namespace)
+    resp = k8s_apps_v1.list_namespaced_replica_set(label_selector = labelname,namespace=namespace)
     # if a replicaset exist, delete it
     # pprint(resp)
     # logging.debug resp.items[0].metadata.namespace
     for i in resp.items:
         if i.metadata.namespace == namespace:
-            # del_resp_1 = api.delete_namespaced_replica_set(i.metadata.name, namespace, body)
-            del_resp_1 = api.delete_namespaced_replica_set(i.metadata.name, namespace)
+            try:
+                # del_resp_1 = k8s_apps_v1.delete_namespaced_replica_set(i.metadata.name, namespace, body)
+                del_resp_1 = k8s_apps_v1.delete_namespaced_replica_set(i.metadata.name, namespace)
 
-            logging.debug("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
+                logging.debug("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
+            except ApiException as e:
+                logging.debug("Exception when calling AppsV1Api->delete_namespaced_replica_set: %s",e)
 
     # Check if there is a pod still running by using the label
     resp = None

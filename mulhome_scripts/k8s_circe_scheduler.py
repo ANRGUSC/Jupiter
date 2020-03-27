@@ -43,7 +43,7 @@ def check_status_circe(dag,app_name):
     # We have defined the namespace for deployments in jupiter_config
 
     # Get proper handles or pointers to the k8-python tool to call different functions.
-    extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
     v1_delete_options = client.V1DeleteOptions()
     core_v1_api = client.CoreV1Api()
 
@@ -108,7 +108,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
         Get proper handles or pointers to the k8-python tool to call different functions.
     """
     api = client.CoreV1Api()
-    k8s_beta = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
 
     #get DAG and home machine info
     first_task = dag_info[0]
@@ -231,7 +231,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     
         pod_name = app_name+"-"+task
         #Generate the yaml description of the required deployment for each task
-        dep = write_circe_deployment_specs(name = pod_name, node_name = hosts.get(task)[1],
+        dep = write_circe_deployment_specs(name = pod_name, label = pod_name, node_name = hosts.get(task)[1],
             image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
             child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
             home_node_ip = service_ips.get('home'),
@@ -244,7 +244,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
 
         # # Call the Kubernetes API to create the deployment
         try:
-            resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
+            resp = k8s_apps_v1.create_namespaced_deployment(body = dep, namespace = namespace)
             logging.debug("Deployment created")
             logging.debug("Deployment created. status = '%s'" % str(resp.status))
         except ApiException as e:
@@ -260,7 +260,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
 
     # logging.debug(service_ips)
     home_name =app_name+"-home"
-    home_dep = write_circe_home_specs(name=home_name,image = jupiter_config.HOME_IMAGE, 
+    home_dep = write_circe_home_specs(name=home_name,label=home_name,image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
                                 child = jupiter_config.HOME_CHILD,
                                 child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
@@ -269,7 +269,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
                                 dir = '{}')
 
     try:
-        resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
+        resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
         logging.debug("Home deployment created")
         logging.debug("Home deployment created. status = '%s'" % str(resp.status))
         # logging.debug(resp)

@@ -14,7 +14,6 @@ from k8s_profiler_scheduler import *
 from k8s_wave_scheduler import *
 from k8s_circe_scheduler import *
 from k8s_pricing_circe_scheduler import *
-from k8s_decoupled_pricing_circe_scheduler import *
 from k8s_exec_scheduler import *
 from k8s_heft_scheduler import *
 from pprint import *

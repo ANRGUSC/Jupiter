@@ -24,8 +24,6 @@ from k8s_get_service_ips import *
 from functools import wraps
 from delete_all_circe import *
 from delete_all_pricing_circe import *
-from delete_all_integrated_pricing_circe import *
-from delete_all_decoupled_pricing_circe import *
 from delete_all_waves import *
 from delete_all_heft import *
 from delete_all_exec import *

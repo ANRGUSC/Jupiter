@@ -63,8 +63,6 @@ def check_status_profilers():
                 logging.debug("Pod Not Running %s", key)
                 result = False
 
-            # logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
-
     if result:
         logging.debug("All systems GOOOOO!!")
     else:
@@ -127,12 +125,9 @@ def k8s_profiler_scheduler():
         Get proper handles or pointers to the k8-python tool to call different functions.
     """
     api = client.CoreV1Api()
-    k8s_beta = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
     nodes = utilities.k8s_get_nodes(path2)
     service_ips = {}; 
-
-    # get the list of nodes
-    # ret = v1.list_node()
 
     """
         Loop through the list of nodes and run all profiler related k8 deployment, replicaset, pods, and service.
@@ -180,7 +175,6 @@ def k8s_profiler_scheduler():
             logging.debug(e)
             logging.debug("Exception Occurred")
 
-        # logging.debug resp.spec.cluster_ip
         service_ips[i] = resp.spec.cluster_ip
         nexthost_ips = nexthost_ips + ':' + service_ips[i]
         nexthost_names = nexthost_names + ':' + i
@@ -208,7 +202,7 @@ def k8s_profiler_scheduler():
                                          home_ips = home_ips,
                                          home_ids = home_ids)
         # # Call the Kubernetes API to create the deployment
-        resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
+        resp = k8s_apps_v1.create_namespaced_deployment(body = dep, namespace = namespace)
         logging.debug("Deployment created. status ='%s'" % str(resp.status))
             
     while 1:
@@ -226,7 +220,7 @@ def k8s_profiler_scheduler():
                                                      serv_ip = service_ips[i],
                                                      home_ips = home_ips,
                                                      home_ids = home_ids)
-            resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
+            resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
             logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
             pprint(service_ips)
