@@ -115,7 +115,7 @@ def check_status_exec_profiler_workers(app_name):
     # We have defined the namespace for deployments in jupiter_config
 
     # Get proper handles or pointers to the k8-python tool to call different functions.
-    extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
     v1_delete_options = client.V1DeleteOptions()
     core_v1_api = client.CoreV1Api()
 
@@ -187,7 +187,7 @@ def k8s_exec_scheduler(app_name):
         Get proper handles or pointers to the k8-python tool to call different functions.
     """
     api = client.CoreV1Api()
-    k8s_beta = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
 
     #get DAG and home machine info
     first_task = jupiter_config.HOME_CHILD
@@ -338,7 +338,7 @@ def k8s_exec_scheduler(app_name):
 
 
             # # Call the Kubernetes API to create the deployment
-            resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
+            resp = k8s_apps_v1.create_namespaced_deployment(body = dep, namespace = namespace)
             logging.debug("Deployment created. status = '%s'" % str(resp.status))
 
     for i in nodes:
@@ -357,7 +357,7 @@ def k8s_exec_scheduler(app_name):
                                              host = nodes[i][0], home_node_ip = service_ips['home'],
                                              all_node = all_node,all_node_ips = all_node_ips)
             # # Call the Kubernetes API to create the deployment
-            resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
+            resp = k8s_apps_v1.create_namespaced_deployment(body = dep, namespace = namespace)
             logging.debug("Deployment created. status ='%s'" % str(resp.status))
 
     """
@@ -378,6 +378,7 @@ def k8s_exec_scheduler(app_name):
     home_name = app_name+'-home'
     home_dep = write_exec_specs_home_control(flag = str(flag), inputnum = str(inputnum),
             name = home_name, node_name = home_name,
+            label = home_name,
             task_name = task,
             image = jupiter_config.EXEC_HOME_IMAGE, child = nexthosts,
             child_ips = next_svc, host = jupiter_config.HOME_NODE, dir = '{}',
@@ -388,7 +389,7 @@ def k8s_exec_scheduler(app_name):
             allprofiler_ips = allprofiler_ips,
             allprofiler_names = allprofiler_names)
 
-    resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
+    resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
     logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
     logging.debug('Successfully deploy execution profiler ')

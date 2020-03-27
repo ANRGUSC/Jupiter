@@ -67,34 +67,39 @@ def delete_all_profilers():
         namespace = jupiter_config.PROFILER_NAMESPACE
 
         # Get proper handles or pointers to the k8-python tool to call different functions.
-        api = client.ExtensionsV1beta1Api()
+        k8s_apps_v1 = client.AppsV1Api()
         body = client.V1DeleteOptions()
         
         # First check if there is a exisitng profiler deployment with
         # the name = key in the respective namespace
         resp = None
         try:
-            resp = api.read_namespaced_deployment(key, namespace)
+            resp = k8s_apps_v1.read_namespaced_deployment(key, namespace)
         except ApiException as e:
             logging.debug("Exception Occurred")
 
         # if a deployment with the name = key exists in the namespace, delete it
         if resp:
-            del_resp_0 = api.delete_namespaced_deployment(key, namespace, body)
+            del_resp_0 = k8s_apps_v1.delete_namespaced_deployment(key, namespace)
+            # del_resp_0 = k8s_apps_v1.delete_namespaced_deployment(key, namespace, body)
             logging.debug("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
         # Check if there is a replicaset running by using the label "app={key} + profiler" e.g, "app=node1profiler"
         # The label of kubernets are used to identify replicaset associate to each task
         label = "app=" + key + "profiler"
-        resp = api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
+        resp = k8s_apps_v1.list_namespaced_replica_set(label_selector = label,namespace=namespace)
         # if a replicaset exist, delete it
         # pprint(resp)
         # logging.debug resp.items[0].metadata.namespace
         for i in resp.items:
             if i.metadata.namespace == namespace:
-                del_resp_1 = api.delete_namespaced_replica_set(i.metadata.name, namespace, body)
-                logging.debug("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
+                try:
+                    del_resp_1 = k8s_apps_v1.delete_namespaced_replica_set(i.metadata.name, namespace)
+                    # del_resp_1 = k8s_apps_v1.delete_namespaced_replica_set(i.metadata.name, namespace, body)
+                    logging.debug("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
+                except ApiException as e:
+                    logging.debug("Exception when calling AppsV1Api->delete_namespaced_replica_set: %s",e)
 
         # Check if there is a pod still running by using the label
         resp = None
@@ -102,7 +107,8 @@ def delete_all_profilers():
         resp = api_2.list_namespaced_pod(namespace, label_selector = label)
         # if a pod is running just delete it
         if resp.items:
-            del_resp_2 = api_2.delete_namespaced_pod(resp.items[0].metadata.name, namespace, body)
+            del_resp_2 = api_2.delete_namespaced_pod(resp.items[0].metadata.name, namespace)
+            # del_resp_2 = api_2.delete_namespaced_pod(resp.items[0].metadata.name, namespace, body)
             logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
 
         # Check if there is a service running by name = key
@@ -114,8 +120,8 @@ def delete_all_profilers():
             logging.debug("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = api_2.delete_namespaced_service(key, namespace,body)
-            #del_resp_2 = api_2.delete_namespaced_service(key, namespace)
+            # del_resp_2 = api_2.delete_namespaced_service(key, namespace,body)
+            del_resp_2 = api_2.delete_namespaced_service(key, namespace)
             logging.debug("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running

@@ -48,7 +48,6 @@ def check_status_waves(app_name):
     # We have defined the namespace for deployments in jupiter_config
 
     # Get proper handles or pointers to the k8-python tool to call different functions.
-    extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
     v1_delete_options = client.V1DeleteOptions()
     core_v1_api = client.CoreV1Api()
 
@@ -123,8 +122,8 @@ def k8s_wave_scheduler(profiler_ips,app_name):
         Get proper handles or pointers to the k8-python tool to call different functions.
     """
     api = client.CoreV1Api()
-    k8s_beta = client.ExtensionsV1beta1Api()
-
+    k8s_apps_v1 = client.AppsV1Api()
+    
     service_ips = {}; 
 
     """
@@ -209,7 +208,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
                                              child = jupiter_config.HOME_CHILD,
                                              app_option = jupiter_config.APP_OPTION)
             # # Call the Kubernetes API to create the deployment
-            resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
+            resp = k8s_apps_v1.create_namespaced_deployment(body = dep, namespace = namespace)
             logging.debug("Deployment created. status ='%s'" % str(resp.status))
             
 
@@ -239,7 +238,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
                                              child = jupiter_config.HOME_CHILD,
                                              app_name = app_name,
                                              app_option = jupiter_config.APP_OPTION)
-    resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
+    resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
     logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
