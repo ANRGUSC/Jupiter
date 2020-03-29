@@ -39,10 +39,10 @@ RUN apt-get install stress
 
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/dummy_app/scripts/ /centralized_scheduler/
-COPY app_specific_files/dummy_app/sample_input /centralized_scheduler/sample_input
+ADD app_specific_files/sleep/scripts/ /centralized_scheduler/
+COPY app_specific_files/sleep/sample_input /centralized_scheduler/sample_input
 
-ADD app_specific_files/dummy_app/configuration.txt /centralized_scheduler/DAG.txt
+ADD app_specific_files/sleep/configuration.txt /centralized_scheduler/DAG.txt
 
 ADD profilers/execution_profiler_mulhome/profiler_worker.py /centralized_scheduler/profiler.py
 
