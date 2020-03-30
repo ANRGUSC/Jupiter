@@ -7,7 +7,7 @@ def task(input_files, pathin, pathout):
     filelist=[]
     filelist.append(input_files)
 
-    time.sleep(20)
+    time.sleep(10)
     cmd = "dd bs=1024 count=8192 </dev/urandom >%s/task0_file0" % pathout
     os.system(cmd)
     return [os.path.join(pathout,'task0_file0')]
