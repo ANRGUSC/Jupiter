@@ -8,9 +8,9 @@ def task(input_files, pathin, pathout):
     filelist.append(input_files)
 
     time.sleep(20)
-    cmd = "dd bs=1024 count=8192 </dev/urandom >%s/output_task0_file0" % pathout
+    cmd = "dd bs=1024 count=8192 </dev/urandom >%s/task0_file0" % pathout
     os.system(cmd)
-    return [os.path.join(pathout,'output_task0_file0')]
+    return [os.path.join(pathout,'task0_file0')]
 
 
 
@@ -19,7 +19,6 @@ def main():
     outpath = os.path.join(os.path.dirname(__file__), "generated_files/")
     outfile = task(filelist, outpath, outpath)
     return outfile
-    
 '''
 if __name__ == '__main__':
 
