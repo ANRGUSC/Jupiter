@@ -810,6 +810,7 @@ class Handler1(pyinotify.ProcessEvent):
             if flag=='true': 
                 logging.debug('send a single output of the task to all its children') 
 
+                # TODO: turn me into an option
                 #Unicast
                 # destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
                 # for idx,host in enumerate(next_hosts):
@@ -836,6 +837,7 @@ class Handler1(pyinotify.ProcessEvent):
                 if len(files_mul[key]) == len(next_hosts):
                     logging.debug('Enough output files to transfer')
 
+                    # TODO: turn me into an option
                     #Unicast
                     # for idx,host in enumerate(next_hosts):
                     #     current_file = files_mul[key][idx].split('/')[-1]
