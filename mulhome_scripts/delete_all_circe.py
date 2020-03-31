@@ -14,6 +14,9 @@ from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
 import time
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def write_file(filename,message):
     with open(filename,'a') as f:
@@ -34,7 +37,7 @@ def delete_all_circe(app_name):
     path2 = jupiter_config.HERE + 'nodes.txt'
     node_list, homes = utilities.k8s_get_nodes_worker(path2)
 
-    print('Starting to teardown CIRCE')
+    logging.debug('Starting to teardown CIRCE')
     if jupiter_config.BOKEH == 3:
         latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
         start_time = time.time()
@@ -55,7 +58,7 @@ def delete_all_circe(app_name):
     namespace = jupiter_config.DEPLOYMENT_NAMESPACE
 
     # Get proper handles or pointers to the k8-python tool to call different functions.
-    extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
     v1_delete_options = client.V1DeleteOptions()
     core_v1_api = client.CoreV1Api()
 
@@ -71,34 +74,40 @@ def delete_all_circe(app_name):
     """
     for key, value in dag.items():
 
-        print(key)
+        logging.debug(key)
         pod_name = app_name+"-"+key
 
         # First check if there is a deployment existing with
         # the name = key in the respective namespace
         resp = None
         try:
-            resp = extensions_v1_beta1_api.read_namespaced_deployment(pod_name, namespace)
+            resp = k8s_apps_v1.read_namespaced_deployment(pod_name, namespace)
         except ApiException as e:
-            print("No Such Deplyment Exists")
+            logging.debug("No Such Deplyment Exists")
 
         # if a deployment with the name = key exists in the namespace, delete it
         if resp:
-            del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(pod_name, namespace, v1_delete_options)
-            print("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
+            # del_resp_0 = k8s_apps_v1.delete_namespaced_deployment(pod_name, namespace, v1_delete_options)
+            del_resp_0 = k8s_apps_v1.delete_namespaced_deployment(pod_name, namespace)
+
+            logging.debug("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
         # Check if there is a replicaset running by using the label app={key}
         # The label of kubernets are used to identify replicaset associate to each task
         label = "app="+app_name+'-' + key
-        resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label,namespace=namespace)
+        resp = k8s_apps_v1.list_namespaced_replica_set(label_selector= label,namespace=namespace)
         # if a replicaset exist, delete it
-        
-        # print resp.items[0].metadata.namespace
+
         for i in resp.items:
             if i.metadata.namespace == namespace:
-                del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
-                print("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
+                try:
+                    del_resp_1 = k8s_apps_v1.delete_namespaced_replica_set(i.metadata.name, namespace)
+
+                    # del_resp_1 = k8s_apps_v1.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
+                    logging.debug("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
+                except ApiException as e:
+                    logging.debug("Exception when calling AppsV1Api->delete_namespaced_replica_set: %s",e)
 
         # Check if there is a pod still running by using the label app={key}
         resp = None
@@ -106,20 +115,22 @@ def delete_all_circe(app_name):
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
         # if a pod is running just delete it
         if resp.items:
-            del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
-            print("Pod Deleted. status='%s'" % str(del_resp_2.status))
+            del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace)
+
+            # del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
+            logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
 
         # Check if there is a service running by name = task#
         resp = None
         try:
             resp = core_v1_api.read_namespaced_service(pod_name, namespace)
         except ApiException as e:
-            print("Exception Occurred")
+            logging.debug("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace, v1_delete_options)
-            #del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace)
-            print("Service Deleted. status='%s'" % str(del_resp_2.status))
+            # del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace, v1_delete_options)
+            del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace)
+            logging.debug("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the related service, pods, deployment running
     #end for
@@ -130,55 +141,64 @@ def delete_all_circe(app_name):
     #home_name ="home"
     resp = None
     try:
-        resp = extensions_v1_beta1_api.read_namespaced_deployment(home_name, namespace)
+        resp = k8s_apps_v1.read_namespaced_deployment(home_name, namespace)
     except ApiException as e:
-        print("No Such Deplyment Exists")
+        logging.debug("No Such Deplyment Exists")
 
     # if home exists, delete it 
     if resp:
-        del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(home_name, namespace, v1_delete_options)
-        print("Deployment '%s' Deleted. status='%s'" % (home_name, str(del_resp_0.status)))
+        del_resp_0 = k8s_apps_v1.delete_namespaced_deployment(home_name, namespace)
+
+        # del_resp_0 = k8s_apps_v1.delete_namespaced_deployment(home_name, namespace, v1_delete_options)
+        logging.debug("Deployment '%s' Deleted. status='%s'" % (home_name, str(del_resp_0.status)))
 
     # Check if there is a replicaset running by using the label app=home
     # The label of kubernets are used to identify replicaset associate to each task
     label = "app="+app_name+"-home"
     # label = "app=home"
-    resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label,namespace = namespace)
+    resp = k8s_apps_v1.list_namespaced_replica_set(label_selector = label,namespace = namespace)
     # if a replicaset exist, delete it
     
-    # print resp.items[0].metadata.namespace
+    # logging.debug resp.items[0].metadata.namespace
     for i in resp.items:
         if i.metadata.namespace == namespace:
-            del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
-            print("Relicaset '%s' Deleted. status='%s'" % (home_name, str(del_resp_1.status)))
+            try:
+                del_resp_1 = k8s_apps_v1.delete_namespaced_replica_set(i.metadata.name, namespace)
+
+                # del_resp_1 = k8s_apps_v1.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
+                logging.debug("Relicaset '%s' Deleted. status='%s'" % (home_name, str(del_resp_1.status)))
+            except ApiException as e:
+                logging.debug("Exception when calling AppsV1Api->delete_namespaced_replica_set: %s",e)
 
     # Check if there is a pod still running by using the label app='home'
     resp = None
     resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
     # if a pod is running just delete it
     if resp.items:
-        del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
-        print("Home pod Deleted. status='%s'" % str(del_resp_2.status))
+        del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace)
+
+        # del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
+        logging.debug("Home pod Deleted. status='%s'" % str(del_resp_2.status))
 
     # Check if there is a service running by name = task#
     resp = None
     try:
         resp = core_v1_api.read_namespaced_service(home_name, namespace=namespace)
     except ApiException as e:
-        print("Exception Occurred")
+        logging.debug("Exception Occurred")
     # if a service is running, kill it
     if resp:
-        del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace, v1_delete_options)
-        #del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace=namespace)
-        print("Service Deleted. status='%s'" % str(del_resp_2.status))  
+        # del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace, v1_delete_options)
+        del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace=namespace)
+        logging.debug("Service Deleted. status='%s'" % str(del_resp_2.status))  
 
-    print('Successfully teardown CIRCE ')
+    logging.debug('Successfully teardown CIRCE ')
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'CIRCE teardownend %f \n'%(end_time)
         write_file(latency_file,msg)
         teardown_time = end_time - start_time
-        print('Time to teardown CIRCE'+ str(teardown_time))   
+        logging.debug('Time to teardown CIRCE'+ str(teardown_time))   
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 

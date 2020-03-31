@@ -26,7 +26,7 @@ RUN apt-get install -y sshpass nano
 # Taken from quynh's network profiler
 RUN pip install cryptography
 
-
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -107,6 +107,7 @@ RUN apt-get install -y mosquitto-clients
 
 ADD circe/original/requirements.txt /requirements.txt
 
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -161,7 +162,6 @@ def write_circe_worker_docker(app_option=None,**kwargs):
     dfp = DockerfileParser(path=file_name)
     dfp.content =template_worker.format(**kwargs)
     return file_name
-    # print(dfp.content)
 
 
 def write_circe_home_docker(app_option=None,**kwargs):

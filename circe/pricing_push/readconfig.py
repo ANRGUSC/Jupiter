@@ -4,6 +4,9 @@ __license__ = "GPL"
 __version__ = "2.0"
 
 import os
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def read_config(path1,path2):
     """
@@ -48,7 +51,7 @@ def read_config(path1,path2):
     for line in config_file:
         #get task, node IP, username and password
         myline = line.strip().split(" ")
-        print(myline)
+        logging.debug(myline)
         hosts.setdefault(myline[0],[])
         for j in range(0,2):
             if j==0:

@@ -74,7 +74,6 @@ def write_heft_docker(**kwargs):
 		"""
 		dfp = DockerfileParser(path='heft.Dockerfile')
 		dfp.content =template_heft.format(**kwargs)
-		# print(dfp.content)
 
 if __name__ == '__main__':
 		write_heft_docker(username = 'root',

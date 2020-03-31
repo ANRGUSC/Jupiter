@@ -37,6 +37,7 @@ from functools import wraps
 import _thread
 import cProfile
 import configparser
+import logging
 
 
 
@@ -56,10 +57,10 @@ def task_mapping_decorator(f):
     @wraps(f)
     def task_mapping(*args, **kwargs):
       if jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: #HEFT
-        print('HEFT mapper')
+        logging.debug('HEFT mapper')
         return f(*args, **kwargs)
       else: #WAVE
-        print('WAVE mapper')
+        logging.debug('WAVE mapper')
         return f(args[0],args[3])
     return task_mapping
 
@@ -73,8 +74,8 @@ def setup_port(port):
     try:
         os.system(cmd)
     except e:
-        print('Error setting up port \n')
-        print(e)
+        logging.debug('Error setting up port \n')
+        logging.debug(e)
 
 def k8s_jupiter_deploy(app_id,app_name,port):
     """
@@ -86,18 +87,18 @@ def k8s_jupiter_deploy(app_id,app_name,port):
     pricing = jupiter_config.PRICING
 
     if jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # HEFT
-        print('Deploy HEFT mapper')
+        logging.debug('Deploy HEFT mapper')
         task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
     else:# WAVE
-        print('Deploy WAVE greedy mapper')
+        logging.debug('Deploy WAVE greedy mapper')
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
         
 
     if jupiter_config.PRICING == 1 or jupiter_config.PRICING == 2:
-        print('Deploy Execution Profiler')
+        logging.debug('Deploy Execution Profiler')
         exec_profiler_function = k8s_exec_scheduler
     elif jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # Nonpricing, HEFT
-        print('De[loy Execution Profiler')
+        logging.debug('De[loy Execution Profiler')
         exec_profiler_function = k8s_exec_scheduler
     else: # Nonpricing, WAVE
         exec_profiler_function = empty_function
@@ -117,57 +118,62 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         execution_ips = get_all_execs(app_id)
         #execution_ips = exec_profiler_function(app_id)
 
-        print('*************************')
-        print('Network Profiling Information:')
-        print(profiler_ips)
-        print('Execution Profiling Information:')
-        print(execution_ips)
-        print('*************************')
+        logging.debug('*************************')
+        logging.debug('Network Profiling Information:')
+        logging.debug(profiler_ips)
+        logging.debug('Execution Profiling Information:')
+        logging.debug(execution_ips)
+        logging.debug('*************************')
 
 
         node_names = utilities.k8s_get_nodes_string(path2)
-        print('*************************')
+        logging.debug('*************************')
 
         #Start the task to node mapper
-        
-        task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
-        """
-            Make sure you run kubectl proxy --port=8080 on a terminal.
-            Then this is link to get the task to node mapping
-        """
+        if pricing == 0 or  pricing == 1 or pricing == 2 : #original non-pricing
+            logging.debug('Start the task to node mapper')
+            task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
-        line = "http://localhost:%d/api/v1/namespaces/"%(port)
-        line = line + jupiter_config.MAPPER_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
-        time.sleep(5)
-        print(line)
-        while 1:
-            try:
-                print("get the data from " + line)
-                time.sleep(5)
-                r = requests.get(line)
-                mapping = r.json()
-                data = json.dumps(mapping)
-                print(data)
-                if len(mapping) != 0:
-                    if "status" not in data:
-                        break
-            except Exception as e:
-                #print(e)
-                print("Will retry to get the mapping for app "+ app_name)
-                time.sleep(30)
+            """
+                Make sure you run kubectl proxy --port=8080 on a terminal.
+                Then this is link to get the task to node mapping
+            """
+
+            line = "http://localhost:%d/api/v1/namespaces/"%(port)
+            line = line + jupiter_config.MAPPER_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
+            time.sleep(5)
+            logging.debug(line)
+            while 1:
+                try:
+                    logging.debug("get the data from " + line)
+                    time.sleep(5)
+                    r = requests.get(line)
+                    mapping = r.json()
+                    data = json.dumps(mapping)
+                    logging.debug(data)
+                    if len(mapping) != 0:
+                        if "status" not in data:
+                            break
+                except Exception as e:
+                    #logging.debug(e)
+                    logging.debug("Will retry to get the mapping for app "+ app_name)
+                    time.sleep(30)
 
 
-        pprint(mapping)
-        schedule = utilities.k8s_get_hosts(path1, path2, mapping)
-        dag = utilities.k8s_read_dag(path1)
-        dag.append(mapping)
-        print("Printing DAG:")
-        pprint(dag)
-        print("Printing schedule")
-        pprint(schedule)
-        print("End print")
-        
+            pprint(mapping)
+            schedule = utilities.k8s_get_hosts(path1, path2, mapping)
+            logging.debug("logging.debuging schedule")
+            pprint(schedule)
+            logging.debug("End logging.debug")
+            dag = utilities.k8s_read_dag(path1)
+            dag.append(mapping)
+            logging.debug("logging.debuging DAG:")
+            pprint(dag)
+        else: #integrated_pricing 
+            dag = utilities.k8s_read_dag(path1)
+            logging.debug("logging.debuging DAG:")
+            pprint(dag)
     
     else:
         import static_assignment1 as st
@@ -175,16 +181,25 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         schedule = st.schedule
 
     #Start CIRCE
-    if pricing == 0:
-        print('Non pricing evaluation')
+    if pricing == 0: #original non-pricing
+        logging.debug('Non pricing evaluation')
         k8s_circe_scheduler(dag,schedule,app_name)
-    else:
-        print('Pricing evaluation')
-        print(pricing)
+    elif pricing == 3: #integrated pricing
+        logging.debug('Integrated Pricing evaluation')
+        logging.debug(pricing)
+        k8s_integrated_pricing_circe_scheduler(dag,profiler_ips,execution_ips,app_name)
+    elif pricing == 4: #decoupled pricing
+        logging.debug('Decoupled Pricing evaluation')
+        logging.debug(pricing)
+        k8s_decoupled_pricing_circe_scheduler(dag,profiler_ips,execution_ips,app_name)
+        # k8s_decoupled_pricing_circe_scheduler(profiler_ips,app_name)
+    else: #event based or push pricing
+        logging.debug('Pricing evaluation')
+        logging.debug(pricing)
         k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
 
 
-    print("The Jupiter Deployment is Successful!")
+    logging.debug("The Jupiter Deployment is Successful!")
 
 
 def empty_function(app_id):
@@ -210,17 +225,17 @@ def redeploy_system(app_id,app_name,port):
     """
         Tear down all current deployments
     """
-    print('Tear down all current CIRCE deployments')
+    logging.debug('Tear down all current CIRCE deployments')
     if pricing == 0:
         delete_all_circe(app_name)
     else:
         delete_all_pricing_circe(app_name)
     if jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # HEFT
-        print('Tear down all current HEFT deployments')
+        logging.debug('Tear down all current HEFT deployments')
         delete_all_heft(app_name)
         task_mapping_function  = task_mapping_decorator(k8s_heft_scheduler)
     else:# WAVE
-        print('Tear down all current WAVE deployments')
+        logging.debug('Tear down all current WAVE deployments')
         delete_all_waves(app_name)
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
         
@@ -247,18 +262,20 @@ def redeploy_system(app_id,app_name,port):
         execution_ips = get_all_execs(app_id)
         #execution_ips = exec_profiler_function(app_id)
 
-        print('*************************')
-        print('Network Profiling Information2222:')
-        print(profiler_ips)
-        print('Execution Profiling Information:')
-        print(execution_ips)
-        print('*************************')
+        logging.debug('*************************')
+        logging.debug('Network Profiling Information2222:')
+        logging.debug(profiler_ips)
+        logging.debug('Execution Profiling Information:')
+        logging.debug(execution_ips)
+        logging.debug('*************************')
 
 
         node_names = utilities.k8s_get_nodes_string(path2)
-        print('*************************')
+        logging.debug('*************************')
 
 
+        logging.debug('Starting to start HEFT mapping') #all input information was provided
+        start_time = time.time()
         #Start the task to node mapper
         task_mapping_function(profiler_ips,execution_ips,node_names,app_name)
 
@@ -270,35 +287,40 @@ def redeploy_system(app_id,app_name,port):
         line = "http://localhost:%d/api/v1/namespaces/"%(port)
         line = line + jupiter_config.MAPPER_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
         time.sleep(5)
-        print(line)
+        logging.debug(line)
         while 1:
             try:
-                print("get the data from " + line)
+                logging.debug("get the data from " + line)
                 time.sleep(5)
                 r = requests.get(line)
-                print(r)
+                logging.debug(r)
                 mapping = r.json()
-                print(mapping)
+                logging.debug(mapping)
                 data = json.dumps(mapping)
-                print(data)
-                # print(mapping)
-                # print(len(mapping))
+                logging.debug(data)
+                # logging.debug(mapping)
+                # logging.debug(len(mapping))
                 if len(mapping) != 0:
                     if "status" not in data:
                         break
             except:
-                print("Will retry to get the mapping for " + app_name)
-                time.sleep(30)
+                logging.debug("Will retry to get the mapping for " + app_name)
+                time.sleep(2)
         pprint(mapping)
+
+        logging.debug('Successfully get the mapping')
+        end_time = time.time()
+        deploy_time = end_time - start_time
+        logging.debug('Time to retrive HEFT mapping'+ str(deploy_time))
 
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
-        print("Printing DAG:")
+        logging.debug("logging.debuging DAG:")
         pprint(dag)
-        print("Printing schedule")
+        logging.debug("logging.debuging schedule")
         pprint(schedule)
-        print("End print")
+        logging.debug("End logging.debug")
 
     
     else:
@@ -306,8 +328,8 @@ def redeploy_system(app_id,app_name,port):
         # dag = static_assignment.dag
         # schedule = static_assignment.schedule
 
-    print('Network Profiling Information:')
-    print(profiler_ips)
+    logging.debug('Network Profiling Information:')
+    logging.debug(profiler_ips)
     # Start CIRCE
     if pricing == 0:
         k8s_circe_scheduler(dag,schedule,app_name)
@@ -327,23 +349,23 @@ def check_finish_evaluation(app_name,port,num_samples):
     jupiter_config.set_globals()
     line = "http://localhost:%d/api/v1/namespaces/"%(port)
     line = line + jupiter_config.DEPLOYMENT_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
-    print('Check if finishing evaluation sample tests')
-    print(line)
+    logging.debug('Check if finishing evaluation sample tests')
+    logging.debug(line)
     while 1:
         try:
-            print("Number of output files :")
+            logging.debug("Number of output files :")
             r = requests.get(line)
             num_files = r.json()
             data = int(json.dumps(num_files))
-            print(data)
-            print(num_samples)
+            logging.debug(data)
+            logging.debug(num_samples)
             if data==num_samples:
-                print('Finish running all sample files!!!!!!!!')
+                logging.debug('Finish running all sample files!!!!!!!!')
                 break
             time.sleep(60)
         except Exception as e: 
-            print(e)
-            print("Will check back later if finishing all the samples for app "+app_name)
+            logging.debug(e)
+            logging.debug("Will check back later if finishing all the samples for app "+app_name)
             time.sleep(60)
 
    
@@ -361,9 +383,9 @@ def deploy_app_jupiter(app_id,app_name,port,num_runs,num_samples):
     k8s_jupiter_deploy(app_id,app_name,port)
     for i in range(0,num_runs):
         check_finish_evaluation(app_name,port,num_samples)
-        print('Finish one run !!!!!!!!!!!!!!!!!!!!!!')
+        logging.debug('Finish one run !!!!!!!!!!!!!!!!!!!!!!')
         t = str(datetime.datetime.now())
-        print(t)            
+        logging.debug(t)            
         time.sleep(30)
         # redeploy_system(app_id,app_name,port)
     #teardown_system(app_name)
@@ -372,19 +394,23 @@ def main():
     """ 
         Deploy num_dags of the application specified by app_name
     """
+
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
     
     jupiter_config.set_globals()
-    app_name = jupiter_config.app_option
+    app_name = jupiter_config.APP_OPTION
     circe_port = int(jupiter_config.FLASK_CIRCE)
+    flask_deploy = int(jupiter_config.FLASK_DEPLOY )
     
     
-    num_samples = 2
+    num_samples = 10
     num_runs = 1
     num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]
     for num_dags in num_dags_list:
         temp = app_name
-        print(num_dags)
+        logging.debug(num_dags)
         jupiter_config.set_globals()
         port_list = []
         app_list = []
@@ -393,12 +419,12 @@ def main():
             cur_app = temp+str(num)
             port_list.append(port)
             app_list.append(cur_app)     
-        print(port_list)
-        print(app_list)
+        logging.debug(port_list)
+        logging.debug(app_list)
        
         for idx,appname in enumerate(app_list):
-            print(appname)
+            logging.debug(appname)
             _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],num_runs,num_samples))
-    app.run(host='0.0.0.0',port='5555')
+    app.run(host='0.0.0.0', port = flask_deploy)
 if __name__ == '__main__':
     main()

@@ -35,9 +35,8 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from pymongo import MongoClient
 import numpy as np
 import paho.mqtt.client as mqtt
-
+import logging
 import pyinotify
-
 
 
 
@@ -80,7 +79,7 @@ def return_output_files():
         int: number of output files
     """
     num_files = len(os.listdir("output/"))
-    print("Recieved request for number of output files. Current done:", num_files)
+    logging.debug("Recieved request for number of output files. Current done: %d", num_files)
     return json.dumps(num_files)
 app.add_url_rule('/', 'return_output_files', return_output_files)
 
@@ -100,8 +99,8 @@ def request_best_assignment(home_id,task_name,file_name):
             msg = 'msgoverhead priceevent home requestbest 1 %s %s\n'%(home_id,task_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
-        print("Sending assignment request to flask server on controller node FAILED!!!")
-        print(e)
+        logging.debug("Sending assignment request to flask server on controller node FAILED!!!")
+        logging.debug(e)
         return "not ok"
 
 def receive_best_assignment():
@@ -120,7 +119,7 @@ def receive_best_assignment():
 
     except Exception as e:
         update_best[task_name,file_name] = False
-        print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
+        logging.debug("Bad reception or failed processing in Flask for best assignment request: %s ",e) 
         return "not ok" 
 
     return "ok"
@@ -139,7 +138,7 @@ def update_controller_map():
         controllers_id_map[info[0]] = info[1]
 
     except Exception as e:
-        print("Bad reception or failed processing in Flask for controllers matching announcement: "+ e) 
+        logging.debug("Bad reception or failed processing in Flask for controllers matching announcement: %s ",e) 
         return "not ok" 
 
     return "ok"
@@ -171,21 +170,21 @@ def recv_runtime_profile_computingnode():
         else: #rt_finish
             rt_finish_time_computingnode[(worker_node,task_name,msg[1])] = float(msg[2])
 
-            print('----------------------------')
-            print('Runtime info at each computing node')
-            print("Worker node: "+ worker_node)
-            print("Input file : "+ msg[1])
-            print("Task name: " + task_name)
-            print("Total duration time:" + str(rt_finish_time_computingnode[(worker_node,task_name, msg[1])] - rt_enter_time_computingnode[(worker_node,task_name, msg[1])]))
-            print("Waiting time:" + str(rt_exec_time_computingnode[(worker_node,task_name,msg[1])] - rt_enter_time_computingnode[(worker_node,task_name,msg[1])]))
-            print(worker_node + " execution time:" + str(rt_finish_time_computingnode[(worker_node,task_name,msg[1])] - rt_exec_time_computingnode[(worker_node,task_name,msg[1])]))
+            logging.debug('----------------------------')
+            logging.debug('Runtime info at each computing node')
+            logging.debug("Worker node: "+ worker_node)
+            logging.debug("Input file : "+ msg[1])
+            logging.debug("Task name: " + task_name)
+            logging.debug("Total duration time:" + str(rt_finish_time_computingnode[(worker_node,task_name, msg[1])] - rt_enter_time_computingnode[(worker_node,task_name, msg[1])]))
+            logging.debug("Waiting time:" + str(rt_exec_time_computingnode[(worker_node,task_name,msg[1])] - rt_enter_time_computingnode[(worker_node,task_name,msg[1])]))
+            logging.debug(worker_node + " execution time:" + str(rt_finish_time_computingnode[(worker_node,task_name,msg[1])] - rt_exec_time_computingnode[(worker_node,task_name,msg[1])]))
             
-            print('----------------------------')  
+            logging.debug('----------------------------')  
 
-            if task_name == "globalfusion" or "task4":
+            if task_name in last_tasks:
                 # Per task stats:
-                print('********************************************') 
-                print("Runtime profiling computing node info:")
+                logging.debug('********************************************') 
+                logging.debug("Runtime profiling computing node info:")
                 """
                     - Worker node: task name
                     - Input file: input files
@@ -198,7 +197,7 @@ def recv_runtime_profile_computingnode():
                 """
                 log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks_computingnode.txt'), "w")
                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Worker_node','Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
-                print(s)
+                logging.debug(s)
                 log_file.write(s)
                 for k, v in rt_enter_time_computingnode.items():
                     worker, task, file = k
@@ -207,17 +206,17 @@ def recv_runtime_profile_computingnode():
                         duration = rt_finish_time_computingnode[k]-rt_exec_time_computingnode[k]
                         waiting = rt_exec_time_computingnode[k]-v
                         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, task, file, v, rt_exec_time_computingnode[k],rt_finish_time_computingnode[k],str(elapse),str(duration),str(waiting))
-                        print(s)
+                        logging.debug(s)
                         log_file.write(s)
                         log_file.flush()
 
                 log_file.close()
-                print('********************************************')
+                logging.debug('********************************************')
 
                 
     except Exception as e:
-        print("Bad reception or failed processing in Flask for runtime profiling")
-        print(e)
+        logging.debug("Bad reception or failed processing in Flask for runtime profiling")
+        logging.debug(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_runtime_profile_computingnode', 'recv_runtime_profile_computingnode', recv_runtime_profile_computingnode)
@@ -239,14 +238,14 @@ def transfer_data_scp(ID,user,pword,source, destination):
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
-            print('data transfer complete\n')
+            logging.debug('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
         except:
-            print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(1)
             retry += 1
     if retry == num_retries:
@@ -278,15 +277,15 @@ def get_updated_resource_profile():
     """Collect the resource profile from local MongoDB peer
     """
     for ip in profiler_ip:
-        print('Check Resource Profiler IP: '+ip)
+        logging.debug('Check Resource Profiler IP: %s',ip)
         client_mongo = MongoClient('mongodb://'+ip+':'+str(MONGO_SVC)+'/')
         db = client_mongo.central_resource_profiler
         collection = db.collection_names(include_system_collections=False)
-        logging =db[ip].find().skip(db[ip].count()-1)
-        for record in logging:
+        logdb =db[ip].find().skip(db[ip].count()-1)
+        for record in logdb:
             resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
-    print("Resource profiles: ", resource_info)
+    logging.debug("Resource profiles: %s", resource_info)
     if BOKEH==3:    
         topic = 'msgoverhead_%s'%(self_name)
         msg = 'msgoverhead priceevent compute%s updateresource %d\n'%(self_name,len(resource_info))
@@ -304,11 +303,11 @@ def get_updated_network_profile():
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
         if num_nb == -1:
-            print('--- Network profiler mongoDB not yet prepared')
+            logging.debug('--- Network profiler mongoDB not yet prepared')
             return network_info
         num_rows = db[self_profiler_ip].count() 
         if num_rows < num_nb:
-            print('--- Network profiler regression info not yet loaded into MongoDB!')
+            logging.debug('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
         logging =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb) 
         c = 0
@@ -322,7 +321,7 @@ def get_updated_network_profile():
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
         return network_info
     except Exception as e:
-        print("Network request failed. Will try again, details: " + str(e))
+        logging.debug("Network request failed. Will try again, details: %s",str(e))
         return -1
 
 def cal_file_size(file_path):
@@ -347,7 +346,7 @@ def price_estimate():
 
     # Default values
     
-    # print('estimate price')
+    # logging.debug('estimate price')
 
     price = dict()
     price['network'] = sys.maxsize
@@ -364,7 +363,7 @@ def price_estimate():
     """
 
     try:
-        print(' Retrieve all input information: ')
+        logging.debug(' Retrieve all input information: ')
         network_info = get_updated_network_profile()
         test_size = cal_file_size('/centralized_scheduler/1botnet.ipsum')
         price['network'] = dict()
@@ -377,7 +376,7 @@ def price_estimate():
         return price
              
     except:
-        print('Error reading input information to calculate the price')
+        logging.debug('Error reading input information to calculate the price')
         
     return price
 
@@ -406,8 +405,8 @@ def announce_price(task_controller_ip, price):
             msg = 'msgoverhead priceevent home announceprice %d\n'%(len(price['network']))
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
-        print("Sending price message to flask server on controller node FAILED!!!")
-        print(e)
+        logging.debug("Sending price message to flask server on controller node FAILED!!!")
+        logging.debug(e)
         return "not ok"
 
 def push_updated_price():
@@ -434,7 +433,7 @@ class MonitorRecv(multiprocessing.Process):
         """
         Start Flask server
         """
-        print("Flask server started")
+        logging.debug("Flask server started")
         # app.run(host='0.0.0.0', port=FLASK_DOCKER)
         app.run(host='0.0.0.0', port=FLASK_DOCKER,threaded=True)
 
@@ -460,11 +459,11 @@ class MyHandler(pyinotify.ProcessEvent):
         global exec_times
         global count
 
-        print("Received file as output - %s." % event.pathname) 
+        logging.debug("Received file as output - %s",event.pathname) 
         outputfile = event.pathname.split('/')[-1].split('_')[0]
         end_times[outputfile] = time.time()
         exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
-        print("execution time is: ", exec_times)
+        logging.debug("execution time is: %s ", exec_times)
 
         if BOKEH == 2: #used for combined_app with distribute script
             app_name = outputfile.split('-')[0]
@@ -491,7 +490,7 @@ class Handler(pyinotify.ProcessEvent):
             event (ProcessEvent): a new file is created
         """
 
-        print("Received file as input - %s." % event.pathname)  
+        logging.debug("Received file as input - %s" ,event.pathname)  
         if RUNTIME == 1:   
             ts = time.time() 
             s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.pathname,ts)
@@ -509,7 +508,7 @@ class Handler(pyinotify.ProcessEvent):
         t1 = time.time()
 
         while not update_best[first_task,new_file_name]:
-            print('--- waiting for computing node assignment')
+            logging.debug('--- waiting for computing node assignment')
             time.sleep(1)
             request_best_assignment(my_task,first_task,new_file_name)
 
@@ -525,6 +524,9 @@ def main():
         -   Whenever there is a new file showing up in ``INPUT`` folder, copy the file to the ``INPUT`` folder of the first scheduled node.
         -   Collect execution profiling information from the system.
     """
+
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
 
     ## Load all the confuguration
     INI_PATH = '/jupiter_config.ini'
@@ -617,9 +619,15 @@ def main():
     hosts=dag_info[2]
     first_flag = dag_info[1][first_task][1]
 
-    print("TASK: ", dag_info[0])
-    print("DAG: ", dag_info[1])
-    print("HOSTS: ", dag_info[2])
+    logging.debug("TASK: %s", dag_info[0])
+    logging.debug("DAG: %s", dag_info[1])
+    logging.debug("HOSTS: %s", dag_info[2])
+
+    global last_tasks
+    last_tasks = set()
+    for task in dag_info[1]:
+        if 'home' in dag_info[1][task]:
+            last_tasks.add(task)
 
     web_server = MonitorRecv()
     web_server.start()
@@ -630,7 +638,7 @@ def main():
     wm = pyinotify.WatchManager()
     input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
     wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
-    print('starting the input monitoring process\n')
+    logging.debug('starting the input monitoring process\n')
     eh = Handler()
     notifier = pyinotify.ThreadedNotifier(wm, eh)
     notifier.start()
@@ -638,7 +646,7 @@ def main():
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
     wm1 = pyinotify.WatchManager()
     wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
-    print('starting the output monitoring process\n')
+    logging.debug('starting the output monitoring process\n')
     eh1 = MyHandler()
     notifier1= pyinotify.Notifier(wm1, eh1)
     notifier1.loop()

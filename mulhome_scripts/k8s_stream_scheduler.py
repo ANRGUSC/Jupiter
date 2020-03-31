@@ -18,6 +18,9 @@ from pprint import *
 import jupiter_config
 import utilities
 from kubernetes.client.rest import ApiException
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def get_service_circe(dag,app_name):
     jupiter_config.set_globals()
@@ -31,8 +34,8 @@ def get_service_circe(dag,app_name):
         resp = api.read_namespaced_service(home_name, namespace)
         service_ips['home'] = resp.spec.cluster_ip
     except ApiException as e:
-        print(e)
-        print("Exception Occurred")
+        logging.debug(e)
+        logging.debug("Exception Occurred")
 
     for key, value in dag.items():
         task = key
@@ -46,8 +49,8 @@ def get_service_circe(dag,app_name):
             resp = api.read_namespaced_service(pod_name, namespace)
             service_ips[task] = resp.spec.cluster_ip
         except ApiException as e:
-            print(e)
-            print("Exception Occurred")
+            logging.debug(e)
+            logging.debug("Exception Occurred")
     return service_ips
 
 
@@ -87,8 +90,8 @@ def k8s_stream_scheduler(app_name):
     first_task = dag_info[0]
     dag = dag_info[1]
     
-    print('DAG info:')
-    print(dag)
+    logging.debug('DAG info:')
+    logging.debug(dag)
 
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes,datasources = utilities.k8s_get_all_elements(path2)
@@ -96,19 +99,19 @@ def k8s_stream_scheduler(app_name):
     service_ips = {}; #list of all service IPs
     
     for i in datasources:
-        print('Data source information')
-        print('First create the home node service')
+        logging.debug('Data source information')
+        logging.debug('First create the home node service')
         home_name =app_name+"-stream"+i
         home_body = write_stream_service_specs(name = home_name)
         
         try:
             ser_resp = api.create_namespaced_service(namespace, home_body)
-            print("Home service created. status = '%s'" % str(ser_resp.status))
+            logging.debug("Home service created. status = '%s'" % str(ser_resp.status))
             resp = api.read_namespaced_service(home_name, namespace)
             service_ips['home'] = resp.spec.cluster_ip
         except ApiException as e:
-            print(e)
-            print("Exception Occurred")
+            logging.debug(e)
+            logging.debug("Exception Occurred")
 
     circe_services = get_service_circe(dag,app_name)
     circe_nodes = ' '.join(circe_services.keys())
@@ -132,10 +135,10 @@ def k8s_stream_scheduler(app_name):
 
         try:
             resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
-            print("Home deployment created")
-            print("Home deployment created. status = '%s'" % str(resp.status))
+            logging.debug("Home deployment created")
+            logging.debug("Home deployment created. status = '%s'" % str(resp.status))
         except ApiException as e:
-            print(e)
+            logging.debug(e)
 
    
 if __name__ == '__main__':

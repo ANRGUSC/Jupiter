@@ -16,6 +16,7 @@ ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 ADD circe/{pricing_option}/requirements_home_controller.txt /requirements.txt
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
 COPY circe/{pricing_option}/master_greedy.py /master.py
@@ -51,6 +52,7 @@ ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 ADD circe/{pricing_option}/requirements_worker_controller.txt /requirements.txt
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
 COPY circe/{pricing_option}/child_appointment_greedy.py /child_appointment.py
@@ -89,7 +91,6 @@ def write_decoupled_pricing_controller_worker_docker(app_option=None,**kwargs):
         file_name = 'worker_%s.Dockerfile'%(app_option)
     dfp = DockerfileParser(path=file_name)
     dfp.content =template_worker_controller.format(**kwargs)
-    # print(dfp.content)
     return file_name
     
 
@@ -103,8 +104,6 @@ def write_decoupled_pricing_controller_home_docker(app_option=None,**kwargs):
         file_name = 'home_%s.Dockerfile'%(app_option)
     dfp = DockerfileParser(path=file_name)
     dfp.content =template_home_controller.format(**kwargs)
-    # print(file_name)
-    # print(dfp.content)
     return file_name
     
 
@@ -123,6 +122,7 @@ RUN apt-get install -y sshpass nano
 RUN pip install cryptography
 
 RUN apt-get -yqq update
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -196,6 +196,7 @@ RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
 ADD circe/{pricing_option}/requirements_compute.txt /requirements.txt
 
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config

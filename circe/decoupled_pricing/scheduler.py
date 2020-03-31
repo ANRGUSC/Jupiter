@@ -37,7 +37,7 @@ import datetime
 import json
 import paho.mqtt.client as mqtt
 import pyinotify
-
+import logging
 
 
 
@@ -71,15 +71,15 @@ def announce_mapping():
 
     try:
         tmp_assignments = request.args.get('assignments')
-        print("Received mapping announcement from controller")
+        logging.debug("Received mapping announcement from controller")
         tmp = tmp_assignments.split(',')
         for task in tmp:
             global_task_node_map[task.split(':')[0]]=task.split(':')[1]
-        print("Sending global task information to all worker nodes")
+        logging.debug("Sending global task information to all worker nodes")
         announce_mapping_to_workers()
     except Exception as e:
-        print("Received mapping announcement from controller failed")
-        print(e)
+        logging.debug("Received mapping announcement from controller failed")
+        logging.debug(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/announce_mapping', 'announce_mapping', announce_mapping)
@@ -91,7 +91,7 @@ app.add_url_rule('/announce_mapping', 'announce_mapping', announce_mapping)
 
 def announce_mapping_to_workers():
     try:
-        print('Announce full mapping to all compute worker node')
+        logging.debug('Announce full mapping to all compute worker node')
         tmp_assignments = ",".join(("{}:{}".format(*i) for i in global_task_node_map.items()))
 
         t = time.time()
@@ -108,8 +108,8 @@ def announce_mapping_to_workers():
             msg = 'msgoverhead pricedecoupled computehome announcemapping %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
-        print('Announce full mapping to compute home node failed')
-        print(e)
+        logging.debug('Announce full mapping to compute home node failed')
+        logging.debug(e)
         return "not ok"
     return res
 
@@ -122,7 +122,7 @@ def return_output_files():
         int: number of output files
     """
     num_files = len(os.listdir("output/"))
-    print("Received request for number of output files. Current done:", num_files)
+    logging.debug("Received request for number of output files. Current done: %s", num_files)
     return json.dumps(num_files)
 app.add_url_rule('/', 'return_output_files', return_output_files)
 
@@ -153,20 +153,20 @@ def recv_runtime_profile_computingnode():
         else: #rt_finish
             rt_finish_time_computingnode[(worker_node,task_name,msg[1])] = float(msg[2])
 
-            print('----------------------------')
-            print('Runtime info at each computing node')
-            print("Worker node: "+ worker_node)
-            print("Input file : "+ msg[1])
-            print("Task name: " + task_name)
-            print("Total duration time:" + str(rt_finish_time_computingnode[(worker_node,task_name, msg[1])] - rt_enter_time_computingnode[(worker_node,task_name, msg[1])]))
-            print("Waiting time:" + str(rt_exec_time_computingnode[(worker_node,task_name,msg[1])] - rt_enter_time_computingnode[(worker_node,task_name,msg[1])]))
-            print(worker_node + " execution time:" + str(rt_finish_time_computingnode[(worker_node,task_name,msg[1])] - rt_exec_time_computingnode[(worker_node,task_name,msg[1])]))
+            logging.debug('----------------------------')
+            logging.debug('Runtime info at each computing node')
+            logging.debug("Worker node: "+ worker_node)
+            logging.debug("Input file : "+ msg[1])
+            logging.debug("Task name: " + task_name)
+            logging.debug("Total duration time:" + str(rt_finish_time_computingnode[(worker_node,task_name, msg[1])] - rt_enter_time_computingnode[(worker_node,task_name, msg[1])]))
+            logging.debug("Waiting time:" + str(rt_exec_time_computingnode[(worker_node,task_name,msg[1])] - rt_enter_time_computingnode[(worker_node,task_name,msg[1])]))
+            logging.debug(worker_node + " execution time:" + str(rt_finish_time_computingnode[(worker_node,task_name,msg[1])] - rt_exec_time_computingnode[(worker_node,task_name,msg[1])]))
             
-            print('----------------------------')  
+            logging.debug('----------------------------')  
             if task_name in last_tasks:
                 # Per task stats:
-                print('********************************************') 
-                print("Received final output at home: Runtime profiling info:")
+                logging.debug('********************************************') 
+                logging.debug("Received final output at home: Runtime profiling info:")
                 """
                     - Worker node: task name
                     - Input file: input files
@@ -179,7 +179,7 @@ def recv_runtime_profile_computingnode():
                 """
                 log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks_computingnode.txt'), "w")
                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Worker_node','Task_name','input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
-                print(s)
+                logging.debug(s)
                 log_file.write(s)
                 for k, v in rt_enter_time_computingnode.items():
                     worker, task, file = k
@@ -188,17 +188,17 @@ def recv_runtime_profile_computingnode():
                         duration = rt_finish_time_computingnode[k]-rt_exec_time_computingnode[k]
                         waiting = rt_exec_time_computingnode[k]-v
                         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, task, file, v, rt_exec_time_computingnode[k],rt_finish_time_computingnode[k],str(elapse),str(duration),str(waiting))
-                        print(s)
+                        logging.debug(s)
                         log_file.write(s)
                         log_file.flush()
 
                 log_file.close()
-                print('********************************************')
+                logging.debug('********************************************')
 
                 
     except Exception as e:
-        print("Bad reception or failed processing in Flask for runtime profiling")
-        print(e)
+        logging.debug("Bad reception or failed processing in Flask for runtime profiling")
+        logging.debug(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_runtime_profile_computingnode', 'recv_runtime_profile_computingnode', recv_runtime_profile_computingnode)
@@ -221,14 +221,14 @@ def transfer_data_scp(ID,user,pword,source, destination):
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
-            print('data transfer complete\n')
+            logging.debug('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
         except:
-            print('File transfer failed, will retry in 2 seconds')
+            logging.debug('File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
     if retry == num_retries:
@@ -265,7 +265,7 @@ class MonitorRecv(multiprocessing.Process):
         """
         Start Flask server
         """
-        print("Flask server started")
+        logging.debug("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
 
@@ -275,12 +275,12 @@ class Handler1(pyinotify.ProcessEvent):
 
 
     def process_IN_CLOSE_WRITE(self, event):
-        print("Received file as output - %s." % event.pathname)
+        logging.debug("Received file as output - %s",event.pathname)
         outputfile = event.pathname.split('/')[-1].split('_')[0]
 
         end_times[outputfile] = time.time()
         exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
-        print("execution time is: ", exec_times)
+        logging.debug("execution time is: %s", exec_times)
 
         if BOKEH==3:
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
@@ -293,7 +293,7 @@ def announce_input(input_file, input_time):
         Exception: request if successful, ``not ok`` if failed
     """
     try:
-        print('Announce input file to all compute worker node')
+        logging.debug('Announce input file to all compute worker node')
         for compute_host in all_compute_host:
             url = "http://" + compute_host + "/announce_input_worker"
             params = {'home_id':my_id,'input_file': input_file, 'input_time':input_time}
@@ -307,8 +307,8 @@ def announce_input(input_file, input_time):
             msg = 'msgoverhead pricedecoupled computehome announceinput %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
-        print('Announce input files to compute nodes failed')
-        print(e)
+        logging.debug('Announce input files to compute nodes failed')
+        logging.debug(e)
         return "not ok"
     return res
 
@@ -318,7 +318,7 @@ class Handler(pyinotify.ProcessEvent):
 
 
     def process_IN_CLOSE_WRITE(self, event):
-        print("Received file as input - %s." % event.pathname)
+        logging.debug("Received file as input - %s" ,event.pathname)
         if RUNTIME == 1:   
             ts = time.time() 
             s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.pathname,ts)
@@ -332,11 +332,11 @@ class Handler(pyinotify.ProcessEvent):
         announce_input(input_file, t)
         new_file_name = os.path.split(event.pathname)[-1]
         while first_task not in global_task_node_map:
-            print('Not yet update global task mapping information')
+            logging.debug('Not yet update global task mapping information')
             time.sleep(2)
 
-        print('Send file to the first node')
-        print(global_task_node_map[first_task])
+        logging.debug('Send file to the first node')
+        logging.debug(global_task_node_map[first_task])
     
         source = event.pathname
         destination = os.path.join('/centralized_scheduler', 'input', first_task,my_task,new_file_name)
@@ -387,7 +387,7 @@ def get_taskmap():
     return tasks, task_order, super_tasks, non_tasks
 
 def start_evaluate():
-    print('Start the evaluation process')
+    logging.debug('Start the evaluation process')
     os.system('python3 evaluate.py &')
 
 def main():
@@ -397,6 +397,10 @@ def main():
         -   Whenever there is a new file showing up in ``INPUT`` folder, copy the file to the ``INPUT`` folder of the first scheduled node.
         -   Collect execution profiling information from the system.
     """
+
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
 
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
@@ -429,11 +433,11 @@ def main():
     
     global tasks, task_order, super_tasks, non_tasks
     tasks, task_order, super_tasks, non_tasks = get_taskmap()
-    print('----------- TASKS INFO')
-    print(tasks)
-    print(task_order)
-    print(super_tasks)
-    print(non_tasks)
+    logging.debug('----------- TASKS INFO')
+    logging.debug(tasks)
+    logging.debug(task_order)
+    logging.debug(super_tasks)
+    logging.debug(non_tasks)
 
 
 
@@ -506,9 +510,9 @@ def main():
     hosts=dag_info[2]
     first_flag = dag_info[1][first_task][1]
 
-    print("TASK: ", dag_info[0])
-    print("DAG: ", dag_info[1])
-    print("HOSTS: ", dag_info[2])
+    logging.debug("TASK: %s", dag_info[0])
+    logging.debug("DAG: %s", dag_info[1])
+    logging.debug("HOSTS: %s ", dag_info[2])
     
 
     global last_tasks
@@ -526,7 +530,7 @@ def main():
     wm = pyinotify.WatchManager()
     input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
     wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
-    print('starting the input monitoring process\n')
+    logging.debug('starting the input monitoring process\n')
     eh = Handler()
     notifier = pyinotify.ThreadedNotifier(wm, eh)
     notifier.start()
@@ -534,7 +538,7 @@ def main():
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
     wm1 = pyinotify.WatchManager()
     wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
-    print('starting the output monitoring process\n')
+    logging.debug('starting the output monitoring process\n')
     eh1 = Handler1()
     notifier1= pyinotify.Notifier(wm1, eh1)
     notifier1.loop()

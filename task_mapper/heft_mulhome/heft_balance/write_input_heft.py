@@ -19,6 +19,8 @@ import sys
 from flask import Flask, request
 import csv
 import os
+import logging
+
 
 app = Flask(__name__)
 
@@ -85,9 +87,9 @@ def get_taskmap():
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].append(data[i])
-    print("tasks: ", tasks)
-    print("task order", task_order) #task_list
-    print("super tasks", super_tasks)
+    logging.debug("tasks: %s", tasks)
+    logging.debug("task order %s", task_order) #task_list
+    logging.debug("super tasks %s", super_tasks)
     return tasks, task_order, super_tasks
 
 def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,task_list,tasks):
@@ -167,25 +169,28 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
     target.close()
 
     num_task, task_names, num_node, comp_cost, rate, data, quaratic_profile = init(tgff_file)
-    print('Checking the written information')
+    logging.debug('Checking the written information')
 
     return
 
 if __name__ == '__main__':
 
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
     NODE_NAMES = os.environ["NODE_NAMES"]
     node_info = NODE_NAMES.split(":")
     node_ids = {v:k for k,v in enumerate(node_info)}
 
-    print('---------------------------------------------')
-    print('\n Read task list from DAG file, Non-DAG info and global information \n')
+    logging.debug('---------------------------------------------')
+    logging.debug('\n Read task list from DAG file, Non-DAG info and global information \n')
 
     configuration_path='/heft/dag.txt'
     profiler_ip,exec_home_ip,num_nodes,network_map,node_list = get_global_info()
     tasks, task_order, super_tasks = get_taskmap()
 
-    print('---------------------------------------------')
-    print('\n Create input HEFT file \n')
+    logging.debug('---------------------------------------------')
+    logging.debug('\n Create input HEFT file \n')
     tgff_file='/heft/input.tgff'
     while True:
         if os.path.isfile('/heft/execution_log.txt') and os.path.isfile('/heft/network_log.txt'):
@@ -201,12 +206,12 @@ if __name__ == '__main__':
                 if row[0]!='home':
                     new_execution.append(row)
                 else:
-                    print(row)
+                    logging.debug(row)
                     if row[1] in super_tasks:
                         for node in node_list:
                             new_execution.append([node,row[1],row[2],row[3]]) # to copy the home profiler data for the non dag task for each processor.
             create_input_heft(tgff_file,num_nodes,network_info,new_execution,node_list,task_order,tasks)
             break
         else:
-            print('No available profiling information')
+            logging.debug('No available profiling information')
             time.sleep(10)

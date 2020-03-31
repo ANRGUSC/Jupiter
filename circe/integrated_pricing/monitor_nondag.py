@@ -37,19 +37,11 @@ from multiprocessing import Process, Manager
 import multiprocessing
 from flask import Flask, request
 from readconfig import read_config
+import logging
 
-global bottleneck
-bottleneck = defaultdict(list)
 
 app = Flask(__name__)
 
-def tic():
-    return time.time()
-
-def toc(t):
-    texec = time.time() - t
-    print('Execution time is:'+str(texec))
-    return texec
 
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
@@ -100,8 +92,8 @@ def send_runtime_profile_computingnode(msg,task_name,home_id):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        print("Sending runtime profiling info to flask server on home FAILED!!!")
-        print(e)
+        logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
+        logging.debug(e)
         return "not ok"
     return res
 
@@ -123,14 +115,14 @@ def transfer_data_scp(IP,user,pword,source, destination):
         try:
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
             os.system(cmd)
-            print('data transfer complete\n')
+            logging.debug('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
         except:
-            print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
     if retry == num_retries:
@@ -175,14 +167,14 @@ def multicast_data_scp(IP_list,user_list,pword_list,source, destination):
             try:
                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword_list[idx], ssh_port, source, user_list[idx], IP_list[idx], destination)
                 os.system(cmd)
-                print('data transfer complete\n')
+                logging.debug('data transfer complete\n')
                 ts = time.time()
                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
                 runtime_sender_log.write(s)
                 runtime_sender_log.flush()
                 break
             except:
-                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+                logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
                 time.sleep(2)
                 retry += 1
         if retry == num_retries:
@@ -248,10 +240,10 @@ def get_taskmap():
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].extend([data[i]])
-    print("tasks: ", tasks)
-    print("task order", task_order) #task_list
-    print("super tasks", super_tasks)
-    print("non tasks", non_tasks)
+    logging.debug("tasks: %s ", tasks)
+    logging.debug("task order %s", task_order) #task_list
+    logging.debug("super tasks %s", super_tasks)
+    logging.debug("non tasks %s", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
 def retrieve_input_enter(task_name, file_name):
@@ -288,7 +280,7 @@ def receive_assignment_info():
         assignment_info = request.args.get('assignment_info').split('#')
         task_node_map[assignment_info[0]] = assignment_info[1]
     except Exception as e:
-        print("Bad reception or failed processing in Flask for assignment announcement: "+ e) 
+        logging.debug("Bad reception or failed processing in Flask for assignment announcement: %s", e) 
         return "not ok" 
 
     return "ok"
@@ -317,7 +309,7 @@ class Watcher1():
                 time.sleep(5)
         except:
             self.observer.stop()
-            print("Error")
+            logging.debug("Error")
 
         self.observer.join()
 
@@ -334,7 +326,7 @@ class Handler1(FileSystemEventHandler):
 
         elif event.event_type == 'created':
 
-            print("Received file as output - %s." % event.src_path)
+            logging.debug("Received file as output - %s" ,event.src_path)
 
             t1 = time.time()
             new_file = os.path.split(event.src_path)[-1]
@@ -376,10 +368,10 @@ class Handler1(FileSystemEventHandler):
                         destination = "/centralized_scheduler/input/" +next_task + "/"+home_id+"/"+new_file 
                         transfer_data(IPaddr,user,password,event.src_path, destination)
                     elif next_task in non_tasks:
-                        print('non_tasks : Do nothing')
+                        logging.debug('non_tasks : Do nothing')
                     else:
                         while next_task not in task_node_map:
-                            print('Best compute node for the next task is not updated yet!')
+                            logging.debug('Best compute node for the next task is not updated yet!')
                             time.sleep(5)
                         best_ip = computing_ip_map[task_node_map[next_task]]
                         destination = "/centralized_scheduler/input/" +next_task + "/"+home_id+"/"+new_file 
@@ -403,7 +395,7 @@ class Handler1(FileSystemEventHandler):
 
                             transfer_data(IPaddr,user,password,event.src_path, destination)
                         elif IPaddr in non_tasks_ips_map:
-                            print('non_tasks : Do nothing')
+                            logging.debug('non_tasks : Do nothing')
                         else:
                             best_ip = task_node_map[next_tasks_map[task_name][i]]
                             destination = "/centralized_scheduler/input/" +next_tasks_map[task_name][i]+"/"+home_id+"/"+myfile
@@ -434,7 +426,7 @@ class Watcher(multiprocessing.Process):
                 time.sleep(5)
         except:
             self.observer.stop()
-            print("Error")
+            logging.debug("Error")
 
         self.observer.join()
 
@@ -447,7 +439,7 @@ class Handler(FileSystemEventHandler):
 
         elif event.event_type == 'created':
 
-            print("Received file as input - %s." % event.src_path)
+            logging.debug("Received file as input - %s",event.src_path)
             new_file = os.path.split(event.src_path)[-1]
 
 
@@ -531,7 +523,7 @@ class MonitorRecv(multiprocessing.Process):
         """
         Start Flask server
         """
-        print("Flask server started")
+        logging.debug("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
 def main():
@@ -545,6 +537,9 @@ def main():
         -   If there are enough input files for the first task on the current node, run the first task. 
 
     """
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
 
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()

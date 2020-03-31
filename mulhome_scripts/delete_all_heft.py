@@ -13,6 +13,9 @@ from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
 import time
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def write_file(filename,message):
     with open(filename,'a') as f:
@@ -33,7 +36,7 @@ def delete_all_heft(app_name):
     dag_info = utilities.k8s_read_config(path2)
     dag = dag_info[1]
 
-    print('Starting to teardown HEFT')
+    logging.debug('Starting to teardown HEFT')
     if jupiter_config.BOKEH == 3:
         latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
         start_time = time.time()
@@ -64,35 +67,40 @@ def delete_all_heft(app_name):
     namespace = jupiter_config.MAPPER_NAMESPACE
 
     # Get proper handles or pointers to the k8-python tool to call different functions.
-    api = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
     body = client.V1DeleteOptions()
 
     # First check if there is a exisitng profiler deployment with
     # the name = key in the respective namespace
     resp = None
     try:
-        resp = api.read_namespaced_deployment(key, namespace)
+        resp = k8s_apps_v1.read_namespaced_deployment(key, namespace)
     except ApiException as e:
-        print("Exception Occurred")
+        logging.debug("Exception Occurred")
 
     # if a deployment with the name = key exists in the namespace, delete it
     if resp:
-        del_resp_0 = api.delete_namespaced_deployment(key, namespace, body)
-        print("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
+        del_resp_0 = k8s_apps_v1.delete_namespaced_deployment(key, namespace)
+        logging.debug("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
     # Check if there is a replicaset running by using the label "app=wave_" + key e.g, "app=wave_node1"
     # The label of kubernets are used to identify replicaset associate to each task
     #labelname = "app=heft_" + key
     labelname = "app="+app_name+'-home'
-    resp = api.list_namespaced_replica_set(label_selector = labelname,namespace=namespace)
+    resp = k8s_apps_v1.list_namespaced_replica_set(label_selector = labelname,namespace=namespace)
     # if a replicaset exist, delete it
     # pprint(resp)
-    # print resp.items[0].metadata.namespace
+    # logging.debug resp.items[0].metadata.namespace
     for i in resp.items:
         if i.metadata.namespace == namespace:
-            del_resp_1 = api.delete_namespaced_replica_set(i.metadata.name, namespace, body)
-            print("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
+            try:
+                # del_resp_1 = k8s_apps_v1.delete_namespaced_replica_set(i.metadata.name, namespace, body)
+                del_resp_1 = k8s_apps_v1.delete_namespaced_replica_set(i.metadata.name, namespace)
+
+                logging.debug("Relicaset '%s' Deleted. status='%s'" % (key, str(del_resp_1.status)))
+            except ApiException as e:
+                logging.debug("Exception when calling AppsV1Api->delete_namespaced_replica_set: %s",e)
 
     # Check if there is a pod still running by using the label
     resp = None
@@ -100,8 +108,10 @@ def delete_all_heft(app_name):
     resp = api_2.list_namespaced_pod(namespace, label_selector = labelname)
     # if a pod is running just delete it
     if resp.items:
-        del_resp_2 = api_2.delete_namespaced_pod(resp.items[0].metadata.name, namespace, body)
-        print("Pod Deleted. status='%s'" % str(del_resp_2.status))
+        # del_resp_2 = api_2.delete_namespaced_pod(resp.items[0].metadata.name, namespace, body)
+        del_resp_2 = api_2.delete_namespaced_pod(resp.items[0].metadata.name, namespace)
+
+        logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
 
     # Check if there is a service running by name = key
     resp = None
@@ -109,21 +119,21 @@ def delete_all_heft(app_name):
     try:
         resp = api_2.read_namespaced_service(key, namespace)
     except ApiException as e:
-        print("Exception Occurred")
+        logging.debug("Exception Occurred")
     # if a service is running, kill it
     if resp:
-        #del_resp_2 = api_2.delete_namespaced_service(key, namespace)
-        del_resp_2 = api_2.delete_namespaced_service(key, namespace, body)
-        print("Service Deleted. status='%s'" % str(del_resp_2.status))
+        del_resp_2 = api_2.delete_namespaced_service(key, namespace)
+        # del_resp_2 = api_2.delete_namespaced_service(key, namespace, body)
+        logging.debug("Service Deleted. status='%s'" % str(del_resp_2.status))
 
         # At this point you should not have any of the profiler related service, pod, or deployment running
-    print('Successfully teardown HEFT ')
+    logging.debug('Successfully teardown HEFT ')
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'HEFT teardownend %f \n'%(end_time)
         write_file(latency_file,msg)
         teardown_time = end_time - start_time
-        print('Time to teardown HEFT'+ str(teardown_time))
+        logging.debug('Time to teardown HEFT'+ str(teardown_time))
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 

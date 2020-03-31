@@ -18,11 +18,13 @@ from pprint import *
 import jupiter_config
 import utilities
 from kubernetes.client.rest import ApiException
-    
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
  
 def check_status_circe(dag,app_name):
     """
-    This function prints out all the tasks that are not running.
+    This function logging.debugs out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
     """
 
@@ -41,14 +43,12 @@ def check_status_circe(dag,app_name):
     # We have defined the namespace for deployments in jupiter_config
 
     # Get proper handles or pointers to the k8-python tool to call different functions.
-    extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
     v1_delete_options = client.V1DeleteOptions()
     core_v1_api = client.CoreV1Api()
 
     result = True
     for key, value in dag.items():
-        # print(key)
-        # print(value)
 
         # First check if there is a deployment existing with
         # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
@@ -62,16 +62,16 @@ def check_status_circe(dag,app_name):
         if resp.items:
             a=resp.items[0]
             if a.status.phase != "Running":
-                print("Pod Not Running", key)
-                print(label)
+                logging.debug("Pod Not Running %s", key)
+                logging.debug(label)
                 result = False
 
-            # print("Pod Deleted. status='%s'" % str(del_resp_2.status))
+            # logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
 
     if result:
-        print("All systems GOOOOO!!")
+        logging.debug("All systems GOOOOO!!")
     else:
-        print("Wait before trying again!!!!")
+        logging.debug("Wait before trying again!!!!")
 
     return result
 
@@ -106,22 +106,22 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
         Get proper handles or pointers to the k8-python tool to call different functions.
     """
     api = client.CoreV1Api()
-    k8s_beta = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
 
     #get DAG and home machine info
     first_task = dag_info[0]
     dag = dag_info[1]
     hosts = temp_info[2]
     
-    print("hosts:")
+    logging.debug("hosts:")
     pprint(hosts)
-    print('DAG info:')
-    print(dag)
+    logging.debug('DAG info:')
+    logging.debug(dag)
 
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
 
-    print('Starting to deploy CIRCE dispatcher')
+    logging.debug('Starting to deploy CIRCE dispatcher')
     if jupiter_config.BOKEH == 3:
         latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
         start_time = time.time()
@@ -132,23 +132,23 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
 
     # #     First create the home node's service.
     
-    print('First create the home node service')
+    logging.debug('First create the home node service')
     home_name =app_name+"-home"
     home_body = write_circe_service_specs(name = home_name)
     
     try:
         ser_resp = api.create_namespaced_service(namespace, home_body)
-        print("Home service created. status = '%s'" % str(ser_resp.status))
+        logging.debug("Home service created. status = '%s'" % str(ser_resp.status))
         resp = api.read_namespaced_service(home_name, namespace)
         service_ips['home'] = resp.spec.cluster_ip
     except ApiException as e:
-        print(e)
-        print("Exception Occurred")
+        logging.debug(e)
+        logging.debug("Exception Occurred")
         
 
 
     
-    # print(resp.spec.cluster_ip)
+    # logging.debug(resp.spec.cluster_ip)
 
     """
         Iterate through the list of tasks and run the related k8 deployment, replicaset, pod, and service on the respective node.
@@ -160,7 +160,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             kubectl get pod -n "namespace name"
     """ 
    
-    print('Create workers service')
+    logging.debug('Create workers service')
     count = 0
     for key, value in dag.items():
         task = key
@@ -178,13 +178,13 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
         try:
             # Call the Kubernetes API to create the service
             ser_resp = api.create_namespaced_service(namespace, body)
-            print("Service created. status = '%s'" % str(ser_resp.status))
+            logging.debug("Service created. status = '%s'" % str(ser_resp.status))
             resp = api.read_namespaced_service(pod_name, namespace)
-            # print resp.spec.cluster_ip
+            # logging.debug resp.spec.cluster_ip
             service_ips[task] = resp.spec.cluster_ip
         except ApiException as e:
-            print(e)
-            print("Exception Occurred")
+            logging.debug(e)
+            logging.debug("Exception Occurred")
 
 
         
@@ -229,7 +229,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     
         pod_name = app_name+"-"+task
         #Generate the yaml description of the required deployment for each task
-        dep = write_circe_deployment_specs(name = pod_name, node_name = hosts.get(task)[1],
+        dep = write_circe_deployment_specs(name = pod_name, label = pod_name, node_name = hosts.get(task)[1],
             image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
             child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
             home_node_ip = service_ips.get('home'),
@@ -242,23 +242,23 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
 
         # # Call the Kubernetes API to create the deployment
         try:
-            resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
-            print("Deployment created")
-            print("Deployment created. status = '%s'" % str(resp.status))
+            resp = k8s_apps_v1.create_namespaced_deployment(body = dep, namespace = namespace)
+            logging.debug("Deployment created")
+            logging.debug("Deployment created. status = '%s'" % str(resp.status))
         except ApiException as e:
-            print(e)
+            logging.debug(e)
 
     while 1:
-        print('Checking status CIRCE workers')
+        logging.debug('Checking status CIRCE workers')
         if check_status_circe(dag,app_name):
             break
         time.sleep(30)
 
 
 
-    # print(service_ips)
+    # logging.debug(service_ips)
     home_name =app_name+"-home"
-    home_dep = write_circe_home_specs(name=home_name,image = jupiter_config.HOME_IMAGE, 
+    home_dep = write_circe_home_specs(name=home_name,label=home_name,image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
                                 child = jupiter_config.HOME_CHILD,
                                 child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
@@ -267,24 +267,24 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
                                 dir = '{}')
 
     try:
-        resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
-        print("Home deployment created")
-        print("Home deployment created. status = '%s'" % str(resp.status))
-        # print(resp)
+        resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
+        logging.debug("Home deployment created")
+        logging.debug("Home deployment created. status = '%s'" % str(resp.status))
+        # logging.debug(resp)
     except ApiException as e:
-        print(e)
+        logging.debug(e)
        
 
        
 
 
     pprint(service_ips)
-    print('Successfully deploy CIRCE dispatcher')
+    logging.debug('Successfully deploy CIRCE dispatcher')
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'CIRCE deployend %f \n'%(end_time)
         write_file(latency_file,msg)
         deploy_time = end_time - start_time
-        print('Time to deploy CIRCE '+ str(deploy_time))
+        logging.debug('Time to deploy CIRCE '+ str(deploy_time))
 
    

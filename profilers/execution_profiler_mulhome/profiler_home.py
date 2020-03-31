@@ -21,6 +21,10 @@ import datetime
 import shutil
 import configparser
 import paho.mqtt.client as mqtt
+import logging
+
+
+
 
 def demo_help(server,port,topic,msg):
     username = 'anrgusc'
@@ -42,15 +46,15 @@ class MyEventHandler(pyinotify.ProcessEvent):
         Args:
             event (str): New execution profiler files created
         """
-        print("New execution profiler files created:", event.pathname)
+        logging.debug("New execution profiler files created: %s", event.pathname)
         file_name = os.path.basename(event.pathname)
         node_info = file_name.split('_')[1]
         node_info = node_info.split('.')[0]
-        print("Node info: ", node_info )
+        logging.debug("Node info: %s", node_info )
         client_mongo = MongoClient('mongodb://localhost:'+ str(MONGO_PORT) +'/')
         db = client_mongo['execution_profiler']
         db.create_collection(node_info)
-        logging = db[node_info]
+        logdb = db[node_info]
         with open(event.pathname) as f:
             first_line = f.readline()
             for line in f:
@@ -58,11 +62,11 @@ class MyEventHandler(pyinotify.ProcessEvent):
             try:
                 df = pd.read_csv(event.pathname,delimiter=',',header=0,names = ["Task","Duration [sec]", "Output File [Kbit]"])
                 data_json = json.loads(df.to_json(orient='records'))
-                logging.insert(data_json)
-                print('MongodB Update Successful')
+                logdb.insert(data_json)
+                logging.debug('MongodB Update Successful')
             except Exception as e:
-                print('MongoDB error')
-                print(e)
+                logging.debug('MongoDB error')
+                logging.debug(e)
 
 
 def update_mongo(file_path):
@@ -74,11 +78,11 @@ def update_mongo(file_path):
     file_name = os.path.basename(file_path)
     node_info = file_name.split('_')[1]
     node_info = node_info.split('.')[0]
-    print("Node info: ", node_info )
+    logging.debug("Node info: %s", node_info )
     client_mongo = MongoClient('mongodb://localhost:'+ str(MONGO_PORT) +'/')
     db = client_mongo['execution_profiler']
     db.create_collection(node_info)
-    logging = db[node_info]
+    logdb = db[node_info]
     with open(file_path) as f:
         first_line = f.readline()
         for line in f:
@@ -86,11 +90,11 @@ def update_mongo(file_path):
         try:
             df = pd.read_csv(file_path,delimiter=',',header=0,names = ["Task","Duration [sec]", "Output File [Kbit]"])
             data_json = json.loads(df.to_json(orient='records'))
-            logging.insert(data_json)
-            print('MongodB Update Successful')
+            logdb.insert(data_json)
+            logging.debug('MongodB Update Successful')
         except Exception as e:
-            print('MongoDB error')
-            print(e)    
+            logging.debug('MongoDB error')
+            logging.debug(e)    
 
 def convert_bytes(num):
     """Convert bytes to Kbit as required by HEFT
@@ -135,10 +139,10 @@ def transfer_data_scp(ID,user,pword,source, destination):
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user,nodeIP, destination)
             os.system(cmd)
-            print('data transfer complete\n')
+            logging.debug('data transfer complete\n')
             break
         except:
-            print('profiler_home.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            logging.debug('profiler_home.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
 
@@ -154,7 +158,7 @@ def transfer_data(ID,user,pword,source, destination):
         destination (str): destination file path
     """
     msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
-    print(msg)
+    logging.debug(msg)
     
     if TRANSFER == 0:
         return transfer_data_scp(ID,user,pword,source, destination)
@@ -171,7 +175,12 @@ def main():
         -   Start Waiting For Incoming Statistics from the Worker Execution Profilers. Once a File arrives at the ``profiling_folder`` immediately process it and move it to the ``profiling_folder_processed`` to keep track of processed files
     """
     ## Load all the confuguration
-    print('Starting to run execution profiler')
+
+    global logging
+
+    logging.basicConfig(level = logging.DEBUG)
+
+    logging.debug('Starting to run execution profiler')
     starting_time = time.time()
 
     HERE     = path.abspath(path.dirname(__file__)) + "/"
@@ -199,7 +208,7 @@ def main():
 
 
     nodename = 'home'
-    print(nodename)
+    logging.debug(nodename)
 
     client_mongo = MongoClient('mongodb://localhost:'+ str(MONGO_PORT) +'/')
     db = client_mongo['execution_profiler']
@@ -256,15 +265,15 @@ def main():
 
         start_time = datetime.datetime.utcnow()
         filename = module.main()
-        print('------------------------------------------------')
-        print(filename)
+        logging.debug('------------------------------------------------')
+        logging.debug(filename)
         stop_time = datetime.datetime.utcnow()
         mytime = stop_time - start_time
         mytime = int(mytime.total_seconds()) #convert to seconds
 
         output_data = [file_size(fname) for fname in filename]
-        print(output_data)
-        print('------------------------------------------------')
+        logging.debug(output_data)
+        logging.debug('------------------------------------------------')
         sum_output_data = sum(output_data) #current: summation of all output files
         line=task+','+str(mytime)+ ','+ str(sum_output_data) + '\n'
         myfile.write(line)
@@ -274,7 +283,7 @@ def main():
 
     myfile.close()
 
-    print('Finish printing out the execution information')
+    logging.debug('Finish logging.debuging out the execution information')
 
     ## data sources
     datasources = []
@@ -287,7 +296,7 @@ def main():
                 datasources.append(node_line[0])
 
 
-    print(datasources)
+    logging.debug(datasources)
     for ds in datasources:
         src_path = os.path.join(os.path.dirname(__file__), 'profiler_'+ds+'.txt')
         myfile = open(src_path, "w")
@@ -309,7 +318,7 @@ def main():
         processed_file = os.path.join(profiling_folder_processed,'profiler_'+ds+'.txt')
         shutil.move(src_path,  processed_file)
 
-    print('Starting to send the output file back to the master node')
+    logging.debug('Starting to send the output file back to the master node')
 
 
     # TODO: send the intermedaiate files to the remote location
@@ -323,14 +332,14 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 
-    print('Copy supertask information to profilers folder')
+    logging.debug('Copy supertask information to profilers folder')
     master_profile_file_name = os.path.join(os.path.dirname(__file__), 'profiler_' + nodename + '.txt')
     local_profiler_path    = os.path.join(os.path.dirname(__file__), 'profiler_files/')
     if path.isfile(master_profile_file_name):
         os.system('mv ' + master_profile_file_name + ' ' + local_profiler_path)
 
     nonDAG_file = local_profiler_path+ 'profiler_home.txt'
-    print('update non DAG info in MongoDB')
+    logging.debug('update non DAG info in MongoDB')
     client_mongo = MongoClient('mongodb://localhost:'+ str(MONGO_PORT) +'/')
     db = client_mongo['execution_profiler']
 
@@ -351,17 +360,17 @@ def main():
         Transfer the Intermdiate Files Tt all the Workers. 
     """
     for node in allprofiler_names:
-        print('----------------------------------')
-        print("Sending data to execution worker of ", node)
+        logging.debug('----------------------------------')
+        logging.debug("Sending data to execution worker of %s", node)
         transfer_data(node,username,password,ptFile, ptFile1)
         try:
-            print("start the profiler in ", node)
-            print(profilers_ip_map[node])
+            logging.debug("start the profiler in %s", node)
+            logging.debug(profilers_ip_map[node])
             r = requests.get("http://"+profilers_ip_map[node]+":" + str(EXC_FPORT))
             result = r.json()
         except Exception as e:
-            print("Exception in sending data")
-            print(e)
+            logging.debug("Exception in sending data")
+            logging.debug(e)
 
 
     if BOKEH==3:
@@ -377,7 +386,7 @@ def main():
     ## Once a File arrives at the profiling_folder immediately process it and
     ## move it to the profiling_folder_processed to keep track of processed files
 
-    print('Watching the incoming execution profiler files')
+    logging.debug('Watching the incoming execution profiler files')
     
     ## Copy profiler files for data sources:
 
@@ -388,27 +397,28 @@ def main():
         list_files = os.listdir(profiling_folder) # dir is your directory path
         for file_path in list_files:
             try:
-                print('--- Add execution info from file: '+ file_path)
+                logging.debug('--- Add execution info from file: '+ file_path)
                 src_path = profiling_folder + '/' + file_path
                 update_mongo(src_path)
                 shutil.move(src_path, profiling_folder_processed + file_path)
                 recv_file_count += 1
-            except:
-                print("Some Exception")
+            except Exception as e:
+                logging.debug("Some Exception")
+                logging.debug(e)
 
-        print("Number of execution profiling files : " + str(recv_file_count))
+        logging.debug("Number of execution profiling files : %s",str(recv_file_count))
         if recv_file_count == num_files:
-            print('Successfully finish execution profiler ')
+            logging.debug('Successfully finish execution profiler ')
             end_time = time.time()
             deploy_time = end_time - starting_time
-            print('Time to finish execution profiler '+ str(deploy_time))
+            logging.debug('Time to finish execution profiler %s',str(deploy_time))
             break
         time.sleep(60)
 
     
 
     while 1:
-        print("Finish execution profiling : " + str(recv_file_count))
+        logging.debug("Finish execution profiling : %s",str(recv_file_count))
         time.sleep(60)
 
 if __name__ == '__main__':

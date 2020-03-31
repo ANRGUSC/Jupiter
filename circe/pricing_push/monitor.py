@@ -34,6 +34,7 @@ import threading
 import numpy as np
 from apscheduler.schedulers.background import BackgroundScheduler
 import paho.mqtt.client as mqtt
+import logging
 
 
 
@@ -105,7 +106,7 @@ def receive_price_info():
     """
     try:
         pricing_info = request.args.get('pricing_info').split('#')
-        print("Received pricing info")
+        logging.debug("Received pricing info")
         #Network, CPU, Memory, Queue
         node_name = pricing_info[0]
 
@@ -119,7 +120,7 @@ def receive_price_info():
 
 
     except Exception as e:
-        print("Bad reception or failed processing in Flask for pricing announcement: "+ e) 
+        logging.debug("Bad reception or failed processing in Flask for pricing announcement: %s",e) 
         return "not ok" 
 
     return "ok"
@@ -129,7 +130,7 @@ app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info
 def default_best_node():
     """select the current best node
     """
-    print('Select the current best node')
+    logging.debug('Select the current best node')
     starttime = time.time()
     w_net = 1 # Network profiling: longer time, higher price
     w_cpu = 1 # Resource profiling : larger cpu resource, lower price
@@ -140,10 +141,10 @@ def default_best_node():
     temp_parents = [x for x in last_tasks_map[self_task] if x not in super_tasks]
     
     if temp_parents[0] not in task_node_map:
-        print('Parent tasks not available yet!!!!')
+        logging.debug('Parent tasks not available yet!!!!')
     else:
         source_node = task_node_map[temp_parents[0]]
-        print('Current best compute node of parent tasks')
+        logging.debug('Current best compute node of parent tasks')
         for (source, dest), price in task_price_net.items():
             if source == source_node:
                 task_price_network[dest]= price
@@ -167,7 +168,7 @@ def default_best_node():
                     msg = 'mappinglatency pricepush controller%s %s %f\n'%(self_task,app_name,mappinglatency)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         else:
-            print('Task price summary is not ready yet.....') 
+            logging.debug('Task price summary is not ready yet.....') 
         
     
     
@@ -178,7 +179,7 @@ def update_best_node():
     """Select the best node from price information of all nodes, either default or customized from user price file
     """
     try:
-        print('Update best assignment node to all computing nodes and home nodes')
+        logging.debug('Update best assignment node to all computing nodes and home nodes')
         for computing_ip in all_computing_ips:
             send_assignment_info(computing_ip)
         for home_ip in home_ips:
@@ -186,7 +187,7 @@ def update_best_node():
         for controller_ip in controller_ip_nondag:
             send_assignment_info(controller_ip)
     except:
-        print('Not yet receive best compute node assignment!')
+        logging.debug('Not yet receive best compute node assignment!')
 
 def send_controller_info(node_ip):
     """Send my task controller information to the compute node
@@ -203,8 +204,8 @@ def send_controller_info(node_ip):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        print("Sending controller message to flask server on computing node FAILED!!!")
-        print(e)
+        logging.debug("Sending controller message to flask server on computing node FAILED!!!")
+        logging.debug(e)
         return "not ok"
 
 def push_controller_map():
@@ -226,12 +227,12 @@ def update_assignment_info_child():
     """
     
     try:
-        print("Update best assignment info from parents")
+        logging.debug("Update best assignment info from parents")
         assignment_info = request.args.get('assignment_info').split('#')
         task_node_map[assignment_info[0]] = assignment_info[1]
 
     except Exception as e:
-        print("Bad reception or failed processing in Flask for best assignment request: "+ e) 
+        logging.debug("Bad reception or failed processing in Flask for best assignment request: %s",e) 
         return "not ok" 
 
     return "ok"
@@ -244,7 +245,7 @@ def send_assignment_info(node_ip):
         node_ip (str): IP of the node
     """
     try:
-        print("Announce my current best computing node " + node_ip)
+        logging.debug("Announce my current best computing node %s",node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/receive_assignment_info"
         assignment_info = self_task + "#"+task_node_map[self_task]
         params = {'assignment_info': assignment_info}
@@ -258,8 +259,8 @@ def send_assignment_info(node_ip):
             msg = 'msgoverhead pricepush controller%s updatebest 1\n'%(self_task)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
-        print("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
-        print(e)
+        logging.debug("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
+        logging.debug(e)
         return "not ok"
 
 def update_assignment_info_to_child(node_ip):
@@ -269,7 +270,7 @@ def update_assignment_info_to_child(node_ip):
         node_ip (str): IP of my children task
     """
     try:
-        print("Announce my current best computing node to children " + node_ip)
+        logging.debug("Announce my current best computing node to children %s",node_ip)
         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_assignment_info_child"
         assignment_info = self_task + "#"+task_node_map[self_task]
         params = {'assignment_info': assignment_info}
@@ -279,14 +280,14 @@ def update_assignment_info_to_child(node_ip):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        print("Sending assignment message to flask server on child controller nodes FAILED!!!")
-        print(e)
+        logging.debug("Sending assignment message to flask server on child controller nodes FAILED!!!")
+        logging.debug(e)
         return "not ok"
 
 def announce_best_assignment_to_child():
     """Announce my current best assignment to all my children tasks
     """
-    print('Announce best assignment to my children')
+    logging.debug('Announce best assignment to my children')
     for child_ip in child_nodes_ip_dag:
         update_assignment_info_to_child(child_ip)   
     if BOKEH==3:    
@@ -299,10 +300,10 @@ def push_first_assignment_map():
     """
     while self_task not in task_node_map:
         default_best_node()
-        print('Waiting for first best assignment for my task' + self_task)
+        logging.debug('Waiting for first best assignment for my task %s',self_task)
         time.sleep(10) 
     
-    print('Sucessfully assign the first best computing node')
+    logging.debug('Sucessfully assign the first best computing node')
     update_best_node()
     if 'home' not in child_nodes:
         announce_best_assignment_to_child()
@@ -310,7 +311,7 @@ def push_first_assignment_map():
 def push_assignment_map():
     """Update assignment periodically
     """
-    print('Updated assignment periodically')
+    logging.debug('Updated assignment periodically')
     default_best_node()
     update_best_node()
     if 'home' not in child_nodes:
@@ -343,7 +344,7 @@ def send_runtime_profile(msg,taskname):
         Exception: if sending message to flask server on home is failed
     """
     try:
-        # print("Sending message", msg)
+        # logging.debug("Sending message", msg)
         for home_node_host_port in home_node_host_ports:
             url = "http://" + home_node_host_port + "/recv_runtime_profile"
             params = {'msg': msg, "work_node": taskname}
@@ -353,8 +354,8 @@ def send_runtime_profile(msg,taskname):
             res = res.read()
             res = res.decode('utf-8')
     except Exception as e:
-        print("Sending runtime profiling info to flask server on home FAILED!!!")
-        print(e)
+        logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
+        logging.debug(e)
         return "not ok"
     return res
 
@@ -400,10 +401,10 @@ def get_taskmap():
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].extend([data[i]])
-    print("tasks: ", tasks)
-    print("task order", task_order) #task_list
-    print("super tasks", super_tasks)
-    print("non tasks", non_tasks)
+    logging.debug("tasks: %s", tasks)
+    logging.debug("task order %s", task_order) #task_list
+    logging.debug("super tasks %s", super_tasks)
+    logging.debug("non tasks %s", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
 class TimedValue:
@@ -425,7 +426,7 @@ class MonitorRecv(multiprocessing.Process):
         """
         Start Flask server
         """
-        print("Flask server started")
+        logging.debug("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
 
@@ -441,6 +442,9 @@ def main():
         -   If there are enough input files for the first task on the current node, run the first task. 
 
     """
+
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
 
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()

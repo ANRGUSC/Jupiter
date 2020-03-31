@@ -36,6 +36,8 @@ import pyinotify
 from collections import Counter
 import _thread
 import threading
+import logging
+
 
 
 
@@ -61,8 +63,8 @@ def send_monitor_data(msg):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        print("Sending message to flask server on home FAILED!!!")
-        print(e)
+        logging.debug("Sending message to flask server on home FAILED!!!")
+        logging.debug(e)
         return "not ok"
     return res
 
@@ -88,8 +90,8 @@ def send_runtime_profile(msg):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        print("Sending runtime profiling info to flask server on home FAILED!!!")
-        print(e)
+        logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
+        logging.debug(e)
         return "not ok"
     return res
 
@@ -112,14 +114,14 @@ def transfer_data_scp(ID,user,pword,source, destination):
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
-            print('data transfer complete\n')
+            logging.debug('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
         except:
-            print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
     if retry == num_retries:
@@ -144,7 +146,7 @@ def transfer_data(ID,user,pword,source, destination):
 
     return transfer_data_scp(ID,user,pword,source, destination) #default
 
-def transfer_multicast_data_scp(ID_list,user_list,pword_list,source, destination):
+def transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destination_list):
     """Transfer data using SCP to multiple nodes
     
     Args:
@@ -155,9 +157,9 @@ def transfer_multicast_data_scp(ID_list,user_list,pword_list,source, destination
         destination (str): destination file path
     """
     for idx in range(len(ID_list)): 
-        _thread.start_new_thread(transfer_data_scp,(ID_list[idx],user_list[idx],pword_list[idx],source, destination,))
+        _thread.start_new_thread(transfer_data_scp,(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx],))
 
-def transfer_multicast_data(ID_list,user_list,pword_list,source, destination):
+def transfer_multicast_data(ID_list,user_list,pword_list,source_list, destination_list):
     """Transfer data with given parameters
     
     Args:
@@ -168,10 +170,10 @@ def transfer_multicast_data(ID_list,user_list,pword_list,source, destination):
         destination (str): destination file path
     """
     for idx in range(len(ID_list)):
-        msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID_list[idx],user_list[idx],pword_list[idx],source, destination)
+        msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx])
     if TRANSFER==0:
-        print('Multicast all the files')
-        transfer_multicast_data_scp(ID_list,user_list,pword_list,source, destination)
+        logging.debug('Multicast all the files')
+        transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destination_list)
     
 
 def demo_help(server,port,topic,msg):
@@ -189,7 +191,7 @@ class Handler1(pyinotify.ProcessEvent):
 
 
     def process_IN_CLOSE_WRITE(self, event):
-        print("Received file as output - %s." % event.pathname)
+        logging.debug("Received file as output - %s." % event.pathname)
         
         """
             Save the time when a output file is available. This is taken as the end time of the task.
@@ -208,7 +210,7 @@ class Handler1(pyinotify.ProcessEvent):
         flag2 = sys.argv[2]
         ts = time.time()
         if taskname == 'distribute':
-            print('This is the distribution point')
+            logging.debug('This is the distribution point')
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
@@ -225,7 +227,7 @@ class Handler1(pyinotify.ProcessEvent):
             destination = os.path.join('/centralized_scheduler', 'input', new_file)
             transfer_data(next_task,user,password,source, destination)
         elif sys.argv[3] == 'home':
-            print('Next node is home')
+            logging.debug('Next node is home')
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
@@ -245,7 +247,7 @@ class Handler1(pyinotify.ProcessEvent):
             
 
         elif flag2 == 'true':
-            print('Flag is true -- using multicast instead')
+            
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
@@ -268,20 +270,24 @@ class Handler1(pyinotify.ProcessEvent):
             #     transfer_data(cur_task,user,password,source, destination)
             
             # Using multicast
+            logging.debug('Using multicast instead')
             cur_tasks =[]
             users = []
             passwords = []
             source = event.pathname
             destination = os.path.join('/centralized_scheduler', 'input', new_file)
 
+
             for i in range(3, len(sys.argv)-1,4):
                 cur_tasks.append(sys.argv[i])
                 users.append(sys.argv[i+2])
                 passwords.append(sys.argv[i+3])
+
+            destinations = [destination] *len(cur_tasks)
+            sources = [source]*len(cur_tasks)
                 
-            transfer_multicast_data(cur_tasks,users,passwords,source, destination)
+            transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
         else:
-            print('Flag is false -- using unicast')
             num_child = (len(sys.argv) - 4) / 4
             files_out.append(new_file)
             if (len(files_out) == num_child):
@@ -296,16 +302,29 @@ class Handler1(pyinotify.ProcessEvent):
                     msg = taskname + " ends"
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     
+                # Using unicast
+                # for i in range(3, len(sys.argv)-1,4):
+                #     myfile = files_out.pop(0)
+                #     event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
+                #     cur_task = sys.argv[i]
+                #     user = sys.argv[i+2]
+                #     password = sys.argv[i+3]
+                #     source = event_path
+                #     destination = os.path.join('/centralized_scheduler','input', myfile)
+                #     transfer_data(cur_task,user,password,source, destination)
+                
+                logging.debug('Using multicast instead')
+                cur_tasks =[]
+                users = []
+                passwords = []
                 for i in range(3, len(sys.argv)-1,4):
-                    myfile = files_out.pop(0)
-                    event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
-                    cur_task = sys.argv[i]
-                    user = sys.argv[i+2]
-                    password = sys.argv[i+3]
-                    source = event_path
-                    destination = os.path.join('/centralized_scheduler','input', myfile)
-                    transfer_data(cur_task,user,password,source, destination)
+                    cur_tasks.append(sys.argv[i])
+                    users.append(sys.argv[i+2])
+                    passwords.append(sys.argv[i+3])
+                destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in files_out]
+                sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in files_out]
 
+                transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
                 files_out=[]
 
 
@@ -315,7 +334,7 @@ class Handler(pyinotify.ProcessEvent):
     """
 
     def process_IN_CLOSE_WRITE(self, event):
-        print("Received file as input - %s." % event.pathname)
+        logging.debug("Received file as input - %s." % event.pathname)
 
         new_file = os.path.split(event.pathname)[-1]
 
@@ -403,6 +422,10 @@ def main():
 
     """
 
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
+
     INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
@@ -479,7 +502,7 @@ def main():
         wm = pyinotify.WatchManager()
         input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
         wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
-        print('starting the input monitoring process\n')
+        logging.debug('starting the input monitoring process\n')
         eh = Handler()
         notifier = pyinotify.ThreadedNotifier(wm, eh)
         notifier.start()
@@ -487,12 +510,12 @@ def main():
         output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
         wm1 = pyinotify.WatchManager()
         wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
-        print('starting the output monitoring process\n')
+        logging.debug('starting the output monitoring process\n')
         eh1 = Handler1()
         notifier1= pyinotify.Notifier(wm1, eh1)
         notifier1.loop()
     else:
-        print('Task Mapping information')
+        logging.debug('Task Mapping information')
         path_src = "/centralized_scheduler/" + taskname
         args = ' '.join(str(x) for x in taskmap[2:])
 

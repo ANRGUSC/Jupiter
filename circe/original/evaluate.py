@@ -22,6 +22,8 @@ import math
 import configparser
 import urllib
 import urllib.request
+import logging
+
 
 def evaluate_random():
     """
@@ -38,7 +40,7 @@ def evaluate_random():
             time.sleep(1)
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         shutil.copyfile(src,dest)
 
 def evaluate_interval(interval):
@@ -57,7 +59,7 @@ def evaluate_interval(interval):
             time.sleep(1)
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         shutil.copyfile(src,dest)
 
 def evaluate_sequential():
@@ -67,11 +69,11 @@ def evaluate_sequential():
     """
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
-    print('---- Generate random input files')
+    logging.debug('---- Generate random input files')
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         shutil.copyfile(src,dest)
         count = 0
         while 1:
@@ -82,7 +84,7 @@ def evaluate_sequential():
                 break
 
 
-    print('---- Finish generating sequential input files')
+    logging.debug('---- Finish generating sequential input files')
 
 def evaluate_test():
     file_count = len(os.listdir("sample_input/"))
@@ -90,7 +92,7 @@ def evaluate_test():
     for filepath in glob.iglob('sample_input/*.ipsum'):
         filename = filepath.split('/')[1]
         dest = "input/"+filename
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         shutil.copyfile(filepath,dest)
         count = 0
         while 1:
@@ -105,7 +107,7 @@ def evaluate_combine(num_apps,num_samples):
     file_count_out = len(os.listdir("output/")) 
     count = 0
     for i in range(1,num_samples+1):
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         for j in range(1,num_apps+1):
             filein = 'sample_input/dummyapp%d-%dbotnet.ipsum'%(j,i)
             fileout ='input/dummyapp%d-%dbotnet.ipsum'%(j,i)
@@ -116,12 +118,12 @@ def evaluate_combine(num_apps,num_samples):
             time.sleep(5)
             file_count_out = len(os.listdir("output/"))
             if file_count_out ==  count:
-                print('Finishing all the current samples')
+                logging.debug('Finishing all the current samples')
                 break
-        print('Continue to generate more random input files')
+        logging.debug('Continue to generate more random input files')
 
 def evaluate_combine_app(num_apps,num_samples):
-    print('---- Generate random input files')
+    logging.debug('---- Generate random input files')
     for i in range(1,num_apps+1):
         filein = 'sample_input/dummyapp%d-1botnet.ipsum'%(i)
         fileout ='input/dummyapp%d-1botnet.ipsum'%(i)
@@ -151,18 +153,18 @@ def evaluate_stress(num_nodes):
     num_stress = math.floor(file_count/3)
     num_stress = 1
     requested = False
-    print('---- Generate random input files')
+    logging.debug('---- Generate random input files')
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         shutil.copyfile(src,dest)
         count = 0
         while 1:
             time.sleep(5)
             file_count_out = len(os.listdir("output/"))
             if file_count_out == num_stress and requested==False:
-                print('Start to run stress test')
+                logging.debug('Start to run stress test')
                 request_stress_test(num_nodes)
                 requested = True
 
@@ -179,7 +181,7 @@ def request_stress_test(num_nodes):
     config.read(INI_PATH)
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     for i in range(0,num_nodes):
-        print('---------- Request stress on the following node: '+nodes[i])
+        logging.debug('---------- Request stress on the following node: '+nodes[i])
         worker_node_host_port =  node_ips[i]+ ":" + str(FLASK_SVC)
         try:
             url = "http://" + worker_node_host_port + "/start_stress_test"
@@ -190,8 +192,8 @@ def request_stress_test(num_nodes):
             res = res.read()
             res = res.decode('utf-8')
         except Exception as e:
-            print("Sending message to flask server on workers FAILED!!!")
-            print(e)
+            logging.debug("Sending message to flask server on workers FAILED!!!")
+            logging.debug(e)
             
 class MyHandler(PatternMatchingEventHandler):
     """
@@ -221,7 +223,7 @@ class MyHandler(PatternMatchingEventHandler):
         """
         # the file will be processed there
         if event.event_type == 'created':
-            print("Received file as output in evaluation - %s." % event.src_path)  
+            logging.debug("Received file as output in evaluation - %s." % event.src_path)  
             filename = os.path.split(event.src_path)[-1]
             appname = filename.split('-')[0]
             curfile = filename.split('-')[1].split('botnet')[0]
@@ -241,21 +243,26 @@ class MyHandler(PatternMatchingEventHandler):
         
 
 if __name__ == '__main__':
+
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
+
     time.sleep(60)
-    print('Start copying sample files for evaluation')
+    logging.debug('Start copying sample files for evaluation')
 
     evaluate_sequential()
     
     # global num_apps, num_samples
     # num_apps = 100
     # num_samples = 10
-    # print('---- Generate random input files')
+    # logging.debug('---- Generate random input files')
     # for i in range(1,num_apps+1):
     #     filein = 'sample_input/dummyapp%d-1botnet.ipsum'%(i)
     #     fileout ='input/dummyapp%d-1botnet.ipsum'%(i)
     #     shutil.copyfile(filein,fileout) 
     
-    # print("Starting the output monitoring system:")
+    # logging.debug("Starting the output monitoring system:")
     # observer = Observer()
     # observer.schedule(MyHandler(), path=os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/'))
     # observer.start()

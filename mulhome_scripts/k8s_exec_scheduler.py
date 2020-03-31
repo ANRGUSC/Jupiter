@@ -24,13 +24,16 @@ import utilities
 import sys, json
 sys.path.append("../")
 import jupiter_config
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 
 
 
 def check_status_exec_profiler(app_name):
     """
-    This function prints out all the tasks that are not running.
+    This function logging.debugs out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
     """
     jupiter_config.set_globals()    
@@ -78,20 +81,20 @@ def check_status_exec_profiler(app_name):
             if resp.items:
                 a=resp.items[0]
                 if a.status.phase != "Running":
-                    print("Pod ", key, "status:",a.status.phase)
+                    logging.debug("Pod ", key, "status:",a.status.phase)
                     result = False
 
-            # print("Pod Deleted. status='%s'" % str(del_resp_2.status))
+            # logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
 
     if result:
-        print("All systems GOOOOO!!")
+        logging.debug("All systems GOOOOO!!")
     else:
-        print("Wait before trying again!!!!!!")
+        logging.debug("Wait before trying again!!!!!!")
     return result
 
 def check_status_exec_profiler_workers(app_name):
     """
-    This function prints out all the workers that are not running.
+    This function logging.debugs out all the workers that are not running.
     If all the workers are running: return ``True``; else return ``False``.
     """
 
@@ -112,7 +115,7 @@ def check_status_exec_profiler_workers(app_name):
     # We have defined the namespace for deployments in jupiter_config
 
     # Get proper handles or pointers to the k8-python tool to call different functions.
-    extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
     v1_delete_options = client.V1DeleteOptions()
     core_v1_api = client.CoreV1Api()
 
@@ -132,15 +135,15 @@ def check_status_exec_profiler_workers(app_name):
             if resp.items:
                 a=resp.items[0]
                 if a.status.phase != "Running":
-                    print("Pod Not Running", key)
+                    logging.debug("Pod Not Running %s", key)
                     result = False
 
-            # print("Pod Deleted. status='%s'" % str(del_resp_2.status))
+            # logging.debug("Pod Deleted. status='%s'" % str(del_resp_2.status))
 
     if result:
-        print("All systems GOOOOO!!")
+        logging.debug("All systems GOOOOO!!")
     else:
-        print("Wait before trying again!!!!")
+        logging.debug("Wait before trying again!!!!")
 
     return result
 
@@ -184,7 +187,7 @@ def k8s_exec_scheduler(app_name):
         Get proper handles or pointers to the k8-python tool to call different functions.
     """
     api = client.CoreV1Api()
-    k8s_beta = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
 
     #get DAG and home machine info
     first_task = jupiter_config.HOME_CHILD
@@ -196,7 +199,7 @@ def k8s_exec_scheduler(app_name):
 
 
 
-    print('Starting to deploy execution profiler')
+    logging.debug('Starting to deploy execution profiler')
     # if jupiter_config.BOKEH == 3:
     #     latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
     #     start_time = time.time()
@@ -211,12 +214,12 @@ def k8s_exec_scheduler(app_name):
     home_body = write_exec_service_specs_home(name = home_name)
 
     ser_resp = api.create_namespaced_service(namespace, home_body)
-    print("Home service created. status = '%s'" % str(ser_resp.status))
+    logging.debug("Home service created. status = '%s'" % str(ser_resp.status))
 
     try:
         resp = api.read_namespaced_service(home_name, namespace)
     except ApiException as e:
-        print("Exception Occurred")
+        logging.debug("Exception Occurred")
 
     service_ips['home'] = resp.spec.cluster_ip
 
@@ -243,21 +246,21 @@ def k8s_exec_scheduler(app_name):
 
             # Call the Kubernetes API to create the service
             ser_resp = api.create_namespaced_service(namespace, body)
-            print("Service created. status = '%s'" % str(ser_resp.status))
+            logging.debug("Service created. status = '%s'" % str(ser_resp.status))
 
             try:
                 resp = api.read_namespaced_service(pod_name, namespace)
             except ApiException as e:
-                print("Exception Occurred")
+                logging.debug("Exception Occurred")
 
-            # print resp.spec.cluster_ip
+            # logging.debug resp.spec.cluster_ip
             service_ips[task] = resp.spec.cluster_ip
         else:
             service_ips[task] = service_ips['home']
 
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
-    print(all_node)
+    logging.debug(all_node)
 
     
     
@@ -277,13 +280,13 @@ def k8s_exec_scheduler(app_name):
 
             try:
                 ser_resp = api.create_namespaced_service(namespace, body)
-                print("Service created. status = '%s'" % str(ser_resp.status))
-                print(i)
+                logging.debug("Service created. status = '%s'" % str(ser_resp.status))
+                logging.debug(i)
                 resp = api.read_namespaced_service(pod_name, namespace)
             except ApiException as e:
-                print("Exception Occurred")
+                logging.debug("Exception Occurred")
 
-            # print resp.spec.cluster_ip
+            # logging.debug resp.spec.cluster_ip
             allprofiler_ips = allprofiler_ips + ':' + resp.spec.cluster_ip
             allprofiler_names = allprofiler_names + ':' + i
 
@@ -315,10 +318,10 @@ def k8s_exec_scheduler(app_name):
             if i != 2:
                 next_svc = next_svc + ':'
             next_svc = next_svc + str(service_ips.get(value[i]))
-        # print("NEXT HOSTS")
-        # print(nexthosts)
-        # print("NEXT SVC")
-        # print(next_svc)
+        # logging.debug("NEXT HOSTS")
+        # logging.debug(nexthosts)
+        # logging.debug("NEXT SVC")
+        # logging.debug(next_svc)
 
         if taskmap[key][1] == False:
             #Generate the yaml description of the required deployment for each task
@@ -335,8 +338,8 @@ def k8s_exec_scheduler(app_name):
 
 
             # # Call the Kubernetes API to create the deployment
-            resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
-            print("Deployment created. status = '%s'" % str(resp.status))
+            resp = k8s_apps_v1.create_namespaced_deployment(body = dep, namespace = namespace)
+            logging.debug("Deployment created. status = '%s'" % str(resp.status))
 
     for i in nodes:
 
@@ -354,8 +357,8 @@ def k8s_exec_scheduler(app_name):
                                              host = nodes[i][0], home_node_ip = service_ips['home'],
                                              all_node = all_node,all_node_ips = all_node_ips)
             # # Call the Kubernetes API to create the deployment
-            resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
-            print("Deployment created. status ='%s'" % str(resp.status))
+            resp = k8s_apps_v1.create_namespaced_deployment(body = dep, namespace = namespace)
+            logging.debug("Deployment created. status ='%s'" % str(resp.status))
 
     """
         Check if all the tera detectors are running
@@ -375,6 +378,7 @@ def k8s_exec_scheduler(app_name):
     home_name = app_name+'-home'
     home_dep = write_exec_specs_home_control(flag = str(flag), inputnum = str(inputnum),
             name = home_name, node_name = home_name,
+            label = home_name,
             task_name = task,
             image = jupiter_config.EXEC_HOME_IMAGE, child = nexthosts,
             child_ips = next_svc, host = jupiter_config.HOME_NODE, dir = '{}',
@@ -385,16 +389,16 @@ def k8s_exec_scheduler(app_name):
             allprofiler_ips = allprofiler_ips,
             allprofiler_names = allprofiler_names)
 
-    resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
-    print("Home deployment created. status = '%s'" % str(resp.status))
+    resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
+    logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
-    print('Successfully deploy execution profiler ')
+    logging.debug('Successfully deploy execution profiler ')
     # if jupiter_config.BOKEH == 3:
     #     end_time = time.time()
     #     msg = 'Executionprofiler deployend %f \n'%(end_time)
     #     write_file(latency_file,msg)
     #     deploy_time = end_time - start_time
-    #     print('Time to deploy execution profiler '+ str(deploy_time))
+    #     logging.debug('Time to deploy execution profiler '+ str(deploy_time))
 
     return(service_ips)
 

@@ -12,6 +12,7 @@ RUN apt-get install -y sshpass nano
 RUN pip install cryptography
 
 RUN apt-get -yqq update
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -31,7 +32,7 @@ RUN mkdir -p /input
 RUN mkdir -p /output
 
 # Add input files
-COPY  app_specific_files/dummyapp30/sample_input /sample_input
+COPY  app_specific_files/dummy_app_multicast/sample_input /sample_input
 
 # Add the mongodb scripts
 ADD circe/integrated_pricing/runtime_profiler_mongodb /central_mongod
@@ -42,8 +43,8 @@ ADD jupiter_config.py /jupiter_config.py
 ADD circe/integrated_pricing/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
-RUN echo app_specific_files/dummyapp30/configuration.txt
-ADD app_specific_files/dummyapp30/configuration.txt /configuration.txt
+RUN echo app_specific_files/dummy_app_multicast/configuration.txt
+ADD app_specific_files/dummy_app_multicast/configuration.txt /configuration.txt
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
 
@@ -51,10 +52,10 @@ ADD jupiter_config.ini /jupiter_config.ini
 ADD circe/integrated_pricing/start_home.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
-ADD app_specific_files/dummyapp30/name_convert.txt /centralized_scheduler/name_convert.txt
-ADD app_specific_files/dummyapp30/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
-ADD app_specific_files/dummyapp30/scripts/config.json /centralized_scheduler/config.json
-ADD app_specific_files/dummyapp30/configuration.txt  /centralized_scheduler/dag.txt
+ADD app_specific_files/dummy_app_multicast/name_convert.txt /centralized_scheduler/name_convert.txt
+ADD app_specific_files/dummy_app_multicast/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD app_specific_files/dummy_app_multicast/scripts/config.json /centralized_scheduler/config.json
+ADD app_specific_files/dummy_app_multicast/configuration.txt  /centralized_scheduler/dag.txt
 
 WORKDIR /
 

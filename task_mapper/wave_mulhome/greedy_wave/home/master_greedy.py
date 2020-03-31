@@ -24,13 +24,15 @@ from functools import wraps
 from pymongo import MongoClient
 from flask import Flask, request
 import requests
+import logging
+
 
 
 
 app = Flask(__name__)
 
 def demo_help(server,port,topic,msg):
-    print('Sending demo')
+    logging.debug('Sending demo')
     username = 'anrgusc'
     password = 'anrgusc'
     client = mqtt.Client()
@@ -77,7 +79,7 @@ def prepare_global():
 
 
 
-    print("starting the main thread on port")
+    logging.debug("starting the main thread on port")
 
     
     global task_assign_summary, docker_ip2node_name
@@ -185,7 +187,7 @@ def recv_task_assign_info():
     """
     assign = request.args.get('assign')
     task_assign_summary.append(assign)
-    print("Task assign summary: " + json.dumps(task_assign_summary))
+    logging.debug("Task assign summary: " + json.dumps(task_assign_summary))
     return 'ok'
 app.add_url_rule('/recv_task_assign_info', 'recv_task_assign_info', recv_task_assign_info)
 
@@ -203,7 +205,7 @@ def recv_mapping():
     """
 
     try:
-        print('Receive mapping from the workers')
+        logging.debug('Receive mapping from the workers')
         node = request.args.get('node')
         mapping = request.args.get("mapping")
 
@@ -220,7 +222,7 @@ def recv_mapping():
 
         write_file("local/input_to_CIRCE.txt", to_be_write, "a+")
     except Exception as e:
-        print(e)
+        logging.debug(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_mapping', 'recv_mapping', recv_mapping)
@@ -232,9 +234,9 @@ def return_assignment():
     Returns:
         json: mapping assignments
     """
-    print("Recieved request for current mapping. Current mappings done:", len(assignments))
+    logging.debug("Recieved request for current mapping. Current mappings done: %d", len(assignments))
     if len(assignments) == MAX_TASK_NUMBER:
-        print(assignments)
+        logging.debug(assignments)
         return json.dumps(assignments)
     else:
         return json.dumps(dict())
@@ -252,7 +254,7 @@ def assign_task_to_remote(assigned_node, task_name):
         str: request if sucessful, ``not ok`` otherwise
     """
     try:
-        print('Assign the first task')
+        logging.debug('Assign the first task')
         url = "http://" + nodes[assigned_node] + "/assign_task"
         params = {'task_name': task_name}
         params = urllib.parse.urlencode(params)
@@ -264,7 +266,7 @@ def assign_task_to_remote(assigned_node, task_name):
             msg = 'msgoverhead greedywavehome assignfirst 1 \n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
-        print(e)
+        logging.debug(e)
         return "not ok"
     return res
 
@@ -276,9 +278,9 @@ def init_thread():
     Assign the first task
     """
     time.sleep(60)
-    print('--------------- Init thread')
+    logging.debug('--------------- Init thread')
     for key in init_tasks:
-        # print(key)
+        # logging.debug(key)
         tasks = init_tasks[key]
         for _, task in enumerate(tasks):
             res = assign_task_to_remote(key, task)
@@ -290,17 +292,17 @@ def init_thread():
 
 def monitor_task_status():
     """
-    Monitor task allocation status and print notification if all task allocations are done
+    Monitor task allocation status and logging.debug notification if all task allocations are done
     """
 
     killed = 0
     while True:
         if len(assigned_tasks) == MAX_TASK_NUMBER:
-            print(assigned_tasks)
-            print("All task allocations are done! Great News!")
+            logging.debug(assigned_tasks)
+            logging.debug("All task allocations are done! Great News!")
             end_time = time.time()
             deploy_time = end_time - starting_time
-            print('Time to finish WAVE mapping '+ str(deploy_time))
+            logging.debug('Time to finish WAVE mapping '+ str(deploy_time))
             if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)
                 msg = 'mappinglatency greedywave %s %f \n' %(app_name,deploy_time)
@@ -328,29 +330,29 @@ def write_file(file_name, content, mode):
 def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     """Collect the network profile from local MongoDB peer
     """
-    print('Check My Network Profiler IP: '+my_profiler_ip)
+    logging.debug('Check My Network Profiler IP: %s',my_profiler_ip)
     client_mongo = MongoClient('mongodb://'+my_profiler_ip+':'+str(MONGO_SVC_PORT)+'/')
     db = client_mongo.droplet_network_profiler
     collection = db.collection_names(include_system_collections=False)
     num_nb = len(collection)-1
     while num_nb==-1:
-        print('--- Network profiler mongoDB not yet prepared')
+        logging.debug('--- Network profiler mongoDB not yet prepared')
         time.sleep(60)
         collection = db.collection_names(include_system_collections=False)
         num_nb = len(collection)-1
     num_rows = db[my_profiler_ip].count()
     while num_rows < num_nb:
-        print('--- Network profiler regression info not yet loaded into MongoDB!')
+        logging.debug('--- Network profiler regression info not yet loaded into MongoDB!')
         time.sleep(60)
         num_rows = db[my_profiler_ip].count()
-    logging =db[my_profiler_ip].find().skip(db[my_profiler_ip].count()-num_nb)
-    for record in logging:
+    logdb =db[my_profiler_ip].find().skip(db[my_profiler_ip].count()-num_nb)
+    for record in logdb:
         # Destination ID -> Parameters(a,b,c) , Destination IP
         if record['Destination[IP]'] in home_profiler_ip: continue
         params = re.split(r'\s+', record['Parameters'])
         network_profile_data[network_map[record['Destination[IP]']]] = {'a': float(params[0]), 'b': float(params[1]),
                                                             'c': float(params[2]), 'ip': record['Destination[IP]']}
-    print('Network information has already been provided')
+    logging.debug('Network information has already been provided')
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
@@ -373,15 +375,15 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
     """
 
     for profiler_ip in profiler_ips:
-        print('Check Resource Profiler IP: '+profiler_ip)
+        logging.debug('Check Resource Profiler IP: %s',profiler_ip)
         client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(MONGO_SVC_PORT)+'/')
         db = client_mongo.central_resource_profiler
         collection = db.collection_names(include_system_collections=False)
-        logging =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
-        for record in logging:
+        logdb =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
+        for record in logdb:
             resource_data[network_map[profiler_ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
-    print('Resource information has already been provided')
+    logging.debug('Resource information has already been provided')
     global is_resource_data_ready
     is_resource_data_ready = True
 
@@ -427,12 +429,12 @@ def get_most_suitable_node(file_size):
     Returns:
         str: result_node_name - assigned node for the current task
     """
-    print('Trying to get the most suitable node')
+    logging.debug('Trying to get the most suitable node')
     weight_network = 1
     weight_cpu = 1
     weight_memory = 1
 
-    print('Input profiling information')
+    logging.debug('Input profiling information')
     valid_nodes = []
     min_value = sys.maxsize
 
@@ -467,16 +469,16 @@ def get_most_suitable_node(file_size):
             min_value = tmp_cost
             result_node_name = item
 
-    print('Task price summary')
-    print(task_price_summary)
+    logging.debug('Task price summary')
+    logging.debug(task_price_summary)
 
     try:
         best_node = min(task_price_summary,key=task_price_summary.get)
-        print('Best node for is ' +best_node)
+        logging.debug('Best node for is ' +best_node)
         return best_node
     except Exception as e:
-        print('Task price summary is not ready yet.....') 
-        print(e)
+        logging.debug('Task price summary is not ready yet.....') 
+        logging.debug(e)
         return -1
 
 def cal_file_size(file_path):
@@ -508,8 +510,8 @@ def init_task_topology():
         assign_to_node = get_most_suitable_node(sample_size)
         time.sleep(60)
     init_tasks[assign_to_node] = [first_task]
-    print('------- Init tasks')
-    print("init_tasks" ,init_tasks)
+    logging.debug('------- Init tasks')
+    logging.debug("init_tasks" ,init_tasks)
 
     for line in application:
         line = line.strip()
@@ -543,8 +545,8 @@ def init_task_topology():
                     break
             if not flag:
                 control_relation[parent[0]] = [key]
-    print('----------- Control relation')
-    print("control_relation" ,control_relation)
+    logging.debug('----------- Control relation')
+    logging.debug("control_relation" ,control_relation)
 
 
 
@@ -552,13 +554,13 @@ def init_task_topology():
 
 def output(msg):
     """
-    if debug is True, print the msg
+    if debug is True, logging.debug the msg
     
     Args:
-        msg (str): message to be printed
+        msg (str): message to be logging.debuged
     """
     if debug:
-        print(msg)
+        logging.debug(msg)
 
 def main():
     """
@@ -567,15 +569,18 @@ def main():
         - Start thread to watch directory: ``local/task_responsibility``
         - Start thread to monitor task mapping status
     """
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+    
     global starting_time
-    print('Starting to run WAVE mapping')
+    logging.debug('Starting to run WAVE mapping')
     starting_time = time.time()
 
     prepare_global()
 
 
 
-    print("starting the main thread on port", FLASK_PORT)
+    logging.debug("starting the main thread on port %d", FLASK_PORT)
 
     get_network_data = get_network_data_mapping()
     get_resource_data = get_resource_data_mapping()

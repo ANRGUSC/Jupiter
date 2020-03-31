@@ -38,6 +38,9 @@ from bokeh.models import Plot, Range1d, MultiLine, Circle, HoverTool, BoxZoomToo
 from bokeh.models.graphs import from_networkx
 from bokeh.transform import transform 
 from bokeh.models.transforms import CustomJSTransform 
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def get_dag_nodes(lines):
     nodes = []
@@ -74,15 +77,15 @@ class mq():
         self.nodes = nodes
         self.start_messages = [x+' starts' for x in self.nodes]
         self.end_messages = [x+' ends' for x in self.nodes]
-        print(self.start_messages)
-        print(self.end_messages)
+        logging.debug(self.start_messages)
+        logging.debug(self.end_messages)
 
     # The callback for when the client receives a CONNACK response from the server.
     def on_connect(self,client, userdata, flags, rc):
         # Subscribing in on_connect() means that if we lose the connection and
         # reconnect then subscriptions will be renewed.
         subres = client.subscribe(self.subs,qos=1)
-        print("Connected with result code "+str(rc))
+        logging.debug("Connected with result code "+str(rc))
 
 
     # The callback for when a PUBLISH message is received from the server.
@@ -100,9 +103,9 @@ class mq():
         global finish_time
         global total_time
 
-        print('--------------')
-        print(message)
-        print('--------------')
+        logging.debug('--------------')
+        logging.debug(message)
+        logging.debug('--------------')
         if message in start_messages:
             index = start_messages.index(message)
             topd,bottomd,leftd,rightd = top_dag[index],bottom_dag[index],left_dag[index],right_dag[index]
@@ -124,14 +127,14 @@ class mq():
             doc.add_next_tick_callback(partial(update3, top= topd, bottom=bottomd,left=leftd,right=rightd, color=color1[index]))
 
         elif message.startswith('mapping'):
-            print('---- Receive task mapping')
+            logging.debug('---- Receive task mapping')
             doc.add_next_tick_callback(partial(update5,new=message,old=source6_df,attr=source6.data))
             doc.add_next_tick_callback(partial(update4,new=message,old=source5_df,attr=data_table2.source))
         elif message.startswith('runtime'):
-            print('---- Receive runtime statistics')
+            logging.debug('---- Receive runtime statistics')
             doc.add_next_tick_callback(partial(update8,new=message,old=source8_df,attr=data_table4.source))
         elif message.startswith('global'):
-            print('-----Receive global information')
+            logging.debug('-----Receive global information')
             doc.add_next_tick_callback(partial(update7,new=message,old=source7_df,attr=data_table3.source))
 
 

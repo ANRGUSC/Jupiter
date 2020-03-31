@@ -15,8 +15,11 @@ from create_input import init
 from copy import deepcopy
 import numpy as np
 import os
+import logging
 
-MAX_TASK_ALLOWED = 90
+logging.basicConfig(level = logging.DEBUG)
+
+MAX_TASK_ALLOWED = 2
 
 class Duration:
     """Time duration about a task
@@ -278,7 +281,7 @@ class HEFT:
                 self.processors[dup_task.processor_num].time_line.append(
                                 Duration(-1, dup_task.ast, dup_task.aft))
                 self.processors[processor_num].time_line.sort(cmp=lambda x, y: cmp(x.start, y.start))
-                print('task %d dup on %s' % (pre_task.number, self.node_info[processor_num]))
+                logging.debug('task %d dup on %s' % (pre_task.number, self.node_info[processor_num]))
 
     def reschedule(self):
         """
@@ -311,9 +314,6 @@ class HEFT:
                 for processor in self.processors:
                     est = self.cal_est(task, processor)
                     if est + task.comp_cost[processor.number] < aft and processor.assigned_task < MAX_TASK_ALLOWED:
-                        # print("est:", est)
-                        # print("task:",task.comp_cost[processor.number])
-                        # print(processor.number, task.number)
                         aft = est + task.comp_cost[processor.number]
                         p = processor.number
                         processor.assigned_task += 1
@@ -336,21 +336,21 @@ class HEFT:
         """Display scheduling result to console
         """
         for t in self.tasks:
-            print('task %d : up_rank = %f, down_rank = %f' % (t.number, t.up_rank, t.down_rank))
+            logging.debug('task %d : up_rank = %f, down_rank = %f' % (t.number, t.up_rank, t.down_rank))
             if t.number == self.end_task_num:
                 makespan = t.aft
 
         for p in self.processors:
-            print('%s:' % (self.node_info[p.number + 1]))
+            logging.debug('%s:' % (self.node_info[p.number + 1]))
             for duration in p.time_line:
                 if duration.task_num != -1:
-                    print('task %d : ast = %d, aft = %d' % (duration.task_num + 1,
+                    logging.debug('task %d : ast = %d, aft = %d' % (duration.task_num + 1,
                                                             duration.start, duration.end))
 
         for dup in self.dup_tasks:
-            print('redundant task %s on %s' % (dup.number + 1, self.node_info[dup.processor_num + 1]))
+            logging.debug('redundant task %s on %s' % (dup.number + 1, self.node_info[dup.processor_num + 1]))
 
-        print('makespan = %d' % makespan)
+        logging.debug('makespan = %d' % makespan)
 
     def output_file(self,file_path):
         """Output scheduling to file

@@ -26,6 +26,7 @@ COPY task_mapper/wave_mulhome/random_wave/home/start.sh /
 
 ADD {app_file}/configuration.txt DAG/DAG_application.txt
 ADD {app_file}/input_node.txt DAG
+ADD {app_file}/sample_input /
 
 ADD jupiter_config.ini /jupiter_config.ini
 
@@ -60,7 +61,7 @@ COPY task_mapper/wave_mulhome/random_wave/worker/start.sh /
 
 ADD {app_file}/configuration.txt DAG/DAG_application.txt
 ADD {app_file}/input_node.txt DAG
-ADD {app_file}/sample_input/1botnet.ipsum /1botnet.ipsum
+ADD {app_file}/sample_input /
 
 ADD jupiter_config.ini /jupiter_config.ini
 
@@ -77,21 +78,32 @@ CMD ["./start.sh"]
 ############################################ DOCKER GENERATORS #########################################################
 
 
-def write_wave_worker_docker(**kwargs):
+def write_wave_worker_docker(app_option=None,**kwargs):
     """
         Function to Generate the Dockerfile of the worker nodes
     """
-    dfp = DockerfileParser(path='worker.Dockerfile')
+    if app_option==None:
+      file_name = 'worker_node.Dockerfile'
+    else:
+      file_name = 'worker_node_%s.Dockerfile'%(app_option)
+    dfp = DockerfileParser(path=file_name)
     dfp.content =template_worker.format(**kwargs)
-    #print(dfp.content)
+    return file_name
 
-def write_wave_home_docker(**kwargs):
+
+def write_wave_home_docker(app_option=None,**kwargs):
     """
-        Function to Generate the Dockerfile of the worker nodes
+        Function to Generate the Dockerfile of the home/master node of CIRCE
     """
-    dfp = DockerfileParser(path='home.Dockerfile')
+    if app_option==None:
+      file_name = 'home_node.Dockerfile'
+    else:
+      file_name = 'home_node_%s.Dockerfile'%(app_option)
+    dfp = DockerfileParser(path=file_name)
     dfp.content =template_home.format(**kwargs)
-    #print(dfp.content)
+    return file_name
+
+    
 
 if __name__ == '__main__':
     write_wave_worker_docker( app_file='app_specific_files/network_monitoring',

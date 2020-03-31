@@ -22,6 +22,8 @@ import math
 import configparser
 import urllib
 import urllib.request
+import logging
+
 
 
 def evaluate_random():
@@ -39,7 +41,7 @@ def evaluate_random():
             time.sleep(1)
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         shutil.copyfile(src,dest)
 
 def evaluate_interval(interval):
@@ -58,7 +60,7 @@ def evaluate_interval(interval):
             time.sleep(1)
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         shutil.copyfile(src,dest)
 
 def evaluate_sequential():
@@ -68,11 +70,12 @@ def evaluate_sequential():
     """
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
-    print('---- Generate random input files')
-    for i in range(1,file_count+1):
+    logging.debug('---- Generate random input files')
+    # for i in range(1,file_count+1):
+    for i in range(1,4):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
-        print('---- Generate random input files')
+        logging.debug('---- Generate random input files')
         shutil.copyfile(src,dest)
         count = 0
         while 1:
@@ -83,7 +86,7 @@ def evaluate_sequential():
                 break
 
 
-    print('---- Finish generating sequential input files')
+    logging.debug('---- Finish generating sequential input files')
 
 
 def evaluate_stress(num_nodes):
@@ -92,7 +95,7 @@ def evaluate_stress(num_nodes):
     file_count_out = len(os.listdir("output/"))
     num_stress = math.floor(file_count/3)
     requested = False
-    print('---- Generate random input files')
+    logging.debug('---- Generate random input files')
     for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
@@ -102,7 +105,7 @@ def evaluate_stress(num_nodes):
             time.sleep(5)
             file_count_out = len(os.listdir("output/"))
             if file_count_out == num_stress and requested==False:
-                print('Start to run stress test')
+                logging.debug('Start to run stress test')
                 request_stress_test(num_nodes)
                 requested = True
 
@@ -118,7 +121,7 @@ def request_stress_test(num_nodes):
     config.read(INI_PATH)
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     for i in range(0,num_nodes):
-        print('---------- Request stress on the following node: '+nodes[i])
+        logging.debug('---------- Request stress on the following node: '+nodes[i])
         worker_node_host_port =  node_ips[i]+ ":" + str(FLASK_SVC)
         try:
             url = "http://" + worker_node_host_port + "/start_stress_test"
@@ -129,8 +132,8 @@ def request_stress_test(num_nodes):
             res = res.read()
             res = res.decode('utf-8')
         except Exception as e:
-            print("Sending message to flask server on workers FAILED!!!")
-            print(e)
+            logging.debug("Sending message to flask server on workers FAILED!!!")
+            logging.debug(e)
             
     
 class MyHandler(PatternMatchingEventHandler):
@@ -161,7 +164,7 @@ class MyHandler(PatternMatchingEventHandler):
         """
         # the file will be processed there
         if event.event_type == 'created':
-            print("Received file as output in evaluation - %s." % event.src_path)  
+            logging.debug("Received file as output in evaluation - %s." % event.src_path)  
             filename = os.path.split(event.src_path)[-1]
             appname = filename.split('-')[0]
             curfile = filename.split('-')[1].split('botnet')[0]
@@ -179,6 +182,9 @@ class MyHandler(PatternMatchingEventHandler):
     
 
 if __name__ == '__main__':
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
     my_id = os.environ['TASK']
     n = my_id.split('home')
     
@@ -187,11 +193,11 @@ if __name__ == '__main__':
         num = float(n[1])
     sleep_time_default = 240
     sleep_time = sleep_time_default + (num-1)*120
-    print('The delay to send sample files')
+    logging.debug('The delay to send sample files')
     time.sleep(sleep_time)
-    print('Start copying sample files for evaluation')
+    logging.debug('Start copying sample files for evaluation')
     evaluate_sequential()
     #evaluate_random()
     # time.sleep(300)
-    # print('Start copying sample files for evaluation')
+    # logging.debug('Start copying sample files for evaluation')
     # evaluate_sequential()

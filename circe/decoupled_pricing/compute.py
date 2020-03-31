@@ -35,6 +35,8 @@ from shutil import copyfile
 import datetime
 from collections import defaultdict 
 import pyinotify
+import logging
+
 
 app = Flask(__name__)
 
@@ -108,10 +110,10 @@ def get_taskmap():
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].extend([data[i]])
-    print("tasks: ", tasks)
-    print("task order", task_order) #task_list
-    print("super tasks", super_tasks)
-    print("non tasks", non_tasks)
+    logging.debug("tasks: %s", tasks)
+    logging.debug("task order %s", task_order) #task_list
+    logging.debug("super tasks %s", super_tasks)
+    logging.debug("non tasks %s", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
 
@@ -233,7 +235,7 @@ def prepare_global_info():
     execution_map = configs['exec_profiler']
 
 
-    print('Generating task folders for OUTPUT\n')
+    logging.debug('Generating task folders for OUTPUT\n')
     global task_module
     task_module = {}
     for task in dag:
@@ -245,7 +247,7 @@ def prepare_global_info():
                 cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
                 os.system(cmd)
 
-    print('Generating task folders for INPUT\n')
+    logging.debug('Generating task folders for INPUT\n')
     for task in dag:
         if taskmap[task][1]: #DAG
             cmd = "mkdir centralized_scheduler/input/"+task 
@@ -258,24 +260,24 @@ def prepare_global_info():
   
 def announce_input_worker():
     try:
-        print('Receive input announcement from the home node')
+        logging.debug('Receive input announcement from the home node')
         tmp_file = request.args.get('input_file')
         tmp_time = request.args.get('input_time')
         tmp_info = request.args.get('home_id')
         tmp_home = tmp_info.split('-')[1]
-        print("Received input announcement from home compute")
+        logging.debug("Received input announcement from home compute")
         start_times[(tmp_home,tmp_file)] = tmp_time
-        print(global_task_node_map)
-        print(mapping_times)
+        logging.debug(global_task_node_map)
+        logging.debug(mapping_times)
         if len(mapping_times)==0: 
             mapping_input_id[(tmp_home,tmp_file)] = 0
         else:
             mapping_input_id[(tmp_home,tmp_file)] = len(mapping_times)-1 #ID of last mapping
-        print(mapping_input_id)
+        logging.debug(mapping_input_id)
 
     except Exception as e:
-        print("Received mapping announcement from controller failed")
-        print(e)
+        logging.debug("Received mapping announcement from controller failed")
+        logging.debug(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/announce_input_worker', 'announce_input_worker', announce_input_worker)
@@ -286,7 +288,7 @@ def announce_mapping_worker():
         tmp_info = request.args.get('home_id')
         tmp_home = tmp_info.split('-')[1]
         tmp_time = request.args.get('mapping_time')
-        print("Received mapping announcement from home compute")
+        logging.debug("Received mapping announcement from home compute")
         tmp = tmp_assignments.split(',')
 
         mapping_times.append(tmp_time)
@@ -297,8 +299,8 @@ def announce_mapping_worker():
         
 
     except Exception as e:
-        print("Received mapping announcement from controller failed")
-        print(e)
+        logging.debug("Received mapping announcement from controller failed")
+        logging.debug(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/announce_mapping_worker', 'announce_mapping_worker', announce_mapping_worker)
@@ -320,67 +322,86 @@ def execute_task(home_id,task_name,file_name, filenames, input_path, output_path
     dag_task.join()
     
     
-def transfer_mapping_decorator(TRANSFER=0):
-    """Mapping the chosen TA2 module (network and resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
+
+def transfer_data_scp(ID,user,pword,source, destination):
+    """Transfer data using SCP
     
     Args:
-        TRANSFER (int, optional): TRANSFER specified from ``jupiter_config.ini``, default method is SCP
-    
-    Returns:
-        function: chosen transfer method
+        ID (str): destination ID
+        user (str): username
+        pword (str): password
+        source (str): source file path
+        destination (str): destination file path
     """
-    
-    def transfer_data_scp(ID,user,pword,source, destination):
-        """Transfer data using SCP
-        
-        Args:
-            IP (str): destination ID
-            user (str): destination username
-            pword (str): destination password
-            source (str): source file path
-            destination (str): destination file path
-        """
-        #Keep retrying in case the containers are still building/booting up on
-        #the child nodes.
-        retry = 0
-        ts = -1
-        while retry < num_retries:
+    #Keep retrying in case the containers are still building/booting up on
+    #the child nodes.
+    retry = 0
+    ts = -1
+    while retry < num_retries:
             try:
                 nodeIP = combined_ip_map[ID]
                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
                 os.system(cmd)
-                print('data transfer complete\n')
+                logging.debug('data transfer complete\n')
                 ts = time.time()
                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
                 runtime_sender_log.write(s)
                 runtime_sender_log.flush()
                 break
             except:
-                print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+                logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
                 time.sleep(1)
                 retry += 1
-        if retry == num_retries:
-            s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name,transfer_type,source,ts)
-            runtime_sender_log.write(s)
-            runtime_sender_log.flush()
+    if retry == num_retries:
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,source,ts)
+        runtime_sender_log.write(s)
+        runtime_sender_log.flush()
 
-    if TRANSFER==0:
-        return transfer_data_scp
-    return transfer_data_scp
-
-@transfer_mapping_decorator
 def transfer_data(ID,user,pword,source, destination):
     """Transfer data with given parameters
     
     Args:
-        IP (str): destination ID
+        ID (str): destination ID
         user (str): destination username
         pword (str): destination password
         source (str): source file path
         destination (str): destination file path
     """
     msg = 'Transfer to ID: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID,user,pword,source, destination)
-    print(msg)
+    
+    if TRANSFER == 0:
+        return transfer_data_scp(ID,user,pword,source, destination)
+
+    return transfer_data_scp(ID,user,pword,source, destination) #default
+
+def transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destination_list):
+    """Transfer data using SCP to multiple nodes
+    
+    Args:
+        ID_list (str): destination ID list
+        user_list (str): username list
+        pword_list (str): password list
+        source (str): source file path 
+        destination (str): destination file path
+    """
+    for idx in range(len(ID_list)): 
+        _thread.start_new_thread(transfer_data_scp,(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx],))
+
+def transfer_multicast_data(ID_list,user_list,pword_list,source_list, destination_list):
+    """Transfer data with given parameters
+    
+    Args:
+        ID_list (str): destination ID list 
+        user (str): destination username
+        pword (str): destination password
+        source (str): source file path
+        destination (str): destination file path
+    """
+    for idx in range(len(ID_list)):
+        msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx])
+    if TRANSFER==0:
+        logging.debug('Multicast all the files')
+        transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destination_list)
 
 def send_runtime_profile_computingnode(msg,task_name,home_id):
     """
@@ -396,7 +417,7 @@ def send_runtime_profile_computingnode(msg,task_name,home_id):
         Exception: if sending message to flask server on home is failed
     """
     try:
-        # print("Sending message", msg)
+        # logging.debug("Sending message", msg)
         url = "http://" + home_node_host_ports[home_id] + "/recv_runtime_profile_computingnode"
         params = {'msg': msg, "work_node": self_name, "task_name": task_name}
         params = urllib.parse.urlencode(params)
@@ -405,8 +426,8 @@ def send_runtime_profile_computingnode(msg,task_name,home_id):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        print("Sending runtime profiling info to flask server on home FAILED!!!")
-        print(e)
+        logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
+        logging.debug(e)
         return "not ok"
     return res
 
@@ -442,7 +463,7 @@ class Handler1(pyinotify.ProcessEvent):
 
 
     def process_IN_CLOSE_WRITE(self, event):
-        print("Received file as output - %s." % event.pathname)
+        logging.debug("Received file as output - %s",event.pathname)
 
 
         new_file = os.path.split(event.pathname)[-1]
@@ -467,39 +488,50 @@ class Handler1(pyinotify.ProcessEvent):
         key = (home_id,task_name,input_name)
         flag = next_mul[key][0]
         if next_tasks_map[task_name][0] in home_ids: 
-            print('----- next step is home')
+            logging.debug('----- next step is home')
             #send runtime info
             
             runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
             send_runtime_profile_computingnode(runtime_info,task_name,home_id)
             transfer_data(home_id,username,password,event.pathname, "/output/"+new_file)   
         else:
-            print('----- next step is not home')
+            logging.debug('----- next step is not home')
             while len(global_task_node_map)==0:
-                print('Global task mapping is not loaded')
+                logging.debug('Global task mapping is not loaded')
                 time.sleep(1)
-            print('Current mapping input list')
+            logging.debug('Current mapping input list')
             next_hosts = [global_task_node_map[mapping_input_id[(home_id,input_name)],home_id,x] for x in next_tasks_map[task_name]]
             
-            print('Sending the output files to the corresponding destinations')
-            print(next_hosts)
+            logging.debug('Sending the output files to the corresponding destinations')
+            logging.debug(next_hosts)
             if flag=='true': 
-                print('not wait, send')
+                logging.debug('not wait, send')
+                
                 runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
                 send_runtime_profile_computingnode(runtime_info,task_name,home_id)
 
+                # TODO: turn me into an option
                 #send a single output of the task to all its children 
+                # Using unicast 
+                # destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
+                # for idx,host in enumerate(next_hosts):
+                #     if self_ip!=combined_ip_map[host]: # different node
+                #         logging.debug('different node')
+                #         transfer_data(host,username,password,event.pathname, destinations[idx])
+                #     else: # same node
+                #         logging.debug('same node')
+                #         copyfile(event.pathname, destinations[idx])
+
+                # Using multicast
+                logging.debug('Using multicast instead')
                 destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
-                for idx,host in enumerate(next_hosts):
-                    if self_ip!=combined_ip_map[host]: # different node
-                        print('different node')
-                        transfer_data(host,username,password,event.pathname, destinations[idx])
-                    else: # same node
-                        print('same node')
-                        copyfile(event.pathname, destinations[idx])
+                users = [username]*len(destinations)
+                passwords = [password]*len(destinations)
+                sources = [event.pathname]*len(destinations)
+                transfer_multicast_data(next_hosts,users,passwords,sources, destinations)
             else:
                 #it will wait the output files and start putting them into queue, send frst output to first listed child, ....
-                print('wait')
+                logging.debug('wait')
                 if key not in files_mul:
                     files_mul[key] = [event.pathname]
                 else:
@@ -509,14 +541,27 @@ class Handler1(pyinotify.ProcessEvent):
                     runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
                     send_runtime_profile_computingnode(runtime_info,task_name,home_id)
 
-                    for idx,host in enumerate(next_hosts):
-                        current_file = files_mul[key][idx].split('/')[-1]
-                        destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
-                        if self_ip!=combined_ip_map[host]:
-                            transfer_data(host,username,password,files_mul[key][idx], destinations)
-                        else: 
-                            copyfile(files_mul[key][idx],destinations)
+                    # TODO: turn me into an option
+                    # Using unicast 
+                    # for idx,host in enumerate(next_hosts):
+                    #     current_file = files_mul[key][idx].split('/')[-1]
+                    #     destinations = "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file
+                    #     if self_ip!=combined_ip_map[host]:
+                    #         transfer_data(host,username,password,files_mul[key][idx], destinations)
+                    #     else: 
+                    #         copyfile(files_mul[key][idx],destinations)
 
+                    # Using multicast
+                    destinations = []
+                    logging.debug('Using multicast instead')
+                    for idx in range(0,len(next_hosts)):
+                        current_file = files_mul[key][idx].split('/')[-1]  
+                        cur_des =  "/centralized_scheduler/input/" +next_tasks_map[task_name][idx]+"/"+home_id+"/"+current_file 
+                        destinations.append(cur_des) 
+                    users = [username]*len(destinations)
+                    passwords = [password]*len(destinations)
+                    sources = files_mul[key]
+                    transfer_multicast_data(next_hosts,users,passwords,sources, destinations)
 
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
@@ -524,7 +569,7 @@ class Handler(pyinotify.ProcessEvent):
 
 
     def process_IN_CLOSE_WRITE(self, event):
-        print("Received file as input - %s." % event.pathname)
+        logging.debug("Received file as input - %s" ,event.pathname)
 
 
         new_file = os.path.split(event.pathname)[-1]
@@ -575,17 +620,20 @@ class MonitorRecv(multiprocessing.Process):
         """
         Start Flask server
         """
-        print("Flask server started")
+        logging.debug("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
 
 def main():
     
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
+
 
     global dag_info
     path1 = 'centralized_scheduler/dag.txt'
     path2 = 'centralized_scheduler/nodes.txt'
     dag_info = read_config(path1,path2)
-    # print("DAG: ", dag_info[1])
+    # logging.debug("DAG: ", dag_info[1])
 
     global username, password, ssh_port,num_retries, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER,task_queue_size
     # Load all the confuguration
@@ -642,7 +690,7 @@ def main():
     wm = pyinotify.WatchManager()
     input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
     wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
-    print('starting the input monitoring process\n')
+    logging.debug('starting the input monitoring process\n')
     eh = Handler()
     notifier = pyinotify.ThreadedNotifier(wm, eh)
     notifier.start()
@@ -650,7 +698,7 @@ def main():
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
     wm1 = pyinotify.WatchManager()
     wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
-    print('starting the output monitoring process\n')
+    logging.debug('starting the output monitoring process\n')
     eh1 = Handler1()
     notifier1= pyinotify.Notifier(wm1, eh1)
     notifier1.loop()

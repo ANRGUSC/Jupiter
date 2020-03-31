@@ -11,7 +11,8 @@ import time
 import os
 from os import path
 from pprint import *
-
+import logging
+logging.basicConfig(level = logging.DEBUG)
 
 def k8s_read_config(configuration_file):
     """read the configuration  from ``configuration.txt`` file
@@ -81,37 +82,6 @@ def k8s_read_dag(dag_info_file):
   dag_info.append(dag)
   return dag_info
 
-# Support home and datasources
-# def k8s_read_dag(dag_info_file):
-#   """read the dag from the file input
-  
-#   Args:
-#       dag_info_file (str): path of DAG file
-  
-#   Returns:
-#       dict: DAG information 
-#   """
-#   dag_info=[]
-#   config_file = open(dag_info_file,'r')
-#   dag_size = int(config_file.readline())
-
-#   dag={}
-#   c = 0
-#   for i, line in enumerate(config_file, 1):
-#       dag_line = line.strip().split(" ")
-#       # if i == 1:
-#       #     dag_info.append(dag_line[0])
-#       if (dag_line[0].startswith('home') | dag_line[0].startswith('datasource')): 
-#         dag_info.append(dag_line[0]
-          
-#       dag.setdefault(dag_line[0], [])
-#       for j in range(1,len(dag_line)):
-#           dag[dag_line[0]].append(dag_line[j])
-#       if i == dag_size:
-#           break
-
-#   dag_info.append(dag)
-#   return dag_info
 
 def k8s_get_nodes(node_info_file):
   """read the node info from the file input
@@ -153,7 +123,7 @@ def k8s_get_nodes_worker(node_info_file):
       nodes.setdefault(node_line[0], [])
       for i in range(1, len(node_line)):
           nodes[node_line[0]].append(node_line[i])
-  #print(nodes)
+  #logging.debug(nodes)
   return nodes, homes
 
 def k8s_get_all_elements(node_info_file):
@@ -202,15 +172,14 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
 
   dag_info = k8s_read_dag(dag_info_file)
   nodes = k8s_get_nodes(node_info_file)
-  print(nodes)
+  logging.debug(nodes)
   hosts={}
 
-  print('Receive mapping')
-  print(mapping)
+  logging.debug('Receive mapping')
+  logging.debug(mapping)
   
   for i in mapping:
       #get task, node IP, username and password
-      print(i, mapping[i], nodes[mapping[i]])
       hosts.setdefault(i,[])
       hosts[i].append(i)                          # task
       hosts[i].extend(nodes[mapping[i]])      # assigned node id

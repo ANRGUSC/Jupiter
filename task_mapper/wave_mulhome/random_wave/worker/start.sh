@@ -6,4 +6,4 @@
 # 
 
 echo 'Starting worker node'
-python -u /child_appointment.py 8888
+python -u /child_appointment.py

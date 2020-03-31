@@ -8,6 +8,9 @@ sys.path.append("../")
 import os
 import configparser
 import jupiter_config
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def prepare_global_info():
     """Read configuration information from ``app_config.ini``
@@ -25,15 +28,15 @@ def prepare_global_info():
     port_list_home = []
     port_list_home.append(jupiter_config.SSH_DOCKER)
     port_list_home.append(jupiter_config.FLASK_DOCKER)
-    print('The list of ports to be exposed in the circe home are ', " ".join(port_list_home))
+    logging.debug('The list of ports to be exposed in the circe home are %s', " ".join(port_list_home))
 
 
     port_list_worker = []
     port_list_worker.append(jupiter_config.SSH_DOCKER)
     for key in config["DOCKER_PORT"]:
-      print(config["DOCKER_PORT"][key])
+      logging.debug(config["DOCKER_PORT"][key])
       port_list_worker.append(config["DOCKER_PORT"][key])
-    print('The list of ports to be exposed in the circe workers are ', " ".join(port_list_worker))
+    logging.debug('The list of ports to be exposed in the circe workers are %s', " ".join(port_list_worker))
 
     return port_list_home, port_list_worker
     

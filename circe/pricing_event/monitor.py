@@ -37,7 +37,7 @@ import cProfile
 import numpy as np
 from collections import defaultdict
 import paho.mqtt.client as mqtt
-
+import logging
 
 
 
@@ -130,7 +130,7 @@ def receive_price_info():
             task_price_net[node_name,price.split('%')[0]] = float(price.split('%')[1])
         pass_time[node_name] = TimedValue()
     except Exception as e:
-        print("Bad reception or failed processing in Flask for pricing announcement: "+ e) 
+        logging.debug("Bad reception or failed processing in Flask for pricing announcement: %s",e) 
         return "not ok" 
 
     return "ok"
@@ -138,7 +138,7 @@ app.add_url_rule('/receive_price_info', 'receive_price_info', receive_price_info
 
 
 def default_best_node(source_node):
-    print('Select the current best node')
+    logging.debug('Select the current best node')
     starttime = time.time()
     w_net = 1 # Network profiling: longer time, higher price
     w_cpu = 1 # Resource profiling : larger cpu resource, lower price
@@ -168,7 +168,7 @@ def default_best_node(source_node):
             msg = 'mappinglatency priceevent controller%s %s %f\n'%(self_task,app_name,mappinglatency)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     else:
-        print('Task price summary is not ready yet.....') 
+        logging.debug('Task price summary is not ready yet.....') 
     return best_node
 
 def predict_best_node(source_node):
@@ -179,31 +179,31 @@ def predict_best_node(source_node):
 
 def receive_best_assignment_request():
     try:
-        print("------ Receive request of best assignment")
+        logging.debug("------ Receive request of best assignment")
         home_id = request.args.get('home_id')
         source_node = request.args.get('node_name')
         file_name = request.args.get('file_name')
         source_key = request.args.get('key')
         key = (home_id,file_name)
         if key in task_node_summary and task_node_summary[key]!=-1:
-            print('Already existed in task node mapping')
+            logging.debug('Already existed in task node mapping')
             best_node = task_node_summary[key]
         else:
-            print('Not yet existed in task node mapping')
+            logging.debug('Not yet existed in task node mapping')
             best_node = predict_best_node(source_node)
             task_node_summary[key] = best_node
         announce_best_assignment(home_id,best_node, source_node, file_name,source_key)
         
     except Exception as e:
-        print("Sending assignment message to flask server on computing node FAILED!!!")
-        print(e)
+        logging.debug("Sending assignment message to flask server on computing node FAILED!!!")
+        logging.debug(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/receive_best_assignment_request', 'receive_best_assignment_request', receive_best_assignment_request)
 
 def announce_best_assignment(home_id,best_node, source_node, file_name,source_key):
     try:
-        print("Announce the best computing node for my task " + self_task+ " is " + best_node)
+        logging.debug("Announce the best computing node for my task %s is %s" ,self_task,best_node)
         url = "http://" + node_ip_map[source_key] + ":" + str(FLASK_SVC) + "/receive_best_assignment"
         params = {'home_id':home_id,'task_name':self_task,'file_name':file_name,'best_computing_node':best_node}
         params = urllib.parse.urlencode(params)
@@ -217,8 +217,8 @@ def announce_best_assignment(home_id,best_node, source_node, file_name,source_ke
             msg = 'msgoverhead priceevent controller%s announcebest %s 1\n'%(self_task,source_node)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
-        print("Sending assignment information to flask server on computing nodes FAILED!!!")
-        print(e)
+        logging.debug("Sending assignment information to flask server on computing nodes FAILED!!!")
+        logging.debug(e)
         return "not ok"
 
 
@@ -232,8 +232,8 @@ def send_controller_info(node_ip):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        print("Sending controller message to flask server on computing node FAILED!!!")
-        print(e)
+        logging.debug("Sending controller message to flask server on computing node FAILED!!!")
+        logging.debug(e)
         return "not ok"
 
 def push_controller_map():
@@ -298,10 +298,10 @@ def get_taskmap():
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].extend([data[i]])
-    print("tasks: ", tasks)
-    print("task order", task_order) #task_list
-    print("super tasks", super_tasks)
-    print("non tasks", non_tasks)
+    logging.debug("tasks: %s", tasks)
+    logging.debug("task order %s", task_order) #task_list
+    logging.debug("super tasks %s", super_tasks)
+    logging.debug("non tasks %s", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
 class Worker(threading.Thread):
@@ -326,7 +326,7 @@ class MonitorRecv(multiprocessing.Process):
         """
         Start Flask server
         """
-        print("Flask server started")
+        logging.debug("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER,threaded=True)
 
 
@@ -343,6 +343,8 @@ def main():
 
     """
 
+    global logging
+    logging.basicConfig(level = logging.DEBUG)
     
 
     INI_PATH = '/jupiter_config.ini'
@@ -429,8 +431,8 @@ def main():
 
     for idx, controller in enumerate(all_nodes_list):
         if controller in super_tasks:
-            print(controller)
-            print(all_nodes_ips_list[idx])
+            logging.debug(controller)
+            logging.debug(all_nodes_ips_list[idx])
             controller_nondag.append(controller)
             controller_ip_nondag.append(all_nodes_ips_list[idx])
 

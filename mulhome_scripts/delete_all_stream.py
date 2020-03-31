@@ -13,6 +13,9 @@ from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
 import time
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 def delete_all_stream(app_name):
     """Tear down all CIRCE deployments.
@@ -29,7 +32,7 @@ def delete_all_stream(app_name):
     path2 = jupiter_config.HERE + 'nodes.txt'
     node_list, homes,datasources = utilities.k8s_get_all_elements(path2)
 
-    print('Starting to teardown the datasources')
+    logging.debug('Starting to teardown the datasources')
 
 
     """
@@ -49,22 +52,22 @@ def delete_all_stream(app_name):
     core_v1_api = client.CoreV1Api()
 
     for datasource in datasources:
-        print('Data source information')
+        logging.debug('Data source information')
  
         #delete home deployment and service
         home_name =app_name+"-stream"+datasource
-        print(home_name)
+        logging.debug(home_name)
         #home_name ="home"
         resp = None
         try:
             resp = extensions_v1_beta1_api.read_namespaced_deployment(home_name, namespace)
         except ApiException as e:
-            print("No Such Deplyment Exists")
+            logging.debug("No Such Deplyment Exists")
 
         # if home exists, delete it 
         if resp:
             del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(home_name, namespace, v1_delete_options)
-            print("Deployment '%s' Deleted. status='%s'" % (home_name, str(del_resp_0.status)))
+            logging.debug("Deployment '%s' Deleted. status='%s'" % (home_name, str(del_resp_0.status)))
 
         # Check if there is a replicaset running by using the label app=home
         # The label of kubernets are used to identify replicaset associate to each task
@@ -73,11 +76,11 @@ def delete_all_stream(app_name):
         resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label,namespace = namespace)
         # if a replicaset exist, delete it
         
-        # print resp.items[0].metadata.namespace
+        # logging.debug resp.items[0].metadata.namespace
         for i in resp.items:
             if i.metadata.namespace == namespace:
                 del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
-                print("Relicaset '%s' Deleted. status='%s'" % (home_name, str(del_resp_1.status)))
+                logging.debug("Relicaset '%s' Deleted. status='%s'" % (home_name, str(del_resp_1.status)))
 
         # Check if there is a pod still running by using the label app='home'
         resp = None
@@ -85,19 +88,19 @@ def delete_all_stream(app_name):
         # if a pod is running just delete it
         if resp.items:
             del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
-            print("Home pod Deleted. status='%s'" % str(del_resp_2.status))
+            logging.debug("Home pod Deleted. status='%s'" % str(del_resp_2.status))
 
         # Check if there is a service running by name = task#
         resp = None
         try:
             resp = core_v1_api.read_namespaced_service(home_name, namespace=namespace)
         except ApiException as e:
-            print("Exception Occurred")
+            logging.debug("Exception Occurred")
         # if a service is running, kill it
         if resp:
             del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace, v1_delete_options)
             #del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace=namespace)
-            print("Service Deleted. status='%s'" % str(del_resp_2.status))   
+            logging.debug("Service Deleted. status='%s'" % str(del_resp_2.status))   
 
 if __name__ == '__main__':
     jupiter_config.set_globals() 
