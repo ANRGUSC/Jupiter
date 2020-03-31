@@ -510,6 +510,7 @@ class Handler1(pyinotify.ProcessEvent):
                 runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
                 send_runtime_profile_computingnode(runtime_info,task_name,home_id)
 
+                # TODO: turn me into an option
                 #send a single output of the task to all its children 
                 # Using unicast 
                 # destinations = ["/centralized_scheduler/input/" +x + "/"+home_id+"/"+new_file for x in next_tasks_map[task_name]]
@@ -540,6 +541,7 @@ class Handler1(pyinotify.ProcessEvent):
                     runtime_info = 'rt_finish '+ input_name + ' '+str(ts)
                     send_runtime_profile_computingnode(runtime_info,task_name,home_id)
 
+                    # TODO: turn me into an option
                     # Using unicast 
                     # for idx,host in enumerate(next_hosts):
                     #     current_file = files_mul[key][idx].split('/')[-1]
