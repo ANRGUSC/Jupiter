@@ -98,8 +98,7 @@ def delete_all_circe(app_name):
         label = "app="+app_name+'-' + key
         resp = k8s_apps_v1.list_namespaced_replica_set(label_selector= label,namespace=namespace)
         # if a replicaset exist, delete it
-        
-        # logging.debug resp.items[0].metadata.namespace
+
         for i in resp.items:
             if i.metadata.namespace == namespace:
                 try:
