@@ -49,8 +49,6 @@ def check_status_circe(dag,app_name):
 
     result = True
     for key, value in dag.items():
-        # logging.debug(key)
-        # logging.debug(value)
 
         # First check if there is a deployment existing with
         # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
