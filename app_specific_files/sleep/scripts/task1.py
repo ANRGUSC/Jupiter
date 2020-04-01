@@ -12,7 +12,7 @@ def task(input_files, pathin, pathout):
     time.sleep(50)
     cmd = "dd bs=1024 count=8192 </dev/urandom >%s/%s_%s" % (pathout, input_files, sys.argv[0].split('.')[0])
     os.system(cmd)
-    return [os.path.join(pathout,input_files[0] + sys.argv[0])]
+    return [os.path.join(pathout,input_files + sys.argv[0])]
 
 
 
