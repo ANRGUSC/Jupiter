@@ -7,44 +7,79 @@
       apt:
       update_cache: yes
 
+    - name: Install requirements/dependencies
+      apt:
+        name: "{{packages}}"
+        state: present
+        update_cache: yes
+      vars:
+        -apt-transport-https
+        -ca-certificates
+        -curl
+        -gnupg
+        -gnupg2
+        -software-properties-common
+
     - name: Install docker.io
       apt:
               name: docker.io
               state: present
-    
-    - name: Add requirements/dependencies for the apt-add-repository command
-      shell: apt install -y gnupg2 software-properties-common
 
-    - name: Add apt-key for kubernetes
-      shell: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+    - name: Add Docker APT GPG key
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+
+    - name: Add Docker APT repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/debian buster stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt: update_cache=yes name=docker-ce state=latest
+
+    - name: Add Kubernetes APT GPG key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
     
-    - name: Add repository for kubernetes 
-      #shell: apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
-      shell: echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.list.d/kubernetes.list
+    - name: Add APT repository for kubernetes 
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: 'kubernetes'
 
     - name: Run apt-get update
-      shell: sudo apt update
-
+      apt:
+        update_cache: yes
 
     - name: Install kubectl
       apt: 
-              name: kubectl=1.14.0-00
-              state: present
+        name: kubectl=1.14.0-00
+        state: present
    
-
     - name: Install kubelet
       apt: 
-              name: kubelet=1.14.0-00
-              state: present
+        name: kubelet=1.14.0-00
+        state: present
 
- 
     - name: Install kubeadm
       apt: 
-              name: kubeadm=1.14.0-00
-              state: present
+        name: kubeadm=1.14.0-00
+        state: present
 
     - name: Disable swap
       shell: swapoff -a
 
-    - name: Enable docker (systemctl enable docker)
-      shell: systemctl enable docker ; systemctl start docker
+    - name: Enable and check kubelet service
+      systemd:
+        name: kubelet
+        daemon_reload: yes
+        state: started
+        enabled: yes
+
+    - name: Enable and check docker service
+      systemd:
+        name: docker
+        daemon_reload: yes
+        state: started
+        enabled: yes

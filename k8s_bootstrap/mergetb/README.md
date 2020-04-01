@@ -44,7 +44,9 @@ real0).
     mergetb login {USERNAME}
     mergetb -p {PROJECT_NAME} realize {EXPERIMENT_NAME} {REALIZATION_NAME} --accept
     mergetb -p {PROJECT_NAME} materialize {EXPERIMENT_NAME} {REALIZATION_NAME}
-    mergetb -p {PROJECT_NAME} attach {EXPERIMENT_NAME} {REALIZATION_NAME} {XDC_NAME}
+    attach {PROJECT_NAME} {EXPERIMENT_NAME} {REALIZATION_NAME}
+
+If you hare having problems, `detach` and then `attach` again.
 
 ### Install prerequisites and clone repo
 
