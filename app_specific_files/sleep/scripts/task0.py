@@ -8,9 +8,9 @@ def task(input_files, pathin, pathout):
     filelist=[]
     filelist.append(input_files)
 
-    # input_files is a string, not a lost
+    # single input file
     time.sleep(10)
-    output_files = input_files + "_task0"
+    output_files = input_files.split('_')[0] + "_task0"
     cmd = "dd bs=1024 count=8192 </dev/urandom >%s/%s" % (pathout, output_files)
     os.system(cmd)
     return [os.path.join(pathout, output_files)]
