@@ -10,7 +10,7 @@ def task(input_files, pathin, pathout):
 
     # input_files is a string, not a lost
     time.sleep(50)
-    output_files = input_files + '_' + sys.argv[0].split('.')[0]
+    output_files = input_files + "_task1"
     cmd = "dd bs=1024 count=8192 </dev/urandom >%s/%s" % (pathout, output_files)
     os.system(cmd)
     return [os.path.join(pathout, output_files)]
