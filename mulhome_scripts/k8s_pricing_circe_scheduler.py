@@ -962,6 +962,10 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path1)
 
+    #get DAG and home machine info
+    first_task = dag_info[0]
+    dag = dag_info[1]
+
     logging.debug('Starting to deploy decoupled CIRCE dispatcher')
     if jupiter_config.BOKEH == 3:
         latency_path = prepare_stat_path('../stats/')
@@ -994,9 +998,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     api = client.CoreV1Api()
     k8s_apps_v1 = client.AppsV1Api()
 
-    #get DAG and home machine info
-    first_task = dag_info[0]
-    dag = dag_info[1]
+    
     service_ips = {}; #list of all service IPs including home and task controllers
     computing_service_ips = {}
     all_profiler_ips = ''
