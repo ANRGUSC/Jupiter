@@ -5,6 +5,7 @@ __version__ = "2.1"
 
 import sys
 sys.path.append("../")
+import os
 import yaml
 from kubernetes import client, config
 from pprint import *
