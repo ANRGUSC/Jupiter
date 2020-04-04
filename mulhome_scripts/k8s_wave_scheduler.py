@@ -22,6 +22,13 @@ import logging
 
 logging.basicConfig(level = logging.DEBUG)
 
+def prepare_stat_path(stat_path):
+
+    Path(stat_path).mkdir(parents=True, exist_ok=True)
+    latency_path = os.path.joint(stat_path,'summary_latency')
+    Path(latency_path).mkdir(parents=True, exist_ok=True)
+    return latency_path
+
 def check_status_waves(app_name):
     """Verify if all the WAVE home and workers have been deployed and UP in the system.
     """
@@ -101,7 +108,8 @@ def k8s_wave_scheduler(profiler_ips,app_name):
 
     logging.debug('Starting to deploy WAVE')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+        latency_path = prepare_stat_path('../stats/')
+        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes)+len(homes),len(dag))
         start_time = time.time()
         msg = 'WAVE deploystart %f \n'%(start_time)
         write_file(latency_file,msg)
