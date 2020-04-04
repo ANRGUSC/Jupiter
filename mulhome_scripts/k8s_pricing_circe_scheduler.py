@@ -779,7 +779,7 @@ def check_status_circe_compute_decoupled(app_name):
 
 
 
-def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_service_ips):
+def k8s_decoupled_pricing_controller_scheduler(dag_info,profiler_ips,app_name,compute_service_ips,start_time):
     """
         Deploy WAVE in the system. 
     """
@@ -794,6 +794,10 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
     pprint(nodes)
+
+    #get DAG and home machine info
+    first_task = dag_info[0]
+    dag = dag_info[1]
 
 
     """
@@ -962,6 +966,10 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path1)
 
+    #get DAG and home machine info
+    first_task = dag_info[0]
+    dag = dag_info[1]
+
     logging.debug('Starting to deploy decoupled CIRCE dispatcher')
     if jupiter_config.BOKEH == 3:
         latency_path = prepare_stat_path('../stats/')
@@ -994,9 +1002,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
     api = client.CoreV1Api()
     k8s_apps_v1 = client.AppsV1Api()
 
-    #get DAG and home machine info
-    first_task = dag_info[0]
-    dag = dag_info[1]
+    
     service_ips = {}; #list of all service IPs including home and task controllers
     computing_service_ips = {}
     all_profiler_ips = ''
@@ -1136,9 +1142,9 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
         logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
-    return service_ips
+    return service_ips,start_time
 
 def k8s_decoupled_pricing_circe_scheduler(dag_info , profiler_ips, execution_ips,app_name):
-    compute_service_ips = k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips,app_name)
-    k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_service_ips)
+    compute_service_ips,start_time = k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips,app_name)
+    k8s_decoupled_pricing_controller_scheduler(dag_info,profiler_ips,app_name,compute_service_ips,start_time)
     
