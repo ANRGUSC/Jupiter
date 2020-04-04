@@ -50,7 +50,7 @@ def delete_all_pricing_circe(app_name):
     logging.debug('Starting to teardown pricing CIRCE')
     if jupiter_config.BOKEH == 3:
         latency_path = prepare_stat_path('../stats/')
-        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes)+len(homes),len(dag))
+        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes),len(dag))
 
         start_time = time.time()
         if jupiter_config.PRICING == 1:
@@ -303,7 +303,7 @@ def delete_all_decoupled_pricing_circe(app_name):
     logging.debug('Starting to teardown decoupled pricing CIRCE')
     if jupiter_config.BOKEH == 3:
         latency_path = prepare_stat_path('../stats/')
-        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes)+len(homes),len(dag))
+        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes),len(dag))
         start_time = time.time()
         msg = 'PRICEintegrated teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)
@@ -541,7 +541,7 @@ def delete_all_integrated_pricing_circe(app_name):
     logging.debug('Starting to teardown integrated pricing CIRCE')
     if jupiter_config.BOKEH == 3:
         latency_path = prepare_stat_path('../stats/')
-        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes)+len(homes),len(dag))
+        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes),len(dag))
         start_time = time.time()
         msg = 'PRICEintegrated teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)
