@@ -19,6 +19,7 @@ import jupiter_config
 from static_assignment import *
 import utilities
 import logging
+from pathlib import Path
 
 logging.basicConfig(level = logging.DEBUG)
 

@@ -19,6 +19,7 @@ import jupiter_config
 import utilities
 from kubernetes.client.rest import ApiException
 import logging
+from pathlib import Path
 
 logging.basicConfig(level = logging.DEBUG)
 
