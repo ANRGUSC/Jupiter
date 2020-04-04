@@ -225,6 +225,9 @@ def set_globals():
     HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s_%s'%(heft_option,APP_OPTION,cluster_option)
        
 
+    global SIM_STRESS, STRESS_IMAGE
+    SIM_STRESS              = HERE + 'simulation/stress_test'
+    STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
 
 if __name__ == '__main__':
     set_globals()

@@ -287,7 +287,7 @@ def call_send_mapping(mapping, node):
         res = res.read()
         res = res.decode('utf-8')
         local_mapping[mapping] = True
-        if BOKEH == 5:
+        if BOKEH == 3:
             topic = 'msgoverhead_%s' % (node_name)
             msg = 'msgoverhead pricedecoupled controller%s announcehome 1 %s %s \n' % (node_name,node,mapping)
             demo_help(BOKEH_SERVER, BOKEH_PORT, topic, msg)
