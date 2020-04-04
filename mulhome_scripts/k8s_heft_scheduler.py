@@ -25,7 +25,7 @@ logging.basicConfig(level = logging.DEBUG)
 def prepare_stat_path(stat_path):
 
     Path(stat_path).mkdir(parents=True, exist_ok=True)
-    latency_path = os.path.joint(stat_path,'summary_latency')
+    latency_path = os.path.join(stat_path,'summary_latency')
     Path(latency_path).mkdir(parents=True, exist_ok=True)
     return latency_path
 
