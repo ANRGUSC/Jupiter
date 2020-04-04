@@ -779,7 +779,7 @@ def check_status_circe_compute_decoupled(app_name):
 
 
 
-def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_service_ips):
+def k8s_decoupled_pricing_controller_scheduler(dag_info,profiler_ips,app_name,compute_service_ips):
     """
         Deploy WAVE in the system. 
     """
@@ -794,6 +794,10 @@ def k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_ser
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
     pprint(nodes)
+
+    #get DAG and home machine info
+    first_task = dag_info[0]
+    dag = dag_info[1]
 
 
     """
@@ -1142,5 +1146,5 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
 
 def k8s_decoupled_pricing_circe_scheduler(dag_info , profiler_ips, execution_ips,app_name):
     compute_service_ips = k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips,app_name)
-    k8s_decoupled_pricing_controller_scheduler(profiler_ips,app_name,compute_service_ips)
+    k8s_decoupled_pricing_controller_scheduler(dag_info,profiler_ips,app_name,compute_service_ips)
     
