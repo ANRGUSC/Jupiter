@@ -5,7 +5,6 @@ __version__ = "3.0"
 
 import sys
 sys.path.append("../")
-
 import time
 import os
 from os import path
@@ -19,9 +18,16 @@ import jupiter_config
 from static_assignment import *
 import utilities
 import logging
+from pathlib import Path
 
 logging.basicConfig(level = logging.DEBUG)
 
+def prepare_stat_path(stat_path):
+
+    Path(stat_path).mkdir(parents=True, exist_ok=True)
+    latency_path = os.path.join(stat_path,'summary_latency')
+    Path(latency_path).mkdir(parents=True, exist_ok=True)
+    return latency_path
 
 def write_file(filename,message):
     with open(filename,'a') as f:
@@ -48,7 +54,8 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
 
     logging.debug('Starting to deploy HEFT')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
+        latency_path = prepare_stat_path('../stats/')
+        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes)+len(homes),len(dag))
         start_time = time.time()
         msg = 'HEFT deploystart %f \n'%(start_time)
         write_file(latency_file,msg)
@@ -121,6 +128,7 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
 
     pprint(service_ips)
     logging.debug('Successfully deploy HEFT')
+    
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'HEFT deployend %f \n'%(end_time)

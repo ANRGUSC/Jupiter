@@ -4,7 +4,7 @@ __license__ = "GPL"
 __version__ = "2.1"
 
 """
-    Experiment 67: collect overhead latency and power overhead (CPU & memory)
+    Experiment 8: collect all stats
 """
 
 import sys
@@ -106,7 +106,7 @@ if __name__ == '__main__':
 
     appname = jupiter_config.APP_OPTION
 
-    main_folder = '../stats/exp8_data'
+    main_folder = '../stats'
     folder_list= ['makespan','msg_overhead','power_overhead','mapping_latency','summary_latency']
     try:
         os.mkdir(main_folder)
@@ -144,6 +144,7 @@ if __name__ == '__main__':
 
     mqtt_port = 1883
     mqtt_timeout = 300
+    flask_port = 5055
 
     # Collect makespan
     exp_folder = main_folder+'/'+folder_list[0]
