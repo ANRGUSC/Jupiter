@@ -1142,9 +1142,9 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
         logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
-    return start_time
+    return service_ips,start_time
 
 def k8s_decoupled_pricing_circe_scheduler(dag_info , profiler_ips, execution_ips,app_name):
-    start_time = k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips,app_name)
+    compute_service_ips,start_time = k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips,app_name)
     k8s_decoupled_pricing_controller_scheduler(dag_info,profiler_ips,app_name,compute_service_ips,start_time)
     
