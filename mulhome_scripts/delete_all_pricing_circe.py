@@ -523,6 +523,11 @@ def delete_all_decoupled_pricing_circe(app_name):
         teardown_time = end_time - start_time
         logging.debug('Time to teardown PRICEING CIRCE'+ str(teardown_time)) 
 
+    if jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3:
+        delete_all_heft(app_name)
+    else:
+        delete_all_waves(app_name)
+
 def delete_all_integrated_pricing_circe(app_name):
     """Tear down all CIRCE deployments.
     """
