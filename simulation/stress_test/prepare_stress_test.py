@@ -33,27 +33,19 @@ def get_nodes(node_info_file):
         nodes.append(node_line[1])
   return homes, nodes
 
-def build_push_stress(homes):
+def build_push_stress():
     jupiter_config.set_globals()
     print(jupiter_config.STRESS_IMAGE)
-    ssh = connect_remote_ssh(homes[0])
-    # cmd_to_execute = '(cd Jupiter/simulation/stress_test/; sudo docker build -f Dockerfile . -t %s)'%(jupiter_config.STRESS_IMAGE)
-    cmd_to_execute ='pwd; ls'
-    # cmd_to_execute ='cd Jupiter/simulation/stress_test/; pwd'
-    print(cmd_to_execute)
+    # Master node on DCOMP n0
+    ssh = connect_remote_ssh('n0')
+    cmd_to_execute = '(cd Jupiter/simulation/stress_test/; sudo docker build -f Dockerfile . -t %s)'%(jupiter_config.STRESS_IMAGE)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
-    # ssh_stdout.channel.recv_exit_status()
-    # lines = ssh_stdout.readlines()
-    # for line in lines:
-    #     print(line)
     for line in iter(ssh_stdout.readline, ""):
         print(line, end="")
-    print('finished.')
-
-
-    # cmd_to_execute = "sudo docker push " + jupiter_config.STRESS_IMAGE
-    # ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute)
-    
+    cmd_to_execute = "sudo docker push " + jupiter_config.STRESS_IMAGE
+    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+    for line in iter(ssh_stdout.readline, ""):
+        print(line, end="")
 
 def gen_random_stress(nodes):
     jupiter_config.set_globals()
@@ -83,7 +75,7 @@ def run_remote(random_stressed_nodes):
 def prepare_stress_test():
     node_info_file = '../../nodes.txt'
     homes, nodes = get_nodes(node_info_file)
-    build_push_stress(homes)
+    build_push_stress()
     # random_stressed_nodes = gen_random_stress()
     # run_remote(random_stressed_nodes)
     
