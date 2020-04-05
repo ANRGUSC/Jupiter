@@ -81,7 +81,7 @@ def run_remote_stress(hostname):
     cmd_to_execute = "sudo docker exec -it sim python3 /stress_test.py"
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
     for line in ssh_stdout:
-        logging.debug(line)
+        logging.info(line)
 
 def run_remote(random_stressed_nodes):
     for hostname in random_stressed_nodes:
