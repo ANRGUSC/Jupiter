@@ -38,14 +38,13 @@ def build_push_stress(homes):
     ssh = connect_remote_ssh(homes[0])
     cmd_to_execute = "sudo docker build -f Dockerfile . -t %s"%(jupiter_config.STRESS_IMAGE)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute)
-    print(ssh_stderr)
-    print(ssh_stdout)
-    print(ssh_stdin)
-    cmd_to_execute = "sudo docker push " + jupiter_config.STRESS_IMAGE
-    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute)
-    print(ssh_stderr)
-    print(ssh_stdout)
-    print(ssh_stdin)
+    ssh_stdout.channel.recv_exit_status()
+    lines = ssh_stdout.readlines()
+    for line in lines:
+        print(line)
+    # cmd_to_execute = "sudo docker push " + jupiter_config.STRESS_IMAGE
+    # ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute)
+    
 
 def gen_random_stress(nodes):
     jupiter_config.set_globals()
