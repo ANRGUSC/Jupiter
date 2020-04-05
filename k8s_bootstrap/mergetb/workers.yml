@@ -1,0 +1,33 @@
+- hosts: workers 
+  order: sorted
+  gather_facts: False
+  become: yes
+  check_mode: no
+  vars:
+    ansible_python_interpreter: python3
+  tasks:
+    - name: Check if kubelet.conf exists
+      stat:
+        path: "/etc/kubernetes/kubelet.conf"
+      register: kubelet_conf
+
+    - name: Reset Kubernetes if kubelet.conf doesn't exist
+      when: not kubelet_conf.stat.exists
+      shell: "sudo kubeadm reset --force"
+      register: reset_cluster
+
+    - name: Join cluster with kubeadm (hostname of master is simply "master")
+      when: reset_cluster is succeeded and not kubelet_conf.stat.exists
+      shell: |
+        sudo kubeadm join --token 3bwyan.ixrild4p02vldwbc \
+                    --discovery-token-unsafe-skip-ca-verification \
+                    master:6443
+      register: join_cluster
+
+    - name: Enable and check kubelet service
+      when: join_cluster is succeeded
+      systemd:
+        name: kubelet
+        daemon_reload: yes
+        state: started
+        enabled: yes

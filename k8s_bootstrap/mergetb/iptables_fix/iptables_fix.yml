@@ -1,0 +1,11 @@
+- hosts: all
+  order: sorted
+  gather_facts: False
+  become: yes
+  vars:
+    # DCOMP Ubuntu 18.04 containers do not have /usr/bin/python but have python3
+    ansible_python_interpreter: python3
+  tasks:
+    - name: Switch iptables to legacy mode (legacy mode only available for newer iptables versions), see https://github.com/kubernetes/kubernetes/issues/71305
+      shell: update-alternatives --set iptables /usr/sbin/iptables-legacy
+
