@@ -11,7 +11,7 @@ import socket
 
 logging.basicConfig(level = logging.DEBUG)
 
-# This script must run on XDC to collect stats from DCOMP testbed 
+# This script must run on XDC to put random stress test on random nodes in order to collect stats from DCOMP testbed 
 
 def get_worker_nodes(node_info_file):
   """read the node info from the file input
@@ -62,8 +62,8 @@ def run_remote(random_stressed_nodes):
 
 def prepare_stress_test():
     build_push_stress()
-    gen_random_stress()
-    run_remote()
+    random_stressed_nodes = gen_random_stress()
+    run_remote(random_stressed_nodes)
     
 if __name__ == '__main__':
     prepare_stress_test()

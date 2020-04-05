@@ -150,8 +150,10 @@ def set_globals():
     """Kubernetes required information"""
     global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 
-    KUBECONFIG_PATH         = os.environ['KUBECONFIG']
-
+    try:
+        KUBECONFIG_PATH         = os.environ['KUBECONFIG']
+    except Excetion as e:
+        print('KUBECONFIG environment variable has not been setup yet!')
     # Namespaces
     DEPLOYMENT_NAMESPACE    = 'quynh-circe'
     PROFILER_NAMESPACE      = 'quynh-profiler'
