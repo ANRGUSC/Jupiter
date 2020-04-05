@@ -404,9 +404,9 @@ def main():
     flask_deploy = int(jupiter_config.FLASK_DEPLOY )
     
     
-    num_samples = 10
+    num_samples = 2
     num_runs = 1
-    num_dags_list = [1]
+    num_dags_list = [5]
     #num_dags_list = [1,2,4,6,8,10]
     for num_dags in num_dags_list:
         temp = app_name
@@ -425,6 +425,7 @@ def main():
         for idx,appname in enumerate(app_list):
             logging.debug(appname)
             _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],num_runs,num_samples))
+
     app.run(host='0.0.0.0', port = flask_deploy)
 if __name__ == '__main__':
     main()
