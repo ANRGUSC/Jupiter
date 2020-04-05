@@ -110,10 +110,6 @@ def set_globals():
         print('Task mapper: Heft load balanced selected')
         HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/heft_balance/'   
         heft_option         = 'heftbalance'
-    elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY_BALANCE']):
-        print('Task mapper: Wave greedy (group of neighbors & load balanced) selected')
-        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave_balance/'   
-        wave_option         = 'greedybalance'
     else: 
         print('Task mapper: Heft original selected')
 
@@ -172,9 +168,9 @@ def set_globals():
     
 
     HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummy_app_multicast/'
-    APP_NAME                  = 'app_specific_files/dummy_app_multicast'
-    APP_OPTION                = 'dummymulticast'
+    APP_PATH                  = HERE  + 'app_specific_files/apacdemo/'
+    APP_NAME                  = 'app_specific_files/apacdemo'
+    APP_OPTION                = 'demo'
 
 
     """pricing CIRCE home and worker images"""
