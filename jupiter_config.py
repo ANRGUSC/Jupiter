@@ -152,7 +152,7 @@ def set_globals():
 
     try:
         KUBECONFIG_PATH         = os.environ['KUBECONFIG']
-    except Excetion as e:
+    except Exception as e:
         print('KUBECONFIG environment variable has not been setup yet!')
     # Namespaces
     DEPLOYMENT_NAMESPACE    = 'quynh-circe'
