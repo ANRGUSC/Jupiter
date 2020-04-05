@@ -9,7 +9,7 @@ import paramiko
 import socket
 
 
-logging.basicConfig(level = logging.DEBUG)
+logging.basicConfig(level = logging.INFO)
 
 # This script must run on XDC to put random stress test on random nodes in order to collect stats from DCOMP testbed 
 
@@ -38,8 +38,14 @@ def build_push_stress(homes):
     ssh = connect_remote_ssh(homes[0])
     cmd_to_execute = "sudo docker build -f Dockerfile . -t %s"%(jupiter_config.STRESS_IMAGE)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute)
+    print(ssh_stderr)
+    print(ssh_stdout)
+    print(ssh_stdin)
     cmd_to_execute = "sudo docker push " + jupiter_config.STRESS_IMAGE
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute)
+    print(ssh_stderr)
+    print(ssh_stdout)
+    print(ssh_stdin)
 
 def gen_random_stress(nodes):
     jupiter_config.set_globals()
