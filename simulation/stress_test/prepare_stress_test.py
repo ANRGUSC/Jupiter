@@ -38,7 +38,8 @@ def build_push_stress(homes):
     print(jupiter_config.STRESS_IMAGE)
     ssh = connect_remote_ssh(homes[0])
     # cmd_to_execute = '(cd Jupiter/simulation/stress_test/; sudo docker build -f Dockerfile . -t %s)'%(jupiter_config.STRESS_IMAGE)
-    cmd_to_execute ='cd Jupiter/simulation/stress_test/; pwd'
+    cmd_to_execute ='pwd; ls'
+    # cmd_to_execute ='cd Jupiter/simulation/stress_test/; pwd'
     print(cmd_to_execute)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
     # ssh_stdout.channel.recv_exit_status()
