@@ -72,7 +72,7 @@ def prepare_stress_test():
     node_info_file = '../../nodes.txt'
     homes, nodes = get_nodes(node_info_file)
     build_push_stress()
-    random_stressed_nodes = gen_random_stress()
+    random_stressed_nodes = gen_random_stress(nodes)
     run_remote(random_stressed_nodes)
     
 if __name__ == '__main__':
