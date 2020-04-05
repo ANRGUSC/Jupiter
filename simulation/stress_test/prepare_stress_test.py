@@ -8,9 +8,13 @@ import random
 import paramiko
 import socket
 import _thread
+import multiprocessing
+from multiprocessing import Process, Manager
+
 
 
 logging.basicConfig(level = logging.DEBUG)
+app = Flask(__name__)
 
 # This script must run on XDC to put random stress test on random nodes in order to collect stats from DCOMP testbed 
 
@@ -63,8 +67,11 @@ def connect_remote_ssh(hostname):
     return ssh
 
 def run_remote_stress(hostname):
+    print('-----------------')
     jupiter_config.set_globals()
+    print('-----------------2')
     ssh = connect_remote_ssh(hostname)
+    print('-----------------3')
     cmd_to_execute = "sudo docker pull "+ jupiter_config.STRESS_IMAGE
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
     for line in ssh_stdout:
@@ -80,6 +87,7 @@ def run_remote_stress(hostname):
 
 def run_remote(random_stressed_nodes):
     for hostname in random_stressed_nodes:
+        print('-----------------5')
         _thread.start_new_thread(run_remote_stress,(hostname,))    
 
 def prepare_stress_test():
@@ -88,6 +96,19 @@ def prepare_stress_test():
     build_push_stress()
     random_stressed_nodes = gen_random_stress(nodes)
     run_remote(random_stressed_nodes)
+
+class MonitorRecv(multiprocessing.Process):
+    def __init__(self):
+        multiprocessing.Process.__init__(self)
+
+    def run(self):
+        """
+        Start Flask server
+        """
+        logging.debug("Flask server started")
+        app.run(host='0.0.0.0')
     
 if __name__ == '__main__':
+    web_server = MonitorRecv()
+    web_server.start()
     prepare_stress_test()
