@@ -40,12 +40,8 @@ def build_push_stress():
     ssh = connect_remote_ssh('n0')
     cmd_to_execute = '(cd Jupiter/simulation/stress_test/; sudo docker build -f Dockerfile . -t %s)'%(jupiter_config.STRESS_IMAGE)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
-    for line in iter(ssh_stdout.readline, ""):
-        print(line, end="")
     cmd_to_execute = "sudo docker push " + jupiter_config.STRESS_IMAGE
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
-    for line in iter(ssh_stdout.readline, ""):
-        print(line, end="")
 
 def gen_random_stress(nodes):
     jupiter_config.set_globals()
@@ -66,18 +62,18 @@ def run_remote(random_stressed_nodes):
     for hostname in random_stressed_nodes:
         ssh = connect_remote_ssh(hostname)
         cmd_to_execute = "sudo docker pull "+ jupiter_config.STRESS_IMAGE
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute)
-        # cmd = "sudo docker run -d --name sim "+ jupiter_config.STRESS_IMAGE
-        # os.system(cmd)
-        # cmd = "sudo docker exec -it sim python3 /stress_test.py"
-        # os.system(cmd)
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+        cmd_to_execute = "sudo docker run -d --name sim "+ jupiter_config.STRESS_IMAGE
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+        cmd_to_execute = "sudo docker exec -it sim python3 /stress_test.py"
+        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
 
 def prepare_stress_test():
     node_info_file = '../../nodes.txt'
     homes, nodes = get_nodes(node_info_file)
     build_push_stress()
-    # random_stressed_nodes = gen_random_stress()
-    # run_remote(random_stressed_nodes)
+    random_stressed_nodes = gen_random_stress()
+    run_remote(random_stressed_nodes)
     
 if __name__ == '__main__':
     prepare_stress_test()
