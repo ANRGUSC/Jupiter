@@ -11,7 +11,7 @@ RUN apt-get install -y sshpass nano
 RUN pip install cryptography
 
 
-ADD requirements_sim.txt /requirements.txt
+ADD simulation/stress_test/requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 
@@ -25,9 +25,9 @@ ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 RUN apt-get install stress
-ADD stress_test.py /stress_test.py
-ADD start_home.sh /start.sh
-ADD keep_alive.py /keep_alive.py
+ADD simulation/stress_test/stress_test.py /stress_test.py
+ADD simulation/stress_test/start_home.sh /start.sh
+ADD simulation/stress_test/keep_alive.py /keep_alive.py
 RUN chmod +x /start.sh
 
 

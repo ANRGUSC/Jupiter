@@ -226,7 +226,7 @@ def set_globals():
        
 
     global SIM_STRESS, STRESS_IMAGE
-    SIM_STRESS              = HERE + 'simulation/stress_test'
+    SIM_STRESS              = HERE + 'simulation/stress_test/'
     STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
 
 if __name__ == '__main__':

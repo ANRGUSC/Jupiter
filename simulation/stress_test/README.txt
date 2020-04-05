@@ -2,7 +2,7 @@ docker login
 docker build -t yuki1711/sim_stress:v1 .
 sudo docker push yuki1711/sim_stress:v1
 
-docker images
+docker imaages
 docker run -i -t yuki1711/sim_stress:v1 /bin/bash
 
 docker run -d --name sim localhost:5000/sim_stress:v1 # detached, given name 'sim'
