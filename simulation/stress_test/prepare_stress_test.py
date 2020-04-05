@@ -35,13 +35,20 @@ def get_nodes(node_info_file):
 
 def build_push_stress(homes):
     jupiter_config.set_globals()
+    print(jupiter_config.STRESS_IMAGE)
     ssh = connect_remote_ssh(homes[0])
     cmd_to_execute = "sudo docker build -f Dockerfile . -t %s"%(jupiter_config.STRESS_IMAGE)
-    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute)
-    ssh_stdout.channel.recv_exit_status()
-    lines = ssh_stdout.readlines()
-    for line in lines:
-        print(line)
+    print(cmd_to_execute)
+    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+    # ssh_stdout.channel.recv_exit_status()
+    # lines = ssh_stdout.readlines()
+    # for line in lines:
+    #     print(line)
+    for line in iter(ssh_stdout.readline, ""):
+        print(line, end="")
+    print('finished.')
+
+
     # cmd_to_execute = "sudo docker push " + jupiter_config.STRESS_IMAGE
     # ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute)
     
