@@ -21,8 +21,6 @@ def build_push_stress():
     sys.path.append(jupiter_config.SIM_STRESS)
     logging.debug(jupiter_config.SIM_STRESS)
     os.chdir(jupiter_config.SIM_STRESS)
-    print('----------')
-    print(os.path.abspath(os.getcwd()))
     stress_file = 'Dockerfile'
     cmd = "sudo docker build -f %s ../../ -t %s"%(stress_file,jupiter_config.STRESS_IMAGE)
     os.system(cmd)
