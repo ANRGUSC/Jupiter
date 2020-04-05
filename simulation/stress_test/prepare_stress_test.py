@@ -10,7 +10,7 @@ import socket
 import _thread
 
 
-logging.basicConfig(level = logging.INFO)
+logging.basicConfig(level = logging.DEBUG)
 
 # This script must run on XDC to put random stress test on random nodes in order to collect stats from DCOMP testbed 
 
@@ -41,8 +41,12 @@ def build_push_stress():
     ssh = connect_remote_ssh('n0')
     cmd_to_execute = '(cd Jupiter/simulation/stress_test/; sudo docker build -f Dockerfile . -t %s)'%(jupiter_config.STRESS_IMAGE)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+    for line in ssh_stdout:
+        logging.debug(line)
     cmd_to_execute = "sudo docker push " + jupiter_config.STRESS_IMAGE
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+    for line in ssh_stdout:
+        logging.debug(line)
 
 def gen_random_stress(nodes):
     jupiter_config.set_globals()
@@ -63,11 +67,17 @@ def run_remote_stress(hostname):
     ssh = connect_remote_ssh(hostname)
     cmd_to_execute = "sudo docker pull "+ jupiter_config.STRESS_IMAGE
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+    for line in ssh_stdout:
+        logging.debug(line)
     cmd_to_execute = "sudo docker run -d --name sim "+ jupiter_config.STRESS_IMAGE
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+    for line in ssh_stdout:
+        logging.debug(line)
     cmd_to_execute = "sudo docker exec -it sim python3 /stress_test.py"
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
-    
+    for line in ssh_stdout:
+        logging.debug(line)
+
 def run_remote(random_stressed_nodes):
     for hostname in random_stressed_nodes:
         _thread.start_new_thread(run_remote_stress,(hostname,))    
