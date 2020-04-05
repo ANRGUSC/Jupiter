@@ -7,6 +7,7 @@ import logging
 import random
 import paramiko
 import socket
+import _thread
 
 
 logging.basicConfig(level = logging.INFO)
@@ -40,12 +41,8 @@ def build_push_stress():
     ssh = connect_remote_ssh('n0')
     cmd_to_execute = '(cd Jupiter/simulation/stress_test/; sudo docker build -f Dockerfile . -t %s)'%(jupiter_config.STRESS_IMAGE)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
-    for line in ssh_stdout:
-        print(line)
     cmd_to_execute = "sudo docker push " + jupiter_config.STRESS_IMAGE
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
-    for line in ssh_stdout:
-        print(line)
 
 def gen_random_stress(nodes):
     jupiter_config.set_globals()
@@ -61,22 +58,19 @@ def connect_remote_ssh(hostname):
     ssh.connect(hostname, username=myuser, key_filename=mySSHK)
     return ssh
 
-def run_remote(random_stressed_nodes):
+def run_remote_stress(hostname):
     jupiter_config.set_globals()
+    ssh = connect_remote_ssh(hostname)
+    cmd_to_execute = "sudo docker pull "+ jupiter_config.STRESS_IMAGE
+    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+    cmd_to_execute = "sudo docker run -d --name sim "+ jupiter_config.STRESS_IMAGE
+    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+    cmd_to_execute = "sudo docker exec -it sim python3 /stress_test.py"
+    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+    
+def run_remote(random_stressed_nodes):
     for hostname in random_stressed_nodes:
-        ssh = connect_remote_ssh(hostname)
-        cmd_to_execute = "sudo docker pull "+ jupiter_config.STRESS_IMAGE
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
-        for line in ssh_stdout:
-            print(line)
-        cmd_to_execute = "sudo docker run -d --name sim "+ jupiter_config.STRESS_IMAGE
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
-        for line in ssh_stdout:
-            print(line)
-        cmd_to_execute = "sudo docker exec -it sim python3 /stress_test.py"
-        ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
-        for line in ssh_stdout:
-            print(line)
+        _thread.start_new_thread(run_remote_stress,(hostname,))    
 
 def prepare_stress_test():
     node_info_file = '../../nodes.txt'
