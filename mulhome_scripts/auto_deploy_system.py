@@ -353,7 +353,7 @@ def check_finish_evaluation(app_name,port,num_samples):
     logging.debug(line)
     while 1:
         try:
-            logging.debug("Number of output files :")
+            logging.debug("Number of output files for app: "+app_name)
             r = requests.get(line)
             num_files = r.json()
             data = int(json.dumps(num_files))
