@@ -150,8 +150,10 @@ def set_globals():
     """Kubernetes required information"""
     global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 
-    KUBECONFIG_PATH         = os.environ['KUBECONFIG']
-
+    try:
+        KUBECONFIG_PATH         = os.environ['KUBECONFIG']
+    except Excetion as e:
+        print('KUBECONFIG environment variable has not been setup yet!')
     # Namespaces
     DEPLOYMENT_NAMESPACE    = 'quynh-circe'
     PROFILER_NAMESPACE      = 'quynh-profiler'
@@ -225,8 +227,8 @@ def set_globals():
     HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s_%s'%(heft_option,APP_OPTION,cluster_option)
        
 
-    global SIM_STRESS, STRESS_IMAGE
-    SIM_STRESS              = HERE + 'simulation/stress_test/'
+    global NUM_STRESS, STRESS_IMAGE
+    NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
     STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
 
 if __name__ == '__main__':
