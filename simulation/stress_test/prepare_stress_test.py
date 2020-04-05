@@ -35,7 +35,7 @@ def get_nodes(node_info_file):
 
 def build_push_stress(homes):
     jupiter_config.set_globals()
-    ssh = connect_remote_ssh(hostname)
+    ssh = connect_remote_ssh(homes[0])
     cmd_to_execute = "sudo docker build -f Dockerfile . -t %s"%(jupiter_config.STRESS_IMAGE)
     ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute)
     cmd_to_execute = "sudo docker push " + jupiter_config.STRESS_IMAGE
@@ -47,7 +47,7 @@ def gen_random_stress(nodes):
     random_stressed_nodes = random.choices(nodes, k=num_stress)
     return random_stressed_nodes
 
-def connect_remote_ssh(hostname)
+def connect_remote_ssh(hostname):
     ssh = paramiko.SSHClient()
     ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy()) # no known_hosts error
     myuser = os.getlogin()
