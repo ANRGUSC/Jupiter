@@ -14,7 +14,7 @@ logging.basicConfig(level = logging.DEBUG)
 
 
 def build_push_stress():
-	jupiter_config.set_globals()
+    jupiter_config.set_globals()
     INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
@@ -28,4 +28,4 @@ def build_push_stress():
 
 
 if __name__ == '__main__':
-	build_push_stress()	
+    build_push_stress() 
