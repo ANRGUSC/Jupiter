@@ -115,7 +115,9 @@ class HEFT:
             for j in range(self.num_processor):
                 if i==j: continue
                 res += self.cal_comm_quadratic(self.data[task1.number][task2.number],self.quaratic_profile[i][j])
-
+        if(res < 0):
+            print("got negative communication cost from network profiler, something wrong with DRUPE")
+            exit()
         return res / (self.num_processor ** 2 - self.num_processor)
 
     def cal_up_rank(self, task):
