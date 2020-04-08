@@ -6,7 +6,10 @@ net = mx.Topology('hello')
 
 
 JUPITER_WORKER_NODES = ["n%d"%(x) for x in range(0,10)]
-master = net.device('master', cores >= 4, memory >= gb(4))
+JUPITER_MASTER_NODES = ["master"]
+
+master = net.device('master', memory >= gb(4))
+
 worker_nodes = [net.device(name) for name in JUPITER_WORKER_NODES]
 
 net.connect(worker_nodes + [master])
