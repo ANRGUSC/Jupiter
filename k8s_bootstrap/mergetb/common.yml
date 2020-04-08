@@ -43,9 +43,15 @@
         - gnupg2
         - software-properties-common
 
-    - name: Add Docker APT GPG key
+    - name: Add Docker APT GPG key for Ubuntu
+      when: ansible_os_family == "Ubuntu"
       apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
+
+    - name: Add Docker APT GPG key for Debian
+      when: ansible_os_family == "Debian"
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
 
     - name: Add Docker APT repository for Ubuntu nodes
       when: ansible_os_family == "Ubuntu"
@@ -53,7 +59,9 @@
         repo: deb https://download.docker.com/linux/ubuntu bionic stable
         state: present
 
-    - name: Add Docker APT repository for Debian nodes
+    - name: Add Docker APT repository for Debian nodes via python2 (python3.7 and ansible bug in April 2019)
+      vars:
+        ansible_python_interpreter: python
       when: ansible_os_family == "Debian"
       apt_repository:
         repo: deb https://download.docker.com/linux/debian buster stable
