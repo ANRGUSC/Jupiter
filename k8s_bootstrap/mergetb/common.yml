@@ -83,7 +83,17 @@
         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
         state: present
     
-    - name: Add APT repository for kubernetes (works for Debian and Ubuntu)
+    - name: Add APT repository for kubernetes 
+      when: ansible_os_family == "Ubuntu"
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: 'kubernetes'
+
+    - name: Add APT repository for kubernetes for Debian via python2 (python3.7 and ansible bug in April 2019)
+      when: ansible_os_family == "Debian"
+      vars:
+        ansible_python_interpreter: python
       apt_repository:
         repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
         state: present
