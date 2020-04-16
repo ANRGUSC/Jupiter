@@ -150,7 +150,12 @@ def set_globals():
     """Kubernetes required information"""
     global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
 
-    KUBECONFIG_PATH         = os.environ['KUBECONFIG']
+    try:
+        KUBECONFIG_PATH     = os.environ['KUBECONFIG']
+    except:
+        print('$KUBECONFIG does not exist. Using default path ~/.kube/config')
+        home                = os.environ['HOME']
+        KUBECONFIG_PATH     = home + '/.kube/config'
 
     # Namespaces
     DEPLOYMENT_NAMESPACE    = 'quynh-circe'
