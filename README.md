@@ -1,5 +1,11 @@
 # Jupiter  
 
+**Note**: Jupiter is currently undergoing many changes, and the readthedocs may be
+slightly out of date. Please refer to the "tutorials" directory for more up to
+date tutorials. Also, please see the the k8s_boostrap/mergetb directory for
+instructions on how to bootstrap a MergeTB cluster. The provided ansible scripts
+can be adapted and used to bootstrap clusters in other cloud providers.
+
 Jupiter is an orchestrator for Dispersed Computing (distributed computing with networked computers) that 
 uses Docker containers and Kubernetes (K8s).  
 
