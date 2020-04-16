@@ -251,7 +251,8 @@ if __name__ == '__main__':
     time.sleep(60)
     logging.debug('Start copying sample files for evaluation')
 
-    evaluate_sequential()
+    evaluate_interval(10)
+    # evaluate_sequential()
     
     # global num_apps, num_samples
     # num_apps = 100

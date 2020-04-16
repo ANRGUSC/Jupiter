@@ -19,11 +19,7 @@ import json
 import paramiko
 from scp import SCPClient
 import datetime
-from netifaces import AF_INET, AF_INET6, AF_LINK, AF_PACKET, AF_BRIDGE
-import netifaces as ni
-import platform
 from os import path
-from socket import gethostbyname, gaierror, error
 import time
 import urllib
 import urllib.request
@@ -31,12 +27,11 @@ import configparser
 import numpy as np
 from collections import defaultdict
 import paho.mqtt.client as mqtt
-import socket
 import pyinotify
 from collections import Counter
 import _thread
-import threading
 import logging
+from multiprocessing import Process, Manager
 
 
 
@@ -350,63 +345,38 @@ class Handler(pyinotify.ProcessEvent):
         else:
             temp_name = new_file.split('.')[0]
 
-
-        queue_mul.put(new_file)
-        
-        ts = time.time()
-        if RUNTIME == 1:
-            s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,event.pathname,ts)
-            runtime_receiver_log.write(s)
-            runtime_receiver_log.flush()
-
-        """
-            Save the time the input file enters the queue
-        """
-        filename = new_file
-        global filenames
-
-        if len(filenames) == 0:
-            runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
-            send_runtime_profile(runtime_info)
-            if BOKEH == 1:
-                runtimebk = 'rt_enter '+ taskname+' '+ temp_name+ ' '+str(ts)
-                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
         flag1 = sys.argv[1]
-        if flag1 == "1":
+        key = temp_name
+        if key not in files_mul:
+            files_mul[key] = [new_file]
+            count_mul[key]= int(flag1)-1
+        else:
+            files_mul[key] = files_mul[key] + [new_file]
+            count_mul[key]=count_mul[key]-1
+
+        if count_mul[key] == 0: # enough input files
+            logging.debug('Enough input files')
             ts = time.time()
-            runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-            send_runtime_profile(runtime_info)  
             if BOKEH == 1:
                 runtimebk = 'rt_exec '+ taskname + ' '+temp_name+ ' '+str(ts)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
             if BOKEH == 0:
                 msg = taskname + " starts"
-                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)                
-            inputfile=queue_mul.get()
+                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+            
+            incoming_file = files_mul[key]
+            if len(incoming_file)==1: 
+                filenames = incoming_file[0]
+            else:
+                filenames = incoming_file
+            
             input_path = os.path.split(event.pathname)[0]
-            output_path = os.path.join(os.path.split(input_path)[0],'output')
-            dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
+            output_path = input_path.replace("input","output")
+
+            dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
             dag_task.start()
             dag_task.join()
-           
-        else:
-            filenames.append(queue_mul.get())
-            if (len(filenames) == int(flag1)):
-                ts = time.time()
-                runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)           
-                if BOKEH == 1:
-                    runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-                if BOKEH == 0:
-                    msg = taskname + " starts"
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
-                input_path = os.path.split(event.pathname)[0]
-                output_path = os.path.join(os.path.split(input_path)[0],'output')
-                dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
-                dag_task.start()
-                dag_task.join()
-                filenames = []
+
 
 
 
@@ -454,7 +424,7 @@ def main():
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, queue_mul
+    global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries
 
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
@@ -495,9 +465,14 @@ def main():
         password = sys.argv[i+3]
         combined_ip_map[node] = IPaddr
 
-    if taskmap[1] == True:
-        queue_mul=multiprocessing.Queue()
 
+
+    if taskmap[1] == True:
+
+        global manager,count_mul, files_mul
+        manager = Manager()
+        count_mul = manager.dict() 
+        files_mul = manager.dict() 
 
         wm = pyinotify.WatchManager()
         input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')

@@ -197,4 +197,5 @@ if __name__ == '__main__':
     logging.debug('The delay to send sample files')
     time.sleep(sleep_time)
     logging.debug('Start copying sample files for evaluation')
-    evaluate_sequential()
+    # evaluate_sequential()
+    evaluate_interval(10)
