@@ -1,3 +1,6 @@
+Ansible playbooks were modeled after those found in:
+https://github.com/kairen/kubeadm-ansible.
+
 ### Known Issues
 
  * These directions only support **Ubuntu and Debian**.
