@@ -137,10 +137,6 @@ class HEFT:
         # self.cal_down_rank(self.tasks[self.end_task_num])
         self.tasks.sort(cmp=lambda x, y: cmp(x.up_rank, y.up_rank), reverse=True)
         
-        for task in self.tasks:
-            print("task number %d" % task.number)
-            print("task uprank %f" % task.up_rank)
-        
 
     def cal_up_rank(self, task):
         """
@@ -158,40 +154,6 @@ class HEFT:
                 longest = max(longest, self.cal_avg_comm(task, successor) + successor.up_rank)
 
         task.up_rank = task.avg_comp + longest
-        
-        
-    def cal_down_rank(self, task):
-        """
-        Calculate the down rank of all tasks.
-
-        Args:
-            task (str): the exit node of the DAG.
-        """
-        if task == self.tasks[self.start_task_num]:
-            task.down_rank = 0
-            return
-        for pre in self.tasks:
-            if self.data[pre.number][task.number] != -1:
-                if pre.down_rank == -1:
-                    self.cal_down_rank(pre)
-
-                task.down_rank = max(task.down_rank,
-                                     pre.down_rank + pre.avg_comp + self.cal_avg_comm(pre, task))
-                                
-    #def cal_weight(self, task):
-    #
-    #    if task.weight != 0:
-    #        return 
-    #    if task == self.tasks[self.start_task_num]:
-    #        task.weight = task.ave_comp
-    #        return
-    #    max_parent_cost = 0
-    #    for parent in self.tasks:
-    #        if self.data[parent.number][task.number] != -1:
-    #            if parent.weight == 0:
-    #                cal_weight(parent)
-    #            max_parent_cost = max(max_parent_cost, parent.weight + cal_avg_comm(parent, task)) 
-    #    task.weight = max_parent_cost + task.ave_comp
         
         
     def cal_comm_quadratic(self,file_size,quaratic_profile):
@@ -229,20 +191,6 @@ class HEFT:
             print("got negative communication cost from network profiler, something wrong with DRUPE")
             exit()
         return res / (self.num_processor ** 2 - self.num_processor)
-
-
-    def reschedule(self):
-        # clear the time line list
-        for p in self.processors:
-            p.time_line = filter(lambda duration: duration.task_num == -1, p.time_line)
-
-        for task in self.tasks:
-            processor_num = task.processor_num
-            est = self.cal_est(task, self.processors[processor_num])
-            task.ast = est
-            task.aft = est + task.comp_cost[processor_num]
-            self.processors[task.processor_num].time_line.append(Duration(task.number, task.ast, task.aft))
-            self.processors[processor_num].time_line.sort(cmp=lambda x, y: cmp(x.start, y.start))
 
 
     def run(self):
@@ -311,7 +259,7 @@ class HEFT:
                 node.time_line.append(Duration(task, start_time, end_time))
                 
                 # update ALL links takeup time from all parents
-                parent_tasks = self.get_all_parents(task)
+                parent_tasks = [self.tasks[n] for n in task.parents_numbers]
                 for parent in parent_tasks:
                     parent_processor_number = parent.processor_num
                     link_takeup_time = self.links.cal_comm_quadratic(self.data[parent.number][task.number], 
@@ -342,22 +290,31 @@ class HEFT:
     def display_result(self):
         """Display scheduling result to console
         """
-        for t in self.tasks:
-            print('task %d : up_rank = %f, down_rank = %f' % (t.number, t.up_rank, t.down_rank))
-            if t.number == self.end_task_num:
-                makespan = t.aft
-
-        for p in self.processors:
-            print('%s:' % (self.node_info[p.number + 1]))
-            for duration in p.time_line:
-                if duration.task_num != -1:
-                    print('task %d : ast = %d, aft = %d' % (duration.task_num + 1,
-                                                            duration.start, duration.end))
-
-        for dup in self.dup_tasks:
-            print('redundant task %s on %s' % (dup.number + 1, self.node_info[dup.processor_num + 1]))
-
-        print('makespan = %d' % makespan)
+        print("==============================================")
+        print("print task info")
+        print("==============================================")
+        for task in self.tasks:
+            print("task number %d" % task.number)
+            print("task uprank %f" % task.up_rank)
+        
+        print("==============================================")
+        print("print processor info")
+        print("==============================================")
+        for processor in self.processors:
+            print("processor number %d" % processor.number)
+            print("processor takeup time")
+            for tl in processor.time_line:
+                print("task num, start time, end time   " + str(tl.task_num) + "   " + str(tl.start) + "   " + str(tl.end))
+                
+       
+        print("==============================================")
+        print("print link info")
+        print("==============================================") 
+        for link in self.links:
+            print("link name %s" % link.id)
+            print("link takeup time")
+            print(link.time_line)
+        
 
     # output file is input_to_CIRCE
     def output_file(self,file_path):
