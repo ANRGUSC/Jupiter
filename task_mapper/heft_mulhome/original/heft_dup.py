@@ -69,14 +69,11 @@ class Task:
     
     def __init__(self, num):
         self.number = num
-        self.ast = -1
-        self.aft = -1
         self.processor_num = -1
         self.up_rank = -1
-        self.down_rank = -1
         self.comp_cost = []
         self.avg_comp = 0
-        self.pre_task_num = -1
+        self.parents_numbers = []
 
 class Processor:
     """Processor class represent a processor
@@ -118,6 +115,7 @@ class HEFT:
         '''
         self.tasks = [Task(n) for n in range(self.num_task)]
         self.processors = [Processor(n) for n in range(self.num_processor)]
+        self.get_parents_for_all()
         self.start_task_num, self.end_task_num = 0, self.num_task-1
         self.dup_tasks = []
         self.critical_pre_task_num = -1
@@ -160,6 +158,7 @@ class HEFT:
                 longest = max(longest, self.cal_avg_comm(task, successor) + successor.up_rank)
 
         task.up_rank = task.avg_comp + longest
+        
         
     def cal_down_rank(self, task):
         """
@@ -286,7 +285,7 @@ class HEFT:
                         if parent_processor_number == processor.number:
                             continue
                         else:
-                            Link l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number)
+                            l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number)
                             cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
                             updated_link_time_here = max(updated_link_time_here, cur_end_time_for_l + \
                               self.links.cal_comm_quadratic(self.data[parent.number][task.number],
@@ -321,12 +320,25 @@ class HEFT:
                     if parent_processor_number == processor.number:
                         continue
                     else:
-                        Link l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number)
+                        l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number)
                         cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
-                        LinkDuration ld = LinkDuration(parent.number, task.number, cur_end_time_for_l, 
+                        ld = LinkDuration(parent.number, task.number, cur_end_time_for_l, 
                           cur_end_time_for_l + link_takeup_time) 
                         l.time_line.append(ld)
-
+                        
+    #l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number)
+    def get_link_by_id(self, link_id):
+        for l in self.links:
+            if l.id == link_id
+                return l
+             
+    def get_parents_for_all(self):
+        for task in self.tasks:
+            for parent in self.tasks:
+                if self.data[parent.number][task.number] != -1:
+                    task.parents_numbers.append(parent.number)
+                    
+    
     def display_result(self):
         """Display scheduling result to console
         """
