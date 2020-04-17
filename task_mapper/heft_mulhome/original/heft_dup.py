@@ -277,7 +277,7 @@ class HEFT:
     #l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number)
     def get_link_by_id(self, link_id):
         for l in self.links:
-            if l.id == link_id
+            if l.id == link_id:
                 return l
              
     def get_parents_for_all(self):
