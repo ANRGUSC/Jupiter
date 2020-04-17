@@ -1,10 +1,24 @@
 
 """
-This module is the HEFT algorithm modifed based on the `source`_ by Ouyang Liduo.
+This module is a modified version of HEFT that's designed to improve the steady-state throughput, in general,
+    this algorithm tries to balance the time across all resources. Detailed steps are as follows:
 
-.. _source: https://github.com/oyld/heft 
+1. task initialize: average computation of a task over all processors
+2. comm initialize: average communication time of taska -> taskb over all processors
+3. calculate task uprank
+4. define resources: nodes and links. Use virtual links for now. 
+5. for task in decreasing order of uprank, assign it to a processor that minimizes the max of ALL resource takeup time 
+   (including processors and links)
 
+Assume we don't know the actual link topology and routing rules of the cluster, we can imagine there's a virtual link
+    between each pairs of nodes, identified by three quadratic parameters (a, b, c)
+
+When assigning the first task, choose the node that will result in minimum execution time
+When assigning later tasks, iterate over each node, calculate the finish time on this node,
+    and the finish time of parent node to child node link, choose a node such that max of ALL resource takeup time is 
+    minimized
 """
+
 __author__ = "Ouyang Liduo, Quynh Nguyen, Aleksandra Knezevic, Pradipta Ghosh and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
@@ -15,6 +29,7 @@ from create_input import init
 from copy import deepcopy
 import numpy as np
 import os
+import time
 
 class Duration:
     """Time duration about a task
@@ -30,6 +45,23 @@ class Duration:
         self.start = start
         self.end = end
 
+class LinkDuration:
+    """Time duration about an inter-task transfer on a (virtual) link
+    this doesn't represent the virtual link itself, which is a node-to-node class
+    this is a task-to-task class
+    
+    Attributes:
+        -   end (float): ending time
+        -   start (float): starting time
+        -   start_task_num (int): task ID number of transfer source
+        -   end_task_num (int): task ID number of transfer destination
+    """
+    
+    def __init__(self, task1, task2, start, end):
+        self.start_task_num = task1
+        self.end_task_num = task2
+        self.start = start
+        self.end = end
 
 class Task:
     """Task class represent a task
@@ -45,10 +77,8 @@ class Task:
         self.comp_cost = []
         self.avg_comp = 0
         self.pre_task_num = -1
-        self.weight = 0
 
 class Processor:
-
     """Processor class represent a processor
     """
     
@@ -58,11 +88,12 @@ class Processor:
 
 class Link:
     """Link class represent a VIRTUAL link
-    consider both link and nodes as computation resources
-    here we use virtual links, meaning imagine we have an independent link
-    between each pair of nodes, and we try to balance the calculation time
-    among them and the computing nodes
+    Represent a node (processor) by node number, represent a link by id: string '{node1}_{node2}'
     """
+
+    def __init__(self, node1, node2):
+        self.id = str(node1) + '_' + str(node2)
+        self.time_line = []
  
 class HEFT:
     """A class of scheduling algorithm
@@ -90,33 +121,28 @@ class HEFT:
         self.start_task_num, self.end_task_num = 0, self.num_task-1
         self.dup_tasks = []
         self.critical_pre_task_num = -1
+        self.links = []
 
-
+        # create empty virtual links
+        for i in range(self.num_processor):
+            for j in range(self.num_processor):
+                if i == j: continue
+                self.links.append(Link(i, j))
+        
         for i in range(self.num_task):
             self.tasks[i].comp_cost = comp_cost[i]
 
         for task in self.tasks:
             task.avg_comp = sum(task.comp_cost) / self.num_processor
         
-        """ throughput optimized HEFT: try to balance the execution time among all nodes """
-        
-        '''
-        step1: rank tasks in decreasing order by their 'weight'
-               weight of a task is defined as the average computation time, plus the max of (parent weight + ave communication time)
-        '''
-        for task in self.tasks:
-            self.cal_weight(task)
-        self.tasks.sort(cmp=lambda x, y: cmp(x.weight, y.weight), reverse=True)
-        
-        '''
-        step2: for task in decreasing order of weight, assign each task to a processor to minimize the max occupation time of
-               all resources, including links and processors
-        '''
-        for task in self.tasks:
-            
-        
         self.cal_up_rank(self.tasks[self.start_task_num])
-        self.cal_down_rank(self.tasks[self.end_task_num])
+        # self.cal_down_rank(self.tasks[self.end_task_num])
+        self.tasks.sort(cmp=lambda x, y: cmp(x.up_rank, y.up_rank), reverse=True)
+        
+        for task in self.tasks;
+            print("task number %d" % task.number)
+            print("task uprank %f" % task.up_rank)
+        
 
     def cal_up_rank(self, task):
         """
@@ -152,22 +178,21 @@ class HEFT:
 
                 task.down_rank = max(task.down_rank,
                                      pre.down_rank + pre.avg_comp + self.cal_avg_comm(pre, task))
-                                     
-    def cal_weight(self, task):
-    """
-    """
-        if task.weight != 0:
-            return 
-        if task == self.tasks[self.start_task_num]:
-            task.weight = task.ave_comp
-            return
-        max_parent_cost = 0
-        for parent in self.tasks:
-            if self.data[parent.number][task.number] != -1:
-                if parent.weight == 0:
-                    cal_weight(parent)
-                max_parent_cost = max(max_parent_cost, parent.weight + cal_avg_comm(parent, task)) 
-        task.weight = max_parent_cost + task.ave_comp
+                                
+    #def cal_weight(self, task):
+    #
+    #    if task.weight != 0:
+    #        return 
+    #    if task == self.tasks[self.start_task_num]:
+    #        task.weight = task.ave_comp
+    #        return
+    #    max_parent_cost = 0
+    #    for parent in self.tasks:
+    #        if self.data[parent.number][task.number] != -1:
+    #            if parent.weight == 0:
+    #                cal_weight(parent)
+    #            max_parent_cost = max(max_parent_cost, parent.weight + cal_avg_comm(parent, task)) 
+    #    task.weight = max_parent_cost + task.ave_comp
         
         
     def cal_comm_quadratic(self,file_size,quaratic_profile):
@@ -222,38 +247,85 @@ class HEFT:
 
 
     def run(self):
+        
+        # mapping from task number (int) to processor number (int)
+        #task_to_node = {}
+        # mapping from resource id (string) to current resource max takeup time (float)
+        max_takeup_time = {}
+        # current max takeup time (bottleneck) among all resources (links + nodes), i.e. the max value in dict {max_takeup_time}
+        cur_max_time = 0
+        # current bottleneck resource id
+        cur_bottleneck_resource = ""
+        
         for task in self.tasks:
             if task == self.tasks[0]:
+                # no need to consider link when assigning entry task
                 w = min(task.comp_cost)
                 p = task.comp_cost.index(w)
                 task.processor_num = p
-                task.ast = 0
-                task.aft = w
                 self.processors[p].time_line.append(Duration(task.number, 0, w))
+                cur_max_time = w
+                max_takeup_time[p] = w
+                cur_bottleneck_resource = str(task.number)
+                #mapping[task[0]] = p
             else:
-                aft = 9999
+                # try assigning task to each processor, update max takeup time, choose the minimum one
+                # if task is assigned to processor, the overall system max takeup time (bottleneck) would be:
+                # processor id (int) -> expected system max time (float) if assigned to this processor
+                tmp = {}
                 for processor in self.processors:
-                    est = self.cal_est(task, processor)
-                    # print("est:", est)
-                    # print("task:",task.comp_cost[processor.number])
-                    print(processor.number, task.number)
-                    if est + task.comp_cost[processor.number] < aft:
-                        aft = est + task.comp_cost[processor.number]
-                        p = processor.number
-                        # Find the critical pre task
-                        task.pre_task_num = self.critical_pre_task_num
-
-                task.processor_num = p
-                task.ast = aft - task.comp_cost[p]
-                task.aft = aft
-                self.processors[p].time_line.append(Duration(task.number, task.ast, task.aft))
-                self.processors[p].time_line.sort(cmp=lambda x, y: cmp(x.start, y.start))
-
-        self.duplicate()
-        self.reschedule()
-
-
-
+                
+                    updated_node_time_here = task.comp_cost[processor.number] if len(processor.time_line) == 0 else
+                      processor.time_line[-1].end + task.comp_cost[processor.number]
+                        
+                    updated_link_time_here = 0
+                    parent_tasks = self.get_all_parents(task)
+                    for parent in parent_tasks:
+                        parent_processor_number = parent.processor_num
+                        # parent assigned to the same node as child, no comm cost
+                        if parent_processor_number == processor.number:
+                            continue
+                        else:
+                            Link l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number)
+                            cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
+                            updated_link_time_here = max(updated_link_time_here, cur_end_time_for_l + 
+                              self.links.cal_comm_quadratic(self.data[parent.number][task.number],
+                              self.quaratic_profile[parent_processor_number][processor.number]))
+                    
+                    updated_time_here = max(updated_node_time_here, updated_link_time_here)
+                    #updated_system_max_time_here = max(updated_time_here, cur_max_time)
+                    tmp[processor.number] = updated_time_here
+                    
+                # find the processor which will result in minimum max_updated_time
+                candidate = -1
+                min_max_time = time.time() # consider this value as infinity
+                for key in tmp:
+                    if tmp[key] < min_max_time:
+                        min_max_time = tmp[key]
+                        candidate = key
+                        
+                # assign task to candidate (candidate is a processor number)
+                node = self.processors[candidate]
+                task.processor_num = candidate
+                start_time = 0 if len(node.time_line) == 0 else node.time_line[-1].end
+                end_time = task.comp_cost[candidate] + start_time
+                node.time_line.append(Duration(task, start_time, end_time))
+                
+                # update ALL links takeup time from all parents
+                parent_tasks = self.get_all_parents(task)
+                for parent in parent_tasks:
+                    parent_processor_number = parent.processor_num
+                    link_takeup_time = self.links.cal_comm_quadratic(self.data[parent.number][task.number], 
+                      self.quaratic_profile[parent_processor_number][processor.number])
+                    # parent assigned to the same node as child, no comm cost
+                    if parent_processor_number == processor.number:
+                        continue
+                    else:
+                        Link l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number)
+                        cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
+                        LinkDuration ld = LinkDuration(parent.number, task.number, cur_end_time_for_l, 
+                          cur_end_time_for_l + link_takeup_time) 
+                        l.time_line.append(ld)
 
     def display_result(self):
         """Display scheduling result to console
@@ -275,6 +347,7 @@ class HEFT:
 
         print('makespan = %d' % makespan)
 
+    # output file is input_to_CIRCE
     def output_file(self,file_path):
         """Output scheduling to file
         
