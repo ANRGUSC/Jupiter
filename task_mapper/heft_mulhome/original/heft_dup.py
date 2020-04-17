@@ -226,7 +226,7 @@ class HEFT:
                       processor.time_line[-1].end + task.comp_cost[processor.number]
                         
                     updated_link_time_here = 0
-                    parent_tasks = [self.tasks[n] for n in task.parent_numbers]
+                    parent_tasks = [self.tasks[n] for n in task.parents_numbers]
                     for parent in parent_tasks:
                         parent_processor_number = parent.processor_num
                         # parent assigned to the same node as child, no comm cost
