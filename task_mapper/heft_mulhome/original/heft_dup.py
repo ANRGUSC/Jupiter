@@ -233,7 +233,7 @@ class HEFT:
                         if parent_processor_number == processor.number:
                             continue
                         else:
-                            l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number)
+                            l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number))
                             cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
                             updated_link_time_here = max(updated_link_time_here, cur_end_time_for_l + \
                               self.links.cal_comm_quadratic(self.data[parent.number][task.number],
