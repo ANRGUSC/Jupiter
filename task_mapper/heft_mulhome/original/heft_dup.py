@@ -139,7 +139,7 @@ class HEFT:
         # self.cal_down_rank(self.tasks[self.end_task_num])
         self.tasks.sort(cmp=lambda x, y: cmp(x.up_rank, y.up_rank), reverse=True)
         
-        for task in self.tasks;
+        for task in self.tasks:
             print("task number %d" % task.number)
             print("task uprank %f" % task.up_rank)
         
