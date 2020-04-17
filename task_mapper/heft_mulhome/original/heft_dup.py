@@ -262,7 +262,7 @@ class HEFT:
                 parent_tasks = [self.tasks[n] for n in task.parents_numbers]
                 for parent in parent_tasks:
                     parent_processor_number = parent.processor_num
-                    link_takeup_time = self.links.cal_comm_quadratic(self.data[parent.number][task.number], 
+                    link_takeup_time = self.cal_comm_quadratic(self.data[parent.number][task.number], 
                       self.quaratic_profile[parent_processor_number][processor.number])
                     # parent assigned to the same node as child, no comm cost
                     if parent_processor_number == processor.number:
