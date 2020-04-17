@@ -256,7 +256,7 @@ class HEFT:
                 task.processor_num = candidate
                 start_time = 0 if len(node.time_line) == 0 else node.time_line[-1].end
                 end_time = task.comp_cost[candidate] + start_time
-                node.time_line.append(Duration(task, start_time, end_time))
+                node.time_line.append(Duration(task.number, start_time, end_time))
                 
                 # update ALL links takeup time from all parents
                 parent_tasks = [self.tasks[n] for n in task.parents_numbers]
