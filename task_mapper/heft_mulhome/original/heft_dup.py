@@ -275,7 +275,7 @@ class HEFT:
                 tmp = {}
                 for processor in self.processors:
                 
-                    updated_node_time_here = task.comp_cost[processor.number] if len(processor.time_line) == 0 else
+                    updated_node_time_here = task.comp_cost[processor.number] if len(processor.time_line) == 0 else \
                       processor.time_line[-1].end + task.comp_cost[processor.number]
                         
                     updated_link_time_here = 0
@@ -288,7 +288,7 @@ class HEFT:
                         else:
                             Link l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number)
                             cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
-                            updated_link_time_here = max(updated_link_time_here, cur_end_time_for_l + 
+                            updated_link_time_here = max(updated_link_time_here, cur_end_time_for_l + \
                               self.links.cal_comm_quadratic(self.data[parent.number][task.number],
                               self.quaratic_profile[parent_processor_number][processor.number]))
                     
