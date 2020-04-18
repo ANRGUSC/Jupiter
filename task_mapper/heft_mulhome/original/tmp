@@ -1,0 +1,123 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+-------------------------------------
+Automatically generating HEFT input
+-------------------------------------
+Perform HEFT scheduling
+Starting to run HEFT mapping
+('tasks: ', {'task0': ['task1', 'task2'], 'task1': ['task3'], 'task2': ['task3'], 'task3': []})
+('task order', ['task0', 'task1', 'task2', 'task3'])
+('super tasks', [])
+('non tasks', [])
+No input TGFF file found!
+---------------------------------------------
+
+ Read task list from DAG file, Non-DAG info and global information 
+
+tasks:  {'task0': ['task1', 'task2'], 'task2': ['task3'], 'task3': [], 'task1': ['task3']}
+task order ['task0', 'task1', 'task2', 'task3']
+super tasks []
+---------------------------------------------
+
+ Create input HEFT file 
+
+No available profiling information
+---------------------------------------------
+
+ Step 1: Read task list from DAG file and global information 
+
+------------------------------------------------------------
+
+ Step 2: Read network profiler information : 
+
+------------------------------------------------------------
+
+ Step 3: Read execution Profiler Information : 
+
+Check Network Profiler IP: node1-10.109.241.162
+Current number of updated execution profilers:
+3
+--- Check execution profiler ID : node2
+--- Check execution profiler ID : node1
+--- Check execution profiler ID : home
+Execution information has already been provided
+--- Number of neighbors: 2
+Check Network Profiler IP: node2-10.108.224.168
+--- Number of neighbors: 2
+Network information has already been provided
+No input TGFF file found!
+No input TGFF file found!
+['home', 'task0', '5', '67108.864']
+['home', 'task1', '2', '67108.864']
+['home', 'task2', '1', '67108.864']
+['home', 'task3', '3', '67108.864']
+[['node2', 'task0', '5', '67108.864'], ['node2', 'task1', '2', '67108.864'], ['node2', 'task2', '1', '67108.864'], ['node2', 'task3', '3', '67108.864'], ['node1', 'task0', '5', '67108.864'], ['node1', 'task1', '2', '67108.864'], ['node1', 'task2', '1', '67108.864'], ['node1', 'task3', '3', '67108.864']]
+	TASK task0	TYPE 0 
+
+	TASK task1	TYPE 1 
+
+	TASK task2	TYPE 2 
+
+	TASK task3	TYPE 3 
+
+task_names: ['task0', 'task1', 'task2', 'task3']
+==================
+ File TGFF was generated!!!
+	TASK task0	TYPE 0 
+
+	TASK task1	TYPE 1 
+
+	TASK task2	TYPE 2 
+
+	TASK task3	TYPE 3 
+
+('task_names:', ['task0', 'task1', 'task2', 'task3'])
+==================
+Start the HEFT scheduler
+Output of HEFT scheduler
+Assign random master and slaves
+==============================================
+print task info
+==============================================
+task number 0
+task uprank 834.760142
+task number 1
+task uprank 417.380071
+task number 2
+task uprank 407.380071
+task number 3
+task uprank 30.000000
+==============================================
+print processor info
+==============================================
+processor number 0
+processor takeup time
+task num, start time, end time   0   0   50
+task num, start time, end time   1   50   70
+task num, start time, end time   2   70   80
+task num, start time, end time   3   80   110
+processor number 1
+processor takeup time
+==============================================
+print link info
+==============================================
+link name 0_1
+link takeup time
+link task start_num, end_num, start_time, end_time0   1   0   368.8996830804725
+link task start_num, end_num, start_time, end_time0   2   368.8996830804725   737.799366160945
+link task start_num, end_num, start_time, end_time1   3   737.799366160945   1106.6990492414175
+link task start_num, end_num, start_time, end_time2   3   1106.6990492414175   1475.59873232189
+link name 1_0
+link takeup time
+Successfully finish HEFT mapping 
+Time to finish HEFT mapping 15.024739027
+ * Serving Flask app "master" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:8888/ (Press CTRL+C to quit)
+('Recieved request for current mapping. Current mappings done:', 4)
+{'task0': 'node1', 'task1': 'node1', 'task2': 'node1', 'task3': 'node1'}
+10.244.0.1 - - [18/Apr/2020 18:22:27] "GET / HTTP/1.1" 200 -
+

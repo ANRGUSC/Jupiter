@@ -213,7 +213,7 @@ class HEFT:
                 self.processors[p].time_line.append(Duration(task.number, 0, w))
                 cur_max_time = w
                 max_takeup_time[p] = w
-                cur_bottleneck_resource = str(task.number)
+                #cur_bottleneck_resource = str(task.number)
                 #mapping[task[0]] = p
             else:
                 # try assigning task to each processor, update max takeup time, choose the minimum one
@@ -263,12 +263,12 @@ class HEFT:
                 for parent in parent_tasks:
                     parent_processor_number = parent.processor_num
                     link_takeup_time = self.cal_comm_quadratic(self.data[parent.number][task.number], 
-                      self.quaratic_profile[parent_processor_number][processor.number])
+                      self.quaratic_profile[parent_processor_number][candidate])
                     # parent assigned to the same node as child, no comm cost
-                    if parent_processor_number == processor.number:
+                    if parent_processor_number == candidate:
                         continue
                     else:
-                        l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number))
+                        l = self.get_link_by_id(str(parent_processor_number) + '_' + str(candidate))
                         cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
                         ld = LinkDuration(parent.number, task.number, cur_end_time_for_l, 
                           cur_end_time_for_l + link_takeup_time) 
