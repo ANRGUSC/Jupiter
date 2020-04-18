@@ -313,7 +313,18 @@ class HEFT:
         for link in self.links:
             print("link name %s" % link.id)
             print("link takeup time")
-            print(link.time_line)
+            for tl in link.time_line:
+                print("link task start_num, end_num, start_time, end_time" + str(tl.start_task_num) + \ 
+                str(tl.end_task_num) + str(start) + str(end))
+"""
+class LinkDuration
+    
+    def __init__(self, task1, task2, start, end):
+        self.start_task_num = task1
+        self.end_task_num = task2
+        self.start = start
+        self.end = end
+"""
         
 
     # output file is input_to_CIRCE
