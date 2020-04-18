@@ -314,8 +314,7 @@ class HEFT:
             print("link name %s" % link.id)
             print("link takeup time")
             for tl in link.time_line:
-                print("link task start_num, end_num, start_time, end_time" + str(tl.start_task_num) + \ 
-                str(tl.end_task_num) + str(start) + str(end))
+                print("link task start_num, end_num, start_time, end_time" + str(tl.start_task_num) + str(tl.end_task_num) + str(start) + str(end))
 """
 class LinkDuration
     
