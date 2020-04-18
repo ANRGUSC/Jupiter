@@ -215,9 +215,9 @@ if __name__ == '__main__':
     PROFILER = int(config['CONFIG']['PROFILER'])
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
 
     logging.debug('---------------------------------------------')
     logging.debug('\n Step 1: Read task list from DAG file and global information \n')

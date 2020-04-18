@@ -128,9 +128,9 @@ def prepare_global():
     assignments = {}
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH, app_name,app_option
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
     app_name = os.environ['APP_NAME']
     app_option = os.environ['APP_OPTION']
 

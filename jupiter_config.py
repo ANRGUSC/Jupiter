@@ -74,10 +74,10 @@ def set_globals():
     FLASK_DEPLOY            = config['PORT']['FLASK_DEPLOY']
 
     global BOKEH,BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH = int(config['OTHER']['BOKEH'])
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
     
 
     """Modules path of Jupiter"""

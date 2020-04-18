@@ -427,10 +427,10 @@ def main():
 
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH, BOKEH_INTERVAL, SELF_NAME
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
-    BOKEH_INTERVAL = int(config['OTHER']['BOKEH_INTERVAL'])
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
+    BOKEH_INTERVAL = int(config['BOKEH_LIST']['BOKEH_INTERVAL'])
     SELF_NAME = os.environ['SELF_NAME']
 
     logging.debug('Bokeh information')

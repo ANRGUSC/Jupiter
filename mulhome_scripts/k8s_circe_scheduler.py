@@ -22,12 +22,6 @@ from pathlib import Path
 
 logging.basicConfig(level = logging.DEBUG)
 
-def prepare_stat_path(stat_path):
-
-    Path(stat_path).mkdir(parents=True, exist_ok=True)
-    latency_path = os.path.join(stat_path,'summary_latency')
-    Path(latency_path).mkdir(parents=True, exist_ok=True)
-    return latency_path
  
 def check_status_circe(dag,app_name):
     """
@@ -130,8 +124,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
 
     logging.debug('Starting to deploy CIRCE dispatcher')
     if jupiter_config.BOKEH == 3:
-        latency_path = prepare_stat_path('../stats/')
-        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes)+len(homes),len(dag))
+        latency_file = utilities.prepare_stat_path(nodes,homes,dag)
         start_time = time.time()
         msg = 'CIRCE deploystart %f \n'%(start_time)
         write_file(latency_file,msg)

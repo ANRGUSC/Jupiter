@@ -488,9 +488,9 @@ def main():
     TRANSFER = int(config['CONFIG']['TRANSFER'])
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
 
     global app_name,app_option
     app_name = os.environ['APP_NAME']

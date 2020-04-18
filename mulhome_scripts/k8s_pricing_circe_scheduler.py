@@ -24,12 +24,6 @@ from pathlib import Path
 
 logging.basicConfig(level = logging.DEBUG)
 
-def prepare_stat_path(stat_path):
-
-    Path(stat_path).mkdir(parents=True, exist_ok=True)
-    latency_path = os.path.join(stat_path,'summary_latency')
-    Path(latency_path).mkdir(parents=True, exist_ok=True)
-    return latency_path
 
 def write_file(filename,message):
     with open(filename,'a') as f:
@@ -141,7 +135,7 @@ def check_status_circe_computing(app_name):
     return result
 
 # if __name__ == '__main__':
-def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ips,app_name):
+def k8s_pricing_circe_scheduler(dag_info, temp_info, profiler_ips, execution_ips, app_name):
     """
     This script deploys CIRCE in the system. 
     
@@ -170,14 +164,13 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
     logging.debug('Starting to deploy pricing CIRCE')
     if jupiter_config.BOKEH == 3:
-        latency_path = prepare_stat_path('../stats/')
-        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes)+len(homes),len(dag))
+        latency_file = utilities.prepare_stat_path(nodes, homes, dag)
         start_time = time.time()
         if jupiter_config.PRICING == 1:
             msg = 'PRICEpush deploystart %f \n'%(start_time)
         elif jupiter_config.PRICING == 2:
             msg = 'PRICEevent deploystart %f \n'%(start_time)
-        write_file(latency_file,msg)
+        write_file(latency_file, msg)
 
     configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
     taskmap = configs["taskname_map"]
@@ -373,7 +366,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         inputnum = str(value[0])
         flag = str(value[1])
 
-        for i in range(2,len(value)):
+        for i in range(2, len(value)):
             if i != 2:
                 nexthosts = nexthosts + ':'
             nexthosts = nexthosts + str(hosts.get(value[i])[0])
@@ -387,7 +380,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
         if taskmap[key][1] and executionmap[key]: #DAG
             logging.debug('--------- Start task controllers DAG')
-            dep = write_circe_controller_specs(flag = str(flag), inputnum = str(inputnum), name = pod_name, label = pod_name,node_name = hosts.get(task)[1],
+            dep = write_circe_controller_specs(flag = str(flag), inputnum = str(inputnum), name = pod_name, label = pod_name, node_name = hosts.get(task)[1],
                 image = jupiter_config.WORKER_CONTROLLER_IMAGE, child = nexthosts, 
                 child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
                 home_node_ip = home_nodes_str,
@@ -403,7 +396,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
         elif taskmap[key][1] and not executionmap[key]: #nonDAG controllers:
             logging.debug('--------- Start task controllers nonDAG')
             #Generate the yaml description of the required deployment for each task
-            dep = write_circe_nondag_specs(flag = str(flag), inputnum = str(inputnum), name = pod_name, label = pod_name,node_name = hosts.get(task)[1],
+            dep = write_circe_nondag_specs(flag = str(flag), inputnum = str(inputnum), name = pod_name, label = pod_name, node_name = hosts.get(task)[1],
                 image = jupiter_config.NONDAG_CONTROLLER_IMAGE, child = nexthosts, task_name=task,
                 child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
                 home_node_ip = home_nodes_str,
@@ -434,7 +427,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
 
     while 1:
-        if check_status_circe_controller(dag,app_name):
+        if check_status_circe_controller(dag, app_name):
             break
         time.sleep(30)
 
@@ -442,7 +435,7 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
     for key in homes:
         home_name =app_name+"-" + key
-        home_dep = write_circe_home_specs(name=home_name,image = jupiter_config.PRICING_HOME_IMAGE, 
+        home_dep = write_circe_home_specs(name=home_name, image = jupiter_config.PRICING_HOME_IMAGE, 
                                     label=home_name,
                                     host = jupiter_config.HOME_NODE, 
                                     child = jupiter_config.HOME_CHILD,
@@ -463,16 +456,15 @@ def k8s_pricing_circe_scheduler(dag_info , temp_info, profiler_ips, execution_ip
 
     logging.debug('Starting to teardown pricing CIRCE')
     if jupiter_config.BOKEH == 3:
-        latency_path = prepare_stat_path('../stats/')
-        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes)+len(homes),len(dag))
+        latency_file = utilities.prepare_stat_path(nodes, homes, dag)
         end_time = time.time()
         if jupiter_config.PRICING == 1:
             msg = 'PRICEpush deployend %f \n'%(end_time)
         elif jupiter_config.PRICING == 2:
             msg = 'PRICEevent deployend %f \n'%(end_time)
-        write_file(latency_file,msg)
+        write_file(latency_file, msg)
 
-def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ips,app_name):
+def k8s_integrated_pricing_circe_scheduler(dag_info ,profiler_ips, execution_ips, app_name):
     """
     This script deploys CIRCE in the system. 
     
@@ -497,11 +489,10 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
 
     logging.debug('Starting to deploy integrated CIRCE')
     if jupiter_config.BOKEH == 3:
-        latency_path = prepare_stat_path('../stats/')
-        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes)+len(homes),len(dag))
+        latency_file = utilities.prepare_stat_path(nodes, homes, dag)
         start_time = time.time()
         msg = 'PRICEintegrated deploystart %f \n'%(start_time)
-        write_file(latency_file,msg)
+        write_file(latency_file, msg)
 
     configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
     taskmap = configs["taskname_map"]
@@ -646,7 +637,7 @@ def k8s_integrated_pricing_circe_scheduler(dag_info , profiler_ips, execution_ip
 
     for key in homes:
         home_name =app_name+"-" + key
-        home_dep = write_integrated_circe_home_specs(name=home_name,label=home_name,image = jupiter_config.PRICING_HOME_IMAGE, 
+        home_dep = write_integrated_circe_home_specs(name=home_name,label=home_name, image = jupiter_config.PRICING_HOME_IMAGE, 
                                     host = jupiter_config.HOME_NODE, 
                                     child = jupiter_config.HOME_CHILD,
                                     child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
@@ -779,7 +770,7 @@ def check_status_circe_compute_decoupled(app_name):
 
 
 
-def k8s_decoupled_pricing_controller_scheduler(dag_info,profiler_ips,app_name,compute_service_ips,start_time):
+def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name, compute_service_ips, start_time):
     """
         Deploy WAVE in the system. 
     """
@@ -939,15 +930,14 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info,profiler_ips,app_name,co
 
     logging.debug('Successfully deploy CIRCE dispatcher')
     if jupiter_config.BOKEH == 3:
-        latency_path = prepare_stat_path('../stats/')
-        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes)+len(homes),len(dag))
+        latency_file = utilities.prepare_stat_path(nodes, homes, dag)
         end_time = time.time()
         msg = 'CIRCE decoupled deployend %f \n'%(end_time)
-        write_file(latency_file,msg)
+        write_file(latency_file, msg)
         deploy_time = end_time - start_time
         logging.debug('Time to deploy CIRCE '+ str(deploy_time))
 
-def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips,app_name):
+def k8s_decoupled_pricing_compute_scheduler(dag_info, profiler_ips, execution_ips, app_name):
     """
     This script deploys CIRCE in the system. 
     
@@ -972,11 +962,10 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
 
     logging.debug('Starting to deploy decoupled CIRCE dispatcher')
     if jupiter_config.BOKEH == 3:
-        latency_path = prepare_stat_path('../stats/')
-        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes)+len(homes),len(dag))
+        latency_file = utilities.prepare_stat_path(nodes, homes, dag)
         start_time = time.time()
         msg = 'CIRCE decoupled deploystart %f \n'%(start_time)
-        write_file(latency_file,msg)
+        write_file(latency_file, msg)
 
 
     configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
@@ -1125,7 +1114,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
 
     for key in homes:
         home_name =app_name+"-" + key
-        home_dep = write_decoupled_circe_compute_home_specs(name=home_name,label=home_name,image = jupiter_config.PRICING_HOME_COMPUTE, 
+        home_dep = write_decoupled_circe_compute_home_specs(name=home_name,label=home_name, image = jupiter_config.PRICING_HOME_COMPUTE, 
                                     host = jupiter_config.HOME_NODE, 
                                     child = jupiter_config.HOME_CHILD,
                                     child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
@@ -1142,9 +1131,9 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_i
         logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
-    return service_ips,start_time
+    return service_ips, start_time
 
 def k8s_decoupled_pricing_circe_scheduler(dag_info , profiler_ips, execution_ips,app_name):
-    compute_service_ips,start_time = k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips,app_name)
-    k8s_decoupled_pricing_controller_scheduler(dag_info,profiler_ips,app_name,compute_service_ips,start_time)
+    compute_service_ips, start_time = k8s_decoupled_pricing_compute_scheduler(dag_info , profiler_ips, execution_ips, app_name)
+    k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name, compute_service_ips, start_time)
     

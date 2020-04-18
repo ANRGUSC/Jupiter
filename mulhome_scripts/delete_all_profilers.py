@@ -19,12 +19,6 @@ from pathlib import Path
 
 logging.basicConfig(level = logging.DEBUG)
 
-def prepare_stat_path(stat_path):
-
-    Path(stat_path).mkdir(parents=True, exist_ok=True)
-    latency_path = os.path.join(stat_path,'summary_latency')
-    Path(latency_path).mkdir(parents=True, exist_ok=True)
-    return latency_path
 
 
 def write_file(filename,message):
@@ -49,8 +43,7 @@ def delete_all_profilers():
 
     logging.debug('Starting to teardown DRUPE')
     if jupiter_config.BOKEH == 3:
-        latency_path = prepare_stat_path('../stats/')
-        latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(nodes),len(dag))
+        latency_file = utilities.prepare_stat_path(nodes,[],dag)
         start_time = time.time()
         msg = 'DRUPE teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)

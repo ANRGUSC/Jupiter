@@ -12,6 +12,8 @@ import os
 from os import path
 from pprint import *
 import logging
+from pathlib import Path
+
 logging.basicConfig(level = logging.DEBUG)
 
 def k8s_read_config(configuration_file):
@@ -227,6 +229,14 @@ def k8s_get_nodes_homes_string(node_info_file):
         homes = homes + ":" + str(node_line[0])
       nodes = nodes + ":" + str(node_line[0])
   return nodes,homes
+
+def prepare_stat_path(node_list,homes,dag):
+    stat_path = 'stats/'
+    Path(stat_path).mkdir(parents=True, exist_ok=True)
+    latency_path = os.path.join(stat_path,'summary_latency')
+    Path(latency_path).mkdir(parents=True, exist_ok=True)
+    latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(node_list)+len(homes),len(dag))
+    return latency_file
 
 if __name__ == '__main__':
   dag_info_file = '../app_specific_files/dummy_datasources/configuration.txt'

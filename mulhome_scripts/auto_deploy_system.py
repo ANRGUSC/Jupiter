@@ -70,7 +70,7 @@ def setup_port(port):
     Args:
         port (int): port number
     """
-    cmd = "kubectl proxy -p " + str(port)+ " &"
+    cmd = "kubectl proxy -p " + str(port) + " &"
     try:
         os.system(cmd)
     except e:
@@ -141,7 +141,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
             """
 
             line = "http://localhost:%d/api/v1/namespaces/"%(port)
-            line = line + jupiter_config.MAPPER_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
+            line = line + jupiter_config.MAPPER_NAMESPACE + "/services/" +app_name + "-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
             time.sleep(5)
             logging.debug(line)
             while 1:
@@ -157,7 +157,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
                             break
                 except Exception as e:
                     #logging.debug(e)
-                    logging.debug("Will retry to get the mapping for app "+ app_name)
+                    logging.debug("Will retry to get the mapping for app " + app_name)
                     time.sleep(30)
 
 
@@ -311,7 +311,7 @@ def redeploy_system(app_id,app_name,port):
         logging.debug('Successfully get the mapping')
         end_time = time.time()
         deploy_time = end_time - start_time
-        logging.debug('Time to retrive HEFT mapping'+ str(deploy_time))
+        logging.debug('Time to retrive HEFT mapping' + str(deploy_time))
 
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
@@ -348,24 +348,24 @@ def check_finish_evaluation(app_name,port,num_samples):
     """
     jupiter_config.set_globals()
     line = "http://localhost:%d/api/v1/namespaces/"%(port)
-    line = line + jupiter_config.DEPLOYMENT_NAMESPACE + "/services/"+app_name+"-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
+    line = line + jupiter_config.DEPLOYMENT_NAMESPACE + "/services/" + app_name+ "-home:" + str(jupiter_config.FLASK_SVC) + "/proxy"
     logging.debug('Check if finishing evaluation sample tests')
     logging.debug(line)
     while 1:
         try:
-            logging.debug("Number of output files for app: "+app_name)
+            logging.debug("Number of output files for app: " + app_name)
             r = requests.get(line)
             num_files = r.json()
             data = int(json.dumps(num_files))
             logging.debug(data)
             logging.debug(num_samples)
-            if data==num_samples:
+            if data == num_samples:
                 logging.debug('Finish running all sample files!!!!!!!!')
                 break
             time.sleep(60)
         except Exception as e: 
             logging.debug(e)
-            logging.debug("Will check back later if finishing all the samples for app "+app_name)
+            logging.debug("Will check back later if finishing all the samples for app " + app_name)
             time.sleep(60)
 
    
@@ -404,7 +404,7 @@ def main():
     flask_deploy = int(jupiter_config.FLASK_DEPLOY )
     
     
-    num_samples = 2
+    num_samples_files = 2
     num_runs = 1
     num_dags_list = [5]
     #num_dags_list = [1,2,4,6,8,10]
@@ -414,9 +414,9 @@ def main():
         jupiter_config.set_globals()
         port_list = []
         app_list = []
-        for num in range(1,num_dags+1):
-            port =  circe_port + num-1
-            cur_app = temp+str(num)
+        for num in range(1,num_dags + 1):
+            port =  circe_port + num - 1
+            cur_app = temp + str(num)
             port_list.append(port)
             app_list.append(cur_app)     
         logging.debug(port_list)
@@ -424,7 +424,7 @@ def main():
        
         for idx,appname in enumerate(app_list):
             logging.debug(appname)
-            _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],num_runs,num_samples))
+            _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],num_runs,num_samples_files))
 
     app.run(host='0.0.0.0', port = flask_deploy)
 if __name__ == '__main__':
