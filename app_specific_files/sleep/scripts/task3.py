@@ -9,9 +9,9 @@ def task(input_files, pathin, pathout):
     filelist.append(input_files)
 
     # wait for two input files before processing
-    time.sleep(15)
+    time.sleep(3)
     output_files = input_files[0].split('_')[0] + "_task3"
-    cmd = "dd bs=1024 count=1024 </dev/urandom >%s/%s" % (pathout, output_files)
+    cmd = "dd bs=1024 count=8192 </dev/urandom >%s/%s" % (pathout, output_files)
     os.system(cmd)
     return [os.path.join(pathout, output_files)]
 
