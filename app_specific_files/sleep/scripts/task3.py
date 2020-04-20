@@ -20,7 +20,7 @@ def task(input_files, pathin, pathout):
         cur_time = time.time()
         if cur_time - start_time > EXEC_TIME:
             break
-    output_files = input_files.split('_')[0] + "_" + TASK_NAME
+    output_files = input_files[0].split('_')[0] + "_" + TASK_NAME
     cmd = "dd bs=1024 count=%d </dev/urandom >%s/%s" % (NUM_BLOCK, pathout, output_files)
     os.system(cmd)
     return [os.path.join(pathout, output_files)]
