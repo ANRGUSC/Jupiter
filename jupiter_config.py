@@ -168,9 +168,9 @@ def set_globals():
     
 
     HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/collage_inference/'
-    APP_NAME                  = 'app_specific_files/collage_inference'
-    APP_OPTION                = 'collage'
+    APP_PATH                  = HERE  + 'app_specific_files/demo/'
+    APP_NAME                  = 'app_specific_files/demo'
+    APP_OPTION                = 'demo'
 
 
     """pricing CIRCE home and worker images"""
