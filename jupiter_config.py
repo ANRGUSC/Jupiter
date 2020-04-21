@@ -81,7 +81,7 @@ def set_globals():
     
 
     """Modules path of Jupiter"""
-    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH
+    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH, DATA_PATH
 
     # default network and resource profiler: DRUPE
     # default wave mapper: random wave
@@ -91,7 +91,10 @@ def set_globals():
     HEFT_PATH               = HERE + 'task_mapper/heft_mulhome/original/'
     WAVE_PATH               = HERE + 'task_mapper/wave_mulhome/random_wave/'
     SCRIPT_PATH             = HERE + 'scripts/'
-    STREAM_PATH             = HERE + 'simulation/data_sources/'
+    # simulation of streaming data sources
+    # STREAM_PATH             = HERE + 'simulation/data_sources/'
+    # data sources for testing demo
+    STREAM_PATH               = HERE + 'simulation/demo_sources/'
 
     global heft_option, wave_option
     heft_option             = 'original'    
@@ -167,7 +170,7 @@ def set_globals():
     global APP_PATH, APP_NAME, APP_OPTION
     
 
-    HOME_CHILD                = 'task0'
+    HOME_CHILD                = 'master_task'
     APP_PATH                  = HERE  + 'app_specific_files/demo/'
     APP_NAME                  = 'app_specific_files/demo'
     APP_OPTION                = 'demo'
