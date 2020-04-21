@@ -230,7 +230,8 @@ def k8s_exec_scheduler(app_name):
             kubectl get replicaset -n "namespace name"
             kubectl get pod -n "namespace name"
     """
-    logging.debug('Taskmap :' + taskmap)
+    logging.debug('Taskmap :')
+    logging.debug(taskmap)
 
     for key, value in dag.items():
         task = key
