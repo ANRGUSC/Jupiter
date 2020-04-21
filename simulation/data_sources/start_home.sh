@@ -8,4 +8,4 @@
 service ssh start
 
 echo 'Automatically run the data streamer'
-python3 -u ds_test.py 
+python3 -u ds_stream.py 
