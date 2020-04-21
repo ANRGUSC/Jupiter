@@ -571,7 +571,7 @@ def main():
     resource_db = resource_client['central_resource_profiler']
     resource_db.create_collection(self_ip, capped=True, size = 100000,max=1000)
 
-    if BOKEH==3:
+    if BOKEH == 3:
         logging.debug('Step 7: Start sending profiling information (CPU,mem) to the bokeh server')
         _thread.start_new_thread(schedule_bokeh_profiling,(BOKEH_INTERVAL,))
 

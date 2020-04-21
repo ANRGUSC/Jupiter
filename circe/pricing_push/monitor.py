@@ -163,7 +163,7 @@ def default_best_node():
                 best_node = min(task_price_summary,key=task_price_summary.get)
                 task_node_map[self_task] = best_node
                 mappinglatency = time.time() - starttime   
-                if BOKEH==3:    
+                if BOKEH == 3:    
                     topic = 'mappinglatency_%s'%(app_option)
                     msg = 'mappinglatency pricepush controller%s %s %f\n'%(self_task,app_name,mappinglatency)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -214,7 +214,7 @@ def push_controller_map():
     time.sleep(90)
     for computing_ip in all_computing_ips:
         send_controller_info(computing_ip)
-    if BOKEH==3:    
+    if BOKEH == 3:    
         topic = 'msgoverhead_controller%s'%(self_task)
         msg = 'msgoverhead pricepush controller%s pushcontroller %d \n'%(self_task,len(all_computing_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -254,7 +254,7 @@ def send_assignment_info(node_ip):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'msgoverhead_controller%s'%(self_task)
             msg = 'msgoverhead pricepush controller%s updatebest 1\n'%(self_task)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -290,7 +290,7 @@ def announce_best_assignment_to_child():
     logging.debug('Announce best assignment to my children')
     for child_ip in child_nodes_ip_dag:
         update_assignment_info_to_child(child_ip)   
-    if BOKEH==3:    
+    if BOKEH == 3:    
         topic = 'msgoverhead_controller%s'%(self_task)
         msg = 'msgoverhead pricepush controller%s sendassignmentchild %d\n'%(self_task,len(child_nodes_ip_dag))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)

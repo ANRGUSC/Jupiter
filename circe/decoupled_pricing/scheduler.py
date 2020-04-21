@@ -103,7 +103,7 @@ def announce_mapping_to_workers():
             res = urllib.request.urlopen(req)
             res = res.read()
             res = res.decode('utf-8')
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'msgoverhead_home'
             msg = 'msgoverhead pricedecoupled computehome announcemapping %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -282,8 +282,8 @@ class Handler1(pyinotify.ProcessEvent):
         exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
         logging.debug("execution time is: %s", exec_times)
 
-        if BOKEH==3:
-            msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+        if BOKEH == 3:
+            msg = 'makespan ' + appoption + ' ' + appname + ' ' + outputfile + ' ' + str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
            
 
@@ -302,7 +302,7 @@ def announce_input(input_file, input_time):
             res = urllib.request.urlopen(req)
             res = res.read()
             res = res.decode('utf-8')
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'msgoverhead_home'
             msg = 'msgoverhead pricedecoupled computehome announceinput %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)

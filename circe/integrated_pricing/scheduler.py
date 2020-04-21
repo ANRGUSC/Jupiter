@@ -144,7 +144,7 @@ def send_assignment_info(node_ip,task_name,best_node):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==3:    
+        if BOKEH == 3:    
             msg = 'msgoverhead priceintegrated %s updatebest 1\n'%(my_id)
             demo_help(BOKEH_SERVER,BOKEH_PORT,'msgoverhead_home',msg)
     except Exception as e:
@@ -176,7 +176,7 @@ def push_assignment_map():
     best_list = best_list[1:]
     if t0 == len(tasks):
         localmappingtime = time.time()-starttime
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'mappinglatency_%s'%(appoption)
             msg = 'mappinglatency priceintegrated home %s %f\n'%(appname,localmappingtime)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -216,9 +216,9 @@ def update_global_assignment():
         starttime = time.time()
         global_task_node_map[first_task] = local_task_node_map[my_task,first_task]
         globalmappingtime = time.time()-starttime
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'mappinglatency_%s'%(appoption)
-            msg = 'mappinglatency priceintegrated %s %f\n'%(appname,globalmappingtime)
+            msg = 'mappinglatency priceintegrated global %s %f\n'%(appname,globalmappingtime)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug('Local task node mapping not yet available')
@@ -384,7 +384,7 @@ def get_updated_network_profile():
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c = c+1
         
-        if BOKEH==3:
+        if BOKEH == 3:
             msg = 'msgoverhead priceintegrated %s networkdata %d\n'%(my_id,c)
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
 
@@ -524,7 +524,7 @@ class Handler1(pyinotify.ProcessEvent):
         logging.debug("execution time is: %s", exec_times)
 
         if BOKEH == 3:
-            msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+            msg = 'makespan ' + appoption + ' ' + appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
            
 
@@ -595,7 +595,7 @@ def announce_input(input_file, input_time):
             res = urllib.request.urlopen(req)
             res = res.read()
             res = res.decode('utf-8')
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'msgoverhead_home'
             msg = 'msgoverhead priceintegrated computehome announceinput %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)

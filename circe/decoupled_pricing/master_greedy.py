@@ -243,7 +243,7 @@ def announce_mapping_to_homecompute():
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==3:
+        if BOKEH == 3:
             msg = 'msgoverhead pricedecoupled controllerhome announcehomecompute 1 \n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
@@ -273,7 +273,7 @@ def restart_mapping_process():
     logging.debug('Restart the mapping process')
     for node in nodes:
         trigger_restart(nodes[node])
-    if BOKEH==3:
+    if BOKEH == 3:
         msg = 'msgoverhead pricedecoupled controllerhome triggerrestart %d\n'%(len(nodes))
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     logging.debug('Send the first task to the first node')
@@ -300,7 +300,7 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==3:
+        if BOKEH == 3:
             msg = 'msgoverhead pricedecoupled controllerhome assignfirst 1 \n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
@@ -340,7 +340,7 @@ def monitor_task_status(starting_time):
             end_time = time.time()
             deploy_time = end_time - starting_time
             logging.debug('Time to finish WAVE mapping %s',str(deploy_time))
-            if BOKEH==3:
+            if BOKEH == 3:
                 topic = 'mappinglatency_%s'%(app_option)
                 msg = 'mappinglatency pricedecoupled controllerhome %s %f \n' %(app_name,deploy_time)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -403,7 +403,7 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
 
-    if BOKEH==3:
+    if BOKEH == 3:
         topic = 'msgoverhead_%s'%(node_name)
         msg = 'msgoverhead pricedecoupled controllerhome%s networkdata %d \n' %(node_name,num_nb)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -433,7 +433,7 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
     global is_resource_data_ready
     is_resource_data_ready = True
 
-    if BOKEH==3:
+    if BOKEH == 3:
         topic = 'msgoverhead_%s'%(node_name)
         msg = 'msgoverhead pricedecoupled controllerhome%s resourcedata %d \n' %(node_name,len(profiler_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
