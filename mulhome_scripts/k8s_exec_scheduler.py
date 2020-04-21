@@ -230,6 +230,7 @@ def k8s_exec_scheduler(app_name):
             kubectl get replicaset -n "namespace name"
             kubectl get pod -n "namespace name"
     """
+    logging.debug('Taskmap :' + taskmap)
 
     for key, value in dag.items():
         task = key
@@ -239,6 +240,7 @@ def k8s_exec_scheduler(app_name):
             Generate the yaml description of the required service for each task
         """
         pod_name = app_name+'-'+task
+
         if taskmap[key][1] == False:
             body = write_exec_service_specs_home(name = pod_name)
 
