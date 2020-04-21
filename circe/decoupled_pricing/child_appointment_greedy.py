@@ -438,7 +438,7 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
 
     if BOKEH == 3:
         topic = 'msgoverhead_%s' % (node_name)
-        msg = 'msgoverhead pricedecoupled%s resourcedata %d \n' % \
+        msg = 'msgoverhead pricedecoupled %s resourcedata %d \n' % \
             (node_name, len(profiler_ips))
         demo_help(BOKEH_SERVER, BOKEH_PORT, topic, msg)
 

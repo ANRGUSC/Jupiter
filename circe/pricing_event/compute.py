@@ -317,7 +317,7 @@ def update_exec_profile_file():
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
 
-    if BOKEH==3:    
+    if BOKEH == 3:    
         topic = 'msgoverhead_%s'%(self_name)
         msg = 'msgoverhead priceevent compute%s updateexec %d\n'%(self_name,c)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -383,7 +383,7 @@ def get_updated_resource_profile():
             for record in logging:
                 resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceevent compute%s updateresource %d\n'%(self_name,len(resource_info))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -488,7 +488,7 @@ def push_updated_price():
         price = price_aggregate(task)
         announce_price(controllers_ip_map[task], price)
 
-    if BOKEH==3:    
+    if BOKEH == 3:    
         topic = 'msgoverhead_%s'%(self_name)
         msg = 'msgoverhead priceevent compute%s pushprice %d\n'%(self_name,len(task_controllers))
 
@@ -673,7 +673,7 @@ def request_best_assignment(home_id,task_name,file_name):
         res = res.read()
         res = res.decode('utf-8')
 
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceevent compute%s requestbest 1\n'%(self_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)

@@ -294,7 +294,7 @@ class MyHandler(pyinotify.ProcessEvent):
             demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
 
         if BOKEH == 3:
-            msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+            msg = 'makespan ' + appoption + ' ' + appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
 class Handler(pyinotify.ProcessEvent):

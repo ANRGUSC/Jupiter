@@ -224,9 +224,9 @@ def main():
 
     if path.isfile(local_profiler_path):
         transfer_data('home',username,password,local_profiler_path, remote_path)
-        if BOKEH==3:
+        if BOKEH == 3:
             topic = "msgoverhead_%s"%(nodename)
-            msg = 'msgoverhead executionprofiler sendexecinfo %d\n'%(len(tasks))
+            msg = 'msgoverhead executionprofiler %s sendexecinfo %d\n'%(nodename,len(tasks))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     else:
         logging.debug('No Runtime data file exists...')

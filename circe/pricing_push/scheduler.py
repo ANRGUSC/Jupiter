@@ -87,7 +87,7 @@ def announce_input(input_file, input_time):
             res = urllib.request.urlopen(req)
             res = res.read()
             res = res.decode('utf-8')
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'msgoverhead_home'
             msg = 'msgoverhead pricepush home announceinput %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -336,7 +336,7 @@ def get_updated_network_profile():
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
 
         
-        if BOKEH==3:
+        if BOKEH == 3:
             msg = 'msgoverhead pricepush home networkdata %d\n'%(c)
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
 
@@ -423,7 +423,7 @@ def announce_price(task_controller_ip, price):
         res = res.read()
         res = res.decode('utf-8')
 
-        if BOKEH==3:
+        if BOKEH == 3:
             msg = 'msgoverhead pricepush home announceprice %d\n'%(len(price['network']))
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
@@ -512,7 +512,7 @@ class MyHandler(pyinotify.ProcessEvent):
         logging.debug("execution time is: %s", exec_times)
 
         if BOKEH == 3:
-            msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+            msg = 'makespan ' + appoption + ' ' + appname + ' ' + outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
 

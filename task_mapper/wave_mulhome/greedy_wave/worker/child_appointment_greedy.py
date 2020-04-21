@@ -204,7 +204,7 @@ def assign_task_to_remote(assigned_node, task_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==3:
+        if BOKEH == 3:
             topic = 'msgoverhead_%s'%(node_name)
             msg = 'msgoverhead greedywave%s assignremote 1 %s %s \n' %(node_name,task_name,assigned_node)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -437,9 +437,9 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
     global is_resource_data_ready
     is_resource_data_ready = True
 
-    if BOKEH==3:
+    if BOKEH == 3:
         topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead greedywave%s resourcedata %d \n' %(node_name,len(profiler_ips))
+        msg = 'msgoverhead greedywave %s resourcedata %d \n' %(node_name,len(profiler_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
@@ -472,9 +472,9 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
 
-    if BOKEH==3:
+    if BOKEH == 3:
         topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead greedywave%s networkdata %d \n' %(node_name,len(myneighbors))
+        msg = 'msgoverhead greedywave %s networkdata %d \n' %(node_name,len(myneighbors))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     
 

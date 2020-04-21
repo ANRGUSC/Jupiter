@@ -182,9 +182,9 @@ def main():
     profiler_ip,exec_home_ip,num_nodes,network_map,node_list = get_global_info()
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH, app_name,app_option
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
     app_name = os.environ['APP_NAME']
     app_option = os.environ['APP_OPTION']
 
@@ -209,9 +209,9 @@ def main():
                 deploy_time = end_time - starting_time
                 logging.debug('Time to finish HEFT mapping %s',str(deploy_time))
 
-            if BOKEH==3:
+            if BOKEH == 3:
                 topic = 'mappinglatency_%s'%(app_option)
-                msg = 'mappinglatency originalheft %s %f \n' %(app_name,deploy_time)
+                msg = 'mappinglatency heft original %s %f \n' %(app_name,deploy_time)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         
             if BOKEH == 1:

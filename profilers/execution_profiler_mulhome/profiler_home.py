@@ -373,10 +373,10 @@ def main():
             logging.debug(e)
 
 
-    if BOKEH==3:
-        msg = 'msgoverhead executionprofiler sendsample %d\n'%(len(profilers_ips))
+    if BOKEH == 3:
+        msg = 'msgoverhead executionprofiler home sendsample %d\n'%(len(profilers_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
-        msg = 'msgoverhead executionprofiler startprofiler %d\n'%(len(profilers_ips))
+        msg = 'msgoverhead executionprofiler home startprofiler %d\n'%(len(profilers_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
 
 

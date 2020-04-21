@@ -94,7 +94,7 @@ if __name__ == '__main__':
 
     jupiter_config.set_globals()
 
-    global SERVER_IP, DAG_PATH, folder
+    global SERVER_IP, DAG_PATH, folder, cur_app
     SERVER_IP = "127.0.0.1"
     NODE_PATH = jupiter_config.HERE + 'nodes.txt'
     nodes = k8s_get_nodes(NODE_PATH)
@@ -104,9 +104,14 @@ if __name__ == '__main__':
     tasks,tasksid = retrieve_tasks(DAG_PATH)
     M = len(tasks)
 
-    main_folder = '../stats/exp8_data'
+    cur_app = jupiter_config.APP_OPTION
+
+
+
+    main_folder = 'stats'
     folder_list= ['makespan','msg_overhead','power_overhead','mapping_latency','summary_latency']
     try:
+        print('Creating folder')
         os.mkdir(main_folder)
         for folder in folder_list:
             exp_folder= main_folder+'/'+folder
@@ -114,12 +119,19 @@ if __name__ == '__main__':
     except:
         print('Folder already existed')
 
+
     
     try:
+        print('Creating subfolder')
         for folder in folder_list:
             if folder!='summary_latency':
-                task_folder = main_folder+'/'+folder+'/N%dM%d'%(N,M)
-                os.mkdir(task_folder)
+                if cur_app.startswith('ccr'):
+                    task_folder = main_folder+'/'+folder+'/N%dM%d%s'%(N,M,cur_app)
+                    os.mkdir(task_folder)
+                else:
+                    task_folder = main_folder+'/'+folder+'/N%dM%d'%(N,M)
+                    os.mkdir(task_folder)
+
     except:
         print('Subfolder already existed')
 
@@ -144,54 +156,75 @@ if __name__ == '__main__':
     mqtt_port = 1883
     mqtt_timeout = 300
 
+
     # Collect makespan
     exp_folder = main_folder+'/'+folder_list[0]
-    makespan_log = '%s/N%dM%d/%s_N%d_M%d.log'%(exp_folder,N,M,option,N,M)
-    cur_app = jupiter_config.APP_OPTION
+    if cur_app.startswith('ccr'):
+        sub_folder = '%s/N%dM%d%s'%(exp_folder,N,M,cur_app)
+    else:
+        sub_folder = '%s/N%dM%d'%(exp_folder,N,M)
+    
+    makespan_log = '%s/%s_N%d_M%d.log'%(sub_folder,option,N,M)
+    
     _thread.start_new_thread(collector,(cur_app,cur_app,SERVER_IP,mqtt_port,mqtt_timeout,1,makespan_log))
     
     # Collect power overhead (CPU/ memory)
     exp_folder = main_folder+'/'+folder_list[2]
+    if cur_app.startswith('ccr'):
+        sub_folder = '%s/N%dM%d%s'%(exp_folder,N,M,cur_app)
+    else:
+        sub_folder = '%s/N%dM%d'%(exp_folder,N,M)
     for node in nodes:
-        node_log = '%s/N%dM%d/%s_%s_N%d_M%d.log'%(exp_folder,N,M,option,node,N,M)
+        node_log = '%s/%s_%s_N%d_M%d.log'%(sub_folder,option,node,N,M)
         cur_sub = 'poweroverhead_%s'%(node)
         print(cur_sub)
         _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,node_log))
 
 
-    ## Collect message overhead # nonpricing
+    # Collect message overhead # nonpricing
     # exp_folder = main_folder+'/'+folder_list[1]
+    # if cur_app.startswith('ccr'):
+    #     sub_folder = '%s/N%dM%d%s'%(exp_folder,N,M,cur_app)
+    # else:
+    #     sub_folder = '%s/N%dM%d'%(exp_folder,N,M)
     # for node in nodes:
-    #     node_log = '%s/N%dM%d/%s_%s_N%d_M%d.log'%(exp_folder,N,M,option,node,N,M)
+    #     node_log = '%s/%s_%s_N%d_M%d.log'%(sub_folder,option,node,N,M)
     #     cur_sub = 'msgoverhead_%s'%(node)
     #     print(cur_sub)
     #     _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,node_log))
 
     ## Collect message overhead # pricing
-    exp_folder = main_folder+'/'+folder_list[1] 
-    for node in nodes:
-        node_log = '%s/N%dM%d/%s_%s_N%d_M%d'%(exp_folder,N,M,option,node,N,M)
-        cur_sub = 'msgoverhead_%s'%(node)
-        print(cur_sub)
-        print(node_log)
-        _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,node_log))
+    # exp_folder = main_folder+'/'+folder_list[1]
+    # if cur_app.startswith('ccr'):
+    #     sub_folder = '%s/N%dM%d%s'%(exp_folder,N,M,cur_app)
+    # else:
+    #     sub_folder = '%s/N%dM%d'%(exp_folder,N,M)
+    # for node in nodes:
+    #     node_log = '%s/%s_%s_N%d_M%d'%(sub_folder,option,node,N,M)
+    #     cur_sub = 'msgoverhead_%s'%(node)
+    #     print(cur_sub)
+    #     print(node_log)
+    #     _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,node_log))
     # for task in tasks:
-    #     task_log = '%s/N%dM%d/%s_controller%s_N%d_M%d.log'%(exp_folder,N,M,option,task,N,M)
+    #     task_log = '%s/%s_controller%s_N%d_M%d.log'%(sub_folder,option,task,N,M)
     #     cur_sub = 'msgoverhead_controller%s'%(task)
     #     print(cur_sub)
     #     print(task_log)
     #     _thread.start_new_thread(collector,(task,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,task_log))
 
-    # Collect mapping latency 
+    # # Collect mapping latency 
     # exp_folder = main_folder+'/'+folder_list[3]
-    # mapping_log = '%s/N%dM%d/%s_N%d_M%d.log'%(exp_folder,N,M,option,N,M)
+    # if cur_app.startswith('ccr'):
+    #     sub_folder = '%s/N%dM%d%s'%(exp_folder,N,M,cur_app)
+    # else:
+    #     sub_folder = '%s/N%dM%d'%(exp_folder,N,M)
+    # mapping_log = '%s/%s_N%d_M%d.log'%(sub_folder,option,N,M)
     # print(mapping_log)
     # cur_app = jupiter_config.APP_OPTION
     # cur_sub = 'mappinglatency_%s'%(cur_app)
     # print(cur_sub)
     # # SERVER_IP = '192.168.1.234'
     # _thread.start_new_thread(collector,(cur_app,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,mapping_log))
-
 
 
     app.run(host='0.0.0.0',port=5055)

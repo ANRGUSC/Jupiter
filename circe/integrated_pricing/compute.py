@@ -325,7 +325,7 @@ def send_assignment_info(node_ip,task_name,best_node):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceintegrated %s updatebest 1\n'%(self_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -358,7 +358,7 @@ def push_assignment_map():
     
     if t0 == len(tasks):
         localmappingtime = time.time()-starttime
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'mappinglatency_%s'%(appoption)
             msg = 'mappinglatency priceintegrated compute%s %s %f\n'%(self_name,appname,localmappingtime)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -426,7 +426,7 @@ def update_global_assignment():
     globalmappingtime = time.time()-starttime
 
 
-    if BOKEH==3:    
+    if BOKEH == 3:    
         topic = 'mappinglatency_%s'%(appoption)
         msg = 'mappinglatency priceintegrated compute%s %s %f\n'%(self_name,appname,globalmappingtime)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -484,7 +484,7 @@ def update_exec_profile_file():
     with open('execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
-    if BOKEH==3:    
+    if BOKEH == 3:    
         topic = 'msgoverhead_%s'%(self_name)
         msg = 'msgoverhead priceintegrated compute%s updateexec %d\n'%(self_name,c)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -537,7 +537,7 @@ def get_updated_network_profile():
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c = c+1
         logging.debug('Retrieve network information')
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceintegrated compute%s updatenetwork %d\n'%(self_name,c)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -562,7 +562,7 @@ def get_updated_resource_profile():
                 resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
         logging.debug("Resource profiles: %s", resource_info)
-        if BOKEH==3:    
+        if BOKEH == 3:    
             topic = 'msgoverhead_%s'%(self_name)
             msg = 'msgoverhead priceintegrated compute%s updateresource %d\n'%(self_name,len(resource_info))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -775,7 +775,7 @@ def announce_price(price):
             res = res.read()
             res = res.decode('utf-8')
 
-            if BOKEH==3:    
+            if BOKEH == 3:    
                 topic = 'msgoverhead_%s'%(self_name)
                 msg = 'msgoverhead priceintegrated compute%s updateprice 1\n'%(self_name)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)

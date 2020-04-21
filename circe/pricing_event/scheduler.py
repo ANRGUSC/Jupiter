@@ -95,7 +95,7 @@ def request_best_assignment(home_id,task_name,file_name):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
-        if BOKEH==3:    
+        if BOKEH == 3:    
             msg = 'msgoverhead priceevent home requestbest 1 %s %s\n'%(home_id,task_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
@@ -286,7 +286,7 @@ def get_updated_resource_profile():
             resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
     logging.debug("Resource profiles: %s", resource_info)
-    if BOKEH==3:    
+    if BOKEH == 3:    
         topic = 'msgoverhead_%s'%(self_name)
         msg = 'msgoverhead priceevent compute%s updateresource %d\n'%(self_name,len(resource_info))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
@@ -316,7 +316,7 @@ def get_updated_network_profile():
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c=c+1
         
-        if BOKEH==3:
+        if BOKEH == 3:
             msg = 'msgoverhead priceevent home networkdata %d\n'%(c)
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
         return network_info
@@ -471,7 +471,7 @@ class MyHandler(pyinotify.ProcessEvent):
             demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
 
         if BOKEH == 3:
-            msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+            msg = 'makespan ' + appoption + ' ' + appname + ' '+ outputfile + ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
 class Handler(pyinotify.ProcessEvent):
