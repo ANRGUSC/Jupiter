@@ -229,8 +229,7 @@ def set_globals():
     NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
     STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
 
-    global NUM_STREAM, STREAM_IMAGE
-    NUM_STREAM = int(config['OTHER']['NUM_STREAM'])
+    global STREAM_IMAGE
     STREAM_IMAGE = 'docker.io/anrg/stream_home:%s_%s'%(APP_OPTION,cluster_option)
 
 if __name__ == '__main__':
