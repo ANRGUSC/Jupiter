@@ -224,9 +224,11 @@ def main():
     tasks_info = open(os.path.join(os.path.dirname(__file__), 'DAG.txt'), "r")
 
     ## create DAG dictionary
+    logging.debug(task_map)
     tasks = {}
     count = 0
     for line in tasks_info:
+        logging.debug(line)
         if count == 0:
             count += 1
             continue
@@ -238,10 +240,12 @@ def main():
         tasks.setdefault(data[0], [])
         if data[0] not in task_order:
             task_order.append(data[0])
+        logging.debug(data)
         for i in range(3, len(data)):
             if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].append(data[i])
-
+                
+    logging.debug(tasks)
     ## import task modules, put then in a list and create task-module dictinary
     task_module = {}
     modules=[]
