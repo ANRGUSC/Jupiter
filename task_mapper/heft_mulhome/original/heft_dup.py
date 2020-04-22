@@ -323,8 +323,8 @@ class HEFT:
                 self.processors[p].time_line.append(Duration(task.number, task.ast, task.aft))
                 self.processors[p].time_line.sort(cmp=lambda x, y: cmp(x.start, y.start))
 
-        #self.duplicate()
-        #self.reschedule()
+        self.duplicate()
+        self.reschedule()
 
 
 
