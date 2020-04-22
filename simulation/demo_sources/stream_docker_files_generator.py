@@ -45,7 +45,7 @@ ADD jupiter_config.ini /jupiter_config.ini
 RUN mkdir generated_stream 
 ADD simulation/demo_sources/start_home.sh /start.sh
 ADD simulation/demo_sources/ds_demo.py /ds_demo.py
-ADD simulation/{dataset} /generated_stream/fireengine
+ADD simulation/data /data
 
 RUN chmod +x /start.sh
 

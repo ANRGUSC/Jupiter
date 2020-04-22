@@ -193,11 +193,10 @@ def set_globals():
     NONDAG_WORKER_IMAGE     = 'docker.io/anrg/%s_circe_nondag_worker:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
     
     """CIRCE home and worker images for execution profiler"""
-    global HOME_IMAGE, WORKER_IMAGE, STREAM_IMAGE
+    global HOME_IMAGE, WORKER_IMAGE
 
     HOME_IMAGE              = 'docker.io/anrg/circe_home:%s_%s'%(APP_OPTION,cluster_option)
     WORKER_IMAGE            = 'docker.io/anrg/circe_worker:%s_%s'%(APP_OPTION,cluster_option)
-    STREAM_IMAGE              = 'docker.io/anrg/stream_home:%s_%s'%(APP_OPTION,cluster_option)
 
     """DRUPE home and worker images"""
     global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
@@ -229,6 +228,10 @@ def set_globals():
     global NUM_STRESS, STRESS_IMAGE
     NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
     STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
+
+    global NUM_STREAM, STREAM_IMAGE
+    NUM_STREAM = int(config['OTHER']['NUM_STREAM'])
+    STREAM_IMAGE = 'docker.io/anrg/stream_home:%s_%s'%(APP_OPTION,cluster_option)
 
 if __name__ == '__main__':
     set_globals()
