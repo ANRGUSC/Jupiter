@@ -67,8 +67,14 @@ def task(filelist, pathin, pathout):
     for f in filelist:
         helper_copyfile(f, pathin, pathout[1], out_list)	
     return out_list 
+
+def main():
+    filelist = ['n03345487_10.JPEG']
+    outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
+    outfile = task(filelist, outpath, outpath)
+    return outfile
 	
-if __name__ == "__main__":
-    filelist = ['outds1prefix_n03345487_1002.JPEG', 'outds2prefix_n04146614_10015.JPEG']
-    pathout = ["./to_collage/", "./to_resnet/"]
-    task(filelist, "./to_master/", pathout)
+# if __name__ == "__main__":
+#     filelist = ['outds1prefix_n03345487_1002.JPEG', 'outds2prefix_n04146614_10015.JPEG']
+#     pathout = ["./to_collage/", "./to_resnet/"]
+#     task(filelist, "./to_master/", pathout)
