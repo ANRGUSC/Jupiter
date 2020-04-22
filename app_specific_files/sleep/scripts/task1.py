@@ -2,7 +2,7 @@ import os
 import time
 import sys
 
-EXEC_TIME = 2
+EXEC_TIME = 20
 TASK_NAME = "task1"
 NUM_BLOCK = 8192
 
