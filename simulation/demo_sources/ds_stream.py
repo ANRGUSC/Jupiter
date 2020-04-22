@@ -18,6 +18,7 @@ from flask import Flask, request
 import configparser
 import urllib
 import logging
+import random
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -28,12 +29,8 @@ end_times = dict()
 exec_times = dict()
 
 def find_next_file(local_folder):
-    global current_idx
     list_files = os.listdir(local_folder)
-    current_idx += 1
-    #current_idx = random.randint(0 , len(list_files)-1)
-    if current_idx >= len(list_files):
-        current_idx = current_idx % len(list_files)
+    current_idx = random.randint(0 , len(list_files)-1)
     return list_files[current_idx]
 
 def gen_stream_data(interval,data_path,original_data_path):
