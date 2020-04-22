@@ -187,7 +187,7 @@ class HEFT:
 
         time_slots = []
         if len(processor.time_line) == 0:
-            time_slots.append([0, 9999])
+            time_slots.append([0, 9999999999])
         else:
             for i in range(len(processor.time_line)):
                 if i == 0:
@@ -197,7 +197,7 @@ class HEFT:
                         continue
                 else:
                     time_slots.append([processor.time_line[i - 1].end, processor.time_line[i].start])
-            time_slots.append([processor.time_line[len(processor.time_line) - 1].end, 9999])
+            time_slots.append([processor.time_line[len(processor.time_line) - 1].end, 9999999999])
 
 
         for slot in time_slots:
@@ -205,7 +205,7 @@ class HEFT:
                 return slot[0]
             if est >= slot[0] and est + task.comp_cost[processor.number] <= slot[1]:
                 return est
-        # TODO: Possible bug here. If the value of est is larger than 9999 it returns an empty array which creates failts.
+        # TODO: Possible bug here. If the value of est is larger than 9999999999 it returns an empty array which creates failts.
         # So added a default return statement to always return something. Not sure whether it is correct
         return est
 
@@ -305,7 +305,7 @@ class HEFT:
                 task.aft = w
                 self.processors[p].time_line.append(Duration(task.number, 0, w))
             else:
-                aft = 9999
+                aft = 9999999999
                 for processor in self.processors:
                     est = self.cal_est(task, processor)
                     # print("est:", est)
@@ -323,8 +323,8 @@ class HEFT:
                 self.processors[p].time_line.append(Duration(task.number, task.ast, task.aft))
                 self.processors[p].time_line.sort(cmp=lambda x, y: cmp(x.start, y.start))
 
-        self.duplicate()
-        self.reschedule()
+        #self.duplicate()
+        #self.reschedule()
 
 
 
