@@ -117,7 +117,13 @@ def task(file_, pathin, pathout):
         pickle.dump(final_preds, outfile)
     out_list.append(outfile)
     return out_list
-if __name__=="__main__":
+
+def main():
     filelist = ["outmasterprefix_new_collage.JPEG"]
-    for f in filelist:
-        task(f, "./to_collage/", "./")
+    outpath = os.path.join(os.path.dirname(__file__), 'to_collage/')
+    outfile = task(filelist, outpath, outpath)
+    return outfile
+# if __name__=="__main__":
+#     filelist = ["outmasterprefix_new_collage.JPEG"]
+#     for f in filelist:
+#         task(f, "./to_collage/", "./")

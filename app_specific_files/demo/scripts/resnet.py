@@ -53,10 +53,16 @@ def task(file_, pathin, pathout):
             out_list.append(shutil.copyfile(source, destination))
     return out_list
 
-if __name__ == "__main__":
-    #filelist = ['outmasterprefix_n03345487_1002.JPEG', 'outmasterprefix_n04146614_10015.JPEG']
-    file_ = 'outmasterprefix_n03345487_1002.JPEG'
-    pathin = './to_resnet/'
-    pathout = './classified_images/'
-    #for f in filelist:
-    task(file_, pathin, pathout)    
+def main():
+    filelist = ["outmasterprefix_n03345487_1002.JPEG"]
+    outpath = os.path.join(os.path.dirname(__file__), 'to_resnet/')
+    outfile = task(filelist, outpath, outpath)
+    return outfile
+
+# if __name__ == "__main__":
+#     #filelist = ['outmasterprefix_n03345487_1002.JPEG', 'outmasterprefix_n04146614_10015.JPEG']
+#     file_ = 'outmasterprefix_n03345487_1002.JPEG'
+#     pathin = './to_resnet/'
+#     pathout = './classified_images/'
+#     #for f in filelist:
+#     task(file_, pathin, pathout)    
