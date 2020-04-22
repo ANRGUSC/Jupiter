@@ -187,7 +187,7 @@ class HEFT:
 
         time_slots = []
         if len(processor.time_line) == 0:
-            time_slots.append([0, 9999999999])
+            time_slots.append([0, 9999])
         else:
             for i in range(len(processor.time_line)):
                 if i == 0:
@@ -197,7 +197,7 @@ class HEFT:
                         continue
                 else:
                     time_slots.append([processor.time_line[i - 1].end, processor.time_line[i].start])
-            time_slots.append([processor.time_line[len(processor.time_line) - 1].end, 9999999999])
+            time_slots.append([processor.time_line[len(processor.time_line) - 1].end, 9999])
 
 
         for slot in time_slots:
@@ -305,7 +305,7 @@ class HEFT:
                 task.aft = w
                 self.processors[p].time_line.append(Duration(task.number, 0, w))
             else:
-                aft = 9999999999
+                aft = 9999
                 for processor in self.processors:
                     est = self.cal_est(task, processor)
                     # print("est:", est)
