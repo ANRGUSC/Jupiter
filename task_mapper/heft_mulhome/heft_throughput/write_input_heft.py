@@ -121,7 +121,8 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
 
     # Read format: Node ID, Task, Execution Time, Output size
     for row in execution_info:
-        computation_matrix[task_ID_dict[row[1]]][node_ids[row[0]] - 1] = int(float(row[2])*10) 
+        # computation_matrix[task_ID_dict[row[1]]][node_ids[row[0]] - 1] = int(float(row[2])*10) 
+        computation_matrix[task_ID_dict[row[1]]][node_ids[row[0]] - 1] = int(float(row[2])*1000) 
         #100000
         task_size[row[1]] = row[3]
 
