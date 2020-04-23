@@ -34,25 +34,9 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
     collage_resized.save(collage_name)
     return collage_name
 
-def helper_copyfile(f, pathin, pathout, out_list):
-    source = os.path.join(pathin, f)
-    print("file is", f)
-    print(pathin)
-    print(source)
-    print(pathout)
-    destination = os.path.join(pathout, "outmasterprefix_"+f)
-    # destination = os.path.join(pathout, "outmasterprefix_" + f)
-    print(destination)
-    # f_split = f.split("prefix_")[1]
-    # destination = os.path.join(pathout, "outmasterprefix_" + f_split)
-    #try: 
-    out_list.append(shutil.copyfile(source, destination))
-    #except: 
-    #print("ERROR while copying file in master_task.py")
-    return
 
 def task(filelist, pathin, pathout):
-    out_list = [] # output file list. Ordered as => [collage_file, image1, image2, ...., image9]
+    out_list = []# output file list. Ordered as => [collage_file, image1, image2, ...., image9]
     ### send to collage task
     ### Collage image is arranged as a rectangular grid of shape w x w 
     w = 3 
@@ -69,13 +53,12 @@ def task(filelist, pathin, pathout):
     #collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w).astype(np.float16)
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     
-    helper_copyfile(collage_file, "", pathout, out_list) 
+    shutil.copyfile(collage_file, "outmasterprefix_"+collage_file)
+    outlist = ["outmasterprefix_"+collage_file]
     ### send to resnet tasks
     for f in filelist:
-        helper_copyfile(f, pathin, pathout, out_list)	
-    print(collage_file)
-    
-    print(outlist)
+        shutil.copyfile(f, "outmasterprefix_"+f)	
+        outlist.append("outmasterprefix_"+f)
     return out_list 
 
 def main():
