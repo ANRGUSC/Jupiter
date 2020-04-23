@@ -40,7 +40,7 @@ def helper_copyfile(f, pathin, pathout, out_list):
     print(pathin)
     print(source)
     print(pathout)
-    destination = os.path.join(pathout, "outmasterprefix_" +f)
+    destination = os.path.join(pathout, f)
     # destination = os.path.join(pathout, "outmasterprefix_" + f)
     print(destination)
     # f_split = f.split("prefix_")[1]
