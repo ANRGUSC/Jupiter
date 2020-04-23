@@ -29,7 +29,7 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
     #collage = np.transpose(collage,(2,0,1))
     #collage /= 255.0
     ### write to file 
-    collage_name = "./outmasterprefix_new_collage.JPEG"
+    collage_name = "new_collage.JPEG"
     collage_resized = collage.resize((collage_spatial, collage_spatial), Image.ANTIALIAS)
     collage_resized.save(collage_name)
     return collage_name
@@ -40,7 +40,7 @@ def helper_copyfile(f, pathin, pathout, out_list):
     print(pathin)
     print(source)
     print(pathout)
-    destination = os.path.join(pathout, f)
+    destination = os.path.join(pathout, "outmasterprefix_"+f)
     # destination = os.path.join(pathout, "outmasterprefix_" + f)
     print(destination)
     # f_split = f.split("prefix_")[1]
