@@ -21,8 +21,7 @@ def task(file_, pathin, pathout):
                transforms.CenterCrop(224),
                transforms.ToTensor()])
     out_list = []
-    for f in file_:
-        print(f)
+    for i, f in enumerate(file_):
         ### Read input files.
         img = Image.open(os.path.join(pathin, f))
         ### Apply transforms.
