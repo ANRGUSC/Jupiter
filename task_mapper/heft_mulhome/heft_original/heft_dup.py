@@ -205,7 +205,7 @@ class HEFT:
                 return slot[0]
             if est >= slot[0] and est + task.comp_cost[processor.number] <= slot[1]:
                 return est
-        # TODO: Possible bug here. If the value of est is larger than 9999999999 it returns an empty array which creates failts.
+        # TODO: Possible bug here. If the value of est is larger than 9999 it returns an empty array which creates failts.
         # So added a default return statement to always return something. Not sure whether it is correct
         return est
 
@@ -323,8 +323,8 @@ class HEFT:
                 self.processors[p].time_line.append(Duration(task.number, task.ast, task.aft))
                 self.processors[p].time_line.sort(cmp=lambda x, y: cmp(x.start, y.start))
 
-        #self.duplicate()
-        #self.reschedule()
+        self.duplicate()
+        self.reschedule()
 
 
 
