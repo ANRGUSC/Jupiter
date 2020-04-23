@@ -37,8 +37,9 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
 def helper_copyfile(f, pathin, pathout, out_list):
     source = os.path.join(pathin, f)
     print("file is", f)
-    f_split = f.split("prefix_")[1]
-    destination = os.path.join(pathout, "outmasterprefix_" + f_split)
+    destination = os.path.join(pathout, "outmasterprefix_" + f)
+    # f_split = f.split("prefix_")[1]
+    # destination = os.path.join(pathout, "outmasterprefix_" + f_split)
     #try: 
     out_list.append(shutil.copyfile(source, destination))
     #except: 
