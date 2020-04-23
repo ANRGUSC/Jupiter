@@ -52,11 +52,17 @@ RUN mkdir -p /home/darpa/apps/data
 RUN apt-get install stress
 
 
+
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
 ADD {app_file}/scripts/ /centralized_scheduler/
 COPY {app_file}/sample_input /centralized_scheduler/sample_input
 
 ADD {app_file}/configuration.txt /centralized_scheduler/DAG.txt
+
+# torch models
+RUN mkdir /home/.torch/models
+COPY {app_file}/scripts/modified_pytorch_source_code_files/models/resnet34-333f7ec4.pth /home/.torch/models/resnet34-333f7ec4.pth
+
 
 ADD profilers/execution_profiler_mulhome/profiler_worker.py /centralized_scheduler/profiler.py
 

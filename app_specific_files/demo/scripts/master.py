@@ -54,6 +54,7 @@ def task(filelist, pathin, pathout):
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     
     shutil.copyfile(collage_file, "outmasterprefix_"+collage_file)
+    ### send to collage task
     outlist = ["outmasterprefix_"+collage_file]
     ### send to resnet tasks
     for f in filelist:
