@@ -57,7 +57,7 @@ def task(filelist, pathin, pathout):
     outlist = ["outmasterprefix_"+collage_file]
     ### send to resnet tasks
     for f in filelist:
-        shutil.copyfile(f, "outmasterprefix_"+f)	
+        shutil.copyfile(os.path.join(pathin,f), "outmasterprefix_"+f)	
         outlist.append("outmasterprefix_"+f)
     return out_list 
 
