@@ -22,6 +22,7 @@ def task(file_, pathin, pathout):
                transforms.ToTensor()])
     out_list = []
     for f in [file_]:
+        print(f)
         ### Read input files.
         img = Image.open(os.path.join(pathin, f))
         ### Apply transforms.
