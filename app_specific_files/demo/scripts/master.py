@@ -40,9 +40,6 @@ def helper_copyfile(f, pathin, pathout, out_list):
     print(pathin)
     print(source)
     print(pathout)
-
-    print(pathout[0])
-    print(pathout[1])
     destination = os.path.join(pathout, "outmasterprefix_" +f)
     # destination = os.path.join(pathout, "outmasterprefix_" + f)
     print(destination)
@@ -72,10 +69,10 @@ def task(filelist, pathin, pathout):
     #collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w).astype(np.float16)
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     
-    helper_copyfile(collage_file, "", pathout[0], out_list) 
+    helper_copyfile(collage_file, "", pathout, out_list) 
     ### send to resnet tasks
     for f in filelist:
-        helper_copyfile(f, pathin, pathout[1], out_list)	
+        helper_copyfile(f, pathin, pathout, out_list)	
     print(collage_file)
     
     print(outlist)
