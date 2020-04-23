@@ -119,8 +119,8 @@ def task(file_, pathin, pathout):
     return out_list
 
 def main():
-    filelist = ["outmasterprefix_new_collage.JPEG"]
-    outpath = os.path.join(os.path.dirname(__file__), 'to_collage/')
+    filelist = ["outmaster_new_collage.JPEG"]
+    outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
 # if __name__=="__main__":
