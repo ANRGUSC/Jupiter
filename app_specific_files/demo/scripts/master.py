@@ -66,13 +66,15 @@ def task(filelist, pathin, pathout):
         input_list.append(os.path.join(pathin, filelist[file_idx]))
     #collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w).astype(np.float16)
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
-    print(collage_file)
-    print(pathout[0])
-    print(outlist)
+    
     helper_copyfile(collage_file, "", pathout[0], out_list) 
     ### send to resnet tasks
     for f in filelist:
         helper_copyfile(f, pathin, pathout[1], out_list)	
+    print(collage_file)
+    print(pathout[0])
+    print(pathout[1])
+    print(outlist)
     return out_list 
 
 def main():
