@@ -39,24 +39,24 @@ def task(file_, pathin, pathout):
         ### Copy to appropriate destination paths
         if pred[0] == 555: ### fire engine. class 1
             source = os.path.join(pathin, f)
-            f_split = f.split("prefix_")[1]
-            destination = os.path.join(pathout, "class1_prefix_" + f_split)
+            # f_split = f.split("prefix_")[1]
+            destination = os.path.join(pathout, "class1_" + f)
             out_list.append(shutil.copyfile(source, destination))
         elif pred[0] == 779: ### school bus. class 2
             source = os.path.join(pathin, f)
-            f_split = f.split("prefix_")[1]
-            destination = os.path.join(pathout, "class2_prefix_" + f_split)
+            # f_split = f.split("prefix_")[1]
+            destination = os.path.join(pathout, "class2_" + f)
             out_list.append(shutil.copyfile(source, destination))
         else: ### not either of the classes
             source = os.path.join(pathin, f)
-            f_split = f.split("prefix_")[1]
-            destination = os.path.join(pathout, "classNA_prefix_" + f_split)
+            # f_split = f.split("prefix_")[1]
+            destination = os.path.join(pathout, "classNA_" + f)
             out_list.append(shutil.copyfile(source, destination))
     return out_list
 
 def main():
-    filelist = ["outmasterprefix_n03345487_1002.JPEG"]
-    outpath = os.path.join(os.path.dirname(__file__), 'to_resnet/')
+    filelist = ["outmaster_n03345487_1002.JPEG"]
+    outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
 

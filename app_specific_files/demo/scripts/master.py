@@ -53,13 +53,13 @@ def task(filelist, pathin, pathout):
     #collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w).astype(np.float16)
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     
-    shutil.copyfile(collage_file, "outmasterprefix_"+collage_file)
+    shutil.copyfile(collage_file, "outmaster_"+collage_file)
     ### send to collage task
-    outlist = ["outmasterprefix_"+collage_file]
+    outlist = ["outmaster_"+collage_file]
     ### send to resnet tasks
     for f in filelist:
-        shutil.copyfile(os.path.join(pathin,f), "outmasterprefix_"+f)	
-        outlist.append("outmasterprefix_"+f)
+        shutil.copyfile(os.path.join(pathin,f), "outmaster_"+f)	
+        outlist.append("outmaster_"+f)
     return out_list 
 
 def main():

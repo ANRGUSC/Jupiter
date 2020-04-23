@@ -7,8 +7,8 @@ Task for node that stores classified images belonding to it's assigned class.
 def task(file_, pathin, pathout):
     out_list = []
     source = os.path.join(pathin, file_) 
-    file_split = file_.split("prefix_")[1]
-    destination = os.path.join(pathout, "outstore2prefix_" + file_split)
+    # file_split = file_.split("prefix_")[1]
+    destination = os.path.join(pathout, "outstore2_" + file)
     try: 
         out_list.append(shutil.copyfile(source, destination))
     except: 
@@ -17,8 +17,8 @@ def task(file_, pathin, pathout):
 
 
 def main():
-    filelist = ['class2_prefix_n04146614_10015.JPEG']
-    outpath = os.path.join(os.path.dirname(__file__), 'store_class_2/')
+    filelist = ['class2_n04146614_10015.JPEG']
+    outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
 	
