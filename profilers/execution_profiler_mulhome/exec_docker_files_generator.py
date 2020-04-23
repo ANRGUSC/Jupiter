@@ -59,10 +59,6 @@ COPY {app_file}/sample_input /centralized_scheduler/sample_input
 
 ADD {app_file}/configuration.txt /centralized_scheduler/DAG.txt
 
-# torch models
-RUN mkdir -p /root/.cache/torch/checkpoints/
-COPY {app_file}/scripts/modified_pytorch_source_code_files/models/resnet34-333f7ec4.pth /root/.cache/torch/checkpoints/resnet34-333f7ec4.pth
-
 
 ADD profilers/execution_profiler_mulhome/profiler_worker.py /centralized_scheduler/profiler.py
 
