@@ -39,7 +39,12 @@ def helper_copyfile(f, pathin, pathout, out_list):
     print("file is", f)
     print(pathin)
     print(source)
-    destination = os.path.join(pathout, "outmasterprefix_" + f)
+    print(pathout)
+
+    print(pathout[0])
+    print(pathout[1])
+    destination = os.path.join(pathout, "outmasterprefix_" +f)
+    # destination = os.path.join(pathout, "outmasterprefix_" + f)
     print(destination)
     # f_split = f.split("prefix_")[1]
     # destination = os.path.join(pathout, "outmasterprefix_" + f_split)
@@ -72,8 +77,7 @@ def task(filelist, pathin, pathout):
     for f in filelist:
         helper_copyfile(f, pathin, pathout[1], out_list)	
     print(collage_file)
-    print(pathout[0])
-    print(pathout[1])
+    
     print(outlist)
     return out_list 
 
