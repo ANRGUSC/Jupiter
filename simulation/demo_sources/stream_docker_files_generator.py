@@ -63,7 +63,7 @@ CMD ["./start.sh"]
 ############################################ WORKER DOCKER TEMPLATE#########################################################
 
 
-def write_demodata_home_docker(app_option=None,**kwargs):
+def write_stream_home_docker(app_option=None,**kwargs):
     """
         Function to Generate the Dockerfile of the home/master node of CIRCE
     """
