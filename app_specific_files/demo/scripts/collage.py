@@ -115,9 +115,10 @@ def task(file_, pathin, pathout):
         final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
     ### Write predictions to a file and send it to decoder task's folder
     out_list = []
-    with open(os.path.join(pathout,"outcollageprefix_collage_preds.pickle"), "wb") as outfile:
+    pickle_file = os.path.join(pathout,"outcollage_collage_preds.pickle")
+    with open(pickle_file, "wb") as outfile:
         pickle.dump(final_preds, outfile)
-    out_list.append(outfile)
+    out_list.append(pickle_file)
     return out_list
 
 def main():
