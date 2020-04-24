@@ -107,7 +107,7 @@ RUN apt-get install -y mosquitto-clients
 
 # install Torch
 RUN curl -O https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
-RUN bash Anaconda3-2020.02-Linux-x86_64.sh
+RUN bash -b -p Anaconda3-2020.02-Linux-x86_64.sh
 RUN source ~/.bashrc
 RUN conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
 
