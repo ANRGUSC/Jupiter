@@ -137,7 +137,8 @@ ADD jupiter_config.ini /jupiter_config.ini
 ADD circe/original/start_worker.sh /start.sh
 RUN chmod +x /start.sh
 
-WORKDIR /
+# WORKDIR /
+WORKDIR centralized_scheduler
 
 # tell the port number the container should expose
 EXPOSE {ports}
