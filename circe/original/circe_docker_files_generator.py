@@ -131,14 +131,19 @@ RUN mkdir -p /home/darpa/apps/data
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
 ADD {app_file}/scripts/ /centralized_scheduler/
 
-ADD jupiter_config.ini /jupiter_config.ini
 
 
-ADD circe/original/start_worker.sh /start.sh
-RUN chmod +x /start.sh
 
+# ADD jupiter_config.ini /jupiter_config.ini
+# ADD circe/original/start_worker.sh /start.sh
+# RUN chmod +x /start.sh
 # WORKDIR /
-WORKDIR centralized_scheduler
+
+
+WORKDIR centralized_scheduler/
+ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
+ADD circe/original/start_worker.sh /centralized_scheduler/start.sh
+RUN chmod +x /start.sh
 
 # tell the port number the container should expose
 EXPOSE {ports}
