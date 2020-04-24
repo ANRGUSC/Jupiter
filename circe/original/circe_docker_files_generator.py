@@ -149,7 +149,7 @@ RUN chmod +x /start.sh
 EXPOSE {ports}
 
 # run the command
-CMD ["./start.sh"]
+CMD ["./centralized_scheduler/start.sh"]
 
 """
 
