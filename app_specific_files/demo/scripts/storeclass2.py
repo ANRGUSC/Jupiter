@@ -6,7 +6,7 @@ Task for node that stores classified images belonding to it's assigned class.
 """
 def task(file_, pathin, pathout):
     out_list = []
-    for i, f in enumerate(file):
+    for i, f in enumerate(file_):
         source = os.path.join(pathin, f) 
         # file_split = file_.split("prefix_")[1]
         destination = os.path.join(pathout, "outstore2_" + f)
