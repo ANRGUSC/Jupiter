@@ -262,26 +262,25 @@ def main():
 
     count = 0
     for task in task_order:
-        if task != 'decoder':
-            module = task_module.get(task)
-            os.environ['TASK'] = task
-            count = count+1
+        module = task_module.get(task)
+        os.environ['TASK'] = task
+        count = count+1
 
-            start_time = datetime.datetime.utcnow()
-            filename = module.main()
-            logging.debug('------------------------------------------------')
-            logging.debug(filename)
-            stop_time = datetime.datetime.utcnow()
-            mytime = stop_time - start_time
-            mytime = int(mytime.total_seconds()) #convert to seconds
+        start_time = datetime.datetime.utcnow()
+        filename = module.main()
+        logging.debug('------------------------------------------------')
+        logging.debug(filename)
+        stop_time = datetime.datetime.utcnow()
+        mytime = stop_time - start_time
+        mytime = int(mytime.total_seconds()) #convert to seconds
 
-            output_data = [file_size(fname) for fname in filename]
-            logging.debug(output_data)
-            logging.debug('------------------------------------------------')
-            sum_output_data = sum(output_data) #current: summation of all output files
-            line=task+','+str(mytime)+ ','+ str(sum_output_data) + '\n'
-            myfile.write(line)
-            myfile.flush()
+        output_data = [file_size(fname) for fname in filename]
+        logging.debug(output_data)
+        logging.debug('------------------------------------------------')
+        sum_output_data = sum(output_data) #current: summation of all output files
+        line=task+','+str(mytime)+ ','+ str(sum_output_data) + '\n'
+        myfile.write(line)
+        myfile.flush()
 
 
 
