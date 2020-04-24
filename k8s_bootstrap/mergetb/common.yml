@@ -43,6 +43,14 @@
         - gnupg2
         - software-properties-common
 
+    - name: Get iptables version
+      shell: 'dpkg -s iptables | grep ''Version'' | sed -re s''/.*: ([0-9]+\.[0-9]).*/\1/'''
+      register: iptables_version
+
+    - name: Switch to iptables legacy if version >= 1.8 (legacy only available on newer versions), see https://github.com/kubernetes/kubernetes/issues/71305
+      when: iptables_version.stdout | version('1.8', '>=') 
+      shell: update-alternatives --set iptables /usr/sbin/iptables-legacy
+
     - name: Add Docker APT GPG key for Ubuntu
       when: ansible_os_family == "Ubuntu"
       apt_key:
