@@ -64,4 +64,6 @@ echo "python3 centralized_scheduler/monitor.py $INPUTNUM $FLAG $INPUT_ARGS $TASK
 
 # Run python with '-u' for unbuffered prints so the Kubernetes log system gets
 # all the print statements.
-python3 -u centralized_scheduler/monitor.py $INPUTNUM $FLAG $INPUT_ARGS $TASK
+# python3 -u centralized_scheduler/monitor.py $INPUTNUM $FLAG $INPUT_ARGS $TASK
+
+python3 -u monitor.py $INPUTNUM $FLAG $INPUT_ARGS $TASK
