@@ -6,13 +6,15 @@ Task for node that stores classified images belonding to it's assigned class.
 """
 def task(file_, pathin, pathout):
     out_list = []
-    source = os.path.join(pathin, file_) 
-    # file_split = file_.split("prefix_")[1]
-    destination = os.path.join(pathout, "outstore1_" + file)
-    try: 
-        out_list.append(shutil.copyfile(source, destination))
-    except: 
-        print("ERROR while copying file in store_class_task.py")
+    for i, f in enumerate(file):
+        source = os.path.join(pathin, f) 
+        # file_split = file_.split("prefix_")[1]
+        destination = os.path.join(pathout, "outstore1_" + f)
+        try: 
+            shutil.copyfile(source, destination)
+            out_list.append(destination)
+        except: 
+            print("ERROR while copying file in store_class_task.py")
     return out_list 
 
 def main():
