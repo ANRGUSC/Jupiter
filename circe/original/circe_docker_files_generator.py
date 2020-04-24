@@ -91,7 +91,7 @@ FROM ubuntu:16.04
 
 RUN apt-get -yqq update && apt-get install -y --no-install-recommends apt-utils
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev 
-RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen
+RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen curl
 RUN apt-get install -y vim
 RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
 RUN apt-get install sudo -y
@@ -104,6 +104,13 @@ RUN apt-get install iproute2 -y
 #RUN rm ~/hadoop-2.8.1.tar.gz
 RUN sudo apt update
 RUN apt-get install -y mosquitto-clients
+
+# install Torch
+RUN curl -O https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
+RUN bash -y Anaconda3-2020.02-Linux-x86_64.sh
+RUN source ~/.bashrc
+RUN conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
+
 
 ADD circe/original/requirements.txt /requirements.txt
 
