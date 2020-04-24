@@ -34,7 +34,7 @@ def task(file_, pathin, pathout):
         #img_tensor =  input_batch[0]
         ### call the ResNet model
         output = model(img_tensor) 
-        pred = torch.argmax(output, dim=1).numpy().tolist()
+        pred = torch.argmax(output, dim=1).detach().numpy().tolist()
         ### To simulate slow downs
         #distrib = np.load('/home/collage_inference/resnet/latency_distribution.npy')
         # s = np.random.choice(distrib)
