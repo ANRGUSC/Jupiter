@@ -91,7 +91,7 @@ FROM ubuntu:16.04
 
 RUN apt-get -yqq update && apt-get install -y --no-install-recommends apt-utils
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev 
-RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen curl
+RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen 
 RUN apt-get install -y vim
 RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
 RUN apt-get install sudo -y
@@ -106,8 +106,8 @@ RUN sudo apt update
 RUN apt-get install -y mosquitto-clients
 
 # install Torch
-RUN curl -O https://repo.anaconda.com/archive/Anaconda3-2020.02-Linux-x86_64.sh
-RUN bash -b -p Anaconda3-2020.02-Linux-x86_64.sh
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
+RUN bash ~/miniconda.sh -b -p $HOME/miniconda
 RUN source ~/.bashrc
 RUN conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
 
