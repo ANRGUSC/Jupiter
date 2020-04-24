@@ -88,9 +88,11 @@ def task(file_, pathin, pathout):
     conf_thres = 0.3
     # Load collage model
     device = torch.device("cpu")
-    net_config_path = "../collage_worker/cfg/yolov3-tiny.cfg"
+    # net_config_path = "../collage_worker/cfg/yolov3-tiny.cfg"
+    net_config_path = "collage_worker/cfg/yolov3-tiny.cfg"
     model = Darknet(net_config_path, img_size)
-    weights_file_path = "../collage_worker/weights/best.pt"
+    # weights_file_path = "../collage_worker/weights/best.pt"
+    weights_file_path = "collage_worker/weights/best.pt"
     checkpoint = torch.load(weights_file_path, map_location="cpu")
     model.load_state_dict(checkpoint['model'])
     del checkpoint
