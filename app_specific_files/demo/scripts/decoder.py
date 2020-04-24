@@ -9,9 +9,10 @@ def task(filelist, pathin, pathout):
     for f in filelist:
         with open(pathin + f, "rb") as inp_file:
             preds = pickle.load(inp_file)
-    with open(pathout + "outdecoder.txt", "w") as out_file:
+    out_name = pathout + "outdecoder.txt"
+    with open(out_name, "w") as out_file:
         out_file.write("place holder")
-        out_list.append(out_file)
+        out_list.append(out_name)
     return out_list 
 
 def main():
