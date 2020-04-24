@@ -102,7 +102,7 @@ def task(file_, pathin, pathout):
     ### Load collage image
     composed = transforms.Compose([
                transforms.ToTensor()])
-    for f in [file_]:
+    for i, f in enumerate(file_):
         ### Read input files.
         collage_img = Image.open(os.path.join(pathin, f))
         ### Transform to tensor format.
