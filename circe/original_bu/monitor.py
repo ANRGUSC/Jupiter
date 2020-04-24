@@ -426,8 +426,7 @@ def main():
     logging.basicConfig(level = logging.DEBUG)
 
 
-    # INI_PATH = '/jupiter_config.ini'
-    INI_PATH = 'jupiter_config.ini'
+    INI_PATH = '/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
