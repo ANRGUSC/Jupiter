@@ -22,8 +22,11 @@ def task(file_, pathin, pathout):
                transforms.ToTensor()])
     out_list = []
     for i, f in enumerate(file_):
+        print(f)
+        print(os.path.join(pathin, f))
         ### Read input files.
         img = Image.open(os.path.join(pathin, f))
+
         ### Apply transforms.
        	img_tensor = composed(img)
         ### 3D -> 4D (batch dimension = 1)
