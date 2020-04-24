@@ -108,7 +108,6 @@ RUN apt-get install -y mosquitto-clients
 # install Torch
 RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
 RUN bash ~/miniconda.sh -b -p $HOME/miniconda
-RUN source ~/.bashrc
 RUN conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
 
 
