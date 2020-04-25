@@ -41,38 +41,47 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 
-# Create the input, output, and runtime profiler directories
-RUN mkdir -p /input
-RUN mkdir -p /output
-#RUN mkdir -p /runtime
-
 
 RUN apt-get install stress
+# Create the input, output, and runtime profiler directories
+# RUN mkdir -p /input
+# RUN mkdir -p /output 
 
 # Add input files
-COPY  {app_file}/sample_input /sample_input
+#COPY  {app_file}/sample_input /sample_input
 
 # Add the mongodb scripts
-ADD circe/original/runtime_profiler_mongodb /central_mongod
-#ADD circe/original/rt_profiler_update_mongo.py /run_update.py
-
-ADD circe/original/readconfig.py /readconfig.py
-ADD circe/original/scheduler.py /scheduler.py
-ADD jupiter_config.py /jupiter_config.py
-ADD circe/original/evaluate.py /evaluate.py
-
+# ADD circe/original/runtime_profiler_mongodb /central_mongod
+# ADD circe/original/readconfig.py /readconfig.py
+# ADD circe/original/scheduler.py /scheduler.py
+# ADD jupiter_config.py /jupiter_config.py
+# ADD circe/original/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
-ADD {app_file}/configuration.txt /configuration.txt
+#ADD {app_file}/configuration.txt /configuration.txt
+#ADD nodes.txt /nodes.txt
+#ADD jupiter_config.ini /jupiter_config.ini
+#ADD circe/original/start_home.sh /start.sh
+#RUN chmod +x /start.sh
+#RUN chmod +x /central_mongod
 
-ADD nodes.txt /nodes.txt
-ADD jupiter_config.ini /jupiter_config.ini
+COPY  {app_file}/sample_input /centralized_scheduler/sample_input
+ADD circe/original/runtime_profiler_mongodb /centralized_scheduler/central_mongod
+ADD circe/original/readconfig.py /centralized_scheduler/readconfig.py
+ADD circe/original/scheduler.py /centralized_scheduler/scheduler.py
+ADD jupiter_config.py /centralized_scheduler/jupiter_config.py
+ADD circe/original/evaluate.py /centralized_scheduler/evaluate.py
 
-ADD circe/original/start_home.sh /start.sh
-RUN chmod +x /start.sh
-RUN chmod +x /central_mongod
+ADD {app_file}/configuration.txt /centralized_scheduler/configuration.txt
+ADD nodes.txt /centralized_scheduler/nodes.txt
+ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
+ADD circe/original/start_home.sh /centralized_scheduler/start.sh
+RUN chmod +x /centralized_scheduler/start.sh
+RUN chmod +x /centralized_scheduler/central_mongod
 
-WORKDIR /
+
+#WORKDIR /
+WORKDIR /centralized_scheduler/
 
 # tell the port number the container should expose
 EXPOSE {ports}
@@ -105,21 +114,6 @@ RUN apt-get install iproute2 -y
 RUN sudo apt update
 RUN apt-get install -y mosquitto-clients
 
-# install Torch
-# RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda.sh
-# RUN bash ~/miniconda.sh -b -p $HOME/miniconda
-# RUN touch ~/.bashrc
-# RUN echo "export PATH="$HOME/miniconda/bin:$PATH"" >> ~/.bashrc
-#RUN source ~/.bashrc
-#RUN $HOME/miniconda/bin/conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
-# RUN $HOME/miniconda/bin/conda install pytorch torchvision -c pytorch
-
-
-
-ADD circe/original/requirements.txt /requirements.txt
-
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -130,6 +124,10 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
+
+ADD circe/original/requirements.txt /requirements.txt
+# RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
 
 RUN mkdir -p /centralized_scheduler/input
 RUN mkdir -p /centralized_scheduler/output
