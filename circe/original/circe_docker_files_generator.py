@@ -110,6 +110,7 @@ RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -
 RUN bash ~/miniconda.sh -b -p $HOME/miniconda
 RUN touch ~/.bashrc
 RUN echo "export PATH="$HOME/miniconda/bin:$PATH"" >> ~/.bashrc
+RUN cat ~/.bashrc
 RUN conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
 
 
