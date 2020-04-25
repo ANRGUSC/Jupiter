@@ -19,7 +19,7 @@ RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
 ADD circe/original/requirements.txt /requirements.txt
-RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
+RUN apt-get -y install build-essential libssl-dev libffi-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
 
@@ -99,7 +99,10 @@ template_worker ="""\
 FROM ubuntu:16.04
 
 RUN apt-get -yqq update && apt-get install -y --no-install-recommends apt-utils
-RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev 
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN apt update
+RUN apt-get -yqq install python3.7
+RUN apt-get -yqq install python3-pip libssl-dev libffi-dev 
 RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen 
 RUN apt-get install -y vim
 RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
