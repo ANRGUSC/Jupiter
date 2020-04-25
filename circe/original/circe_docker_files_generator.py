@@ -111,7 +111,7 @@ RUN bash ~/miniconda.sh -b -p $HOME/miniconda
 RUN touch ~/.bashrc
 RUN echo "export PATH="$HOME/miniconda/bin:$PATH"" >> ~/.bashrc
 RUN cat ~/.bashrc
-RUN conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
+RUN $HOME/miniconda/bin/conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
 
 
 ADD circe/original/requirements.txt /requirements.txt
