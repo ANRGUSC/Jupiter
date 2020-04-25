@@ -1,6 +1,8 @@
 import torch
-import torchvision.models as models
-import torchvision.transforms as transforms
+from torchvision import models
+from torchvision import transforms
+# import torchvision.models as models
+# import torchvision.transforms as transforms
 import os
 import numpy as np
 from PIL import Image
