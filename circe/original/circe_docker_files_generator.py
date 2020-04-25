@@ -24,7 +24,7 @@ RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
 
 # Taken from quynh's network profiler
-RUN pip install cryptography
+RUN pip3 install cryptography
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
