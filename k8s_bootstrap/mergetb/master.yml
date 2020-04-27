@@ -48,5 +48,11 @@
         mode: 0755
         remote_src: true
 
+    - name: Enable kubectl autocompletion if it doesn't exist
+      lineinfile:
+        path: /root/.bashrc
+        line: 'source <(kubectl completion bash)'
+        create: yes
+
     - name: Apply Flannel
       shell: kubectl apply -f https://raw.githubusercontent.com/ANRGUSC/Jupiter/c5dd54a5ecba1173ff2f888e08f0769045bae32b/k8s_bootstrap/mergetb/kube-flannel-jupiter.yml
