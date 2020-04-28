@@ -251,6 +251,7 @@ def main():
     modules=[]
     for task in tasks.keys():
         os.environ['TASK'] = task
+        print(task)
         taskmodule  = __import__(task)
         modules.append(taskmodule)
         task_module[task]=(taskmodule)
