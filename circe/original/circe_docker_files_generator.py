@@ -18,16 +18,10 @@ FROM ubuntu:18.04
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
-ADD circe/original/requirements.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
 
-# Taken from quynh's network profiler
-RUN pip3 install cryptography
-
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
@@ -64,6 +58,13 @@ RUN apt-get install stress
 #ADD circe/original/start_home.sh /start.sh
 #RUN chmod +x /start.sh
 #RUN chmod +x /central_mongod
+
+# Taken from quynh's network profiler
+RUN pip3 install cryptography
+
+ADD circe/original/requirements.txt /requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
 
 COPY  {app_file}/sample_input /centralized_scheduler/sample_input
 ADD circe/original/runtime_profiler_mongodb /centralized_scheduler/central_mongod
@@ -152,7 +153,7 @@ ADD {app_file}/scripts/ /centralized_scheduler/
 # WORKDIR /
 
 
-WORKDIR centralized_scheduler/
+WORKDIR /centralized_scheduler/
 ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
 ADD circe/original/start_worker.sh /centralized_scheduler/start.sh
 RUN chmod +x /centralized_scheduler/start.sh

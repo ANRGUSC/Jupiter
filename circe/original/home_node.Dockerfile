@@ -1,16 +1,16 @@
 # Instructions copied from - https://hub.docker.com/_/python/
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
 ADD circe/original/requirements.txt /requirements.txt
-RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
+RUN apt-get -y install build-essential libssl-dev libffi-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
 
 # Taken from quynh's network profiler
-RUN pip install cryptography
+RUN pip3 install cryptography
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
@@ -27,38 +27,47 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 
-# Create the input, output, and runtime profiler directories
-RUN mkdir -p /input
-RUN mkdir -p /output
-#RUN mkdir -p /runtime
-
 
 RUN apt-get install stress
+# Create the input, output, and runtime profiler directories
+# RUN mkdir -p /input
+# RUN mkdir -p /output 
 
 # Add input files
-COPY  app_specific_files/dummyapp100/sample_input /sample_input
+#COPY  app_specific_files/demo/sample_input /sample_input
 
 # Add the mongodb scripts
-ADD circe/original/runtime_profiler_mongodb /central_mongod
-#ADD circe/original/rt_profiler_update_mongo.py /run_update.py
-
-ADD circe/original/readconfig.py /readconfig.py
-ADD circe/original/scheduler.py /scheduler.py
-ADD jupiter_config.py /jupiter_config.py
-ADD circe/original/evaluate.py /evaluate.py
-
+# ADD circe/original/runtime_profiler_mongodb /central_mongod
+# ADD circe/original/readconfig.py /readconfig.py
+# ADD circe/original/scheduler.py /scheduler.py
+# ADD jupiter_config.py /jupiter_config.py
+# ADD circe/original/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
-ADD app_specific_files/dummyapp100/configuration.txt /configuration.txt
+#ADD app_specific_files/demo/configuration.txt /configuration.txt
+#ADD nodes.txt /nodes.txt
+#ADD jupiter_config.ini /jupiter_config.ini
+#ADD circe/original/start_home.sh /start.sh
+#RUN chmod +x /start.sh
+#RUN chmod +x /central_mongod
 
-ADD nodes.txt /nodes.txt
-ADD jupiter_config.ini /jupiter_config.ini
+COPY  app_specific_files/demo/sample_input /centralized_scheduler/sample_input
+ADD circe/original/runtime_profiler_mongodb /centralized_scheduler/central_mongod
+ADD circe/original/readconfig.py /centralized_scheduler/readconfig.py
+ADD circe/original/scheduler.py /centralized_scheduler/scheduler.py
+ADD jupiter_config.py /centralized_scheduler/jupiter_config.py
+ADD circe/original/evaluate.py /centralized_scheduler/evaluate.py
 
-ADD circe/original/start_home.sh /start.sh
-RUN chmod +x /start.sh
-RUN chmod +x /central_mongod
+ADD app_specific_files/demo/configuration.txt /centralized_scheduler/configuration.txt
+ADD nodes.txt /centralized_scheduler/nodes.txt
+ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
+ADD circe/original/start_home.sh /centralized_scheduler/start.sh
+RUN chmod +x /centralized_scheduler/start.sh
+RUN chmod +x /centralized_scheduler/central_mongod
 
-WORKDIR /
+
+#WORKDIR /
+WORKDIR /centralized_scheduler/
 
 # tell the port number the container should expose
 EXPOSE 22 8888
