@@ -2,20 +2,25 @@ import os
 import time
 import sys
 
+LOOP_RANGE = 20000000 # this could take about 1s
+TASK_NAME = "task2"
+NUM_BLOCK = 8192
+
 def task(input_files, pathin, pathout):
 
 
     filelist=[]
     filelist.append(input_files)
 
-    # single input file
-    time.sleep(1)
-    output_files = input_files.split('_')[0] + "_task2"
-    cmd = "dd bs=1024 count=8192 </dev/urandom >%s/%s" % (pathout, output_files)
+    count = 0
+    for i in range(LOOP_RANGE):
+        count = count + 1
+        count = count - 1
+
+    output_files = input_files.split('_')[0] + "_" + TASK_NAME
+    cmd = "dd bs=1024 count=%d </dev/urandom >%s/%s" % (NUM_BLOCK, pathout, output_files)
     os.system(cmd)
     return [os.path.join(pathout, output_files)]
-
-
 
 def main():
     filelist= 'input0'
@@ -25,7 +30,6 @@ def main():
 
 if __name__ == '__main__':
 
-    #Suppose the file structure is erick/detection_app/camera1_input/camera1_20190222.jpeg
     filelist= 'input0'
     task(filelist, '../sample_input', '.')
 
