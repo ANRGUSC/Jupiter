@@ -37,6 +37,7 @@ from collections import Counter
 import _thread
 import threading
 import logging
+import importlib
 
 
 
@@ -471,7 +472,8 @@ def main():
     taskname = taskmap[0]
     if taskmap[1] == True:
         print(taskname)
-        taskmodule = __import__(taskname)
+        #taskmodule = __import__(taskname)
+        taskmodule =  importlib.import_module(taskname)
 
     #target port for SSHing into a container
     filenames=[]
