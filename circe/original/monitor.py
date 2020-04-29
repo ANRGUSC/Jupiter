@@ -58,8 +58,8 @@ def send_monitor_data(msg):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        logging.debug("Sending message to flask server on home FAILED!!!")
-        logging.debug(e)
+        print("Sending message to flask server on home FAILED!!!")
+        print(e)
         return "not ok"
     return res
 
@@ -85,8 +85,8 @@ def send_runtime_profile(msg):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
-        logging.debug(e)
+        print("Sending runtime profiling info to flask server on home FAILED!!!")
+        print(e)
         return "not ok"
     return res
 
@@ -109,14 +109,14 @@ def transfer_data_scp(ID,user,pword,source, destination):
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
-            logging.debug('data transfer complete\n')
+            print('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
         except:
-            logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            print('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
     if retry == num_retries:
@@ -167,7 +167,7 @@ def transfer_multicast_data(ID_list,user_list,pword_list,source_list, destinatio
     for idx in range(len(ID_list)):
         msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx])
     if TRANSFER==0:
-        logging.debug('Multicast all the files')
+        print('Multicast all the files')
         transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destination_list)
     
 
@@ -186,7 +186,7 @@ class Handler1(pyinotify.ProcessEvent):
 
 
     def process_IN_CLOSE_WRITE(self, event):
-        logging.debug("Received file as output - %s." % event.pathname)
+        print("Received file as output - %s." % event.pathname)
         
         """
             Save the time when a output file is available. This is taken as the end time of the task.
@@ -205,7 +205,7 @@ class Handler1(pyinotify.ProcessEvent):
         flag2 = sys.argv[2]
         ts = time.time()
         if taskname == 'distribute':
-            logging.debug('This is the distribution point')
+            print('This is the distribution point')
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
@@ -222,7 +222,7 @@ class Handler1(pyinotify.ProcessEvent):
             destination = os.path.join('/centralized_scheduler', 'input', new_file)
             transfer_data(next_task,user,password,source, destination)
         elif sys.argv[3] == 'home':
-            logging.debug('Next node is home')
+            print('Next node is home')
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
@@ -265,7 +265,7 @@ class Handler1(pyinotify.ProcessEvent):
             #     transfer_data(cur_task,user,password,source, destination)
             
             # Using multicast
-            logging.debug('Using multicast instead')
+            print('Using multicast instead')
             cur_tasks =[]
             users = []
             passwords = []
@@ -308,7 +308,7 @@ class Handler1(pyinotify.ProcessEvent):
                 #     destination = os.path.join('/centralized_scheduler','input', myfile)
                 #     transfer_data(cur_task,user,password,source, destination)
                 
-                logging.debug('Using multicast instead')
+                print('Using multicast instead')
                 cur_tasks =[]
                 users = []
                 passwords = []
@@ -329,7 +329,7 @@ class Handler(pyinotify.ProcessEvent):
     """
 
     def process_IN_CLOSE_WRITE(self, event):
-        logging.debug("Received file as input - %s." % event.pathname)
+        print("Received file as input - %s." % event.pathname)
 
         new_file = os.path.split(event.pathname)[-1]
 
@@ -355,7 +355,7 @@ class Handler(pyinotify.ProcessEvent):
             count_mul[key]=count_mul[key]-1
 
         if count_mul[key] == 0: # enough input files
-            logging.debug('Enough input files')
+            print('Enough input files')
             ts = time.time()
             if BOKEH == 1:
                 runtimebk = 'rt_exec '+ taskname + ' '+temp_name+ ' '+str(ts)
@@ -477,7 +477,7 @@ def main():
         wm = pyinotify.WatchManager()
         input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
         wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
-        logging.debug('starting the input monitoring process\n')
+        print('starting the input monitoring process\n')
         eh = Handler()
         notifier = pyinotify.ThreadedNotifier(wm, eh)
         notifier.start()
@@ -485,12 +485,12 @@ def main():
         output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
         wm1 = pyinotify.WatchManager()
         wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
-        logging.debug('starting the output monitoring process\n')
+        print('starting the output monitoring process\n')
         eh1 = Handler1()
         notifier1= pyinotify.Notifier(wm1, eh1)
         notifier1.loop()
     else:
-        logging.debug('Task Mapping information')
+        print('Task Mapping information')
         path_src = "/centralized_scheduler/" + taskname
         args = ' '.join(str(x) for x in taskmap[2:])
 
