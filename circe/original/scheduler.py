@@ -289,6 +289,8 @@ class MyHandler(pyinotify.ProcessEvent):
         end_times[outputfile] = time.time()
         
         exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
+        print("start time is: ", start_times)
+        print("end time is: ", end_times)
         print("execution time is: ", exec_times)
 
         if BOKEH == 2: #used for combined_app with distribute script
