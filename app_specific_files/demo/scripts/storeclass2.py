@@ -10,6 +10,8 @@ def task(file_, pathin, pathout):
         source = os.path.join(pathin, f) 
         # file_split = file_.split("prefix_")[1]
         destination = os.path.join(pathout, "outstore2_" + f)
+        print(source)
+        print(destination)
         try: 
             shutil.copyfile(source, destination)
             out_list.append(destination)
