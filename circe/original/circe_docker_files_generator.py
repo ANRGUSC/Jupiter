@@ -100,10 +100,10 @@ template_worker ="""\
 FROM ubuntu:18.04
 
 RUN apt-get -yqq update && apt-get install -y --no-install-recommends apt-utils
-RUN add-apt-repository ppa:deadsnakes/ppa
-RUN apt update
-RUN apt-get -yqq install python3.7
-RUN apt-get -yqq install python3-pip libssl-dev libffi-dev 
+# RUN add-apt-repository ppa:deadsnakes/ppa
+# RUN apt update
+# RUN apt-get -yqq install python3.7
+RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev 
 RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen 
 RUN apt-get install -y vim
 RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
