@@ -117,7 +117,7 @@ class Handler(pyinotify.ProcessEvent):
 
         ID = os.environ['CHILD_NODES']
         source = event.pathname
-        destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
+        destination = os.path.join('/input', new_file_name)
 
         send_monitor_data(inputfile,'input',t)
 
