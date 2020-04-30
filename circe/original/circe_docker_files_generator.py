@@ -66,23 +66,7 @@ ADD circe/original/requirements.txt /requirements.txt
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
-# COPY  {app_file}/sample_input /centralized_scheduler/sample_input
-# ADD circe/original/runtime_profiler_mongodb /centralized_scheduler/central_mongod
-# ADD circe/original/readconfig.py /centralized_scheduler/readconfig.py
-# ADD circe/original/scheduler.py /centralized_scheduler/scheduler.py
-# ADD jupiter_config.py /centralized_scheduler/jupiter_config.py
-# ADD circe/original/evaluate.py /centralized_scheduler/evaluate.py
-
-# ADD {app_file}/configuration.txt /centralized_scheduler/configuration.txt
-# ADD nodes.txt /centralized_scheduler/nodes.txt
-# ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
-# ADD circe/original/start_home.sh /centralized_scheduler/start.sh
-# RUN chmod +x /centralized_scheduler/start.sh
-# RUN chmod +x /centralized_scheduler/central_mongod
-
-
 WORKDIR /
-# WORKDIR /centralized_scheduler/
 
 # tell the port number the container should expose
 EXPOSE {ports}
@@ -131,37 +115,22 @@ ADD circe/original/requirements.txt /requirements.txt
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
-# RUN mkdir -p /centralized_scheduler/input
-# RUN mkdir -p /centralized_scheduler/output
-# RUN mkdir -p /centralized_scheduler/runtime
-#ADD circe/original/monitor.py /centralized_scheduler/monitor.py
-
-RUN mkdir -p /input
-RUN mkdir -p /output
-RUN mkdir -p /runtime
-ADD circe/original/monitor.py /monitor.py
+RUN mkdir -p /centralized_scheduler/input
+RUN mkdir -p /centralized_scheduler/output
+RUN mkdir -p /centralized_scheduler/runtime
+ADD circe/original/monitor.py /centralized_scheduler/monitor.py
 
 RUN mkdir -p /home/darpa/apps/data
 
 #ADD circe/original/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-# ADD {app_file}/scripts/ /centralized_scheduler/
-ADD {app_file}/scripts/ /
-
-
-
+ADD {app_file}/scripts/ /centralized_scheduler/
 
 ADD jupiter_config.ini /jupiter_config.ini
 ADD circe/original/start_worker.sh /start.sh
 RUN chmod +x /start.sh
 WORKDIR /
-
-
-# WORKDIR /centralized_scheduler/
-# ADD jupiter_config.ini /centralized_scheduler/jupiter_config.ini
-# ADD circe/original/start_worker.sh /centralized_scheduler/start.sh
-# RUN chmod +x /centralized_scheduler/start.sh
 
 # tell the port number the container should expose
 EXPOSE {ports}
