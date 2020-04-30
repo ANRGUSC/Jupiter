@@ -4,14 +4,11 @@ from mergexp.net import addressing, ipv4
 from mergexp.machine import cores, memory
 from mergexp.unit import gb
 
-# This mode is for creating a cluster with a single Ahi node (large instance)
-# 4/2020: FYI only Debian images work with Ahi nodes
+# set number of minnow worker nodes
+NUM_MINNOWS = 50
 
-# set number of worker nodes
-NUM_WORKER_NODES = 4
-
-# minimum memory for all nodes, current DCOMP nodes include either 2GB or 8GB
-MIN_MEMORY = 4
+# set number of rohu worker nodes
+NUM_ROHUS = 50
 
 
 def ubuntu(name, version, min_memory=2):
@@ -21,22 +18,28 @@ def ubuntu(name, version, min_memory=2):
     return dev
 
 
-net = mx.Topology('k8s-bootstrap-example', addressing == ipv4)
+net = mx.Topology('jupiter-100nodes')
 
-JUPITER_MASTER_NODE = ["master"]
-JUPITER_WORKER_NODES = ["n%d" % (x) for x in range(0, NUM_WORKER_NODES)]
+# for generating ansible `hosts` file (see host_generator.py)
+total_worker_nodes = NUM_MINNOWS + NUM_ROHUS
+JUPITER_MASTER_NODE = ["master"] 
+JUPITER_WORKER_NODES = ["n%d" % (x) for x in range(0, total_worker_nodes)]
 
 master = net.device(JUPITER_MASTER_NODE[0], memory >= gb(40))
 master.props["shape"] = "wye"
 master.props["color"] = "red"
 
-nodes = [ubuntu(name, '1804', MIN_MEMORY) for name in JUPITER_WORKER_NODES]
+nodes = [master]
+nodecount = 0
+for minnow in range(NUM_MINNOWS):
+    nodes.append(ubuntu("n{}".format(nodecount), '1804', 1))
+    nodecount += 1
 
-# connect all worker nodes directly to master
-for n in nodes:
-    net.connect([master, n])
+for rohu in range(NUM_ROHUS):
+    nodes.append(ubuntu("n{}".format(nodecount), '1804', 4))
+    nodecount += 1
 
-# connect all worker nodes to LAN
+# connect all nodes to LAN
 net.connect(nodes)
 
 mx.experiment(net)
