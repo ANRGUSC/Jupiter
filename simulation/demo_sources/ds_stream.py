@@ -19,6 +19,7 @@ import configparser
 import urllib
 import logging
 import random
+import shutil
 
 logging.basicConfig(level = logging.DEBUG)
 
