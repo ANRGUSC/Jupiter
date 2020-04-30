@@ -116,6 +116,9 @@ def k8s_stream_scheduler(app_name):
     circe_services = get_service_circe(dag,app_name)
     circe_nodes = ' '.join(circe_services.keys())
     circe_nodes_ips = ' '.join(circe_services.values())
+
+    print('-------------')
+    print(circe_services.get('home'))
     
     for i in datasources:
         

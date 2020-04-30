@@ -170,7 +170,7 @@ def set_globals():
     global APP_PATH, APP_NAME, APP_OPTION
     
 
-    HOME_CHILD                = 'master_task'
+    HOME_CHILD                = 'master'
     APP_PATH                  = HERE  + 'app_specific_files/demo/'
     APP_NAME                  = 'app_specific_files/demo'
     APP_OPTION                = 'demo'
