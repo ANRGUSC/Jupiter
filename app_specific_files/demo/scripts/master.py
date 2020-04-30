@@ -51,6 +51,9 @@ def task(filelist, pathin, pathout):
         file_idx = int(i % len(filelist))
         input_list.append(os.path.join(pathin, filelist[file_idx]))
     #collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w).astype(np.float16)
+
+    print('Input list file')
+    print(input_list)
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     
     shutil.copyfile(collage_file, os.path.join(pathout,"outmaster_"+collage_file))

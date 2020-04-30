@@ -31,8 +31,6 @@ def get_service_circe(dag,app_name):
     service_ips = {}
     home_name =app_name+"-home"
     try:
-        print('------')
-        print(home_name)
         resp = api.read_namespaced_service(home_name, namespace)
         service_ips['home'] = resp.spec.cluster_ip
     except ApiException as e:
@@ -40,9 +38,6 @@ def get_service_circe(dag,app_name):
         logging.debug("Exception Occurred")
 
     for key, value in dag.items():
-        print('------')
-        print(key)
-        print(value)
         task = key
         nexthosts = ''
  
@@ -121,9 +116,6 @@ def k8s_stream_scheduler(app_name):
     circe_services = get_service_circe(dag,app_name)
     circe_nodes = ' '.join(circe_services.keys())
     circe_nodes_ips = ' '.join(circe_services.values())
-
-    print('-------------')
-    print(circe_services.get('home'))
     
     for i in datasources:
         

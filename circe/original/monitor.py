@@ -471,8 +471,6 @@ def main():
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
     taskname = taskmap[0]
     if taskmap[1] == True:
-        print(taskname)
-        #taskmodule = __import__(taskname)
         taskmodule =  importlib.import_module(taskname)
 
     #target port for SSHing into a container
