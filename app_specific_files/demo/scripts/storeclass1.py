@@ -5,6 +5,7 @@ import shutil
 Task for node that stores classified images belonding to it's assigned class.
 """
 def task(file_, pathin, pathout):
+    file_ = [file_] if isinstance(file_, str) else file_
     out_list = []
     for i, f in enumerate(file_):
         source = os.path.join(pathin, f) 

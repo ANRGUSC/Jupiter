@@ -82,6 +82,7 @@ def process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial
     return predictions_list
 	
 def task(file_, pathin, pathout):
+    file_ = [file_] if isinstance(file_, str) else file_
     img_size=416
     w = 3
     single_spatial = math.ceil(img_size*1.0/w)
