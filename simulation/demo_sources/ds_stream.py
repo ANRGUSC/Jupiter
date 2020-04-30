@@ -154,7 +154,6 @@ def send_monitor_data(filename,filetype,ts):
         Exception: if sending message to flask server on home is failed
     """
     try:
-        print(home_node_host_port)
         url = "http://" + home_node_host_port + "/recv_monitor_datasource"
         params = {'filename': filename, "filetype": filetype,"time":ts}
         params = urllib.parse.urlencode(params)
@@ -190,8 +189,6 @@ def main():
     combined_ip_map[os.environ['CHILD_NODES']]= os.environ['CHILD_NODES_IPS']
 
     global home_node_host_port
-    print('------------')
-    print(os.environ['HOME_NODE'])
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
 
     global all_nodes,all_nodes_ips
