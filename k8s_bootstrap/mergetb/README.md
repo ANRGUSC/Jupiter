@@ -8,8 +8,9 @@ https://github.com/kairen/kubeadm-ansible.
    `/usr/bin/python3` so we have defaulted ansible to using `python3`
  * coredns pods will be scheduled on the master node due to the order of 
    commands in the ansible playbooks, which is the preferred  behavior. If the 
-   pods are restarted, they may be scheduled on worker nodes.
- * `iptables` v1.8+ may cause problems. See troubleshooting sections below.
+   pods are restarted, they may be scheduled on k8s worker nodes.
+ * `iptables` v1.8+ may cause problems and switching it to legacy mode is
+   included in the playbooks. More information in troubleshooting section below.
 
 ### Learning MergeTB
 
@@ -189,18 +190,16 @@ the user-space `iptables` tool is tightly integrated with the kernel subsystem,
 a Docker container running commands via iptables&lt;v1.8 on a host which has
 iptables>=v1.8 will not work properly. Because Ubuntu, Kubernetes, and much of
 the container world has not yet moved to v1.8, this will cause problems in the
-future or for Debian nodes. As a first-level patch for this, each k8s node can
-run:
+future or for any nodes running Debian Buster or greater. As a first-level patch
+for this, each k8s node can run:
 
     sudo update-alternatives --set iptables /usr/sbin/iptables-legacy
 
-To automate this, we have included a quick playbook to do this for all nodes.
-Make sure your `hosts` file is up to date.
-
-    ansible-playbook -i hosts iptables_fix/iptables_fix.yml
-
-K8s/Jupiter users should be aware of this through time. More information can be
-found here: https://github.com/kubernetes/kubernetes/issues/71305
+The common.yml playbook already detects the iptables version and sets legacy 
+mode where applicable. K8s/Jupiter users should be aware of this through time in
+the event an update is pushed downstream to lower iptables versions. More
+information can be found here: 
+https://github.com/kubernetes/kubernetes/issues/71305
 
 ##### coredns problems
 

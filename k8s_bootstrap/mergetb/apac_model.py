@@ -10,6 +10,7 @@ NUM_MINNOWS = 50
 # set number of rohu worker nodes
 NUM_ROHUS = 50
 
+
 def ubuntu(name, version, min_memory=2):
     dev = net.device(name, image == "ubuntu:" + version,
                      memory >= gb(min_memory))
