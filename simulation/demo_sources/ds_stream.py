@@ -40,7 +40,7 @@ def gen_stream_data(interval,data_path,original_data_path):
         logging.debug('--- Copy new file')
         filename = find_next_file(original_data_path)
         source = os.path.join(original_data_path,filename)
-        destination = os.join(data_path,filename)
+        destination = os.path.join(data_path,filename)
         shutil.copyfile(source, destination)
         
 
