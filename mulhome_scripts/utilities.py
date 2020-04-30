@@ -155,6 +155,9 @@ def k8s_get_all_elements(node_info_file):
         nodes.setdefault(node_line[0], [])
         for i in range(1, len(node_line)):
             nodes[node_line[0]].append(node_line[i])
+  print(nodes)
+  print(datasources)
+  print(homes)
   return nodes, homes,datasources
 
     
