@@ -10,7 +10,8 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets
 import shutil
 
-def task(file_, pathin, pathout): 
+def task(file_, pathin, pathout):
+    file_ = [file_] if isinstance(file_, str) else file_ 
     ### set device to CPU
     device = torch.device("cpu")
     ### Load model
@@ -23,6 +24,7 @@ def task(file_, pathin, pathout):
                transforms.CenterCrop(224),
                transforms.ToTensor()])
     out_list = []
+
     for i, f in enumerate(file_):
         print(f)
         print(os.path.join(pathin, f))

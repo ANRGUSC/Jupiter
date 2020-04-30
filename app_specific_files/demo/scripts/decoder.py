@@ -5,6 +5,7 @@ import os
 import pickle
 
 def task(filelist, pathin, pathout):
+    filelist = [filelist] if isinstance(filelist, str) else filelist
     out_list = []
     for f in filelist:
         with open(pathin + f, "rb") as inp_file:

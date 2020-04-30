@@ -39,6 +39,7 @@ def task(filelist, pathin, pathout):
     out_list = []# output file list. Ordered as => [collage_file, image1, image2, ...., image9]
     ### send to collage task
     ### Collage image is arranged as a rectangular grid of shape w x w 
+    filelist = [filelist] if isinstance(filelist, str) else filelist  
     w = 3 
     num_images = w * w
     collage_spatial = 416
@@ -46,20 +47,14 @@ def task(filelist, pathin, pathout):
     single_spatial_full = 256
     input_list = []
     ### List of images that are used to create a collage image
-    print('------')
-    print(num_images)
-    print(filelist)
-    if not isinstance(filelist, list):
-        filelist = [filelist]    
-
+    
     for i in range(num_images):
         ### Number of files in file list can be less than the number of images needed (9)
         file_idx = int(i % len(filelist))
         input_list.append(os.path.join(pathin, filelist[file_idx]))
     #collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w).astype(np.float16)
 
-    print('Input list file')
-    print(input_list)
+    
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     
     shutil.copyfile(collage_file, os.path.join(pathout,"outmaster_"+collage_file))
