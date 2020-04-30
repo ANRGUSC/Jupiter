@@ -180,7 +180,8 @@ def k8s_demo_scheduler(app_name):
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes,datasources = utilities.k8s_get_all_elements(path2)
 
-    logging.debug('Datasources ' + datasources)
+    logging.debug('Datasources :')
+    logging.debug(datasources)
     service_ips = {}; #list of all service IPs
     
     for i in datasources:
