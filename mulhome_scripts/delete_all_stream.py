@@ -66,7 +66,8 @@ def delete_all_stream(app_name):
 
         # if home exists, delete it 
         if resp:
-            del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(home_name, namespace, v1_delete_options)
+            # del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(home_name, namespace, v1_delete_options)
+            del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(home_name, namespace)
             logging.debug("Deployment '%s' Deleted. status='%s'" % (home_name, str(del_resp_0.status)))
 
         # Check if there is a replicaset running by using the label app=home
@@ -79,7 +80,8 @@ def delete_all_stream(app_name):
         # logging.debug resp.items[0].metadata.namespace
         for i in resp.items:
             if i.metadata.namespace == namespace:
-                del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
+                # del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
+                               del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace)
                 logging.debug("Relicaset '%s' Deleted. status='%s'" % (home_name, str(del_resp_1.status)))
 
         # Check if there is a pod still running by using the label app='home'
@@ -87,7 +89,8 @@ def delete_all_stream(app_name):
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
         # if a pod is running just delete it
         if resp.items:
-            del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
+            # del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace, v1_delete_options)
+            del_resp_2 = core_v1_api.delete_namespaced_pod(resp.items[0].metadata.name, namespace)
             logging.debug("Home pod Deleted. status='%s'" % str(del_resp_2.status))
 
         # Check if there is a service running by name = task#
@@ -98,8 +101,8 @@ def delete_all_stream(app_name):
             logging.debug("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace, v1_delete_options)
-            #del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace=namespace)
+            # del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace, v1_delete_options)
+            del_resp_2 = core_v1_api.delete_namespaced_service(home_name, namespace=namespace)
             logging.debug("Service Deleted. status='%s'" % str(del_resp_2.status))   
 
 if __name__ == '__main__':
