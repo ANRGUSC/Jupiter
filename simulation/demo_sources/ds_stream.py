@@ -190,6 +190,8 @@ def main():
     combined_ip_map[os.environ['CHILD_NODES']]= os.environ['CHILD_NODES_IPS']
 
     global home_node_host_port
+    print('------------')
+    print(os.environ['HOME_NODE'])
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
 
     global all_nodes,all_nodes_ips
