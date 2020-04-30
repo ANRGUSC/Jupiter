@@ -121,6 +121,11 @@ class Handler(pyinotify.ProcessEvent):
 
         send_monitor_data(inputfile,'input',t)
 
+        logging.debug(ID)
+        logging.debug(username)
+        logging.debug(password)
+        logging.debug(source)
+        logging.debug(destination)
         transfer_data(ID,username, password,source, destination)
 
 class MonitorRecv(multiprocessing.Process):
@@ -149,6 +154,7 @@ def send_monitor_data(filename,filetype,ts):
         Exception: if sending message to flask server on home is failed
     """
     try:
+        print(home_node_host_port)
         url = "http://" + home_node_host_port + "/recv_monitor_datasource"
         params = {'filename': filename, "filetype": filetype,"time":ts}
         params = urllib.parse.urlencode(params)
