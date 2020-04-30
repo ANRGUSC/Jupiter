@@ -81,7 +81,7 @@ def delete_all_stream(app_name):
         for i in resp.items:
             if i.metadata.namespace == namespace:
                 # del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace, v1_delete_options)
-                               del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace)
+                del_resp_1 = extensions_v1_beta1_api.delete_namespaced_replica_set(i.metadata.name, namespace)
                 logging.debug("Relicaset '%s' Deleted. status='%s'" % (home_name, str(del_resp_1.status)))
 
         # Check if there is a pod still running by using the label app='home'
