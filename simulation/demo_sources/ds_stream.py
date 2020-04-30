@@ -121,11 +121,6 @@ class Handler(pyinotify.ProcessEvent):
 
         send_monitor_data(inputfile,'input',t)
 
-        logging.debug(ID)
-        logging.debug(username)
-        logging.debug(password)
-        logging.debug(source)
-        logging.debug(destination)
         transfer_data(ID,username, password,source, destination)
 
 class MonitorRecv(multiprocessing.Process):
