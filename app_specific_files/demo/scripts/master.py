@@ -49,6 +49,9 @@ def task(filelist, pathin, pathout):
     print('------')
     print(num_images)
     print(filelist)
+    if not isinstance(filelist, list):
+        filelist = [filelist]    
+
     for i in range(num_images):
         ### Number of files in file list can be less than the number of images needed (9)
         file_idx = int(i % len(filelist))
