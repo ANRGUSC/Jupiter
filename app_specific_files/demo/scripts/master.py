@@ -46,6 +46,9 @@ def task(filelist, pathin, pathout):
     single_spatial_full = 256
     input_list = []
     ### List of images that are used to create a collage image
+    print('------')
+    print(num_images)
+    print(filelist)
     for i in range(num_images):
         ### Number of files in file list can be less than the number of images needed (9)
         file_idx = int(i % len(filelist))

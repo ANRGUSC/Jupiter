@@ -38,8 +38,8 @@ RUN mkdir -p /mongodb/log
 
 RUN apt-get install stress
 # Create the input, output, and runtime profiler directories
-# RUN mkdir -p /input
-# RUN mkdir -p /output 
+RUN mkdir -p /input
+RUN mkdir -p /output 
 
 # Add input files
 #COPY  {app_file}/sample_input /sample_input
