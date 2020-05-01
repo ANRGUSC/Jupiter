@@ -1,0 +1,58 @@
+- hosts: master
+  order: sorted
+  gather_facts: False
+  become: true
+  check_mode: no
+  vars:
+    ansible_python_interpreter: python3
+  tasks:
+    - name: Check if kubeadm has already run
+      stat:
+        path: "/etc/kubernetes/pki/ca.key"
+      register: kubeadm_ca
+
+    - name: Reset Kubernetes component
+      when: not kubeadm_ca.stat.exists
+      shell: "sudo kubeadm reset --force"
+      register: reset_cluster
+
+    - name: Init Kubernetes cluster with pregenerated token
+      when: reset_cluster is succeeded and not kubeadm_ca.stat.exists
+      shell: | 
+        sudo kubeadm init --pod-network-cidr=10.244.0.0/16 \
+                     --service-cidr=10.96.0.0/12 \
+                     --ignore-preflight-errors=all \
+                     --token 3bwyan.ixrild4p02vldwbc
+      register: init_cluster
+
+    - name: "Copy config file to local machine's home folder"
+      fetch:
+        src: /etc/kubernetes/admin.conf 
+        dest: "{{ lookup('env', 'HOME') }}/.kube/config"
+        flat: yes
+      run_once: yes
+      ignore_errors: yes
+
+    - name: Create Kubernetes config directory
+      file:
+        path: "/root/.kube/"
+        state: directory
+
+    - name: Copy admin.conf to Home directory
+      when: init_cluster is succeeded
+      copy:
+        src: "/etc/kubernetes/admin.conf"
+        dest: "/root/.kube/config"
+        owner: "root"
+        group: "root"
+        mode: 0755
+        remote_src: true
+
+    - name: Enable kubectl autocompletion if it doesn't exist
+      lineinfile:
+        path: /root/.bashrc
+        line: 'source <(kubectl completion bash)'
+        create: yes
+
+    - name: Apply Flannel
+      shell: kubectl apply -f https://raw.githubusercontent.com/ANRGUSC/Jupiter/c5dd54a5ecba1173ff2f888e08f0769045bae32b/k8s_bootstrap/mergetb/kube-flannel-jupiter.yml
