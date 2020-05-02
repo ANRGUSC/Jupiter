@@ -41,8 +41,9 @@ RUN apt-get install stress
 RUN mkdir -p /input
 RUN mkdir -p /output 
 
-ADD circe/original/requirements.txt /requirements.txt
+
 RUN pip3 install --upgrade pip
+ADD circe/original/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
 # Add input files

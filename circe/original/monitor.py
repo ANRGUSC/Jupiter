@@ -248,7 +248,7 @@ class Handler1(pyinotify.ProcessEvent):
             destination = os.path.join('/output', new_file)
             logging.debug(source)
             logging.debug(destination)
-            logging.debug(username)
+            logging.debug(user)
             logging.debug(password)
             transfer_data('home',user,password,source, destination)
             
