@@ -43,6 +43,7 @@ def gen_stream_data(interval,data_path,original_data_path):
         source = os.path.join(original_data_path,filename)
         destination = os.path.join(data_path,filename)
         shutil.copyfile(source, destination)
+
         
 
 def transfer_data_scp(ID,user,pword,source, destination):
