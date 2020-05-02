@@ -467,7 +467,7 @@ def main():
 
     global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
 
-    configs = json.load(open('/config.json'))
+    configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
     taskname = taskmap[0]
     if taskmap[1] == True:
