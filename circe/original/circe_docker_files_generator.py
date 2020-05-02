@@ -41,6 +41,10 @@ RUN apt-get install stress
 RUN mkdir -p /input
 RUN mkdir -p /output 
 
+ADD circe/original/requirements.txt /requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
+
 # Add input files
 COPY  {app_file}/sample_input /sample_input
 
@@ -62,9 +66,7 @@ RUN chmod +x /central_mongod
 # Taken from quynh's network profiler
 RUN pip3 install cryptography
 
-ADD circe/original/requirements.txt /requirements.txt
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
+
 
 WORKDIR /
 
