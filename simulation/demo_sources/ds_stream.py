@@ -44,6 +44,15 @@ def gen_stream_data(interval,data_path,original_data_path):
         destination = os.path.join(data_path,filename)
         shutil.copyfile(source, destination)
 
+def gen_stream_fixed_data(num_images,data_path,original_data_path):
+    for i in range(0,num_images):
+        time.sleep(1)
+        logging.debug('--- Copy new file')
+        filename = find_next_file(original_data_path)
+        source = os.path.join(original_data_path,filename)
+        destination = os.path.join(data_path,filename)
+        shutil.copyfile(source, destination)
+
         
 
 def transfer_data_scp(ID,user,pword,source, destination):
@@ -199,7 +208,12 @@ def main():
     interval = 10
     data_path = "generated_stream"
     original_data_path = "data"
-    _thread.start_new_thread(gen_stream_data,(interval,data_path,original_data_path))  
+    # Generate streaming data
+    # thread.start_new_thread(gen_stream_data,(interval,data_path,original_data_path))  
+
+    # Generate fixed number of images
+    num = 18
+    thread.start_new_thread(gen_stream_fixed_data,(num,data_path,original_data_path)) 
 
     # watch manager
     wm = pyinotify.WatchManager()
