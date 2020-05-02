@@ -116,6 +116,7 @@ def transfer_data_scp(ID,user,pword,source, destination):
             logging.debug(combined_ip_map)
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
+            logging.debug(cmd)
             os.system(cmd)
             logging.debug('data transfer complete\n')
             ts = time.time()
