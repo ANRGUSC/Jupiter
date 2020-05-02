@@ -61,7 +61,7 @@ def task(file_, pathin, pathout):
     return out_list
 
 def main():
-    filelist = ["outmaster_n03345487_1002.JPEG"]
+    filelist = ["outmaster_n03345487_10.JPEG"]
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
