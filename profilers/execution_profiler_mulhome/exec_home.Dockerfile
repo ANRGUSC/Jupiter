@@ -38,11 +38,13 @@ RUN mkdir -p /home/darpa/apps/data
 RUN apt-get install stress
 
 
-# IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/dummyapp100/scripts/ /centralized_scheduler/
-COPY app_specific_files/dummyapp100/sample_input /centralized_scheduler/sample_input
 
-ADD app_specific_files/dummyapp100/configuration.txt /centralized_scheduler/DAG.txt
+# IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
+ADD app_specific_files/demo/scripts/ /centralized_scheduler/
+COPY app_specific_files/demo/sample_input /centralized_scheduler/sample_input
+
+ADD app_specific_files/demo/configuration.txt /centralized_scheduler/DAG.txt
+
 
 ADD profilers/execution_profiler_mulhome/profiler_worker.py /centralized_scheduler/profiler.py
 

@@ -17,7 +17,7 @@ FROM ubuntu:18.04
 
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
-RUN apt-get install -y openssh-server mongodb
+RUN apt-get install -y openssh-server mongodb --fix-missing
 RUN apt-get -y install build-essential libssl-dev libffi-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
@@ -93,7 +93,7 @@ FROM ubuntu:18.04
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 
-RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen --fix-missing
+RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen
 RUN apt-get install -y vim
 RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
 RUN apt-get install sudo -y
