@@ -194,7 +194,7 @@ class Handler1(pyinotify.ProcessEvent):
 
 
     def process_IN_CLOSE_WRITE(self, event):
-        logging.debug("Received file as output - %s." % event.pathname)
+        logging.debug("Just received file as output - %s." % event.pathname)
         
         """
             Save the time when a output file is available. This is taken as the end time of the task.
