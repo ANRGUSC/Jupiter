@@ -288,7 +288,7 @@ class Handler1(pyinotify.ProcessEvent):
             sources = [source]*len(cur_tasks)
                 
             transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
-        else:
+        elif flag2 == 'false':
             num_child = (len(sys.argv) - 4) / 4
             files_out.append(new_file)
             if (len(files_out) == num_child):
@@ -327,6 +327,8 @@ class Handler1(pyinotify.ProcessEvent):
 
                 transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
                 files_out=[]
+        else:#exclusive
+            logging.debug('Sending exclusive information to the corresponding children')
 
 
 
