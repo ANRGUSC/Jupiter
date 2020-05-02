@@ -112,11 +112,8 @@ def transfer_data_scp(ID,user,pword,source, destination):
     ts = -1
     while retry < num_retries:
         try:
-            logging.debug(ID)
-            logging.debug(combined_ip_map)
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
-            logging.debug(cmd)
             os.system(cmd)
             logging.debug('data transfer complete\n')
             ts = time.time()
@@ -195,7 +192,7 @@ class Handler1(pyinotify.ProcessEvent):
 
 
     def process_IN_CLOSE_WRITE(self, event):
-        logging.debug("Just received file as output - %s." % event.pathname)
+        logging.debug("Received file as output - %s." % event.pathname)
         
         """
             Save the time when a output file is available. This is taken as the end time of the task.
@@ -247,10 +244,6 @@ class Handler1(pyinotify.ProcessEvent):
             password=sys.argv[6]
             source = event.pathname
             destination = os.path.join('/output', new_file)
-            logging.debug(source)
-            logging.debug(destination)
-            logging.debug(user)
-            logging.debug(password)
             transfer_data('home',user,password,source, destination)
             
 
