@@ -22,6 +22,11 @@ RUN apt-get -y install build-essential libssl-dev libffi-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
 
+
+RUN pip3 install --upgrade pip
+ADD circe/original/requirements.txt /requirements.txt
+RUN pip3 install -r requirements.txt
+
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
@@ -42,9 +47,6 @@ RUN mkdir -p /input
 RUN mkdir -p /output 
 
 
-RUN pip3 install --upgrade pip
-ADD circe/original/requirements.txt /requirements.txt
-RUN pip3 install -r requirements.txt
 
 # Add input files
 COPY  {app_file}/sample_input /sample_input
@@ -104,6 +106,11 @@ RUN apt-get install iproute2 -y
 RUN sudo apt update
 RUN apt-get install -y mosquitto-clients
 
+ADD circe/original/requirements.txt /requirements.txt
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
+
+
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -115,9 +122,6 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-ADD circe/original/requirements.txt /requirements.txt
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
 
 RUN mkdir -p /centralized_scheduler/input
 RUN mkdir -p /centralized_scheduler/output
