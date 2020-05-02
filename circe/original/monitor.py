@@ -112,6 +112,8 @@ def transfer_data_scp(ID,user,pword,source, destination):
     ts = -1
     while retry < num_retries:
         try:
+            logging.debug(ID)
+            logging.debug(combined_ip_map)
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
@@ -122,7 +124,7 @@ def transfer_data_scp(ID,user,pword,source, destination):
             runtime_sender_log.flush()
             break
         except:
-            logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            logging.debug('SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
     if retry == num_retries:
@@ -244,6 +246,10 @@ class Handler1(pyinotify.ProcessEvent):
             password=sys.argv[6]
             source = event.pathname
             destination = os.path.join('/output', new_file)
+            logging.debug(source)
+            logging.debug(destination)
+            logging.debug(username)
+            logging.debug(password)
             transfer_data('home',user,password,source, destination)
             
 

@@ -119,18 +119,18 @@ RUN pip3 install -r requirements.txt
 RUN mkdir -p /centralized_scheduler/input
 RUN mkdir -p /centralized_scheduler/output
 RUN mkdir -p /centralized_scheduler/runtime
-ADD circe/original/monitor.py /centralized_scheduler/monitor.py
-
 RUN mkdir -p /home/darpa/apps/data
 
 #ADD circe/original/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
 ADD {app_file}/scripts/ /centralized_scheduler/
-
 ADD jupiter_config.ini /jupiter_config.ini
 ADD circe/original/start_worker.sh /start.sh
 RUN chmod +x /start.sh
+
+ADD circe/original/monitor.py /centralized_scheduler/monitor.py
+
 WORKDIR /
 
 # tell the port number the container should expose

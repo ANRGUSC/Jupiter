@@ -195,7 +195,7 @@ def main():
     web_server.start()
     
     logging.debug('Starting to generate the streaming files')
-    interval = 180
+    interval = 10
     data_path = "generated_stream"
     original_data_path = "data"
     _thread.start_new_thread(gen_stream_data,(interval,data_path,original_data_path))  

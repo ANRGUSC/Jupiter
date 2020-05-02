@@ -53,11 +53,11 @@ def task(file_, pathin, pathout):
             # f_split = f.split("prefix_")[1]
             destination = os.path.join(pathout, "class2_" + f)
             out_list.append(shutil.copyfile(source, destination))
-        else: ### not either of the classes
-            source = os.path.join(pathin, f)
-            # f_split = f.split("prefix_")[1]
-            destination = os.path.join(pathout, "classNA_" + f)
-            out_list.append(shutil.copyfile(source, destination))
+        else: ### not either of the classes # do nothing
+            print('This does not belong to any classes!!!')
+            #source = os.path.join(pathin, f)
+            #destination = os.path.join(pathout, "classNA_" + f)
+            #out_list.append(shutil.copyfile(source, destination))
     return out_list
 
 def main():
