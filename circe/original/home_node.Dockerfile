@@ -3,6 +3,7 @@ FROM ubuntu:18.04
 
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
+RUN apt-get -yqq update
 RUN apt-get install -y openssh-server mongodb
 RUN apt-get -y install build-essential libssl-dev libffi-dev
 RUN pip3 install --upgrade pip

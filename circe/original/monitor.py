@@ -329,6 +329,21 @@ class Handler1(pyinotify.ProcessEvent):
                 files_out=[]
         else:#exclusive
             logging.debug('Sending exclusive information to the corresponding children')
+            cur_tasks =[]
+            users = []
+            passwords = []
+            source = event.pathname
+            destination = os.path.join('/centralized_scheduler', 'input', new_file)
+            logging.debug('Checking ')
+            next_child = 
+
+            for i in range(3, len(sys.argv)-1,4):
+                cur_tasks.append(sys.argv[i])
+                users.append(sys.argv[i+2])
+                passwords.append(sys.argv[i+3])
+
+            destinations = [destination] *len(cur_tasks)
+            sources = [source]*len(cur_tasks)
 
 
 
