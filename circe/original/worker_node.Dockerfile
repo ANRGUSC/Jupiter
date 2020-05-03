@@ -3,12 +3,21 @@ FROM ubuntu:18.04
 
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
+RUN apt-get -yqq update
+RUN apt-get install -y openssh-server mongodb
+RUN apt-get -y install build-essential libssl-dev libffi-dev
+RUN pip3 install --upgrade pip
+RUN apt-get install -y sshpass nano
 
-RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen --fix-missing
-RUN apt-get install -y vim
-RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
-RUN apt-get install sudo -y
-RUN apt-get install iproute2 -y
+
+RUN pip3 install --upgrade pip
+ADD circe/original/requirements.txt /requirements.txt
+RUN pip3 install -r requirements.txt
+
+# RUN apt-get install -yqq openssh-client openssh-server sshpass
+# RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
+# RUN apt-get install sudo -y
+# RUN apt-get install iproute2 -y
 
 ## Install TASK specific needs. The hadoop is a requirement for the network profiler application
 ##RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
@@ -16,13 +25,8 @@ RUN apt-get install iproute2 -y
 #RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 #RUN rm ~/hadoop-2.8.1.tar.gz
 
-RUN sudo apt update
+RUN apt-get -yqq update
 RUN apt-get install -y mosquitto-clients
-
-ADD circe/original/requirements.txt /requirements.txt
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
-
 
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
