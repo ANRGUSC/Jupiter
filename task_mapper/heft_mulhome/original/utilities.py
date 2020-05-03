@@ -1,4 +1,4 @@
-def get_bottleneck(links, processors):
+def get_bottleneck_id(links, processors):
     """
     given current processor and link usage, return the id of resource with max takeup time 
     (without considering pipelined wait times)
@@ -32,14 +32,14 @@ def is_link(rsrc_id):
             return True
     return False
             
-
+"""
 def get_idle_proc_id(processors):
     """
-    given all the current state of processors, return idle ones (hash set)
+    #given all the current state of processors, return idle ones (hash set)
     """
     idle_proc_ids = set()
     for processor in processors:
         if len(processor.time_line) == 0:
             idle_proc_ids.add(processor.number)
     return idle_proc_ids
-
+"""
