@@ -3,12 +3,104 @@ import os
 import shutil
 from PIL import Image
 # import numpy as np
+#KRishna
+from multiprocessing import Process, Manager
+from flask import Flask, request
+import configparser
+import urllib
+import loggingg
+import time
+#Krishna
+
 """
 Task for master encoder node.
 1) Takes as input multiple image files and creates a collage image file. It is ideal to have 9 different inputs to create one collage image. 
 2) Sends the image files to ResNet or Collage task folders downstream.
 """
 ### create a collage image and write to a file
+
+#KRishna
+app = Flask(__name__)
+global logging
+logging.basicConfig(level = logging.DEBUG)
+### NOTETOQUYNH: Need to set the below
+### store class node tasks ip/port, store class node paths
+store_class_tasks_node_port_dict = {}
+store_class_tasks_paths_dict = {}
+### May be need to use job ids to tackle issues coming from queuing/slowdowns
+tasks_to_images_dict = {}
+
+def transfer_data_scp(destination_node_port, source_path, destination_path):
+    """Transfer data using SCP
+    """
+    pass
+    return
+
+def recv_missing_from_decoder_task():
+    """
+    Receive information on slow/missing resnet tasks from the decoder task
+    Forward the images to corresonding destination storage nodes
+    Raises:
+        Exception: failed processing in Flask
+    """
+    global store_class_tasks_node_port_dict
+    global tasks_to_images_dict
+    try:
+        missing_resnet_tasks_str = request.args.get('missing_resnet_tasks')
+        class_predictions_str = request.args.get('class_predictions')
+        missing_resnet_tasks = missing_resnet_tasks_str.split(" ")
+        class_predictions = class_predictions_str.split(" ")
+        for task,cls in zip(missing_resnet_tasks, class_predictions):
+            source_path = tasks_to_images_dict[task]
+            destination_node_port = store_class_tasks_node_port_dict[cls]
+            destination_path = store_class_tasks_paths_dict[cls]
+            #if pred[0] == 555: ### fire engine. class 1
+            #    f_split = f.split("prefix_")[1]
+            #    destination = os.path.join(pathout, "class1_prefix_" + f_split)
+            #elif pred[0] == 779: ### school bus. class 2
+            #    f_split = f.split("prefix_")[1]
+            #    destination = os.path.join(pathout, "class2_prefix_" + f_split)
+            #else: ### not either of the classes
+            #    pass
+            transfer_data_scp(destination_node_port, source_path, destination_path)
+    except Exception as e:
+        logging.debug("Bad reception or failed processing in Flask for receiving slow resnet tasks information from decoder task")
+        logging.debug(e)
+        return "not ok"
+    return "ok"
+app.add_url_rule('/recv_missing_from_decoder_task', 'recv_missing_from_decoder_task', recv_missing_from_decoder_task)
+
+def helper_update_tasks_to_images_dict(task_num, f, pathin):
+    ### Reusing the input files to the master node. NOT creating a local copy of input files.
+    global tasks_to_images_dict
+    source = os.path.join(pathin, f)
+    tasks_to_images_dict[task_num] = source 
+    return
+
+#????
+# def helper_copyfile(f, pathin, pathout, out_list):
+#     source = os.path.join(pathin, f)
+#     print("file is", f)
+#     f_split = f.split("prefix_")[1]
+#     destination = os.path.join(pathout, "outmasterprefix_" + f_split)
+#     #try: 
+#     out_list.append(shutil.copyfile(source, destination))
+#     #except: 
+#     #print("ERROR while copying file in master_task.py")
+#     return
+
+class MonitorRecv(multiprocessing.Process):
+    def __init__(self):
+        multiprocessing.Process.__init__(self)
+
+    def run(self):
+        """
+        Start Flask server
+        """
+        logging.debug("Flask server started")
+        app.run(host='0.0.0.0', port=FLASK_DOCKER)
+
+#KRishna
 
 def create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w):
     collage = Image.new('RGB', (single_spatial*w,single_spatial*w))
@@ -56,7 +148,9 @@ def task(filelist, pathin, pathout):
         file_idx = int(i % len(filelist))
         input_list.append(os.path.join(pathin, filelist[file_idx]))
     #collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w).astype(np.float16)
-
+        # KRishna
+        helper_update_tasks_to_images_dict(i, filelist[file_idx], pathin)
+        #KRishna
     print('Input list')
     print(input_list)
     
@@ -76,6 +170,13 @@ def task(filelist, pathin, pathout):
     return outlist
 
 def main():
+    ### NOTETOQUYNH - Begin
+    INI_PATH = '/jupiter_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+    global FLASK_DOCKER
+    FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+    ### NOTETOQUYNH - End
     filelist = ['n03345487_10.JPEG','n03345487_108.JPEG','n03345487_133.JPEG','n03345487_135.JPEG','n03345487_136.JPEG','n04146614_16038.JPEG','n03345487_18.JPEG','n03345487_40.JPEG','n03345487_78.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
