@@ -10,6 +10,15 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets
 import shutil
 
+#Krishna
+import urllib
+import logging
+global logging
+logging.basicConfig(level = logging.DEBUG)
+global decoder_node_port
+decoder_node_port = ":"
+#Krishna
+
 resnet_task_num = 4
 
 def task(file_, pathin, pathout):
@@ -65,8 +74,38 @@ def task(file_, pathin, pathout):
             #source = os.path.join(pathin, f)
             #destination = os.path.join(pathout, "classNA_" + f)
             #out_list.append(shutil.copyfile(source, destination))
+        #Krishna
+        send_prediction_to_decoder_task(pred[0], decoder_node_port)
+        #Krishna
     return out_list
 
+#Krishna
+def send_prediction_to_decoder_task(prediction, decoder_node_port):
+    """
+    Sending prediction and resnet node task's number to flask server on decoder
+    Args:
+        prediction: the prediction to be sent
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+    Raises:
+        Exception: if sending message to flask server on decoder is failed
+    """
+    global resnet_task_num
+    try:
+        url = "http://" + decoder_node_port + "/recv_prediction_from_resnet_task"
+        ### NOTETOQUYNH: set resnet_task_num to ID of the resnet worker task (0 to 10)
+        params = {'msg': prediction, "resnet_task_num": resnet_task_num}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        logging.debug("Sending my prediction info to flask server on decoder FAILED!!!")
+        logging.debug(e)
+        return "not ok"
+    return res
+#Krishna
 def main():
     filelist = ["master_resnet4_n03345487_136.JPEG"]
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
