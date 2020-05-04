@@ -10,7 +10,7 @@ def task(file_, pathin, pathout):
     for i, f in enumerate(file_):
         source = os.path.join(pathin, f) 
         # file_split = file_.split("prefix_")[1]
-        destination = os.path.join(pathout, "outstore2_" + f)
+        destination = os.path.join(pathout, "storeclass2_" + f)
         print(source)
         print(destination)
         try: 
@@ -18,12 +18,12 @@ def task(file_, pathin, pathout):
             out_list.append(destination)
         except: 
             print("ERROR while copying file in store_class_task.py")
-    return out_list 
+    return out_list
 
 
 
 def main():
-    filelist = ['class2_outmaster_n04146614_10015.JPEG']
+    filelist = ['resnet5_storeclass2_master_resnet5_n04146614_16038.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile

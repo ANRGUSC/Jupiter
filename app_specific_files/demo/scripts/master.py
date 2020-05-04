@@ -9,6 +9,7 @@ Task for master encoder node.
 2) Sends the image files to ResNet or Collage task folders downstream.
 """
 ### create a collage image and write to a file
+
 def create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w):
     collage = Image.new('RGB', (single_spatial*w,single_spatial*w))
     collage_resized = Image.new('RGB', (collage_spatial, collage_spatial))
@@ -29,9 +30,11 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
     #collage = np.transpose(collage,(2,0,1))
     #collage /= 255.0
     ### write to file 
-    collage_name = "new_collage.JPEG"
+    collage_name = "collage.JPEG"
     collage_resized = collage.resize((collage_spatial, collage_spatial), Image.ANTIALIAS)
     collage_resized.save(collage_name)
+    print('New collage file is created!')
+    print(collage_name)
     return collage_name
 
 
@@ -54,20 +57,26 @@ def task(filelist, pathin, pathout):
         input_list.append(os.path.join(pathin, filelist[file_idx]))
     #collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w).astype(np.float16)
 
+    print('Input list')
+    print(input_list)
     
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     
-    shutil.copyfile(collage_file, os.path.join(pathout,"outmaster_"+collage_file))
+    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+collage_file))
+    print('Receive collage file:')
     ### send to collage task
-    outlist = ["outmaster_"+collage_file]
+    outlist = [os.path.join(pathout,"master_"+collage_file)]
+    print(outlist)
     ### send to resnet tasks
-    for f in filelist:
-        shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"outmaster_"+f))	
-        outlist.append(os.path.join(pathout,"outmaster_"+f))
-    return out_list 
+    print('Receive resnet files: ')
+    for i, f in enumerate(filelist):
+        shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(i)+'_'+f))	
+        outlist.append(os.path.join(pathout,"master_resnet"+str(i)+'_'+f))
+        print(outlist)
+    return outlist
 
 def main():
-    filelist = ['n03345487_10.JPEG','n03345487_108.JPEG','n03345487_133.JPEG','n03345487_135.JPEG','n03345487_136.JPEG','n03345487_144.JPEG','n03345487_18.JPEG','n03345487_40.JPEG','n03345487_78.JPEG']
+    filelist = ['n03345487_10.JPEG','n03345487_108.JPEG','n03345487_133.JPEG','n03345487_135.JPEG','n03345487_136.JPEG','n04146614_16038.JPEG','n03345487_18.JPEG','n03345487_40.JPEG','n03345487_78.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile

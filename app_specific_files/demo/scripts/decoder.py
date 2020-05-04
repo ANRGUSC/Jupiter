@@ -14,10 +14,10 @@ def task(filelist, pathin, pathout):
     with open(out_name, "w") as out_file:
         out_file.write("place holder")
         out_list.append(out_name)
-    return out_list 
+    return out_list
 
 def main():
-    filelist = ['outcollage_collage_preds.pickle']
+    filelist = ['collage_decoder_preds.pickle']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
