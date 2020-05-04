@@ -1,0 +1,2 @@
+class Duplicate:
+    def
