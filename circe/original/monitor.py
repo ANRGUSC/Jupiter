@@ -327,25 +327,77 @@ class Handler1(pyinotify.ProcessEvent):
 
                 transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
                 files_out=[]
-        else:#exclusive
+        elif flag2 == 'exclusive':#exclusive
             logging.debug('Sending exclusive information to the corresponding children')
+            source = event.pathname
+            destination = os.path.join('/centralized_scheduler', 'input', new_file)
+            
+            new_file = os.path.split(event.pathname)[-1]
+            dest = new_file.split('.')[0].split('_')[1]
+            logging.debug(dest)
+
             cur_tasks =[]
             users = []
             passwords = []
-            source = event.pathname
-            destination = os.path.join('/centralized_scheduler', 'input', new_file)
-            logging.debug('Checking ')
-            next_child = 
 
             for i in range(3, len(sys.argv)-1,4):
-                cur_tasks.append(sys.argv[i])
-                users.append(sys.argv[i+2])
-                passwords.append(sys.argv[i+3])
+                if sys.argv[i]==dest:
+                    print(sys.argv[i])
+                    cur_tasks = [sys.argv[i]]
+                    users = [sys.argv[i+2]]
+                    passwords = [sys.argv[i+3]]
+                    break
 
-            destinations = [destination] *len(cur_tasks)
-            sources = [source]*len(cur_tasks)
-
-
+            destinations = [destination]
+            sources = [source]
+            transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
+        else: #ordered
+            logging.debug('Sending all the information to the corresponding children based on order')
+            num_child = (len(sys.argv) - 4) / 4
+            files_out.append(new_file)
+            if (len(files_out) == num_child):
+                # send runtime profiling information
+                ts = time.time()
+                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                send_runtime_profile(runtime_info)
+                if BOKEH == 1:
+                    runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+                if BOKEH == 0:
+                    msg = taskname + " ends"
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                    
+                # Using unicast
+                # for i in range(3, len(sys.argv)-1,4):
+                #     myfile = files_out.pop(0)
+                #     event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
+                #     cur_task = sys.argv[i]
+                #     user = sys.argv[i+2]
+                #     password = sys.argv[i+3]
+                #     source = event_path
+                #     destination = os.path.join('/centralized_scheduler','input', myfile)
+                #     transfer_data(cur_task,user,password,source, destination)
+                
+                logging.debug('Using multicast instead')
+                cur_tasks =[]
+                users = []
+                passwords = []
+                logging.debug(files_out)
+                for fout in files_out:
+                    dest = fout.split('.')[0].split('_')[1]
+                    logging.debug(dest)
+                    for i in range(3, len(sys.argv)-1,4):
+                        if sys.argv[i]==dest:
+                            cur_tasks.append(sys.argv[i])
+                            users.append(sys.argv[i+2])
+                            passwords.append(sys.argv[i+3])
+                            break
+                logging.debug(cur_tasks)
+                destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in files_out]
+                sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in files_out]
+                logging.debug('Transfer the output files to the corresponding destinations')
+                transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
+                files_out=[]
 
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
@@ -390,6 +442,7 @@ class Handler(pyinotify.ProcessEvent):
                 runtimebk = 'rt_enter '+ taskname+' '+ temp_name+ ' '+str(ts)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
         flag1 = sys.argv[1]
+        logging.debug(flag1)
         if flag1 == "1":
             ts = time.time()
             runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)

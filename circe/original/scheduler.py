@@ -69,8 +69,11 @@ def recv_datasource():
         logging.debug("Received flask message: %s %s %s", filename, filetype,ts)
         if filetype == 'input':
             start_times[filename]=float(ts)
+            logging.debug(start_times)
         else:
             end_times[filename]=float(ts)
+            logging.debug(end_times)
+
         
     except Exception as e:
         logging.debug("Bad reception or failed processing in Flask")
@@ -282,6 +285,7 @@ class MyHandler(pyinotify.ProcessEvent):
 
         logging.debug("Received file as output - %s." % event.pathname) 
         outputfile = event.pathname.split('/')[-1].split('_')[0]
+        logging.debug(outputfile)
 
         end_times[outputfile] = time.time()
         
@@ -323,6 +327,7 @@ class Handler(pyinotify.ProcessEvent):
             runtime_receiver_log.flush()
 
         inputfile = event.pathname.split('/')[-1]
+        logging.debug(inputfile)
         t = time.time()
         start_times[inputfile] = t
         new_file_name = os.path.split(event.pathname)[-1]

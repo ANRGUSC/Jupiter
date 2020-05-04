@@ -22,6 +22,7 @@ import shutil
 import configparser
 import paho.mqtt.client as mqtt
 import logging
+import math
 
 
 
@@ -116,6 +117,7 @@ def file_size(file_path):
     Returns:
         float: file size in bytes
     """
+    print(file_path)
     if os.path.isfile(file_path):
         file_info = os.stat(file_path)
         return convert_bytes(file_info.st_size)
@@ -262,7 +264,9 @@ def main():
     myfile.write('task,time(sec),output_data (Kbit)\n')
 
     count = 0
+    logging.debug('Executing the task')
     for task in task_order:
+        logging.debug(task)
         module = task_module.get(task)
         os.environ['TASK'] = task
         count = count+1
@@ -273,12 +277,15 @@ def main():
         logging.debug(filename)
         stop_time = datetime.datetime.utcnow()
         mytime = stop_time - start_time
-        mytime = int(mytime.total_seconds()) #convert to seconds
-
+        logging.debug(mytime)
+        # mytime = int(mytime.total_seconds()) #convert to seconds
+        mytime = math.ceil(mytime.total_seconds()) #convert to seco
+        logging.debug(mytime)
         output_data = [file_size(fname) for fname in filename]
         logging.debug(output_data)
-        logging.debug('------------------------------------------------')
         sum_output_data = sum(output_data) #current: summation of all output files
+        logging.debug(sum_output_data)
+        logging.debug('------------------------------------------------')
         line=task+','+str(mytime)+ ','+ str(sum_output_data) + '\n'
         myfile.write(line)
         myfile.flush()

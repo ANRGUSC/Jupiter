@@ -91,15 +91,18 @@ def task(file_, pathin, pathout):
     # Load collage model
     device = torch.device("cpu")
     # net_config_path = "../collage_worker/cfg/yolov3-tiny.cfg"
-    net_config_path = "collage_worker/cfg/yolov3-tiny.cfg"
+    # net_config_path = "collage_worker/cfg/yolov3-tiny.cfg"
+    net_config_path = os.path.join(os.path.dirname(__file__),"yolov3-tiny.cfg")
     model = Darknet(net_config_path, img_size)
     # weights_file_path = "../collage_worker/weights/best.pt"
-    weights_file_path = "collage_worker/weights/best.pt"
+    # weights_file_path = "collage_worker/weights/best.pt"
+    weights_file_path = os.path.join(os.path.dirname(__file__),"best.pt")
     checkpoint = torch.load(weights_file_path, map_location="cpu")
     model.load_state_dict(checkpoint['model'])
     del checkpoint
     model.to(device).eval()
-    classes_list = np.load("./classes_list_103_classes.npy")
+    # classes_list = np.load("./classes_list_103_classes.npy")
+    classes_list = np.load(os.path.join(os.path.dirname(__file__),"classes_list_103_classes.npy"))
     classes_list = np.sort(classes_list)
     ### Load collage image
     composed = transforms.Compose([
@@ -117,18 +120,15 @@ def task(file_, pathin, pathout):
         final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
     ### Write predictions to a file and send it to decoder task's folder
     out_list = []
-    pickle_file = os.path.join(pathout,"outcollage_collage_preds.pickle")
+    pickle_file = os.path.join(pathout,"collage_decoder_preds.pickle")
     with open(pickle_file, "wb") as outfile:
         pickle.dump(final_preds, outfile)
     out_list.append(pickle_file)
     return out_list
 
 def main():
-    filelist = ["outmaster_new_collage.JPEG"]
+    filelist = ["master_collage.JPEG"]
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
-# if __name__=="__main__":
-#     filelist = ["outmasterprefix_new_collage.JPEG"]
-#     for f in filelist:
-#         task(f, "./to_collage/", "./")
+

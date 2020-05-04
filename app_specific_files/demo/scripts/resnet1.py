@@ -50,13 +50,15 @@ def task(file_, pathin, pathout):
             source = os.path.join(pathin, f)
             # f_split = f.split("prefix_")[1]
             #destination = os.path.join(pathout, "class1_" + f)
-            destination = os.path.join(pathout, "storeclass1_" + "resnet" + str(resnet_task_num) + f)
+            destination = os.path.join(pathout,  "resnet" + str(resnet_task_num)+ "_storeclass1_" + f)
+            # destination = os.path.join(pathout, "storeclass1_" + f)
             out_list.append(shutil.copyfile(source, destination))
         elif pred[0] == 779: ### school bus. class 2
             source = os.path.join(pathin, f)
             # f_split = f.split("prefix_")[1]
             # destination = os.path.join(pathout, "class2_" + f)
-            destination = os.path.join(pathout, "storeclass2_" + "resnet" + str(resnet_task_num) + f)
+            destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass2_"+ f)
+            # destination = os.path.join(pathout, "storeclass2_" + f)
             out_list.append(shutil.copyfile(source, destination))
         else: ### not either of the classes # do nothing
             print('This does not belong to any classes!!!')
@@ -66,15 +68,8 @@ def task(file_, pathin, pathout):
     return out_list
 
 def main():
-    filelist = ["outmaster_n03345487_10.JPEG"]
+    filelist = ["master_resnet1_n03345487_108.JPEG"]
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
 
-# if __name__ == "__main__":
-#     #filelist = ['outmasterprefix_n03345487_1002.JPEG', 'outmasterprefix_n04146614_10015.JPEG']
-#     file_ = 'outmasterprefix_n03345487_1002.JPEG'
-#     pathin = './to_resnet/'
-#     pathout = './classified_images/'
-#     #for f in filelist:
-#     task(file_, pathin, pathout)    

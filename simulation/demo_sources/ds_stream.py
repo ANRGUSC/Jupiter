@@ -213,7 +213,7 @@ def main():
 
     # Generate fixed number of images
     num = 18
-    thread.start_new_thread(gen_stream_fixed_data,(num,data_path,original_data_path)) 
+    _thread.start_new_thread(gen_stream_fixed_data,(num,data_path,original_data_path)) 
 
     # watch manager
     wm = pyinotify.WatchManager()
