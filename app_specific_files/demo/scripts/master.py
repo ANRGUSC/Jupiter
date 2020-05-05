@@ -27,7 +27,11 @@ global logging
 logging.basicConfig(level = logging.DEBUG)
 ### NOTETOQUYNH: Need to set the below
 ### store class node tasks ip/port, store class node paths
-store_class_tasks_node_port_dict = {}
+
+global manager
+manager = Manager()
+
+store_class_tasks_node_port_dict = manager.dict()
 store_class_tasks_paths_dict = {}
 ### May be need to use job ids to tackle issues coming from queuing/slowdowns
 tasks_to_images_dict = {}
@@ -49,14 +53,7 @@ store_class_list = ['storeclass1','storeclass2']
 for item in store_class_list:
     store_class_tasks_node_port_dict[item] = map_nodes_ip[item] + ":" + str(FLASK_SVC )
 
-### NOTETOQUYNH - Begin
-INI_PATH = 'jupiter_config.ini'
-config = configparser.ConfigParser()
-config.read(INI_PATH)
-global FLASK_DOCKER
-FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
-logging.debug(FLASK_DOCKER)
-### NOTETOQUYNH - End
+
 
 def transfer_data_scp(destination_node_port, source_path, destination_path):
     """Transfer data using SCP
