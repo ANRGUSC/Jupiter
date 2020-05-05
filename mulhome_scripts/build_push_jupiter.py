@@ -16,9 +16,9 @@ from build_push_exec import *
 from build_push_heft import *
 
 if __name__ == '__main__':
-	# build_push_wave()
-	# build_push_circe()
-	# build_push_profiler()
+	build_push_profiler()
 	build_push_exec()
-	# build_push_heft()
+	build_push_heft()
+	build_push_circe()
+	# build_push_wave()
 
