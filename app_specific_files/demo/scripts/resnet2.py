@@ -101,8 +101,8 @@ def send_prediction_to_decoder_task(prediction, decoder_node_port):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        logging.debug("Sending my prediction info to flask server on decoder FAILED!!!")
-        logging.debug(e)
+        logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
+        #logging.debug(e)
         return "not ok"
     return res
 #Krishna

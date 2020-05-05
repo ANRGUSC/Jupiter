@@ -8,8 +8,9 @@ from multiprocessing import Process, Manager
 from flask import Flask, request
 import configparser
 import urllib
-import loggingg
+import logging
 import time
+import multiprocessing
 #Krishna
 
 """
@@ -171,11 +172,12 @@ def task(filelist, pathin, pathout):
 
 def main():
     ### NOTETOQUYNH - Begin
-    INI_PATH = '/jupiter_config.ini'
+    INI_PATH = 'jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
     global FLASK_DOCKER
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+    logging.debug(FLASK_DOCKER)
     ### NOTETOQUYNH - End
     filelist = ['n03345487_10.JPEG','n03345487_108.JPEG','n03345487_133.JPEG','n03345487_135.JPEG','n03345487_136.JPEG','n04146614_16038.JPEG','n03345487_18.JPEG','n03345487_40.JPEG','n03345487_78.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')

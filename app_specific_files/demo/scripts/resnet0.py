@@ -7,6 +7,7 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets
 import shutil
+import time
 
 #Krishna
 import urllib
@@ -73,6 +74,8 @@ def task(file_, pathin, pathout):
             #destination = os.path.join(pathout, "classNA_" + f)
             #out_list.append(shutil.copyfile(source, destination))
         #Krishna
+        # purposely add delay time to slow down the sending
+        time.sleep(3) #>=2 
         send_prediction_to_decoder_task(pred[0], decoder_node_port)
         #Krishna
     return out_list
@@ -99,8 +102,8 @@ def send_prediction_to_decoder_task(prediction, decoder_node_port):
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        logging.debug("Sending my prediction info to flask server on decoder FAILED!!!")
-        logging.debug(e)
+        logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
+        #logging.debug(e)
         return "not ok"
     return res
 #Krishna

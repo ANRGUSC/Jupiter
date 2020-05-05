@@ -11,8 +11,9 @@ from multiprocessing import Process, Manager
 from flask import Flask, request
 import configparser
 import urllib
-import loggingg
+import logging
 import time
+import multiprocessing
 
 app = Flask(__name__)
 global logging
@@ -33,6 +34,9 @@ def task(filelist, pathin, pathout):
     for f in filelist:
         with open(pathin + f, "rb") as inp_file:
             preds = pickle.load(inp_file)
+
+    logging.debug(preds)
+
     ### Busy wait till a timeout to receive requests from ResNet and Collage tasks
     ### NOTETOQUYNH: This time_to_wait in seconds needs to be set depending on the system. Floating point
     ### NOTETOQUYNH: Set the time value in floating point format
@@ -45,14 +49,28 @@ def task(filelist, pathin, pathout):
             time.sleep(0.5)
     # Find the missing resnet tasks
     assert(num_remaining_resnet_tasks >= 0)
-    missing_resnet_tasks_set = set(range(0, max_num_remaining_resnet_tasks + 1))
+    missing_resnet_tasks_set = set(range(0, max_num_remaining_resnet_tasks))
     missing_resnet_tasks = []
     missing_resnet_tasks_str = ""
     class_predictions = []
     class_predictions_str = ""
+    logging.debug('Number of remaining resnet:')
+    logging.debug(num_remaining_resnet_tasks)
+
+    out_name = pathout + "decoder.txt"
+    with open(out_name, "w") as out_file:
+        out_file.write("dummy output file")
+        out_list.append(out_name)
+    
+
     if num_remaining_resnet_tasks > 0: # Only if there are slow running resnet tasks
+        logging.debug('There are slow running resnet tasks')
+        logging.debug(working_resnet_tasks_dict)
         missing_resnet_tasks_set = missing_resnet_tasks_set - set(working_resnet_tasks_dict.keys())
+        logging.debug('Missing resnet task set')
+        logging.debug(missing_resnet_tasks_set)
         for task in missing_resnet_tasks_set:
+            logging.debug(task)
             task_pred = preds[task]
             if task_pred != -1:
                 missing_resnet_tasks.append(str(task))
@@ -65,10 +83,8 @@ def task(filelist, pathin, pathout):
     working_resnet_tasks_dict = {}
     num_remaining_resnet_tasks = max_num_remaining_resnet_tasks
     # dummy output file for Jupiter 
-    with open(pathout + "outdecoderprefix.txt", "w") as out_file:
-        out_file.write("dummy output file")
-        out_list.append(out_file)
-    return out_list 
+    
+    return out_list
 
 def recv_prediction_from_resnet_task():
     """
@@ -113,8 +129,8 @@ def send_requests_to_master_task(missing_resnet_tasks_str, class_predictions_str
         res = res.read()
         res = res.decode('utf-8')
     except Exception as e:
-        logging.debug("Sending my prediction info to flask server on master FAILED!!!")
-        logging.debug(e)
+        logging.debug("Sending my prediction info to flask server on master FAILED!!! - possibly running on the execution profiler")
+        # logging.debug(e)
         return "not ok"
     return res
 
@@ -133,18 +149,20 @@ class MonitorRecv(multiprocessing.Process):
 
 def main():
     ### NOTETOQUYNH - Begin
-    INI_PATH = '/jupiter_config.ini'
+    INI_PATH = 'jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
     global FLASK_DOCKER
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+    logging.debug(FLASK_DOCKER)
     ### NOTETOQUYNH - End
 
-    filelist = ['outcollageprefix_collage_preds.pickle']
+    filelist = ['collage_decoder_preds.pickle']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
+    return outfile
 
 #Krishna
 
-if __name__ == "__main__":
-    main()
+# if __name__ == "__main__":
+#     main()
