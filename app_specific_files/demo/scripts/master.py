@@ -11,6 +11,7 @@ import urllib
 import logging
 import time
 import multiprocessing
+from multiprocessing import Process, Manager
 #Krishna
 
 """
@@ -30,6 +31,32 @@ store_class_tasks_node_port_dict = {}
 store_class_tasks_paths_dict = {}
 ### May be need to use job ids to tackle issues coming from queuing/slowdowns
 tasks_to_images_dict = {}
+
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+global FLASK_DOCKER, FLASK_SVC
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+
+global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
+all_nodes = os.environ["ALL_NODES"].split(":")
+all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":") 
+logging.debug(all_nodes)
+map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
+store_class_list = ['storeclass1','storeclass2']
+for item in store_class_list:
+    store_class_tasks_node_port_dict[item] = map_nodes_ip[item] + ":" + str(FLASK_SVC )
+
+### NOTETOQUYNH - Begin
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+global FLASK_DOCKER
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+logging.debug(FLASK_DOCKER)
+### NOTETOQUYNH - End
 
 def transfer_data_scp(destination_node_port, source_path, destination_path):
     """Transfer data using SCP
@@ -51,18 +78,20 @@ def recv_missing_from_decoder_task():
         class_predictions_str = request.args.get('class_predictions')
         missing_resnet_tasks = missing_resnet_tasks_str.split(" ")
         class_predictions = class_predictions_str.split(" ")
-        for task,cls in zip(missing_resnet_tasks, class_predictions):
+        logging.debug('Receive missing from decoder task:')
+        logging.debug(missing_resnet_tasks)
+        logging.debug(class_predictions)
+        for task,item in zip(missing_resnet_tasks, class_predictions):
+            logging.debug(task)
+            logging.debug(item)
+            logging.debug(tasks_to_images_dict)
             source_path = tasks_to_images_dict[task]
-            destination_node_port = store_class_tasks_node_port_dict[cls]
-            destination_path = store_class_tasks_paths_dict[cls]
-            #if pred[0] == 555: ### fire engine. class 1
-            #    f_split = f.split("prefix_")[1]
-            #    destination = os.path.join(pathout, "class1_prefix_" + f_split)
-            #elif pred[0] == 779: ### school bus. class 2
-            #    f_split = f.split("prefix_")[1]
-            #    destination = os.path.join(pathout, "class2_prefix_" + f_split)
-            #else: ### not either of the classes
-            #    pass
+            destination_node_port = store_class_tasks_node_port_dict[item]
+            destination_path = store_class_tasks_paths_dict[item]
+            logging.debug(source_path)
+            logging.debug(destination_node_port)
+            logging.debug(destination_path)
+            logging.debug('Transfer the file')
             transfer_data_scp(destination_node_port, source_path, destination_path)
     except Exception as e:
         logging.debug("Bad reception or failed processing in Flask for receiving slow resnet tasks information from decoder task")
@@ -74,21 +103,12 @@ app.add_url_rule('/recv_missing_from_decoder_task', 'recv_missing_from_decoder_t
 def helper_update_tasks_to_images_dict(task_num, f, pathin):
     ### Reusing the input files to the master node. NOT creating a local copy of input files.
     global tasks_to_images_dict
+    logging.debug('Update tasks to image dict')
+    logging.debug(task_num)
     source = os.path.join(pathin, f)
     tasks_to_images_dict[task_num] = source 
-    return
-
-#????
-# def helper_copyfile(f, pathin, pathout, out_list):
-#     source = os.path.join(pathin, f)
-#     print("file is", f)
-#     f_split = f.split("prefix_")[1]
-#     destination = os.path.join(pathout, "outmasterprefix_" + f_split)
-#     #try: 
-#     out_list.append(shutil.copyfile(source, destination))
-#     #except: 
-#     #print("ERROR while copying file in master_task.py")
-#     return
+    logging.debug(tasks_to_images_dict)
+    return tasks_to_images_dict
 
 class MonitorRecv(multiprocessing.Process):
     def __init__(self):
@@ -132,6 +152,12 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
 
 
 def task(filelist, pathin, pathout):
+    global tasks_to_images_dict
+
+    logging.debug('Start the flask server: ')
+    web_server = MonitorRecv()
+    web_server.start()
+
     out_list = []# output file list. Ordered as => [collage_file, image1, image2, ...., image9]
     ### send to collage task
     ### Collage image is arranged as a rectangular grid of shape w x w 
@@ -148,9 +174,8 @@ def task(filelist, pathin, pathout):
         ### Number of files in file list can be less than the number of images needed (9)
         file_idx = int(i % len(filelist))
         input_list.append(os.path.join(pathin, filelist[file_idx]))
-    #collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w).astype(np.float16)
         # KRishna
-        helper_update_tasks_to_images_dict(i, filelist[file_idx], pathin)
+        tasks_to_images_dict = helper_update_tasks_to_images_dict(i, filelist[file_idx], pathin)
         #KRishna
     print('Input list')
     print(input_list)
@@ -171,20 +196,9 @@ def task(filelist, pathin, pathout):
     return outlist
 
 def main():
-    ### NOTETOQUYNH - Begin
-    INI_PATH = 'jupiter_config.ini'
-    config = configparser.ConfigParser()
-    config.read(INI_PATH)
-    global FLASK_DOCKER
-    FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
-    logging.debug(FLASK_DOCKER)
-    ### NOTETOQUYNH - End
+    
     filelist = ['n03345487_10.JPEG','n03345487_108.JPEG','n03345487_133.JPEG','n03345487_135.JPEG','n03345487_136.JPEG','n04146614_16038.JPEG','n03345487_18.JPEG','n03345487_40.JPEG','n03345487_78.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
-	
-# if __name__ == "__main__":
-#     filelist = ['outds1prefix_n03345487_1002.JPEG', 'outds2prefix_n04146614_10015.JPEG']
-#     pathout = ["./to_collage/", "./to_resnet/"]
-#     task(filelist, "./to_master/", pathout)
+

@@ -23,16 +23,39 @@ max_num_remaining_resnet_tasks = 9
 num_remaining_resnet_tasks = max_num_remaining_resnet_tasks 
 working_resnet_tasks_dict = {}
 ### NOTETOQUYNH: Set this to master node ip/port
-master_node_port = ":"
+
+### NOTETOQUYNH - Begin
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+global FLASK_DOCKER, FLASK_SVC
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+
+global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
+all_nodes = os.environ["ALL_NODES"].split(":")
+all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":") 
+logging.debug(all_nodes)
+map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
+master_node_port = map_nodes_ip['master'] + ":" + str(FLASK_SVC )
+### NOTETOQUYNH - End
 
 def task(filelist, pathin, pathout):
+
+    logging.debug('Start the flask server: ')
+    web_server = MonitorRecv()
+    web_server.start()
+
     global num_remaining_resnet_tasks
     global max_num_remaining_resnet_tasks
     global working_resnet_tasks_dict
     global master_node_port
+    filelist = [filelist] if isinstance(filelist, str) else filelist  
     out_list = []
     for f in filelist:
-        with open(pathin + f, "rb") as inp_file:
+        logging.debug(f)
+        with open(os.path.join(pathin,f), "rb") as inp_file:
             preds = pickle.load(inp_file)
 
     logging.debug(preds)
@@ -123,6 +146,10 @@ def send_requests_to_master_task(missing_resnet_tasks_str, class_predictions_str
     try:
         url = "http://" + master_node_port + "/recv_missing_from_decoder_task"
         params = {'missing_resnet_tasks': missing_resnet_tasks_str,'class_predictions': class_predictions_str}
+        logging.debug('Sending requests to master task')
+        logging.debug(master_node_port)
+        logging.debug(missing_resnet_tasks_str)
+        logging.debug(class_predictions_str)
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
@@ -148,14 +175,6 @@ class MonitorRecv(multiprocessing.Process):
 
 
 def main():
-    ### NOTETOQUYNH - Begin
-    INI_PATH = 'jupiter_config.ini'
-    config = configparser.ConfigParser()
-    config.read(INI_PATH)
-    global FLASK_DOCKER
-    FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
-    logging.debug(FLASK_DOCKER)
-    ### NOTETOQUYNH - End
 
     filelist = ['collage_decoder_preds.pickle']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')

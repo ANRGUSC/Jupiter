@@ -9,6 +9,7 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets
 import shutil
+import configparser
 
 #Krishna
 import urllib
@@ -16,10 +17,24 @@ import logging
 global logging
 logging.basicConfig(level = logging.DEBUG)
 global decoder_node_port
-decoder_node_port = ":"
 #Krishna
 
 resnet_task_num = 6
+
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+global FLASK_DOCKER, FLASK_SVC
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+
+global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
+all_nodes = os.environ["ALL_NODES"].split(":")
+all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":") 
+logging.debug(all_nodes)
+map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
+decoder_node_port = map_nodes_ip['decoder'] + ":" + str(FLASK_SVC )
 
 def task(file_, pathin, pathout):
     global resnet_task_num
