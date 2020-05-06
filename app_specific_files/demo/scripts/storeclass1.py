@@ -26,8 +26,3 @@ def main():
     outfile = task(filelist, outpath, outpath)
     return outfile
 	
-# if __name__ == "__main__":
-#     filelist = ['class1_prefix_n03345487_1002.JPEG']
-#     class_num = 1    
-#     #for f in filelist:
-#     task(f, "./classified_images/", "./store_class_"+ str(class_num) + "/")
