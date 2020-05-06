@@ -28,6 +28,7 @@ def k8s_read_config(configuration_file):
     dag_info=[]
     config_file = open(configuration_file,'r')
     dag_size = int(config_file.readline())
+    print(dag_size)
 
     dag={}
     for i, line in enumerate(config_file, 1):
@@ -41,12 +42,15 @@ def k8s_read_config(configuration_file):
             break
 
     dag_info.append(dag)
-
+    print(dag_info)
+    print(config_file)
     hosts={}
     for line in config_file:
         #get task, node IP, username and password
+        print(line)
         myline = line.strip().split(" ")
         hosts.setdefault(myline[0],[])
+        print(hosts)
         hosts[myline[0]].append(myline[1])
 
     hosts.setdefault('home',[])
