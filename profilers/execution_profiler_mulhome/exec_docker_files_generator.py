@@ -25,6 +25,9 @@ RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
 RUN apt-get install sudo -y
 RUN apt-get install iproute2 -y
 
+# Chien's 2nd DAG
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
+
 RUN apt-get install -y openssh-server
 RUN echo '{username}:{password}' | chpasswd
 
@@ -99,6 +102,8 @@ RUN apt-get install -y vim
 RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
 RUN apt-get install sudo -y
 RUN apt-get install iproute2 -y
+# Chien's 2nd DAG
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
 
 RUN apt-get install -y openssh-server
 
