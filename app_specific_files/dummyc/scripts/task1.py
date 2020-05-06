@@ -8,7 +8,8 @@ import subprocess
 def task(filename,pathin,pathout):
      filename= "task1.c"
      subprocess.call(["gcc",filename])
-     subprocess.call("./a.out")
+     ret_value= subprocess.check_output("./a.out")
+     return ret_value
         
 
 def main():

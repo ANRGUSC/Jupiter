@@ -15,6 +15,7 @@
 //char* filename="ibotnet.ipsum";
 char file_path[RSIZ][LSIZ];
 int execution_time;
+char task_name_temp[LSIZ];
 char task_name[LSIZ];
 char output1_list[LSIZ];
 char input_file[LSIZ];
@@ -56,10 +57,12 @@ int idx1 = 0, idx2 = 0;
   { 
 		1+1 ;
   } 
-	char *path = "task0";
+	char *path = basename(__FILE__);
 	char *path_cpy = strdup(path);
-	base=basename(path_cpy);
-        memcpy(task_name,base,LSIZ);
+	//base=basename(path_cpy);
+        memcpy(task_name_temp,path_cpy,LSIZ);
+        char* token = strtok(task_name_temp,".");
+        memcpy(task_name,token,LSIZ);
 	printf("-------------------------\n");
 	printf("%s\n",task_name);
 	printf("%s\n",filename);
@@ -167,6 +170,7 @@ int idx1 = 0, idx2 = 0;
 			strcat(bash_script," ");
                         int dev;
 			sscanf(sizes[k], "%d",&dev);
+                        printf("DEV************%dn",dev);
                         char s[LSIZ];
                         sprintf(s,"%d",dev);
                         strcat(bash_script,s);
