@@ -23,6 +23,9 @@ RUN apt-get -y install build-essential libssl-dev libffi-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
 
+# Chien's 2nd DAG
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
+
 
 RUN pip3 install --upgrade pip
 ADD circe/original/requirements.txt /requirements.txt
@@ -99,6 +102,8 @@ RUN apt-get -y install build-essential libssl-dev libffi-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
 
+# Chien's 2nd DAG
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
 
 RUN pip3 install --upgrade pip
 ADD circe/original/requirements.txt /requirements.txt
