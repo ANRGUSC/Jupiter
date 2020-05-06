@@ -97,7 +97,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         print('Deploy Execution Profiler')
         exec_profiler_function = k8s_exec_scheduler
     elif jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # Nonpricing, HEFT
-        print('De[loy Execution Profiler')
+        print('Deploy Execution Profiler')
         exec_profiler_function = k8s_exec_scheduler
     else: # Nonpricing, WAVE
         exec_profiler_function = empty_function

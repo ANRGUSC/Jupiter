@@ -395,7 +395,22 @@ def main():
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
     dag_info = read_config(path1,path2)
-
+    """
+    example output:
+    [
+        'task0', 
+         {
+             'task0': ['1', 'true', 'task1', 'task2'], 
+             'task1': ['1', 'true', 'task3'], 
+             'task3': ['2', 'true', 'home'], 
+             'task2': ['1', 'true', 'task3']
+         }, 
+         {
+             'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01']
+         }
+    ]
+    """
+    
     global manager
     manager = Manager()
 
