@@ -155,7 +155,9 @@ int idx1 = 0, idx2 = 0;
                         strcpy(output_path[k],new_path);
                         printf("NEW PATH IS %s \n",new_path);
                         strcat(bash_script,"/centralized_scheduler/generate_random_files.sh"); 
+                        strcat(bash_script," ");
                         strcat(bash_script,new_path);
+                        strcat(bash_script," ");
                         strcat(bash_script,sizes[k]);
                         system(bash_script); 
                     }
@@ -178,7 +180,9 @@ int idx1 = 0, idx2 = 0;
               sprintf(rand_file,"%d",x);
               strcpy(new_file,output_name); 
               strcat(bash_script,"/centralized_scheduler/generate_random_files.sh"); 
+              strcat(bash_script," ");
               strcat(bash_script,new_path);
+              strcat(bash_script," ");
               strcat(bash_script,rand_file);
               system(bash_script); 
         } 
