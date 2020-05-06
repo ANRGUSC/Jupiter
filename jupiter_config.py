@@ -176,8 +176,8 @@ def set_globals():
 
     HOME_CHILD                = 'task0'
     APP_PATH                  = HERE  + 'app_specific_files/dummy_app_multicast/'
-    APP_NAME                  = 'app_specific_files/dummy_app_multicast'
-    APP_OPTION                = 'dummymulticast'
+    APP_NAME                  = 'app_specific_files/dummyc'
+    APP_OPTION                = 'dummyc'
 
 
     """pricing CIRCE home and worker images"""
