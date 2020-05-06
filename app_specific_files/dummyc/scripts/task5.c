@@ -54,7 +54,7 @@ int idx1 = 0, idx2 = 0;
   { 
 		1+1 ;
   } 
-	char *path = "/Desktop/testshraddha/task5";
+	char *path = "task5";
 	char *path_cpy = strdup(path);
 	base=basename(path_cpy);
         memcpy(task_name,base,LSIZ);
@@ -74,7 +74,7 @@ int idx1 = 0, idx2 = 0;
         printf("%s",output_name);
 	printf("---------------------------");
 	char actualpath [PATH_MAX+1];
-	char *file_comm = "/Desktop/testshraddha/communication.txt";
+	char *file_comm = "communication.txt";
 	char *ptr;
         //memset(ptr,'\0', sizeof(ptr));
         
@@ -212,7 +212,7 @@ int idx1 = 0, idx2 = 0;
         memset(str,'\0', sizeof(str));
         memset(fname,'\0', sizeof(fname)); */
 	char filelist[128] = "1botnet.ipsum";  
-	char* outpath="/Desktop/testshraddha";
+	char* outpath="/centralized_scheduler/";
 	//strcat(outpath,"sample_input/"); 
         char* final= task(filelist, outpath, outpath);
          for(int v=0;v<tot;v++)
