@@ -28,21 +28,26 @@ logging.basicConfig(level = logging.DEBUG)
 ### NOTETOQUYNH: Need to set the below
 ### store class node tasks ip/port, store class node paths
 
-global manager
-manager = Manager()
 
-store_class_tasks_node_port_dict = manager.dict()
+
+
 store_class_tasks_paths_dict = {}
 ### May be need to use job ids to tackle issues coming from queuing/slowdowns
-tasks_to_images_dict = {}
+global manager, tasks_to_images_dict
+manager = Manager()
+tasks_to_images_dict = manager.dict()
 
 INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
 config.read(INI_PATH)
 
-global FLASK_DOCKER, FLASK_SVC
+global FLASK_DOCKER, FLASK_SVC, num_retries, ssh_port, username, password
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+ssh_port    = int(config['PORT']['SSH_SVC'])
+username    = config['AUTH']['USERNAME']
+password    = config['AUTH']['PASSWORD']
 
 global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
 all_nodes = os.environ["ALL_NODES"].split(":")
@@ -50,16 +55,48 @@ all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
 logging.debug(all_nodes)
 map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
 store_class_list = ['storeclass1','storeclass2']
-for item in store_class_list:
-    store_class_tasks_node_port_dict[item] = map_nodes_ip[item] + ":" + str(FLASK_SVC )
+
+store_class_tasks_dict = {}
+store_class_tasks_dict[555] = "storeclass1"
+store_class_tasks_dict[779] = "storeclass2"
 
 
 
-def transfer_data_scp(destination_node_port, source_path, destination_path):
+
+
+def transfer_data_scp(ID,user,pword,source, destination):
     """Transfer data using SCP
+    
+    Args:
+        ID (str): destination ID
+        user (str): username
+        pword (str): password
+        source (str): source file path
+        destination (str): destination file path
     """
-    pass
-    return
+    #Keep retrying in case the containers are still building/booting up on
+    #the child nodes.
+    retry = 0
+    ts = -1
+    while retry < num_retries:
+        try:
+            logging.debug(map_nodes_ip)
+            nodeIP = map_nodes_ip[ID]
+            logging.debug(nodeIP)
+            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
+            logging.debug(cmd)
+            os.system(cmd)
+            logging.debug('data transfer complete\n')
+            break
+        except Exception as e:
+            logging.debug('SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            logging.debug(e)
+            time.sleep(2)
+            retry += 1
+    if retry == num_retries:
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,source,ts)
+        runtime_sender_log.write(s)
+        runtime_sender_log.flush()
 
 def recv_missing_from_decoder_task():
     """
@@ -76,20 +113,16 @@ def recv_missing_from_decoder_task():
         missing_resnet_tasks = missing_resnet_tasks_str.split(" ")
         class_predictions = class_predictions_str.split(" ")
         logging.debug('Receive missing from decoder task:')
-        logging.debug(missing_resnet_tasks)
-        logging.debug(class_predictions)
         for task,item in zip(missing_resnet_tasks, class_predictions):
-            logging.debug(task)
-            logging.debug(item)
-            logging.debug(tasks_to_images_dict)
-            source_path = tasks_to_images_dict[task]
-            destination_node_port = store_class_tasks_node_port_dict[item]
-            destination_path = store_class_tasks_paths_dict[item]
+            source_path = tasks_to_images_dict[int(task)]
             logging.debug(source_path)
-            logging.debug(destination_node_port)
-            logging.debug(destination_path)
+            file_name = 'master_'+source_path.split('/')[3]
             logging.debug('Transfer the file')
-            transfer_data_scp(destination_node_port, source_path, destination_path)
+            destination_path = os.path.join('/centralized_scheduler/input',file_name)
+            logging.debug(destination_path)
+            next_store_class = store_class_tasks_dict[int(item)]
+            logging.debug(next_store_class)
+            transfer_data_scp(next_store_class,username,password,source_path, destination_path)
     except Exception as e:
         logging.debug("Bad reception or failed processing in Flask for receiving slow resnet tasks information from decoder task")
         logging.debug(e)
@@ -100,11 +133,11 @@ app.add_url_rule('/recv_missing_from_decoder_task', 'recv_missing_from_decoder_t
 def helper_update_tasks_to_images_dict(task_num, f, pathin):
     ### Reusing the input files to the master node. NOT creating a local copy of input files.
     global tasks_to_images_dict
-    logging.debug('Update tasks to image dict')
-    logging.debug(task_num)
+    # logging.debug('Update tasks to image dict')
+    # logging.debug(task_num)
     source = os.path.join(pathin, f)
     tasks_to_images_dict[task_num] = source 
-    logging.debug(tasks_to_images_dict)
+    # logging.debug(tasks_to_images_dict)
     return tasks_to_images_dict
 
 class MonitorRecv(multiprocessing.Process):
@@ -117,6 +150,8 @@ class MonitorRecv(multiprocessing.Process):
         """
         logging.debug("Flask server started")
         app.run(host='0.0.0.0', port=FLASK_DOCKER)
+        global tasks_to_images_dict
+        print(tasks_to_images_dict)
 
 #KRishna
 
@@ -149,7 +184,9 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
 
 
 def task(filelist, pathin, pathout):
+    
     global tasks_to_images_dict
+
 
     logging.debug('Start the flask server: ')
     web_server = MonitorRecv()
@@ -174,6 +211,8 @@ def task(filelist, pathin, pathout):
         # KRishna
         tasks_to_images_dict = helper_update_tasks_to_images_dict(i, filelist[file_idx], pathin)
         #KRishna
+    print('Task to images dict')
+    print(tasks_to_images_dict)
     print('Input list')
     print(input_list)
     
