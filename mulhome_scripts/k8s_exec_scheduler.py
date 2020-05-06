@@ -163,6 +163,8 @@ def k8s_exec_scheduler(app_name):
     configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
     taskmap = configs["taskname_map"]
 
+    print(taskmap.keys())
+
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
     path2 = jupiter_config.HERE + 'nodes.txt'
 
