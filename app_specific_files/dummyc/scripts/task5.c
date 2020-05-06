@@ -7,10 +7,12 @@
 #include<sys/types.h>
 #define PATH_MAX 128
 #include<libgen.h>
+#include<stdint.h>
+#include<inttypes.h>
 #define LSIZ 128 
 #define RSIZ 20
 
-char* filename="task5.c";
+char* filename="task0.c";
 char file_path[RSIZ][LSIZ];
 int execution_time;
 char task_name[LSIZ];
@@ -47,7 +49,7 @@ int idx1 = 0, idx2 = 0;
  char* task(char* filename,char* pathin,char* pathout)
 { 
 	execution_time = rand() % 10;
-	printf("%d",execution_time);
+	printf("%d\n",execution_time);
 	time_t timeout=0;
 	timeout = time(&timeout) + execution_time;
 	while (time(&timeout) < timeout)
@@ -58,32 +60,34 @@ int idx1 = 0, idx2 = 0;
 	char *path_cpy = strdup(path);
 	base=basename(path_cpy);
         memcpy(task_name,base,LSIZ);
-	printf("-------------------------");
-	printf("%s",task_name);
-	printf("%s",filename);
-	printf("-------------------------" );
+	printf("-------------------------\n");
+	printf("%s\n",task_name);
+	printf("%s\n",filename);
+	printf("-------------------------\n" );
 	strcpy(output1_list,filename);
 	strcat(output1_list,"_");
 	strcat(output1_list,task_name);
-	strcat(output1_list,".txt") ;      
-	printf("%s",output1_list);
-	printf("%s",input_file);
+	strcat(output1_list,".txt") ; 
+             
+	printf("%s\n",output1_list);
+        strcpy(input_file,task_name);
+	printf("%s\n",input_file);
 	strcpy(output_name,input_file);
         strcat(output_name,"_");
 	strcat(output_name,task_name);	
-        printf("%s",output_name);
-	printf("---------------------------");
+        printf("%s\n",output_name);
+	printf("---------------------------\n");
 	char actualpath [PATH_MAX+1];
 	char *file_comm = "communication.txt";
 	char *ptr;
         //memset(ptr,'\0', sizeof(ptr));
         
 	ptr=realpath(file_comm,actualpath);
-	printf("%s",actualpath);
+	printf("%s\n",actualpath);
 
 
 	
-    
+     
     fname="communication.txt";	
 
     fptr = fopen(fname, "r");
@@ -109,6 +113,8 @@ int idx1 = 0, idx2 = 0;
                   }
         }
     }
+
+    
     for(i = 0; i < tot; ++i)
     {
       if (strncmp(task_name,src[i],5)==0)
@@ -139,9 +145,10 @@ int idx1 = 0, idx2 = 0;
 
                     for(int k = 0;k < idx1; k++)
                     {
-                        printf("The neighor is:");
+                        memset(bash_script,'\0',sizeof(bash_script));
+                        printf("The neighor is:\n");
                         printf("%s\n",dest[k]);
-                        printf("The IDX  is:");
+                        printf("The IDX  is:\n");
                         printf("%d\n",k);
                         strcpy(new_file,output_name);
                         strcat(new_file,"_");
@@ -155,10 +162,14 @@ int idx1 = 0, idx2 = 0;
                         strcpy(output_path[k],new_path);
                         printf("NEW PATH IS %s \n",new_path);
                         strcat(bash_script,"/centralized_scheduler/generate_random_files.sh"); 
-                        strcat(bash_script," ");
+			strcat(bash_script," ");
                         strcat(bash_script,new_path);
-                        strcat(bash_script," ");
-                        strcat(bash_script,sizes[k]);
+			strcat(bash_script," ");
+                        int dev;
+			sscanf(sizes[k], "%d",&dev);
+                        char s[LSIZ];
+                        sprintf(s,"%d",dev);
+                        strcat(bash_script,s);
                         system(bash_script); 
                     }
         } // END OF STRCMP IF
@@ -184,6 +195,7 @@ int idx1 = 0, idx2 = 0;
               strcat(bash_script,new_path);
               strcat(bash_script," ");
               strcat(bash_script,rand_file);
+              
               system(bash_script); 
         } 
    

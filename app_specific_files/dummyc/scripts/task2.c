@@ -7,10 +7,12 @@
 #include<sys/types.h>
 #define PATH_MAX 128
 #include<libgen.h>
+#include<stdint.h>
+#include<inttypes.h>
 #define LSIZ 128 
 #define RSIZ 20
 
-char* filename="task2.c";
+char* filename="task0.c";
 char file_path[RSIZ][LSIZ];
 int execution_time;
 char task_name[LSIZ];
@@ -65,8 +67,10 @@ int idx1 = 0, idx2 = 0;
 	strcpy(output1_list,filename);
 	strcat(output1_list,"_");
 	strcat(output1_list,task_name);
-	strcat(output1_list,".txt") ;      
+	strcat(output1_list,".txt") ; 
+             
 	printf("%s\n",output1_list);
+        strcpy(input_file,task_name);
 	printf("%s\n",input_file);
 	strcpy(output_name,input_file);
         strcat(output_name,"_");
@@ -74,7 +78,7 @@ int idx1 = 0, idx2 = 0;
         printf("%s\n",output_name);
 	printf("---------------------------\n");
 	char actualpath [PATH_MAX+1];
-	char *file_comm = "/Desktop/testshraddha/communication.txt";
+	char *file_comm = "communication.txt";
 	char *ptr;
         //memset(ptr,'\0', sizeof(ptr));
         
@@ -83,7 +87,7 @@ int idx1 = 0, idx2 = 0;
 
 
 	
-    
+     
     fname="communication.txt";	
 
     fptr = fopen(fname, "r");
@@ -94,7 +98,7 @@ int idx1 = 0, idx2 = 0;
         i++;
     }
     tot = i;
-     
+       
     for(i = 0; i < tot; ++i)
     {
         
@@ -109,6 +113,8 @@ int idx1 = 0, idx2 = 0;
                   }
         }
     }
+
+    
     for(i = 0; i < tot; ++i)
     {
       if (strncmp(task_name,src[i],5)==0)
@@ -139,6 +145,7 @@ int idx1 = 0, idx2 = 0;
 
                     for(int k = 0;k < idx1; k++)
                     {
+                        memset(bash_script,'\0',sizeof(bash_script));
                         printf("The neighor is:\n");
                         printf("%s\n",dest[k]);
                         printf("The IDX  is:\n");
@@ -155,10 +162,14 @@ int idx1 = 0, idx2 = 0;
                         strcpy(output_path[k],new_path);
                         printf("NEW PATH IS %s \n",new_path);
                         strcat(bash_script,"/centralized_scheduler/generate_random_files.sh"); 
-                        strcat(bash_script," ");
+			strcat(bash_script," ");
                         strcat(bash_script,new_path);
-                        strcat(bash_script," ");
-                        strcat(bash_script,sizes[k]);
+			strcat(bash_script," ");
+                        int dev;
+			sscanf(sizes[k], "%d",&dev);
+                        char s[LSIZ];
+                        sprintf(s,"%d",dev);
+                        strcat(bash_script,s);
                         system(bash_script); 
                     }
         } // END OF STRCMP IF
@@ -184,6 +195,7 @@ int idx1 = 0, idx2 = 0;
               strcat(bash_script,new_path);
               strcat(bash_script," ");
               strcat(bash_script,rand_file);
+              
               system(bash_script); 
         } 
    
