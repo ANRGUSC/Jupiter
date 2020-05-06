@@ -12,7 +12,7 @@
 #define LSIZ 128 
 #define RSIZ 20
 
-char* filename="task0.c";
+//char* filename="ibotnet.ipsum";
 char file_path[RSIZ][LSIZ];
 int execution_time;
 char task_name[LSIZ];
@@ -70,7 +70,7 @@ int idx1 = 0, idx2 = 0;
 	strcat(output1_list,".txt") ; 
              
 	printf("%s\n",output1_list);
-        strcpy(input_file,task_name);
+        strcpy(input_file,filename);
 	printf("%s\n",input_file);
 	strcpy(output_name,input_file);
         strcat(output_name,"_");
@@ -204,38 +204,12 @@ int idx1 = 0, idx2 = 0;
 
 	 char* main() 
 	 {  
-        /*memset(file_path,'\0', sizeof(file_path)); 
-        //memset(task_name,'\0', sizeof(task_name));
-        //memset(output1_list,'\0', sizeof(output1_list));
-        //memset(input_file,'\0', sizeof(input_file));
-        memset(output_name,'\0', sizeof(output_name));
-        memset(new_path,'\0', sizeof(new_path));
-        //memset(bash_script,'\0', sizeof(bash_script));
-        memset(ptr,'\0', sizeof(ptr));
-        memset(base,'\0', sizeof(base));
-        memset(rand_file,'\0', sizeof(rand_file));
-        memset(output_path,'\0', sizeof(output_path));
-        memset(output_list,'\0', sizeof(output_list));
-        memset(file_size,'\0', sizeof(file_size));
-        memset(new_file,'\0', sizeof(new_file));
-        memset(line,'\0', sizeof(line));
-        memset(comm,'\0', sizeof(comm));
-        memset(temp_comm,'\0', sizeof(temp_comm));
-        memset(src,'\0', sizeof(src));
-        memset(dest,'\0', sizeof(dest));
-        memset(dest_temp,'\0', sizeof(dest_temp));
-        memset(sizes,'\0', sizeof(sizes));
-        memset(str,'\0', sizeof(str));
-        memset(fname,'\0', sizeof(fname)); */
+       
 	char filelist[128] = "1botnet.ipsum";  
-	char* outpath="/centralized_scheduler/";
+	char* outpath="/centralized_scheduler/sample_input/";
 	//strcat(outpath,"sample_input/"); 
         char* final= task(filelist, outpath, outpath);
-         for(int v=0;v<tot;v++)
-      {
-          printf("OUTPUT PATH: %s\n",output_path[v]);
-      }   
-        
+        return final;      
                
 	
 	 } 
