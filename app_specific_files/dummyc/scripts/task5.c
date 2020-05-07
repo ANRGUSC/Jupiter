@@ -170,7 +170,7 @@ int idx1 = 0, idx2 = 0;
 			strcat(bash_script," ");
                         int dev;
 			sscanf(sizes[k], "%d",&dev);
-                        printf("DEV************%dn",dev);
+                        //printf("DEV************%dn",dev);
                         char s[LSIZ];
                         sprintf(s,"%d",dev);
                         strcat(bash_script,s);

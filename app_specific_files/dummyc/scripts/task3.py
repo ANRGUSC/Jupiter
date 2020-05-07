@@ -1,3 +1,6 @@
+from ctypes import cdll
+from ctypes import c_char_p
+import ctypes 
 import os
 import time
 import shutil
@@ -7,10 +10,11 @@ import subprocess
 
 def task(filename,pathin,pathout):
      filename= "task3.c"
-     subprocess.call(["gcc",filename])
-     ret_value= subprocess.check_output("./a.out")
-     return ret_value
-        
+     subprocess.call(["gcc","-o","task3.so","-shared","-fPIC","task3.c"])
+     task3_lib = cdll.LoadLibrary("./task3.so")
+     s = task3_lib.main
+     s.restype = c_char_p
+     return s()
 
 def main():
 	filelist = '1botnet.ipsum'

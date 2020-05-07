@@ -170,7 +170,7 @@ int idx1 = 0, idx2 = 0;
 			strcat(bash_script," ");
                         int dev;
 			sscanf(sizes[k], "%d",&dev);
-                        printf("DEV************%dn",dev);
+                        //printf("DEV************%dn",dev);
                         char s[LSIZ];
                         sprintf(s,"%d",dev);
                         strcat(bash_script,s);
@@ -206,14 +206,14 @@ int idx1 = 0, idx2 = 0;
      return (char *)output_path;
 }
 
-	 char* main() 
+	 int main() 
 	 {  
        
 	char filelist[128] = "1botnet.ipsum";  
 	char* outpath="/centralized_scheduler/sample_input/";
 	//strcat(outpath,"sample_input/"); 
         char* final= task(filelist, outpath, outpath);
-        return final;      
+        return 4;      
                
 	
 	 } 
