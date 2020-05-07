@@ -53,8 +53,6 @@ def task(file_, pathin, pathout):
     out_list = []
 
     for i, f in enumerate(file_):
-        print(f)
-        print(os.path.join(pathin, f))
         ### Read input files.
         img = Image.open(os.path.join(pathin, f))
 
@@ -122,7 +120,8 @@ def send_prediction_to_decoder_task(prediction, decoder_node_port):
     return res
 #Krishna
 def main():
-    filelist = ["master_resnet3_n03345487_135.JPEG"]
+    filelist = ['master_resnet3_n03345487_135.JPEG','master_resnet3_n04146614_209.JPEG','master_resnet3_n04146614_231.JPEG',
+       'master_resnet3_n04146614_232.JPEG','master_resnet3_n04146614_237.JPEG','master_resnet3_n04146614_245.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
