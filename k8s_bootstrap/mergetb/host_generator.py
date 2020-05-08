@@ -21,7 +21,7 @@ model = importlib.import_module(import_name)
 
 with open("hosts", 'w') as g:
     g.write("[master]\n")
-    for m in model.JUPITER_MASTER_NODE:
+    for m in model.JUPITER_MASTER_NODES:
         g.write("{}\n".format(m))
 
     g.write("\n[workers]\n")
