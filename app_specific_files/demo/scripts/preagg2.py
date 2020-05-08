@@ -22,30 +22,34 @@ def task(filelist, pathin, pathout):
         'filename': filelist[0]
     }
     
-    # address of flask server for class1 is 0.0.0.0:5000 and "post-dict" is for requesting dictionary 
-    url = "http://0.0.0.0:5000/post-dict"
-    
-    # request of dictionary of received results
-    job_dict = requests.post(url, headers = hdr,ata = json.dumps(payload))
+    # address of flask server for class2 is 0.0.0.0:5000 and "post-dict" is for requesting dictionary 
+    try:
+        url = "http://0.0.0.0:5000/post-dict"
+        
+        # request of dictionary of received results
+        job_dict = requests.post(url, headers = hdr,ata = json.dumps(payload))
+    except Exception as e:
+        print('Possibly running on the execution profiler')
+        # job_dict = {'1':['score2a_preagg2_job1_20200424.csv', 'score2b_preagg2_job1_20200424.csv']}
+        job_dict = {'1':['score2a_preagg2_job2_resnet0_storeclass2_master_resnet0_n04146614_1.csv','score2b_preagg2_job2_resnet0_storeclass2_master_resnet0_n04146614_1.csv']}
         
     #Parameters
     M = 2 # Number of data-batches
     
     #Check if number of received results for the same job is equal to M
+    outlist = []
     if len(job_dict[job_id]) == M:
         print('Receive enough results for job '+job_id)
         for i in range(M):
             En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
-            np.savetxt(os.path.join(pathout,'preaggregator1_lccdecoder1_'+filelist[0].partition('_')[0]+'_job'+job_id+'_'+snapshot_time+'.csv'), En_Image_Batch, delimiter=',')
-    else:
-        print('Not receive enough results for job '+job_id)
+            destination = os.path.join(pathout,'preagg2_lccdec2_'+filelist[0].partition('_')[0]+'_job'+job_id+'_'+snapshot_time+'.csv')
+            np.savetxt(destination, En_Image_Batch, delimiter=',')
+            outlist.append(destination)
+    return outlist
 
 def main():
-    filelist= ['score1a_preaggregator1_job1_20200424.csv']  
+    filelist= ['score2a_preagg2_job1_20200424.csv']  
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
-            
-if __name__ == '__main__': ##THIS IS FOR TESTING - DO THIS
-    filelist= ['score1a_preaggregator1_job1_20200424.csv'] 
-    task(filelist,'./Enc_Results', './Agg_Results')  
+

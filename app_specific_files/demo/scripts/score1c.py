@@ -60,15 +60,15 @@ def task(filelist, pathin, pathout):
     sc = score(En_Image_Batch, Ref_Images)
     
     # Save the encoded score to a csv file 
-    #np.savetxt(os.path.join(pathout,'job'+job_id+'outscore'+str(worker_id)+'_'+snapshot_time+'.csv'), sc, delimiter=',')
-    np.savetxt(os.path.join(pathout,'score1' + worker_id + '_'+'preaggregator1'+ '_' +'job' + job_id +'_'+snapshot_time+'.csv'), sc, delimiter=',')
+    outlist = []
+    destination = os.path.join(pathout,'score1' + worker_id + '_'+'preagg1'+ '_' +'job' + job_id +'_'+snapshot_time+'.csv')
+    np.savetxt(destination, sc, delimiter=',')
+    outlist.append(destination)
+    return outlist
 
 def main():
-    filelist= ['lccencoder1_score1c_job1_20200424.csv']
+    filelist= ['lccenc1_score1c_job2_resnet0_storeclass1_master_resnet0_n03345487_10.csv']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
         
-if __name__ == '__main__': ##THIS IS FOR TESTING - DO THIS
-    filelist= ['lccencoder1_score1c_job1_20200424.csv'] 
-    task(filelist,'./Enc_Data', './Enc_Results') 
