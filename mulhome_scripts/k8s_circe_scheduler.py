@@ -109,6 +109,29 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     k8s_beta = client.ExtensionsV1beta1Api()
 
     #get DAG and home machine info
+    """
+    example dag_info and temp_info:
+    Printing DAG:
+    ['task0',
+     {'task0': ['1', 'true', 'task1', 'task2'],
+      'task1': ['1', 'true', 'task3'],
+      'task2': ['1', 'true', 'task3'],
+      'task3': ['2', 'true', 'home']},
+     {'task0': 'node2', 'task1': 'node1', 'task2': 'node1', 'task3': 'node1'}
+    ]
+    Printing schedule
+    ['task0',
+     {'task0': ['1', 'true', 'task1', 'task2'],
+      'task1': ['1', 'true', 'task3'],
+      'task2': ['1', 'true', 'task3'],
+      'task3': ['2', 'true', 'home']},
+     {'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01'],
+      'task0': ['task0', 'ubuntu-s-1vcpu-2gb-nyc3-02'],
+      'task1': ['task1', 'ubuntu-s-1vcpu-2gb-nyc3-01'],
+      'task2': ['task2', 'ubuntu-s-1vcpu-2gb-nyc3-01'],
+      'task3': ['task3', 'ubuntu-s-1vcpu-2gb-nyc3-01']}
+    ]
+    """
     first_task = dag_info[0]
     dag = dag_info[1]
     hosts = temp_info[2]
@@ -210,7 +233,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             We inject the host info for the child task via an environment variable valled CHILD_NODES to each pod/deployment.
             We perform it by concatenating the child-hosts via delimeter ':'
             For example if the child nodes are k8node1 and k8node2, we will set CHILD_NODES=k8node1:k8node2
-            Note that the k8node1 and k8node2 in the example are the unique node ids of the kubernets cluster nodes.
+            Note that the k8node1 and k8node2 in the example are the unique node ids of the kubernetes cluster nodes.
         """
 
         count = count +1

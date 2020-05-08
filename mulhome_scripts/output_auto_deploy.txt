@@ -1,0 +1,234 @@
+Task mapper: Heft original selected
+Non pricing scheme selected
+1
+Task mapper: Heft original selected
+Non pricing scheme selected
+[8081]
+['count1']
+count1
+ * Serving Flask app "auto_deploy_system" (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on http://0.0.0.0:5555/ (Press CTRL+C to quit)
+Task mapper: Heft original selected
+Non pricing scheme selected
+Deploy HEFT mapper
+Deploy Execution Profiler
+Task mapper: Heft original selected
+Non pricing scheme selected
+F0506 03:50:22.817077   22614 proxy.go:158] listen tcp 127.0.0.1:8081: bind: address already in use
+Task mapper: Heft original selected
+Non pricing scheme selected
+10.101.221.103
+*************************
+Network Profiling Information:
+{'home': '10.110.114.128', 'node1': '10.109.67.154', 'node2': '10.103.71.149'}
+Execution Profiling Information:
+{'home': '10.101.221.103'}
+*************************
+*************************
+HEFT mapper
+Task mapper: Heft original selected
+Non pricing scheme selected
+Starting to deploy HEFT
+Task mapper: Heft original selected
+Non pricing scheme selected
+Home service created. status = '{'load_balancer': {'ingress': None}}'
+home
+Task mapper: Heft original selected
+Non pricing scheme selected
+Home deployment created. status = '{'available_replicas': None,
+ 'collision_count': None,
+ 'conditions': None,
+ 'observed_generation': None,
+ 'ready_replicas': None,
+ 'replicas': None,
+ 'unavailable_replicas': None,
+ 'updated_replicas': None}'
+{'count1-home': '10.105.189.219'}
+Successfully deploy HEFT
+http://localhost:8081/api/v1/namespaces/zxc-mapper/services/count1-home:6100/proxy
+get the data from http://localhost:8081/api/v1/namespaces/zxc-mapper/services/count1-home:6100/proxy
+Will retry to get the mapping for app count1
+get the data from http://localhost:8081/api/v1/namespaces/zxc-mapper/services/count1-home:6100/proxy
+{"task0": "node2", "task1": "node1", "task2": "node1", "task3": "node1"}
+{'task0': 'node2', 'task1': 'node1', 'task2': 'node1', 'task3': 'node1'}
+{'home': ['ubuntu-s-2vcpu-4gb-sfo2-01'], 'node1': ['ubuntu-s-1vcpu-2gb-nyc3-01'], 'node2': ['ubuntu-s-1vcpu-2gb-nyc3-02']}
+Receive mapping
+{'task0': 'node2', 'task1': 'node1', 'task2': 'node1', 'task3': 'node1'}
+task0 node2 ['ubuntu-s-1vcpu-2gb-nyc3-02']
+task1 node1 ['ubuntu-s-1vcpu-2gb-nyc3-01']
+task2 node1 ['ubuntu-s-1vcpu-2gb-nyc3-01']
+task3 node1 ['ubuntu-s-1vcpu-2gb-nyc3-01']
+Printing DAG:
+['task0',
+ {'task0': ['1', 'true', 'task1', 'task2'],
+  'task1': ['1', 'true', 'task3'],
+  'task2': ['1', 'true', 'task3'],
+  'task3': ['2', 'true', 'home']},
+ {'task0': 'node2', 'task1': 'node1', 'task2': 'node1', 'task3': 'node1'}]
+Printing schedule
+['task0',
+ {'task0': ['1', 'true', 'task1', 'task2'],
+  'task1': ['1', 'true', 'task3'],
+  'task2': ['1', 'true', 'task3'],
+  'task3': ['2', 'true', 'home']},
+ {'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01'],
+  'task0': ['task0', 'ubuntu-s-1vcpu-2gb-nyc3-02'],
+  'task1': ['task1', 'ubuntu-s-1vcpu-2gb-nyc3-01'],
+  'task2': ['task2', 'ubuntu-s-1vcpu-2gb-nyc3-01'],
+  'task3': ['task3', 'ubuntu-s-1vcpu-2gb-nyc3-01']}]
+End print
+Non pricing evaluation
+Task mapper: Heft original selected
+Non pricing scheme selected
+hosts:
+{'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01'],
+ 'task0': ['task0', 'ubuntu-s-1vcpu-2gb-nyc3-02'],
+ 'task1': ['task1', 'ubuntu-s-1vcpu-2gb-nyc3-01'],
+ 'task2': ['task2', 'ubuntu-s-1vcpu-2gb-nyc3-01'],
+ 'task3': ['task3', 'ubuntu-s-1vcpu-2gb-nyc3-01']}
+DAG info:
+{'task0': ['1', 'true', 'task1', 'task2'], 'task1': ['1', 'true', 'task3'], 'task2': ['1', 'true', 'task3'], 'task3': ['2', 'true', 'home']}
+Starting to deploy CIRCE dispatcher
+First create the home node service
+Task mapper: Heft original selected
+Non pricing scheme selected
+Task mapper: Heft original selected
+Non pricing scheme selected
+Home service created. status = '{'load_balancer': {'ingress': None}}'
+Create workers service
+Task mapper: Heft original selected
+Non pricing scheme selected
+Task mapper: Heft original selected
+Non pricing scheme selected
+Service created. status = '{'load_balancer': {'ingress': None}}'
+Task mapper: Heft original selected
+Non pricing scheme selected
+Task mapper: Heft original selected
+Non pricing scheme selected
+Service created. status = '{'load_balancer': {'ingress': None}}'
+Task mapper: Heft original selected
+Non pricing scheme selected
+Task mapper: Heft original selected
+Non pricing scheme selected
+Service created. status = '{'load_balancer': {'ingress': None}}'
+Task mapper: Heft original selected
+Non pricing scheme selected
+Task mapper: Heft original selected
+Non pricing scheme selected
+Service created. status = '{'load_balancer': {'ingress': None}}'
+Task mapper: Heft original selected
+Non pricing scheme selected
+Task mapper: Heft original selected
+Non pricing scheme selected
+Deployment created
+Deployment created. status = '{'available_replicas': None,
+ 'collision_count': None,
+ 'conditions': None,
+ 'observed_generation': None,
+ 'ready_replicas': None,
+ 'replicas': None,
+ 'unavailable_replicas': None,
+ 'updated_replicas': None}'
+Task mapper: Heft original selected
+Non pricing scheme selected
+Task mapper: Heft original selected
+Non pricing scheme selected
+Deployment created
+Deployment created. status = '{'available_replicas': None,
+ 'collision_count': None,
+ 'conditions': None,
+ 'observed_generation': None,
+ 'ready_replicas': None,
+ 'replicas': None,
+ 'unavailable_replicas': None,
+ 'updated_replicas': None}'
+Task mapper: Heft original selected
+Non pricing scheme selected
+Task mapper: Heft original selected
+Non pricing scheme selected
+Deployment created
+Deployment created. status = '{'available_replicas': None,
+ 'collision_count': None,
+ 'conditions': None,
+ 'observed_generation': None,
+ 'ready_replicas': None,
+ 'replicas': None,
+ 'unavailable_replicas': None,
+ 'updated_replicas': None}'
+Task mapper: Heft original selected
+Non pricing scheme selected
+Task mapper: Heft original selected
+Non pricing scheme selected
+Deployment created
+Deployment created. status = '{'available_replicas': None,
+ 'collision_count': None,
+ 'conditions': None,
+ 'observed_generation': None,
+ 'ready_replicas': None,
+ 'replicas': None,
+ 'unavailable_replicas': None,
+ 'updated_replicas': None}'
+Checking status CIRCE workers
+Task mapper: Heft original selected
+Non pricing scheme selected
+Pod Not Running task0
+app=count1-task0
+Pod Not Running task1
+app=count1-task1
+Pod Not Running task2
+app=count1-task2
+Pod Not Running task3
+app=count1-task3
+Wait before trying again!!!!
+Checking status CIRCE workers
+Task mapper: Heft original selected
+Non pricing scheme selected
+All systems GOOOOO!!
+Task mapper: Heft original selected
+Non pricing scheme selected
+Home deployment created
+Home deployment created. status = '{'available_replicas': None,
+ 'collision_count': None,
+ 'conditions': None,
+ 'observed_generation': None,
+ 'ready_replicas': None,
+ 'replicas': None,
+ 'unavailable_replicas': None,
+ 'updated_replicas': None}'
+{'home': '10.109.236.200',
+ 'task0': '10.110.184.124',
+ 'task1': '10.109.60.114',
+ 'task2': '10.96.255.143',
+ 'task3': '10.103.34.234'}
+Successfully deploy CIRCE dispatcher
+The Jupiter Deployment is Successful!
+Task mapper: Heft original selected
+Non pricing scheme selected
+Check if finishing evaluation sample tests
+http://localhost:8081/api/v1/namespaces/zxc-circe/services/count1-home:6100/proxy
+Number of output files :
+invalid literal for int() with base 10: '{"kind": "Status", "apiVersion": "v1", "metadata": {}, "status": "Failure", "message": "no endpoints available for service \\"count1-home\\"", "reason": "ServiceUnavailable", "code": 503}'
+Will check back later if finishing all the samples for app count1
+Number of output files :
+0
+2
+Number of output files :
+0
+2
+Number of output files :
+0
+2
+Number of output files :
+0
+2
+Number of output files :
+0
+2
+Number of output files :
+0
+2
+
