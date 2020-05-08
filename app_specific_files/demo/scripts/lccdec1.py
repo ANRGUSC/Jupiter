@@ -42,7 +42,7 @@ def task(filelist, pathin, pathout):
     K = 10 # Number of referenced Images
 
     # Results recieved from M workers
-    worker_idx = [ord((b.partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(M)]
+    worker_idx = [ord((filelist[i].partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(M)]
     worker_eval = [np.loadtxt(os.path.join(pathin, filelist[i]), delimiter=',') for i in range(M)]
     
     # Decoding Process 
@@ -62,15 +62,16 @@ def task(filelist, pathin, pathout):
     
     
     #Save desired scores of M data-batches
+    outlist = []
     for j in range(M):
-        np.savetxt(os.path.join(pathout,'job'+job_id+'outlccdecoder'+str(j)+'_'+snapshot_time+'.csv'), results[j], delimiter=',')
+        destination = os.path.join(pathout,'job'+job_id+'lccdec1'+str(j)+'_'+snapshot_time+'.csv')
+        np.savetxt(destination, results[j], delimiter=',')
+        outlist.append(destination)
+    return outlist
 
 def main():
-    filelist= ['preaggregator1_lccdecoder1_score1a_job1_20200424.csv','preaggregator1_lccdecoder1_score1c_job1_20200424.csv'] 
+    filelist= ['preagg1_lccdec1_score1a_job1_20200424.csv'] 
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
 
-if __name__ == '__main__': ##THIS IS FOR TESTING - DO THIS
-    filelist= ['preaggregator1_lccdecoder1_score1a_job1_20200424.csv','preaggregator1_lccdecoder1_score1c_job1_20200424.csv'] 
-    task(filelist,'./Agg_Results1', './Results1') 

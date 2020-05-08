@@ -35,7 +35,7 @@ def task(filelist, pathin, pathout):
     dim = (width, height)   
     
     # Read Reference Images
-    filelist_ref = ['schoolbus'+str(i+1)+'_20200424.jpg' for i in range(20,30)]  # to be defined in advance
+    filelist_ref = ['schoolbus'+str(i+1)+'_20200507.jpg' for i in range(20,30)]  # to be defined in advance
     path_ref = './schoolbus' # folder of referenced images
     
     for i in range(K):
@@ -60,15 +60,16 @@ def task(filelist, pathin, pathout):
     sc = score(En_Image_Batch, Ref_Images)
     
     # Save the encoded score to a csv file 
-    #np.savetxt(os.path.join(pathout,'job'+job_id+'outscore'+str(worker_id)+'_'+snapshot_time+'.csv'), sc, delimiter=',')
-    np.savetxt(os.path.join(pathout,'score2' + worker_id + '_'+'preaggregator2'+ '_' +'job' + job_id +'_'+snapshot_time+'.csv'), sc, delimiter=',')
+        # Save the encoded score to a csv file 
+    outlist = []
+    destination = os.path.join(pathout,'score2' + worker_id + '_'+'preagg2'+ '_' +'job' + job_id +'_'+snapshot_time+'.csv')
+    np.savetxt(destination, sc, delimiter=',')
+    outlist.append(destination)
+    return outlist
     
 def main():
-    filelist= ['lccencoder2_score2c_job1_20200424.csv']
+    filelist= ['lccenc2_score2c_job2_resnet0_storeclass2_master_resnet0_n04146614_1.csv']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
     
-if __name__ == '__main__': ##THIS IS FOR TESTING - DO THIS
-    filelist= ['lccencoder2_score2c_job1_20200424.csv'] 
-    task(filelist,'./Enc_Data', './Enc_Results') 
