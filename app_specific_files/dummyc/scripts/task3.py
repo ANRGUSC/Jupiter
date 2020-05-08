@@ -15,12 +15,10 @@ def task(filename,pathin,pathout):
 
      lib = ctypes.CDLL("./libtest.so")
      string_buffers = [ctypes.create_string_buffer(128) for i in range(3)]
-     #pointers = (ctypes.c_char_p*3)
-     lib.main()
+     pointers = (ctypes.c_char_p*3)(*map(ctypes.addressof, string_buffers))
+     lib.main(pointers)
      results = [s.value for s in string_buffers]
-     
      r = [i.decode('utf-8') for i in results]
-     print(r)
      return(r)
 
 def main():

@@ -177,7 +177,7 @@ def set_globals():
     HOME_CHILD                = 'task0'
     APP_PATH                  = HERE  + 'app_specific_files/dummyc/'
     APP_NAME                  = 'app_specific_files/dummyc'
-    APP_OPTION                = 'dummycrevised'
+    APP_OPTION                = 'dummycwrappers'
     # HOME_CHILD                = 'task0'
     # APP_PATH                  = HERE  + 'app_specific_files/dummy_app_multicast/'
     # APP_NAME                  = 'app_specific_files/dummy_app_multicast'

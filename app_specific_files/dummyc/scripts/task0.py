@@ -19,7 +19,6 @@ def task(filename,pathin,pathout):
      lib.main(pointers)
      results = [s.value for s in string_buffers]
      r = [i.decode('utf-8') for i in results]
-     print(r)
      return(r)
 
 def main():

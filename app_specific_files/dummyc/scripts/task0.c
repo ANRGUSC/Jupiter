@@ -168,7 +168,7 @@ int idx1 = 0, idx2 = 0;
                         strcat(new_path,new_file);
                         strcpy(output_path[k],new_path);
                         printf("NEW PATH IS %s \n",new_path);
-                        strcat(bash_script,"/centralized_scheduler/generate_random_files.sh"); 
+                        *strcat(bash_script,"/centralized_scheduler/generate_random_files.sh"); 
 			strcat(bash_script," ");
                         strcat(bash_script,new_path);
 			strcat(bash_script," ");
@@ -215,7 +215,7 @@ int idx1 = 0, idx2 = 0;
      return keys;
 }
 
-	 char** main() 
+	 void main(char** str) 
 	 {  
        
 	char filelist[128] = "1botnet.ipsum";  
@@ -226,13 +226,20 @@ int idx1 = 0, idx2 = 0;
         {
          final[i]=(char*)malloc(LSIZ*sizeof(char));
         }
-          //s = (char**)malloc(RSIZ*sizeof(char *));
+        //char** str = (char**)malloc(RSIZ*sizeof(char *));
+         final=task(filelist,outpath,outpath);
  
-        final= task(filelist, outpath, outpath);
-        
-      
-        return final;
- 
-     
+       
+        printf("OUTPUT PATH-----%s\n",final[0]);
+        printf("OUTPUT PATH-----%s\n",final[1]);
+        printf("OUTPUT PATH-----%s\n",final[2]);
+        printf("OUTPUT PATH-----%s\n",final[3]);
+        strcpy(str[0],final[0]);
+        strcpy(str[1],final[1]);
+        strcpy(str[2],final[2]);
+        strcpy(str[3],final[3]);
+    
+             
+               
 	
 	 } 
