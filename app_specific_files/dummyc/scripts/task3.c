@@ -12,7 +12,7 @@
 #define LSIZ 128 
 #define RSIZ 20
 
-//char* filename="ibotnet.ipsum";
+
 char file_path[RSIZ][LSIZ];
 int execution_time;
 char task_name_temp[LSIZ];
@@ -30,6 +30,7 @@ char output_path[RSIZ][LSIZ];
 char output_list[RSIZ][LSIZ];
 char file_size[RSIZ][LSIZ];
 char new_file[LSIZ];
+//char** keys;
 
 char line[RSIZ][LSIZ];
 char temp_comm [RSIZ][LSIZ];
@@ -47,7 +48,7 @@ int flag=0;
 static int tot = 0;
 int idx1 = 0, idx2 = 0;
 
- char* task(char* filename,char* pathin,char* pathout)
+ char** task(char* filename,char* pathin,char* pathout)
 { 
 	execution_time = rand() % 10;
 	printf("%d\n",execution_time);
@@ -59,7 +60,7 @@ int idx1 = 0, idx2 = 0;
   } 
 	char *path = basename(__FILE__);
 	char *path_cpy = strdup(path);
-	//base=basename(path_cpy);
+	
         memcpy(task_name_temp,path_cpy,LSIZ);
         char* token = strtok(task_name_temp,".");
         memcpy(task_name,token,LSIZ);
@@ -83,12 +84,16 @@ int idx1 = 0, idx2 = 0;
 	char actualpath [PATH_MAX+1];
 	char *file_comm = "communication.txt";
 	char *ptr;
-        //memset(ptr,'\0', sizeof(ptr));
+        
         
 	ptr=realpath(file_comm,actualpath);
 	printf("%s\n",actualpath);
 
-
+       char** keys=(char**)malloc(sizeof(char*)*RSIZ);
+       for(int lnVar=0;lnVar< RSIZ;lnVar++)
+    {
+        keys[lnVar]=(char*)malloc(LSIZ);
+    }
 	
      
     fname="communication.txt";	
@@ -124,20 +129,19 @@ int idx1 = 0, idx2 = 0;
       {   
                     strcpy(str, comm[i]);
                     char* pch;
-                    //memset(pch,'\0', sizeof(pch));
                     int j = 0;
                     pch = strtok (str," -");
                     while (pch != NULL)
                     {
                           if(j%2 == 0)
                           {
-                              //printf ("*********dest:************%s\n",pch);
+                              
                               strcpy(dest[idx1], pch);
                               idx1++;
                           }
                           else
                           {
-                              // printf ("-----------size:----------%s\n",pch);
+                              
                                strcpy (sizes[idx2],pch);
                                idx2++;
                           }
@@ -170,7 +174,7 @@ int idx1 = 0, idx2 = 0;
 			strcat(bash_script," ");
                         int dev;
 			sscanf(sizes[k], "%d",&dev);
-                        //printf("DEV************%dn",dev);
+                       //printf("DEV************%dn",dev);
                         char s[LSIZ];
                         sprintf(s,"%d",dev);
                         strcat(bash_script,s);
@@ -200,20 +204,39 @@ int idx1 = 0, idx2 = 0;
               strcat(bash_script," ");
               strcat(bash_script,rand_file);
               
-              system(bash_script); 
+              system(bash_script);
         } 
-   
-     return (char *)output_path;
+        
+        for(int x=0; x< idx1; x++)
+        {
+          strcpy(keys[x],output_path[x]);
+        }
+
+     return keys;
 }
 
-	 char* main() 
+	 void main(char** str) 
 	 {  
        
 	char filelist[128] = "1botnet.ipsum";  
+        
 	char* outpath="/centralized_scheduler/sample_input/";
-	//strcat(outpath,"sample_input/"); 
-        char* final= task(filelist, outpath, outpath);
-        return final;      
+        char** final = (char**)malloc(RSIZ*sizeof(char *));
+        for(int i=0; i<RSIZ; i++)
+        {
+         final[i]=(char*)malloc(LSIZ*sizeof(char));
+        }
+ 
+        final= task(filelist, outpath, outpath);
+        /*printf("OUTPUT PATH-----%s\n",final[0]);
+        printf("OUTPUT PATH-----%s\n",final[1]);
+        printf("OUTPUT PATH-----%s\n",final[2]);*/
+        for(int k=0;k<idx1;k++)
+        {
+        strcpy(str[k],final[k]);
+        }
+    
+             
                
 	
 	 } 
