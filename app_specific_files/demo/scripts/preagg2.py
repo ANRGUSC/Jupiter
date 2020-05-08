@@ -42,7 +42,7 @@ def task(filelist, pathin, pathout):
         print('Receive enough results for job '+job_id)
         for i in range(M):
             En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
-            destination = os.path.join(pathout,'preagg2_lccdec2_'+filelist[0].partition('_')[0]+'_job'+job_id+'_'+snapshot_time+'.csv')
+            destination = os.path.join(pathout,'preagg2_lccdec2_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+snapshot_time+'.csv')
             np.savetxt(destination, En_Image_Batch, delimiter=',')
             outlist.append(destination)
     return outlist
