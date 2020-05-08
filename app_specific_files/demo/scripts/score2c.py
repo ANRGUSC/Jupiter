@@ -15,15 +15,16 @@ def score (En_Image_Batch, Ref_Images):
 
 
 def task(filelist, pathin, pathout):    
-    snapshot_time = filelist[0].partition('_')[2].partition('.')[0]  #store the data&time info 
+    snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     # Load id of incoming job (id_job=1,2,3,...)
-    job_id = filelist[0].partition('encdata')[0]
+    #job_id = filelist[0].partition('outlccencoder')[0]
+    job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[0]
     job_id = job_id[3:]
     
 
-    #Worker ID: 1,2,...,N
-    worker_id = 3
+    #Worker ID: a,b,c,...
+    worker_id = 'c'
     
     #Parameters
     K = 10 # Number of referenced Images
@@ -34,8 +35,8 @@ def task(filelist, pathin, pathout):
     dim = (width, height)   
     
     # Read Reference Images
-    filelist_ref = ['fireengine'+str(i+1)+'_20200424.jpg' for i in range(20,30)]  # to be defined in advance
-    path_ref = './fireengine' # folder of referenced images
+    filelist_ref = ['schoolbus'+str(i+1)+'_20200424.jpg' for i in range(20,30)]  # to be defined in advance
+    path_ref = './schoolbus' # folder of referenced images
     
     for i in range(K):
         img = cv2.imread(os.path.join(path_ref, filelist_ref[i]))
@@ -52,15 +53,22 @@ def task(filelist, pathin, pathout):
     
     
     # Read Encoded data-batch   
-    En_Image_Batch = np.loadtxt(os.path.join(pathin, filelist[worker_id]), delimiter=',')
+    En_Image_Batch = np.loadtxt(os.path.join(pathin, filelist[0]), delimiter=',')
     
     
     # Compute Scores of ref images and En_Images
     sc = score(En_Image_Batch, Ref_Images)
     
     # Save the encoded score to a csv file 
-    np.savetxt(os.path.join(pathout,'job'+job_id+'encsc'+str(worker_id)+'_'+snapshot_time+'.csv'), sc, delimiter=',')
+    #np.savetxt(os.path.join(pathout,'job'+job_id+'outscore'+str(worker_id)+'_'+snapshot_time+'.csv'), sc, delimiter=',')
+    np.savetxt(os.path.join(pathout,'score2' + worker_id + '_'+'preaggregator2'+ '_' +'job' + job_id +'_'+snapshot_time+'.csv'), sc, delimiter=',')
+    
+def main():
+    filelist= ['lccencoder2_score2c_job1_20200424.csv']
+    outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
+    outfile = task(filelist, outpath, outpath)
+    return outfile
     
 if __name__ == '__main__': ##THIS IS FOR TESTING - DO THIS
-    filelist= ['job1encdata'+str(i+1)+'_20200424.csv' for i in range(3)] 
+    filelist= ['lccencoder2_score2c_job1_20200424.csv'] 
     task(filelist,'./Enc_Data', './Enc_Results') 
