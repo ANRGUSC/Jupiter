@@ -205,15 +205,15 @@ def main():
     web_server.start()
     
     logging.debug('Starting to generate the streaming files')
-    interval = 10
+    interval = 5
     data_path = "generated_stream"
     original_data_path = "data"
     # Generate streaming data
-    # thread.start_new_thread(gen_stream_data,(interval,data_path,original_data_path))  
+    _thread.start_new_thread(gen_stream_data,(interval,data_path,original_data_path))  
 
     # Generate fixed number of images
-    num = 18
-    _thread.start_new_thread(gen_stream_fixed_data,(num,data_path,original_data_path)) 
+    # num = 18
+    # _thread.start_new_thread(gen_stream_fixed_data,(num,data_path,original_data_path)) 
 
     # watch manager
     wm = pyinotify.WatchManager()
