@@ -81,7 +81,7 @@ def set_globals():
     
 
     """Modules path of Jupiter"""
-    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH, DATA_PATH
+    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH, DATA_PATH, GLOBALINFO_PATH
 
     # default network and resource profiler: DRUPE
     # default wave mapper: random wave
@@ -95,6 +95,7 @@ def set_globals():
     # STREAM_PATH             = HERE + 'simulation/data_sources/'
     # data sources for testing demo
     STREAM_PATH               = HERE + 'simulation/demo_sources/'
+    GLOBALINFO_PATH               = HERE + 'simulation/global_info_center/'
 
     global heft_option, wave_option
     heft_option             = 'original'    
@@ -236,6 +237,9 @@ def set_globals():
 
     global STREAM_IMAGE
     STREAM_IMAGE = 'docker.io/anrg/stream_home:%s_%s'%(APP_OPTION,cluster_option)
+
+    global GLOBALINFO_IMAGE
+    GLOBALINFO_IMAGE = 'docker.io/anrg/globalinfo_home:%s_%s'%(APP_OPTION,cluster_option)
 
 if __name__ == '__main__':
     set_globals()

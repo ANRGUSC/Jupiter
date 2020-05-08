@@ -60,7 +60,7 @@ CMD ["./start.sh"]
 ############################################ WORKER DOCKER TEMPLATE#########################################################
 
 
-def write_stream_home_docker(app_option=None,**kwargs):
+def write_globalinfo_home_docker(app_option=None,**kwargs):
     """
         Function to Generate the Dockerfile of the home/master node of CIRCE
     """
@@ -74,7 +74,7 @@ def write_stream_home_docker(app_option=None,**kwargs):
 
 
 if __name__ == '__main__':
-    write_demodata_home_docker(username = 'root',
+    write_globalinfo_home_docker(username = 'root',
                       password = 'PASSWORD',
                       app_file='app_specific_files/network_monitoring',
                       ports = '22 8888',
