@@ -168,7 +168,7 @@ int idx1 = 0, idx2 = 0;
                         strcat(new_path,new_file);
                         strcpy(output_path[k],new_path);
                         printf("NEW PATH IS %s \n",new_path);
-                        strcat(bash_script,"/centralized_scheduler/generate_random_files.sh"); 
+                        /*strcat(bash_script,"/centralized_scheduler/generate_random_files.sh"); 
 			strcat(bash_script," ");
                         strcat(bash_script,new_path);
 			strcat(bash_script," ");
@@ -178,7 +178,7 @@ int idx1 = 0, idx2 = 0;
                         char s[LSIZ];
                         sprintf(s,"%d",dev);
                         strcat(bash_script,s);
-                        system(bash_script); 
+                        system(bash_script); */
                     }
         } // END OF STRCMP IF
 	else if((strncmp(task_name,src[i],5)!=0))
@@ -198,13 +198,13 @@ int idx1 = 0, idx2 = 0;
               int x= (rand() + 1);
               sprintf(rand_file,"%d",x);
               strcpy(new_file,output_name); 
-              strcat(bash_script,"/centralized_scheduler/generate_random_files.sh"); 
+              /*strcat(bash_script,"/centralized_scheduler/generate_random_files.sh"); 
               strcat(bash_script," ");
               strcat(bash_script,new_path);
               strcat(bash_script," ");
               strcat(bash_script,rand_file);
               
-              system(bash_script);
+              system(bash_script);*/ 
         } 
         
         for(int x=0; x< idx1; x++)
