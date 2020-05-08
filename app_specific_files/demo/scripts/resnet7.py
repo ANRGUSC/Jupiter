@@ -121,7 +121,8 @@ def send_prediction_to_decoder_task(prediction, decoder_node_port):
 #Krishna
 def main():
     filelist = ['master_resnet7_n03345487_40.JPEG','master_resnet7_n03345487_243.JPEG','master_resnet7_n03345487_245.JPEG','master_resnet7_n03345487_267.JPEG',
-       'master_resnet7_n03345487_279.JPEG','master_resnet7_n03345487_282.JPEG']
+       'master_resnet7_n03345487_279.JPEG','master_resnet7_n03345487_282.JPEG',
+       'master_resnet7_n04146614_377.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile

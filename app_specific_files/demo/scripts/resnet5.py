@@ -121,7 +121,7 @@ def send_prediction_to_decoder_task(prediction, decoder_node_port):
 def main():
     filelist = ['master_resnet5_n04146614_16038.JPEG','master_resnet5_n04146614_318.JPEG',
        'master_resnet5_n03345487_144.JPEG','master_resnet5_n03345487_163.JPEG','master_resnet5_n03345487_192.JPEG',
-       'master_resnet5_n03345487_205.JPEG']
+       'master_resnet5_n03345487_205.JPEG','master_resnet5_n04146614_330.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile

@@ -35,7 +35,11 @@ def main():
        'resnet3_storeclass2_master_resnet3_n04146614_232.JPEG','resnet3_storeclass2_master_resnet3_n04146614_237.JPEG','resnet3_storeclass2_master_resnet3_n04146614_245.JPEG',
        'resnet4_storeclass2_master_resnet4_n04146614_263.JPEG','resnet4_storeclass2_master_resnet4_n04146614_284.JPEG','resnet4_storeclass2_master_resnet4_n04146614_295.JPEG',
        'resnet4_storeclass2_master_resnet4_n04146614_309.JPEG','resnet4_storeclass2_master_resnet4_n04146614_312.JPEG',
-       'resnet5_storeclass2_master_resnet5_n04146614_16038.JPEG','resnet5_storeclass2_master_resnet5_n04146614_318.JPEG']
+       'resnet5_storeclass2_master_resnet5_n04146614_16038.JPEG','resnet5_storeclass2_master_resnet5_n04146614_318.JPEG',
+       'resnet5_storeclass2_master_resnet5_n04146614_330.JPEG',
+       'resnet6_storeclass2_master_resnet6_n04146614_363.JPEG',
+       'resnet7_storeclass2_master_resnet7_n04146614_377.JPEG',
+       'resnet8_storeclass2_master_resnet8_n04146614_387.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
