@@ -265,7 +265,8 @@ def main():
 
         start_time = datetime.datetime.utcnow()
         filename = module.main()
-        logging.debug('------------------------------------------------')
+        logging.debug('Running task ------------------------------------------------')
+        logging.debug(task)
         logging.debug(filename)
         stop_time = datetime.datetime.utcnow()
         mytime = stop_time - start_time
@@ -273,9 +274,9 @@ def main():
 
         output_data = [file_size(fname) for fname in filename]
         logging.debug(output_data)
-        logging.debug('------------------------------------------------')
         sum_output_data = sum(output_data) #current: summation of all output files
         line=task+','+str(mytime)+ ','+ str(sum_output_data) + '\n'
+        logging.debug('------------------------------------------------')
         myfile.write(line)
         myfile.flush()
 
