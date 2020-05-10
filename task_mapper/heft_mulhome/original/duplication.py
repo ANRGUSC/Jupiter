@@ -153,11 +153,12 @@ class Duplication:
             
         if min_btnk >= btnk_time: # no point for duplication
             return (-1, time.time())
-        return (node, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks))
+        return (node, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks), files_to_dst, files_from_src)
+    
     
     # all these params are passed by reference, thus changing them would change original ones too
     def duplicate(self, links, processors, tasks, comp_cost, data, quaratic_profile, btnk_id, new_node,
-                  min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, task_names):
+                  min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, task_names, files_to_dst, files_from_src):
         """
         what to do in actual duplicate;
         1. update takeup times of related nodes and links, comp matrix etc
@@ -168,11 +169,67 @@ class Duplication:
         """
         tasks_to_dup = tasks[i for i in task_ids_to_dup]
         tasts_to_recv = tasks[i for i in task_ids_to_recv]
+        src_proc = self.get_proc_by_id(processors, btnk_id.split('_')[0])
+        dst_proc = self.get_proc_by_id(processors, btnk_id.split('_')[1])
         
+        # a mapping from old task number to it dup task number and the other way around
+        ori_to_dup = {}
+        dup_to_ori = {}
         # create tasks
         for task in tasks_to_dup:
             dup_task = hd.Task()
-
+            dup_task.number = len(tasks)
+            ori_to_dup[task.number] = dup_task.number
+            dup_to_ori[dup_task.number] = task.number
+            dup_task.comp_cost = task.comp_cost
+            dup_task.processor_num = new_node.number
+            dup_task.parents_numbers = task.parents_numbers
+            
+            cur_end_time = new_node.time_line[-1].end if len(new_node.time_line) > 0 else 0
+            dt = hd.Duration(dup_task.number, cur_end_time, cur_end_time + dup_task.comp_cost[new_node.number])
+            new_node.time_line.append(dt)
+            tasks.append(dup_task)
+            comp_cost.append(dup_task.comp_cost)
+            task_names.append(task_names[task.number]+"_dup")
+            
+        # change parent child relations (src -> dst)
+        for child in tasks_to_recv:
+            for index in len(child.parents_numbers):
+                if child.parents_numbers[index] in task_ids_to_dup:
+                    child.parents_numbers[index] = ori_to_dup[child.parents_numbers[index]]
+                    
+        # expand data transfer matrix
+        l = [-1 for t in task_ids_to_dup]
+        for row in data:
+            row.append(l)
+        while(len(l) < len(data[0])):
+            l.append(-1)
+        while(len(data) < len(data[0])):
+            data.append(l)
+                        
+        # change parent-child data transfer
+        for t in tasks_to_dup:
+            for prnum in t.parents_numbers:
+                data[prnum][ori_to_dup[t.number]] = data[prnum][t.number]
+        for pid in task_ids_to_dup:
+            for dr in dst_proc.time_line:
+                if data[pid][dr.task_num] > 0:
+                    data[ori_to_dup[pid]][dr.task_num] = data[pid][dr.task_num]
+                    data[pid][dr.task_num] = -1
+        
+        # update link durations
+        new_link = self.get_link_by_id(links, str(new_node.number)+'_'+str(dst_proc.number))
+        old_link = self.get_link_by_id(links, btnk_id)
+        for ld in old_link.time_line:
+            new_link.time_line.append(hd.LinkDuration(ori_to_dup[ld.start_task_num], ld.end_task_num, ld.start, ld.end))
+        old_link.time_line = [] # remove bottleneck link
+        for pt in parent_tasks:
+            new_link = self.get_link_by_id(str(pt.processor_num) + '_' + str(new_node.number))
+            old_link = self.get_link_by_id(str(pt.processor_num) + '_' + str(src_proc.number))
+            for ld in old_link.time_line:
+                new_link.time_line.append(hd.LinkDuration(ld.start_task_num, ori_to_dup[ld.end_task_num], ld.start, ld.end))
+        
+        # change task graph and write back to file 'configuration.txt', which will be transfered to CIRCE by flask
         config_file = 'configuration.txt'
         f = open(config_file, "r")
         # a list of strings (adjlist lines)
@@ -184,8 +241,7 @@ class Duplication:
             graph.append(line)
         print("------------------- adjList in last graph --------------------------")
         print(graph)
-        
-        # parent task ID from parent nodes -> child 
+        f.close()
     
     def get_link_by_id(self, links, link_id):
         for link in links:
@@ -208,6 +264,5 @@ class Duplication:
         return task_to_proc
             
     def cal_comm_quadratic(self, file_size, quaratic_profile):
-        return (np.square(file_size)*quaratic_profile[0] + file_size*quaratic_profile[1] + quaratic_profile[2])
-        
+        return (np.square(file_size)*quaratic_profile[0] + file_size*quaratic_profile[1] + quaratic_profile[2]) 
             
