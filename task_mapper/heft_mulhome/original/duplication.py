@@ -172,7 +172,7 @@ class Duplication:
         # create tasks
         for task in tasks_to_dup:
             dup_task = hd.Task()
-        
+
         config_file = 'configuration.txt'
         f = open(config_file, "r")
         # a list of strings (adjlist lines)
