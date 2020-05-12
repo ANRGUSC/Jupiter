@@ -2,7 +2,7 @@
 duplication and split can both remove link bottlenecks, but only split can remove comp btnk
 duplication is doing some tasks twice, and incurred multiple link usage to make btnk link completely idle
 split can evenly distribute jobs on more reources without redundent work
-one good point of duplication though, is that it can bypass a link, which could be bad
+duplication can be used when completely removal of a link is prefered
 Some points:
 1. the new node should duplicate all (not some) tasks assigned to original node
 2. a node can have as many dup nodes, which will indefinately increase throughput

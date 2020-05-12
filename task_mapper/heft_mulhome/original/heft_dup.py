@@ -189,6 +189,10 @@ class HEFT:
                 res += self.cal_comm_quadratic(self.data[task1.number][task2.number],self.quaratic_profile[i][j])
         if(res < 0):
             print("got negative communication cost from network profiler, something wrong with DRUPE")
+            print(task_names[task1.number])
+            print(task_names[task2.number])
+            print(i)
+            print(j)
             exit()
         return res / (self.num_processor ** 2 - self.num_processor)
 
