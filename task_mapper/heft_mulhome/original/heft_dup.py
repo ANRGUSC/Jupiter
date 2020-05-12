@@ -297,31 +297,28 @@ class HEFT:
         """Display scheduling result to console
         """
         print("==============================================")
-        print("print task info")
+        print("               print task info")
         print("==============================================")
+        print("task_number            task_uprank")
         for task in self.tasks:
-            print("task number %d" % task.number)
-            print("task uprank %f" % task.up_rank)
+            print(task.number, "              ", task.up_rank)
         
         print("==============================================")
-        print("print processor info")
+        print("               print processor info")
         print("==============================================")
+        print("processor_number     task_number     start_time     end_time")
         for processor in self.processors:
-            print("processor number %d" % processor.number)
-            print("processor takeup time")
             for tl in processor.time_line:
-                print("task num, start time, end time   " + str(tl.task_num) + "   " + str(tl.start) + "   " + str(tl.end))
+                print("     ", processor.number, "      ", tl.task_num, "    ", tl.start, "    ", tl.end)
                 
        
         print("==============================================")
-        print("print link info")
-        print("==============================================") 
+        print("               print link info")
+        print("==============================================")
+        print("link_name    start_task_num   end_task_num   start_time   end_time") 
         for link in self.links:
-            print("link name %s" % link.id)
-            print("link takeup time")
             for tl in link.time_line:
-                print("link task start_num, end_num, start_time, end_time" \
-                + str(tl.start_task_num) + "   " + str(tl.end_task_num) + "   " + str(tl.start) + "   " + str(tl.end))
+                print(link.id, "      ", tl.start_task_num, "      ", tl.end_task_num, "       ", tl.start, "      ", tl.end)
         
 
     # output file is input_to_CIRCE
