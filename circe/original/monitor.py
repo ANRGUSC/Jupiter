@@ -303,29 +303,30 @@ class Handler1(pyinotify.ProcessEvent):
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     
                 # Using unicast
-                # for i in range(3, len(sys.argv)-1,4):
-                #     myfile = files_out.pop(0)
-                #     event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
-                #     cur_task = sys.argv[i]
-                #     user = sys.argv[i+2]
-                #     password = sys.argv[i+3]
-                #     source = event_path
-                #     destination = os.path.join('/centralized_scheduler','input', myfile)
-                #     transfer_data(cur_task,user,password,source, destination)
-                
-                logging.debug('Using multicast instead')
-                cur_tasks =[]
-                users = []
-                passwords = []
                 for i in range(3, len(sys.argv)-1,4):
-                    cur_tasks.append(sys.argv[i])
-                    users.append(sys.argv[i+2])
-                    passwords.append(sys.argv[i+3])
-                destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in files_out]
-                sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in files_out]
-
-                transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
+                    myfile = files_out.pop(0)
+                    event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
+                    cur_task = sys.argv[i]
+                    user = sys.argv[i+2]
+                    password = sys.argv[i+3]
+                    source = event_path
+                    destination = os.path.join('/centralized_scheduler','input', myfile)
+                    transfer_data(cur_task,user,password,source, destination)
                 files_out=[]
+                
+                # logging.debug('Using multicast instead')
+                # cur_tasks =[]
+                # users = []
+                # passwords = []
+                # for i in range(3, len(sys.argv)-1,4):
+                #     cur_tasks.append(sys.argv[i])
+                #     users.append(sys.argv[i+2])
+                #     passwords.append(sys.argv[i+3])
+                # destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in files_out]
+                # sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in files_out]
+
+                # transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
+                # files_out=[]
 
 
 
