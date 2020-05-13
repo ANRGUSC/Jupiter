@@ -142,14 +142,17 @@ def set_globals():
     if DCOMP == 1:
         cluster_option      = 'dcomp'
 
-    
     """Kubernetes required information"""
-    global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
+    global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, \
+        MAPPER_NAMESPACE, EXEC_NAMESPACE
 
     try:
-        KUBECONFIG_PATH         = os.environ['KUBECONFIG']
-    except Exception as e:
-        print('KUBECONFIG environment variable has not been setup yet!')
+        KUBECONFIG_PATH = os.environ['KUBECONFIG']
+    except KeyError:
+        print('$KUBECONFIG does not exist. Using default path ~/.kube/config')
+        home = os.environ['HOME']
+        KUBECONFIG_PATH = home + '/.kube/config'
+
     # Namespaces
     DEPLOYMENT_NAMESPACE    = 'quynh-circe'
     PROFILER_NAMESPACE      = 'quynh-profiler'
