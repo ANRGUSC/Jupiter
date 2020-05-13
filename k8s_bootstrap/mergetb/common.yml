@@ -1,0 +1,155 @@
+- hosts: all
+  order: sorted
+  gather_facts: False
+  become: yes
+  vars:
+    # DCOMP Ubuntu 18.04 containers do not have /usr/bin/python but have python3
+    ansible_python_interpreter: python3
+  tasks:
+    - name: Get distro name from /etc/os-release
+      when: ansible_os_family is not defined
+      raw: "grep '^NAME=' /etc/os-release | sed s'/NAME=//'"
+      register: distro
+      changed_when: False
+
+    - name: Set fact ansible_os_family var to Debian
+      when:
+        - ansible_os_family is not defined
+        - "'Debian' in distro.stdout"
+      set_fact:
+        ansible_os_family: Debian
+
+    - name: Set fact ansible_os_family var to Ubuntu
+      when:
+        - ansible_os_family is not defined
+        - "'Ubuntu' in distro.stdout"
+      set_fact:
+        ansible_os_family: Ubuntu
+
+    - name: Run apt-get update
+      apt: update_cache=yes
+
+    - name: Install requirements/dependencies
+      apt:
+        name: "{{packages}}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg
+        - gnupg2
+        - software-properties-common
+
+    - name: Get iptables version
+      shell: 'dpkg -s iptables | grep ''Version'' | sed -re s''/.*: ([0-9]+\.[0-9]).*/\1/'''
+      register: iptables_version
+
+    - name: Switch to iptables legacy if version >= 1.8 (legacy only available on newer versions), see https://github.com/kubernetes/kubernetes/issues/71305
+      when: iptables_version.stdout | version('1.8', '>=') 
+      shell: update-alternatives --set iptables /usr/sbin/iptables-legacy
+
+    - name: Add Docker APT GPG key for Ubuntu
+      when: ansible_os_family == "Ubuntu"
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+
+    - name: Add Docker APT GPG key for Debian
+      when: ansible_os_family == "Debian"
+      apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+
+    - name: Add Docker APT repository for Ubuntu nodes
+      when: ansible_os_family == "Ubuntu"
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+
+    - name: Add Docker APT repository for Debian nodes via python2 (python3.7 and ansible bug in April 2019)
+      vars:
+        ansible_python_interpreter: python
+      when: ansible_os_family == "Debian"
+      apt_repository:
+        repo: deb https://download.docker.com/linux/debian buster stable
+        state: present
+
+    - name: Install docker and its dependecies
+      apt: 
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - docker-ce 
+        - docker-ce-cli 
+        - containerd.io
+
+    - name: Add Kubernetes APT GPG key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
+    
+    - name: Add APT repository for kubernetes 
+      when: ansible_os_family == "Ubuntu"
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: 'kubernetes'
+
+    - name: Add APT repository for kubernetes for Debian via python2 (python3.7 and ansible bug in April 2019)
+      when: ansible_os_family == "Debian"
+      vars:
+        ansible_python_interpreter: python
+      apt_repository:
+        repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: 'kubernetes'
+
+    - name: Run apt-get update
+      apt:
+        update_cache: yes
+
+    - name: Disable swap
+      shell: swapoff -a
+
+    - name: Install Kubernetes binaries
+      apt: 
+        name: "{{ packages }}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+          - kubelet=1.14.0-00
+          - kubeadm=1.14.0-00
+          - kubectl=1.14.0-00
+
+    - name: Hold kubernetes versions
+      shell: apt-mark hold kubelet kubeadm kubectl
+
+    - name: Enable and check kubelet service
+      systemd:
+        name: kubelet
+        daemon_reload: yes
+        state: started
+        enabled: yes
+
+    - name: Enable and check docker service
+      systemd:
+        name: docker
+        daemon_reload: yes
+        state: started
+        enabled: yes
+
+    - name: Create generic user "jupiter" all nodes (password is "controlallthings")
+      user: 
+        name: jupiter
+        update_password: always
+        password: 'rUASLsZJNjkL6'
+        shell: /bin/bash
+        groups: 
+          - docker
+          - sudo
+        state: present
+        createhome: yes

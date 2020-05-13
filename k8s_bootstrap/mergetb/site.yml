@@ -1,0 +1,8 @@
+- name: Install dependencies on all nodes
+  import_playbook: common.yml
+
+- name: Setup master node
+  import_playbook: master.yml
+
+- name: Lastly, setup worker nodes
+  import_playbook: workers.yml
