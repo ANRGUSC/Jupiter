@@ -39,13 +39,19 @@ def build_push_stress():
     jupiter_config.set_globals()
     logging.debug('Stress image : ' + jupiter_config.STRESS_IMAGE)
     # Master node on DCOMP n0
+    logging.warn('TODO: prepare_stress_test.py assumes hostnames using',
+                 'mergetb setup instructions. needs refactor.')
     ssh = connect_remote_ssh('n0')
-    cmd_to_execute = '(cd Jupiter/simulation/stress_test/; sudo docker build -f Dockerfile . -t %s)'%(jupiter_config.STRESS_IMAGE)
-    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+    cmd_to_execute = '(cd Jupiter/simulation/stress_test/;' + \
+        'sudo docker build -f Dockerfile . -t %s)' % \
+        (jupiter_config.STRESS_IMAGE)
+    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(
+        cmd_to_execute, get_pty=True)
     for line in ssh_stdout:
         logging.debug(line)
     cmd_to_execute = "sudo docker push " + jupiter_config.STRESS_IMAGE
-    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute, get_pty=True)
+    ssh_stdin, ssh_stdout, ssh_stderr = ssh.exec_command(cmd_to_execute,
+                                                         get_pty=True)
     for line in ssh_stdout:
         logging.debug(line)
 
