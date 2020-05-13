@@ -18,8 +18,10 @@ import jupiter_config
 from kubernetes.client.rest import ApiException
 import utilities 
 import logging
+from pathlib import Path
 
 logging.basicConfig(level = logging.DEBUG)
+
 
 def check_status_profilers():
     """Verify if all the network profilers have been deployed and UP in the system.
@@ -99,11 +101,7 @@ def k8s_profiler_scheduler():
 
     logging.debug('Starting to deploy DRUPE')
     if jupiter_config.BOKEH == 3:
-        try:
-            os.mkdir('../stats/exp8_data/summary_latency/')
-        except:
-            logging.debug('Folder already existed')
-        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
+        latency_file = utilities.prepare_stat_path(node_list,homes,dag)
         start_time = time.time()
         msg = 'DRUPE deploystart %f \n'%(start_time)
         write_file(latency_file,msg,'w')

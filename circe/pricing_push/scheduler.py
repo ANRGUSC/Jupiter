@@ -614,9 +614,9 @@ def main():
     appoption = os.environ['APPOPTION']
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
 
 
     global task_node_summary, controllers_id_map

@@ -11,7 +11,7 @@ RUN apt-get install -y sshpass nano
 RUN pip install cryptography
 
 
-ADD requirements_sim.txt /requirements.txt
+ADD requirements.txt /requirements.txt
 
 RUN pip3 install -r requirements.txt
 

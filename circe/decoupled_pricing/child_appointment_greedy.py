@@ -113,9 +113,9 @@ def prepare_global():
     del application[0]
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
 
     logging.debug('Bokeh information')
     logging.debug(BOKEH_SERVER)
@@ -287,7 +287,7 @@ def call_send_mapping(mapping, node):
         res = res.read()
         res = res.decode('utf-8')
         local_mapping[mapping] = True
-        if BOKEH == 5:
+        if BOKEH == 3:
             topic = 'msgoverhead_%s' % (node_name)
             msg = 'msgoverhead pricedecoupled controller%s announcehome 1 %s %s \n' % (node_name,node,mapping)
             demo_help(BOKEH_SERVER, BOKEH_PORT, topic, msg)

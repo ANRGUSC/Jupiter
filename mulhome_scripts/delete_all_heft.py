@@ -5,6 +5,7 @@ __version__ = "3.0"
 
 import sys
 sys.path.append("../")
+import os
 import utilities
 import yaml
 from kubernetes import client, config
@@ -14,8 +15,10 @@ from kubernetes.client.rest import ApiException
 import jupiter_config
 import time
 import logging
+from pathlib import Path
 
 logging.basicConfig(level = logging.DEBUG)
+
 
 def write_file(filename,message):
     with open(filename,'a') as f:
@@ -38,7 +41,7 @@ def delete_all_heft(app_name):
 
     logging.debug('Starting to teardown HEFT')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
+        latency_file = utilities.prepare_stat_path(nodes,[],dag)
         start_time = time.time()
         msg = 'HEFT teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)

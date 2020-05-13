@@ -5,7 +5,7 @@ __version__ = "3.0"
 
 import sys
 sys.path.append("../")
-
+import os
 from utilities import *
 import yaml
 from kubernetes import client, config
@@ -16,9 +16,11 @@ import jupiter_config
 import logging
 from delete_all_heft import *
 from delete_all_waves import *
+from pathlib import Path
 
 
 logging.basicConfig(level = logging.DEBUG)
+
 
 def write_file(filename,message):
     with open(filename,'a') as f:
@@ -41,7 +43,7 @@ def delete_all_pricing_circe(app_name):
 
     logging.debug('Starting to teardown pricing CIRCE')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
+        latency_file = utilities.prepare_stat_path(nodes,[],dag)
         start_time = time.time()
         if jupiter_config.PRICING == 1:
             msg = 'PRICEpush teardownstart %f \n'%(start_time)
@@ -292,7 +294,7 @@ def delete_all_decoupled_pricing_circe(app_name):
 
     logging.debug('Starting to teardown decoupled pricing CIRCE')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
+        latency_file = utilities.prepare_stat_path(nodes,[],dag)
         start_time = time.time()
         msg = 'PRICEintegrated teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)
@@ -512,6 +514,11 @@ def delete_all_decoupled_pricing_circe(app_name):
         teardown_time = end_time - start_time
         logging.debug('Time to teardown PRICEING CIRCE'+ str(teardown_time)) 
 
+    if jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3:
+        delete_all_heft(app_name)
+    else:
+        delete_all_waves(app_name)
+
 def delete_all_integrated_pricing_circe(app_name):
     """Tear down all CIRCE deployments.
     """
@@ -529,7 +536,7 @@ def delete_all_integrated_pricing_circe(app_name):
 
     logging.debug('Starting to teardown integrated pricing CIRCE')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes),len(dag))
+        latency_file = utilities.prepare_stat_path(nodes,[],dag)
         start_time = time.time()
         msg = 'PRICEintegrated teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)

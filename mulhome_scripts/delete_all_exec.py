@@ -5,6 +5,7 @@ __version__ = "2.1"
 
 import sys
 sys.path.append("../")
+import os
 import utilities
 import yaml
 from kubernetes import client, config
@@ -14,8 +15,11 @@ from kubernetes.client.rest import ApiException
 import jupiter_config
 import time
 import logging
+from pathlib import Path
 
 logging.basicConfig(level = logging.DEBUG)
+
+
 
 def write_file(filename,message):
     with open(filename,'a') as f:
@@ -39,7 +43,7 @@ def delete_all_exec(app_name):
 
     logging.debug('Starting to teardown execution profiler')
     if jupiter_config.BOKEH == 3:
-        latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
+        latency_file = utilities.prepare_stat_path(node_list,homes,dag)
         start_time = time.time()
         msg = 'Executionprofiler teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)

@@ -5,7 +5,6 @@ __version__ = "2.1"
 
 import sys
 sys.path.append("../")
-
 import time
 import os
 from os import path
@@ -25,10 +24,9 @@ import sys, json
 sys.path.append("../")
 import jupiter_config
 import logging
+from pathlib import Path
 
 logging.basicConfig(level = logging.DEBUG)
-
-
 
 
 def check_status_exec_profiler(app_name):
@@ -200,11 +198,11 @@ def k8s_exec_scheduler(app_name):
 
 
     logging.debug('Starting to deploy execution profiler')
-    # if jupiter_config.BOKEH == 3:
-    #     latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(nodes)+len(homes),len(dag))
-    #     start_time = time.time()
-    #     msg = 'Executionprofiler deploystart %f \n'%(start_time)
-    #     write_file(latency_file,msg)
+    if jupiter_config.BOKEH == 3:
+        latency_file = utilities.prepare_stat_path(nodes,homes,dag)
+        start_time = time.time()
+        msg = 'Executionprofiler deploystart %f \n'%(start_time)
+        write_file(latency_file,msg)
 
     """
         First create the home node's service.
@@ -393,12 +391,12 @@ def k8s_exec_scheduler(app_name):
     logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
     logging.debug('Successfully deploy execution profiler ')
-    # if jupiter_config.BOKEH == 3:
-    #     end_time = time.time()
-    #     msg = 'Executionprofiler deployend %f \n'%(end_time)
-    #     write_file(latency_file,msg)
-    #     deploy_time = end_time - start_time
-    #     logging.debug('Time to deploy execution profiler '+ str(deploy_time))
+    if jupiter_config.BOKEH == 3:
+        end_time = time.time()
+        msg = 'Executionprofiler deployend %f \n'%(end_time)
+        write_file(latency_file,msg)
+        deploy_time = end_time - start_time
+        logging.debug('Time to deploy execution profiler '+ str(deploy_time))
 
     return(service_ips)
 

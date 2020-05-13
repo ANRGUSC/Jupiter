@@ -74,10 +74,10 @@ def set_globals():
     FLASK_DEPLOY            = config['PORT']['FLASK_DEPLOY']
 
     global BOKEH,BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH = int(config['OTHER']['BOKEH'])
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
     
 
     """Modules path of Jupiter"""
@@ -110,10 +110,6 @@ def set_globals():
         print('Task mapper: Heft load balanced selected')
         HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/heft_balance/'   
         heft_option         = 'heftbalance'
-    elif SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_GREEDY_BALANCE']):
-        print('Task mapper: Wave greedy (group of neighbors & load balanced) selected')
-        WAVE_PATH           = HERE + 'task_mapper/wave_mulhome/greedy_wave_balance/'   
-        wave_option         = 'greedybalance'
     else: 
         print('Task mapper: Heft original selected')
 
@@ -146,16 +142,16 @@ def set_globals():
     if DCOMP == 1:
         cluster_option      = 'dcomp'
 
-    
     """Kubernetes required information"""
-    global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, MAPPER_NAMESPACE, EXEC_NAMESPACE
+    global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, \
+        MAPPER_NAMESPACE, EXEC_NAMESPACE
 
     try:
-        KUBECONFIG_PATH     = os.environ['KUBECONFIG']
-    except:
+        KUBECONFIG_PATH = os.environ['KUBECONFIG']
+    except KeyError:
         print('$KUBECONFIG does not exist. Using default path ~/.kube/config')
-        home                = os.environ['HOME']
-        KUBECONFIG_PATH     = home + '/.kube/config'
+        home = os.environ['HOME']
+        KUBECONFIG_PATH = home + '/.kube/config'
 
     # Namespaces
     DEPLOYMENT_NAMESPACE    = 'quynh-circe'
@@ -175,9 +171,9 @@ def set_globals():
     
 
     HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummy_app_multicast/'
-    APP_NAME                  = 'app_specific_files/dummy_app_multicast'
-    APP_OPTION                = 'dummymulticast'
+    APP_PATH                  = HERE  + 'app_specific_files/apacdemo/'
+    APP_NAME                  = 'app_specific_files/apacdemo'
+    APP_OPTION                = 'demo'
 
 
     """pricing CIRCE home and worker images"""
@@ -230,6 +226,9 @@ def set_globals():
     HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s_%s'%(heft_option,APP_OPTION,cluster_option)
        
 
+    global NUM_STRESS, STRESS_IMAGE
+    NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
+    STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
 
 if __name__ == '__main__':
     set_globals()
