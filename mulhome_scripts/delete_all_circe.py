@@ -27,9 +27,9 @@ def write_file(filename,message):
 def delete_all_circe(app_name):
     """Tear down all CIRCE deployments.
     """
-    
+
     jupiter_config.set_globals()
-    
+
     """
         This loads the task graph
     """
@@ -41,12 +41,10 @@ def delete_all_circe(app_name):
 
     logging.debug('Starting to teardown CIRCE')
     if jupiter_config.BOKEH == 3:
-        latency_file = utilities.prepare_stat_path(node_list,homes,dag)
+        latency_file = utilities.prepare_stat_path(node_list, homes, dag)
         start_time = time.time()
-        msg = 'CIRCE teardownstart %f \n'%(start_time)
-        write_file(latency_file,msg)
-
-
+        msg = 'CIRCE teardownstart %f \n' % (start_time)
+        write_file(latency_file, msg)
 
     """
         This loads the kubernetes instance configuration.
