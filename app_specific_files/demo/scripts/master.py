@@ -120,9 +120,12 @@ def recv_missing_from_decoder_task():
             logging.debug('Transfer the file')
             destination_path = os.path.join('/centralized_scheduler/input',file_name)
             logging.debug(destination_path)
-            next_store_class = store_class_tasks_dict[int(item)]
-            logging.debug(next_store_class)
-            transfer_data_scp(next_store_class,username,password,source_path, destination_path)
+            try:
+                next_store_class = store_class_tasks_dict[int(item)]
+                logging.debug(next_store_class)
+                transfer_data_scp(next_store_class,username,password,source_path, destination_path)
+            except Exception as e:
+                logging.debug('The predicted item is not available in the stored class')
     except Exception as e:
         logging.debug("Bad reception or failed processing in Flask for receiving slow resnet tasks information from decoder task")
         logging.debug(e)

@@ -3,29 +3,34 @@ from flask import jsonify
 from flask import request
 from datetime import datetime
 import json
+import configparser
 
-app = Flask('Server_class1')
-
-@app.route('/log', methods=['GET'])
-def print_log_callback():
-    response = jsonify(log.get())
-    return response
+app = Flask('Global_Server')
 
 # function of job_id response
 @app.route('/post-id', methods=['POST'])
 def request_id():
-    payload = request.get_json()
-    response = str(log.get_id())
-    log.id_update()
+    print('Receive job id request')
+    recv = request.get_json()
+    class_image = recv['class_image']
+    print(class_image)
+    response = str(log[class_image-1].get_id())
+    print(response)
+    log[class_image-1].id_update()
     return json.dumps(response)
-
+    
 # function of dictionary response
 @app.route('/post-dict',methods=['POST'])
 def request_dict():
+    print('Receive job dictionary request')
     recv = request.get_json()
-    response = log.get_dict()
-    log.dict_update(recv['job_id'],recv['filename'])
+    class_image = recv['class_image']
+    print(class_image)
+    response = log[class_image-1].get_dict()
+    print(response)
+    log[class_image-1].dict_update(recv['job_id'],recv['filename'])
     return json.dumps(response)
+
 
 class EventLog(object):
         def __init__(self):
@@ -43,5 +48,17 @@ class EventLog(object):
 
 
 if __name__ == '__main__':
-    log = EventLog()
-    app.run(threaded = True, host = '0.0.0.0') #address
+    global FLASK_DOCKER
+
+    INI_PATH = 'jupiter_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+    FLASK_DOCKER  = int(config['PORT']['FLASK_DOCKER'])
+
+    num_class = 2
+    log = []
+    for i in range(num_class):
+        event = EventLog()
+        log.append(event)
+    app.run(threaded = True, host = '0.0.0.0',port = FLASK_DOCKER) #address
+    # app.run(host = '0.0.0.0',port = FLASK_DOCKER) #address

@@ -4,6 +4,18 @@ import os
 import cv2
 import requests
 import json
+import configparser
+
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+global FLASK_DOCKER, FLASK_SVC
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+
+global global_info_ip
+global_info_ip = os.environ['GLOBAL_IP']
 
 def gen_Lagrange_coeffs(alpha_s,beta_s):
     U = np.zeros((len(alpha_s), len(beta_s)))
@@ -33,6 +45,7 @@ def LCC_encoding(X,N,M):
 
 
 def task(filelist, pathin, pathout):    
+    filelist = [filelist] if isinstance(filelist, str) else filelist  
     snapshot_time = filelist[0].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     hdr = {
@@ -40,19 +53,23 @@ def task(filelist, pathin, pathout):
             'Authorization': None #not using HTTP secure
                                 }
     # message for requesting job_id
-    payload = {'event': 'request id'}
+    # payload = {'event': 'request id'}
+    payload = {'class_image': 1}
     # address of flask server for class1 is 0.0.0.0:5000 and "post-id" is for requesting id
     try:
-        url = "http://0.0.0.0:5000/post-id"
+        # url = "http://0.0.0.0:5000/post-id"
+        url = "http://%s:%s/post-id"%(global_info_ip,str(FLASK_SVC))
         # request job_id
 
         job_id = requests.post(url, headers = hdr, data = json.dumps(payload))
+        print(job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
         job_id = 2
 
     # Parameters
-    L = 10 # Number of images in a data-batch
+    # L = 10 # Number of images in a data-batch
+    L = 2 # Number of images in a data-batch
     M = 2 # Number of data-batches
     N = 3 # Number of workers (encoded data-batches)
     

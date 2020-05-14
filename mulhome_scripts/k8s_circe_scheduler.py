@@ -22,6 +22,23 @@ from pathlib import Path
 
 logging.basicConfig(level = logging.DEBUG)
 
+def get_service_global(app_name):
+    jupiter_config.set_globals()
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
+    api = client.CoreV1Api()
+
+    service_ip_global = None
+    home_name =app_name+"-globalinfohome"
+    try:
+        resp = api.read_namespaced_service(home_name, namespace)
+        service_ip_global = resp.spec.cluster_ip
+    except ApiException as e:
+        logging.debug(e)
+        logging.debug("Exception Occurred")
+
+    return service_ip_global
+
  
 def check_status_circe(dag,app_name):
     """
@@ -121,6 +138,9 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
 
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
+
+    logging.debug('Get the global information service')
+    service_ip_global = get_service_global(app_name)
 
     logging.debug('Starting to deploy CIRCE dispatcher')
     if jupiter_config.BOKEH == 3:
@@ -237,6 +257,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             own_ip = service_ips[task],
             all_node = all_node,
             all_node_ips = all_node_ips,
+            global_ip = service_ip_global,
             flag = str(flag), inputnum = str(inputnum))
         # pprint(dep)
         
