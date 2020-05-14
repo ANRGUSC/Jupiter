@@ -4,9 +4,22 @@ import os
 import cv2
 import requests
 import json
+import configparser
+
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+global FLASK_DOCKER, FLASK_SVC
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+
+global global_info_ip
+global_info_ip = os.environ['HOME_NODE']
 
 
 def task(filelist, pathin, pathout):     
+    filelist = [filelist] if isinstance(filelist, str) else filelist  
     snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[0]
     job_id = job_id[3:]
@@ -17,14 +30,21 @@ def task(filelist, pathin, pathout):
             'Authorization': None 
                                 }
     # the message of requesting dictionary
+    # payload = {
+    #     'job_id': job_id,
+    #     'filename': filelist[0]
+    # }
     payload = {
+        'class_image': 1,
         'job_id': job_id,
         'filename': filelist[0]
     }
     
     # address of flask server for class1 is 0.0.0.0:5000 and "post-dict" is for requesting dictionary 
     try:
-        url = "http://0.0.0.0:5000/post-dict"
+        # url = "http://0.0.0.0:5000/post-dict"
+        url = "http://%s:%s/post-id"%(global_info_ip,FLASK_SVC)
+
         
         # request of dictionary of received results
         job_dict = requests.post(url, headers = hdr,data = json.dumps(payload))

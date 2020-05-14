@@ -30,6 +30,7 @@ def LCC_decoding(f_eval,N,M,worker_idx):
 
 
 def task(filelist, pathin, pathout): 
+    filelist = [filelist] if isinstance(filelist, str) else filelist  
     snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     # Load id of incoming job (id_job=1,2,3,...)

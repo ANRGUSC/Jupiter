@@ -15,6 +15,7 @@ def score (En_Image_Batch, Ref_Images):
 
 
 def task(filelist, pathin, pathout):    
+    filelist = [filelist] if isinstance(filelist, str) else filelist  
     snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     # Load id of incoming job (id_job=1,2,3,...)
@@ -36,7 +37,7 @@ def task(filelist, pathin, pathout):
     
     # Read Reference Images
     filelist_ref = ['schoolbus'+str(i+1)+'_20200507.jpg' for i in range(20,30)]  # to be defined in advance
-    path_ref = './schoolbus' # folder of referenced images
+    path_ref = os.path.join(os.path.dirname(__file__),'schoolbus') # folder of referenced images
     
     for i in range(K):
         img = cv2.imread(os.path.join(path_ref, filelist_ref[i]))

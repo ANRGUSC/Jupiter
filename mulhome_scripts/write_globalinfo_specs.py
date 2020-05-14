@@ -68,16 +68,12 @@ spec:
           value: {appoption}
         - name: SELF_NAME
           value: {self_name}
-        - name: HOME_NODE
-          value: {home_node_ip}
-        - name: ALL_NODES
-          value: {all_nodes}
-        - name: ALL_NODES_IPS
-          value: {all_nodes_ips}
+        - name: SELF_IP
+          value: {self_ip}
       restartPolicy: Always
 """
 
-def write_stream_home_specs(**kwargs):
+def write_globalinfo_home_specs(**kwargs):
     """
     This function genetares the description yaml for CIRCE
      
