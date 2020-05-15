@@ -16,15 +16,23 @@ Since any node can remove bottleneck, how to decide which node to split on?
 Can choose a node that, after above calculation, reduces the bottleneck most (i.e. min new bottleneck)
 """
 
+import heft_dup as hd
+
 class Split:
 
     # NOTE: for now assume this only happens when the bottleneck is a node
-    def get_split_node(self, links, processors, tasks, comp_cost, data, quaratic_profile, btnk_id):
+    def do_split(self, links, processors, tasks, comp_cost, data, quaratic_profile, btnk_id):
         """
         iterate through all the idle nodes, try duplicating all tasks on this node
         calculate the maximum of incurred link and node usage, use it as "cost" of this node
         select an idle node with minimum cost
         """
+        """
+        update node and link usage and task processors
+        a task with more than one processor implies that it is a splitted task
+        this will show up in the task.extra_proc_nums
+        """    
+        # ---------------------------------- part1: find best node and portion ----------------------------------------
         btnk_node = self.get_node_by_id(processors, btnk_id)
         btnk_time = btnk_node.time_line[-1].end
         
@@ -84,15 +92,43 @@ class Split:
                 min_btnk_val = procid_to_max_time[procid]
                 best_node_id = procid
         new_node_portion = float(min_btnk_val) / (float(min_btnk_val) + float(btnk_time))
+        original_node_portion = 1.0 - new_node_portion
+        new_node = self.get_node_by_id(processors, best_node_id)
         
-        return (self.get_node_by_id(processors, best_node_id), new_node_portion)
-    
-    def do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id):
-        """
-        update node and link usage, also task.processors
-        a task with more than one processor implies that it is a splitted task
-        this will show up in the task.extra_proc_nums
-        """    
+        # ---------------------------------- part2: do split ----------------------------------------
+        # for ALL links inbound and outbound to btnk_node, takeup_time *= original_node_portion
+        # same for new node
+        for tid in task_ids_to_dup:
+            tid.extra_proc_nums.append(new_node)
+        for link in links:
+            # if this node is the outbound
+            if link.id.split('_')[0] == str(btnk_node.number):
+                dup_link = self.get_link_by_id(links, str(new_node.num)+'_'+str(link.id.split('_')[1]))
+                for lkdur in link.time_line:
+                    new_lkdur = hd.LinkDuration(lkdur.task1, lkdur.task2, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
+                    lkdur.start *= original_node_portion
+                    lkdur.end *= original_node_portion
+                    dup_link.time_link.append(new_lkdur)
+            elif link.id.split('_')[1] == str(btnk_node.number):
+                dup_link = self.get_link_by_id(links, str(link.id.split('_')[0])+'_'str(new_node.num))
+                for lkdur in link.time_line:
+                    new_lkdur = hd.LinkDuration(lkdur.task1, lkdur.task2, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
+                    lkdur.start *= original_node_portion
+                    lkdur.end *= original_node_portion
+                    dup_link.time_link.append(new_lkdur)
+                    
+        for dur in btnk_node.time_line:
+            new_dur = hd.Duration(dur.task_num, dur.start*new_node_portion, link.end*new_node_portion)
+            dur.start *= original_node_portion
+            dur.end *= original_node_portion
+            new_node.time_link.append(new_dur)
+                
+        return (new_node, new_node_portion)
+        
+    def get_link_by_id(self, links, link_id):
+        for link in links:
+            if link.id == link_id:
+                return link
     
     def get_node_by_id(self, processors, node_id):
         return processors[node_id]

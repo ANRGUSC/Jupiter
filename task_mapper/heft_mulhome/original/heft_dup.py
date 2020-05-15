@@ -292,12 +292,12 @@ class HEFT:
         btnk_id = self.get_btnk_id()
         if is_link(btnk.id):
             pass
-        else:
+        else:   #TODO
             spt = split.Split()
-            new_node, new_node_portion = spt.get_split_node(self.links, self.processors, 
+            new_node, new_node_portion = spt.do_split(self.links, self.processors, 
                 self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
-            spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
-        
+            
+            
     def get_link_by_id(self, link_id):
         for l in self.links:
             if l.id == link_id:
