@@ -30,6 +30,7 @@ from copy import deepcopy
 import numpy as np
 import os
 import time
+import split
 
 class Duration:
     """Time duration about a task
@@ -74,6 +75,7 @@ class Task:
         self.comp_cost = []
         self.avg_comp = 0
         self.parents_numbers = []
+        self.extra_proc_nums = []
 
 class Processor:
     """Processor class represent a processor
@@ -210,6 +212,10 @@ class HEFT:
         # current bottleneck resource id
         cur_bottleneck_resource = ""
         
+        ################################################################################################
+                           # below part implements the core of throughput optimized HEFT
+        ################################################################################################
+        
         for task in self.tasks:
             if task == self.tasks[0]:
                 # no need to consider link when assigning entry task
@@ -279,8 +285,19 @@ class HEFT:
                         ld = LinkDuration(parent.number, task.number, cur_end_time_for_l, 
                           cur_end_time_for_l + link_takeup_time) 
                         l.time_line.append(ld)
-                        
-    #l = self.get_link_by_id(str(parent_processor_number) + '_' + str(processor.number)
+    
+    
+    def run_dup_split(self):
+        # get_split_node(self, links, processors, tasks, comp_cost, data, quaratic_profile, btnk_id):
+        btnk_id = self.get_btnk_id()
+        if is_link(btnk.id):
+            pass
+        else:
+            spt = split.Split()
+            new_node, new_node_portion = spt.get_split_node(self.links, self.processors, 
+                self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
+            spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
+        
     def get_link_by_id(self, link_id):
         for l in self.links:
             if l.id == link_id:
@@ -292,10 +309,10 @@ class HEFT:
                 if self.data[parent.number][task.number] != -1:
                     task.parents_numbers.append(parent.number)
                     
-    
-    def display_result(self):
+    def display_result(self, level):
         """Display scheduling result to console
         """
+        self.print_level(level)
         print("==============================================")
         print("               print task info")
         print("==============================================")
@@ -322,7 +339,7 @@ class HEFT:
         
 
     # output file is input_to_CIRCE
-    def output_file(self,file_path):
+    def output_file(self, file_path):
         """Output scheduling to file
         
         Args:
@@ -345,12 +362,71 @@ class HEFT:
             dict: assignments of tasks and corresponding computing nodes
         """
         assignments = {}
+        
         for p in self.processors:
             for duration in p.time_line:
                 if duration.task_num != -1:
                     assignments[self.task_names[duration.task_num]] = self.node_info[p.number+1]
         return assignments
 
+    def print_level(self, level):
+        """
+        print put info according to level
+        level = 0: tpheft
+        level = 1: tpheft + dup
+        level = 2: tpheft + split
+        level = 3: tpheft + dup + split
+        """
+        if level == 0:
+            print("#############################################################################################")
+            print("                                   result for tpheft")
+            print("#############################################################################################")
+        elif level == 1:
+            print("#############################################################################################")
+            print("                                 result for tpheft + dup")
+            print("#############################################################################################")
+        elif level == 2:
+            print("#############################################################################################")
+            print("                                result for tpheft + split")
+            print("#############################################################################################")
+        elif level == 3:
+            print("#############################################################################################")
+            print("                             result for tpheft + dup + split")
+            print("#############################################################################################")
+        else
+            print("#############################################################################################")
+            print("                               INVALID PRINT LEVEL NUMBER!!!")
+            print("#############################################################################################")
 
-
-
+    def get_btnk_id(self):
+        """
+        given current processor and link usage, return the id of resource with max takeup time 
+        (without considering pipelined wait times)
+        input: an array of links and an array of processors (with takeup time)
+        output: id of bottleneck resource (string)
+        """
+        max_time = 0.0
+        btnk_id = ""
+        for link in self.links:
+            if len(link.time_line) != 0:
+                if link.time_line[-1].end > max_time:
+                    max_time = link.time_line[-1].end
+                    btnk_id = link.id
+                    
+        for processor in self.processors:
+            if len(processor.time_line) != 0:
+                if processor.time_line[-1].end > max_time:
+                    max_time = processor.time_line[-1].end
+                    btnk_id = str(processor.id)
+                    
+        return btnk_id
+        
+    def is_link(self, btnk_id):
+        """
+        return true if the bottleneck id represents a link
+        false if processor
+        """
+        for c in btnk_id:
+            if c == '_':
+                return True
+        return False
