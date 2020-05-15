@@ -15,7 +15,7 @@ FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
 global global_info_ip
-global_info_ip = os.environ['HOME_NODE']
+global_info_ip = os.environ['GLOBAL_IP']
 
 def gen_Lagrange_coeffs(alpha_s,beta_s):
     U = np.zeros((len(alpha_s), len(beta_s)))
@@ -59,9 +59,11 @@ def task(filelist, pathin, pathout):
     try:
         # url = "http://0.0.0.0:5000/post-id"
         url = "http://%s:%s/post-id"%(global_info_ip,str(FLASK_SVC))
+        print(url)
 
         # request job_id
-        job_id = requests.post(url, headers = hdr, data = json.dumps(payload))
+        response = requests.post(url, headers = hdr, data = json.dumps(payload))
+        job_id = response.json()
         print(job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')

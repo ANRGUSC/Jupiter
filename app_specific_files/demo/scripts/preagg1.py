@@ -15,7 +15,7 @@ FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
 global global_info_ip
-global_info_ip = os.environ['HOME_NODE']
+global_info_ip = os.environ['GLOBAL_IP']
 
 
 def task(filelist, pathin, pathout):     
@@ -23,6 +23,7 @@ def task(filelist, pathin, pathout):
     snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[0]
     job_id = job_id[3:]
+    # job_id = int(job_id)
     
     
     hdr = {
@@ -43,11 +44,12 @@ def task(filelist, pathin, pathout):
     # address of flask server for class1 is 0.0.0.0:5000 and "post-dict" is for requesting dictionary 
     try:
         # url = "http://0.0.0.0:5000/post-dict"
-        url = "http://%s:%s/post-id"%(global_info_ip,FLASK_SVC)
-
-        
+        url = "http://%s:%s/post-dict"%(global_info_ip,str(FLASK_SVC))
+        print(url)
         # request of dictionary of received results
-        job_dict = requests.post(url, headers = hdr,data = json.dumps(payload))
+        response =  requests.post(url, headers = hdr,data = json.dumps(payload))
+        job_dict = response.json()
+        print(job_dict)
     except Exception as e:
         print('Possibly running on the execution profiler')
         # job_dict = {'1':['score1a_preagg1_job1_20200424.csv', 'score1b_preagg1_job1_20200424.csv']}
