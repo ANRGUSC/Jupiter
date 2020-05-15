@@ -13,10 +13,11 @@ def request_id():
     print('Receive job id request')
     recv = request.get_json()
     class_image = recv['class_image']
-    print(class_image)
     response = str(log[class_image-1].get_id())
     print(response)
     log[class_image-1].id_update()
+    print(log[class_image-1].id)
+    print(log[class_image-1].job_dict)
     return json.dumps(response)
     
 # function of dictionary response
@@ -24,11 +25,13 @@ def request_id():
 def request_dict():
     print('Receive job dictionary request')
     recv = request.get_json()
+    print(recv['job_id'])
+    print(recv['filename'])
     class_image = recv['class_image']
-    print(class_image)
+    log[class_image-1].dict_update(recv['job_id'],recv['filename'])
+    print(log[class_image-1])
     response = log[class_image-1].get_dict()
     print(response)
-    log[class_image-1].dict_update(recv['job_id'],recv['filename'])
     return json.dumps(response)
 
 

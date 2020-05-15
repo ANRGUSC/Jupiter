@@ -59,10 +59,12 @@ def task(filelist, pathin, pathout):
     try:
         # url = "http://0.0.0.0:5000/post-id"
         url = "http://%s:%s/post-id"%(global_info_ip,str(FLASK_SVC))
+        print(url)
         # request job_id
 
-        job_id = requests.post(url, headers = hdr, data = json.dumps(payload))
-        print(job_id)
+        response = requests.post(url, headers = hdr, data = json.dumps(payload))
+        job_id = response.json()
+        printprint(job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
         job_id = 2
