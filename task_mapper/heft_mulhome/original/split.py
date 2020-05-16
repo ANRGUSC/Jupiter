@@ -36,6 +36,7 @@ class Split:
         # ---------------------------------- part1: find best node and portion ----------------------------------------
         btnk_node = self.get_node_by_id(processors, btnk_id)
         btnk_time = btnk_node.time_line[-1].end
+        print("current bottleneck number  " + str(btnk_node.number))
         
         # get all link usage related to this node, including all parent and child node links with this node
         # {parent nodes ids -> list of file transfer size to this node from parents}
@@ -95,6 +96,7 @@ class Split:
             if procid_to_max_time[procid] < min_btnk_val:
                 min_btnk_val = procid_to_max_time[procid]
                 best_node_id = procid
+        print("replicate btnk node on  " + str(best_node_id))
         # here we need to cover both cases: current btnk node is an intact node, or an alrealy splitted node
         # the portion here refers to the global portion of the original task
         # i.e. if cur btnk node portion is 0.5, then new split can result in 0.25, 0.25
