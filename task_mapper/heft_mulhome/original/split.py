@@ -123,14 +123,14 @@ class Split:
             if link.id.split('_')[0] == str(btnk_node.number):
                 dup_link = self.get_link_by_id(links, str(new_node.number)+'_'+str(link.id.split('_')[1]))
                 for lkdur in link.time_line:
-                    new_lkdur = hd.LinkDuration(lkdur.task1, lkdur.task2, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
+                    new_lkdur = hd.LinkDuration(lkdur.start_task_num, lkdur.end_task_num, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
                     lkdur.start *= original_node_portion
                     lkdur.end *= original_node_portion
                     dup_link.time_link.append(new_lkdur)
             elif link.id.split('_')[1] == str(btnk_node.number):
                 dup_link = self.get_link_by_id(links, str(link.id.split('_')[0])+'_'+str(new_node.number))
                 for lkdur in link.time_line:
-                    new_lkdur = hd.LinkDuration(lkdur.task1, lkdur.task2, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
+                    new_lkdur = hd.LinkDuration(lkdur.start_task_num, lkdur.end_task_num, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
                     lkdur.start *= original_node_portion
                     lkdur.end *= original_node_portion
                     dup_link.time_link.append(new_lkdur)
