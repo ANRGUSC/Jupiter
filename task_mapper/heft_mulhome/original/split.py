@@ -17,6 +17,7 @@ Can choose a node that, after above calculation, reduces the bottleneck most (i.
 """
 
 import heft_dup as hd
+import numpy as np
 
 class Split:
 
