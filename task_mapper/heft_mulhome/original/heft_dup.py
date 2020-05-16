@@ -75,7 +75,9 @@ class Task:
         self.comp_cost = []
         self.avg_comp = 0
         self.parents_numbers = []
-        self.extra_proc_nums = []
+        # a map from all the processors where this task is assigned (split), to the task's portion on the processor
+        # if no split (only original processor), this field is left empty
+        self.proc_num_to_portion = {}
 
 class Processor:
     """Processor class represent a processor
@@ -287,16 +289,16 @@ class HEFT:
                         l.time_line.append(ld)
     
     
-    def run_dup_split(self):
-        # get_split_node(self, links, processors, tasks, comp_cost, data, quaratic_profile, btnk_id):
-        btnk_id = self.get_btnk_id()
-        if is_link(btnk.id):
-            pass
-        else:   #TODO
-            spt = split.Split()
-            new_node, new_node_portion = spt.do_split(self.links, self.processors, 
-                self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
-            
+    def run_dup_split(self):     
+        while True:
+            btnk_id = self.get_btnk_id()
+            if is_link(btnk.id):
+                break
+            else:   #TODO
+                spt = split.Split()
+                flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
+                if flag == False:
+                    break
             
     def get_link_by_id(self, link_id):
         for l in self.links:
@@ -347,26 +349,39 @@ class HEFT:
         """
         output = open(file_path,"a")
         num = len(self.data)
-        for p in self.processors:
-            for duration in p.time_line:
-                if duration.task_num != -1:
-                    output.write(self.task_names[duration.task_num] + " " + self.node_info[p.number+1])
-                    output.write('\n')
-
+        
+        for task in self.tasks:
+            if len(task.proc_num_to_portion) == 0:
+                output.write(self.task_names[task.number]] + " " = self.node_info[task.processor_num+1] + "\n")
+            else:
+                task_name = self.task_names[task.number]
+                output.write(task_name + "   ")
+                for key, val in task.proc_num_to_portion:
+                    output.write(self.node_info[key+1] + "," + val + " ")
+                output.write('\n')
         output.close()
 
     def output_assignments(self):
         """Output the scheduling and corresponding assignments to ``assignments`` dictionary
         
         Returns:
-            dict: assignments of tasks and corresponding computing nodes
+            dict: assignments of tasks and corresponding computing nodes & portion
         """
+        # eg a['task0'] = ['node1', 0.5, 'node2', 0.5], a['task1'] = 'node1'
+        # if task wasn't split, value is a string specifying the node
+        # else, value is a list, [node, portion, node, portion, etc]
         assignments = {}
         
-        for p in self.processors:
-            for duration in p.time_line:
-                if duration.task_num != -1:
-                    assignments[self.task_names[duration.task_num]] = self.node_info[p.number+1]
+        for task in self.tasks:
+            if len(task.proc_num_to_portion) == 0:
+                assignments[self.task_names[task.number]] = self.node_info[task.processor_num+1]
+            else:
+                task_name = self.task_names[task.number]
+                assignments[task_name] = []
+                for key, val in task.proc_num_to_portion:
+                    assignments[task_name].append(self.node_info[key+1])
+                    assignments[task_name].append(val)
+                    
         return assignments
 
     def print_level(self, level):

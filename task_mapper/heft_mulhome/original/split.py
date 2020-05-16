@@ -83,7 +83,10 @@ class Split:
             for tid in task_ids_to_dup:
                 comp_time += comp_cost[proc.number][tid]
             procid_to_max_time[proc.number] = max(comp_cost, max_comm_cost)
-            
+        
+        if len(procid_to_max_time) == 0:
+            return False    
+        
         # pick a node that minimizes the max extra cost incurred
         best_node_id = -1
         min_btnk_val = time.time() # infinity time value
@@ -91,6 +94,14 @@ class Split:
             if procid_to_max_time[procid] < min_btnk_val:
                 min_btnk_val = procid_to_max_time[procid]
                 best_node_id = procid
+        # here we need to cover both cases: current btnk node is an intact node, or an alrealy splitted node
+        # the portion here refers to the global portion of the original task
+        # i.e. if cur btnk node portion is 0.5, then new split can result in 0.25, 0.25
+        cur_portion = 1.0
+        rand_task = tasks[btnk_node.time_line[0].task_num]
+        if len(rand_task.proc_num_to_portion) > 0: 
+            cur_portion = rand_task.proc_num_to_portion[btnk_node.number]
+        
         new_node_portion = float(min_btnk_val) / (float(min_btnk_val) + float(btnk_time))
         original_node_portion = 1.0 - new_node_portion
         new_node = self.get_node_by_id(processors, best_node_id)
@@ -98,8 +109,7 @@ class Split:
         # ---------------------------------- part2: do split ----------------------------------------
         # for ALL links inbound and outbound to btnk_node, takeup_time *= original_node_portion
         # same for new node
-        for tid in task_ids_to_dup:
-            tid.extra_proc_nums.append(new_node)
+        # NOTE: the bottleneck node could be one that's already a split version 
         for link in links:
             # if this node is the outbound
             if link.id.split('_')[0] == str(btnk_node.number):
@@ -122,8 +132,12 @@ class Split:
             dur.start *= original_node_portion
             dur.end *= original_node_portion
             new_node.time_link.append(new_dur)
-                
-        return (new_node, new_node_portion)
+        
+        for tid in task_ids_to_dup:
+            tid.proc_num_to_portion[btnk_node] = cur_portion * original_node_portion
+            tid.proc_num_to_portion[new_node] = cur_portion * new_node_portion
+        
+        return True
         
     def get_link_by_id(self, links, link_id):
         for link in links:
