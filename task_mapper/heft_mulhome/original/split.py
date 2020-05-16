@@ -47,14 +47,14 @@ class Split:
         
         for tid in task_ids_to_dup:
             for pn in tasks[tid].parents_numbers:
-                proc_num = self.get_node_by_id(processors, pn).processor_num
+                proc_num = self.get_node_by_id(processors, pn).number
                 if not proc_num in parent_nodes_files:
                     parent_nodes_files[proc_num] = []
                 parent_nodes_files[proc_num].append(data[pn][tid])
         for tid in task_ids_to_dup:
             for child_id in range(len(tasks)):
                 if data[tid][child_id] > 0:
-                    proc_num = self.get_node_by_id(processors, child_id).processor_num
+                    proc_num = self.get_node_by_id(processors, child_id).number
                     if not proc_num in child_node_files:
                         child_nodes_files[proc_num] = []
                     child_nodes_files[proc_num].append(data[tid][child_id])
