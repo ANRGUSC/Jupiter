@@ -236,9 +236,7 @@ class Duplication:
                 return link
     
     def get_proc_by_id(self, processors, proc_id):
-        for proc in processors:
-            if proc.number == proc_id:
-                return proc
+        return processors[proc_id]
                 
     def get_procs_by_tasks(self, processors):
         task_to_proc = {}
