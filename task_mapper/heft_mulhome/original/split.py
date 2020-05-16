@@ -139,7 +139,7 @@ class Split:
             new_dur = hd.Duration(dur.task_num, dur.start*new_node_portion, dur.end*new_node_portion)
             dur.start *= original_node_portion
             dur.end *= original_node_portion
-            new_node.time_link.append(new_dur)
+            new_node.time_line.append(new_dur)
         
         for tid in task_ids_to_dup:
             tid.proc_num_to_portion[btnk_node] = cur_portion * original_node_portion
