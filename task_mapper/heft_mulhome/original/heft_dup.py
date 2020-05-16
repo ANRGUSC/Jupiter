@@ -106,13 +106,13 @@ class HEFT:
         """
         NODE_NAMES = os.environ["NODE_NAMES"]
         self.node_info = NODE_NAMES.split(":")
-        self.num_task, self.task_names, self.num_processor, comp_cost, self.rate, self.data,self.quaratic_profile = init(filename)
+        self.num_task, self.task_names, self.num_processor, self.comp_cost, self.rate, self.data,self.quaratic_profile = init(filename)
         '''
         example output in a 3-node DAG:
         self.num_task: 4 
         self.task_names: ['task0', 'task1', 'task2', 'task3']
         self.num_processor: 2
-        comp_cost: [[50, 50], [20, 20], [10, 10], [30, 30]]
+        self.comp_cost: [[50, 50], [20, 20], [10, 10], [30, 30]]
         self.rate: [[0, 1], [1, 0]]
         self.data: [[-1, 67108, 67108, -1], [-1, -1, -1, 67108], [-1, -1, -1, 67108], [-1, -1, -1, -1]]
         self.quaratic_profile: [[(0, 0, 0), (0.0002541701921502464, -2.2216230193642272, 1777.3867073476163)], [(-4.191647173339474e-07, 0.050132222312572056, 236.0932576449177), (0, 0, 0)]]
@@ -132,7 +132,7 @@ class HEFT:
                 self.links.append(Link(i, j))
         
         for i in range(self.num_task):
-            self.tasks[i].comp_cost = comp_cost[i]
+            self.tasks[i].comp_cost = self.comp_cost[i]
 
         for task in self.tasks:
             task.avg_comp = sum(task.comp_cost) / self.num_processor
