@@ -106,13 +106,13 @@ class HEFT:
         """
         NODE_NAMES = os.environ["NODE_NAMES"]
         self.node_info = NODE_NAMES.split(":")
-        self.num_task, self.task_names, self.num_processor, comp_cost, self.rate, self.data,self.quaratic_profile = init(filename)
+        self.num_task, self.task_names, self.num_processor, self.comp_cost, self.rate, self.data,self.quaratic_profile = init(filename)
         '''
         example output in a 3-node DAG:
         self.num_task: 4 
         self.task_names: ['task0', 'task1', 'task2', 'task3']
         self.num_processor: 2
-        comp_cost: [[50, 50], [20, 20], [10, 10], [30, 30]]
+        self.comp_cost: [[50, 50], [20, 20], [10, 10], [30, 30]]
         self.rate: [[0, 1], [1, 0]]
         self.data: [[-1, 67108, 67108, -1], [-1, -1, -1, 67108], [-1, -1, -1, 67108], [-1, -1, -1, -1]]
         self.quaratic_profile: [[(0, 0, 0), (0.0002541701921502464, -2.2216230193642272, 1777.3867073476163)], [(-4.191647173339474e-07, 0.050132222312572056, 236.0932576449177), (0, 0, 0)]]
@@ -132,7 +132,7 @@ class HEFT:
                 self.links.append(Link(i, j))
         
         for i in range(self.num_task):
-            self.tasks[i].comp_cost = comp_cost[i]
+            self.tasks[i].comp_cost = self.comp_cost[i]
 
         for task in self.tasks:
             task.avg_comp = sum(task.comp_cost) / self.num_processor
@@ -193,13 +193,13 @@ class HEFT:
                 res += self.cal_comm_quadratic(self.data[task1.number][task2.number],self.quaratic_profile[i][j])
         if(res < 0):
             print("got negative communication cost from network profiler, something wrong with DRUPE")
-            print(self.task_names[task1.number], self.task_names[task2.number])
-            for i in range(self.num_processor):
-                for j in range(self.num_processor):
-                    if i==j: continue
-                    print(i, j)
-                    print(self.cal_comm_quadratic(self.data[task1.number][task2.number],self.quaratic_profile[i][j]))
-            exit()
+            #print(self.task_names[task1.number], self.task_names[task2.number])
+            #for i in range(self.num_processor):
+            #    for j in range(self.num_processor):
+            #        if i==j: continue
+            #        print(i, j)
+            #        print(self.cal_comm_quadratic(self.data[task1.number][task2.number],self.quaratic_profile[i][j]))
+            #exit()
         return res / (self.num_processor ** 2 - self.num_processor)
 
 
@@ -292,9 +292,9 @@ class HEFT:
     def run_dup_split(self):     
         while True:
             btnk_id = self.get_btnk_id()
-            if is_link(btnk.id):
+            if self.is_link(btnk_id):
                 break
-            else:   #TODO
+            else:
                 spt = split.Split()
                 flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
                 if flag == False:
@@ -352,7 +352,7 @@ class HEFT:
         
         for task in self.tasks:
             if len(task.proc_num_to_portion) == 0:
-                output.write(self.task_names[task.number]] + " " = self.node_info[task.processor_num+1] + "\n")
+                output.write(self.task_names[task.number] + " " + self.node_info[task.processor_num+1] + "\n")
             else:
                 task_name = self.task_names[task.number]
                 output.write(task_name + "   ")
@@ -408,7 +408,7 @@ class HEFT:
             print("#############################################################################################")
             print("                             result for tpheft + dup + split")
             print("#############################################################################################")
-        else
+        else:
             print("#############################################################################################")
             print("                               INVALID PRINT LEVEL NUMBER!!!")
             print("#############################################################################################")
@@ -432,7 +432,7 @@ class HEFT:
             if len(processor.time_line) != 0:
                 if processor.time_line[-1].end > max_time:
                     max_time = processor.time_line[-1].end
-                    btnk_id = str(processor.id)
+                    btnk_id = str(processor.number)
                     
         return btnk_id
         

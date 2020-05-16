@@ -17,6 +17,7 @@ Can choose a node that, after above calculation, reduces the bottleneck most (i.
 """
 
 import heft_dup as hd
+import numpy as np
 
 class Split:
 
@@ -42,25 +43,25 @@ class Split:
         # {child nodes ids -> list of file transfer size to child from this node}
         child_nodes_files = {}
         task_ids_to_dup = [] # tasks on this node
-        for dur in btnk_node:
+        for dur in btnk_node.time_line:
             task_ids_to_dup.append(dur.task_num)
         
         for tid in task_ids_to_dup:
             for pn in tasks[tid].parents_numbers:
-                proc_num = self.get_node_by_id(processors, pn).processor_num
+                proc_num = self.get_node_by_id(processors, pn).number
                 if not proc_num in parent_nodes_files:
                     parent_nodes_files[proc_num] = []
                 parent_nodes_files[proc_num].append(data[pn][tid])
         for tid in task_ids_to_dup:
             for child_id in range(len(tasks)):
                 if data[tid][child_id] > 0:
-                    proc_num = self.get_node_by_id(processors, child_id).processor_num
+                    proc_num = self.get_node_by_id(processors, child_id).number
                     if not proc_num in child_node_files:
                         child_nodes_files[proc_num] = []
                     child_nodes_files[proc_num].append(data[tid][child_id])
                     
         procid_to_max_time = {}
-        for proc in self.processors:
+        for proc in processors:
             # only pick idle nodes
             if len(proc.time_line) > 0:
                 continue
@@ -81,7 +82,7 @@ class Split:
             max_comm_cost = max(max_comm_time, max(child_nodes_files.values()))
             comp_cost = 0.0
             for tid in task_ids_to_dup:
-                comp_time += comp_cost[proc.number][tid]
+                comp_cost += comp_cost[proc.number][tid]
             procid_to_max_time[proc.number] = max(comp_cost, max_comm_cost)
         
         if len(procid_to_max_time) == 0:
@@ -120,7 +121,7 @@ class Split:
                     lkdur.end *= original_node_portion
                     dup_link.time_link.append(new_lkdur)
             elif link.id.split('_')[1] == str(btnk_node.number):
-                dup_link = self.get_link_by_id(links, str(link.id.split('_')[0])+'_'str(new_node.num))
+                dup_link = self.get_link_by_id(links, str(link.id.split('_')[0])+'_'+str(new_node.num))
                 for lkdur in link.time_line:
                     new_lkdur = hd.LinkDuration(lkdur.task1, lkdur.task2, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
                     lkdur.start *= original_node_portion
@@ -128,7 +129,7 @@ class Split:
                     dup_link.time_link.append(new_lkdur)
                     
         for dur in btnk_node.time_line:
-            new_dur = hd.Duration(dur.task_num, dur.start*new_node_portion, link.end*new_node_portion)
+            new_dur = hd.Duration(dur.task_num, dur.start*new_node_portion, dur.end*new_node_portion)
             dur.start *= original_node_portion
             dur.end *= original_node_portion
             new_node.time_link.append(new_dur)
@@ -145,7 +146,7 @@ class Split:
                 return link
     
     def get_node_by_id(self, processors, node_id):
-        return processors[node_id]
+        return processors[int(node_id)]
         
     def cal_comm_quadratic(self, file_size, quaratic_profile):
         return (np.square(file_size)*quaratic_profile[0] + file_size*quaratic_profile[1] + quaratic_profile[2]) 
