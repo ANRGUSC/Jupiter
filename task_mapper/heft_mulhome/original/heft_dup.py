@@ -294,7 +294,7 @@ class HEFT:
             btnk_id = self.get_btnk_id()
             if self.is_link(btnk.id):
                 break
-            else:   #TODO
+            else:
                 spt = split.Split()
                 flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
                 if flag == False:
