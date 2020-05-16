@@ -79,7 +79,7 @@ class Split:
                 for file_size in child_nodes_files[cnid]:
                     new_transfer_times[cnid] += self.cal_comm_quadratic(file_size, quaratic_profile[proc.number][cnid])
             max_comm_cost = max(parent_nodes_files.values())
-            max_comm_cost = max(max_comm_time, max(child_nodes_files.values()))
+            max_comm_cost = max(max_comm_cost, max(child_nodes_files.values()))
             comp_cost = 0.0
             for tid in task_ids_to_dup:
                 comp_cost += comp_cost[proc.number][tid]
