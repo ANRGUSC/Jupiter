@@ -82,10 +82,9 @@ class Split:
                     new_transfer_times[cnid] += self.cal_comm_quadratic(file_size, quaratic_profile[proc.number][cnid])
             # edge case: task to split has no parent or has no child
             max_comm_cost = 0
-            if len(parent_nodes_files) > 0:
-                max_comm_cost = max(max_comm_cost, max(parent_nodes_files.values()))
-            if len(child_nodes_files) > 0:
-                max_comm_cost = max(max_comm_cost, max(child_nodes_files.values()))
+            if len(new_transfer_times) > 0:
+                max_comm_cost = max(max_comm_cost, max(new_transfer_times.values()))
+
             max_comp_cost = 0.0
             for tid in task_ids_to_dup:
                 max_comp_cost += comp_cost[tid][proc.number]
