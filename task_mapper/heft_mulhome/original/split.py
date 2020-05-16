@@ -82,7 +82,7 @@ class Split:
             # edge case: task to split has no parent or has no child
             max_comm_cost = 0
             if len(parent_nodes_files) > 0:
-                max_comm_cost = max(max_comm-cost, max(parent_nodes_files.values()))
+                max_comm_cost = max(max_comm_cost, max(parent_nodes_files.values()))
             if len(child_nodes_files) > 0:
                 max_comm_cost = max(max_comm_cost, max(child_nodes_files.values()))
             comp_cost = 0.0
