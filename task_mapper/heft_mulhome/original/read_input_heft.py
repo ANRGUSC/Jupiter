@@ -60,7 +60,9 @@ def get_global_info():
     profiler_ip = os.environ['PROFILERS'].split(' ')
     profiler_ip = [info.split(":") for info in profiler_ip]
     exec_home_ip = os.environ['EXECUTION_HOME_IP']
-    num_nodes = len(profiler_ip)
+    print(profiler_ip)
+    # num_nodes = len(profiler_ip)
+    num_nodes = int(os.environ['NUM_NODES'])
     node_list = [info[0] for info in profiler_ip]
     node_IP = [info[1] for info in profiler_ip]
     network_map = dict(zip(node_IP, node_list))
@@ -89,9 +91,10 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
             logging.debug('Error connection')
             time.sleep(60)
 
-    while num_profilers < (num_nodes+1):
+    while num_profilers < num_nodes:
         try:
             collection = db.collection_names(include_system_collections=False)
+            print(collection)
             num_profilers = len(collection)
             logging.debug('Current number of updated execution profilers:')
             logging.debug(num_profilers)

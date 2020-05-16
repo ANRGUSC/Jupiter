@@ -19,25 +19,10 @@ import utilities
 from kubernetes.client.rest import ApiException
 import logging
 from pathlib import Path
+import k8s_get_service_ips 
+from k8s_sink_scheduler import *
 
 logging.basicConfig(level = logging.DEBUG)
-
-def get_service_global(app_name):
-    jupiter_config.set_globals()
-    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
-    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
-    api = client.CoreV1Api()
-
-    service_ip_global = None
-    home_name =app_name+"-globalinfohome"
-    try:
-        resp = api.read_namespaced_service(home_name, namespace)
-        service_ip_global = resp.spec.cluster_ip
-    except ApiException as e:
-        logging.debug(e)
-        logging.debug("Exception Occurred")
-
-    return service_ip_global
 
  
 def check_status_circe(dag,app_name):
@@ -127,6 +112,9 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     k8s_apps_v1 = client.AppsV1Api()
 
     #get DAG and home machine info
+    logging.debug('Input of CIRCE')
+    logging.debug(dag_info)
+    logging.debug(temp_info)
     first_task = dag_info[0]
     dag = dag_info[1]
     hosts = temp_info[2]
@@ -140,7 +128,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
 
     logging.debug('Get the global information service')
-    service_ip_global = get_service_global(app_name)
+    service_ip_global = k8s_get_service_ips.get_service_global(app_name)
 
     logging.debug('Starting to deploy CIRCE dispatcher')
     if jupiter_config.BOKEH == 3:
@@ -167,9 +155,11 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
         logging.debug("Exception Occurred")
         
 
-
-    
-    # logging.debug(resp.spec.cluster_ip)
+    service_ips_sinks = k8s_sink_scheduler(app_name,service_ips['home'])
+    logging.debug('Data sinks')
+    logging.debug(service_ips_sinks)
+    all_sinks = ' '.join(service_ips_sinks.keys())
+    all_sinks_ips = ' '.join(service_ips_sinks.values())
 
     """
         Iterate through the list of tasks and run the related k8 deployment, replicaset, pod, and service on the respective node.
@@ -258,7 +248,9 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             all_node = all_node,
             all_node_ips = all_node_ips,
             global_ip = service_ip_global,
-            flag = str(flag), inputnum = str(inputnum))
+            flag = str(flag), inputnum = str(inputnum),
+            all_sinks = all_sinks,
+            all_sinks_ips = all_sinks_ips)
         # pprint(dep)
         
 

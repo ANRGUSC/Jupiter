@@ -60,12 +60,8 @@ spec:
         - containerPort: {ssh_port}
         - containerPort: {flask_port}
         env:
-        - name: CHILD_NODES
-          value: {child}
-        - name: CHILD_NODES_IPS
-          value: {child_ips}
         - name: TASK
-          value: datasource
+          value: datasink
         - name: APPNAME
           value: {appname}
         - name: APPOPTION
@@ -74,14 +70,10 @@ spec:
           value: {self_name}
         - name: HOME_NODE
           value: {home_node_ip}
-        - name: ALL_NODES
-          value: {all_nodes}
-        - name: ALL_NODES_IPS
-          value: {all_nodes_ips}
       restartPolicy: Always
 """
 
-def write_stream_home_specs(**kwargs):
+def write_sink_home_specs(**kwargs):
     """
     This function genetares the description yaml for CIRCE
      

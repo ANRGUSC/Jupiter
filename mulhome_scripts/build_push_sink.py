@@ -32,8 +32,8 @@ def prepare_global_info():
 
     return port_list_home
     
-def build_push_sink():
-    """Build sinker home image from Docker files and push them to the Dockerhub.
+def build_push_SINK():
+    """Build SINKer home image from Docker files and push them to the Dockerhub.
     """
 
     port_list_home = prepare_global_info()
@@ -53,4 +53,4 @@ def build_push_sink():
 
     # os.system("rm *.Dockerfile")
 if __name__ == '__main__':
-    build_push_sink()
+    build_push_SINK()

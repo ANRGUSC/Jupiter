@@ -22,7 +22,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 
 # Add the task speficific configuration files
-ADD app_specific_files/demo/configuration.txt /configuration.txt
+ADD app_specific_files/dummy_app/configuration.txt /configuration.txt
 
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini

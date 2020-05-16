@@ -10,8 +10,6 @@ import jupiter_config
 import configparser
 
 
-
-
 def add_app_specific_ports(dep):
   """Add information of specific ports for the application
   
@@ -63,7 +61,7 @@ spec:
     app: {name}
 """
 
-def write_stream_service_specs(**kwargs):
+def write_sink_service_specs(**kwargs):
     """
     This function genetares the service description yaml for CIRCE
     

@@ -154,6 +154,10 @@ spec:
           value: "{inputnum}"
         - name: GLOBAL_IP
           value: {global_ip}
+        - name: ALL_SINKS
+          value: {all_sinks}
+        - name: ALL_SINKS_IPS
+          value: {all_sinks_ips}  
       nodeSelector:
         kubernetes.io/hostname: {host}
       restartPolicy: Always

@@ -85,7 +85,8 @@ def get_taskmap():
         if data[0] not in task_order:
             task_order.append(data[0])
         for i in range(3, len(data)):
-            if  data[i] != 'home' and task_map[data[i]][1] == True :
+            if  (not data[i].startswith('home')) and (not data[i].startswith('datasink')) and task_map[data[i]][1] == True :
+            # if  data[i] != 'home' and task_map[data[i]][1] == True :
                 tasks[data[0]].append(data[i])
     logging.debug("tasks: %s", tasks)
     logging.debug("task order %s", task_order) #task_list

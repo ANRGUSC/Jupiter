@@ -28,6 +28,8 @@ from delete_all_waves import *
 from delete_all_heft import *
 from delete_all_exec import *
 from delete_all_profilers import *
+from delete_all_globalinfo import *
+from delete_all_sink import *
 
 from flask import Flask, request
 import datetime
@@ -66,6 +68,9 @@ def teardown_system(app_name):
     else:
         logging.debug('Tear down all current Pricing CIRCE deployments')
         delete_all_pricing_circe(app_name)
+
+    delete_all_sink(app_name)
+
     if scheduler == 0 or scheduler==3: # HEFT
         logging.debug('Tear down all current HEFT deployments')
         delete_all_heft(app_name)
