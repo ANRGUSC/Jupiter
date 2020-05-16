@@ -93,7 +93,8 @@ class Split:
         
         if len(procid_to_max_time) == 0:
             return False    
-        
+        print("procid to max time in split")
+        print(procid_to_max_time)
         # pick a node that minimizes the max extra cost incurred
         best_node_id = -1
         min_btnk_val = time.time() # infinity time value
