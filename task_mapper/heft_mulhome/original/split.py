@@ -142,8 +142,8 @@ class Split:
             new_node.time_line.append(new_dur)
         
         for tid in task_ids_to_dup:
-            tid.proc_num_to_portion[btnk_node] = cur_portion * original_node_portion
-            tid.proc_num_to_portion[new_node] = cur_portion * new_node_portion
+            tasks[tid].proc_num_to_portion[btnk_node.number] = cur_portion * original_node_portion
+            tasks[tid].proc_num_to_portion[new_node.number] = cur_portion * new_node_portion
         
         return True
         
