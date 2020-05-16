@@ -352,7 +352,7 @@ class HEFT:
         
         for task in self.tasks:
             if len(task.proc_num_to_portion) == 0:
-                output.write(self.task_names[task.number]] + " " = self.node_info[task.processor_num+1] + "\n")
+                output.write(self.task_names[task.number] + " " + self.node_info[task.processor_num+1] + "\n")
             else:
                 task_name = self.task_names[task.number]
                 output.write(task_name + "   ")
