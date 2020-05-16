@@ -53,16 +53,7 @@ import numpy as np
 import heft_dup as hd
 
 class Duplication:
-'''
-    def __init__(self, links, processors, tasks, comp_cost, data, quaratic_profile, btnk_id):
-        self.links = links
-        self.processors = processors
-        self.btnk_id = btnk_id
-        self.tasks = tasks
-        self.comp_cost = comp_cost
-        self.data = data
-        self.quaratic_profile = quaratic_profile
-'''
+
     def get_dup_node(self, links, processors, tasks, comp_cost, data, quaratic_profile, btnk_id):
         """
         input: links and nodes, and the bottleneck link to bypass

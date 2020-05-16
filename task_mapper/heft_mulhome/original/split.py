@@ -81,7 +81,7 @@ class Split:
             max_comm_cost = max(max_comm_time, max(child_nodes_files.values()))
             comp_cost = 0.0
             for tid in task_ids_to_dup:
-                comp_time += comp_cost[proc.number][tid]
+                comp_cost += comp_cost[proc.number][tid]
             procid_to_max_time[proc.number] = max(comp_cost, max_comm_cost)
         
         if len(procid_to_max_time) == 0:
@@ -120,7 +120,7 @@ class Split:
                     lkdur.end *= original_node_portion
                     dup_link.time_link.append(new_lkdur)
             elif link.id.split('_')[1] == str(btnk_node.number):
-                dup_link = self.get_link_by_id(links, str(link.id.split('_')[0])+'_'str(new_node.num))
+                dup_link = self.get_link_by_id(links, str(link.id.split('_')[0])+'_'+str(new_node.num))
                 for lkdur in link.time_line:
                     new_lkdur = hd.LinkDuration(lkdur.task1, lkdur.task2, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
                     lkdur.start *= original_node_portion
@@ -128,7 +128,7 @@ class Split:
                     dup_link.time_link.append(new_lkdur)
                     
         for dur in btnk_node.time_line:
-            new_dur = hd.Duration(dur.task_num, dur.start*new_node_portion, link.end*new_node_portion)
+            new_dur = hd.Duration(dur.task_num, dur.start*new_node_portion, dur.end*new_node_portion)
             dur.start *= original_node_portion
             dur.end *= original_node_portion
             new_node.time_link.append(new_dur)
