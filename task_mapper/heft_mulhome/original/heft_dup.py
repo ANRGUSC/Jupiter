@@ -432,7 +432,7 @@ class HEFT:
             if len(processor.time_line) != 0:
                 if processor.time_line[-1].end > max_time:
                     max_time = processor.time_line[-1].end
-                    btnk_id = str(processor.id)
+                    btnk_id = str(processor.number)
                     
         return btnk_id
         
