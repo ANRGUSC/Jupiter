@@ -199,7 +199,7 @@ class HEFT:
                     if i==j: continue
                     print(i, j)
                     print(self.cal_comm_quadratic(self.data[task1.number][task2.number],self.quaratic_profile[i][j]))
-            exit()
+            #exit()
         return res / (self.num_processor ** 2 - self.num_processor)
 
 
