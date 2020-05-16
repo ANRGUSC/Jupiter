@@ -85,10 +85,10 @@ class Split:
                 max_comm_cost = max(max_comm_cost, max(parent_nodes_files.values()))
             if len(child_nodes_files) > 0:
                 max_comm_cost = max(max_comm_cost, max(child_nodes_files.values()))
-            comp_cost = 0.0
+            max_comp_cost = 0.0
             for tid in task_ids_to_dup:
-                comp_cost += comp_cost[proc.number][tid]
-            procid_to_max_time[proc.number] = max(comp_cost, max_comm_cost)
+                max_comp_cost += comp_cost[proc.number][tid]
+            procid_to_max_time[proc.number] = max(max_comp_cost, max_comm_cost)
         
         if len(procid_to_max_time) == 0:
             return False    
