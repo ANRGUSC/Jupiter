@@ -117,7 +117,8 @@ def get_taskmap():
         if data[0] not in task_order:
             task_order.append(data[0])
         for i in range(3, len(data)):
-            if  data[i] != 'home' and task_map[data[i]][1] == True :
+            # if  data[i] != 'home' and task_map[data[i]][1] == True :
+            if  (not data[i].startswith('home')) and (not data[i].startswith('datasink')) and task_map[data[i]][1] == True :
                 tasks[data[0]].extend([data[i]])
     logging.debug("tasks: %s", tasks)
     logging.debug("task order %s", task_order) #task_list
@@ -205,6 +206,7 @@ def main():
             t = time.time()
             if len(assignments) == MAX_TASK_NUMBER:
                 logging.debug('Successfully finish HEFT mapping ')
+                logging.debug(assignments)
                 end_time = time.time()
                 deploy_time = end_time - starting_time
                 logging.debug('Time to finish HEFT mapping %s',str(deploy_time))

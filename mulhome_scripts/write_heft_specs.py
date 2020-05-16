@@ -48,6 +48,8 @@ spec:
           value: {app_name}
         - name: APP_OPTION
           value: {app_option}
+        - name: NUM_NODES
+          value: "{num_total_nodes}"
 """
 
 def write_heft_specs(**kwargs):

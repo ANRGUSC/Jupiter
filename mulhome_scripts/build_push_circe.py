@@ -60,9 +60,9 @@ def build_push_circe():
                       ports = " ".join(port_list_worker))
 
     #--no-cache
-    # cmd = "sudo docker build -f %s ../.. -t %s"%(home_file,jupiter_config.HOME_IMAGE)
-    # os.system(cmd)
-    # os.system("sudo docker push " + jupiter_config.HOME_IMAGE)
+    cmd = "sudo docker build -f %s ../.. -t %s"%(home_file,jupiter_config.HOME_IMAGE)
+    os.system(cmd)
+    os.system("sudo docker push " + jupiter_config.HOME_IMAGE)
     cmd = "sudo docker build -f %s ../.. -t %s"%(worker_file,jupiter_config.WORKER_IMAGE)
     os.system(cmd)
     os.system("sudo docker push " + jupiter_config.WORKER_IMAGE)

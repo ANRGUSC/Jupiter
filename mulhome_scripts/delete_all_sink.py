@@ -17,7 +17,7 @@ import logging
 
 logging.basicConfig(level = logging.DEBUG)
 
-def delete_all_stream(app_name):
+def delete_all_sink(app_name):
     """Tear down all CIRCE deployments.
     """
     
@@ -30,9 +30,9 @@ def delete_all_stream(app_name):
     dag_info = utilities.k8s_read_config(path1)
     dag = dag_info[1]
     path2 = jupiter_config.HERE + 'nodes.txt'
-    node_list, homes,datasources = utilities.k8s_get_all_elements(path2)
+    node_list, homes,datasources,datasinks = utilities.k8s_get_all_elements(path2)
 
-    logging.debug('Starting to teardown the datasources')
+    logging.debug('Starting to teardown the datasinks')
 
 
     """
@@ -51,11 +51,11 @@ def delete_all_stream(app_name):
     v1_delete_options = client.V1DeleteOptions()
     core_v1_api = client.CoreV1Api()
 
-    for datasource in datasources:
-        logging.debug('Data source information')
+    for datasink in datasinks:
+        logging.debug('Data sinks information')
  
         #delete home deployment and service
-        home_name =app_name+"-stream"+datasource
+        home_name =app_name+"-sink"+datasink
         logging.debug(home_name)
         #home_name ="home"
         resp = None
@@ -72,7 +72,7 @@ def delete_all_stream(app_name):
 
         # Check if there is a replicaset running by using the label app=home
         # The label of kubernets are used to identify replicaset associate to each task
-        label = "app="+app_name+"-stream"+datasource
+        label = "app="+app_name+"-sink"+datasink
         # label = "app=home"
         resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label,namespace = namespace)
         # if a replicaset exist, delete it
@@ -109,4 +109,4 @@ if __name__ == '__main__':
     jupiter_config.set_globals() 
     app_name = jupiter_config.APP_OPTION
     app_name = app_name+'1'
-    delete_all_stream(app_name)
+    delete_all_sink(app_name)

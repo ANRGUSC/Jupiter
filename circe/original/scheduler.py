@@ -71,8 +71,7 @@ def recv_datasource():
             start_times[filename]=float(ts)
             logging.debug(start_times)
         else:
-            end_times[filename]=float(ts)
-            logging.debug(end_times)
+            print('Something wrong with receiving monitor information from data sources')
 
         
     except Exception as e:
@@ -81,6 +80,34 @@ def recv_datasource():
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_monitor_datasource', 'recv_datasource', recv_datasource)
+
+def recv_datasink():
+    """
+
+    Receiving run-time profiling information from datasinks
+    
+    Raises:
+        Exception: failed processing in Flask
+    """
+    global start_times, end_times
+    try:
+        # logging.debug('Receive final runtime profiling')
+        filename = request.args.get('filename')
+        filetype = request.args.get('filetype')
+        ts = request.args.get('time')
+
+        logging.debug("Received flask message: %s %s %s", filename, filetype,ts)
+        if filetype == 'output':
+            end_times[filename]=float(ts)
+            logging.debug(start_times)
+        else:
+            print('Something wrong with receiving monitor information from data sinks')
+    except Exception as e:
+        logging.debug("Bad reception or failed processing in Flask")
+        logging.debug(e)
+        return "not ok"
+    return "ok"
+app.add_url_rule('/recv_monitor_datasink', 'recv_datasink', recv_datasink)
 
 def recv_mapping():
     """

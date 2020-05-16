@@ -40,10 +40,16 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes, homes = utilities.k8s_get_nodes_worker(path2)
+    # nodes, homes = utilities.k8s_get_nodes_worker(path2)
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
     dag_info = utilities.k8s_read_dag(path1)
     dag = dag_info[1]
+
+    nodes, homes,datasources,datasinks = utilities.k8s_get_all_elements(path2)
+    num_total_nodes = len(nodes)+len(homes)
+    logging.debug('Number of nodes')
+    logging.debug(num_total_nodes)
+
 
     logging.debug('Starting to deploy HEFT')
     if jupiter_config.BOKEH == 3:
@@ -114,7 +120,8 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
                                 execution_home_ip = ex_profiler_ips['home'],
                                 home_profiler_ip = home_profiler_str,
                                 app_name = app_name,
-                                app_option = jupiter_config.APP_OPTION)
+                                app_option = jupiter_config.APP_OPTION,
+                                num_total_nodes = str(num_total_nodes))
     resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
     logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 

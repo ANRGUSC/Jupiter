@@ -91,7 +91,7 @@ def k8s_globalinfo_scheduler(app_name):
     logging.debug(dag)
 
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes, homes,datasources = utilities.k8s_get_all_elements(path2)
+    nodes, homes,datasources,datasinks = utilities.k8s_get_all_elements(path2)
 
     logging.debug('Datasources :')
     logging.debug(datasources)

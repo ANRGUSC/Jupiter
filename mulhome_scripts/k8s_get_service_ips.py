@@ -1,4 +1,4 @@
-__author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhaskar Krishnamachari"
+__author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar, Jason A Tran,  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
@@ -193,6 +193,77 @@ def get_all_execs(app_name):
 
     # At this point you should not have any of the profiler related service, pod, or deployment running
     return mapping
+
+def get_service_circe(dag,app_name):
+    jupiter_config.set_globals()
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
+    api = client.CoreV1Api()
+
+    service_ips = {}
+    home_name =app_name+"-home"
+    try:
+        resp = api.read_namespaced_service(home_name, namespace)
+        service_ips['home'] = resp.spec.cluster_ip
+    except ApiException as e:
+        logging.debug(e)
+        logging.debug("Exception Occurred")
+
+    for key, value in dag.items():
+        task = key
+        nexthosts = ''
+ 
+        """
+            Generate the yaml description of the required service for each task
+        """
+        pod_name = app_name+"-"+task
+        try:
+            resp = api.read_namespaced_service(pod_name, namespace)
+            service_ips[task] = resp.spec.cluster_ip
+        except ApiException as e:
+            logging.debug(e)
+            logging.debug("Exception Occurred")
+    return service_ips
+
+
+def get_service_global(app_name):
+    jupiter_config.set_globals()
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
+    api = client.CoreV1Api()
+
+    service_ip_global = None
+    home_name =app_name+"-globalinfohome"
+    try:
+        resp = api.read_namespaced_service(home_name, namespace)
+        service_ip_global = resp.spec.cluster_ip
+    except ApiException as e:
+        logging.debug(e)
+        logging.debug("Exception Occurred")
+
+    return service_ip_global
+
+def get_service_sinks(app_name):
+    jupiter_config.set_globals()
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
+    api = client.CoreV1Api()
+
+    path2 = jupiter_config.HERE + 'nodes.txt'
+    nodes, homes,datasources,datasinks = utilities.k8s_get_all_elements(path2)
+
+    service_ips = {}; #list of all service IPs
+    for i in datasinks:
+        sink_name =app_name+"-sink"+i
+        try:
+            resp = api.read_namespaced_service(sink_name, namespace)
+            service_ips[sink_name] = resp.spec.cluster_ip
+        except ApiException as e:
+            logging.debug(e)
+            logging.debug("Exception Occurred")
+
+    return service_ips
+
 
 
 

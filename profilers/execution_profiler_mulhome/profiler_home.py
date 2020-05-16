@@ -244,7 +244,7 @@ def main():
             task_order.append(data[0])
         logging.debug(data)
         for i in range(3, len(data)):
-            if  data[i] != 'home' and task_map[data[i]][1] == True :
+            if  (not data[i].startswith('home')) and (not data[i].startswith('datasink')) and task_map[data[i]][1] == True :
                 tasks[data[0]].append(data[i])
                 
     logging.debug(tasks)
@@ -296,19 +296,20 @@ def main():
 
     logging.debug('Finish logging.debuging out the execution information')
 
-    ## data sources
-    datasources = []
+    ## data sources & datasinks
+    sources_sinks = []
     num_files = 0
     with open(os.path.join(os.path.dirname(__file__), 'nodes.txt'), "r") as nFile:
         for line in nFile:
             node_line = line.strip().split(" ")
             num_files = num_files+1
-            if node_line[0].startswith('datasource'):
-                datasources.append(node_line[0])
+            if node_line[0].startswith('datasource') or node_line[0].startswith('datasink'):
+                sources_sinks.append(node_line[0])
 
+    logging.debug('Data sources and data sinks information: ')
+    logging.debug(sources_sinks)
 
-    logging.debug(datasources)
-    for ds in datasources:
+    for ds in sources_sinks:
         src_path = os.path.join(os.path.dirname(__file__), 'profiler_'+ds+'.txt')
         myfile = open(src_path, "w")
         myfile.write('task,time(sec),output_data (Kbit)\n')

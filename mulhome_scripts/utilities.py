@@ -81,6 +81,7 @@ def k8s_read_dag(dag_info_file):
           break
 
   dag_info.append(dag)
+  print(dag_info)
   return dag_info
 
 
@@ -139,6 +140,7 @@ def k8s_get_all_elements(node_info_file):
   nodes = {}
   homes = {}
   datasources = {}
+  datasinks ={}
   node_file = open(node_info_file, "r")
   for line in node_file:
       node_line = line.strip().split(" ")
@@ -150,11 +152,15 @@ def k8s_get_all_elements(node_info_file):
         datasources.setdefault(node_line[0], [])
         for i in range(1, len(node_line)):
           datasources[node_line[0]].append(node_line[i])
+      elif node_line[0].startswith('datasink'):
+        datasinks.setdefault(node_line[0], [])
+        for i in range(1, len(node_line)):
+          datasinks[node_line[0]].append(node_line[i])
       else:
         nodes.setdefault(node_line[0], [])
         for i in range(1, len(node_line)):
             nodes[node_line[0]].append(node_line[i])
-  return nodes, homes,datasources
+  return nodes, homes,datasources,datasinks
 
     
   
@@ -185,9 +191,14 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
       hosts[i].append(i)                          # task
       hosts[i].extend(nodes[mapping[i]])      # assigned node id
       
-  hosts.setdefault('home',[])
-  hosts['home'].append('home')
-  hosts['home'].extend(nodes.get('home'))
+  # hosts.setdefault('home',[])
+  # hosts['home'].append('home')
+  # hosts['home'].extend(nodes.get('home'))
+  for i in nodes:
+    if i.startswith('home') or i.startswith('datasink'):
+      hosts.setdefault(i,[])
+      hosts[i].append(i) 
+      hosts[i].extend(nodes.get(i))
   dag_info.append(hosts)
   return dag_info
 
@@ -238,6 +249,9 @@ def prepare_stat_path(node_list,homes,dag):
     return latency_file
 
 if __name__ == '__main__':
-  dag_info_file = '../app_specific_files/dummy_datasources/configuration.txt'
+  dag_info_file = '../app_specific_files/dummy_app/configuration.txt'
   dag_info = k8s_read_dag(dag_info_file)
+
+  nodes = k8s_get_nodes('../nodes.txt')
+  logging.debug(nodes)
   

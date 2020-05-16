@@ -114,6 +114,7 @@ def transfer_data_scp(ID,user,pword,source, destination):
         try:
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
+            logging.debug(cmd)
             os.system(cmd)
             logging.debug('data transfer complete\n')
             ts = time.time()
@@ -248,7 +249,7 @@ class Handler1(pyinotify.ProcessEvent):
             
 
         elif flag2 == 'true':
-            
+            logging.debug('Flag is true')
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
@@ -289,6 +290,7 @@ class Handler1(pyinotify.ProcessEvent):
                 
             transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
         elif flag2 == 'false':
+            logging.debug('Flag is false')
             num_child = (len(sys.argv) - 4) / 4
             files_out.append(new_file)
             if (len(files_out) == num_child):
@@ -535,7 +537,7 @@ def main():
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
 
 
-    global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
+    global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips, all_sinks, all_sinks_ips
 
     configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
@@ -552,6 +554,9 @@ def main():
     all_nodes = os.environ["ALL_NODES"].split(":")
     all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
 
+    all_sinks = os.environ["ALL_SINKS"].split(":")
+    all_sink_ips = os.environ["ALL_SINKS_IPS"].split(":")
+
     
     global BOKEH_SERVER, BOKEH_PORT, BOKEH
     BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
@@ -566,6 +571,12 @@ def main():
         user = sys.argv[i+2]
         password = sys.argv[i+3]
         combined_ip_map[node] = IPaddr
+
+    for i, sink in enumerate(all_sinks):
+        combined_ip_map[sink] = all_sink_ips[i]  
+
+    logging.debug('Combined IP Map')
+    logging.debug(combined_ip_map)
 
     if taskmap[1] == True:
         queue_mul=multiprocessing.Queue()

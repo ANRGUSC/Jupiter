@@ -24,10 +24,22 @@ def get_datasources(file_name):
     node_file = open(file_name, "r")
     for line in node_file:
         node_line = line.strip().split(" ")
-        datasources.setdefault(node_line[0], [])
-        for i in range(1, len(node_line)):
-          datasources[node_line[0]].append(node_line[i])
+        if node_line[0].startswith('datasource'):
+            datasources.setdefault(node_line[0], [])
+            for i in range(1, len(node_line)):
+              datasources[node_line[0]].append(node_line[i])
     return datasources
+
+def get_datasinks(file_name):
+    datasinks = {}
+    node_file = open(file_name, "r")
+    for line in node_file:
+        node_line = line.strip().split(" ")
+        if node_line[0].startswith('datasink'):
+            datasinks.setdefault(node_line[0], [])
+            for i in range(1, len(node_line)):
+              datasinks[node_line[0]].append(node_line[i])
+    return datasinks
 
 def set_globals():
     """Set global configuration information
@@ -81,7 +93,7 @@ def set_globals():
     
 
     """Modules path of Jupiter"""
-    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH, DATA_PATH, GLOBALINFO_PATH
+    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH, DATA_PATH, GLOBALINFO_PATH, SINK_PATH
 
     # default network and resource profiler: DRUPE
     # default wave mapper: random wave
@@ -96,6 +108,7 @@ def set_globals():
     # data sources for testing demo
     STREAM_PATH               = HERE + 'simulation/demo_sources/'
     GLOBALINFO_PATH               = HERE + 'simulation/global_info_center/'
+    SINK_PATH               = HERE + 'simulation/data_sinks/'
 
     global heft_option, wave_option
     heft_option             = 'original'    
@@ -161,11 +174,11 @@ def set_globals():
     EXEC_NAMESPACE          = 'quynh-exec'
 
     """ Node file path and first task information """
-    global HOME_NODE, HOME_CHILD, STREAM_NODE
+    global HOME_NODE, HOME_CHILD, STREAM_NODE, SINK_NODE
 
     HOME_NODE               = get_home_node(HERE + 'nodes.txt')
     STREAM_NODE             = get_datasources(HERE + 'nodes.txt')
-    
+    SINK_NODE               = get_datasinks(HERE + 'nodes.txt')
 
     """Application Information"""
     global APP_PATH, APP_NAME, APP_OPTION
@@ -238,8 +251,12 @@ def set_globals():
     global STREAM_IMAGE
     STREAM_IMAGE = 'docker.io/anrg/stream_home:%s_%s'%(APP_OPTION,cluster_option)
 
+    global SINK_IMAGE
+    SINK_IMAGE = 'docker.io/anrg/sink_home:%s_%s'%(APP_OPTION,cluster_option)
+
     global GLOBALINFO_IMAGE
     GLOBALINFO_IMAGE = 'docker.io/anrg/globalinfo_home:%s_%s'%(APP_OPTION,cluster_option)
 
 if __name__ == '__main__':
     set_globals()
+    print(get_datasources(HERE + 'nodes.txt'))

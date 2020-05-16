@@ -154,8 +154,10 @@ def main():
             task_order.append(data[0])
 
         for i in range(3, len(data)):
-            if data[i] != 'home' and dag_flag[data[i]] == True and task_map[data[i]][1] == True:
-                tasks[data[0]].append(data[i])
+            if (not data[i].startswith('home')) and (not data[i].startswith('datasink')) and (task_map[data[i]][1] == True) and(data[i] in dag_flag.keys()):
+                if dag_flag[data[i]] == True:
+            # if data[i] != 'home' and dag_flag[data[i]] == True and task_map[data[i]][1] == True:
+                    tasks[data[0]].append(data[i])
 
 
     ## import task modules, put then in a list and create task-module dictinary
