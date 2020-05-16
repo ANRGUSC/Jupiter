@@ -145,7 +145,7 @@ class Split:
                 return link
     
     def get_node_by_id(self, processors, node_id):
-        return processors[node_id]
+        return processors[int(node_id)]
         
     def cal_comm_quadratic(self, file_size, quaratic_profile):
         return (np.square(file_size)*quaratic_profile[0] + file_size*quaratic_profile[1] + quaratic_profile[2]) 
