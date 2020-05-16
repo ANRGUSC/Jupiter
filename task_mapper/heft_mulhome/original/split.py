@@ -42,7 +42,7 @@ class Split:
         # {child nodes ids -> list of file transfer size to child from this node}
         child_nodes_files = {}
         task_ids_to_dup = [] # tasks on this node
-        for dur in btnk_node:
+        for dur in btnk_node.time_line:
             task_ids_to_dup.append(dur.task_num)
         
         for tid in task_ids_to_dup:
