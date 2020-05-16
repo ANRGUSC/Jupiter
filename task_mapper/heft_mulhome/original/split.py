@@ -60,7 +60,7 @@ class Split:
                     child_nodes_files[proc_num].append(data[tid][child_id])
                     
         procid_to_max_time = {}
-        for proc in self.processors:
+        for proc in processors:
             # only pick idle nodes
             if len(proc.time_line) > 0:
                 continue
