@@ -2,7 +2,7 @@ import os
 import time
 import sys
 
-LOOP_RANGE = 4000000 # this could take about 2s
+LOOP_RANGE = 8000000 # this could take about 2s
 TASK_NAME = "task1"
 NUM_BLOCK = 700
 
