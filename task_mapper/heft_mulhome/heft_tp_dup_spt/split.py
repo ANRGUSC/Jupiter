@@ -18,6 +18,7 @@ Can choose a node that, after above calculation, reduces the bottleneck most (i.
 
 import heft_dup as hd
 import numpy as np
+import time
 
 class Split:
 
@@ -36,6 +37,7 @@ class Split:
         # ---------------------------------- part1: find best node and portion ----------------------------------------
         btnk_node = self.get_node_by_id(processors, btnk_id)
         btnk_time = btnk_node.time_line[-1].end
+        print("current bottleneck number  " + str(btnk_node.number))
         
         # get all link usage related to this node, including all parent and child node links with this node
         # {parent nodes ids -> list of file transfer size to this node from parents}
@@ -56,7 +58,7 @@ class Split:
             for child_id in range(len(tasks)):
                 if data[tid][child_id] > 0:
                     proc_num = self.get_node_by_id(processors, child_id).number
-                    if not proc_num in child_node_files:
+                    if not proc_num in child_nodes_files:
                         child_nodes_files[proc_num] = []
                     child_nodes_files[proc_num].append(data[tid][child_id])
                     
@@ -78,16 +80,20 @@ class Split:
             for cnid in child_nodes_files:
                 for file_size in child_nodes_files[cnid]:
                     new_transfer_times[cnid] += self.cal_comm_quadratic(file_size, quaratic_profile[proc.number][cnid])
-            max_comm_cost = max(parent_nodes_files.values())
-            max_comm_cost = max(max_comm_time, max(child_nodes_files.values()))
-            comp_cost = 0.0
+            # edge case: task to split has no parent or has no child
+            max_comm_cost = 0
+            if len(new_transfer_times) > 0:
+                max_comm_cost = max(max_comm_cost, max(new_transfer_times.values()))
+
+            max_comp_cost = 0.0
             for tid in task_ids_to_dup:
-                comp_cost += comp_cost[proc.number][tid]
-            procid_to_max_time[proc.number] = max(comp_cost, max_comm_cost)
+                max_comp_cost += comp_cost[tid][proc.number]
+            procid_to_max_time[proc.number] = max(max_comp_cost, max_comm_cost)
         
         if len(procid_to_max_time) == 0:
             return False    
-        
+        print("procid to max time in split")
+        print(procid_to_max_time)
         # pick a node that minimizes the max extra cost incurred
         best_node_id = -1
         min_btnk_val = time.time() # infinity time value
@@ -95,6 +101,7 @@ class Split:
             if procid_to_max_time[procid] < min_btnk_val:
                 min_btnk_val = procid_to_max_time[procid]
                 best_node_id = procid
+        print("replicate btnk node on  " + str(best_node_id))
         # here we need to cover both cases: current btnk node is an intact node, or an alrealy splitted node
         # the portion here refers to the global portion of the original task
         # i.e. if cur btnk node portion is 0.5, then new split can result in 0.25, 0.25
@@ -114,29 +121,29 @@ class Split:
         for link in links:
             # if this node is the outbound
             if link.id.split('_')[0] == str(btnk_node.number):
-                dup_link = self.get_link_by_id(links, str(new_node.num)+'_'+str(link.id.split('_')[1]))
+                dup_link = self.get_link_by_id(links, str(new_node.number)+'_'+str(link.id.split('_')[1]))
                 for lkdur in link.time_line:
-                    new_lkdur = hd.LinkDuration(lkdur.task1, lkdur.task2, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
+                    new_lkdur = hd.LinkDuration(lkdur.start_task_num, lkdur.end_task_num, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
                     lkdur.start *= original_node_portion
                     lkdur.end *= original_node_portion
-                    dup_link.time_link.append(new_lkdur)
+                    dup_link.time_line.append(new_lkdur)
             elif link.id.split('_')[1] == str(btnk_node.number):
-                dup_link = self.get_link_by_id(links, str(link.id.split('_')[0])+'_'+str(new_node.num))
+                dup_link = self.get_link_by_id(links, str(link.id.split('_')[0])+'_'+str(new_node.number))
                 for lkdur in link.time_line:
-                    new_lkdur = hd.LinkDuration(lkdur.task1, lkdur.task2, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
+                    new_lkdur = hd.LinkDuration(lkdur.start_task_num, lkdur.end_task_num, lkdur.start*new_node_portion, lkdur.end*new_node_portion)
                     lkdur.start *= original_node_portion
                     lkdur.end *= original_node_portion
-                    dup_link.time_link.append(new_lkdur)
+                    dup_link.time_line.append(new_lkdur)
                     
         for dur in btnk_node.time_line:
             new_dur = hd.Duration(dur.task_num, dur.start*new_node_portion, dur.end*new_node_portion)
             dur.start *= original_node_portion
             dur.end *= original_node_portion
-            new_node.time_link.append(new_dur)
+            new_node.time_line.append(new_dur)
         
         for tid in task_ids_to_dup:
-            tid.proc_num_to_portion[btnk_node] = cur_portion * original_node_portion
-            tid.proc_num_to_portion[new_node] = cur_portion * new_node_portion
+            tasks[tid].proc_num_to_portion[btnk_node.number] = cur_portion * original_node_portion
+            tasks[tid].proc_num_to_portion[new_node.number] = cur_portion * new_node_portion
         
         return True
         

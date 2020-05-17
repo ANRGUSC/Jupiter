@@ -356,8 +356,8 @@ class HEFT:
             else:
                 task_name = self.task_names[task.number]
                 output.write(task_name + "   ")
-                for key, val in task.proc_num_to_portion:
-                    output.write(self.node_info[key+1] + "," + val + " ")
+                for proc_num in task.proc_num_to_portion:
+                    output.write(self.node_info[proc_num+1] + "," + str(task.proc_num_to_portion[proc_num]) + " ")
                 output.write('\n')
         output.close()
 
@@ -378,9 +378,9 @@ class HEFT:
             else:
                 task_name = self.task_names[task.number]
                 assignments[task_name] = []
-                for key, val in task.proc_num_to_portion:
-                    assignments[task_name].append(self.node_info[key+1])
-                    assignments[task_name].append(val)
+                for proc_num in task.proc_num_to_portion:
+                    assignments[task_name].append(self.node_info[proc_num+1])
+                    assignments[task_name].append(task.proc_num_to_portion[proc_num])
                     
         return assignments
 
