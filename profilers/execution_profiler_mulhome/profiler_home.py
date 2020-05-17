@@ -260,7 +260,7 @@ def main():
         print(filename)
         stop_time = datetime.datetime.utcnow()
         mytime = stop_time - start_time
-        mytime = int(mytime.total_seconds()) #convert to seconds
+        mytime = mytime.total_seconds()
 
         output_data = [file_size(fname) for fname in filename]
         print(output_data)
