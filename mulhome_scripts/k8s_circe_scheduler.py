@@ -80,7 +80,7 @@ def write_file(filename,message):
     with open(filename,'a') as f:
         f.write(message)
 
-def k8s_circe_scheduler(dag_info , temp_info,app_name):
+def k8s_circe_scheduler(dag_info, temp_info, app_name):
     """
         This script deploys CIRCE in the system. 
     """

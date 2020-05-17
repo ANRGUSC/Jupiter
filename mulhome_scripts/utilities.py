@@ -207,18 +207,47 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
 
   print('Receive mapping')
   print(mapping)
-  
+  """
+  example mapping
+  {'task0': ['node1', 0.167513777340025, 'node3', 0.4223052081895984, 'node5', 0.41018101447037664], 
+   'task1': ['node2', 0.7338789970245765, 'node7', 0.2661210029754235], 
+   'task2': 'node6', 
+   'task3': 'node4'}
+  """
   for i in mapping:
-      #get task, node IP, username and password
-      print(i, mapping[i], nodes[mapping[i]])
-      hosts.setdefault(i,[])
-      hosts[i].append(i)                          # task
-      hosts[i].extend(nodes[mapping[i]])      # assigned node id
+      if  type(mapping[i]) is list:
+          for index in range(len(mapping[i])):
+              if index % 2 == 0:
+                  #get task, node IP, username and password
+                  print(i, mapping[i][index], nodes[mapping[i][index]])
+                  hosts.setdefault(i,[])
+                  hosts[i].append(i)                          # task
+                  hosts[i].extend(nodes[mapping[i][index]])      # assigned node id
+      else:
+          #get task, node IP, username and password
+          print(i, mapping[i], nodes[mapping[i]])
+          hosts.setdefault(i,[])
+          hosts[i].append(i)                          # task
+          hosts[i].extend(nodes[mapping[i]])      # assigned node id
       
   hosts.setdefault('home',[])
   hosts['home'].append('home')
   hosts['home'].extend(nodes.get('home'))
   dag_info.append(hosts)
+  """
+  example return
+  ['task0',
+   {'task0': ['1', 'true', 'task1', 'task2'],
+    'task1': ['1', 'true', 'task3'],
+    'task2': ['1', 'true', 'task3'],
+    'task3': ['2', 'true', 'home']},
+   {'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01'],
+    'task0': ['task0', 'ubuntu-s-1vcpu-2gb-nyc3-02'],
+    'task1': ['task1', 'ubuntu-s-1vcpu-2gb-nyc3-01'],
+    'task2': ['task2', 'ubuntu-s-1vcpu-2gb-nyc3-01'],
+    'task3': ['task3', 'ubuntu-s-1vcpu-2gb-nyc3-01']}
+  ]
+  """
   return dag_info
 
 
