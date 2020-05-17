@@ -180,7 +180,7 @@ def main():
             filename = module.main()
             stop_time = datetime.datetime.utcnow()
             mytime = stop_time - start_time
-            mytime = int(mytime.total_seconds())
+            mytime = mytime.total_seconds()
 
 
             output_data = [file_size(fname) for fname in filename]
