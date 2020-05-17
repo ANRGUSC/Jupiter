@@ -70,6 +70,7 @@ def teardown_system(app_name):
         delete_all_pricing_circe(app_name)
 
     delete_all_sink(app_name)
+    delete_all_globalinfo(app_name)
 
     if scheduler == 0 or scheduler==3: # HEFT
         logging.debug('Tear down all current HEFT deployments')
