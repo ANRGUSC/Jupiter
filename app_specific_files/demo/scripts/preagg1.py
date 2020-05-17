@@ -15,7 +15,7 @@ FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
 global global_info_ip
-global_info_ip = os.environ['GLOBAL_IP']
+
 
 
 def task(filelist, pathin, pathout):     
@@ -44,6 +44,7 @@ def task(filelist, pathin, pathout):
     # address of flask server for class1 is 0.0.0.0:5000 and "post-dict" is for requesting dictionary 
     try:
         # url = "http://0.0.0.0:5000/post-dict"
+        global_info_ip = os.environ['GLOBAL_IP']
         url = "http://%s:%s/post-dict"%(global_info_ip,str(FLASK_SVC))
         print(url)
         # request of dictionary of received results

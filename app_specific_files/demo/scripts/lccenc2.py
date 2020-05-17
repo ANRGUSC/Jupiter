@@ -15,7 +15,7 @@ FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
 global global_info_ip
-global_info_ip = os.environ['GLOBAL_IP']
+
 
 def gen_Lagrange_coeffs(alpha_s,beta_s):
     U = np.zeros((len(alpha_s), len(beta_s)))
@@ -57,6 +57,7 @@ def task(filelist, pathin, pathout):
     payload = {'class_image': 2}
     # address of flask server for class2 is 0.0.0.0:5000 and "post-id" is for requesting id
     try:
+        global_info_ip = os.environ['GLOBAL_IP']
         # url = "http://0.0.0.0:5000/post-id"
         url = "http://%s:%s/post-id"%(global_info_ip,str(FLASK_SVC))
         print(url)

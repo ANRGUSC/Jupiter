@@ -94,7 +94,7 @@ def k8s_stream_scheduler(app_name):
     logging.debug(dag)
 
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes, homes,datasources = utilities.k8s_get_all_elements(path2)
+    nodes, homes,datasources,datasinks = utilities.k8s_get_all_elements(path2)
 
     service_ips = {}; #list of all service IPs
     
@@ -178,7 +178,7 @@ def k8s_demo_scheduler(app_name):
     logging.debug(dag)
 
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes, homes,datasources = utilities.k8s_get_all_elements(path2)
+    nodes, homes,datasources,datasinks = utilities.k8s_get_all_elements(path2)
 
     logging.debug('Datasources :')
     logging.debug(datasources)

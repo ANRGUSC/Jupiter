@@ -22,7 +22,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 RUN mkdir -p /centralized_scheduler/input
 
 # Add the task speficific configuration files
-ADD app_specific_files/dummy_app/configuration.txt /configuration.txt
+ADD app_specific_files/demo/configuration.txt /configuration.txt
 ADD simulation/data_sinks/collect_data.py /collect_data.py
 
 ADD nodes.txt /nodes.txt
