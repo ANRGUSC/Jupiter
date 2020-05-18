@@ -302,105 +302,105 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             task_nodename_portion[key][nodename_to_DNS[subkey][0]] = subval
         
     for key, value in dag.items():
+        for i in range(1, replicas[key]+1):
+            task = key + '-' + str(i):
+            nexthosts = ''
+            next_svc = ''
 
-        task = key
-        nexthosts = ''
-        next_svc = ''
-
-        """
-            We inject the host info for the child task via an environment variable valled CHILD_NODES to each pod/deployment.
-            We perform it by concatenating the child-hosts via delimeter ':'
-            For example if the child nodes are k8node1 and k8node2, we will set CHILD_NODES=k8node1:k8node2
-            Note that the k8node1 and k8node2 in the example are the unique node ids of the kubernetes cluster nodes
+            """
+                We inject the host info for the child task via an environment variable valled CHILD_NODES to each pod/deployment.
+                We perform it by concatenating the child-hosts via delimeter ':'
+                For example if the child nodes are k8node1 and k8node2, we will set CHILD_NODES=k8node1:k8node2
+                Note that the k8node1 and k8node2 in the example are the unique node ids of the kubernetes cluster nodes
+                
+                Example ENV for task0's pod:
+                CHILD_NODES=task1:task2
+                CHILD_NODES_IPS=10.103.170.159:10.110.186.67
+                (Xiangchen comment: the 'node' here means task/pod, not cluster node)
+                
+                If a pod (task0) has multiple child (task1, task2), among them, task1 has 3 child replicas, task2 has just one,
+                inject the ENV this way task1-1/{portion1}:task1-2/{portion2}:task1-3/{portion3}:task2-1/1.0
+            """
+            """
+            mapp:
+            {'task0': ['node1',
+                        0.16960351262061335,
+                        'node3',
+                        0.4178843543834354,
+                        'node5',
+                        0.41251213299595124],
+              'task1': ['node2', 0.7290640758913959, 'node7', 0.2709359241086041],
+              'task2': 'node6',
+              'task3': 'node4'}
+            DAG
+            {'task0': ['1', 'true', 'task1', 'task2'],
+              'task1': ['1', 'true', 'task3'],
+              'task2': ['1', 'true', 'task3'],
+              'task3': ['2', 'true', 'home']}
+            replicas: {task1 -> 3; task2 -> 1}
             
-            Example ENV for task0's pod:
-            CHILD_NODES=task1:task2
-            CHILD_NODES_IPS=10.103.170.159:10.110.186.67
-            (Xiangchen comment: the 'node' here means task/pod, not cluster node)
+            Example hosts:
+            {'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01'],
+              'task0': ['task0',
+                        'ubuntu-s-1vcpu-2gb-nyc3-01',
+                        'task0',
+                        'ubuntu-s-1vcpu-2gb-sfo2-03',
+                        'task0',
+                        'ubuntu-s-1vcpu-2gb-sfo2-01'],
+              'task1': ['task1',
+                        'ubuntu-s-1vcpu-2gb-nyc3-02',
+                        'task1',
+                        'ubuntu-s-1vcpu-2gb-sfo2-02'],
+              'task2': ['task2', 'ubuntu-s-1vcpu-2gb-sfo2-04'],
+              'task3': ['task3', 'ubuntu-s-1vcpu-2gb-sfo2-05']}
+              
+            """
+            inputnum = str(value[0])
+            flag = str(value[1])
             
-            If a pod (task0) has multiple child (task1, task2), among them, task1 has 3 child replicas, task2 has just one,
-            inject the ENV this way task1-1/{portion1}:task1-2/{portion2}:task1-3/{portion3}:task2-1/1.0
-        """
-        """
-        mapp:
-        {'task0': ['node1',
-                    0.16960351262061335,
-                    'node3',
-                    0.4178843543834354,
-                    'node5',
-                    0.41251213299595124],
-          'task1': ['node2', 0.7290640758913959, 'node7', 0.2709359241086041],
-          'task2': 'node6',
-          'task3': 'node4'}
-        DAG
-        {'task0': ['1', 'true', 'task1', 'task2'],
-          'task1': ['1', 'true', 'task3'],
-          'task2': ['1', 'true', 'task3'],
-          'task3': ['2', 'true', 'home']}
-        replicas: {task1 -> 3; task2 -> 1}
+            #nodename_to_portion = {}
+            #for task in task_node_portion:
+            #    for nodeid, portion in task_node_portion[task].items():
+            #        nodename_to_portion[nodename_to_DNS[nodeid][0]] = task_node_portion[task][nodeid]
+            
+            for i in range(2,len(value)):
+                child_hostnames = []
+                child_hostportions = []
+                if type(hosts[value[i]]) is list:
+                    for j in range(len(hosts[value[i]])):
+                        if j % 2 == 0:
+                            child_hostnames.append(hosts[value[i]][j])
+                        else:
+                            child_hostportions.append(str(round(task_nodename_portion[value[i]][hosts[value[i]][j]] ,3)))
+                    for k in range(len(child_hostnames)):
+                        nexthosts = nexthosts + child_hostnames[k] + "/" + child_hostportions[k] + ":"
+                        next_svc = next_svc + str(service_ips[child_hostnames[k]]) + "/" + child_hostportions[k] + ":"
+                else:
+                    nexthosts = nexthosts + str(hosts.get(value[i])[0]) + "-1/1.000:"
+                    next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + "-1/" + child_hostportions[k] + ":"
+            nexthosts.rstrip(':')    
+            next_svc.rstrip(':')
         
-        Example hosts:
-        {'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01'],
-          'task0': ['task0',
-                    'ubuntu-s-1vcpu-2gb-nyc3-01',
-                    'task0',
-                    'ubuntu-s-1vcpu-2gb-sfo2-03',
-                    'task0',
-                    'ubuntu-s-1vcpu-2gb-sfo2-01'],
-          'task1': ['task1',
-                    'ubuntu-s-1vcpu-2gb-nyc3-02',
-                    'task1',
-                    'ubuntu-s-1vcpu-2gb-sfo2-02'],
-          'task2': ['task2', 'ubuntu-s-1vcpu-2gb-sfo2-04'],
-          'task3': ['task3', 'ubuntu-s-1vcpu-2gb-sfo2-05']}
-          
-        """
-        inputnum = str(value[0])
-        flag = str(value[1])
-        
-        #nodename_to_portion = {}
-        #for task in task_node_portion:
-        #    for nodeid, portion in task_node_portion[task].items():
-        #        nodename_to_portion[nodename_to_DNS[nodeid][0]] = task_node_portion[task][nodeid]
-        
-        for i in range(2,len(value)):
-            child_hostnames = []
-            child_hostportions = []
-            if type(hosts[value[i]]) is list:
-                for j in range(len(hosts[value[i]])):
-                    if j % 2 == 0:
-                        child_hostnames.append(hosts[value[i]][j])
-                    else:
-                        child_hostportions.append(str(round(task_nodename_portion[value[i]][hosts[value[i]][j]] ,3)))
-                for k in range(len(child_hostnames)):
-                    nexthosts = nexthosts + child_hostnames[k] + "/" + child_hostportions[k] + ":"
-                    next_svc = next_svc + str(service_ips[child_hostnames[k]]) + "/" + child_hostportions[k] + ":"
-            else:
-                nexthosts = nexthosts + str(hosts.get(value[i])[0]) + "-1/1.000:"
-                next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + "-1/" + child_hostportions[k] + ":"
-        nexthosts.rstrip(':')    
-        next_svc.rstrip(':')
-    
-        pod_name = app_name+"-"+task
-        #Generate the yaml description of the required deployment for each task
-        dep = write_circe_deployment_specs(name = pod_name, node_name = hosts.get(task)[1],
-            image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
-            child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
-            home_node_ip = service_ips.get('home'),
-            own_ip = service_ips[task],
-            all_node = all_node,
-            all_node_ips = all_node_ips,
-            flag = str(flag), inputnum = str(inputnum))
-        # pprint(dep)
-        
+            pod_name = app_name+"-"+task
+            #Generate the yaml description of the required deployment for each task
+            dep = write_circe_deployment_specs(name = pod_name, node_name = hosts.get(task)[1],
+                image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
+                child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
+                home_node_ip = service_ips.get('home'),
+                own_ip = service_ips[task],
+                all_node = all_node,
+                all_node_ips = all_node_ips,
+                flag = str(flag), inputnum = str(inputnum))
+            # pprint(dep)
+            
 
-        # # Call the Kubernetes API to create the deployment
-        try:
-            resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
-            print("Deployment created")
-            print("Deployment created. status = '%s'" % str(resp.status))
-        except ApiException as e:
-            print(e)
+            # # Call the Kubernetes API to create the deployment
+            try:
+                resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
+                print("Deployment created")
+                print("Deployment created. status = '%s'" % str(resp.status))
+            except ApiException as e:
+                print(e)
 
     while 1:
         print('Checking status CIRCE workers')
