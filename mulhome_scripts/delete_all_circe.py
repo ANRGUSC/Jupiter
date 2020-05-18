@@ -36,7 +36,8 @@ def delete_all_circe(app_name):
     path2 = jupiter_config.HERE + 'nodes.txt'
     node_list, homes = utilities.k8s_get_nodes_worker(path2)
     print(node_list)
-
+    node_num = len(node_list)
+    
     print('Starting to teardown CIRCE')
     if jupiter_config.BOKEH == 3:
         latency_file = '../stats/exp8_data/summary_latency/system_latency_N%d_M%d.log'%(len(node_list)+len(homes),len(dag))
@@ -72,7 +73,17 @@ def delete_all_circe(app_name):
             kubectl get replicaset -n "namespace name"
             kubectl get pod -n "namespace name"
     """
-    for key, value in dag.items():
+    
+    """
+    In split, a task can have multiple replicas (thus pods, replicaSets, deployments and svcs)
+    We don't know how many are there without mapping information, so try every combination
+    """
+    comb = []
+    for key in dag:
+        for i in range(1, node_num+1):
+            comb.append(key+'-'+str(i))
+        
+    for key in comb:
 
         print(key)
         pod_name = app_name+"-"+key
