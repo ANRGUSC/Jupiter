@@ -294,7 +294,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         else:
             task_node_portion[key][val] = 1.0
                 
-    for key, value in task_node_portion.items():
+    for key, value in dag.items():
 
         task = key
         nexthosts = ''
