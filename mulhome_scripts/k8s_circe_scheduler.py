@@ -381,8 +381,8 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             else:
                 nexthosts = nexthosts + str(hosts.get(value[i])[0]) + "-1/1.000:"
                 next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + "-1/" + child_hostportions[k] + ":"
-        nexthosts.pop()    
-        next_svc.pop()
+        nexthosts.rstrip(':')    
+        next_svc.rstrip(':')
     
         pod_name = app_name+"-"+task
         #Generate the yaml description of the required deployment for each task
