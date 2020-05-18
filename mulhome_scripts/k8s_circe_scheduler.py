@@ -293,7 +293,11 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                 i += 2
         else:
             task_node_portion[key][val] = 1.0
-                
+    nodename_to_portion = {}
+    for task in task_node_portion:
+        for nodeid, portion in task_node_portion[task].items():
+            nodename_to_portion[nodename_to_DNS[nodeid][0]] = task_node_portion[task][nodeid]
+
     for key, value in dag.items():
 
         task = key
@@ -350,9 +354,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         """
         inputnum = str(value[0])
         flag = str(value[1])
-        nodename_to_portion = {}
-        for nodeid, portion in task_node_portion[task].items():
-            nodename_to_portion[nodename_to_DNS[nodeid][0]] = task_node_portion[task][nodeid]
         
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$DEBUG")
         print(nodename_to_portion)
