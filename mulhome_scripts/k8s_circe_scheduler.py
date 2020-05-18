@@ -319,7 +319,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             (Xiangchen comment: the 'node' here means task/pod, not cluster node)
             
             If a pod (task0) has multiple child (task1, task2), among them, task1 has 3 child replicas, task2 has just one,
-            inject the ENV this way task1_1/{portion1}:task1_2/{portion2}:task1_3/{portion3}:task2/1.0
+            inject the ENV this way task1_1/{portion1}:task1_2/{portion2}:task1_3/{portion3}:task2_1/1.0
         """
         """
         mapp:
@@ -364,7 +364,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         #        nodename_to_portion[nodename_to_DNS[nodeid][0]] = task_node_portion[task][nodeid]
         
         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$    DEBUG")
-        print(task_nodename_portion)
+        print(service_ips)
         
         for i in range(2,len(value)):
             child_hostnames = []
@@ -379,8 +379,8 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                     nexthosts = nexthosts + child_hostnames[k] + "/" + child_hostportions[k] + ":"
                     next_svc = next_svc + str(service_ips[child_hostnames[k]]) + "/" + child_hostportions[k] + ":"
             else:
-                nexthosts = nexthosts + str(hosts.get(value[i])[0]) + "/1.000:"
-                next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + "/" + child_hostportions[k] + ":"
+                nexthosts = nexthosts + str(hosts.get(value[i])[0]) + "_1/1.000:"
+                next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + "_1/" + child_hostportions[k] + ":"
         nexthosts.pop()    
         next_svc.pop()
     
