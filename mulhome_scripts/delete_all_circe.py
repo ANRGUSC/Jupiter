@@ -84,7 +84,7 @@ def delete_all_circe(app_name):
 
         # if a deployment with the name = key exists in the namespace, delete it
         if resp:
-            del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(*, namespace, v1_delete_options)
+            del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(pod_name, namespace, v1_delete_options)
             print("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
@@ -117,6 +117,7 @@ def delete_all_circe(app_name):
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
+            pod_name = app_name + '*'
             del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace, v1_delete_options)
             #del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
