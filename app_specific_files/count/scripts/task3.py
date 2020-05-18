@@ -4,7 +4,7 @@ import sys
 
 LOOP_RANGE = 6000000 # this could take about 3s
 TASK_NAME = "task3"
-NUM_BLOCK = 600
+NUM_BLOCK = 300
 
 def task(input_files, pathin, pathout):
 
