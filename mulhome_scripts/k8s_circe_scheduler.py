@@ -381,7 +381,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
             print(nexthosts)
             print(next_svc)
-            nexthost = nexthosts.rstrip(':')    
+            nexthosts = nexthosts.rstrip(':')    
             next_svc = next_svc.rstrip(':')
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
             print(nexthosts)
