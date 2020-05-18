@@ -80,7 +80,7 @@ def delete_all_circe(app_name):
     """
     comb = []
     for key in dag:
-        for i in range(1, node_num+1):
+        for i in range(1, node_num+2):
             comb.append(key+'-'+str(i))
         
     for key in comb:
