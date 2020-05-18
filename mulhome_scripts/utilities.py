@@ -234,6 +234,7 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
   hosts['home'].append('home')
   hosts['home'].extend(nodes.get('home'))
   dag_info.append(hosts)
+  dag_info.append(nodes)
   """
   example return
   ['task0',
@@ -246,6 +247,7 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
     'task1': ['task1', 'ubuntu-s-1vcpu-2gb-nyc3-01'],
     'task2': ['task2', 'ubuntu-s-1vcpu-2gb-nyc3-01'],
     'task3': ['task3', 'ubuntu-s-1vcpu-2gb-nyc3-01']}
+    {NODES}
   ]
   """
   return dag_info

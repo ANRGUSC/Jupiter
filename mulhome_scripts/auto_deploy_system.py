@@ -162,6 +162,46 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
+        """
+        Example output:
+        Printing DAG:
+        ['task0',
+         {'task0': ['1', 'true', 'task1', 'task2'],
+          'task1': ['1', 'true', 'task3'],
+          'task2': ['1', 'true', 'task3'],
+          'task3': ['2', 'true', 'home']},
+         {'task0': ['node1',
+                    0.16960351262061335,
+                    'node3',
+                    0.4178843543834354,
+                    'node5',
+                    0.41251213299595124],
+          'task1': ['node2', 0.7290640758913959, 'node7', 0.2709359241086041],
+          'task2': 'node6',
+          'task3': 'node4'}]
+          
+        Printing schedule
+        ['task0',
+         {'task0': ['1', 'true', 'task1', 'task2'],
+          'task1': ['1', 'true', 'task3'],
+          'task2': ['1', 'true', 'task3'],
+          'task3': ['2', 'true', 'home']},
+         {'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01'],
+          'task0': ['task0',
+                    'ubuntu-s-1vcpu-2gb-nyc3-01',
+                    'task0',
+                    'ubuntu-s-1vcpu-2gb-sfo2-03',
+                    'task0',
+                    'ubuntu-s-1vcpu-2gb-sfo2-01'],
+          'task1': ['task1',
+                    'ubuntu-s-1vcpu-2gb-nyc3-02',
+                    'task1',
+                    'ubuntu-s-1vcpu-2gb-sfo2-02'],
+          'task2': ['task2', 'ubuntu-s-1vcpu-2gb-sfo2-04'],
+          'task3': ['task3', 'ubuntu-s-1vcpu-2gb-sfo2-05']},
+          {NODES}]
+        End print
+        """
         print("Printing DAG:")
         pprint(dag)
         print("Printing schedule")
