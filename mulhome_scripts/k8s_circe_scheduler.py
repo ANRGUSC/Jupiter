@@ -386,7 +386,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             node_name_here = hosts[task.split('-')[0]][int(task.split('-')[-1])*2-1]
             dep = write_circe_deployment_specs(name = pod_name, node_name = node_name_here,
                 image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
-                child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
+                child_ips = next_svc, host = node_name_here, dir = '{}',
                 home_node_ip = service_ips.get('home'),
                 own_ip = service_ips[task],
                 all_node = all_node,
