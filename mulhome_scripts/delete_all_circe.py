@@ -84,7 +84,7 @@ def delete_all_circe(app_name):
 
         # if a deployment with the name = key exists in the namespace, delete it
         if resp:
-            del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(pod_name, namespace, v1_delete_options)
+            del_resp_0 = extensions_v1_beta1_api.delete_namespaced_deployment(*, namespace, v1_delete_options)
             print("Deployment '%s' Deleted. status='%s'" % (key, str(del_resp_0.status)))
 
 
