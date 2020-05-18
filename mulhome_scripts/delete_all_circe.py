@@ -31,11 +31,8 @@ def delete_all_circe(app_name):
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
     dag_info = utilities.k8s_read_config(path1)
     dag = dag_info[1]
-    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
-    print(dag)
     path2 = jupiter_config.HERE + 'nodes.txt'
     node_list, homes = utilities.k8s_get_nodes_worker(path2)
-    print(node_list)
     node_num = len(node_list)
     
     print('Starting to teardown CIRCE')

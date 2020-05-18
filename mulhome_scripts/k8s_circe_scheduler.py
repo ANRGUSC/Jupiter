@@ -363,9 +363,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         #    for nodeid, portion in task_node_portion[task].items():
         #        nodename_to_portion[nodename_to_DNS[nodeid][0]] = task_node_portion[task][nodeid]
         
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$    DEBUG")
-        print(service_ips)
-        
         for i in range(2,len(value)):
             child_hostnames = []
             child_hostportions = []
