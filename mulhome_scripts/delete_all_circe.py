@@ -112,7 +112,7 @@ def delete_all_circe(app_name):
         # Check if there is a service running by name = task#
         resp = None
         try:
-            resp = core_v1_api.read_namespaced_service(namespace)
+            resp = core_v1_api.read_namespaced_service('*', namespace)
         except ApiException as e:
             print("Exception Occurred")
         # if a service is running, kill it
