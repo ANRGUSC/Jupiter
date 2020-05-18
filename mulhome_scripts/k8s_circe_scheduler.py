@@ -378,6 +378,9 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                 else:
                     nexthosts = nexthosts + str(hosts.get(value[i])[0]) + "-1/1.000:"
                     next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + "-1/" + child_hostportions[k] + ":"
+            print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
+            print(nexthosts)
+            print(next_svc)
             nexthosts.rstrip(':')    
             next_svc.rstrip(':')
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
