@@ -117,7 +117,7 @@ def delete_all_circe(app_name):
             print("Exception Occurred")
         # if a service is running, kill it
         if resp:
-            pod_name = app_name + '*'
+            pod_name = '*'
             del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace, v1_delete_options)
             #del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace)
             print("Service Deleted. status='%s'" % str(del_resp_2.status))
