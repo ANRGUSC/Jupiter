@@ -303,7 +303,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         
     for key, value in dag.items():
         for i in range(1, replicas[key]+1):
-            task = key + '-' + str(i):
+            task = key + '-' + str(i)
             nexthosts = ''
             next_svc = ''
 
