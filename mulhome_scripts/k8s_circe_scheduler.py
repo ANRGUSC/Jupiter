@@ -293,10 +293,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                 i += 2
         else:
             task_node_portion[key][val] = 1.0
-    nodename_to_portion = {}
-    for task in task_node_portion:
-        for nodeid, portion in task_node_portion[task].items():
-            nodename_to_portion[nodename_to_DNS[nodeid][0]] = task_node_portion[task][nodeid]
 
     for key, value in dag.items():
 
@@ -355,8 +351,14 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         inputnum = str(value[0])
         flag = str(value[1])
         
-        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$DEBUG")
-        print(nodename_to_portion)
+        #nodename_to_portion = {}
+        #for task in task_node_portion:
+        #    for nodeid, portion in task_node_portion[task].items():
+        #        nodename_to_portion[nodename_to_DNS[nodeid][0]] = task_node_portion[task][nodeid]
+        
+        print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$    DEBUG")
+        print(task_node_portion).pretty()
+        
         for i in range(2,len(value)):
             child_hostnames = []
             child_hostportions = []
@@ -365,12 +367,13 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                     if j % 2 == 0:
                         child_hostnames.append(hosts[value[i]][j])
                     else:
-                        child_hostportions.append(str(round(nodename_to_portion[hosts[value[i]][j]] ,3)))
+                        child_hostportions.append(str(round(task_node_portion[value[i]][hosts[value[i]][j]] ,3)))
                 for k in range(len(child_hostnames)):
                     nexthosts = nexthosts + child_hostnames[k] + "/" + child_hostportions[k] + ":"
                     next_svc = next_svc + str(service_ips[child_hostnames[k]]) + "/" + child_hostportions[k] + ":"
             else:
                 nexthosts = nexthosts + str(hosts.get(value[i])[0]) + "/1.000:"
+                next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + "/" + child_hostportions[k] + ":"
         nexthosts.pop()    
         next_svc.pop()
     
