@@ -235,7 +235,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     # Assign independent pods for each task's replica
     replicas = {}
     all_tasks = []
-    for key, value in mapp:
+    for key, value in mapp.items():
         if type(value) is list:
             for i in range(len(value)):
                 all_tasks.append(key)
