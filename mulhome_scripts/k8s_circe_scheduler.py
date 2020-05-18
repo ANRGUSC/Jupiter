@@ -157,7 +157,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     
     for key in hosts:
         if len(hosts[key]) == 2:
-            continue
+            hosts[key] = hosts[key] + "-1"
         else:
             for i in range(len(hosts[key])):
                 if i % 2 == 1:
