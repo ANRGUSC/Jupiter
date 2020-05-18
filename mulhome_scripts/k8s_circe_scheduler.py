@@ -150,7 +150,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
       {NODES}]
     
     """
-    nodes = temp_info[3]
+    nodename_to_DNS = temp_info[3]
     first_task = dag_info[0]
     dag = dag_info[1]
     hosts = temp_info[2]
@@ -351,8 +351,8 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         inputnum = str(value[0])
         flag = str(value[1])
         nodename_to_portion = {}
-        for nodeid in task_node_portion[task]:
-            nodename_to_portion[nodes[nodeid]] = task_node_portion[task][nodeid]
+        for nodeid, portion in task_node_portion[task].items():
+            nodename_to_portion[nodename_to_DNS[nodeid][0]] = task_node_portion[task][nodeid]
         
         
         for i in range(2,len(value)):
