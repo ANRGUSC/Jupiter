@@ -163,7 +163,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                 if i % 2 == 1:
                     continue
                 else:
-                    hosts[key][i] = hosts[key][i] + "_" + str(int(i/2 + 1))
+                    hosts[key][i] = hosts[key][i] + "-" + str(int(i/2 + 1))
                     
     print("hosts:")
     pprint(hosts)
@@ -231,7 +231,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     mapp = dag_info[2]
     # mapping from task name to its number of replicas
     # if one replica of a task, just taskX
-    # if multiple, will be called taskX_1, taskX_2, ...
+    # if multiple, will be called taskX-1, taskX-2, ...
     # Assign independent pods for each task's replica
     replicas = {}
     all_tasks = []
@@ -254,7 +254,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         """
             Generate the yaml description of the required service for each task
         """
-        pod_name = app_name + "-" + task + "_" + str(replicas[task])
+        pod_name = app_name + "-" + task + "-" + str(replicas[task])
         body = write_circe_service_specs(name = pod_name)
 
         
@@ -265,7 +265,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             print("Service created. status = '%s'" % str(ser_resp.status))
             resp = api.read_namespaced_service(pod_name, namespace)
             # print resp.spec.cluster_ip
-            service_ips[task+"_"+str(replicas[task])] = resp.spec.cluster_ip
+            service_ips[task+"-"+str(replicas[task])] = resp.spec.cluster_ip
         except ApiException as e:
             print(e)
             print("Exception Occurred")
@@ -319,7 +319,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             (Xiangchen comment: the 'node' here means task/pod, not cluster node)
             
             If a pod (task0) has multiple child (task1, task2), among them, task1 has 3 child replicas, task2 has just one,
-            inject the ENV this way task1_1/{portion1}:task1_2/{portion2}:task1_3/{portion3}:task2_1/1.0
+            inject the ENV this way task1-1/{portion1}:task1-2/{portion2}:task1-3/{portion3}:task2-1/1.0
         """
         """
         mapp:
@@ -379,8 +379,8 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                     nexthosts = nexthosts + child_hostnames[k] + "/" + child_hostportions[k] + ":"
                     next_svc = next_svc + str(service_ips[child_hostnames[k]]) + "/" + child_hostportions[k] + ":"
             else:
-                nexthosts = nexthosts + str(hosts.get(value[i])[0]) + "_1/1.000:"
-                next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + "_1/" + child_hostportions[k] + ":"
+                nexthosts = nexthosts + str(hosts.get(value[i])[0]) + "-1/1.000:"
+                next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + "-1/" + child_hostportions[k] + ":"
         nexthosts.pop()    
         next_svc.pop()
     
