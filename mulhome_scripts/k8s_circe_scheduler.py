@@ -163,7 +163,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                 if i % 2 == 1:
                     continue
                 else:
-                    hosts[key][i] = hosts[key][i] + "_" + str(i/2 + 1)
+                    hosts[key][i] = hosts[key][i] + "_" + str(int(i/2 + 1))
                     
     print("hosts:")
     pprint(hosts)
@@ -295,11 +295,11 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             task_node_portion[key][val] = 1.0
     
     task_nodename_portion = {}
-    for key, val in task_node_portion.items():
+    for key in task_node_portion:
         task_nodename_portion[key] = {}
     for key, val in task_node_portion.items():
-        for subkey, subval in task_node_portion[key].items():
-            task_nodename_portion[key][hosts[subkey][0]] = subval
+        for subkey, subval in val.items():
+            task_nodename_portion[key][nodename_to_DNS[subkey][0]] = subval
         
     for key, value in dag.items():
 
