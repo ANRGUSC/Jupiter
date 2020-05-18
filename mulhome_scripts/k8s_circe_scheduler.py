@@ -297,6 +297,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     task_nodename_portion = {}
     for key, val in task_node_portion.items():
         task_nodename_portion[key] = {}
+    for key, val in task_node_portion.items():
         for subkey, subval in task_node_portion[key].items():
             task_nodename_portion[key][hosts[subkey][0]] = subval
         
