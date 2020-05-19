@@ -331,7 +331,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     child_spec = ""
     DNS_to_nodename = {}
     for key, val in nodename_to_DNS.items():
-        DNS_to_nodename[val] = key
+        DNS_to_nodename[val[0]] = key
 
     for key, val in tmp.items():
         taskname = key
