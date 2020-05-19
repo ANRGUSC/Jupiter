@@ -238,7 +238,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     
     for key, value in mapp.items():
         if type(value) is list:
-            for i in range(len(value)):
+            for i in range(int(len(value)/2)):
                 all_tasks.append(key)
         else:
             all_tasks.append(key)
