@@ -303,7 +303,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     for key, val in task_node_portion.items():
         for subkey, subval in val.items():
             task_nodename_portion[key][nodename_to_DNS[subkey][0]] = subval
-    task_nodename_portion['home'] =
+    task_nodename_portion['home'] = {}
     task_nodename_portion['home'][nodename_to_DNS['home'][0]] = 1.000
     print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
     print(replicas)
