@@ -378,13 +378,16 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                 else:
                     nexthosts = nexthosts + str(hosts.get(value[i])[0]) + "-1/1.000:"
                     next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + "-1/" + child_hostportions[k] + ":"
-                    
+            
+            nexthosts = nexthosts.rstrip(':')
+            next_svc = next_svc.rstrip(':')
             pod_name = app_name+"-"+task
             #Generate the yaml description of the required deployment for each task
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
             print(hosts)
             print(task.split('-')[0])
             node_name_here = hosts[task.split('-')[0]][int(task.split('-')[-1])*2-1]
+            print(node_name_here)
             dep = write_circe_deployment_specs(name = pod_name, node_name = node_name_here,
                 image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
                 child_ips = next_svc, host = node_name_here, dir = '{}',
