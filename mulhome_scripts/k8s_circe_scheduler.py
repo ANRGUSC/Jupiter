@@ -332,18 +332,16 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     DNS_to_nodename = {}
     for key, val in nodename_to_DNS.items():
         DNS_to_nodename[val[0]] = key
-    
     tmpmap = {}
     for i in range(len(tmp)):
         if i % 2 == 0:
-            tmpmap[tmp[i]] = tmp[i+1]
-            
+            tmpmap[tmp[i]] = tmp[i+1]   
     for key, val in tmpmap.items():
         taskname = key
         nodeDNS = val
         nodename = DNS_to_nodename[nodeDNS]
         idx = mapp[entry_task].index(nodename)
-        portion = round(mapp[entry_task][idx+1], 3)
+        portion = str(round(mapp[entry_task][idx+1], 3))
         child_spec = child_spec + taskname + "/" + portion + ':'
     child_spec = child_spec.rstrip(':') 
     print("######################################################################################")
