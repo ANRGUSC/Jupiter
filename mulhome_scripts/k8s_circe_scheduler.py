@@ -315,7 +315,24 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     
     # get a list of home child's (consider task0) replicas and portion
     entry_task = jupiter_config.HOME_CHILD
-    pot = hosts[entry_task]
+    tmp = hosts[entry_task]
+    entry_nodeDNS_to_taskname = {}
+    """
+    tmp
+    ['task0-1', 'ubuntu-s-1vcpu-2gb-nyc3-01', 'task0-2', 'ubuntu-s-1vcpu-2gb-sfo2-03', 'task0-3', 'ubuntu-s-1vcpu-2gb-sfo2-04']
+    
+    mapp
+    {'task0': ['node1', 0.1296876493284042, 'node3', 0.48449175858909777, 'node6', 0.385820592082498], 
+     'task1': ['node2', 0.6756664055262795, 'node5', 0.32433359447372045], 
+     'task2': 'node7', 
+     'task3': 'node4'}
+
+    """
+    for i in range(len(tmp)):
+        if i % 2 == 1:
+            entry_nodeDNS_to_taskname[tmp[i]] = tmp[i-1]
+    node_to_portion = mapp[entry_task]
+    child_spec = ""
     print("######################################################################################")
     print(pot)
     print(mapp)
