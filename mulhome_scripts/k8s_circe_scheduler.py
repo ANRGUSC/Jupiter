@@ -334,7 +334,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         DNS_to_nodename[val[0]] = key
     
     tmpmap = {}
-    for i in range(len(tmp));
+    for i in range(len(tmp)):
         if i % 2 == 0:
             tmpmap[tmp[i]] = tmp[i+1]
             
