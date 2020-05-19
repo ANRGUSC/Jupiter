@@ -300,7 +300,8 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     for key, val in task_node_portion.items():
         for subkey, subval in val.items():
             task_nodename_portion[key][nodename_to_DNS[subkey][0]] = subval
-        
+    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
+    print(replicas)
     for key, value in dag.items():
         for i in range(1, replicas[key]+1):
             task = key + '-' + str(i)
