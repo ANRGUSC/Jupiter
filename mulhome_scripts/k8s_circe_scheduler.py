@@ -386,6 +386,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
             print(hosts)
             print(task.split('-')[0])
+            print(int(task.split('-')[-1])*2-1)
             node_name_here = hosts[task.split('-')[0]][int(task.split('-')[-1])*2-1]
             print(node_name_here)
             dep = write_circe_deployment_specs(name = pod_name, node_name = node_name_here,
