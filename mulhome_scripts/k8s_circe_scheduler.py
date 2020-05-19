@@ -345,7 +345,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         child_spec = child_spec + taskname + "/" + portion + ':'
     child_spec = child_spec.rstrip(':') 
     print("######################################################################################")
-    print(pot)
     print(mapp)
     
     home_name =app_name+"-home"
