@@ -235,6 +235,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     # Assign independent pods for each task's replica
     replicas = {}
     all_tasks = []
+    
     for key, value in mapp.items():
         if type(value) is list:
             for i in range(len(value)):
@@ -243,9 +244,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             all_tasks.append(key)
             
     print('Create workers service')
-    count = 0
     for task in all_tasks:
-        count = count+1
         nexthosts = ''
         if task not in replicas:
             replicas[task] = 1
@@ -270,7 +269,11 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             print(e)
             print("Exception Occurred")
 
-    
+    print("############################################################################################################")
+    print(mapp)
+    print(all_tasks)
+    print(replicas)
+    print("############################################################################################################")
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
     
