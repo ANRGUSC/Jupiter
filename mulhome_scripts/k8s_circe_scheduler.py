@@ -385,6 +385,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             #Generate the yaml description of the required deployment for each task
             print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
             print(hosts)
+            print(task)
             print(task.split('-')[0])
             print(int(task.split('-')[-1])*2-1)
             node_name_here = hosts[task.split('-')[0]][int(task.split('-')[-1])*2-1]
