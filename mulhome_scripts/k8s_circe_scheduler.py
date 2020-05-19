@@ -109,47 +109,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     k8s_beta = client.ExtensionsV1beta1Api()
 
     #get DAG and home machine info
-    """
-    Example dag_info and temp_info:
-    
-    Printing DAG:
-    ['task0',
-     {'task0': ['1', 'true', 'task1', 'task2'],
-      'task1': ['1', 'true', 'task3'],
-      'task2': ['1', 'true', 'task3'],
-      'task3': ['2', 'true', 'home']},
-     {'task0': ['node1',
-                0.16960351262061335,
-                'node3',
-                0.4178843543834354,
-                'node5',
-                0.41251213299595124],
-      'task1': ['node2', 0.7290640758913959, 'node7', 0.2709359241086041],
-      'task2': 'node6',
-      'task3': 'node4'}]
-      
-    Printing schedule
-    ['task0',
-     {'task0': ['1', 'true', 'task1', 'task2'],
-      'task1': ['1', 'true', 'task3'],
-      'task2': ['1', 'true', 'task3'],
-      'task3': ['2', 'true', 'home']},
-     {'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01'],
-      'task0': ['task0',
-                'ubuntu-s-1vcpu-2gb-nyc3-01',
-                'task0',
-                'ubuntu-s-1vcpu-2gb-sfo2-03',
-                'task0',
-                'ubuntu-s-1vcpu-2gb-sfo2-01'],
-      'task1': ['task1',
-                'ubuntu-s-1vcpu-2gb-nyc3-02',
-                'task1',
-                'ubuntu-s-1vcpu-2gb-sfo2-02'],
-      'task2': ['task2', 'ubuntu-s-1vcpu-2gb-sfo2-04'],
-      'task3': ['task3', 'ubuntu-s-1vcpu-2gb-sfo2-05']},
-      {NODES}]
-    
-    """
     nodename_to_DNS = temp_info[3]
     first_task = dag_info[0]
     dag = dag_info[1]
@@ -213,21 +172,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             kubectl get pod -n "namespace name"
         
         For the purpose of split, assign a pod for each task's replica
-        Exampel dag_info:
-        ['task0',
-         {'task0': ['1', 'true', 'task1', 'task2'],
-          'task1': ['1', 'true', 'task3'],
-          'task2': ['1', 'true', 'task3'],
-          'task3': ['2', 'true', 'home']},
-         {'task0': ['node1',
-                    0.16960351262061335,
-                    'node3',
-                    0.4178843543834354,
-                    'node5',
-                    0.41251213299595124],
-          'task1': ['node2', 0.7290640758913959, 'node7', 0.2709359241086041],
-          'task2': 'node6',
-          'task3': 'node4'}]
     """ 
     mapp = dag_info[2]
     # mapping from task name to its number of replicas
@@ -270,11 +214,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             print(e)
             print("Exception Occurred")
 
-    print("############################################################################################################")
-    print(mapp)
-    print(all_tasks)
-    print(replicas)
-    print("############################################################################################################")
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
     
@@ -306,8 +245,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             task_nodename_portion[key][nodename_to_DNS[subkey][0]] = subval
     task_nodename_portion['home'] = {}
     task_nodename_portion['home'][nodename_to_DNS['home'][0]] = 1.000
-    print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
-    print(replicas)
+    
     for key, value in dag.items():
         for i in range(1, replicas[key]+1):
             task = key + '-' + str(i)
@@ -328,48 +266,9 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                 If a pod (task0) has multiple child (task1, task2), among them, task1 has 3 child replicas, task2 has just one,
                 inject the ENV this way task1-1/{portion1}:task1-2/{portion2}:task1-3/{portion3}:task2-1/1.0
             """
-            """
-            mapp:
-            {'task0': ['node1',
-                        0.16960351262061335,
-                        'node3',
-                        0.4178843543834354,
-                        'node5',
-                        0.41251213299595124],
-              'task1': ['node2', 0.7290640758913959, 'node7', 0.2709359241086041],
-              'task2': 'node6',
-              'task3': 'node4'}
-            DAG
-            {'task0': ['1', 'true', 'task1', 'task2'],
-              'task1': ['1', 'true', 'task3'],
-              'task2': ['1', 'true', 'task3'],
-              'task3': ['2', 'true', 'home']}
-            replicas: {task1 -> 3; task2 -> 1}
-            
-            Example hosts:
-            {'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01'],
-              'task0': ['task0',
-                        'ubuntu-s-1vcpu-2gb-nyc3-01',
-                        'task0',
-                        'ubuntu-s-1vcpu-2gb-sfo2-03',
-                        'task0',
-                        'ubuntu-s-1vcpu-2gb-sfo2-01'],
-              'task1': ['task1',
-                        'ubuntu-s-1vcpu-2gb-nyc3-02',
-                        'task1',
-                        'ubuntu-s-1vcpu-2gb-sfo2-02'],
-              'task2': ['task2', 'ubuntu-s-1vcpu-2gb-sfo2-04'],
-              'task3': ['task3', 'ubuntu-s-1vcpu-2gb-sfo2-05']}
-              
-            """
             inputnum = str(value[0])
             flag = str(value[1])
-            
-            #nodename_to_portion = {}
-            #for task in task_node_portion:
-            #    for nodeid, portion in task_node_portion[task].items():
-            #        nodename_to_portion[nodename_to_DNS[nodeid][0]] = task_node_portion[task][nodeid]
-            
+                   
             for i in range(2,len(value)):
                 child_hostnames = []
                 child_hostportions = []
@@ -390,13 +289,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             next_svc = next_svc.rstrip(':')
             pod_name = app_name+"-"+task
             #Generate the yaml description of the required deployment for each task
-            print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
-            print(hosts)
-            print(task)
-            print(task.split('-')[0])
-            print(int(task.split('-')[-1])*2-1)
             node_name_here = hosts[task.split('-')[0]][int(task.split('-')[-1])*2-1]
-            print(node_name_here)
             dep = write_circe_deployment_specs(name = pod_name, node_name = node_name_here,
                 image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
                 child_ips = next_svc, host = node_name_here, dir = '{}',
@@ -405,8 +298,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                 all_node = all_node,
                 all_node_ips = all_node_ips,
                 flag = str(flag), inputnum = str(inputnum))
-            # pprint(dep)
-            
 
             # # Call the Kubernetes API to create the deployment
             try:
@@ -421,10 +312,14 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         if check_status_circe(dag,app_name):
             break
         time.sleep(30)
-
-
-
-    # print(service_ips)
+    
+    # get a list of home child's (consider task0) replicas and portion
+    entry_task = jupiter_config.HOME_CHILD
+    pot = hosts[entry_task]
+    print("######################################################################################")
+    print(pot)
+    print(mapp)
+    
     home_name =app_name+"-home"
     home_dep = write_circe_home_specs(name=home_name,image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
@@ -438,7 +333,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
         print("Home deployment created")
         print("Home deployment created. status = '%s'" % str(resp.status))
-        # print(resp)
     except ApiException as e:
         print(e)
        
