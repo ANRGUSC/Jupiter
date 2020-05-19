@@ -185,14 +185,14 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     # #     First create the home node's service.
     
     print('First create the home node service')
-    home_name =app_name+"-home-1"
+    home_name =app_name+"-home"
     home_body = write_circe_service_specs(name = home_name)
     
     try:
         ser_resp = api.create_namespaced_service(namespace, home_body)
         print("Home service created. status = '%s'" % str(ser_resp.status))
         resp = api.read_namespaced_service(home_name, namespace)
-        service_ips['home-1'] = resp.spec.cluster_ip
+        service_ips['home'] = resp.spec.cluster_ip
     except ApiException as e:
         print(e)
         print("Exception Occurred")
@@ -303,8 +303,8 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     for key, val in task_node_portion.items():
         for subkey, subval in val.items():
             task_nodename_portion[key][nodename_to_DNS[subkey][0]] = subval
-    task_nodename_portion['home-1'] = {}
-    task_nodename_portion['home-1'][nodename_to_DNS['home'][0]] = 1.000
+    task_nodename_portion['home'] =
+    task_nodename_portion['home'][nodename_to_DNS['home'][0]] = 1.000
     print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ DEBUG")
     print(replicas)
     for key, value in dag.items():
@@ -399,7 +399,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             dep = write_circe_deployment_specs(name = pod_name, node_name = node_name_here,
                 image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
                 child_ips = next_svc, host = node_name_here, dir = '{}',
-                home_node_ip = service_ips.get('home-1'),
+                home_node_ip = service_ips.get('home'),
                 own_ip = service_ips[task],
                 all_node = all_node,
                 all_node_ips = all_node_ips,
@@ -424,7 +424,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
 
 
     # print(service_ips)
-    home_name =app_name+"-home-1"
+    home_name =app_name+"-home"
     home_dep = write_circe_home_specs(name=home_name,image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
                                 child = jupiter_config.HOME_CHILD,
