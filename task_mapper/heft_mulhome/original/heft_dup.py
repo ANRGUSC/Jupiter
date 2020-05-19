@@ -420,7 +420,7 @@ class HEFT:
         input: an array of links and an array of processors (with takeup time)
         output: id of bottleneck resource (string)
         """
-        max_time = 0.0
+        max_time = 0
         btnk_id = ""
         for link in self.links:
             if len(link.time_line) != 0:
