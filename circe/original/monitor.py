@@ -32,6 +32,7 @@ from collections import Counter
 import _thread
 import logging
 from multiprocessing import Process, Manager
+import random
 
 
 
@@ -224,12 +225,19 @@ class Handler1(pyinotify.ProcessEvent):
         ts = time.time()
         # establish a hashmap, every key must have exactly one file transfer, within each key, 
         # randomly choose a destination based on portion
-        # example: {task0 : [task0-1, 0.3, task0-2, 0.7], task1 : [task1, 1.0]}
+        # example: {task0 : [task0-1, 0.3, username, password, task0-2, 0.7, username, password], task1 : [task1, 1.0, U, P]}
         mapp = {}
-        inputs = sys.argv[3]
-        print(inputs)
-        print(type(inputs))
-        #task = 
+        for i in range(3, len(sys.argv)-1,4):
+            taskname = sys.argv[i].split('-')[0]
+            task = sys.argv[i].split('/')[0]
+            portion = sys.argv[i].split('/')[1]
+            if not taskname in mapp:
+                mapp[taskname] = []
+            mapp[taskname].append(task)
+            mapp[taskname].append(portion)
+            mapp[taskname].append(sys.argv[i+2])
+            mapp[taskname].append(sys.argv[i+3])
+
         if taskname == 'distribute':
             print('This is the distribution point')
             ts = time.time()
@@ -294,14 +302,15 @@ class Handler1(pyinotify.ProcessEvent):
             destination = os.path.join('/centralized_scheduler', 'input', new_file)
 
 
-            for i in range(3, len(sys.argv)-1,4):
-                cur_tasks.append(sys.argv[i])
-                users.append(sys.argv[i+2])
-                passwords.append(sys.argv[i+3])
-
+            #for i in range(3, len(sys.argv)-1,4):
+            #    cur_tasks.append(sys.argv[i])
+            #    users.append(sys.argv[i+2])
+            #    passwords.append(sys.argv[i+3])
+                
+            # example mapp: {task0 : [task0-1, 0.3, username, password, task0-2, 0.7, username, password], task1 : [task1, 1.0, U, P]}
+            self.random_select(cur_tasks, users, passwords, mapp)          
             destinations = [destination] *len(cur_tasks)
             sources = [source]*len(cur_tasks)
-                
             transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
             
         else:
@@ -343,8 +352,43 @@ class Handler1(pyinotify.ProcessEvent):
 
                 transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
                 files_out=[]
-
-
+                
+    # example mapp: {task0 : [task0-1, 0.3, username, password, task0-2, 0.7, username, password], task1 : [task1, 1.0, U, P]}
+    def random_select(cur_tasks, users, passwords, mapp):
+        
+        for taskname in mapp:
+            info = mapp[taskname]
+            chosen_task = ""
+            usr = ""
+            pwd = ""
+            if len(info) == 4:
+                chosen_task = info[0]
+                usr = info[2]
+                pwd = info[3]
+            else:
+                rand = random.randint(1, 1000)
+                probs = []
+                for k in range(len(info)):
+                    if k % 4 == 1:
+                        probs.append(1000 * float(info[k]))
+                for k in range(len(probs)-1):
+                    probs[k+1] = probs[k] + probs[k+1]
+                probs[len(probs)-1] = 1000
+                if rand <= probs[0]:
+                    chosen_task = info[0]
+                else:
+                    for k in range(len(probs)-1):
+                        if rand > probs[k] and rand <= probs[k+1]:
+                            chosen_task = info[4*(k+1)]
+                idx = info.index(chosen_task)
+                usr = info[idx+2]
+                pwd = info[idx+3]
+            print("chosen task instance")
+            print(chosen_task)
+            cur_tasks.append(chosen_task)
+            users.append(usr)
+            passwords.append(pwd)
+                
 
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
