@@ -140,13 +140,16 @@ def parse_dag_configuration(app_config, app_path):
             elif task['output_policy'] == 'NONE':
                 f.write(' ' + 'none')
 
-            if task['children'] is not None:
-                for child in task['children']:
-                    if child not in tasklist:
-                        logging.error("At least one child task does not " +
-                                      "exist in task_list. Aborting!")
-                        exit()
-                    f.write(' ' + child)
+            try:
+                if task['children'] is not None:
+                    for child in task['children']:
+                        if child not in tasklist:
+                            logging.error("At least one child task does not " +
+                                          "exist in task_list. Aborting!")
+                            exit()
+                        f.write(' ' + child)
+            except KeyError:
+                logging.debug("no children for task {}".format(task['name']))
 
             f.write('\n')
 
