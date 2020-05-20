@@ -21,6 +21,7 @@ import logging
 from pathlib import Path
 import k8s_get_service_ips 
 from k8s_sink_scheduler import *
+from k8s_stream_scheduler import *
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -294,6 +295,8 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
 
     pprint(service_ips)
     logging.debug('Successfully deploy CIRCE dispatcher')
+
+    k8s_stream_scheduler(app_name)
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'CIRCE deployend %f \n'%(end_time)
