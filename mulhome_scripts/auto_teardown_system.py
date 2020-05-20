@@ -30,6 +30,7 @@ from delete_all_exec import *
 from delete_all_profilers import *
 from delete_all_globalinfo import *
 from delete_all_sink import *
+from delete_all_stream import *
 
 from flask import Flask, request
 import datetime
