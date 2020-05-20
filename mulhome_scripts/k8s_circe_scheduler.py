@@ -357,7 +357,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     home_dep = write_circe_home_specs(name=home_name,image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
                                 child = child_spec,
-                                child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
+                                child_ips = child_spec_ips, 
                                 appname = app_name,
                                 appoption = jupiter_config.APP_OPTION,
                                 dir = '{}')
