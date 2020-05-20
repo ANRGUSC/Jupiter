@@ -265,7 +265,6 @@ class MyHandler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
     """
 
-
     def process_IN_CLOSE_WRITE(self, event):
         """On every node, whenever there is scheduling information sent from the central network profiler:
             - Connect the database
@@ -302,10 +301,10 @@ class MyHandler(pyinotify.ProcessEvent):
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
+
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
     """
-
 
     def process_IN_CLOSE_WRITE(self, event):
         """On every node, whenever there is scheduling information sent from the central network profiler:
@@ -332,15 +331,45 @@ class Handler(pyinotify.ProcessEvent):
         start_times[inputfile] = t
         new_file_name = os.path.split(event.pathname)[-1]
 
-
-        #This part should be optimized to avoid hardcoding IP, user and password
-        #of the first task node
+        # This part should be optimized to avoid hardcoding IP, user and password
+        # of the first task node
         # IP = os.environ['CHILD_NODES_IPS']
-        ID = os.environ['CHILD_NODES']
+        # With split, example ENVs on CIRCE home node
+        # CHILD_NODES=task0-1/0.158:task0-2/0.363:task0-3/0.479
+        # CHILD_NODES_IPS=10.102.129.178/0.158:10.99.13.47/0.363:10.106.166.88/0.479
+        # for now only support one child node on home node
+        child_nodes = os.environ['CHILD_NODES']
         source = event.pathname
+        ID = self.random_select(child_nodes)
         destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
         transfer_data(ID,username, password,source, destination)
-
+              
+    def random_select(self, child_nodes):
+        
+        # CHILD_NODES=task0-1/0.158:task0-2/0.363:task0-3/0.479
+        tmp = child_nodes.split(':')
+        tasks = []
+        probs = []
+        for var in tmp:
+            tasks.append(var.split('/')[0])
+            probs.append(var.split('/')[1])
+        if len(probs) == 1:
+            return tasks[0]
+        chosen_task = ""
+        rand = random.randint(1, 1000)
+        probs = [1000*float(v) for v in probs]
+        for k in range(len(probs)-1):
+            probs[k+1] = probs[k] + probs[k+1]
+        probs[len(probs)-1] = 1000
+        if rand <= probs[0]:
+            chosen_task = tasks[0]
+        else:
+            for k in range(len(probs)-1):
+                if rand > probs[k] and rand <= probs[k+1]:
+                    chosen_task = tasks[k+1]
+        return chosen_task
+        
+            
 def main():
     """
         -   Read configurations (DAG info, node info) from ``nodes.txt`` and ``configuration.txt``

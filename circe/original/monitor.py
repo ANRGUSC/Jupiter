@@ -354,7 +354,7 @@ class Handler1(pyinotify.ProcessEvent):
                 files_out=[]
                 
     # example mapp: {task0 : [task0-1, 0.3, username, password, task0-2, 0.7, username, password], task1 : [task1, 1.0, U, P]}
-    def random_select(cur_tasks, users, passwords, mapp):
+    def random_select(self, cur_tasks, users, passwords, mapp):
         
         for taskname in mapp:
             info = mapp[taskname]
