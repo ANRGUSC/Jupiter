@@ -208,6 +208,7 @@ def main():
     # interval = 5
     data_path = "generated_stream"
     original_data_path = "data"
+    time.sleep(30) #waiting for the circe home to be deployed
     # Generate streaming data
     # _thread.start_new_thread(gen_stream_data,(interval,data_path,original_data_path))  
 

@@ -1,0 +1,78 @@
+ 
+node_list:
+  home: k8sworkersb-ubuntu-s-4vcpu-8gb-0-lon1 
+  node1: k8sworkersb-ubuntu-s-4vcpu-8gb-1-sfo2
+  node2: 8sworkersb-ubuntu-s-4vcpu-8gb-2-sfo2
+  datasource1: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1
+application:
+  ports:
+    # these ports are to be exposed by app docker containers and also exposed via k8s service
+    # available range: 50000-60000
+    - 57021
+  num_tasks: 26
+  task_list:
+    home: home  #TODO
+    sources:
+      - datasource1
+    sinks:
+    worker_tasks:
+      - name: task0
+        node_placement: n2
+        inputs_to_wait_for: 1
+        output_policy: BATCHED_ROUND_ROBIN
+        children:  # child order determines round robin sequence
+          - task2
+          - task1
+        infile_prefix: homeout
+        outfile_prefix: outtask0
+        dag_task: True
+      - name: task1
+        inputs_to_wait_for: 1
+        output_policy: BATCHED_ROUND_ROBIN
+        children:
+          - task4
+          - task3
+          - task6
+        infile_prefix: outtask0
+        outfile_prefix: outtask1
+        dag_task: False
+      - name: task2
+        inputs_to_wait_for: 1
+        output_policy: BATCHED_ROUND_ROBIN
+        children:
+          - task5
+          - task6
+        infile_prefix: outtask0
+        outfile_prefix: outtask2
+        dag_task: True
+      - name: task3
+        inputs_to_wait_for: 3
+        output_policy: POINT_TO_POINT_BROADCAST
+        children:
+          - task6
+        infile_prefix: outtask1
+        outfile_prefix: outtask3
+        dag_task: True
+      - name: task4
+        inputs_to_wait_for: 3
+        output_policy: POINT_TO_POINT_BROADCAST
+        children:
+          - task6
+        infile_prefix: outtask1
+        outfile_prefix: outtask4
+        dag_task: True
+      - name: task5
+        inputs_to_wait_for: 2
+        output_policy: BATCHED_ROUND_ROBIN
+        children: 
+        infile_prefix: outtask2
+        outfile_prefix: outtask5
+        dag_task: False
+      - name: task6
+        inputs_to_wait_for: 5
+        output_policy: BATCHED_ROUND_ROBIN
+        children:
+          - home
+        infile_prefix: outtask
+        outfile_prefix: outtask3
+        dag_task: True
