@@ -14,10 +14,10 @@ RUN mkdir -p DAG
 
 COPY circe/decoupled_pricing/start_worker_controller.sh /start.sh
 
-ADD app_specific_files/demo/configuration.txt DAG/DAG_application.txt
-# ADD app_specific_files/demo/input_node.txt DAG
-# ADD app_specific_files/demo/sample_input/1botnet.ipsum /1botnet.ipsum
-ADD app_specific_files/demo/sample_input /
+ADD app_specific_files/demoprice/configuration.txt DAG/DAG_application.txt
+# ADD app_specific_files/demoprice/input_node.txt DAG
+# ADD app_specific_files/demoprice/sample_input/1botnet.ipsum /1botnet.ipsum
+ADD app_specific_files/demoprice/sample_input /
 
 ADD jupiter_config.ini /jupiter_config.ini
 

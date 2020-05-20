@@ -38,22 +38,22 @@ RUN mkdir -p /centralized_scheduler/output
 RUN mkdir -p /home/darpa/apps/data
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/demo/scripts/ /centralized_scheduler/
+ADD app_specific_files/demoprice/scripts/ /centralized_scheduler/
 
 ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py
 
 ADD circe/decoupled_pricing/start_worker_compute.sh /start.sh
 ADD mulhome_scripts/keep_alive.py /centralized_scheduler/keep_alive.py
-ADD app_specific_files/demo/configuration.txt  /centralized_scheduler/dag.txt
-ADD app_specific_files/demo/scripts/config.json /centralized_scheduler/config.json
-# ADD app_specific_files/demo/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
-ADD app_specific_files/demo/sample_input/ /centralized_scheduler/
+ADD app_specific_files/demoprice/configuration.txt  /centralized_scheduler/dag.txt
+ADD app_specific_files/demoprice/scripts/config.json /centralized_scheduler/config.json
+# ADD app_specific_files/demoprice/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD app_specific_files/demoprice/sample_input/ /centralized_scheduler/
 ADD nodes.txt /centralized_scheduler/nodes.txt
 
 ADD circe/decoupled_pricing/compute.py /centralized_scheduler/compute.py
 ADD circe/decoupled_pricing/readconfig.py /readconfig.py
-ADD app_specific_files/demo/name_convert.txt /centralized_scheduler/name_convert.txt
+ADD app_specific_files/demoprice/name_convert.txt /centralized_scheduler/name_convert.txt
 
 RUN chmod +x /start.sh
 
