@@ -224,7 +224,9 @@ def transfer_data_scp(ID,user,pword,source, destination):
     while retry < num_retries:
         try:
             nodeIP = combined_ip_map[ID]
+            print(nodeIP)
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
+            print(cmd)
             os.system(cmd)
             print('data transfer complete\n')
             ts = time.time()
