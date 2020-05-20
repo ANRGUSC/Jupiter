@@ -464,6 +464,8 @@ def main():
     }
     program args: $INPUTNUM $FLAG $INPUT_ARGS $TASK
     """
+    print("###########################################################    DEBUG    ###################################################")
+    print(os.environ)
     configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
     taskname = taskmap[0]
@@ -473,9 +475,6 @@ def main():
     #target port for SSHing into a container
     filenames=[]
     files_out=[]
-    
-    print("###########################################################    DEBUG    ###################################################")
-    print(os.environ)
     
     node_name = os.environ['NODE_NAME']
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
