@@ -219,6 +219,8 @@ def transfer_data_scp(ID,user,pword,source, destination):
     #the child nodes
     retry = 0
     ts = -1
+    print("############################# DEBUG #############################")
+    print(ID, user, pword, source, destination)
     while retry < num_retries:
         try:
             nodeIP = combined_ip_map[ID]
@@ -340,8 +342,11 @@ class Handler(pyinotify.ProcessEvent):
         # for now only support one child node on home node
         child_nodes = os.environ['CHILD_NODES']
         source = event.pathname
+        print("child_nodes")
+        print(child_nodes)
         ID = self.random_select(child_nodes)
         destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
+        print(ID, destination)
         transfer_data(ID,username, password,source, destination)
               
     def random_select(self, child_nodes):
