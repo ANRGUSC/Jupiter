@@ -152,7 +152,7 @@ def delete_all_circe(app_name):
 
     # Check if there is a replicaset running by using the label app=home
     # The label of kubernets are used to identify replicaset associate to each task
-    label = "app="+app_name+"-home"
+    label = "app="+app_name+"-home-1"
     # label = "app=home"
     resp = extensions_v1_beta1_api.list_namespaced_replica_set(label_selector = label,namespace = namespace)
     # if a replicaset exist, delete it
