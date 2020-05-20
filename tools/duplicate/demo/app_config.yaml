@@ -136,6 +136,7 @@ application:
           - lccenc1
         infile_prefix: resnet
         outfile_prefix: storeclass1
+        dag_task: True
       - name: storeclass2
         inputs_to_wait_for: 1
         output_policy: POINT_TO_POINT_BROADCAST

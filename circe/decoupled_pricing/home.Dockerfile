@@ -14,9 +14,9 @@ RUN mkdir -p DAG
 
 COPY circe/decoupled_pricing/start_home_controller.sh /start.sh
 
-ADD app_specific_files/dummy_app_multicast/configuration.txt DAG/DAG_application.txt
-ADD app_specific_files/dummy_app_multicast/input_node.txt DAG
-ADD app_specific_files/dummy_app_multicast/sample_input /
+ADD app_specific_files/demo/configuration.txt DAG/DAG_application.txt
+# ADD app_specific_files/demo/input_node.txt DAG
+ADD app_specific_files/demo/sample_input /
 
 ADD jupiter_config.ini /jupiter_config.ini
 

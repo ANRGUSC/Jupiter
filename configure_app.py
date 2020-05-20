@@ -69,9 +69,7 @@ def identify_dag_tasks(app_config, app_path):
     }
 
     for task in app_config['application']['task_list']['worker_tasks']:
-        print(task)
         taskname = task['name']
-        print(taskname)
         if task['dag_task'] is True:
             dag_indicator['taskname_map'][taskname] = [taskname, True]
             dag_indicator['exec_profiler'][taskname] = True

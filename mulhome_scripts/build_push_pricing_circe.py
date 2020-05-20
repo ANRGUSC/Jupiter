@@ -307,6 +307,8 @@ def build_push_decoupled_pricing_circe():
     os.system("sudo docker build -f worker_compute.Dockerfile ../.. -t "
                                  + jupiter_config.WORKER_COMPUTE_IMAGE)
 
+    os.system("sudo docker push " + jupiter_config.WORKER_COMPUTE_IMAGE)
+
 if __name__ == '__main__':
     jupiter_config.set_globals() 
     pricing_option = jupiter_config.PRICING

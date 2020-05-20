@@ -26,7 +26,7 @@ RUN mkdir -p DAG
 COPY circe/{pricing_option}/start_home_controller.sh /start.sh
 
 ADD {app_file}/configuration.txt DAG/DAG_application.txt
-ADD {app_file}/input_node.txt DAG
+# ADD {app_file}/input_node.txt DAG
 ADD {app_file}/sample_input /
 
 ADD jupiter_config.ini /jupiter_config.ini
@@ -62,7 +62,7 @@ RUN mkdir -p DAG
 COPY circe/{pricing_option}/start_worker_controller.sh /start.sh
 
 ADD {app_file}/configuration.txt DAG/DAG_application.txt
-ADD {app_file}/input_node.txt DAG
+# ADD {app_file}/input_node.txt DAG
 # ADD {app_file}/sample_input/1botnet.ipsum /1botnet.ipsum
 ADD {app_file}/sample_input /
 
@@ -162,7 +162,8 @@ ADD circe/{pricing_option}/start_home_compute.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
 ADD {app_file}/name_convert.txt /centralized_scheduler/name_convert.txt
-ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+#ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD {app_file}/sample_input/ /centralized_scheduler/
 ADD {app_file}/scripts/config.json /centralized_scheduler/config.json
 ADD {app_file}/configuration.txt  /centralized_scheduler/dag.txt
 
@@ -191,9 +192,13 @@ RUN apt-get install iproute2 -y
 
 ## Install TASK specific needs. The hadoop is a requirement for the network profiler application
 ##RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
-RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
-RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
-RUN rm ~/hadoop-2.8.1.tar.gz
+# RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
+# RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
+# RUN rm ~/hadoop-2.8.1.tar.gz
+
+# Chien's 2nd DAG
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
+
 ADD circe/{pricing_option}/requirements_compute.txt /requirements.txt
 
 RUN pip3 install --upgrade pip
@@ -223,7 +228,8 @@ ADD circe/{pricing_option}/start_worker_compute.sh /start.sh
 ADD mulhome_scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD {app_file}/configuration.txt  /centralized_scheduler/dag.txt
 ADD {app_file}/scripts/config.json /centralized_scheduler/config.json
-ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+# ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD {app_file}/sample_input/ /centralized_scheduler/
 ADD nodes.txt /centralized_scheduler/nodes.txt
 
 ADD circe/{pricing_option}/compute.py /centralized_scheduler/compute.py
