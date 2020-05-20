@@ -42,7 +42,7 @@ def task(filelist, pathin, pathout):
     
     # Read Reference Images
     filelist_ref = [classname+str(i+1)+'_20200424.jpg' for i in range(20,30)]  # to be defined in advance
-    path_ref = os.path.join(os.path.dirname(__file__),classname) # folder of referenced images
+    path_ref = os.path.join(os.path.dirname(__file__),'reference',classname) # folder of referenced images
     
     
     for i in range(K):

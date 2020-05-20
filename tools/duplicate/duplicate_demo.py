@@ -41,11 +41,9 @@ def copy_scripts(app_path, base_path):
         shutil.copy(os.path.join(app_path,'dupscripts/config.json'),os.path.join(app_path,'scripts/config.json'))
         shutil.rmtree(os.path.join(app_path,'dupscripts'))
         shutil.copytree(os.path.join(base_path,'sample_input'),os.path.join(app_path,'sample_input'))
+        shutil.copytree(os.path.join(base_path,'reference'),os.path.join(app_path,'scripts/reference'))
     except Exception as e:
         logging.debug('Something wrong in copy scripts')
-
-    reference_path = os.path.join(app_path,'reference')
-    #copy reference images here
 
 def gen_duplicate_scripts(app_config, app_path, base_path, base_tasks):
     #copy_scripts(app_path, base_path)
