@@ -181,10 +181,28 @@ def demo_help(server,port,topic,msg):
     client.disconnect()
 
 class Handler1(pyinotify.ProcessEvent):
-    """Setup the event handler for all the events
+    """ Setup the event handler for all the events
+        sys.argv[3]: child1_task_num child1_ip child1_user child1_pw child2_task_num child2_ip child2_user child2_pw my_task
+        
+        my child nodes are:
+        task1-1/0.323:task1-2/0.677:task2-1/1.0
+        their IPs are:
+        10.109.65.19/0.323:10.108.202.226/0.677:10.110.55.135/1.0
+        my task is:
+        task0-3
+        flag is:
+        true
+        number of inputs for my task:
+        1
+        home node is:
+        10.106.81.10
+        monitor.py input args are:
+        argv[1]: 1 
+        argv[2]: true 
+        argv[3]: task1-1/0.323 10.109.65.19/0.323 root PASSWORD task1-2/0.677 10.108.202.226/0.677 root PASSWORD task2-1/1.0 10.110.55.135/1.0 root PASSWORD
+        argv[4]: task0-3
+
     """
-
-
     def process_IN_CLOSE_WRITE(self, event):
         print("Received file as output - %s." % event.pathname)
         
@@ -204,6 +222,7 @@ class Handler1(pyinotify.ProcessEvent):
         #order given in the config file
         flag2 = sys.argv[2]
         ts = time.time()
+        # maintain a map, {}
         if taskname == 'distribute':
             print('This is the distribution point')
             ts = time.time()
@@ -388,7 +407,9 @@ def main():
         -   Prepare the list of children tasks for every parent task
         -   Generating monitoring process for ``INPUT`` folder.
         -   Generating monitoring process for ``OUTPUT`` folder.
-        -   If there are enough input files for the first task on the current node, run the first task. 
+        -   If there are enough input files for the first task on the current node, run the first task.
+        -   Upon receiving input, just process using task on this pod
+        -   Output: generate a random number and decide which child to send to
 
     """
 
@@ -434,41 +455,10 @@ def main():
 
 
     global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
-    """
-    Example config.json
-    {
-      "exec_profiler": {
-        "task0": true, 
-        "task1": true, 
-        "task2": true, 
-        "task3": true
-      }, 
-      "taskname_map": {
-        "task0": [
-          "task0", 
-          true
-        ], 
-        "task1": [
-          "task1", 
-          true
-        ], 
-        "task2": [
-          "task2", 
-          true
-        ], 
-        "task3": [
-          "task3", 
-          true
-        ]
-      }
-    }
-    program args: $INPUTNUM $FLAG $INPUT_ARGS $TASK
-    """
-    print("###########################################################    DEBUG    ###################################################")
-    print(os.environ)
+    
     configs = json.load(open('/centralized_scheduler/config.json'))
-    taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
-    taskname = taskmap[0]
+    taskname = sys.argv[len(sys.argv)-1].split("-")[0]
+    taskmap = configs["taskname_map"][taskname]
     if taskmap[1] == True:
         taskmodule = __import__(taskname)
 
@@ -481,8 +471,6 @@ def main():
 
     all_nodes = os.environ["ALL_NODES"].split(":")
     all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
-
-    
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH
     BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
