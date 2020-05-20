@@ -534,7 +534,12 @@ def main():
         combined_ip_map[node] = IPaddr
     print("############################# DEBUG ###################################")
     print(combined_ip_map)
-
+    new_combined_ip_map = {}
+    for key, val in combined_ip_map.items():
+        parsed_key = key.split('/')[0]
+        parsed_val = val.split('/')[0]
+        new_combined_ip_map[parsed_key] = parsed_val
+    combined_ip_map = new_combined_ip_map
 
     if taskmap[1] == True:
 
