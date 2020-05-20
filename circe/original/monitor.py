@@ -473,6 +473,10 @@ def main():
     #target port for SSHing into a container
     filenames=[]
     files_out=[]
+    
+    print("###########################################################    DEBUG    ###################################################")
+    print(os.environ)
+    
     node_name = os.environ['NODE_NAME']
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
 
@@ -480,6 +484,7 @@ def main():
     all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
 
     
+
     global BOKEH_SERVER, BOKEH_PORT, BOKEH
     BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
     BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
