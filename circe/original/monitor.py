@@ -434,7 +434,36 @@ def main():
 
 
     global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
-
+    """
+    Example config.json
+    {
+      "exec_profiler": {
+        "task0": true, 
+        "task1": true, 
+        "task2": true, 
+        "task3": true
+      }, 
+      "taskname_map": {
+        "task0": [
+          "task0", 
+          true
+        ], 
+        "task1": [
+          "task1", 
+          true
+        ], 
+        "task2": [
+          "task2", 
+          true
+        ], 
+        "task3": [
+          "task3", 
+          true
+        ]
+      }
+    }
+    program args: $INPUTNUM $FLAG $INPUT_ARGS $TASK
+    """
     configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
     taskname = taskmap[0]
