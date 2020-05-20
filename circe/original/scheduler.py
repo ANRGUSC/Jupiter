@@ -427,7 +427,13 @@ def main():
 
     global combined_ip_map
     combined_ip_map = dict()
-    combined_ip_map[os.environ['CHILD_NODES']]= os.environ['CHILD_NODES_IPS']
+    #{'task0-1/0.159:task0-2/0.364:task0-3/0.477': '10.107.147.223/0.159:10.96.120.197/0.364:10.100.198.217/0.477'
+    child_names = os.environ['CHILD_NODES'].split(':')
+    child_names = [name.split('/')[0] for name in child_names]
+    child_ips = os.environ['CHILD_NODES_IPS'].split(':')
+    child_ips = [ip.split('/')[0] for ip in child_ips]
+    for i in range(len(child_names)):
+        combined_ip_map[child_names[i]] = child_ips[i] 
 
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
