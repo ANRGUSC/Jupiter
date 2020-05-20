@@ -16,6 +16,7 @@ from k8s_circe_scheduler import *
 from k8s_pricing_circe_scheduler import *
 from k8s_exec_scheduler import *
 from k8s_heft_scheduler import *
+from k8s_globalinfo_scheduler import *
 from pprint import *
 import jupiter_config
 import requests
@@ -126,6 +127,10 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         logging.debug('*************************')
 
 
+        logging.debug('******************************')
+        logging.debug('Start the global information center')
+        k8s_globalinfo_scheduler(app_name)
+        
         node_names = utilities.k8s_get_nodes_string(path2)
         logging.debug('*************************')
 
