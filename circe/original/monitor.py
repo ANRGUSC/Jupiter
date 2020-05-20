@@ -222,7 +222,14 @@ class Handler1(pyinotify.ProcessEvent):
         #order given in the config file
         flag2 = sys.argv[2]
         ts = time.time()
-        # maintain a map, {}
+        # establish a hashmap, every key must have exactly one file transfer, within each key, 
+        # randomly choose a destination based on portion
+        # example: {task0 : [task0-1, 0.3, task0-2, 0.7], task1 : [task1, 1.0]}
+        mapp = {}
+        inputs = sys.argv[3]
+        print(inputs)
+        print(type(inputs))
+            task = 
         if taskname == 'distribute':
             print('This is the distribution point')
             ts = time.time()
@@ -240,6 +247,7 @@ class Handler1(pyinotify.ProcessEvent):
             password=sys.argv[idx+3]
             destination = os.path.join('/centralized_scheduler', 'input', new_file)
             transfer_data(next_task,user,password,source, destination)
+            
         elif sys.argv[3] == 'home':
             print('Next node is home')
             ts = time.time()
@@ -273,17 +281,11 @@ class Handler1(pyinotify.ProcessEvent):
                 msg = taskname + " ends"
                 demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
             
-            # Using unicast 
-            # for i in range(3, len(sys.argv)-1,4):
-            #     cur_task = sys.argv[i]
-            #     # IPaddr = sys.argv[i+1]
-            #     user = sys.argv[i+2]
-            #     password = sys.argv[i+3]
-            #     source = event.pathname
-            #     destination = os.path.join('/centralized_scheduler', 'input', new_file)
-            #     transfer_data(cur_task,user,password,source, destination)
-            
             # Using multicast
+            # task1-1/0.323 10.109.65.19/0.323 root PASSWORD 
+            # task1-2/0.677 10.108.202.226/0.677 root PASSWORD 
+            # task2-1/1.0 10.110.55.135/1.0 root PASSWORD
+                
             print('Using multicast instead')
             cur_tasks =[]
             users = []
@@ -301,6 +303,7 @@ class Handler1(pyinotify.ProcessEvent):
             sources = [source]*len(cur_tasks)
                 
             transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
+            
         else:
             num_child = (len(sys.argv) - 4) / 4
             files_out.append(new_file)
