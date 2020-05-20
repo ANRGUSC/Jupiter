@@ -329,6 +329,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
 
     """
     child_spec = ""
+    child_spec_ips = ""
     DNS_to_nodename = {}
     for key, val in nodename_to_DNS.items():
         DNS_to_nodename[val[0]] = key
@@ -342,15 +343,20 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         nodename = DNS_to_nodename[nodeDNS]
         idx = mapp[entry_task].index(nodename)
         portion = str(round(mapp[entry_task][idx+1], 3))
-        child_spec = child_spec + taskname + "/" + portion + ':'
-    child_spec = child_spec.rstrip(':') 
+        child_spec = child_spec + taskname + '/' + portion + ':'
+        child_spec_ips = child_spec_ips + service_ips[taskname] + '/' + portion + ':'
+    child_spec = child_spec.rstrip(':')
+    child_spec_ips = child_spec_ips.rstrip(':')
     print("######################################################################################")
-    print(mapp)
+    print("child_spec, ips")
+    print(child_spec)
+    print(child_spec_ips)
+    
     
     home_name =app_name+"-home"
     home_dep = write_circe_home_specs(name=home_name,image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
-                                child = jupiter_config.HOME_CHILD,
+                                child = child_spec,
                                 child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
                                 appname = app_name,
                                 appoption = jupiter_config.APP_OPTION,
@@ -362,9 +368,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         print("Home deployment created. status = '%s'" % str(resp.status))
     except ApiException as e:
         print(e)
-       
-
-       
 
 
     pprint(service_ips)

@@ -428,24 +428,6 @@ def main():
     rt_exec_time = defaultdict(list)
     rt_finish_time = defaultdict(list)
 
-    """
-    DAG info: something like this
-    [
-    'task0', 
-     {
-          'task0': ['1', 'false', 'task1', 'task3', 'task2', 'task4'], 
-          'task1': ['1', 'false', 'task4'], 
-          'task2': ['1', 'false', 'task5', 'task4', 'task6'], 
-          'task3': ['1', 'false', 'task5', 'task4', 'task6'], 
-          'task4': ['4', 'false', 'task6'], 
-          'task5': ['2', 'false', 'task6'], 
-          'task6': ['4', 'false', 'home']
-     }, 
-     {
-         'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01']
-     }
-    ]
-    """
     #get DAG and home machine info
     first_task = dag_info[0]
     dag = dag_info[1]
@@ -472,33 +454,6 @@ def main():
     web_server.start()
 
     # watch manager
-    """
-    filesystem change monitoring tool, something like this:
-    zxc@zxc-ThinkPad-T470-W10DG:~$ python3 -m pyinotify -v ~
-    [2020-03-14 14:56:35,773 pyinotify DEBUG] Start monitoring ['/home/zxc'], (press c^c to halt pyinotify)
-    [2020-03-14 14:56:35,773 pyinotify DEBUG] New <Watch wd=1 path=/home/zxc mask=4095 proc_fun=None auto_add=None exclude_filter=<function  
-    WatchManager.<lambda> at 0x7f022d455158> dir=True >
-    [2020-03-14 14:58:57,420 pyinotify DEBUG] Event queue size: 32
-    [2020-03-14 14:58:57,422 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x20 name=sshjupiter.sh wd=1 >
-    <Event dir=False mask=0x20 maskname=IN_OPEN name=sshjupiter.sh path=/home/zxc pathname=/home/zxc/sshjupiter.sh wd=1 >
-    [2020-03-14 14:58:57,423 pyinotify DEBUG] Event queue size: 272
-    [2020-03-14 14:58:57,424 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x100 name=sshjupiter (copy).sh wd=1 >
-    [2020-03-14 14:58:57,425 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x20 name=sshjupiter (copy).sh wd=1 >
-    [2020-03-14 14:58:57,425 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x2 name=sshjupiter (copy).sh wd=1 >
-    [2020-03-14 14:58:57,426 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x10 name=sshjupiter.sh wd=1 >
-    [2020-03-14 14:58:57,426 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x8 name=sshjupiter (copy).sh wd=1 >
-    [2020-03-14 14:58:57,426 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x4 name=sshjupiter (copy).sh wd=1 >
-    <Event dir=False mask=0x100 maskname=IN_CREATE name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-    <Event dir=False mask=0x20 maskname=IN_OPEN name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-    <Event dir=False mask=0x2 maskname=IN_MODIFY name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-    <Event dir=False mask=0x10 maskname=IN_CLOSE_NOWRITE name=sshjupiter.sh path=/home/zxc pathname=/home/zxc/sshjupiter.sh wd=1 >
-    <Event dir=False mask=0x8 maskname=IN_CLOSE_WRITE name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-    <Event dir=False mask=0x4 maskname=IN_ATTRIB name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-    [2020-03-14 14:59:15,852 pyinotify DEBUG] Event queue size: 48
-    [2020-03-14 14:59:15,852 pyinotify DEBUG] <_RawEvent cookie=38622 mask=0x40 name=sshjupiter (copy).sh wd=1 >
-    <Event cookie=38622 dir=False mask=0x40 maskname=IN_MOVED_FROM name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-
-    """
     wm = pyinotify.WatchManager()
     input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
     wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
