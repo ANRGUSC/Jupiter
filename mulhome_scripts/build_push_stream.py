@@ -32,16 +32,16 @@ def prepare_global_info():
 
     return port_list_home
     
-def build_push_STREAM():
+def build_push_stream():
     """Build STREAMer home image from Docker files and push them to the Dockerhub.
     """
 
     port_list_home = prepare_global_info()
-    import STREAM_docker_files_generator as dc 
+    import stream_docker_files_generator as dc 
 
     os.chdir(jupiter_config.STREAM_PATH)
 
-    home_file = dc.write_STREAM_home_docker(username = jupiter_config.USERNAME,
+    home_file = dc.write_stream_home_docker(username = jupiter_config.USERNAME,
                       password = jupiter_config.PASSWORD,
                       app_file = jupiter_config.APP_NAME,
                       ports = " ".join(port_list_home))
@@ -53,4 +53,4 @@ def build_push_STREAM():
 
     # os.system("rm *.Dockerfile")
 if __name__ == '__main__':
-    build_push_STREAM()
+    build_push_strean()
