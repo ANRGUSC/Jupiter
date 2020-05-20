@@ -30,7 +30,7 @@ def delete_all_stream(app_name):
     dag_info = utilities.k8s_read_config(path1)
     dag = dag_info[1]
     path2 = jupiter_config.HERE + 'nodes.txt'
-    node_list, homes,datasources = utilities.k8s_get_all_elements(path2)
+    node_list, homes,datasources,datasinks = utilities.k8s_get_all_elements(path2)
 
     logging.debug('Starting to teardown the datasources')
 
