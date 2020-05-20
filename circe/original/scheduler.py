@@ -219,9 +219,6 @@ def transfer_data_scp(ID,user,pword,source, destination):
     #the child nodes
     retry = 0
     ts = -1
-    print("############################# DEBUG #############################")
-    print(ID, user, pword, source, destination)
-    print(combined_ip_map)
     while retry < num_retries:
         try:
             nodeIP = combined_ip_map[ID]

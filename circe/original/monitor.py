@@ -532,7 +532,8 @@ def main():
         user = sys.argv[i+2]
         password = sys.argv[i+3]
         combined_ip_map[node] = IPaddr
-
+    print("############################# DEBUG ###################################")
+    print(combined_ip_map)
 
 
     if taskmap[1] == True:
