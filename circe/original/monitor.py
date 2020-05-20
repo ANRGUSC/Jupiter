@@ -229,7 +229,7 @@ class Handler1(pyinotify.ProcessEvent):
         inputs = sys.argv[3]
         print(inputs)
         print(type(inputs))
-            task = 
+        #task = 
         if taskname == 'distribute':
             print('This is the distribution point')
             ts = time.time()
