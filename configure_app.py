@@ -69,7 +69,9 @@ def identify_dag_tasks(app_config, app_path):
     }
 
     for task in app_config['application']['task_list']['worker_tasks']:
+        print(task)
         taskname = task['name']
+        print(taskname)
         if task['dag_task'] is True:
             dag_indicator['taskname_map'][taskname] = [taskname, True]
             dag_indicator['exec_profiler'][taskname] = True
@@ -137,6 +139,8 @@ def parse_dag_configuration(app_config, app_path):
                 f.write(' ' + 'ordered')
             elif task['output_policy'] == 'UNICAST':
                 f.write(' ' + 'exclusive')
+            elif task['output_policy'] == 'NONE':
+                f.write(' ' + 'none')
 
             if task['children'] is not None:
                 for child in task['children']:
