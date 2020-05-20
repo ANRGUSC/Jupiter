@@ -137,7 +137,7 @@ def delete_all_circe(app_name):
 
  
     #delete home deployment and service
-    home_name =app_name+"-home"
+    home_name =app_name+"-home-1"
     #home_name ="home"
     resp = None
     try:
