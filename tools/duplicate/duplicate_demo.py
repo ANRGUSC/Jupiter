@@ -46,7 +46,7 @@ def copy_scripts(app_path, base_path):
         logging.debug('Something wrong in copy scripts')
 
 def gen_duplicate_scripts(app_config, app_path, base_path, base_tasks):
-    #copy_scripts(app_path, base_path)
+    copy_scripts(app_path, base_path)
     tasklist = ['home']  # 'home' always exists
     for task in app_config['application']['task_list']['worker_tasks']:
         tasklist.append(task['name'])
@@ -92,10 +92,19 @@ def gen_duplicate_scripts(app_config, app_path, base_path, base_tasks):
                     basefile = os.path.join(app_path,'scripts/score1c.py')
                     newfile = app_path+'/scripts/'+ task+'.py'
                     shutil.copy(basefile,newfile)
+
+    #Copy to app_specific_files
+    try:
+        logging.debug('Copy app folder')
+        app_folder = '../../app_specific_files/demotest'
+        shutil.rmtree(app_folder)
+        shutil.copytree(app_path,app_folder)
+    except Exception as e:
+        logging.debug('Error copy app folder')
     
 if __name__ == '__main__':
     base_path = 'base'
-    app_path = 'demo'
+    app_path = 'demotest'
     app_config = load_yaml(app_path + "/app_config.yaml")
     base_tasks = ['master','collage','decoder','storeclass1','resnet0','lccenc1','lccdec1','score1a','score1b','score1c','preagg1']
     gen_duplicate_scripts(app_config, app_path, base_path, base_tasks)

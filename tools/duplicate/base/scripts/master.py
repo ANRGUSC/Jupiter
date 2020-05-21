@@ -59,6 +59,24 @@ store_class_list = ['storeclass1','storeclass2']
 store_class_tasks_dict = {}
 store_class_tasks_dict[555] = "storeclass1"
 store_class_tasks_dict[779] = "storeclass2"
+store_class_tasks_dict[270] = "storeclass3"
+store_class_tasks_dict[276] = "storeclass4"
+store_class_tasks_dict[278] = "storeclass5"
+store_class_tasks_dict[283] = "storeclass6"
+store_class_tasks_dict[288] = "storeclass7"
+store_class_tasks_dict[291] = "storeclass8"
+store_class_tasks_dict[292] = "storeclass9"
+store_class_tasks_dict[295] = "storeclass10"
+store_class_tasks_dict[298] = "storeclass11"
+store_class_tasks_dict[340] = "storeclass12"
+store_class_tasks_dict[341] = "storeclass13"
+store_class_tasks_dict[344] = "storeclass14"
+store_class_tasks_dict[345] = "storeclass15"
+store_class_tasks_dict[346] = "storeclass16"
+store_class_tasks_dict[348] = "storeclass17"
+store_class_tasks_dict[352] = "storeclass18"
+store_class_tasks_dict[354] = "storeclass19"
+store_class_tasks_dict[360] = "storeclass20"
 
 
 
