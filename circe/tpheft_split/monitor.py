@@ -256,7 +256,7 @@ class Handler1(pyinotify.ProcessEvent):
             destination = os.path.join('/centralized_scheduler', 'input', new_file)
             transfer_data(next_task,user,password,source, destination)
             
-        elif sys.argv[3] == 'home':
+        elif sys.argv[3].split('/')[0] == 'home':
             print('Next node is home')
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
@@ -354,7 +354,7 @@ class Handler1(pyinotify.ProcessEvent):
                 files_out=[]
                 
     # example mapp: {task0 : [task0-1, 0.3, username, password, task0-2, 0.7, username, password], task1 : [task1, 1.0, U, P]}
-    def random_select(cur_tasks, users, passwords, mapp):
+    def random_select(self, cur_tasks, users, passwords, mapp):
         
         for taskname in mapp:
             info = mapp[taskname]
@@ -532,8 +532,14 @@ def main():
         user = sys.argv[i+2]
         password = sys.argv[i+3]
         combined_ip_map[node] = IPaddr
-
-
+    print("############################# DEBUG ###################################")
+    print(combined_ip_map)
+    new_combined_ip_map = {}
+    for key, val in combined_ip_map.items():
+        parsed_key = key.split('/')[0]
+        parsed_val = val.split('/')[0]
+        new_combined_ip_map[parsed_key] = parsed_val
+    combined_ip_map = new_combined_ip_map
 
     if taskmap[1] == True:
 
