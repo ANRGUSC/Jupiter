@@ -141,13 +141,13 @@ class Duplication:
             if procid_to_max_time[key] < min_btnk:
                 min_btnk = procid_to_max_time[key]
                 node = key
-        print("###################################################################################################")
-        print((node, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks), files_to_dst, files_from_src))
+            
         if min_btnk >= btnk_time: # no point for duplication
             return (-1, time.time())
         return (node, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks), files_to_dst, files_from_src)
     
     
+    # all these params are passed by reference, thus changing them would change original ones too
     def duplicate(self, links, processors, tasks, comp_cost, data, quaratic_profile, btnk_id, new_node,
                   min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, task_names, files_to_dst, files_from_src):
         """
@@ -220,20 +220,14 @@ class Duplication:
             old_link = self.get_link_by_id(str(pt.processor_num) + '_' + str(src_proc.number))
             for ld in old_link.time_line:
                 new_link.time_line.append(hd.LinkDuration(ld.start_task_num, ori_to_dup[ld.end_task_num], ld.start, ld.end))
-        
-        path = 'dag.txt'
-        rewrite_graph_file(path, data, task_names)
-        return True
-        
+    
     def get_link_by_id(self, links, link_id):
         for link in links:
             if link.id == link_id:
                 return link
     
-    
     def get_proc_by_id(self, processors, proc_id):
         return processors[proc_id]
-    
                 
     def get_procs_by_tasks(self, processors):
         task_to_proc = {}
@@ -244,64 +238,52 @@ class Duplication:
                 for duration in proc.time_line:
                     task_to_proc[duration.task_num] = proc.number
         return task_to_proc
-    
             
     def cal_comm_quadratic(self, file_size, quaratic_profile):
         return (np.square(file_size)*quaratic_profile[0] + file_size*quaratic_profile[1] + quaratic_profile[2]) 
     
-    
-    def construct_graph(self, data):
-        
-        size = len(data)
-        adjList = [[] for n in range(size)]
-        for parent in range(size):
-            for child in range(size):
-                if data[parent][child] > 0:
-                    adjList[parent].append(child)
-        return adjList
-    
-    
-    def rewrite_graph_file(path, data, task_names):
-        
-        adjList = self.construct_graph(data)
+    def create_graph(path, data, task_names, parent_tasks, tasks_to_dup, new_tasks):
+        # construct a graph
+        f = open(path, "r")
         name_to_id = {}
         num = 0
         for name in task_names:
             name_to_id[name] = num
             num += 1
-        taskname_to_numinput = {}
-        taskname_to_flag = {}
-        f = open(path, "r")
-        """
-        Example graph:
-        4
-        task0 1 true task1 task2
-        task1 1 true task3
-        task2 1 true task3
-        task3 2 true home
-        """
-        line = f.readline().rstrip('\n')
+        graph = []
         while(1):
             line = f.readline().rstrip('\n')
             if len(line) == 0:
                 break
-            info = line.split(' ')
-            name = info[0]
-            num_inputs[name] = info[1]
-            flags[name] = info[2]
+            graph.append(line.aplit(" "))
+        print("---------------------- adjList of original graph --------------------------")
+        print(graph)
+        """
+        example graph:
+        [['4'], ['task0', '1', 'true', 'task1', 'task2'], ['task1', '1', 'true', 'task3'], 
+         ['task2', '1', 'true', 'task3'], ['task3', '2', 'true', 'home']]
+        """
+        graph[0][0] = str(len(data))
+        
         f.close()
-        for name in task_names:
-            if not name in takename_to_flag:
-                taskname_to_numinput[name] = taskname_to_numinput[name.split('-')]
-                taskname_to_flag[name] = taskname_to_flag[name.split('-')]
-        f = open(path, "w")
-        for tid in rannge(len(adjList)):
-            tname = task_names[tid]
-            newline =  tname + " " + taskname_to_numinput[tname] + " " + taskname_to_flag[tname]
-            for cid in adjList[tid]:
-                newline = newline + " " + task_names[cid]
-            newline += '\n'
-            f.write(newline)
-        f.close()
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
