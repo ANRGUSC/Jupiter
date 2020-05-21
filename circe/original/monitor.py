@@ -256,7 +256,7 @@ class Handler1(pyinotify.ProcessEvent):
             destination = os.path.join('/centralized_scheduler', 'input', new_file)
             transfer_data(next_task,user,password,source, destination)
             
-        elif sys.argv[3] == 'home':
+        elif sys.argv[3].split('/')[0] == 'home':
             print('Next node is home')
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
