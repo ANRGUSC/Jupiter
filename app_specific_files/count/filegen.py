@@ -13,7 +13,7 @@ def main():
         cmd = "touch input/input%s" % str(input_id)
         os.system(cmd)
         input_id += 1
-        time.sleep(int(sys.argv[2]))
+        time.sleep(float(sys.argv[2]))
         
 if __name__ == '__main__':
 
