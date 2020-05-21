@@ -69,6 +69,8 @@ def task(file_, pathin, pathout):
             #distrib = np.load('/home/collage_inference/resnet/latency_distribution.npy')
             # s = np.random.choice(distrib)
             ### Copy to appropriate destination paths
+            logging.debug(os.path.join(pathin, f))
+            logging.debug(pred[0])
             if pred[0] == 555: ### fire engine. class 1
                 source = os.path.join(pathin, f)
                 # f_split = f.split("prefix_")[1]

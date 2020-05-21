@@ -227,8 +227,8 @@ def task(file_, pathin, pathout):
 
         #Krishna
         # purposely add delay time to slow down the sending
-        time.sleep(3) #>=2 
-        return [] #slow resnet node: return empty
+        # time.sleep(3) #>=2 
+        # return [] #slow resnet node: return empty
         send_prediction_to_decoder_task(pred[0], decoder_node_port)
         #Krishna
     return out_list

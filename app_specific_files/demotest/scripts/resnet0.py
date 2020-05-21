@@ -181,7 +181,7 @@ def task(file_, pathin, pathout):
                 destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass15_"+ f)
                 # destination = os.path.join(pathout, "storeclass2_" + f)
                 out_list.append(shutil.copyfile(source, destination))
-            elif pred[0] == 346: ### buffallo. class 16
+            elif pred[0] == 346: ### bufallo. class 16
                 source = os.path.join(pathin, f)
                 # f_split = f.split("prefix_")[1]
                 # destination = os.path.join(pathout, "class2_" + f)
@@ -227,8 +227,8 @@ def task(file_, pathin, pathout):
 
         #Krishna
         # purposely add delay time to slow down the sending
-        time.sleep(3) #>=2 
-        return [] #slow resnet node: return empty
+        # time.sleep(3) #>=2 
+        # return [] #slow resnet node: return empty
         send_prediction_to_decoder_task(pred[0], decoder_node_port)
         #Krishna
     return out_list

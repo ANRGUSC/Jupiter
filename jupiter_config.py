@@ -254,8 +254,15 @@ def set_globals():
     NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
     STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
 
-    global STREAM_IMAGE
+    global STREAM_IMAGE, STREAM_IMAGES
     STREAM_IMAGE = 'docker.io/anrg/stream_home:%s_%s'%(APP_OPTION,cluster_option)
+
+    demosources = ['fireengine','schoolbus','whitewolf','hyena','kitfox','persiancat','leopard','lion',
+                        'tiger','blackbear','mongoose','zebra','hog','hippo','ox','buffalo','ram',
+                        'impala','camel','otter']
+    STREAM_IMAGES = []
+    for idx,datasource in enumerate(demosources):
+        STREAM_IMAGES[idx] = 'docker.io/anrg/streams_home:%s_%s_%s'%(APP_OPTION,cluster_option,datasource)
 
     global SINK_IMAGE
     SINK_IMAGE = 'docker.io/anrg/sink_home:%s_%s'%(APP_OPTION,cluster_option)
