@@ -159,8 +159,8 @@ class Duplication:
             2.3 add children to parent source tasks
         """
         print("1234567890987654321")
-        tasks_to_dup = tasks[i for i in task_ids_to_dup]
-        tasts_to_recv = tasks[i for i in task_ids_to_recv]
+        tasks_to_dup = [tasks[i] for i in task_ids_to_dup]
+        tasts_to_recv = [tasks[i] for i in task_ids_to_recv]
         src_proc = self.get_proc_by_id(processors, btnk_id.split('_')[0])
         dst_proc = self.get_proc_by_id(processors, btnk_id.split('_')[1])
         
