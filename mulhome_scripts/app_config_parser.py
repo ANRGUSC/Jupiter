@@ -15,11 +15,8 @@ import json
 logging.basicConfig(level=logging.DEBUG)
 
 # returns content of yaml in a dictionary
-def load_app_config():
-    jupiter_config.set_globals()
-    app_path = jupiter_config.APP_NAME 
-    logging.debug(app_path)
-    with open("../../" +app_path + "/app_config.yaml") as f:
+def load_app_config(app_config_path):
+    with open(app_config_path) as f:
         app_config = yaml.load(f, Loader=yaml.FullLoader)
     return app_config
 
@@ -35,6 +32,14 @@ def parse_datasources(app_config):
 
 
 if __name__ == '__main__':
-    app_config = load_app_config()
+    # jupiter_config.set_globals()
+    # app_path = jupiter_config.APP_NAME 
+    # logging.debug(app_path)
+    # app_config_path = "../" +app_path + "/app_config.yaml"
+    app_config_path = '../tools/duplicate/demotest/app_config.yaml'
+    app_config = load_app_config(app_config_path)
     datasources = parse_datasources(app_config)
-    logging.debug(datasources.keys())
+    tmp =[]
+    for name in datasources:
+        tmp.append(datasources[name]['dataset'])
+    logging.debug(tmp)

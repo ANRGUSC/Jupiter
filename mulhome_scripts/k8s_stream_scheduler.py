@@ -291,7 +291,9 @@ def k8s_demo_multipledata_scheduler(app_name):
     circe_nodes = ' '.join(circe_services.keys())
     circe_nodes_ips = ' '.join(circe_services.values())
 
-    app_config = load_app_config()
+    app_path = jupiter_config.APP_NAME 
+    app_config_path = "../../" +app_path + "/app_config.yaml"
+    app_config = load_app_config(app_config_path)
     datasources = parse_datasources(app_config)
     
     for i in datasources:

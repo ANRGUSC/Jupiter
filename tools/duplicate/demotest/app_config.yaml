@@ -3,8 +3,130 @@ node_list:
   home: k8sworkersb-ubuntu-s-4vcpu-8gb-0-lon1 
   node1: k8sworkersb-ubuntu-s-4vcpu-8gb-1-sfo2
   node2: k8sworkersb-ubuntu-s-4vcpu-8gb-2-sfo2
+  #TODO: datasources will eventually be removed from here
   datasource1: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1
 application:
+  sources:
+    - name: datasource1
+      dataset: firengine
+      datapath: data/fireengine
+      stream_image: docker.io/anrg/streams_home:fireengine
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource2
+      dataset: schoolbus
+      datapath: data/schoolbus
+      stream_image: docker.io/anrg/streams_home:schoolbus
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource3
+      dataset: whitewolf
+      datapath: data/whitewolf
+      stream_image: docker.io/anrg/streams_home:whitewolf
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource4
+      dataset: hyena
+      datapath: data/hyena
+      stream_image: docker.io/anrg/streams_home:hyena
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource5
+      dataset: kitfox
+      datapath: data/kitfox
+      stream_image: docker.io/anrg/streams_home:kitfox
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource6
+      dataset: persiancat
+      datapath: data/persiancat
+      stream_image: docker.io/anrg/streams_home:persiancat
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource7
+      dataset: leopard
+      datapath: data/leopard
+      stream_image: docker.io/anrg/streams_home:leopard
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource8
+      dataset: lion
+      datapath: data/lion
+      stream_image: docker.io/anrg/streams_home:lion
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource9
+      dataset: tiger
+      datapath: data/tiger
+      stream_image: docker.io/anrg/streams_home:tiger
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource10
+      dataset: americanblackbear
+      datapath: data/americanblackbear
+      stream_image: docker.io/anrg/streams_home:americanblackbear
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource11
+      dataset: mongoose
+      datapath: data/mongoose
+      stream_image: docker.io/anrg/streams_home:mongoose
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource12
+      dataset: zebra
+      datapath: data/zebra
+      stream_image: docker.io/anrg/streams_home:zebra
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource13
+      dataset: hog
+      datapath: data/hog
+      stream_image: docker.io/anrg/streams_home:hog
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource14
+      dataset: hippopotamus
+      datapath: data/hippopotamus
+      stream_image: docker.io/anrg/streams_home:hippopotamus
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource15
+      dataset: ox
+      datapath: data/ox
+      stream_image: docker.io/anrg/streams_home:ox
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource16
+      dataset: buffalo
+      datapath: data/buffalo
+      stream_image: docker.io/anrg/streams_home:buffalo
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource17
+      dataset: ram
+      datapath: data/ram
+      stream_image: docker.io/anrg/streams_home:ram
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource18
+      dataset: impala 
+      datapath: data/impala 
+      stream_image: docker.io/anrg/streams_home:impala
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource19
+      dataset: arabiancamel
+      datapath: data/arabiancamel
+      stream_image: docker.io/anrg/streams_home:arabiancamel
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+    - name: datasource20
+      dataset: otter
+      datapath: data/otter
+      stream_image: docker.io/anrg/streams_home:otter
+      #this should be a node that jupiter wont schedule nodes on   
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1  
   ports:
     # these ports are to be exposed by app docker containers and also exposed via k8s service
     # available range: 50000-60000
@@ -12,9 +134,6 @@ application:
   num_tasks: 26 #base is 19, add 7 everytime adding a new set
   task_list:
     home: home  #TODO
-    sources:
-      - datasource1
-    sinks:
     worker_tasks:
       - name: master
         # node_placement: n2

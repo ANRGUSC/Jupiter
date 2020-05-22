@@ -3,6 +3,7 @@ node_list:
   home: k8sworkersb-ubuntu-s-4vcpu-8gb-0-lon1 
   node1: k8sworkersb-ubuntu-s-4vcpu-8gb-1-sfo2
   node2: k8sworkersb-ubuntu-s-4vcpu-8gb-2-sfo2
+  #TODO: datasources will eventually be removed from here
   datasource1: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1
 application:
   sources:
@@ -11,13 +12,7 @@ application:
       datapath: data/fireengine
       stream_image: docker.io/anrg/streams_home:fireengine
       #this should be a node that jupiter wont schedule nodes on   
-      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1
-    - name: datasource2
-      dataset: schoolbus
-      datapath: data/schoolbus
-      stream_image: docker.io/anrg/streams_home:schoolbus
-      #this should be a node that jupiter wont schedule nodes on   
-      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-2-sfo2
+      node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
   ports:
     # these ports are to be exposed by app docker containers and also exposed via k8s service
     # available range: 50000-60000

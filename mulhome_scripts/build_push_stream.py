@@ -65,7 +65,9 @@ def build_push_streams():
     os.chdir(jupiter_config.STREAMS_PATH)
     logging.debug(os. getcwd())
 
-    app_config = load_app_config()
+    app_path = jupiter_config.APP_NAME 
+    app_config_path = "../../" +app_path + "/app_config.yaml"
+    app_config = load_app_config(app_config_path)
     datasources = parse_datasources(app_config)
 
 
