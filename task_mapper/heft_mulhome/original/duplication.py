@@ -101,7 +101,12 @@ class Duplication:
                     if not src_proc in files_from_src:
                         files_from_src[src_proc] = []
                     files_from_src[src_proc].append(data[task_src.number][tid_dst])
-        
+                    
+        print("task ids to dup, task ids to recv, files_to_dst, files_from_src")
+        print(task_ids_to_dup)
+        print(task_ids_to_recv)
+        print(files_to_dst)
+        print(files_from_src)
         # hashmap {idle node id to duplicate : max new time incurred}. New incurred times:
         # 1. all parent nodes to idle node link usage
         # 2. idle node computation
@@ -130,7 +135,8 @@ class Duplication:
                     for file_size in files_from_src[key.number]:
                         cur_time += self.cal_comm_quadratic(file_size, quaratic_profile[key.number][proc.number])
                     time_from_src.append(cur_time)
-                
+                    print("time from src")
+                    print(time_from_src)
                 new_btnk_proc = max(time_from_src)
                 new_btnk_proc = max(new_btnk_proc, time_to_dst)
                 new_btnk_proc = max(new_btnk_proc, comp_time)
