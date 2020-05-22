@@ -233,7 +233,7 @@ class Duplication:
     
     
     def get_proc_by_id(self, processors, proc_id):
-        return processors[proc_id]
+        return processors[int(proc_id)]
     
                 
     def get_procs_by_tasks(self, processors):
