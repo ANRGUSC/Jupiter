@@ -80,7 +80,7 @@ class Duplication:
         parent_tasks = set()
         for parent in tasks:
             for task_id in task_ids_to_dup:
-                if self.data[parent.number][task_id] > 0:
+                if data[parent.number][task_id] > 0:
                     parent_tasks.add(parent)
         
         # a list of file sizes to transfer from idle node to dst node
@@ -91,22 +91,22 @@ class Duplication:
         files_from_src = {} 
         for tid_scr in task_ids_to_dup:
             for tid_dst in task_ids_to_recv:
-                if self.data[tid_src][tid_dst] > 0:
-                    files_to_dst.append(self.data[tid_src][tid_dst])
+                if data[tid_src][tid_dst] > 0:
+                    files_to_dst.append(data[tid_src][tid_dst])
         for tid_scr in parent_tasks:
             for tid_dst in task_ids_to_dup:
-                if self.data[tid_src][tid_dst] > 0:
+                if data[tid_src][tid_dst] > 0:
                     src_proc = task_to_proc[tid_src]
                     if not src_proc in files_from_src:
                         files_from_src[src_proc] = []
-                    files_from_src[src_proc].append(self.data[tid_src][tid_dst])
+                    files_from_src[src_proc].append(data[tid_src][tid_dst])
         
         # hashmap {idle node id to duplicate : max new time incurred}. New incurred times:
         # 1. all parent nodes to idle node link usage
         # 2. idle node computation
         # 3. idle node to destination node transfer
         procid_to_max_time = {}
-        for proc in self.processors:
+        for proc in processors:
             if len(proc.time_line) != 0:
                 continue
             else: # this is an idle node
@@ -119,14 +119,14 @@ class Duplication:
                 # new node to destination node
                 time_to_dst = 0.0
                 for file_size in files_to_dst:
-                    time_to_dst += self.cal_comm_quadratic(file_size, self.quaratic_profile[proc.number][dst_proc.number])
+                    time_to_dst += self.cal_comm_quadratic(file_size, quaratic_profile[proc.number][dst_proc.number])
                         
                 # all source nodes to new node
                 time_from_src = []
                 for key in files_from_src:
                     cur_time = 0.0
                     for file_size in files_from_src[key]:
-                        cur_time += self.cal_comm_quadratic(file_size, self.quaratic_profile[key.number][proc.number])
+                        cur_time += self.cal_comm_quadratic(file_size, quaratic_profile[key.number][proc.number])
                     time_from_src.append(cur_time)
                 
                 new_btnk_proc = max(time_from_src)
@@ -262,7 +262,7 @@ class Duplication:
         return adjList
     
     
-    def rewrite_graph_file(path, data, task_names):
+    def rewrite_graph_file(self, path, data, task_names):
         
         adjList = self.construct_graph(data)
         name_to_id = {}
