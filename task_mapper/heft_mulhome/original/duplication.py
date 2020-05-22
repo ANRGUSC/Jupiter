@@ -89,11 +89,11 @@ class Duplication:
         # node id -> list of file sizes to transfer to idle node
         # fixed destination node but multiple source nodes
         files_from_src = {} 
-        for tid_scr in task_ids_to_dup:
+        for tid_src in task_ids_to_dup:
             for tid_dst in task_ids_to_recv:
                 if data[tid_src][tid_dst] > 0:
                     files_to_dst.append(data[tid_src][tid_dst])
-        for tid_scr in parent_tasks:
+        for tid_src in parent_tasks:
             for tid_dst in task_ids_to_dup:
                 if data[tid_src][tid_dst] > 0:
                     src_proc = task_to_proc[tid_src]
