@@ -51,6 +51,7 @@ This file takes the node name and tasks as input, does task graph and mapping ch
 """
 import numpy as np
 import heft_dup as hd
+import time
 
 class Duplication:
 
