@@ -93,13 +93,13 @@ class Duplication:
             for tid_dst in task_ids_to_recv:
                 if data[tid_src][tid_dst] > 0:
                     files_to_dst.append(data[tid_src][tid_dst])
-        for tid_src in parent_tasks:
+        for task_src in parent_tasks:
             for tid_dst in task_ids_to_dup:
-                if data[tid_src][tid_dst] > 0:
-                    src_proc = task_to_proc[tid_src]
+                if data[task_src.number][tid_dst] > 0:
+                    src_proc = task_to_proc[task_src.number]
                     if not src_proc in files_from_src:
                         files_from_src[src_proc] = []
-                    files_from_src[src_proc].append(data[tid_src][tid_dst])
+                    files_from_src[src_proc].append(data[task_src.number][tid_dst])
         
         # hashmap {idle node id to duplicate : max new time incurred}. New incurred times:
         # 1. all parent nodes to idle node link usage
