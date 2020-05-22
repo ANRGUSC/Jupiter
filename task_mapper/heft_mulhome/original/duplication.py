@@ -123,7 +123,8 @@ class Duplication:
                         
                 # all source nodes to new node
                 time_from_src = []
-                for key in files_from_src:
+                for nodeid in files_from_src:
+                    key = processors[nodeid]
                     cur_time = 0.0
                     for file_size in files_from_src[key]:
                         cur_time += self.cal_comm_quadratic(file_size, quaratic_profile[key.number][proc.number])
