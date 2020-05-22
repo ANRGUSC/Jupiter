@@ -126,7 +126,7 @@ class Duplication:
                 for nodeid in files_from_src:
                     key = processors[nodeid]
                     cur_time = 0.0
-                    for file_size in files_from_src[key]:
+                    for file_size in files_from_src[key.number]:
                         cur_time += self.cal_comm_quadratic(file_size, quaratic_profile[key.number][proc.number])
                     time_from_src.append(cur_time)
                 
@@ -137,16 +137,16 @@ class Duplication:
                 procid_to_max_time[proc.number] = new_btnk_proc
         
         min_btnk = time.time()
-        node = -1
+        nodeid = -1
         for key in procid_to_max_time:
             if procid_to_max_time[key] < min_btnk:
                 min_btnk = procid_to_max_time[key]
-                node = key
+                nodeid = key
         print("###################################################################################################")
-        print((node, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks), files_to_dst, files_from_src))
+        print(nodeid, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks), files_to_dst, files_from_src)
         if min_btnk >= btnk_time: # no point for duplication
             return (-1, time.time())
-        return (node, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks), files_to_dst, files_from_src)
+        return (nodeid, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks), files_to_dst, files_from_src)
     
     
     def duplicate(self, links, processors, tasks, comp_cost, data, quaratic_profile, btnk_id, new_node,
