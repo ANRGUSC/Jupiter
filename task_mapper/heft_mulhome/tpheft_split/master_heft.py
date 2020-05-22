@@ -198,7 +198,7 @@ def main():
             print('Assign random master and slaves')
             for i in range(0,len(non_tasks)):
                 assignments[non_tasks[i]] = node_info[randint(1,num_nodes)] 
-            heft_scheduler.display_result(2)
+            #heft_scheduler.display_result(2)
             t = time.time()
             if len(assignments) == MAX_TASK_NUMBER:
                 print('Successfully finish HEFT mapping ')
