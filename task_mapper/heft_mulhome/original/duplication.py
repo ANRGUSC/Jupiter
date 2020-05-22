@@ -72,7 +72,7 @@ class Duplication:
         # get tasks in dst proc that receive file from src node
         task_ids_to_dup = []
         task_ids_to_recv = []
-        for linkdur in btnk_link:
+        for linkdur in btnk_link.time_line:
             task_ids_to_dup.append(linkdur.start_task_num)
             task_ids_to_recv.append(linkdur.end_task_num)
         
