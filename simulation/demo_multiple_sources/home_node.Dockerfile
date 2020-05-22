@@ -4,7 +4,7 @@ FROM ubuntu:16.04
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
-ADD simulation/demo_sources/requirements_data.txt /requirements.txt
+ADD simulation/demo_multiple_sources/requirements_data.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
@@ -28,9 +28,9 @@ ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
 
 RUN mkdir generated_stream 
-ADD simulation/demo_sources/start_home.sh /start.sh
-ADD simulation/demo_sources/ds_stream.py /ds_stream.py
-ADD simulation/demo_sources/data /data
+ADD simulation/demo_multiple_sources/start_home.sh /start.sh
+ADD simulation/demo_multiple_sources/ds_stream.py /ds_stream.py
+ADD simulation/demo_multiple_sources/data/schoolbus /data
 
 RUN chmod +x /start.sh
 

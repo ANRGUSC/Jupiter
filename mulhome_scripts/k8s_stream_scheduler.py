@@ -19,6 +19,7 @@ import jupiter_config
 import utilities
 from kubernetes.client.rest import ApiException
 import logging
+from app_config_parser import *
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -227,10 +228,104 @@ def k8s_demo_scheduler(app_name):
             logging.debug(e)
 
 
+def k8s_demo_multipledata_scheduler(app_name):
+    """
+        This script deploys data sources for demo in the system. 
+    """
+    
+    logging.debug('Deploys data sources for demo in the system!')
+    jupiter_config.set_globals()
+    
+    sys.path.append(jupiter_config.STREAM_PATH)
+
+    """
+        This loads the kubernetes instance configuration.
+        In our case this is stored in admin.conf.
+        You should set the config file path in the jupiter_config.py file.
+    """
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    
+    """
+        We have defined the namespace for deployments in jupiter_config
+    """
+    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
+    
+    """
+        Get proper handles or pointers to the k8-python tool to call different functions.
+    """
+    api = client.CoreV1Api()
+    k8s_beta = client.ExtensionsV1beta1Api()
+
+    path1 = jupiter_config.APP_PATH + 'configuration.txt'
+    dag_info = utilities.k8s_read_dag(path1)
+    #get DAG and home machine info
+    first_task = dag_info[0]
+    dag = dag_info[1]
+    
+    logging.debug('DAG info:')
+    logging.debug(dag)
+
+    path2 = jupiter_config.HERE + 'nodes.txt'
+    nodes, homes,datasources,datasinks = utilities.k8s_get_all_elements(path2)
+
+    logging.debug('Datasources :')
+    logging.debug(datasources)
+    service_ips = {}; #list of all service IPs
+    
+    for i in datasources:
+        logging.debug('Data source information')
+        logging.debug('First create the home node service')
+        home_name =app_name+"-stream"+i
+        home_body = write_stream_service_specs(name = home_name)
+        
+        try:
+            ser_resp = api.create_namespaced_service(namespace, home_body)
+            logging.debug("Home service created. status = '%s'" % str(ser_resp.status))
+            resp = api.read_namespaced_service(home_name, namespace)
+            service_ips['home'] = resp.spec.cluster_ip
+        except ApiException as e:
+            logging.debug(e)
+            logging.debug("Exception Occurred")
+
+    circe_services = get_service_circe(dag,app_name)
+    circe_nodes = ' '.join(circe_services.keys())
+    circe_nodes_ips = ' '.join(circe_services.values())
+
+    app_config = load_app_config()
+    datasources = parse_datasources(app_config)
+    
+    for i in datasources:
+        
+        home_name =app_name+"-stream"+i
+
+        home_dep = write_stream_home_specs(name=home_name,image = jupiter_config.STREAM_IMAGE, 
+                                    host = datasources[i]['stream_image'], 
+                                    child = jupiter_config.HOME_CHILD,
+                                    child_ips = circe_services.get(jupiter_config.HOME_CHILD), 
+                                    appname = app_name,
+                                    appoption = jupiter_config.APP_OPTION,
+                                    dir = '{}',
+                                    self_name=i,
+                                    home_node_ip = circe_services.get('home'),
+                                    all_nodes = circe_nodes,
+                                    all_nodes_ips = circe_nodes_ips)
+
+        try:
+            resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
+            logging.debug("Home deployment created")
+            logging.debug("Home deployment created. status = '%s'" % str(resp.status))
+        except ApiException as e:
+            logging.debug(e)
+
+
+
+
+
    
 if __name__ == '__main__':
     jupiter_config.set_globals() 
     app_name = jupiter_config.APP_OPTION
     app_name = app_name+'1'
     #k8s_stream_scheduler(app_name)
-    k8s_demo_scheduler(app_name)
+    # k8s_demo_scheduler(app_name)
+    k8s_demo_multipledata_scheduler(app_name)

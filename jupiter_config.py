@@ -93,7 +93,7 @@ def set_globals():
     
 
     """Modules path of Jupiter"""
-    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH, DATA_PATH, GLOBALINFO_PATH, SINK_PATH
+    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH, DATA_PATH, GLOBALINFO_PATH, SINK_PATH, STREAMS_PATH
 
     # default network and resource profiler: DRUPE
     # default wave mapper: random wave
@@ -109,6 +109,7 @@ def set_globals():
     STREAM_PATH               = HERE + 'simulation/demo_sources/'
     GLOBALINFO_PATH               = HERE + 'simulation/global_info_center/'
     SINK_PATH               = HERE + 'simulation/data_sinks/'
+    STREAMS_PATH               = HERE + 'simulation/demo_multiple_sources/'
 
     global heft_option, wave_option
     heft_option             = 'original'    
@@ -254,15 +255,8 @@ def set_globals():
     NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
     STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
 
-    global STREAM_IMAGE, STREAM_IMAGES
+    global STREAM_IMAGE
     STREAM_IMAGE = 'docker.io/anrg/stream_home:%s_%s'%(APP_OPTION,cluster_option)
-
-    demosources = ['fireengine','schoolbus','whitewolf','hyena','kitfox','persiancat','leopard','lion',
-                        'tiger','blackbear','mongoose','zebra','hog','hippo','ox','buffalo','ram',
-                        'impala','camel','otter']
-    STREAM_IMAGES = []
-    for idx,datasource in enumerate(demosources):
-        STREAM_IMAGES[idx] = 'docker.io/anrg/streams_home:%s_%s_%s'%(APP_OPTION,cluster_option,datasource)
 
     global SINK_IMAGE
     SINK_IMAGE = 'docker.io/anrg/sink_home:%s_%s'%(APP_OPTION,cluster_option)
