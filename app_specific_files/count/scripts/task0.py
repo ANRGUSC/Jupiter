@@ -2,9 +2,9 @@ import os
 import time
 import sys
 
-LOOP_RANGE = 2400000
+LOOP_RANGE = 240000
 TASK_NAME = "task0"
-NUM_BLOCK = 2000
+NUM_BLOCK = 200
 
 def task(input_files, pathin, pathout):
 
