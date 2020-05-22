@@ -296,10 +296,10 @@ class HEFT:
             btnk_id = self.get_btnk_id()
             if self.is_link(btnk_id):
                 dup = duplication.Duplication()
-                new_nodeid, min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, files_to_dst, files_from_src = \
+                new_node_id, min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, files_to_dst, files_from_src = \
                     dup.get_dup_node(self.links, self.processors, self.tasks, self.comp_cost, self.data, 
                     self.quaratic_profile, btnk_id)
-                if new_node == -1:
+                if new_node_id == -1:
                     break
                 print("new node and task ids to dup")
                 print(new_node_id, task_ids_to_dup)
