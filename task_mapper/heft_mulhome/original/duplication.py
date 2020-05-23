@@ -304,8 +304,8 @@ class Duplication:
             if len(line) == 0:
                 break
             info = line.split(' ')
-            name = info[0]
-            num_inputs[name] = info[1]
+            taskname_to_numinput = info[0]
+            taskname_to_flag[name] = info[1]
             flags[name] = info[2]
         f.close()
         for name in task_names:
@@ -313,6 +313,7 @@ class Duplication:
                 taskname_to_numinput[name] = taskname_to_numinput[name.split('-')]
                 taskname_to_flag[name] = taskname_to_flag[name.split('-')]
         f = open(path, "w")
+        f.write(str(len(data))+'\n')
         for tid in rannge(len(adjList)):
             tname = task_names[tid]
             newline =  tname + " " + taskname_to_numinput[tname] + " " + taskname_to_flag[tname]
