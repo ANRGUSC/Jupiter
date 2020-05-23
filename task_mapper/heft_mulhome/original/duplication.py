@@ -124,8 +124,9 @@ class Duplication:
                 # get the max of all link transfer time
                 # new node to destination node
                 time_to_dst = 0.0
-                for file_size in files_to_dst:
-                    time_to_dst += self.cal_comm_quadratic(file_size, quaratic_profile[proc.number][dst_proc.number])
+                if len(files_to_dst) > 0:
+                    for file_size in files_to_dst:
+                        time_to_dst += self.cal_comm_quadratic(file_size, quaratic_profile[proc.number][dst_proc.number])
                         
                 # all source nodes to new node
                 time_from_src = []
@@ -137,11 +138,16 @@ class Duplication:
                     time_from_src.append(cur_time)
                     print("time from src")
                     print(time_from_src)
-                new_btnk_proc = max(time_from_src)
+                
+                # corner case: src node has no parent or dst node has no child
+                new_btnk_proc = 0
+                if len(time_from_src) > 0:
+                    new_btnk_proc = max(time_from_src)
                 new_btnk_proc = max(new_btnk_proc, time_to_dst)
                 new_btnk_proc = max(new_btnk_proc, comp_time)
                 
                 procid_to_max_time[proc.number] = new_btnk_proc
+        
         
         min_btnk = time.time()
         nodeid = -1
