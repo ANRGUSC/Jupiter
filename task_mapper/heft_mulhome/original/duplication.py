@@ -151,8 +151,10 @@ class Duplication:
                 nodeid = key
         print("###################################################################################################")
         print(nodeid, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks), files_to_dst, files_from_src)
+        '''
         if min_btnk >= btnk_time: # no point for duplication
             nodeid = -1
+        '''
         return (nodeid, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks), files_to_dst, files_from_src)
     
     
