@@ -12,6 +12,7 @@ import logging
 import time
 import multiprocessing
 from multiprocessing import Process, Manager
+import collections
 #Krishna
 
 """
@@ -28,14 +29,7 @@ logging.basicConfig(level = logging.DEBUG)
 ### NOTETOQUYNH: Need to set the below
 ### store class node tasks ip/port, store class node paths
 
-
-
-
 store_class_tasks_paths_dict = {}
-### May be need to use job ids to tackle issues coming from queuing/slowdowns
-global manager, tasks_to_images_dict
-manager = Manager()
-tasks_to_images_dict = manager.dict()
 
 INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
@@ -56,13 +50,13 @@ logging.debug(all_nodes)
 map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
 store_class_list = ['storeclass1','storeclass2']
 
+global global_info_ip, global_info_ip_port
+global_info_ip = os.environ['GLOBAL_IP']
+global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+
 store_class_tasks_dict = {}
 store_class_tasks_dict[555] = "storeclass1"
 store_class_tasks_dict[779] = "storeclass2"
-
-
-
-
 
 def transfer_data_scp(ID,user,pword,source, destination):
     """Transfer data using SCP
@@ -98,64 +92,82 @@ def transfer_data_scp(ID,user,pword,source, destination):
         runtime_sender_log.write(s)
         runtime_sender_log.flush()
 
-def recv_missing_from_decoder_task():
-    """
-    Receive information on slow/missing resnet tasks from the decoder task
-    Forward the images to corresonding destination storage nodes
-    Raises:
-        Exception: failed processing in Flask
-    """
-    global store_class_tasks_node_port_dict
-    global tasks_to_images_dict
+def get_job_id(): 
+    hdr = {
+            'Content-Type': 'application/json',
+            'Authorization': None #not using HTTP secure
+                                }
+    # message for requesting job_id
+    payload = {}
+    # address of flask server for class1 is 0.0.0.0:5000 and "post-id" is for requesting id
     try:
-        missing_resnet_tasks_str = request.args.get('missing_resnet_tasks')
-        class_predictions_str = request.args.get('class_predictions')
-        missing_resnet_tasks = missing_resnet_tasks_str.split(" ")
-        class_predictions = class_predictions_str.split(" ")
-        logging.debug('Receive missing from decoder task:')
-        for task,item in zip(missing_resnet_tasks, class_predictions):
-            source_path = tasks_to_images_dict[int(task)]
-            logging.debug(source_path)
-            file_name = 'master_'+source_path.split('/')[3]
-            logging.debug('Transfer the file')
-            destination_path = os.path.join('/centralized_scheduler/input',file_name)
-            logging.debug(destination_path)
-            try:
-                next_store_class = store_class_tasks_dict[int(item)]
-                logging.debug(next_store_class)
-                transfer_data_scp(next_store_class,username,password,source_path, destination_path)
-            except Exception as e:
-                logging.debug('The predicted item is not available in the stored class')
+        # url = "http://0.0.0.0:5000/post-id"
+        url = "http://%s:%s/post-id-master"%(global_info_ip,str(FLASK_SVC))
+        print(url)
+        # request job_id
+
+        response = requests.post(url, headers = hdr, data = json.dumps(payload))
+        job_id = response.json()
+        printprint(job_id)
     except Exception as e:
-        logging.debug("Bad reception or failed processing in Flask for receiving slow resnet tasks information from decoder task")
-        logging.debug(e)
-        return "not ok"
+        print('Possibly running on the execution profiler')
+        job_id = 0
+
+def put_filenames(job_id, filelist):
+    hdr = {
+            'Content-Type': 'application/json',
+            'Authorization': None #not using HTTP secure
+                                }
+    # message for requesting job_id
+    payload = {"job_id": job_id, "filelist":filelist}
+    # address of flask server for class1 is 0.0.0.0:5000 and "post-id" is for requesting id
+    try:
+        # url = "http://0.0.0.0:5000/post-id"
+        url = "http://%s:%s/post-files-master"%(global_info_ip,str(FLASK_SVC))
+        print(url)
+        # request job_id
+
+        response = requests.post(url, headers = hdr, data = json.dumps(payload))
+        job_id = response.json()
+        printprint(job_id)
+    except Exception as e:
+        print('Possibly running on the execution profiler')
+        job_id = 0
+
+def get_and_send_missing_images():
+    # Check with global info server
+    hdr = {
+            'Content-Type': 'application/json',
+            'Authorization': None #not using HTTP secure
+                                }
+    # message for requesting job_id
+    payload = {}
+    try:
+        # url = "http://0.0.0.0:5000/post-id"
+        url = "http://%s:%s/post-get-images-master"%(global_info_ip,str(FLASK_SVC))
+        print(url)
+        # request job_id
+        response = requests.post(url, headers = hdr, data = json.dumps(payload))
+        missing_images_dict = response.json()
+        printprint(missing_images_dict)
+    except Exception as e:
+        print('Possibly running on the execution profiler')
+        missing_images_dict = collections.defaultdict(list)
+    # Process and send requests out     
+    logging.debug('Receive missing from decoder task:')
+    for image_file, _class in missing_images_dict: 
+        logging.debug(image_file)
+        file_name = 'master_' + image_file
+        logging.debug('Transfer the file')
+        destination_path = os.path.join('/centralized_scheduler/input',file_name)
+        logging.debug(destination_path)
+        try:
+            next_store_class = store_class_tasks_dict[int(_class)]
+            logging.debug(next_store_class)
+            transfer_data_scp(next_store_class,username,password,source_path, destination_path)
+        except Exception as e:
+            logging.debug('The predicted item is not available in the stored class')
     return "ok"
-app.add_url_rule('/recv_missing_from_decoder_task', 'recv_missing_from_decoder_task', recv_missing_from_decoder_task)
-
-def helper_update_tasks_to_images_dict(task_num, f, pathin):
-    ### Reusing the input files to the master node. NOT creating a local copy of input files.
-    global tasks_to_images_dict
-    # logging.debug('Update tasks to image dict')
-    # logging.debug(task_num)
-    source = os.path.join(pathin, f)
-    tasks_to_images_dict[task_num] = source 
-    # logging.debug(tasks_to_images_dict)
-    return tasks_to_images_dict
-
-class MonitorRecv(multiprocessing.Process):
-    def __init__(self):
-        multiprocessing.Process.__init__(self)
-
-    def run(self):
-        """
-        Start Flask server
-        """
-        logging.debug("Flask server started")
-        app.run(host='0.0.0.0', port=FLASK_DOCKER)
-        global tasks_to_images_dict
-        print(tasks_to_images_dict)
-
 #KRishna
 
 def create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w):
@@ -187,14 +199,6 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
 
 
 def task(filelist, pathin, pathout):
-    
-    global tasks_to_images_dict
-
-
-    logging.debug('Start the flask server: ')
-    web_server = MonitorRecv()
-    web_server.start()
-
     out_list = []# output file list. Ordered as => [collage_file, image1, image2, ...., image9]
     ### send to collage task
     ### Collage image is arranged as a rectangular grid of shape w x w 
@@ -212,15 +216,12 @@ def task(filelist, pathin, pathout):
         file_idx = int(i % len(filelist))
         input_list.append(os.path.join(pathin, filelist[file_idx]))
         # KRishna
-        tasks_to_images_dict = helper_update_tasks_to_images_dict(i, filelist[file_idx], pathin)
-        #KRishna
-    print('Task to images dict')
-    print(tasks_to_images_dict)
     print('Input list')
     print(input_list)
-    
+    # get job id for this requests
+    job_id = get_job_id() 
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
-    
+     
     shutil.copyfile(collage_file, os.path.join(pathout,"master_"+collage_file))
     print('Receive collage file:')
     ### send to collage task
@@ -233,6 +234,8 @@ def task(filelist, pathin, pathout):
         shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(idx)+'_'+f))	
         outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f))
         print(outlist)
+    job_id = put_filenames()
+    get_and_send_missing_images() 
     return outlist
 
 def main():

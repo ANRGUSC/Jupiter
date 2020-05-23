@@ -1,8 +1,6 @@
 import torch
 from torchvision import models
 from torchvision import transforms
-# import torchvision.models as models
-# import torchvision.transforms as transforms
 import os
 import numpy as np
 from PIL import Image
@@ -29,12 +27,9 @@ global FLASK_DOCKER, FLASK_SVC
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
-global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
-all_nodes = os.environ["ALL_NODES"].split(":")
-all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":") 
-logging.debug(all_nodes)
-map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
-decoder_node_port = map_nodes_ip['decoder'] + ":" + str(FLASK_SVC )
+global global_info_ip, global_info_ip_port
+global_info_ip = os.environ['GLOBAL_IP']
+global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
 
 def task(file_, pathin, pathout):
     global resnet_task_num
@@ -93,12 +88,13 @@ def task(file_, pathin, pathout):
             logging.debug(e)
 
         #Krishna
-        send_prediction_to_decoder_task(pred[0], decoder_node_port)
+        job_id = 0
+        send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
         #Krishna
     return out_list
 
 #Krishna
-def send_prediction_to_decoder_task(prediction, decoder_node_port):
+def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
     """
     Sending prediction and resnet node task's number to flask server on decoder
     Args:
@@ -110,9 +106,10 @@ def send_prediction_to_decoder_task(prediction, decoder_node_port):
     """
     global resnet_task_num
     try:
-        url = "http://" + decoder_node_port + "/recv_prediction_from_resnet_task"
+        logging.debug('Send prediction to the decoder')
+        url = "http://" + global_info_ip_port + "/recv_prediction_from_resnet_task"
         ### NOTETOQUYNH: set resnet_task_num to ID of the resnet worker task (0 to 10)
-        params = {'msg': prediction, "resnet_task_num": resnet_task_num}
+        params = {"job_id": job_id, 'msg': prediction, "resnet_task_num": resnet_task_num}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)

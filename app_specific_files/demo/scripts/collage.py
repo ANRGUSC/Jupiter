@@ -10,6 +10,18 @@ from utils.utils import *
 from utils import torch_utils
 import pickle
 
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+global FLASK_DOCKER, FLASK_SVC
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+
+global global_info_ip, global_info_ip_port
+global_info_ip = os.environ['GLOBAL_IP']
+global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+
 def calculate_iou(L1, R1, T1, B1, L2, R2, T2, B2):
     L = max(L1, L2)
     R = min(R1, R2)    
@@ -119,12 +131,42 @@ def task(file_, pathin, pathout):
         ### Process predictions	to get a list of final predictions
         final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
     ### Write predictions to a file and send it to decoder task's folder
+        job_id = 0
+        send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
     out_list = []
-    pickle_file = os.path.join(pathout,"collage_decoder_preds.pickle")
-    with open(pickle_file, "wb") as outfile:
-        pickle.dump(final_preds, outfile)
-    out_list.append(pickle_file)
+    out_name = pathout + "collage.txt"
+    with open(out_name, "w") as out_file:
+        out_file.write("dummy output file")
+        out_list.append(out_name)
     return out_list
+
+#Krishna
+def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
+    """
+    Sending prediction and resnet node task's number to flask server on decoder
+    Args:
+        prediction: the prediction to be sent
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+    Raises:
+        Exception: if sending message to flask server on decoder is failed
+    """
+    global resnet_task_num
+    try:
+        logging.debug('Send prediction to the decoder')
+        url = "http://" + global_info_ip_port + "/recv_prediction_from_resnet_task"
+        ### NOTETOQUYNH: set resnet_task_num to ID of the resnet worker task (0 to 10)
+        params = {"job_id": job_id, 'msg': final_preds, "resnet_task_num": resnet_task_num}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
+        #logging.debug(e)
+        return "not ok"
+    return res
 
 def main():
     filelist = ["master_collage.JPEG"]
