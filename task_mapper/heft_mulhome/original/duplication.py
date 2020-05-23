@@ -316,8 +316,8 @@ class Duplication:
         f.close()
         for name in task_names:
             if not name in taskname_to_flag:
-                taskname_to_numinput[name] = taskname_to_numinput[name.split('-')]
-                taskname_to_flag[name] = taskname_to_flag[name.split('-')]
+                taskname_to_numinput[name] = taskname_to_numinput[name.split('-')[0]]
+                taskname_to_flag[name] = taskname_to_flag[name.split('-')[0]]
         f = open(path, "w")
         f.write(str(len(data))+'\n')
         for tid in range(len(adjList)):
