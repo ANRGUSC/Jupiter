@@ -205,7 +205,7 @@ class Duplication:
         # expand data transfer matrix
         l = [-1 for t in task_ids_to_dup]
         for row in data:
-            row.append(l)
+            row = row + l
         while(len(l) < len(data[0])):
             l.append(-1)
         while(len(data) < len(data[0])):
