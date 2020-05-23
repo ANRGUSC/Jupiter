@@ -171,7 +171,7 @@ class Duplication:
         src_proc = self.get_proc_by_id(processors, btnk_id.split('_')[0])
         dst_proc = self.get_proc_by_id(processors, btnk_id.split('_')[1])
         
-        # a mapping from old task number to it dup task number and the other way around
+        # a mapping from old task number to its dup task number and the other way around
         ori_to_dup = {}
         dup_to_ori = {}
         new_tasks = []
@@ -190,8 +190,12 @@ class Duplication:
             new_node.time_line.append(dt)
             tasks.append(dup_task)
             comp_cost.append(dup_task.comp_cost)
-            task_names.append(task_names[task.number]+"_dup")
+            task_names.append(task_names[task.number]+"-dup")
             
+        print("task numbers: ori to dup, dup to ori, new tasks")
+        print(ori_to_dup)
+        print(dup_to_ori)
+        print(new_tasks)
         # change parent child relations (src -> dst)
         for child in tasks_to_recv:
             for index in range(len(child.parents_numbers)):
@@ -206,6 +210,9 @@ class Duplication:
             l.append(-1)
         while(len(data) < len(data[0])):
             data.append(l)
+            
+        print("updated data transfer matrix with task duplication")
+        print(data)
                         
         # change parent-child data transfer
         for t in tasks_to_dup:
