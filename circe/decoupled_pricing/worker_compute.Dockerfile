@@ -17,6 +17,8 @@ RUN apt-get install iproute2 -y
 
 # Chien's 2nd DAG
 RUN apt-get install -y libsm6 libxext6 libxrender-dev
+RUN apt-get -yqq update
+RUN apt-get install -y libgtk2.0-dev 
 
 ADD circe/decoupled_pricing/requirements_compute.txt /requirements.txt
 
