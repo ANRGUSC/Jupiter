@@ -71,6 +71,8 @@ class Duplication:
         
         # get tasks in src proc that transfer file to dst proc
         # get tasks in dst proc that receive file from src node
+        # dup[i] -> recv[i] represents a pair of file transfer
+        # currently we're not using advanced multicast, so same file can take twice the time to transfer to two destinations
         task_ids_to_dup = []
         task_ids_to_recv = []
         for linkdur in btnk_link.time_line:
@@ -90,10 +92,8 @@ class Duplication:
         # node id -> list of file sizes to transfer to idle node
         # fixed destination node but multiple source nodes
         files_from_src = {} 
-        for tid_src in task_ids_to_dup:
-            for tid_dst in task_ids_to_recv:
-                if data[tid_src][tid_dst] > 0:
-                    files_to_dst.append(data[tid_src][tid_dst])
+        for i in range(len(task_ids_to_dup)):
+            files_to_dst.append(data[task_ids_to_dup[i]][task_ids_to_recv[i]])
         for task_src in parent_tasks:
             for tid_dst in task_ids_to_dup:
                 if data[task_src.number][tid_dst] > 0:
