@@ -194,7 +194,7 @@ class Duplication:
             
         # change parent child relations (src -> dst)
         for child in tasks_to_recv:
-            for index in len(child.parents_numbers):
+            for index in range(len(child.parents_numbers)):
                 if child.parents_numbers[index] in task_ids_to_dup:
                     child.parents_numbers[index] = ori_to_dup[child.parents_numbers[index]]
                     
