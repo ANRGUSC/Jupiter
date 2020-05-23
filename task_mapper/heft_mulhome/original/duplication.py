@@ -232,8 +232,8 @@ class Duplication:
             new_link.time_line.append(hd.LinkDuration(ori_to_dup[ld.start_task_num], ld.end_task_num, ld.start, ld.end))
         old_link.time_line = [] # remove bottleneck link
         for pt in parent_tasks:
-            new_link = self.get_link_by_id(str(pt.processor_num) + '_' + str(new_node.number))
-            old_link = self.get_link_by_id(str(pt.processor_num) + '_' + str(src_proc.number))
+            new_link = self.get_link_by_id(links, str(pt.processor_num) + '_' + str(new_node.number))
+            old_link = self.get_link_by_id(links, str(pt.processor_num) + '_' + str(src_proc.number))
             for ld in old_link.time_line:
                 new_link.time_line.append(hd.LinkDuration(ld.start_task_num, ori_to_dup[ld.end_task_num], ld.start, ld.end))
         
