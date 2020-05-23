@@ -54,7 +54,7 @@ def build_push_exec():
     import exec_docker_files_generator as dc
 
 
-    os.chdir(jupiter_config.EXEC_PROFILER_PATH )
+    os.chdir(jupiter_config.EXEC_PROFILER_PATH)
 
     home_file = dc.write_exec_home_docker(username = jupiter_config.USERNAME,
                      password = jupiter_config.PASSWORD,

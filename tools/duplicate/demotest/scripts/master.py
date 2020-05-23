@@ -232,10 +232,10 @@ def task(filelist, pathin, pathout):
         # KRishna
         tasks_to_images_dict = helper_update_tasks_to_images_dict(i, filelist[file_idx], pathin)
         #KRishna
-    print('Task to images dict')
-    print(tasks_to_images_dict)
-    print('Input list')
-    print(input_list)
+    # print('Task to images dict')
+    # print(tasks_to_images_dict)
+    # print('Input list')
+    # print(input_list)
     
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     
@@ -243,20 +243,27 @@ def task(filelist, pathin, pathout):
     print('Receive collage file:')
     ### send to collage task
     outlist = [os.path.join(pathout,"master_"+collage_file)]
-    print(outlist)
+    # print(outlist)
     ### send to resnet tasks
     print('Receive resnet files: ')
     for i, f in enumerate(filelist):
         idx  = i%num_images
         shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(idx)+'_'+f))	
         outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f))
-        print(outlist)
+        # print(outlist)
     return outlist
 
 def main():
-    filelist = ['n03345487_10.JPEG','n03345487_108.JPEG', 'n03345487_133.JPEG','n03345487_135.JPEG','n03345487_136.JPEG','n04146614_16038.JPEG','n03345487_18.JPEG','n03345487_40.JPEG','n03345487_78.JPEG','n04146614_1.JPEG','n04146614_39.JPEG','n04146614_152.JPEG','n04146614_209.JPEG','n04146614_263.JPEG','n04146614_318.JPEG','n03345487_206.JPEG','n03345487_243.JPEG','n03345487_284.JPEG','n04146614_25.JPEG','n04146614_53.JPEG','n04146614_158.JPEG','n04146614_231.JPEG','n04146614_284.JPEG','n03345487_144.JPEG','n03345487_208.JPEG','n03345487_245.JPEG',
-       'n03345487_311.JPEG','n04146614_27.JPEG','n04146614_69.JPEG','n04146614_186.JPEG','n04146614_232.JPEG','n04146614_295.JPEG','n03345487_163.JPEG','n03345487_209.JPEG','n03345487_267.JPEG','n03345487_317.JPEG','n04146614_30.JPEG','n04146614_79.JPEG','n04146614_187.JPEG','n04146614_237.JPEG','n04146614_309.JPEG','n03345487_192.JPEG','n03345487_210.JPEG','n03345487_279.JPEG','n03345487_328.JPEG','n04146614_36.JPEG','n04146614_84.JPEG','n04146614_199.JPEG','n04146614_245.JPEG','n04146614_312.JPEG','n03345487_205.JPEG','n03345487_241.JPEG','n03345487_282.JPEG','n03345487_334.JPEG',
-       'n03345487_351.JPEG','n03345487_360.JPEG','n03345487_386.JPEG','n03345487_410.JPEG','n03345487_417.JPEG','n04146614_330.JPEG','n04146614_363.JPEG','n04146614_377.JPEG','n04146614_387.JPEG']
+    classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'kitfox', 'persiancat', 'leopard', 'lion', 'tiger', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+    num = 27
+    filelist = []
+    for i in classlist:
+        for j in range(1,num+1):
+            filename = i+'_'+str(j)+'.JPEG'
+            filelist.append(filename)
+    # filelist = ['n03345487_10.JPEG','n03345487_108.JPEG', 'n03345487_133.JPEG','n03345487_135.JPEG','n03345487_136.JPEG','n04146614_16038.JPEG','n03345487_18.JPEG','n03345487_40.JPEG','n03345487_78.JPEG','n04146614_1.JPEG','n04146614_39.JPEG','n04146614_152.JPEG','n04146614_209.JPEG','n04146614_263.JPEG','n04146614_318.JPEG','n03345487_206.JPEG','n03345487_243.JPEG','n03345487_284.JPEG','n04146614_25.JPEG','n04146614_53.JPEG','n04146614_158.JPEG','n04146614_231.JPEG','n04146614_284.JPEG','n03345487_144.JPEG','n03345487_208.JPEG','n03345487_245.JPEG',
+    #    'n03345487_311.JPEG','n04146614_27.JPEG','n04146614_69.JPEG','n04146614_186.JPEG','n04146614_232.JPEG','n04146614_295.JPEG','n03345487_163.JPEG','n03345487_209.JPEG','n03345487_267.JPEG','n03345487_317.JPEG','n04146614_30.JPEG','n04146614_79.JPEG','n04146614_187.JPEG','n04146614_237.JPEG','n04146614_309.JPEG','n03345487_192.JPEG','n03345487_210.JPEG','n03345487_279.JPEG','n03345487_328.JPEG','n04146614_36.JPEG','n04146614_84.JPEG','n04146614_199.JPEG','n04146614_245.JPEG','n04146614_312.JPEG','n03345487_205.JPEG','n03345487_241.JPEG','n03345487_282.JPEG','n03345487_334.JPEG',
+    #    'n03345487_351.JPEG','n03345487_360.JPEG','n03345487_386.JPEG','n03345487_410.JPEG','n03345487_417.JPEG','n04146614_330.JPEG','n04146614_363.JPEG','n04146614_377.JPEG','n04146614_387.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile

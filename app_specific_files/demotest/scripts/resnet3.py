@@ -264,9 +264,16 @@ def send_prediction_to_decoder_task(prediction, decoder_node_port):
 
 def main():
     #filelist = ["master_resnet0_n03345487_10.JPEG"]
-    filelist = ['master_resnet0_n03345487_10.JPEG','master_resnet0_n04146614_1.JPEG','master_resnet0_n04146614_25.JPEG','master_resnet0_n04146614_27.JPEG',
-       'master_resnet0_n04146614_30.JPEG','master_resnet0_n04146614_36.JPEG',
-       'master_resnet0_n03345487_351.JPEG']
+    classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'kitfox', 'persiancat', 'leopard', 'lion', 'tiger', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+    num = 27
+    filelist = []
+    for i in classlist:
+        for j in range(resnet_task_num+1,num+1,9):
+            filename = 'master_'+taskname+'_'+i+'_'+str(j)+'.JPEG'
+            filelist.append(filename)
+    # filelist = ['master_resnet0_n03345487_10.JPEG','master_resnet0_n04146614_1.JPEG','master_resnet0_n04146614_25.JPEG','master_resnet0_n04146614_27.JPEG',
+    #    'master_resnet0_n04146614_30.JPEG','master_resnet0_n04146614_36.JPEG',
+    #    'master_resnet0_n03345487_351.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile

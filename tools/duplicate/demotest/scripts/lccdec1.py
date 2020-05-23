@@ -3,6 +3,7 @@ import time
 import os
 import cv2
 from pathlib import Path
+from os import listdir
 
 taskname = Path(__file__).stem
 classnum = taskname.split('lccdec')[1]
@@ -35,12 +36,12 @@ def LCC_decoding(f_eval,N,M,worker_idx):
 
 
 def task(filelist, pathin, pathout): 
-    filelist = [filelist] if isinstance(filelist, str) else filelist  
-    snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
-    
+    filelist = [filelist] if isinstance(filelist, str) else filelist      
     # Load id of incoming job (id_job=1,2,3,...)
-    job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('_')[0]
-    job_id = job_id[3:]
+    # job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('_')[0]
+    # job_id = job_id[3:]
+    job_id = filelist[0].split('.csv')[0].split('job')[1]
+    print(job_id)
    
     #Parameters 
     N = 3 # Number of workers (encoded data-batches)
@@ -70,16 +71,18 @@ def task(filelist, pathin, pathout):
     #Save desired scores of M data-batches
     outlist = []
     for j in range(M):
-        destination = os.path.join(pathout,'job'+job_id+taskname+str(j)+'_'+snapshot_time+'.csv')
+        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'.csv')
         np.savetxt(destination, results[j], delimiter=',')
         outlist.append(destination)
     return outlist
 
 def main():
-    file1 = 'preagg%s_lccdec%s_score%sa_job1_20200424.csv'%(classnum,classnum,classnum)
-    file2 = 'preagg%s_lccdec%s_score%sb_job1_20200424.csv'%(classnum,classnum,classnum)
-    filelist= [file1,file2] 
+    # file1 = 'preagg%s_lccdec%s_score%sa_job1_20200424.csv'%(classnum,classnum,classnum)
+    # file2 = 'preagg%s_lccdec%s_score%sb_job1_20200424.csv'%(classnum,classnum,classnum)
+    # filelist= [file1,file2] 
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
+    c = 'preagg%s'%(classnum)
+    filelist = [f for f in listdir(outpath) if f.startswith(c)]
     outfile = task(filelist, outpath, outpath)
     return outfile
 

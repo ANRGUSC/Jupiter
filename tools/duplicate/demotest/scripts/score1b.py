@@ -3,6 +3,7 @@ import time
 import os
 import cv2
 from pathlib import Path
+from os import listdir
 
 taskname = Path(__file__).stem
 classnum = taskname.split('score')[1][0]
@@ -21,12 +22,13 @@ def score (En_Image_Batch, Ref_Images):
 
 def task(filelist, pathin, pathout):   
     filelist = [filelist] if isinstance(filelist, str) else filelist  
-    snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     # Load id of incoming job (id_job=1,2,3,...)
     #job_id = filelist[0].partition('outlccencoder')[0]
-    job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[0]
-    job_id = job_id[3:]
+    # job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[0]
+    # job_id = job_id[3:]
+    job_id = filelist[0].split('.csv')[0].split('job')[1]
+    print(job_id)
     
 
     #Worker ID: a,b,c,...
@@ -41,7 +43,7 @@ def task(filelist, pathin, pathout):
     dim = (width, height)   
     
     # Read Reference Images
-    filelist_ref = [classname+str(i+1) for i in range(20,30)]  # to be defined in advance
+    filelist_ref = [classname+str(i+1)+'.JPEG' for i in range(20,30)]  # to be defined in advance
     path_ref = os.path.join(os.path.dirname(__file__),'reference',classname) # folder of referenced images
     
     for i in range(K):
@@ -66,14 +68,16 @@ def task(filelist, pathin, pathout):
     sc = score(En_Image_Batch, Ref_Images)
     
     outlist = []
-    destination = os.path.join(pathout,'score'+classnum + worker_id + '_'+'preagg'+classnum+ '_' +'job' + job_id +'_'+snapshot_time+'.csv')
+    destination = os.path.join(pathout,'score'+classnum + worker_id + '_'+'preagg'+classnum+ '_' +'job' + job_id +'.csv')
     np.savetxt(destination, sc, delimiter=',')
     outlist.append(destination)
     return outlist
 
 def main():
-    file1 = 'lccenc%s_score%sb_job2_resnet0_storeclass1_master_resnet0_n03345487_10.csv'%(classnum,classnum)
-    filelist= [file1]
+    # file1 = 'lccenc%s_score%sb_job2_resnet0_storeclass1_master_resnet0_n03345487_10.csv'%(classnum,classnum)
+    # filelist= [file1]
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
+    c = 'lccenc%s'%(classnum)
+    filelist = [f for f in listdir(outpath) if f.startswith(c)]
     outfile = task(filelist, outpath, outpath)
     return outfile

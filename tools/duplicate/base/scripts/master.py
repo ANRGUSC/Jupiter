@@ -232,10 +232,10 @@ def task(filelist, pathin, pathout):
         # KRishna
         tasks_to_images_dict = helper_update_tasks_to_images_dict(i, filelist[file_idx], pathin)
         #KRishna
-    print('Task to images dict')
-    print(tasks_to_images_dict)
-    print('Input list')
-    print(input_list)
+    # print('Task to images dict')
+    # print(tasks_to_images_dict)
+    # print('Input list')
+    # print(input_list)
     
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     
@@ -243,19 +243,19 @@ def task(filelist, pathin, pathout):
     print('Receive collage file:')
     ### send to collage task
     outlist = [os.path.join(pathout,"master_"+collage_file)]
-    print(outlist)
+    # print(outlist)
     ### send to resnet tasks
     print('Receive resnet files: ')
     for i, f in enumerate(filelist):
         idx  = i%num_images
         shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(idx)+'_'+f))	
         outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f))
-        print(outlist)
+        # print(outlist)
     return outlist
 
 def main():
-    classlist = ['firengine', 'schoolbus', 'whitewolf', 'hyena', 'kitfox', 'persiancat', 'leopard', 'lion', 'tiger', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'buffalo', 'ram', 'impala', 'arabiancamel', 'otter']
-    num = 30
+    classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'kitfox', 'persiancat', 'leopard', 'lion', 'tiger', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+    num = 27
     filelist = []
     for i in classlist:
         for j in range(1,num+1):
