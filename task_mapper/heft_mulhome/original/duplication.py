@@ -201,7 +201,8 @@ class Duplication:
             for index in range(len(child.parents_numbers)):
                 if child.parents_numbers[index] in task_ids_to_dup:
                     child.parents_numbers[index] = ori_to_dup[child.parents_numbers[index]]
-                    
+        print("original data matrix")
+        print(data)     
         # expand data transfer matrix
         l = [-1 for t in task_ids_to_dup]
         for row in data:
