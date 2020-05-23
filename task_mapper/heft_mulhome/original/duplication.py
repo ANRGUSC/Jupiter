@@ -238,7 +238,7 @@ class Duplication:
                 new_link.time_line.append(hd.LinkDuration(ld.start_task_num, ori_to_dup[ld.end_task_num], ld.start, ld.end))
         
         path = 'dag.txt'
-        rewrite_graph_file(path, data, task_names)
+        self.rewrite_graph_file(path, data, task_names)
         return True
         
     def get_link_by_id(self, links, link_id):
