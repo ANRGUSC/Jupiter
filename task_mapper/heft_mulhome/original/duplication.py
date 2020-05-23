@@ -310,9 +310,9 @@ class Duplication:
             if len(line) == 0:
                 break
             info = line.split(' ')
-            taskname_to_numinput = info[0]
-            taskname_to_flag[name] = info[1]
-            flags[name] = info[2]
+            name = info[0]
+            taskname_to_numinput[name] = info[1]
+            taskname_to_flag[name] = info[2]
         f.close()
         for name in task_names:
             if not name in takename_to_flag:
