@@ -436,13 +436,13 @@ class HEFT:
                 if link.time_line[-1].end > max_time:
                     max_time = link.time_line[-1].end
                     btnk_id = link.id
-                    
+        '''
         for processor in self.processors:
             if len(processor.time_line) != 0:
                 if processor.time_line[-1].end > max_time:
                     max_time = processor.time_line[-1].end
                     btnk_id = str(processor.number)
-                    
+        '''         
         return btnk_id
         
     def is_link(self, btnk_id):
