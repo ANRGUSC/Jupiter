@@ -136,8 +136,8 @@ class Duplication:
                     for file_size in files_from_src[key.number]:
                         cur_time += self.cal_comm_quadratic(file_size, quaratic_profile[key.number][proc.number])
                     time_from_src.append(cur_time)
-                print("time from src")
-                print(proc.number, time_from_src)
+                print("node id, files to transfer to duplicated nodes")
+                print(proc.number, files_from_src)
                 # corner case: src node has no parent or dst node has no child
                 new_btnk_proc = 0
                 if len(time_from_src) > 0:
