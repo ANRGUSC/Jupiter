@@ -280,10 +280,11 @@ class Duplication:
         taskname_to_flag = {}
         size = len(data)
         adjList = [[] for n in range(size)]
-        task_names.append('home')
         taskname_to_id = {}
         for i in range(len(task_names)):
             taskname_to_id[task_names[i]] = i
+        # a list of task ids whose child comtains home
+        exit_task_ids = set()
         f = open(path, "r")
         line = f.readline().rstrip('\n')
         while(1):
@@ -296,17 +297,20 @@ class Duplication:
             taskname_to_flag[name] = info[2]
             if len(info) == 3:
                 continue
-            adjList[taskname_to_id[name]] = [taskname_to_id[info[i]] for i in range(3, len(info))]
+            for i in range(3, len(info)):
+                if info[i] == 'home':
+                    exit_task_ids.add(taskname_to_id[name])
+                else:
+                    adjList[taskname_to_id[name]].append(taskname_to_id[info[i]])
         f.close()
-        return adjList, taskname_to_numinput, taskname_to_flag    
+        return adjList, taskname_to_numinput, taskname_to_flag, exit_task_ids
     
     def rewrite_graph_file(self, data, path, task_names):
         
-        adjList, taskname_to_numinput, taskname_to_flag = self.construct_graph(data, path, task_names)
+        adjList, taskname_to_numinput, taskname_to_flag, exit_task_ids = self.construct_graph(data, path, task_names)
         print("updated task adjList")
         print(adjList)
-        for idx in range(len(task_names)-1): # exclude 'home'
-            name = task_names[idx]
+        for name in task_names:
             if not name in taskname_to_flag:
                 taskname_to_numinput[name] = taskname_to_numinput[name.split('-')[0]]
                 taskname_to_flag[name] = taskname_to_flag[name.split('-')[0]]
@@ -319,6 +323,8 @@ class Duplication:
             newline =  tname + " " + taskname_to_numinput[tname] + " " + taskname_to_flag[tname]
             for cid in adjList[tid]:
                 newline = newline + " " + task_names[cid]
+            if tid in exit_task_ids:
+                newline = newline + " " + "home"
             newline += '\n'
             f.write(newline)
         f.close()
