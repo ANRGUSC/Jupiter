@@ -300,7 +300,7 @@ class Duplication:
         f.close()
         return adjList, taskname_to_numinput, taskname_to_flag    
     
-    def rewrite_graph_file(self, path, data, task_names):
+    def rewrite_graph_file(self, data, path, task_names):
         
         adjList, taskname_to_numinput, taskname_to_flag = self.construct_graph(data, path, task_names)
         print("updated task adjList")
