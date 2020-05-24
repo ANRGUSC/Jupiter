@@ -305,7 +305,7 @@ class Duplication:
         adjList, taskname_to_numinput, taskname_to_flag = self.construct_graph(data, path, task_names)
         print("updated task adjList")
         print(adjList)
-        for idx in range(len(task_names-1)): # exclude 'home'
+        for idx in range(len(task_names)-1): # exclude 'home'
             name = task_names[idx]
             if not name in taskname_to_flag:
                 taskname_to_numinput[name] = taskname_to_numinput[name.split('-')[0]]
