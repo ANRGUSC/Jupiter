@@ -246,15 +246,16 @@ class Duplication:
         path = 'dag.txt'
         self.rewrite_graph_file(path, data, task_names)
         return True
+    
         
     def get_link_by_id(self, links, link_id):
         for link in links:
             if link.id == link_id:
                 return link
     
-    
+      
     def get_proc_by_id(self, processors, proc_id):
-        return processors[int(proc_id)]
+        return processors[int(proc_id)]    
     
                 
     def get_procs_by_tasks(self, processors):
@@ -272,36 +273,18 @@ class Duplication:
         return (np.square(file_size)*quaratic_profile[0] + file_size*quaratic_profile[1] + quaratic_profile[2]) 
     
     
-    def construct_graph(self, data):
+    # read from dag path and construct graph
+    def construct_graph(self, path, task_names):
         
-        size = len(data)
-        adjList = [[] for n in range(size)]
-        for parent in range(size):
-            for child in range(size):
-                if data[parent][child] > 0:
-                    adjList[parent].append(child)
-        return adjList
-    
-    
-    def rewrite_graph_file(self, path, data, task_names):
-        
-        adjList = self.construct_graph(data)
-        name_to_id = {}
-        num = 0
-        for name in task_names:
-            name_to_id[name] = num
-            num += 1
         taskname_to_numinput = {}
         taskname_to_flag = {}
+        size = len(data)
+        adjList = [[] for n in range(size)]
+        task_names.append('home')
+        taskname_to_id = {}
+        for i in range(len(task_names)):
+            taskname_to_id[task_names[i]] = i
         f = open(path, "r")
-        """
-        Example graph:
-        4
-        task0 1 true task1 task2
-        task1 1 true task3
-        task2 1 true task3
-        task3 2 true home
-        """
         line = f.readline().rstrip('\n')
         while(1):
             line = f.readline().rstrip('\n')
@@ -311,12 +294,21 @@ class Duplication:
             name = info[0]
             taskname_to_numinput[name] = info[1]
             taskname_to_flag[name] = info[2]
+            if len(info) == 3:
+                continue
+            adjList[taskname_to_id[name]] = [taskname_to_id[info[i]] for i in range(3, len(info))]
         f.close()
+        return adjList, taskname_to_numinput, taskname_to_flag    
+    
+    def rewrite_graph_file(self, path, data, task_names):
+        
+        adjList, taskname_to_numinput, taskname_to_flag = self.construct_graph(data, task_names)
+        print("updated task adjList")
+        print(adjList)
         for name in task_names:
             if not name in taskname_to_flag:
                 taskname_to_numinput[name] = taskname_to_numinput[name.split('-')[0]]
                 taskname_to_flag[name] = taskname_to_flag[name.split('-')[0]]
-        print(taskname_to_numinput, taskname_to_flag)
         f = open(path, "w")
         f.write(str(len(data))+'\n')
         for tid in range(len(adjList)):
@@ -324,7 +316,6 @@ class Duplication:
             newline =  tname + " " + taskname_to_numinput[tname] + " " + taskname_to_flag[tname]
             for cid in adjList[tid]:
                 newline = newline + " " + task_names[cid]
-            print(newline)
             newline += '\n'
             f.write(newline)
         f.close()
