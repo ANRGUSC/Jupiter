@@ -273,19 +273,33 @@ class Duplication:
         return (np.square(file_size)*quaratic_profile[0] + file_size*quaratic_profile[1] + quaratic_profile[2]) 
     
     
-    # read from dag path and construct graph
-    def construct_graph(self, data, path, task_names):
+    def construct_graph(self, data):
         
-        taskname_to_numinput = {}
-        taskname_to_flag = {}
         size = len(data)
         adjList = [[] for n in range(size)]
-        taskname_to_id = {}
-        for i in range(len(task_names)):
-            taskname_to_id[task_names[i]] = i
-        # a list of task ids whose child comtains home
-        exit_task_ids = set()
+        for parent in range(size):
+            for child in range(size):
+                if data[parent][child] > 0:
+                    adjList[parent].append(child)
+        return adjList
+    
+    
+    def rewrite_graph_file(self, path, data, task_names):
+        
+        adjList = self.construct_graph(data)
+        taskname_to_numinput = {}
+        taskname_to_flag = {}
+        # a set of tasks whose child tasks contain 'home' 
+        exit_task_names = set()
         f = open(path, "r")
+        """
+        Example graph:
+        4
+        task0 1 true task1 task2
+        task1 1 true task3
+        task2 1 true task3
+        task3 2 true home
+        """
         line = f.readline().rstrip('\n')
         while(1):
             line = f.readline().rstrip('\n')
@@ -295,21 +309,9 @@ class Duplication:
             name = info[0]
             taskname_to_numinput[name] = info[1]
             taskname_to_flag[name] = info[2]
-            if len(info) == 3:
-                continue
-            for i in range(3, len(info)):
-                if info[i] == 'home':
-                    exit_task_ids.add(taskname_to_id[name])
-                else:
-                    adjList[taskname_to_id[name]].append(taskname_to_id[info[i]])
+            if 'home' in info:
+                exit_task_names.add(name)
         f.close()
-        return adjList, taskname_to_numinput, taskname_to_flag, exit_task_ids
-    
-    def rewrite_graph_file(self, data, path, task_names):
-        
-        adjList, taskname_to_numinput, taskname_to_flag, exit_task_ids = self.construct_graph(data, path, task_names)
-        print("updated task adjList")
-        print(adjList)
         for name in task_names:
             if not name in taskname_to_flag:
                 taskname_to_numinput[name] = taskname_to_numinput[name.split('-')[0]]
@@ -318,15 +320,11 @@ class Duplication:
         f.write(str(len(data))+'\n')
         for tid in range(len(adjList)):
             tname = task_names[tid]
-            if tname == 'home':
-                continue
             newline =  tname + " " + taskname_to_numinput[tname] + " " + taskname_to_flag[tname]
             for cid in adjList[tid]:
                 newline = newline + " " + task_names[cid]
-            if tid in exit_task_ids:
+            if tname in exit_task_names:
                 newline = newline + " " + "home"
             newline += '\n'
             f.write(newline)
         f.close()
-        
-        
