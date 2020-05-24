@@ -313,6 +313,8 @@ class Duplication:
         f.write(str(len(data))+'\n')
         for tid in range(len(adjList)):
             tname = task_names[tid]
+            if tname == 'home':
+                continue
             newline =  tname + " " + taskname_to_numinput[tname] + " " + taskname_to_flag[tname]
             for cid in adjList[tid]:
                 newline = newline + " " + task_names[cid]
