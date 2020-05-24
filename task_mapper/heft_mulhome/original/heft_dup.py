@@ -388,6 +388,8 @@ class HEFT:
         for task in self.tasks:
             if len(task.proc_num_to_portion) == 0:
                 assignments[self.task_names[task.number]] = self.node_info[task.processor_num+1]
+                print("\n\nassignments\n\n")
+                print(assignments)
             else:
                 task_name = self.task_names[task.number]
                 assignments[task_name] = []
