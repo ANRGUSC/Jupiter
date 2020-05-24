@@ -306,7 +306,7 @@ class Duplication:
         print("updated task adjList")
         print(adjList)
         for name in task_names:
-            if not name in taskname_to_flag:
+            if not name in taskname_to_flag and not name == 'home':
                 taskname_to_numinput[name] = taskname_to_numinput[name.split('-')[0]]
                 taskname_to_flag[name] = taskname_to_flag[name.split('-')[0]]
         f = open(path, "w")
