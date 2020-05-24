@@ -244,7 +244,7 @@ class Duplication:
                     new_link.time_line.append(hd.LinkDuration(ld.start_task_num, ori_to_dup[ld.end_task_num], ld.start, ld.end))
         
         path = 'dag.txt'
-        self.rewrite_graph_file(path, data, task_names)
+        self.rewrite_graph_file(data, path, task_names)
         return True
     
         
@@ -274,7 +274,7 @@ class Duplication:
     
     
     # read from dag path and construct graph
-    def construct_graph(self, path, task_names):
+    def construct_graph(self, data, path, task_names):
         
         taskname_to_numinput = {}
         taskname_to_flag = {}
@@ -302,7 +302,7 @@ class Duplication:
     
     def rewrite_graph_file(self, path, data, task_names):
         
-        adjList, taskname_to_numinput, taskname_to_flag = self.construct_graph(data, task_names)
+        adjList, taskname_to_numinput, taskname_to_flag = self.construct_graph(data, path, task_names)
         print("updated task adjList")
         print(adjList)
         for name in task_names:
