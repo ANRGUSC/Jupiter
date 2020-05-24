@@ -229,7 +229,6 @@ class Duplication:
         print(data)
         print("updated task names with dupicated tasks")
         print(task_names)
-        print('\n\n')
         # update link durations
         new_link = self.get_link_by_id(links, str(new_node.number)+'_'+str(dst_proc.number))
         old_link = self.get_link_by_id(links, btnk_id)
@@ -239,10 +238,11 @@ class Duplication:
         for pt in parent_tasks:
             new_link = self.get_link_by_id(links, str(pt.processor_num) + '_' + str(new_node.number))
             old_link = self.get_link_by_id(links, str(pt.processor_num) + '_' + str(src_proc.number))
+            print("old link, new link", old_link.id, new_link.id)
             for ld in old_link.time_line:
                 if ld.end_task_num in task_ids_to_dup:
                     new_link.time_line.append(hd.LinkDuration(ld.start_task_num, ori_to_dup[ld.end_task_num], ld.start, ld.end))
-        
+        print('\n\n')
         path = 'dag.txt'
         self.rewrite_graph_file(data, path, task_names)
         return True
