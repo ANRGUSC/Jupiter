@@ -307,7 +307,6 @@ class HEFT:
                 new_node = self.processors[new_node_id]
                 dup.duplicate(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, 
                 btnk_id, new_node, min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, self.task_names, files_to_dst, files_from_src)
-                self.display_result(1)
             else:
                 break
                 #spt = split.Split()
