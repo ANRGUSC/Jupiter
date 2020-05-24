@@ -244,7 +244,7 @@ class Duplication:
                     new_link.time_line.append(hd.LinkDuration(ld.start_task_num, ori_to_dup[ld.end_task_num], ld.start, ld.end))
         print('\n\n')
         path = 'dag.txt'
-        self.rewrite_graph_file(data, path, task_names)
+        self.rewrite_graph_file(path, data, task_names)
         return True
     
         
