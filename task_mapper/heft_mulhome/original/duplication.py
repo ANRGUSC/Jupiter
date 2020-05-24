@@ -136,16 +136,16 @@ class Duplication:
                     for file_size in files_from_src[key.number]:
                         cur_time += self.cal_comm_quadratic(file_size, quaratic_profile[key.number][proc.number])
                     time_from_src.append(cur_time)
-                print("node id, files to transfer to duplicated nodes")
-                print(proc.number, files_from_src)
+                    
                 # corner case: src node has no parent or dst node has no child
                 new_btnk_proc = 0
                 if len(time_from_src) > 0:
                     new_btnk_proc = max(time_from_src)
                 new_btnk_proc = max(new_btnk_proc, time_to_dst)
                 new_btnk_proc = max(new_btnk_proc, comp_time)
-                
                 procid_to_max_time[proc.number] = new_btnk_proc
+                print("candidate duplicate node id, files to transfer to duplicated nodes, duplicated task exec time, time to dst tasks")
+                print(proc.number, files_from_src, comp_time, time_to_dst)
                 
         print("procid to max time")
         print(procid_to_max_time)
