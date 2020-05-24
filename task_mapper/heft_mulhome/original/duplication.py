@@ -240,7 +240,8 @@ class Duplication:
             new_link = self.get_link_by_id(links, str(pt.processor_num) + '_' + str(new_node.number))
             old_link = self.get_link_by_id(links, str(pt.processor_num) + '_' + str(src_proc.number))
             for ld in old_link.time_line:
-                new_link.time_line.append(hd.LinkDuration(ld.start_task_num, ori_to_dup[ld.end_task_num], ld.start, ld.end))
+                if ld.end_task_num in task_ids_to_dup:
+                    new_link.time_line.append(hd.LinkDuration(ld.start_task_num, ori_to_dup[ld.end_task_num], ld.start, ld.end))
         
         path = 'dag.txt'
         self.rewrite_graph_file(path, data, task_names)
