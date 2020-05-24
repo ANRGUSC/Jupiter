@@ -319,6 +319,8 @@ def k8s_demo_multipledata_scheduler(app_name):
         except ApiException as e:
             logging.debug(e)
 
+    return service_ips
+
 
 
 
@@ -330,4 +332,4 @@ if __name__ == '__main__':
     app_name = app_name+'1'
     #k8s_stream_scheduler(app_name)
     # k8s_demo_scheduler(app_name)
-    k8s_demo_multipledata_scheduler(app_name)
+    service_ips = k8s_demo_multipledata_scheduler(app_name)

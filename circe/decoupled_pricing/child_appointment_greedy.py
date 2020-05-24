@@ -139,10 +139,15 @@ def init_task_topology():
         - Write control relations to ``DAG/parent_controller.txt``
     """
 
+    logging.debug(application)
+
     for line in application:
         line = line.strip()
         items = line.split()
-
+        logging.debug(items)
+        logging.debug(len(items))
+        if len(items)<4: 
+            continue #parent tasks having no children
         parent = items[0]
         if parent == items[3] or items[3] == "home":
             continue

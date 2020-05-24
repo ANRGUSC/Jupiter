@@ -1,13 +1,19 @@
 # Instructions copied from - https://hub.docker.com/_/python/
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
+RUN apt-get -yqq update
+
+RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get -yqq update && apt-get install -y --no-install-recommends apt-utils
-RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev 
+RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen
 RUN apt-get install -y vim
 RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
 RUN apt-get install sudo -y
 RUN apt-get install iproute2 -y
+
+# Chien's 2nd DAG
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
 
 ## Install TASK specific needs. The hadoop is a requirement for the network profiler application
 ##RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
@@ -15,15 +21,6 @@ RUN apt-get install iproute2 -y
 # RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 # RUN rm ~/hadoop-2.8.1.tar.gz
 
-# Chien's 2nd DAG
-RUN apt-get install -y libsm6 libxext6 libxrender-dev
-RUN apt-get -yqq update
-RUN apt-get install -y libgtk2.0-dev 
-
-ADD circe/decoupled_pricing/requirements_compute.txt /requirements.txt
-
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -34,6 +31,11 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
+
+ADD circe/decoupled_pricing/requirements_compute.txt /requirements.txt
+
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
 
 RUN mkdir -p /centralized_scheduler/input
 RUN mkdir -p /centralized_scheduler/output

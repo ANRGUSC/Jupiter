@@ -148,6 +148,8 @@ def prepare_global():
     global profiler_ips 
     profiler_ips = os.environ['ALL_PROFILERS'].split(':')
     profiler_ips = profiler_ips[1:]
+    logging.debug('All provided profilers')
+    logging.debug(profiler_ips)
 
     global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
 
@@ -181,6 +183,8 @@ def prepare_global():
 
     # network_map is a dict that contains node names and profiler ips mapping
     network_map = {v: k for k, v in tmp_nodes_for_convert.items()}
+    logging.debug('Network map:')
+    logging.debug(network_map)
 
     global home_profiler_ip
     home_profiler = os.environ['HOME_PROFILER_IP'].split(' ')
@@ -579,6 +583,7 @@ def init_task_topology():
         items = line.split()
 
         parent = items[0]
+        if len(items)<4: continue
         if parent == items[3] or items[3] == "home":
             continue
 

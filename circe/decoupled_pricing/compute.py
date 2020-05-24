@@ -36,6 +36,7 @@ import datetime
 from collections import defaultdict 
 import pyinotify
 import logging
+import importlib
 
 
 app = Flask(__name__)
@@ -240,7 +241,7 @@ def prepare_global_info():
     task_module = {}
     for task in dag:
         if taskmap[task][1] and execution_map[task]: #DAG
-            task_module[task] = __import__(task)
+            task_module[task] = importlib.import_module(task)
             cmd = "mkdir centralized_scheduler/output/"+task 
             os.system(cmd)
             for home_id in home_ids:

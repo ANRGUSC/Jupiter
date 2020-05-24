@@ -15,12 +15,15 @@ import yaml
 from kubernetes import client, config
 from pprint import *
 import jupiter_config
-import utilities
+from utilities import *
 
 import sys, json
 sys.path.append("../")
 import logging
 from pathlib import Path
+
+from k8s_sink_scheduler import *
+from k8s_stream_scheduler import *
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -220,6 +223,13 @@ def k8s_pricing_circe_scheduler(dag_info, temp_info, profiler_ips, execution_ips
 
         service_ips[key] = resp.spec.cluster_ip
 
+    # given that there is only one home
+    service_ips_sinks = k8s_sink_scheduler(app_name,service_ips['home'])
+    logging.debug('Data sinks')
+    logging.debug(service_ips_sinks)
+    all_sinks = ' '.join(service_ips_sinks.keys())
+    all_sinks_ips = ' '.join(service_ips_sinks.values())
+
     """
         Iterate through the list of tasks and run the related k8 deployment, replicaset, pod, and service on the respective node.
         You can always check if a service/pod/deployment is running after running this script via kubectl command.
@@ -310,6 +320,7 @@ def k8s_pricing_circe_scheduler(dag_info, temp_info, profiler_ips, execution_ips
 
     home_nodes_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(home_nodes.items()))
 
+    logging.debug(nodes)
     for i in nodes:
 
         
@@ -780,11 +791,12 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name,
         This loads the node list
     """
     all_profiler_ips = ''
+    all_profiler_nodes = ''
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes, homes = utilities.k8s_get_nodes_worker(path2)
-    pprint(nodes)
+    # nodes, homes = utilities.k8s_get_nodes_worker(path2)
+    nodes, homes,datasources,datasinks = k8s_get_all_elements(path2)
 
     #get DAG and home machine info
     first_task = dag_info[0]
@@ -834,6 +846,9 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name,
     service_ips['home'] = resp.spec.cluster_ip
     home_ip = service_ips['home']
 
+    logging.debug('Create controller services for the following nodes')
+    logging.debug(nodes)
+
     for i in nodes:
 
         """
@@ -859,6 +874,9 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name,
             nexthost_ips = nexthost_ips + ':' + service_ips[i]
             nexthost_names = nexthost_names + ':' + i
             all_profiler_ips = all_profiler_ips + ':' + profiler_ips[i]
+
+    logging.debug('All provided network profilers for the decoupled pricing circe module')
+    logging.debug(all_profiler_ips)
 
     home_profiler_ips = {}
     for key in homes:
@@ -954,16 +972,17 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info, profiler_ips, execution_ip
     global configs, taskmap, path1
 
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes, homes = utilities.k8s_get_nodes_worker(path1)
+    # nodes, homes = utilities.k8s_get_nodes_worker(path1)
+    nodes, homes,datasources,datasinks = k8s_get_all_elements(path1)
 
     #get DAG and home machine info
     first_task = dag_info[0]
     dag = dag_info[1]
 
     logging.debug('Starting to deploy decoupled CIRCE dispatcher')
+    start_time = time.time()
     if jupiter_config.BOKEH == 3:
         latency_file = utilities.prepare_stat_path(nodes, homes, dag)
-        start_time = time.time()
         msg = 'CIRCE decoupled deploystart %f \n'%(start_time)
         write_file(latency_file, msg)
 
@@ -996,7 +1015,6 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info, profiler_ips, execution_ip
     computing_service_ips = {}
     all_profiler_ips = ''
     all_profiler_nodes = ''
-    
 
     logging.debug('-------- First create the home node service')
     """
@@ -1131,6 +1149,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info, profiler_ips, execution_ip
         logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
+
     return service_ips, start_time
 
 def k8s_decoupled_pricing_circe_scheduler(dag_info , profiler_ips, execution_ips,app_name):

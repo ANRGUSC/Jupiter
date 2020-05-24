@@ -126,7 +126,8 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     logging.debug(dag)
 
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes, homes = utilities.k8s_get_nodes_worker(path2)
+    # nodes, homes = utilities.k8s_get_nodes_worker(path2)
+    nodes, homes,datasources,datasinks = k8s_get_all_elements(path2)
 
     logging.debug('Get the global information service')
     service_ip_global = k8s_get_service_ips.get_service_global(app_name)
