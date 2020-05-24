@@ -146,17 +146,17 @@ class Duplication:
                 new_btnk_proc = max(new_btnk_proc, comp_time)
                 
                 procid_to_max_time[proc.number] = new_btnk_proc
-                print("procid to max time")
-                print(procid_to_max_time)
-        
+                
+        print("procid to max time")
+        print(procid_to_max_time)
         min_btnk = time.time()
         nodeid = -1
         for key in procid_to_max_time:
             if procid_to_max_time[key] < min_btnk:
                 min_btnk = procid_to_max_time[key]
                 nodeid = key
-        print("###################################################################################################")
-        print(nodeid, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks), files_to_dst, files_from_src)
+        print("chosen node id, min btnk, task ids to dup, tak ids to recv, parent tasks, files to dest, files from src")
+        print(nodeid, min_btnk, task_ids_to_dup, task_ids_to_recv, [pt.number for pt in parent_tasks], files_to_dst, files_from_src)
         '''
         if min_btnk >= btnk_time: # no point for duplication
             nodeid = -1
@@ -219,9 +219,6 @@ class Duplication:
             l.append(-1)
         while(len(data) < len(data[0])):
             data.append(l)
-            
-        print("updated data transfer matrix with task duplication")
-        print(data)
                         
         # change parent-child data transfer
         for t in tasks_to_dup:
@@ -232,7 +229,8 @@ class Duplication:
                 if data[pid][dr.task_num] > 0:
                     data[ori_to_dup[pid]][dr.task_num] = data[pid][dr.task_num]
                     data[pid][dr.task_num] = -1
-        
+        print("updated data transfer matrix with task duplication")
+        print(data)
         # update link durations
         new_link = self.get_link_by_id(links, str(new_node.number)+'_'+str(dst_proc.number))
         old_link = self.get_link_by_id(links, btnk_id)
