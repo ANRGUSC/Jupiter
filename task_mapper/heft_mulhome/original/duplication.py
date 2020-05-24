@@ -144,8 +144,6 @@ class Duplication:
                 new_btnk_proc = max(new_btnk_proc, time_to_dst)
                 new_btnk_proc = max(new_btnk_proc, comp_time)
                 procid_to_max_time[proc.number] = new_btnk_proc
-                print("candidate duplicate node id, files to transfer to duplicated nodes, duplicated task exec time, time to dst tasks")
-                print(proc.number, files_from_src, comp_time, time_to_dst)
                 
         print("procid to max time")
         print(procid_to_max_time)
@@ -182,7 +180,6 @@ class Duplication:
         # a mapping from old task number to its dup task number and the other way around
         ori_to_dup = {}
         dup_to_ori = {}
-        new_tasks = []
         # create tasks
         for task in tasks_to_dup:
             dup_task = hd.Task(-1)
@@ -192,7 +189,7 @@ class Duplication:
             dup_task.comp_cost = task.comp_cost
             dup_task.processor_num = new_node.number
             dup_task.parents_numbers = task.parents_numbers
-            
+            dup_task.up_rank = task.up_rank
             cur_end_time = new_node.time_line[-1].end if len(new_node.time_line) > 0 else 0
             dt = hd.Duration(dup_task.number, cur_end_time, cur_end_time + dup_task.comp_cost[new_node.number])
             new_node.time_line.append(dt)
@@ -200,10 +197,9 @@ class Duplication:
             comp_cost.append(dup_task.comp_cost)
             task_names.append(task_names[task.number]+"-dup")
             
-        print("task numbers: ori to dup, dup to ori, new tasks")
+        print("task numbers: ori to dup, dup to ori")
         print(ori_to_dup)
         print(dup_to_ori)
-        print(new_tasks)
         # change parent child relations (src -> dst)
         for child in tasks_to_recv:
             for index in range(len(child.parents_numbers)):
@@ -231,6 +227,9 @@ class Duplication:
                     data[pid][dr.task_num] = -1
         print("updated data transfer matrix with task duplication")
         print(data)
+        print("updated task names with dupicated tasks")
+        print(task_names)
+        print('\n\n')
         # update link durations
         new_link = self.get_link_by_id(links, str(new_node.number)+'_'+str(dst_proc.number))
         old_link = self.get_link_by_id(links, btnk_id)
