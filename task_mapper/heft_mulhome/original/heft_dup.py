@@ -392,10 +392,10 @@ class HEFT:
                 for proc_num in task.proc_num_to_portion:
                     assignments[task_name].append(self.node_info[proc_num+1])
                     assignments[task_name].append(task.proc_num_to_portion[proc_num])
-        print("\nassignments\n")
-        print(assignments)
         dag_str = self.serialize_dag_file("dag.txt")
         assignments["UPDATED_DAG_FILE_WITH_DUPICATION"] = dag_str
+        print("\nassignments\n")
+        print(assignments)
         return assignments
 
     def print_level(self, level):
