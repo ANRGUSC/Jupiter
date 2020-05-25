@@ -381,21 +381,21 @@ class HEFT:
         Returns:
             dict: assignments of tasks and corresponding computing nodes & portion
         """
-        # eg a['task0'] = ['node1', 0.5, 'node2', 0.5], a['task1'] = 'node1'
-        # if task wasn't split, value is a string specifying the node
-        # else, value is a list, [node, portion, node, portion, etc]
+        # with duplication: send a serialized value (string) of updated graph to circe
         assignments = {}
         for task in self.tasks:
             if len(task.proc_num_to_portion) == 0:
                 assignments[self.task_names[task.number]] = self.node_info[task.processor_num+1]
-                print("\n\nassignments\n\n")
-                print(assignments)
             else:
                 task_name = self.task_names[task.number]
                 assignments[task_name] = []
                 for proc_num in task.proc_num_to_portion:
                     assignments[task_name].append(self.node_info[proc_num+1])
-                    assignments[task_name].append(task.proc_num_to_portion[proc_num])                
+                    assignments[task_name].append(task.proc_num_to_portion[proc_num])
+        print("\nassignments\n")
+        print(assignments)
+        dag_str = self.serialize_dag_file("dag.txt")
+        assignments["UPDATED_DAG_FILE_WITH_DUPICATION"] = dag_str
         return assignments
 
     def print_level(self, level):
@@ -459,3 +459,14 @@ class HEFT:
             if c == '_':
                 return True
         return False
+        
+    def serialize_dag_file(self, path):
+        
+        dag_str = ""
+        f = open(path, "r")
+        while(1):
+            line = f.readline()
+            if len(line) == 0:
+                break
+            dag_str += line
+        f.close()
