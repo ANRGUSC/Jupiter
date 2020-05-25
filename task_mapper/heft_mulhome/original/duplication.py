@@ -258,7 +258,7 @@ class Duplication:
                     start_time = 0 if len(new_link.time_line) == 0 else new_link.time_line[-1].end
                     transfer_time = self.cal_comm_quadratic(file_size_to_tran, quaratic_profile[new_node.number][dst_proc.number])
                     ld = hd.LinkDuration(task_ids_to_dup[idx], task_ids_to_recv[idx], start_time, start_time + transfer_time)
-                    new_link.time_line.append()
+                    new_link.time_line.append(ld)
             print("new_link to dst")
             print(new_link.id)
             if len(new_link.time_line) > 0:
@@ -283,7 +283,7 @@ class Duplication:
                     start_time = 0 if len(new_link.time_line) == 0 else new_link.time_line[-1].end
                     tran_time = self.cal_comm_quadratic(file_sizes[idx], quaratic_profile[procnum][new_node.number])
                     ld = hd.LinkDuration(parent_ids[idx], child_ids[idx], start_time, start_time + tran_time)
-                    new_link.time_line.append()
+                    new_link.time_line.append(ld)
                     print("new_link from parents")
                     print(new_link.id)
                     if len(new_link.time_line) > 0:
