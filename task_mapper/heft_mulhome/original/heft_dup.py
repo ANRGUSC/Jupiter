@@ -470,3 +470,4 @@ class HEFT:
                 break
             dag_str += line
         f.close()
+        return dag_str
