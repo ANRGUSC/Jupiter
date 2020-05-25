@@ -230,6 +230,9 @@ class Duplication:
         print("updated task names with dupicated tasks")
         print(task_names)
         # update link durations
+        # NOTE: corner case here, the parent and child can be scheduled on the same node originally, but seperated after dup
+        # thus causing a new link usage, so can't just copy original link usage
+        """
         new_link = self.get_link_by_id(links, str(new_node.number)+'_'+str(dst_proc.number))
         old_link = self.get_link_by_id(links, btnk_id)
         for ld in old_link.time_line:
@@ -242,12 +245,56 @@ class Duplication:
             for ld in old_link.time_line:
                 if ld.end_task_num in task_ids_to_dup:
                     new_link.time_line.append(hd.LinkDuration(ld.start_task_num, ori_to_dup[ld.end_task_num], ld.start, ld.end))
+        """
+        # from selected new node to dst node: task_ids_to_dup[i] -> task_ids_to_recv[i]
+        # from parents to selected nodes: files_from_src[nodeid]
+        
+        # link from new node to dst node
+        if new_node.number != dst_proc.number:
+            new_link = self.get_link_by_id(links, str(new_node.number)+'_'+str(dst_proc.number))
+            if len(task_ids_to_dup) > 0:
+                for idx in range(len(task_ids_to_dup)):
+                    file_size_to_tran = data[task_ids_to_dup[idx]][task_ids_to_recv[idx]]
+                    start_time = 0 if len(new_link.time_line) == 0 else new_link.time_line[-1].end
+                    transfer_time = self.cal_comm_quadratic(file_size_to_tran, quaratic_profile[new_node.number]][dst_proc.number])
+                    ld = hd.LinkDuration(task_ids_to_dup[idx], task_ids_to_recv[idx], start_time, start_time + transfer_time)
+                    new_link.time_line.append()
+            print("new_link to dst")
+            print(new_link.id)
+            if len(new_link.time_line) > 0:
+                for tl in new_link.time_line:
+                    print(tl.start_task_num, " ", tl.end_task_num, " ", tl.start, " ", tl.end)
+        # maintain a data-structure: 
+        # parent_ids, child_ids, file_sizes: parent[i] transfer file_size[i] to child[i]
+        parent_ids = []
+        child_ids = []
+        file_sizes = []
+        for pt in parent_tasks:
+            for ctid in task_ids_to_dup:
+                if data[pt.number][ctid] > 0:
+                    parent_ids.append(pt.number)
+                    child_ids.append(ctid)
+                    file_sizes.append(data[pt.number][ctid])
+        if len(file_sizes) > 0:
+            procnum = tasks[parent_ids[idx]].processor_num
+            for idx in range(len(file_sizes)):
+                if procnum != new_node.number:
+                    new_link = self.get_link_by_id(links, str(procnum)+'_'+str(new_node.number))
+                    start_time = 0 if len(new_link.time_line) == 0 else new_link.time_line[-1].end
+                    tran_time = self.cal_comm_quadratic(file_sizes[idx], quaratic_profile[procnum]][new_node.number])
+                    ld = hd.LinkDuration(parent_ids[idx], child_ids[idx], start_time, start_time + tran_time)
+                    new_link.time_line.append()
+                    print("new_link from parents")
+                    print(new_link.id)
+                    if len(new_link.time_line) > 0:
+                        for tl in new_link.time_line:
+                            print(tl.start_task_num, " ", tl.end_task_num, " ", tl.start, " ", tl.end)
         print('\n\n')
         path = 'dag.txt'
         self.rewrite_graph_file(path, data, task_names)
         return True
     
-        
+    
     def get_link_by_id(self, links, link_id):
         for link in links:
             if link.id == link_id:
