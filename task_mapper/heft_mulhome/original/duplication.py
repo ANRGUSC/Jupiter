@@ -281,7 +281,7 @@ class Duplication:
                 if procnum != new_node.number:
                     new_link = self.get_link_by_id(links, str(procnum)+'_'+str(new_node.number))
                     start_time = 0 if len(new_link.time_line) == 0 else new_link.time_line[-1].end
-                    tran_time = self.cal_comm_quadratic(file_sizes[idx], quaratic_profile[procnum]][new_node.number])
+                    tran_time = self.cal_comm_quadratic(file_sizes[idx], quaratic_profile[procnum][new_node.number])
                     ld = hd.LinkDuration(parent_ids[idx], child_ids[idx], start_time, start_time + tran_time)
                     new_link.time_line.append()
                     print("new_link from parents")
