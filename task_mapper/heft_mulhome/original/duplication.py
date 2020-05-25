@@ -256,7 +256,7 @@ class Duplication:
                 for idx in range(len(task_ids_to_dup)):
                     file_size_to_tran = data[task_ids_to_dup[idx]][task_ids_to_recv[idx]]
                     start_time = 0 if len(new_link.time_line) == 0 else new_link.time_line[-1].end
-                    transfer_time = self.cal_comm_quadratic(file_size_to_tran, quaratic_profile[new_node.number]][dst_proc.number])
+                    transfer_time = self.cal_comm_quadratic(file_size_to_tran, quaratic_profile[new_node.number][dst_proc.number])
                     ld = hd.LinkDuration(task_ids_to_dup[idx], task_ids_to_recv[idx], start_time, start_time + transfer_time)
                     new_link.time_line.append()
             print("new_link to dst")
