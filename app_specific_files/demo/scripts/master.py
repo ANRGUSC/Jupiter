@@ -154,9 +154,12 @@ def get_and_send_missing_images():
         print('Possibly running on the execution profiler')
         missing_images_dict = collections.defaultdict(list)
     # Process and send requests out     
+    ### Reusing the input files to the master node. NOT creating a local copy of input files.
     logging.debug('Receive missing from decoder task:')
     for image_file, _class in missing_images_dict: 
         logging.debug(image_file)
+        just_file_name = image_file.split("_jobid_")[0]
+        source_path = os.path.join(pathin, just_file_name)
         file_name = 'master_' + image_file
         logging.debug('Transfer the file')
         destination_path = os.path.join('/centralized_scheduler/input',file_name)
@@ -197,7 +200,6 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
     print(collage_name)
     return collage_name
 
-
 def task(filelist, pathin, pathout):
     out_list = []# output file list. Ordered as => [collage_file, image1, image2, ...., image9]
     ### send to collage task
@@ -222,19 +224,21 @@ def task(filelist, pathin, pathout):
     job_id = get_job_id() 
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
      
-    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+collage_file))
+    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+ collage_file +  + "_jobid_"+ str(job_id)))
     print('Receive collage file:')
     ### send to collage task
     outlist = [os.path.join(pathout,"master_"+collage_file)]
     print(outlist)
     ### send to resnet tasks
     print('Receive resnet files: ')
+    filelist_flask = []
     for i, f in enumerate(filelist):
         idx  = i%num_images
-        shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(idx)+'_'+f))	
+        shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(idx)+'_'+ f + "_jobid_"+ str(job_id)))
+        filelist_flask.append(f + "_jobid_"+ str(job_id))
         outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f))
         print(outlist)
-    job_id = put_filenames()
+    next_job_id = put_filenames(filelist_flask)
     get_and_send_missing_images() 
     return outlist
 

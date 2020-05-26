@@ -131,7 +131,7 @@ def task(file_, pathin, pathout):
         ### Process predictions	to get a list of final predictions
         final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
     ### Write predictions to a file and send it to decoder task's folder
-        job_id = 0
+        job_id = int(f.split("_jobid_")[1])
         send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
     out_list = []
     out_name = pathout + "collage.txt"
@@ -151,12 +151,10 @@ def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
     Raises:
         Exception: if sending message to flask server on decoder is failed
     """
-    global resnet_task_num
     try:
         logging.debug('Send prediction to the decoder')
-        url = "http://" + global_info_ip_port + "/recv_prediction_from_resnet_task"
-        ### NOTETOQUYNH: set resnet_task_num to ID of the resnet worker task (0 to 10)
-        params = {"job_id": job_id, 'msg': final_preds, "resnet_task_num": resnet_task_num}
+        url = "http://" + global_info_ip_port + "/post-predictions-collage"
+        params = {"job_id": job_id, 'msg': final_preds}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)

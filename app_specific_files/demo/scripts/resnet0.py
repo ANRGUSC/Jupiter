@@ -91,7 +91,7 @@ def task(file_, pathin, pathout):
         # purposely add delay time to slow down the sending
         time.sleep(3) #>=2 
         return [] #slow resnet node: return empty
-        job_id = 0
+        job_id = int(f.split("_jobid_")[1])
         send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
         #Krishna
     return out_list
@@ -110,7 +110,7 @@ def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
     global resnet_task_num
     try:
         logging.debug('Send prediction to the decoder')
-        url = "http://" + global_info_ip_port + "/recv_prediction_from_resnet_task"
+        url = "http://" + global_info_ip_port + "/post-prediction-resnet"
         ### NOTETOQUYNH: set resnet_task_num to ID of the resnet worker task (0 to 10)
         params = {"job_id": job_id, 'msg': prediction, "resnet_task_num": resnet_task_num}
         params = urllib.parse.urlencode(params)

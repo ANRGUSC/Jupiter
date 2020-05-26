@@ -89,7 +89,8 @@ def task(file_, pathin, pathout):
             logging.debug(e)
 
         #Krishna
-        job_id = 0
+        # job_id = 0
+        job_id = int(f.split("_jobid_")[1])
         send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
         #Krishna
     return out_list
