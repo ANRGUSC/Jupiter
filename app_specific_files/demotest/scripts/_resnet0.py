@@ -20,6 +20,10 @@ resnet_task_num = int(taskname.split('resnet')[1])
 
 global logging
 logging.basicConfig(level = logging.DEBUG)
+global decoder_node_port
+#Krishna
+
+
 
 INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
@@ -29,7 +33,12 @@ global FLASK_DOCKER, FLASK_SVC
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
-global global_info_ip, global_info_ip_port
+global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
+all_nodes = os.environ["ALL_NODES"].split(":")
+all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":") 
+logging.debug(all_nodes)
+map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
+decoder_node_port = map_nodes_ip['decoder'] + ":" + str(FLASK_SVC )
 
 
 def task(file_, pathin, pathout):
@@ -53,7 +62,7 @@ def task(file_, pathin, pathout):
         img = Image.open(os.path.join(pathin, f))
 
         ### Apply transforms.
-        img_tensor = composed(img)
+       	img_tensor = composed(img)
         ### 3D -> 4D (batch dimension = 1)
         img_tensor.unsqueeze_(0) 
         #img_tensor =  input_batch[0]
@@ -65,6 +74,8 @@ def task(file_, pathin, pathout):
             #distrib = np.load('/home/collage_inference/resnet/latency_distribution.npy')
             # s = np.random.choice(distrib)
             ### Copy to appropriate destination paths
+            logging.debug(os.path.join(pathin, f))
+            logging.debug(pred[0])
             if pred[0] == 555: ### fire engine. class 1
                 source = os.path.join(pathin, f)
                 # f_split = f.split("prefix_")[1]
@@ -216,15 +227,14 @@ def task(file_, pathin, pathout):
 
         #Krishna
         # purposely add delay time to slow down the sending
-        time.sleep(3) #>=2 
-        return [] #slow resnet node: return empty
-        job_id = int(f.split("_jobid_")[1])
-        send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
+        # time.sleep(3) #>=2 
+        # return [] #slow resnet node: return empty
+        send_prediction_to_decoder_task(pred[0], decoder_node_port)
         #Krishna
     return out_list
 
 #Krishna
-def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
+def send_prediction_to_decoder_task(prediction, decoder_node_port):
     """
     Sending prediction and resnet node task's number to flask server on decoder
     Args:
@@ -237,11 +247,9 @@ def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
     global resnet_task_num
     try:
         logging.debug('Send prediction to the decoder')
-        global_info_ip = os.environ['GLOBAL_IP']
-        global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-        url = "http://" + global_info_ip_port + "/post-prediction-resnet"
+        url = "http://" + decoder_node_port + "/recv_prediction_from_resnet_task"
         ### NOTETOQUYNH: set resnet_task_num to ID of the resnet worker task (0 to 10)
-        params = {"job_id": job_id, 'msg': prediction, "resnet_task_num": resnet_task_num}
+        params = {'msg': prediction, "resnet_task_num": resnet_task_num}
         params = urllib.parse.urlencode(params)
         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
         res = urllib.request.urlopen(req)
@@ -254,14 +262,6 @@ def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
     return res
 #Krishna
 
-# def main():
-#     #filelist = ["master_resnet0_n03345487_10.JPEG"]
-#     filelist = ['master_resnet0_n03345487_10.JPEG','master_resnet0_n04146614_1.JPEG','master_resnet0_n04146614_25.JPEG','master_resnet0_n04146614_27.JPEG',
-#        'master_resnet0_n04146614_30.JPEG','master_resnet0_n04146614_36.JPEG',
-#        'master_resnet0_n03345487_351.JPEG']
-#     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
-#     outfile = task(filelist, outpath, outpath)
-#     return outfile
 def main():
     #filelist = ["master_resnet0_n03345487_10.JPEG"]
     classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'kitfox', 'persiancat', 'leopard', 'lion', 'tiger', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']

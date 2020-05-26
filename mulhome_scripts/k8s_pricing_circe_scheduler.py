@@ -965,7 +965,9 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name,
                                              compute_home_ip = compute_service_ips['home'],
                                              child = jupiter_config.HOME_CHILD,
                                              app_name = app_name,
-                                             app_option =jupiter_config.APP_OPTION)
+                                             app_option =jupiter_config.APP_OPTION,
+                                             all_resources_nodes = all_resources_nodes,
+                                             all_resources_ips = all_resources_ips)
     resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
     logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 

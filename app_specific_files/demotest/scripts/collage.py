@@ -9,6 +9,18 @@ from darknet_models import Darknet
 from utils.utils import *
 from utils import torch_utils
 import pickle
+import configparser
+
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+global FLASK_DOCKER, FLASK_SVC
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+
+global global_info_ip, global_info_ip_port
+
 
 def calculate_iou(L1, R1, T1, B1, L2, R2, T2, B2):
     L = max(L1, L2)
@@ -20,7 +32,7 @@ def calculate_iou(L1, R1, T1, B1, L2, R2, T2, B2):
     A2 = (R2-L2+1) * (B2-T2+1)
     iou = i*1.0/(A1 + A2 - i) 
     return iou
-	
+    
 def calculate_pos(left, right, top, bottom, w, spatial):
     # return box in pos with maximum iou.
     pos_dict = {}
@@ -42,7 +54,7 @@ def calculate_pos(left, right, top, bottom, w, spatial):
                  y = i 
     #print(left, right, top, bottom, x, y)
     return (pos_dict[x])[y]
-	
+    
 def process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial):
     #print("pred1: ", pred.shape)
     pred = pred[pred[:, :, 4] > conf_thres]
@@ -80,7 +92,7 @@ def process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial
     #predictions_arr = np.array(predictions_list)
     predictions_list = classes_list[predictions_list].tolist()
     return predictions_list
-	
+    
 def task(file_, pathin, pathout):
     file_ = [file_] if isinstance(file_, str) else file_
     img_size=416
@@ -116,19 +128,50 @@ def task(file_, pathin, pathout):
         collage_tensor.unsqueeze_(0) 
         ### Classify the image
         pred = model(collage_tensor)
-        ### Process predictions	to get a list of final predictions
+        ### Process predictions to get a list of final predictions
         final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
     ### Write predictions to a file and send it to decoder task's folder
+        job_id = int(f.split("_jobid_")[1])
+        send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
     out_list = []
-    pickle_file = os.path.join(pathout,"collage_decoder_preds.pickle")
-    with open(pickle_file, "wb") as outfile:
-        pickle.dump(final_preds, outfile)
-    out_list.append(pickle_file)
+    out_name = pathout + "collage.txt"
+    with open(out_name, "w") as out_file:
+        out_file.write("dummy output file")
+        out_list.append(out_name)
     return out_list
+
+#Krishna
+def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
+    """
+    Sending prediction and resnet node task's number to flask server on decoder
+    Args:
+        prediction: the prediction to be sent
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+    Raises:
+        Exception: if sending message to flask server on decoder is failed
+    """
+    try:
+        logging.debug('Send prediction to the decoder')
+        global_info_ip = os.environ['GLOBAL_IP']
+        global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+        url = "http://" + global_info_ip_port + "/post-predictions-collage"
+        params = {"job_id": job_id, 'msg': final_preds}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
+        #logging.debug(e)
+        return "not ok"
+    return res
 
 def main():
     filelist = ["master_collage.JPEG"]
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
+
 

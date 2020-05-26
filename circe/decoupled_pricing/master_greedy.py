@@ -151,6 +151,10 @@ def prepare_global():
     logging.debug('All provided profilers')
     logging.debug(profiler_ips)
 
+    global resource_profiler_ips
+    resource_profiler_ips = os.environ['ALL_RESOURCES_IPS'].split(':')
+    resource_profiler_ips = resource_profiler_ips[1:]
+
     global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
 
     
@@ -424,7 +428,9 @@ def profilers_mapping_decorator(f):
 def get_resource_data_drupe(MONGO_SVC_PORT):
     """Collect the resource profile from local MongoDB peer
     """
-    for profiler_ip in profiler_ips:
+    logging.debug('Retrieve resource information for profiler')
+    logging.debug(resource_profiler_ips)
+    for profiler_ip in resource_profiler_ips:
         logging.debug('Check Resource Profiler IP: '+profiler_ip)
         client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(MONGO_SVC_PORT)+'/')
         db = client_mongo.central_resource_profiler

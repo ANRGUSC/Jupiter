@@ -142,8 +142,10 @@ def prepare_global_info():
     
 
     global computing_nodes,computing_ips 
-    computing_nodes = os.environ['ALL_COMPUTING_NODES'].split(':')
-    computing_ips = os.environ['ALL_COMPUTING_IPS'].split(':')
+    # computing_nodes = os.environ['ALL_COMPUTING_NODES'].split(':')
+    # computing_ips = os.environ['ALL_COMPUTING_IPS'].split(':')
+    computing_nodes = os.environ['ALL_NODES'].split(':')
+    computing_ips = os.environ['ALL_NODES_IPS'].split(':')
     node_ip_map = dict(zip(computing_nodes, computing_ips))
 
     global combined_ip_map,combined_ips,combined_nodes
