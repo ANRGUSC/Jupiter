@@ -525,7 +525,8 @@ def main():
     web_server = MonitorRecv()
     web_server.start()
 
-    _thread.start_new_thread(start_evaluate,())
+    # Only for dummy applications
+    # _thread.start_new_thread(start_evaluate,())
 
     wm = pyinotify.WatchManager()
     input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')

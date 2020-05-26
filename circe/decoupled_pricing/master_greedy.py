@@ -175,7 +175,7 @@ def prepare_global():
         node_count += 1
 
     #Get nodes to profiler_ip mapping
-    for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
+    for name, node_ip in zip(os.environ['ALL_PROFILERS'].split(":"), os.environ['ALL_PROFILERS_IPS'].split(":")):
         if name == "":
             continue
         #First get mapping like {node: profiler_ip}, and later convert it to {profiler_ip: node}
@@ -566,7 +566,8 @@ def init_task_topology():
         - Write control relations to ``DAG/parent_controller.txt``
     """
 
-    sample_file = '/1botnet.ipsum'
+    # sample_file = '/1botnet.ipsum'
+    sample_file = os.listdir('/sample_input')[0]
     sample_size = cal_file_size(sample_file)
 
     assign_to_node = -1

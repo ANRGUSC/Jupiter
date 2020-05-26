@@ -80,7 +80,7 @@ def prepare_global():
         node_count += 1
 
     # Get nodes to profiler_ip mapping
-    for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
+    for name, node_ip in zip(os.environ['ALL_PROFILERS'].split(":"), os.environ['ALL_PROFILERS_IPS'].split(":")):
         if name == "":
             continue
         #First get mapping like {node: profiler_ip}, and later convert it to {profiler_ip: node}
@@ -126,9 +126,9 @@ def prepare_global():
     global first_task
     first_task = os.environ['CHILD_NODES']
 
-    global profiler_ips
-    profiler_ips = os.environ['ALL_PROFILERS'].split(':')
-    profiler_ips = profiler_ips[1:]
+    global resource_profiler_ips
+    resource_profiler_ips = os.environ['ALL_RESOURCES_IPS'].split(':')
+    resource_profiler_ips = resource_profiler_ips[1:]
 
 
 def init_task_topology():
@@ -313,11 +313,12 @@ def assign_children_task(children_task):
             logging.debug("Waiting for the profiler data")
             time.sleep(100)
     res = False
-    if 'app' in children_task:
-        appname = children_task.split('-')[0]
-        sample_file = '/' + appname + '-1botnet.ipsum'
-    else:
-        sample_file = '/1botnet.ipsum'
+    # if 'app' in children_task:
+    #     appname = children_task.split('-')[0]
+    #     sample_file = '/' + appname + '-1botnet.ipsum'
+    # else:
+    #     sample_file = '/1botnet.ipsum'
+    sample_file = os.listdir('/sample_input')[0]
     sample_size = cal_file_size(sample_file)
     assign_to_node = get_most_suitable_node(sample_size)
     if not assign_to_node:
@@ -426,8 +427,9 @@ def output(msg):
 def get_resource_data_drupe(MONGO_SVC_PORT):
     """Collect the resource profile from local MongoDB peer
     """
-
-    for profiler_ip in profiler_ips:
+    logging.debug('Retrieve resource information for profiler')
+    logging.debug(resource_profiler_ips)
+    for profiler_ip in resource_profiler_ips:
         logging.debug('Check Resource Profiler IP: %s', profiler_ip)
         client_mongo = MongoClient('mongodb://' + profiler_ip + ':' +
                                    str(MONGO_SVC_PORT) + '/')
