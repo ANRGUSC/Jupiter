@@ -112,6 +112,7 @@ def get_job_id():
         print(job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
+        job_id = 0
 
 def put_filenames(job_id, filelist):
     hdr = {
@@ -221,7 +222,9 @@ def task(filelist, pathin, pathout):
     print('Input list')
     print(input_list)
     # get job id for this requests
-    job_id = get_job_id() 
+    job_id = get_job_id()
+    logging.debug("got job id") 
+    logging.debug(job_id) 
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     collage_file_split = collage_file.split(".JPEG")[0] 
     shutil.copyfile(collage_file, os.path.join(pathout,"master_"+ collage_file_split + "_jobid_" + str(job_id) + ".JPEG"))
