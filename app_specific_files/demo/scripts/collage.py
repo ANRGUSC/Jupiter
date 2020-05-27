@@ -21,8 +21,6 @@ FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
 global global_info_ip, global_info_ip_port
-global_info_ip = os.environ['GLOBAL_IP']
-global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
 
 def calculate_iou(L1, R1, T1, B1, L2, R2, T2, B2):
     L = max(L1, L2)
@@ -133,8 +131,14 @@ def task(file_, pathin, pathout):
         ### Process predictions	to get a list of final predictions
         final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
     ### Write predictions to a file and send it to decoder task's folder
-        job_id = int(f.split("_jobid_")[1])
-        send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
+        f_stripped = f.split(".JPEG")[0]
+        job_id = int(f_stripped.split("_jobid_")[1])
+        try:
+            global_info_ip = os.environ['GLOBAL_IP']
+            global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+            send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
+        except Exception as e:
+            print('Possibly running on the execution profiler')
     out_list = []
     out_name = pathout + "collage.txt"
     with open(out_name, "w") as out_file:
@@ -162,7 +166,7 @@ def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
     return res
 
 def main():
-    filelist = ["master_collage.JPEG"]
+    filelist = ["master_collage_jobid_0.JPEG"]
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile

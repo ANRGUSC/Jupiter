@@ -54,8 +54,6 @@ map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
 store_class_list = ['storeclass1','storeclass2']
 
 global global_info_ip, global_info_ip_port
-global_info_ip = os.environ['GLOBAL_IP']
-global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
 
 store_class_tasks_dict = {}
 store_class_tasks_dict[555] = "storeclass1"
@@ -105,6 +103,7 @@ def get_job_id():
     # address of flask server for class1 is 0.0.0.0:5000 and "post-id" is for requesting id
     try:
         # url = "http://0.0.0.0:5000/post-id"
+        global_info_ip = os.environ['GLOBAL_IP']
         url = "http://%s:%s/post-id-master"%(global_info_ip,str(FLASK_SVC))
         print(url)
         # request job_id
@@ -113,7 +112,6 @@ def get_job_id():
         print(job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
-        job_id = 0
 
 def put_filenames(job_id, filelist):
     hdr = {
@@ -125,6 +123,7 @@ def put_filenames(job_id, filelist):
     # address of flask server for class1 is 0.0.0.0:5000 and "post-id" is for requesting id
     try:
         # url = "http://0.0.0.0:5000/post-id"
+        global_info_ip = os.environ['GLOBAL_IP']
         url = "http://%s:%s/post-files-master"%(global_info_ip,str(FLASK_SVC))
         print(url)
         # request job_id
@@ -133,7 +132,6 @@ def put_filenames(job_id, filelist):
         print(next_job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
-        job_id = 0
 
 def get_and_send_missing_images():
     # Check with global info server
@@ -145,6 +143,7 @@ def get_and_send_missing_images():
     payload = {}
     try:
         # url = "http://0.0.0.0:5000/post-id"
+        global_info_ip = os.environ['GLOBAL_IP']
         url = "http://%s:%s/post-get-images-master"%(global_info_ip,str(FLASK_SVC))
         print(url)
         # request job_id
@@ -241,14 +240,14 @@ def task(filelist, pathin, pathout):
         filelist_flask.append(f_new)
         outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f_new))
         print(outlist)
-    next_job_id = put_filenames(filelist_flask)
+    next_job_id = put_filenames(job_id, filelist_flask)
     get_and_send_missing_images() 
     return outlist
 
 def main():
-    filelist = ['n03345487_10.JPEG','n03345487_108.JPEG', 'n03345487_133.JPEG','n03345487_135.JPEG','n03345487_136.JPEG','n04146614_16038.JPEG','n03345487_18.JPEG','n03345487_40.JPEG','n03345487_78.JPEG','n04146614_1.JPEG','n04146614_39.JPEG','n04146614_152.JPEG','n04146614_209.JPEG','n04146614_263.JPEG','n04146614_318.JPEG','n03345487_206.JPEG','n03345487_243.JPEG','n03345487_284.JPEG','n04146614_25.JPEG','n04146614_53.JPEG','n04146614_158.JPEG','n04146614_231.JPEG','n04146614_284.JPEG','n03345487_144.JPEG','n03345487_208.JPEG','n03345487_245.JPEG',
-       'n03345487_311.JPEG','n04146614_27.JPEG','n04146614_69.JPEG','n04146614_186.JPEG','n04146614_232.JPEG','n04146614_295.JPEG','n03345487_163.JPEG','n03345487_209.JPEG','n03345487_267.JPEG','n03345487_317.JPEG','n04146614_30.JPEG','n04146614_79.JPEG','n04146614_187.JPEG','n04146614_237.JPEG','n04146614_309.JPEG','n03345487_192.JPEG','n03345487_210.JPEG','n03345487_279.JPEG','n03345487_328.JPEG','n04146614_36.JPEG','n04146614_84.JPEG','n04146614_199.JPEG','n04146614_245.JPEG','n04146614_312.JPEG','n03345487_205.JPEG','n03345487_241.JPEG','n03345487_282.JPEG','n03345487_334.JPEG',
-       'n03345487_351.JPEG','n03345487_360.JPEG','n03345487_386.JPEG','n03345487_410.JPEG','n03345487_417.JPEG','n04146614_330.JPEG','n04146614_363.JPEG','n04146614_377.JPEG','n04146614_387.JPEG']
+    filelist = ['n03345487_10_jobid_0.JPEG','n03345487_108_jobid_0.JPEG', 'n03345487_133_jobid_0.JPEG','n03345487_135_jobid_0.JPEG','n03345487_136_jobid_0.JPEG','n04146614_16038_jobid_0.JPEG','n03345487_18_jobid_0.JPEG','n03345487_40_jobid_0.JPEG','n03345487_78_jobid_0.JPEG','n04146614_1_jobid_0.JPEG','n04146614_39_jobid_0.JPEG','n04146614_152_jobid_0.JPEG','n04146614_209_jobid_0.JPEG','n04146614_263_jobid_0.JPEG','n04146614_318_jobid_0.JPEG','n03345487_206_jobid_0.JPEG','n03345487_243_jobid_0.JPEG','n03345487_284_jobid_0.JPEG','n04146614_25_jobid_0.JPEG','n04146614_53_jobid_0.JPEG','n04146614_158_jobid_0.JPEG','n04146614_231_jobid_0.JPEG','n04146614_284_jobid_0.JPEG','n03345487_144_jobid_0.JPEG','n03345487_208_jobid_0.JPEG','n03345487_245_jobid_0.JPEG',
+       'n03345487_311_jobid_0.JPEG','n04146614_27_jobid_0.JPEG','n04146614_69_jobid_0.JPEG','n04146614_186_jobid_0.JPEG','n04146614_232_jobid_0.JPEG','n04146614_295_jobid_0.JPEG','n03345487_163_jobid_0.JPEG','n03345487_209_jobid_0.JPEG','n03345487_267_jobid_0.JPEG','n03345487_317_jobid_0.JPEG','n04146614_30_jobid_0.JPEG','n04146614_79_jobid_0.JPEG','n04146614_187_jobid_0.JPEG','n04146614_237_jobid_0.JPEG','n04146614_309_jobid_0.JPEG','n03345487_192_jobid_0.JPEG','n03345487_210_jobid_0.JPEG','n03345487_279_jobid_0.JPEG','n03345487_328_jobid_0.JPEG','n04146614_36_jobid_0.JPEG','n04146614_84_jobid_0.JPEG','n04146614_199_jobid_0.JPEG','n04146614_245_jobid_0.JPEG','n04146614_312_jobid_0.JPEG','n03345487_205_jobid_0.JPEG','n03345487_241_jobid_0.JPEG','n03345487_282_jobid_0.JPEG','n03345487_334_jobid_0.JPEG',
+       'n03345487_351_jobid_0.JPEG','n03345487_360_jobid_0.JPEG','n03345487_386_jobid_0.JPEG','n03345487_410_jobid_0.JPEG','n03345487_417_jobid_0.JPEG','n04146614_330_jobid_0.JPEG','n04146614_363_jobid_0.JPEG','n04146614_377_jobid_0.JPEG','n04146614_387_jobid_0.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile

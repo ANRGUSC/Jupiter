@@ -17,7 +17,6 @@ import urllib
 import logging
 global logging
 logging.basicConfig(level = logging.DEBUG)
-global decoder_node_port
 #Krishna
 
 resnet_task_num = 5
@@ -31,8 +30,6 @@ FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
 global global_info_ip, global_info_ip_port
-global_info_ip = os.environ['GLOBAL_IP']
-global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
 
 def task(file_, pathin, pathout):
     global resnet_task_num
@@ -93,7 +90,12 @@ def task(file_, pathin, pathout):
         #Krishna
         f_stripped = f.split(".JPEG")[0]
         job_id = int(f_stripped.split("_jobid_")[1])
-        send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
+        try:
+            global_info_ip = os.environ['GLOBAL_IP']
+            global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+            send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
+        except Exception as e:
+            print('Possibly running on the execution profiler')
         #Krishna
     return out_list
 
@@ -128,8 +130,8 @@ def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
 #Krishna
 def main():
     filelist = ['master_resnet5_n04146614_16038.JPEG','master_resnet5_n04146614_318.JPEG',
-       'master_resnet5_n03345487_144.JPEG','master_resnet5_n03345487_163.JPEG','master_resnet5_n03345487_192.JPEG',
-       'master_resnet5_n03345487_205.JPEG','master_resnet5_n04146614_330.JPEG']
+       'master_resnet5_n03345487_144_jobid_0.JPEG','master_resnet5_n03345487_163_jobid_0.JPEG','master_resnet5_n03345487_192_jobid_0.JPEG',
+       'master_resnet5_n03345487_205_jobid_0.JPEG','master_resnet5_n04146614_330_jobid_0.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
