@@ -13,6 +13,9 @@ import time
 import multiprocessing
 from multiprocessing import Process, Manager
 import collections
+
+import requests
+import json
 #Krishna
 
 """
@@ -105,10 +108,9 @@ def get_job_id():
         url = "http://%s:%s/post-id-master"%(global_info_ip,str(FLASK_SVC))
         print(url)
         # request job_id
-
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
         job_id = response.json()
-        printprint(job_id)
+        print(job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
         job_id = 0
@@ -126,10 +128,9 @@ def put_filenames(job_id, filelist):
         url = "http://%s:%s/post-files-master"%(global_info_ip,str(FLASK_SVC))
         print(url)
         # request job_id
-
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
-        job_id = response.json()
-        printprint(job_id)
+        next_job_id = response.json()
+        print(next_job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
         job_id = 0
@@ -158,8 +159,8 @@ def get_and_send_missing_images():
     logging.debug('Receive missing from decoder task:')
     for image_file, _class in missing_images_dict: 
         logging.debug(image_file)
-        just_file_name = image_file.split("_jobid_")[0]
-        source_path = os.path.join(pathin, just_file_name)
+        file_name_wo_jobid = image_file.split("_jobid_")[0]
+        source_path = os.path.join(pathin, file_name_wo_jobid + ".JPEG")
         file_name = 'master_' + image_file
         logging.debug('Transfer the file')
         destination_path = os.path.join('/centralized_scheduler/input',file_name)
@@ -223,8 +224,8 @@ def task(filelist, pathin, pathout):
     # get job id for this requests
     job_id = get_job_id() 
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
-     
-    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+ collage_file +  + "_jobid_"+ str(job_id)))
+    collage_file_split = collage_file.split(".JPEG")[0] 
+    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+ collage_file_split + "_jobid_" + str(job_id) + ".JPEG"))
     print('Receive collage file:')
     ### send to collage task
     outlist = [os.path.join(pathout,"master_"+collage_file)]
@@ -234,9 +235,11 @@ def task(filelist, pathin, pathout):
     filelist_flask = []
     for i, f in enumerate(filelist):
         idx  = i%num_images
-        shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(idx)+'_'+ f + "_jobid_"+ str(job_id)))
-        filelist_flask.append(f + "_jobid_"+ str(job_id))
-        outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f))
+        f_split = f.split(".JPEG")[0]
+        f_new = f_split + "_jobid_"+ str(job_id) + ".JPEG" 
+        shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(idx)+'_'+ f_new))
+        filelist_flask.append(f_new)
+        outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f_new))
         print(outlist)
     next_job_id = put_filenames(filelist_flask)
     get_and_send_missing_images() 

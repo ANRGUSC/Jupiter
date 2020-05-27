@@ -9,6 +9,8 @@ from darknet_models import Darknet
 from utils.utils import *
 from utils import torch_utils
 import pickle
+import requests
+import json
 
 INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
@@ -142,24 +144,17 @@ def task(file_, pathin, pathout):
 
 #Krishna
 def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
-    """
-    Sending prediction and resnet node task's number to flask server on decoder
-    Args:
-        prediction: the prediction to be sent
-    Returns:
-        str: the message if successful, "not ok" otherwise.
-    Raises:
-        Exception: if sending message to flask server on decoder is failed
-    """
     try:
+        hdr = {
+                'Content-Type': 'application/json',
+                'Authorization': None #not using HTTP secure
+                                        }
         logging.debug('Send prediction to the decoder')
         url = "http://" + global_info_ip_port + "/post-predictions-collage"
         params = {"job_id": job_id, 'msg': final_preds}
-        params = urllib.parse.urlencode(params)
-        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        res = urllib.request.urlopen(req)
-        res = res.read()
-        res = res.decode('utf-8')
+        response = requests.post(url, headers = hdr, data = json.dumps(params))
+        ret_job_id = response.json()
+        logging.debug(ret_job_id)
     except Exception as e:
         logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
         #logging.debug(e)

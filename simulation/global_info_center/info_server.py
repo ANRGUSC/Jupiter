@@ -10,7 +10,7 @@ import collections
 app = Flask('Global_Server')
 
 ### Krishna
-@app.route('post-prediction-resnet', methods=['POST'])
+@app.route('/post-prediction-resnet', methods=['POST'])
 def request_resnet_prediction():
     print('Receive the prediction from resnet for job id')
     recv = request.get_json()
@@ -18,37 +18,51 @@ def request_resnet_prediction():
     prediction = recv['msg']
     resnet_task_num = recv['resnet_task_num']
     collagejobs.put_resnet_pred(job_id, prediction, resnet_task_num)
-    response = ""
+    response = job_id
+    print(collagejobs.job_resnet_preds_dict)
     return json.dumps(response)
 
-@app.route('post-predictions-collage', methods=['POST'])
+@app.route('/post-predictions-collage', methods=['POST'])
 def request_collage_prediction():
-    print('Receive the prediction from resnet for job id')
+    print('Receive the prediction from collage for job id')
     recv = request.get_json()
     job_id = recv['job_id']
     final_preds = recv['msg']
     collagejobs.put_collage_preds(job_id, final_preds)
-    response = ""
+    response = job_id
+    print(collagejobs.job_collage_preds_dict)
     return json.dumps(response)
 
-@app.route('post-id-master', methods=['POST'])
+@app.route('/post-id-master', methods=['POST'])
 def request_id_master():
     recv = request.get_json()
     response = collagejobs.get_id()
+    print("New job id is: ", response)
     return json.dumps(response)
 
-@app.route('post-files-master', methods=['POST'])
+@app.route('/post-files-master', methods=['POST'])
 def request_post_files():
     recv = request.get_json()
     job_id = recv['job_id']
     filelist = recv['filelist']
+    # print("File list for job id %s is %s " % (job_id, filelist))
     response = collagejobs.put_files(job_id, filelist)
+    print(collagejobs.job_files_dict)
     return json.dumps(response)
 
-@app.route('post-get-images-master', methods=['POST'])
+@app.route('/post-get-images-master', methods=['POST'])
 def request_post_get_images():
     recv = request.get_json()
-    response = collagejobs.get_missing_dict() 
+    print("before processing")
+    print(collagejobs.job_files_dict)
+    print(collagejobs.job_resnet_preds_dict)
+    print(collagejobs.job_collage_preds_dict)
+    response = collagejobs.get_missing_dict()
+    print(response)
+    print("after processing")
+    print(collagejobs.job_files_dict)
+    print(collagejobs.job_resnet_preds_dict)
+    print(collagejobs.job_collage_preds_dict)
     return json.dumps(response)
     
 class collageJobs(object):
@@ -98,7 +112,9 @@ class collageJobs(object):
                         if missing_pred != -1:
                             missing_file = self.job_files_dict[job_id][idx]
                             missing_files_preds_dict[missing_file] = missing_pred
-            self.delete_jobs(job_id)
+                    self.delete_jobs(job_id) # Does this needs to be deleted at all?
+            else:
+                self.delete_jobs(job_id) # Does this needs to be deleted at all?
         return missing_files_preds_dict
 ### Krishna
 
@@ -150,7 +166,7 @@ if __name__ == '__main__':
     INI_PATH = 'jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
-    FLASK_DOCKER  = int(config['PORT']['FLASK_DOCKER'])
+    #FLASK_DOCKER  = int(config['PORT']['FLASK_DOCKER'])
 
     num_class = 2
     log = []
@@ -158,5 +174,6 @@ if __name__ == '__main__':
         event = EventLog()
         log.append(event)
     collagejobs = collageJobs()
-    app.run(threaded = True, host = '0.0.0.0',port = FLASK_DOCKER) #address
+    #app.run(threaded = True, host = '0.0.0.0',port = FLASK_DOCKER) #address
+    app.run(threaded = True, host = '0.0.0.0')
     # app.run(host = '0.0.0.0',port = FLASK_DOCKER) #address

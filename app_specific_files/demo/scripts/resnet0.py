@@ -9,6 +9,8 @@ from torchvision import datasets
 import shutil
 import time
 import configparser
+import requests
+import json
 
 #Krishna
 import urllib
@@ -91,7 +93,8 @@ def task(file_, pathin, pathout):
         # purposely add delay time to slow down the sending
         time.sleep(3) #>=2 
         return [] #slow resnet node: return empty
-        job_id = int(f.split("_jobid_")[1])
+        f_stripped = f.split(".JPEG")[0]
+        job_id = int(f_stripped.split("_jobid_")[1])
         send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
         #Krishna
     return out_list
@@ -108,16 +111,17 @@ def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
         Exception: if sending message to flask server on decoder is failed
     """
     global resnet_task_num
+    hdr = {
+            'Content-Type': 'application/json',
+            'Authorization': None #not using HTTP secure
+                                    }
     try:
         logging.debug('Send prediction to the decoder')
         url = "http://" + global_info_ip_port + "/post-prediction-resnet"
-        ### NOTETOQUYNH: set resnet_task_num to ID of the resnet worker task (0 to 10)
         params = {"job_id": job_id, 'msg': prediction, "resnet_task_num": resnet_task_num}
-        params = urllib.parse.urlencode(params)
-        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        res = urllib.request.urlopen(req)
-        res = res.read()
-        res = res.decode('utf-8')
+        response = requests.post(url, headers = hdr, data = json.dumps(params))
+        ret_job_id = response.json()
+        logging.debug(ret_job_id)
     except Exception as e:
         logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
         #logging.debug(e)
@@ -133,4 +137,3 @@ def main():
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
-
