@@ -94,6 +94,7 @@ def task(filelist, pathin, pathout):
         count = 0
         while count < L:
             try:
+                print(os.path.join(pathin, filelist[count_file]))
                 img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
                 if img is not None:
                 # resize image

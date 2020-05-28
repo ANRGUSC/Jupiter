@@ -318,7 +318,7 @@ def assign_children_task(children_task):
     #     sample_file = '/' + appname + '-1botnet.ipsum'
     # else:
     #     sample_file = '/1botnet.ipsum'
-    sample_file = os.listdir('/sample_input')[0]
+    sample_file = os.path.join('/sample_input',os.listdir('/sample_input')[0])
     sample_size = cal_file_size(sample_file)
     assign_to_node = get_most_suitable_node(sample_size)
     if not assign_to_node:

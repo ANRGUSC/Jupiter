@@ -27,6 +27,7 @@ def prepare_global_info():
     config.read(INI_PATH)
     sys.path.append(jupiter_config.STREAM_PATH)
     sys.path.append(jupiter_config.STREAMS_PATH)
+    sys.path.append(jupiter_config.STREAM_PRICING_PATH)
     port_list_home = []
     port_list_home.append(jupiter_config.SSH_DOCKER)
     port_list_home.append(jupiter_config.FLASK_DOCKER)
@@ -55,15 +56,38 @@ def build_push_stream():
 
     # os.system("rm *.Dockerfile")
 
-def build_push_streams():
+def build_push_decoupled_stream():
     """Build STREAMer home image from Docker files and push them to the Dockerhub.
     """
 
+    logging.debug('Building datasources for decoupled pricing')
+    port_list_home = prepare_global_info()
+    
+
+    os.chdir(jupiter_config.STREAM_PRICING_PATH)
+    logging.debug(jupiter_config.STREAM_PRICING_PATH)
+    import stream_decoupled_docker_files_generator as dc 
+
+    home_file = dc.write_stream_decoupled_home_docker(username = jupiter_config.USERNAME,
+                      password = jupiter_config.PASSWORD,
+                      app_file = jupiter_config.APP_NAME,
+                      ports = " ".join(port_list_home))
+
+    #--no-cache
+    cmd = "sudo docker build -f %s ../.. -t %s"%(home_file,jupiter_config.STREAM_PRICING_IMAGE)
+    os.system(cmd)
+    os.system("sudo docker push " + jupiter_config.STREAM_PRICING_IMAGE )
+
+    # os.system("rm *.Dockerfile")
+
+def build_push_streams():
+    """Build STREAMer home image from Docker files and push them to the Dockerhub.
+    """
+    logging.debug('Building multiple datasources for original circe')
     port_list_home = prepare_global_info()
     import streams_docker_files_generator as dc 
 
     os.chdir(jupiter_config.STREAMS_PATH)
-    logging.debug(os. getcwd())
 
     app_path = jupiter_config.APP_NAME 
     app_config_path = "../../" +app_path + "/app_config.yaml"
@@ -85,6 +109,12 @@ def build_push_streams():
 
     # os.system("rm *.Dockerfile")
 if __name__ == '__main__':
+    # Multiple datasets
     # build_push_streams()
-    build_push_stream()
+
+    # Single dataset - original circe
+    # build_push_stream()
+
+    # Single dataset - pricing circe
+    build_push_decoupled_stream()
 

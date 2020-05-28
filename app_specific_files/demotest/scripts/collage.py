@@ -132,7 +132,12 @@ def task(file_, pathin, pathout):
         final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
     ### Write predictions to a file and send it to decoder task's folder
         job_id = int(f.split("_jobid_")[1])
-        send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
+        try:
+            global_info_ip = os.environ['GLOBAL_IP']
+            global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+            send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
+        except Exception as e:
+            print('Possibly running on the execution profiler')
     out_list = []
     out_name = pathout + "collage.txt"
     with open(out_name, "w") as out_file:
@@ -152,9 +157,7 @@ def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
         Exception: if sending message to flask server on decoder is failed
     """
     try:
-        logging.debug('Send prediction to the decoder')
-        global_info_ip = os.environ['GLOBAL_IP']
-        global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+        logging.debug('Send prediction to the decoder')        
         url = "http://" + global_info_ip_port + "/post-predictions-collage"
         params = {"job_id": job_id, 'msg': final_preds}
         params = urllib.parse.urlencode(params)
@@ -169,7 +172,7 @@ def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
     return res
 
 def main():
-    filelist = ["master_collage.JPEG"]
+    filelist = ["master_collage.JPEG_jobid_0"]
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile

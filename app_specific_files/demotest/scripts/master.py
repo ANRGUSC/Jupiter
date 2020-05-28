@@ -133,6 +133,7 @@ def get_job_id():
     except Exception as e:
         print('Possibly running on the execution profiler')
         job_id = 0
+    return job_id
 
 def put_filenames(job_id, filelist):
     hdr = {
@@ -144,6 +145,8 @@ def put_filenames(job_id, filelist):
     # address of flask server for class1 is 0.0.0.0:5000 and "post-id" is for requesting id
     try:
         # url = "http://0.0.0.0:5000/post-id"
+        global_info_ip = os.environ['GLOBAL_IP']
+        global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
         url = "http://%s:%s/post-files-master"%(global_info_ip,str(FLASK_SVC))
         print(url)
         # request job_id
@@ -165,12 +168,14 @@ def get_and_send_missing_images():
     payload = {}
     try:
         # url = "http://0.0.0.0:5000/post-id"
+        global_info_ip = os.environ['GLOBAL_IP']
+        global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
         url = "http://%s:%s/post-get-images-master"%(global_info_ip,str(FLASK_SVC))
         print(url)
         # request job_id
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
         missing_images_dict = response.json()
-        printprint(missing_images_dict)
+        print(missing_images_dict)
     except Exception as e:
         print('Possibly running on the execution profiler')
         missing_images_dict = collections.defaultdict(list)
@@ -242,24 +247,29 @@ def task(filelist, pathin, pathout):
     print('Input list')
     print(input_list)
     # get job id for this requests
-    job_id = get_job_id() 
+    job_id = get_job_id()
+    print('Job ID') 
+    print(job_id)
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
-     
-    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+ collage_file +  + "_jobid_"+ str(job_id)))
+    logging.debug(job_id)
+    dest = os.path.join(pathout,"master_"+ collage_file + "_jobid_"+ str(job_id))
+    shutil.copyfile(collage_file, dest)
     print('Receive collage file:')
     ### send to collage task
-    outlist = [os.path.join(pathout,"master_"+collage_file)]
+    outlist = [dest]
     print(outlist)
     ### send to resnet tasks
     print('Receive resnet files: ')
     filelist_flask = []
     for i, f in enumerate(filelist):
         idx  = i%num_images
-        shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(idx)+'_'+ f + "_jobid_"+ str(job_id)))
+        dest = os.path.join(pathout,"master_resnet"+str(idx)+'_'+ f + "_jobid_"+ str(job_id))
+        shutil.copyfile(os.path.join(pathin,f), dest)
         filelist_flask.append(f + "_jobid_"+ str(job_id))
-        outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f))
-        print(outlist)
-    next_job_id = put_filenames(filelist_flask)
+        outlist.append(dest)
+    next_job_id = put_filenames(job_id, filelist_flask)
+    print('Next job id')
+    print(next_job_id)
     get_and_send_missing_images() 
     return outlist
 

@@ -8,7 +8,7 @@ import configparser
 app = Flask('Global_Server')
 
 ### Krishna
-@app.route('post-prediction-resnet', methods=['POST'])
+@app.route('/post-prediction-resnet', methods=['POST'])
 def request_resnet_prediction():
     print('Receive the prediction from resnet for job id')
     recv = request.get_json()
@@ -19,7 +19,7 @@ def request_resnet_prediction():
     response = ""
     return json.dumps(response)
 
-@app.route('post-predictions-collage', methods=['POST'])
+@app.route('/post-predictions-collage', methods=['POST'])
 def request_collage_prediction():
     print('Receive the prediction from resnet for job id')
     recv = request.get_json()
@@ -29,13 +29,13 @@ def request_collage_prediction():
     response = ""
     return json.dumps(response)
 
-@app.route('post-id-master', methods=['POST'])
+@app.route('/post-id-master', methods=['POST'])
 def request_id_master():
     recv = request.get_json()
     response = collagejobs.get_id()
     return json.dumps(response)
 
-@app.route('post-files-master', methods=['POST'])
+@app.route('/post-files-master', methods=['POST'])
 def request_post_files():
     recv = request.get_json()
     job_id = recv['job_id']
@@ -43,7 +43,7 @@ def request_post_files():
     response = collagejobs.put_files(job_id, filelist)
     return json.dumps(response)
 
-@app.route('post-get-images-master', methods=['POST'])
+@app.route('/post-get-images-master', methods=['POST'])
 def request_post_get_images():
     recv = request.get_json()
     response = collagejobs.get_missing_dict() 

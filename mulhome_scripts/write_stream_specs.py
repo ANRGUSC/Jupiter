@@ -112,3 +112,77 @@ def write_stream_home_specs(**kwargs):
 
     dep = yaml.load(specific_yaml)
     return dep
+
+template_decoupled_home = """
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {name}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {name}
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: {host}
+      containers:
+      - name: {name}
+        image: {image}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {ssh_port}
+        - containerPort: {flask_port}
+        env:
+        - name: DEST_NODES
+          value: {dest}
+        - name: DEST_NODES_IPS
+          value: {dest_ips}
+        - name: TASK
+          value: datasource
+        - name: APPNAME
+          value: {appname}
+        - name: APPOPTION
+          value: {appoption}
+        - name: SELF_NAME
+          value: {self_name}
+        - name: HOME_NODE
+          value: {home_node_ip}
+        - name: ALL_NODES
+          value: {all_nodes}
+        - name: ALL_NODES_IPS
+          value: {all_nodes_ips}
+      restartPolicy: Always
+"""
+
+def write_stream_decoupled_home_specs(**kwargs):
+    """
+    This function genetares the description yaml for CIRCE
+     
+    In this case, call argument should be:
+    
+      -   image: {image}
+      -   SSH Port: {ssh_port}
+      -   Flask Port: {flask_port}
+      -   CHILD_NODES_IPS: {child_ips}
+      -   kubernetes.io/hostname: {host}
+    
+    Args:
+        ``**kwargs``: list of key value pair
+    
+    Returns:
+        dict: loaded configuration 
+    """
+
+    jupiter_config.set_globals()
+
+    INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+
+    specific_yaml = template_decoupled_home.format(ssh_port = jupiter_config.SSH_DOCKER, 
+                                    flask_port = jupiter_config.FLASK_DOCKER,
+                                    **kwargs)
+
+    dep = yaml.load(specific_yaml)
+    return dep

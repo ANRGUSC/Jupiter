@@ -219,7 +219,12 @@ def task(file_, pathin, pathout):
         time.sleep(3) #>=2 
         return [] #slow resnet node: return empty
         job_id = int(f.split("_jobid_")[1])
-        send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
+        try:
+            global_info_ip = os.environ['GLOBAL_IP']
+            global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+            send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
+        except Exception as e:
+            print('Possibly running on the execution profiler')
         #Krishna
     return out_list
 
@@ -237,8 +242,6 @@ def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
     global resnet_task_num
     try:
         logging.debug('Send prediction to the decoder')
-        global_info_ip = os.environ['GLOBAL_IP']
-        global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
         url = "http://" + global_info_ip_port + "/post-prediction-resnet"
         ### NOTETOQUYNH: set resnet_task_num to ID of the resnet worker task (0 to 10)
         params = {"job_id": job_id, 'msg': prediction, "resnet_task_num": resnet_task_num}
@@ -269,7 +272,7 @@ def main():
     filelist = []
     for i in classlist:
         for j in range(resnet_task_num+1,num+1,9):
-            filename = 'master_'+taskname+'_'+i+'_'+str(j)+'.JPEG'
+            filename = 'master_'+taskname+'_'+i+'_'+str(j)+'.JPEG_jobid_0'
             filelist.append(filename)
     # filelist = ['master_resnet0_n03345487_10.JPEG','master_resnet0_n04146614_1.JPEG','master_resnet0_n04146614_25.JPEG','master_resnet0_n04146614_27.JPEG',
     #    'master_resnet0_n04146614_30.JPEG','master_resnet0_n04146614_36.JPEG',

@@ -521,7 +521,9 @@ def get_most_suitable_node(file_size):
 
     valid_net_data = dict()
     for tmp_node_name in network_profile_data:
+        logging.debug(tmp_node_name)
         data = network_profile_data[tmp_node_name]
+        logging.debug(data)
         delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
         
         valid_net_data[tmp_node_name] = delay
@@ -573,8 +575,10 @@ def init_task_topology():
     """
 
     # sample_file = '/1botnet.ipsum'
-    sample_file = os.listdir('/sample_input')[0]
+    sample_file = os.path.join('/sample_input',os.listdir('/sample_input')[0])
+    logging.debug(sample_file)
     sample_size = cal_file_size(sample_file)
+    logging.debug(sample_size)
 
     assign_to_node = -1
     while assign_to_node==-1:

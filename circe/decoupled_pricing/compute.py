@@ -270,13 +270,13 @@ def announce_input_worker():
         tmp_home = tmp_info.split('-')[1]
         logging.debug("Received input announcement from home compute")
         start_times[(tmp_home,tmp_file)] = tmp_time
-        logging.debug(global_task_node_map)
-        logging.debug(mapping_times)
+        # logging.debug(global_task_node_map)
+        # logging.debug(mapping_times)
         if len(mapping_times)==0: 
             mapping_input_id[(tmp_home,tmp_file)] = 0
         else:
             mapping_input_id[(tmp_home,tmp_file)] = len(mapping_times)-1 #ID of last mapping
-        logging.debug(mapping_input_id)
+        # logging.debug(mapping_input_id)
 
     except Exception as e:
         logging.debug("Received mapping announcement from controller failed")
@@ -442,8 +442,11 @@ def retrieve_input_enter(task_name, file_name):
         file_name (str): name of the file enter at the INPUT folder
     """
     suffix = name_convert_in[task_name]
+    logging.debug(suffix)
     prefix = file_name.split(suffix)
+    logging.debug(prefix)
     input_name = prefix[0]+name_convert_in['input']
+    logging.debug(input_name)
     return input_name
 
 def retrieve_input_finish(task_name, file_name):
@@ -506,7 +509,7 @@ class Handler1(pyinotify.ProcessEvent):
             next_hosts = [global_task_node_map[mapping_input_id[(home_id,input_name)],home_id,x] for x in next_tasks_map[task_name]]
             
             logging.debug('Sending the output files to the corresponding destinations')
-            logging.debug(next_hosts)
+            # logging.debug(next_hosts)
             if flag=='true': 
                 logging.debug('not wait, send')
                 

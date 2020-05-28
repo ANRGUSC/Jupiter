@@ -177,7 +177,7 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global FLASK_SVC,FLASK_DOCKER,username, password, TRANSFER,num_retries,ssh_port
+    global FLASK_SVC,FLASK_DOCKER,username, password, TRANSFER,num_retries,ssh_port, PRICING
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
@@ -185,6 +185,8 @@ def main():
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     ssh_port    = int(config['PORT']['SSH_SVC'])
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+    PRICING  = int(config['CONFIG']['PRICING'])
+
 
     global current_idx
     current_idx = 0
@@ -192,6 +194,8 @@ def main():
     global combined_ip_map
     combined_ip_map = dict()
     combined_ip_map[os.environ['CHILD_NODES']]= os.environ['CHILD_NODES_IPS']
+    
+
 
     global home_node_host_port
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)

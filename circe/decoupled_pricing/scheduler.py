@@ -66,6 +66,64 @@ def demo_help(server,port,topic,msg):
     client.publish(topic, msg,qos=1)
     client.disconnect()
 
+def recv_datasource():
+    """
+
+    Receiving run-time profiling information from WAVE/HEFT for every task (task name, start time stats, end time stats)
+    
+    Raises:
+        Exception: failed processing in Flask
+    """
+    global start_times, end_times
+    try:
+        # logging.debug('Receive final runtime profiling')
+        filename = request.args.get('filename')
+        filetype = request.args.get('filetype')
+        ts = request.args.get('time')
+
+        logging.debug("Received flask message: %s %s %s", filename, filetype,ts)
+        if filetype == 'input':
+            start_times[filename]=float(ts)
+            logging.debug(start_times)
+        else:
+            print('Something wrong with receiving monitor information from data sources')
+
+        
+    except Exception as e:
+        logging.debug("Bad reception or failed processing in Flask")
+        logging.debug(e)
+        return "not ok"
+    return "ok"
+app.add_url_rule('/recv_monitor_datasource', 'recv_datasource', recv_datasource)
+
+def recv_datasink():
+    """
+
+    Receiving run-time profiling information from datasinks
+    
+    Raises:
+        Exception: failed processing in Flask
+    """
+    global start_times, end_times
+    try:
+        # logging.debug('Receive final runtime profiling')
+        filename = request.args.get('filename')
+        filetype = request.args.get('filetype')
+        ts = request.args.get('time')
+
+        logging.debug("Received flask message: %s %s %s", filename, filetype,ts)
+        if filetype == 'output':
+            end_times[filename]=float(ts)
+            logging.debug(start_times)
+        else:
+            print('Something wrong with receiving monitor information from data sinks')
+    except Exception as e:
+        logging.debug("Bad reception or failed processing in Flask")
+        logging.debug(e)
+        return "not ok"
+    return "ok"
+app.add_url_rule('/recv_monitor_datasink', 'recv_datasink', recv_datasink)
+
 
 def announce_mapping():
 
@@ -121,7 +179,7 @@ def return_output_files():
     Returns:
         int: number of output files
     """
-    num_files = len(os.listdir("output/"))
+    num_files = len(os.listdir("/centralized_scheduler/output/"))
     logging.debug("Received request for number of output files. Current done: %s", num_files)
     return json.dumps(num_files)
 app.add_url_rule('/', 'return_output_files', return_output_files)
@@ -351,10 +409,12 @@ def get_taskmap():
         - list: super_tasks 
         - list: non_tasks - tasks not belong to DAG
     """
-    configs = json.load(open('centralized_scheduler/config.json'))
+    # configs = json.load(open('centralized_scheduler/config.json'))
+    configs = json.load(open('/config.json'))
     task_map = configs['taskname_map']
     execution_map = configs['exec_profiler']
-    tasks_info = open('centralized_scheduler/dag.txt', "r")
+    # tasks_info = open('centralized_scheduler/dag.txt', "r")
+    tasks_info = open('/dag.txt', "r")
 
     task_order = []#create the  (DAG) task list in the order of execution
     super_tasks = []
@@ -529,14 +589,14 @@ def main():
     # _thread.start_new_thread(start_evaluate,())
 
     wm = pyinotify.WatchManager()
-    input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
+    input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'/centralized_scheduler/input/')
     wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
     logging.debug('starting the input monitoring process\n')
     eh = Handler()
     notifier = pyinotify.ThreadedNotifier(wm, eh)
     notifier.start()
 
-    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'/centralized_scheduler/output/')
     wm1 = pyinotify.WatchManager()
     wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
     logging.debug('starting the output monitoring process\n')

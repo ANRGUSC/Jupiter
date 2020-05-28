@@ -93,7 +93,7 @@ def set_globals():
     
 
     """Modules path of Jupiter"""
-    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH, DATA_PATH, GLOBALINFO_PATH, SINK_PATH, STREAMS_PATH
+    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH, STREAM_PRICING_PATH, GLOBALINFO_PATH, SINK_PATH, STREAMS_PATH
 
     # default network and resource profiler: DRUPE
     # default wave mapper: random wave
@@ -107,6 +107,7 @@ def set_globals():
     # STREAM_PATH             = HERE + 'simulation/data_sources/'
     # data sources for testing demo
     STREAM_PATH               = HERE + 'simulation/demo_sources/'
+    STREAM_PRICING_PATH               = HERE + 'simulation/demo_sources_decoupled/'
     GLOBALINFO_PATH               = HERE + 'simulation/global_info_center/'
     SINK_PATH               = HERE + 'simulation/data_sinks/'
     STREAMS_PATH               = HERE + 'simulation/demo_multiple_sources/'
@@ -255,8 +256,9 @@ def set_globals():
     NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
     STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
 
-    global STREAM_IMAGE
+    global STREAM_IMAGE, STREAM_PRICING_IMAGE
     STREAM_IMAGE = 'docker.io/anrg/stream_home:%s_%s'%(APP_OPTION,cluster_option)
+    STREAM_PRICING_IMAGE = 'docker.io/anrg/stream_pricing_home:%s_%s'%(APP_OPTION,cluster_option)
 
     global SINK_IMAGE
     SINK_IMAGE = 'docker.io/anrg/sink_home:%s_%s'%(APP_OPTION,cluster_option)
