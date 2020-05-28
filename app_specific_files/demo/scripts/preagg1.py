@@ -54,7 +54,7 @@ def task(filelist, pathin, pathout):
     except Exception as e:
         print('Possibly running on the execution profiler')
         # job_dict = {'1':['score1a_preagg1_job1_20200424.csv', 'score1b_preagg1_job1_20200424.csv']}
-        job_dict = {'1':['score1a_preagg1_job2_resnet0_storeclass1_master_resnet0_n03345487_10.csv','score1b_preagg1_job2_resnet0_storeclass1_master_resnet0_n03345487_10.csv']}
+        job_dict = {'1':['score1a_preagg1_job2_resnet0_storeclass1_master_resnet0_n03345487_10_jobid_0.csv','score1b_preagg1_job2_resnet0_storeclass1_master_resnet0_n03345487_10_jobid_0.csv']}
         
     #Parameters
     M = 2 # Number of data-batches

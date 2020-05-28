@@ -106,13 +106,13 @@ def get_job_id():
         global_info_ip = os.environ['GLOBAL_IP']
         url = "http://%s:%s/post-id-master"%(global_info_ip,str(FLASK_SVC))
         print(url)
-        # request job_id
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
         job_id = response.json()
-        print(job_id)
+        #print(job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
         job_id = 0
+    return job_id
 
 def put_filenames(job_id, filelist):
     hdr = {
@@ -130,9 +130,10 @@ def put_filenames(job_id, filelist):
         # request job_id
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
         next_job_id = response.json()
-        print(next_job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
+        next_job_id = 1
+    return next_job_id
 
 def get_and_send_missing_images():
     # Check with global info server
@@ -150,13 +151,16 @@ def get_and_send_missing_images():
         # request job_id
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
         missing_images_dict = response.json()
-        printprint(missing_images_dict)
+        print(missing_images_dict)
     except Exception as e:
         print('Possibly running on the execution profiler')
+        logging.debug('Exception during post-get-images-master')
+        logging.debug(e)
         missing_images_dict = collections.defaultdict(list)
     # Process and send requests out     
     ### Reusing the input files to the master node. NOT creating a local copy of input files.
     logging.debug('Receive missing from decoder task:')
+    logging.debug(missing_images_dict)
     for image_file, _class in missing_images_dict: 
         logging.debug(image_file)
         file_name_wo_jobid = image_file.split("_jobid_")[0]
@@ -225,12 +229,13 @@ def task(filelist, pathin, pathout):
     job_id = get_job_id()
     logging.debug("got job id") 
     logging.debug(job_id) 
+    print('got job id: ', job_id)
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     collage_file_split = collage_file.split(".JPEG")[0] 
     shutil.copyfile(collage_file, os.path.join(pathout,"master_"+ collage_file_split + "_jobid_" + str(job_id) + ".JPEG"))
     print('Receive collage file:')
     ### send to collage task
-    outlist = [os.path.join(pathout,"master_"+collage_file)]
+    outlist = [os.path.join(pathout,"master_"+ collage_file_split + "_jobid_" + str(job_id) + ".JPEG")]
     print(outlist)
     ### send to resnet tasks
     print('Receive resnet files: ')
@@ -238,6 +243,7 @@ def task(filelist, pathin, pathout):
     for i, f in enumerate(filelist):
         idx  = i%num_images
         f_split = f.split(".JPEG")[0]
+        print('got job id 2: ', job_id)
         f_new = f_split + "_jobid_"+ str(job_id) + ".JPEG" 
         shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(idx)+'_'+ f_new))
         filelist_flask.append(f_new)

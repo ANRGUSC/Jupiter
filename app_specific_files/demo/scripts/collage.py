@@ -12,6 +12,10 @@ import pickle
 import requests
 import json
 import configparser
+import logging
+
+global logging
+logging.basicConfig(level = logging.DEBUG)
 
 INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
@@ -137,9 +141,10 @@ def task(file_, pathin, pathout):
         try:
             global_info_ip = os.environ['GLOBAL_IP']
             global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-            send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
+            print("global info ip port: ", global_info_ip_port)
+            send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
         except Exception as e:
-            print('Possibly running on the execution profiler')
+            print('Possibly running on the execution profiler: ', e)
     out_list = []
     out_name = pathout + "collage.txt"
     with open(out_name, "w") as out_file:
@@ -162,7 +167,7 @@ def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
         logging.debug(ret_job_id)
     except Exception as e:
         logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
-        #logging.debug(e)
+        logging.debug(e)
         return "not ok"
     return res
 

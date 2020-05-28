@@ -93,6 +93,7 @@ def task(file_, pathin, pathout):
         return [] #slow resnet node: return empty
         f_stripped = f.split(".JPEG")[0]
         job_id = int(f_stripped.split("_jobid_")[1])
+        print('job_id from the file is: ', job_id)
         try:
             global_info_ip = os.environ['GLOBAL_IP']
             global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)

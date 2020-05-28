@@ -129,7 +129,7 @@ def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
     return res
 #Krishna
 def main():
-    filelist = ['master_resnet5_n04146614_16038.JPEG','master_resnet5_n04146614_318.JPEG',
+    filelist = ['master_resnet5_n04146614_16038_jobid_0.JPEG','master_resnet5_n04146614_318_jobid_0.JPEG',
        'master_resnet5_n03345487_144_jobid_0.JPEG','master_resnet5_n03345487_163_jobid_0.JPEG','master_resnet5_n03345487_192_jobid_0.JPEG',
        'master_resnet5_n03345487_205_jobid_0.JPEG','master_resnet5_n04146614_330_jobid_0.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')

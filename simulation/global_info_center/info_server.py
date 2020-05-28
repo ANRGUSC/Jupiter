@@ -30,7 +30,8 @@ def request_collage_prediction():
     final_preds = recv['msg']
     collagejobs.put_collage_preds(job_id, final_preds)
     response = job_id
-    print(collagejobs.job_collage_preds_dict)
+    print("posted predictions from collage: ", job_id, final_preds)
+    print("collage preds dict: ", collagejobs.job_collage_preds_dict)
     return json.dumps(response)
 
 @app.route('/post-id-master', methods=['POST'])
@@ -45,7 +46,7 @@ def request_post_files():
     recv = request.get_json()
     job_id = recv['job_id']
     filelist = recv['filelist']
-    # print("File list for job id %s is %s " % (job_id, filelist))
+    print("File list for job id %s is %s " % (job_id, filelist))
     response = collagejobs.put_files(job_id, filelist)
     print(collagejobs.job_files_dict)
     return json.dumps(response)
@@ -53,13 +54,13 @@ def request_post_files():
 @app.route('/post-get-images-master', methods=['POST'])
 def request_post_get_images():
     recv = request.get_json()
-    print("before processing")
+    print("post-get-images: before processing")
     print(collagejobs.job_files_dict)
     print(collagejobs.job_resnet_preds_dict)
     print(collagejobs.job_collage_preds_dict)
     response = collagejobs.get_missing_dict()
     print(response)
-    print("after processing")
+    print("post-get-images: after processing")
     print(collagejobs.job_files_dict)
     print(collagejobs.job_resnet_preds_dict)
     print(collagejobs.job_collage_preds_dict)
@@ -166,7 +167,7 @@ if __name__ == '__main__':
     INI_PATH = 'jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
-    #FLASK_DOCKER  = int(config['PORT']['FLASK_DOCKER'])
+    FLASK_DOCKER  = int(config['PORT']['FLASK_DOCKER'])
 
     num_class = 2
     log = []
@@ -174,6 +175,6 @@ if __name__ == '__main__':
         event = EventLog()
         log.append(event)
     collagejobs = collageJobs()
-    #app.run(threaded = True, host = '0.0.0.0',port = FLASK_DOCKER) #address
-    app.run(threaded = True, host = '0.0.0.0')
+    app.run(threaded = True, host = '0.0.0.0',port = FLASK_DOCKER) #address
+    # app.run(threaded = True, host = '0.0.0.0')
     # app.run(host = '0.0.0.0',port = FLASK_DOCKER) #address

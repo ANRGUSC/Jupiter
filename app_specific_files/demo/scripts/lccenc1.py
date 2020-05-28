@@ -119,24 +119,24 @@ def task(filelist, pathin, pathout):
     return out_list
 
 def main():
-    filelist = ['storeclass1_resnet0_storeclass1_master_resnet0_n03345487_10.JPEG',
-    'storeclass1_resnet1_storeclass1_master_resnet1_n03345487_108.JPEG',
-    'storeclass1_resnet2_storeclass1_master_resnet2_n03345487_133.JPEG',
-    'storeclass1_resnet3_storeclass1_master_resnet3_n03345487_135.JPEG',
-    'storeclass1_resnet4_storeclass1_master_resnet4_n03345487_136.JPEG',
-    'storeclass1_resnet5_storeclass1_master_resnet5_n03345487_144.JPEG','storeclass1_resnet5_storeclass1_master_resnet5_n03345487_163.JPEG','storeclass1_resnet5_storeclass1_master_resnet5_n03345487_192.JPEG',
-       'storeclass1_resnet5_storeclass1_master_resnet5_n03345487_205.JPEG',
-       'storeclass1_resnet6_storeclass1_master_resnet6_n03345487_18.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_206.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_208.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_209.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_210.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_241.JPEG',
-       'storeclass1_resnet7_storeclass1_master_resnet7_n03345487_40.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_243.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_245.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_267.JPEG',
-       'storeclass1_resnet7_storeclass1_master_resnet7_n03345487_279.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_282.JPEG',
-       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_78.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_284.JPEG',
-       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_311.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_317.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_328.JPEG',
-       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_334.JPEG',
-       'storeclass1_resnet0_storeclass1_master_resnet0_n03345487_351.JPEG',
-       'storeclass1_resnet1_storeclass1_master_resnet1_n03345487_360.JPEG',
-       'storeclass1_resnet2_storeclass1_master_resnet2_n03345487_386.JPEG',
-       'storeclass1_resnet3_storeclass1_master_resnet3_n03345487_410.JPEG',
-       'storeclass1_resnet4_storeclass1_master_resnet4_n03345487_417.JPEG'] 
+    filelist = ['storeclass1_resnet0_storeclass1_master_resnet0_n03345487_10_jobid_0.JPEG',
+    'storeclass1_resnet1_storeclass1_master_resnet1_n03345487_108_jobid_0.JPEG',
+    'storeclass1_resnet2_storeclass1_master_resnet2_n03345487_133_jobid_0.JPEG',
+    'storeclass1_resnet3_storeclass1_master_resnet3_n03345487_135_jobid_0.JPEG',
+    'storeclass1_resnet4_storeclass1_master_resnet4_n03345487_136_jobid_0.JPEG',
+    'storeclass1_resnet5_storeclass1_master_resnet5_n03345487_144_jobid_0.JPEG','storeclass1_resnet5_storeclass1_master_resnet5_n03345487_163_jobid_0.JPEG','storeclass1_resnet5_storeclass1_master_resnet5_n03345487_192_jobid_0.JPEG',
+       'storeclass1_resnet5_storeclass1_master_resnet5_n03345487_205_jobid_0.JPEG',
+       'storeclass1_resnet6_storeclass1_master_resnet6_n03345487_18_jobid_0.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_206_jobid_0.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_208_jobid_0.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_209_jobid_0.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_210_jobid_0.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_241_jobid_0.JPEG',
+       'storeclass1_resnet7_storeclass1_master_resnet7_n03345487_40_jobid_0.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_243_jobid_0.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_245_jobid_0.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_267_jobid_0.JPEG',
+       'storeclass1_resnet7_storeclass1_master_resnet7_n03345487_279_jobid_0.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_282_jobid_0.JPEG',
+       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_78_jobid_0.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_284_jobid_0.JPEG',
+       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_311_jobid_0.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_317_jobid_0.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_328_jobid_0.JPEG',
+       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_334_jobid_0.JPEG',
+       'storeclass1_resnet0_storeclass1_master_resnet0_n03345487_351_jobid_0.JPEG',
+       'storeclass1_resnet1_storeclass1_master_resnet1_n03345487_360_jobid_0.JPEG',
+       'storeclass1_resnet2_storeclass1_master_resnet2_n03345487_386_jobid_0.JPEG',
+       'storeclass1_resnet3_storeclass1_master_resnet3_n03345487_410_jobid_0.JPEG',
+       'storeclass1_resnet4_storeclass1_master_resnet4_n03345487_417_jobid_0.JPEG'] 
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
