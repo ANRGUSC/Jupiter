@@ -161,7 +161,7 @@ def get_and_send_missing_images():
     ### Reusing the input files to the master node. NOT creating a local copy of input files.
     logging.debug('Receive missing from decoder task:')
     logging.debug(missing_images_dict)
-    for image_file, _class in missing_images_dict: 
+    for image_file, _class in missing_images_dict.items(): 
         logging.debug(image_file)
         file_name_wo_jobid = image_file.split("_jobid_")[0]
         source_path = os.path.join(pathin, file_name_wo_jobid + ".JPEG")

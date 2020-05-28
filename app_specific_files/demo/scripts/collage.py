@@ -161,15 +161,17 @@ def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
                                         }
         logging.debug('Send prediction to the decoder')
         url = "http://" + global_info_ip_port + "/post-predictions-collage"
+        logging.debug(url)
         params = {"job_id": job_id, 'msg': final_preds}
         response = requests.post(url, headers = hdr, data = json.dumps(params))
+        logging.debug(response)
         ret_job_id = response.json()
         logging.debug(ret_job_id)
     except Exception as e:
         logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
         logging.debug(e)
         return "not ok"
-    return res
+    return "ok"
 
 def main():
     filelist = ["master_collage_jobid_0.JPEG"]

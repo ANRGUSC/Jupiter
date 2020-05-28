@@ -59,7 +59,7 @@ def request_post_get_images():
     print(collagejobs.job_resnet_preds_dict)
     print(collagejobs.job_collage_preds_dict)
     response = collagejobs.get_missing_dict()
-    print(response)
+    print("missing files dict: ", response)
     print("post-get-images: after processing")
     print(collagejobs.job_files_dict)
     print(collagejobs.job_resnet_preds_dict)
@@ -68,43 +68,58 @@ def request_post_get_images():
     
 class collageJobs(object):
     def __init__(self):
-        self.job_id = 0
+        self.current_job_id = 0
         self.num_tasks = 9
         self.job_files_dict = collections.defaultdict(list)
-        self.job_resnet_preds_dict = {}
+        self.job_resnet_preds_dict = collections.defaultdict(list)
         self.job_collage_preds_dict = collections.defaultdict(list)
+        self.processed_jobids = []
     def get_id(self):
-        return self.job_id
+        self.job_resnet_preds_dict[self.current_job_id] = [-1] * self.num_tasks
+        return self.current_job_id
     def put_files(self, job_id, filelist): 
         self.job_files_dict[job_id] = filelist
-        self.job_id += 1
-        return self.job_id
+        self.current_job_id += 1
+        return self.current_job_id
     def put_resnet_pred(self, job_id, pred, task_num):
-        if job_id not in self.job_resnet_preds_dict: 
-            self.job_resnet_preds_dict[job_id] = [-1] * self.num_tasks
+        print("job_id, task_num, resnet preds for this job ", job_id, task_num, self.job_resnet_preds_dict[job_id])
         self.job_resnet_preds_dict[job_id][task_num] = pred
     def put_collage_preds(self, job_id, preds):
         self.job_collage_preds_dict[job_id] = preds
-    def get_collage_preds(self, job_id):
-        return self.job_collage_preds_dict[job_id]
-    def get_resnet_preds(self, job_id):
-        return self.job_resnet_preds_dict[job_id]
-    def get_files(self, job_id): 
-        return self.job_files_dict[job_id]
-    def delete_jobs(self, job_id):
-        del self.job_files_dict[job_id]
-        del self.job_resnet_preds_dict[job_id]
-        del self.job_collage_preds_dict[job_id]
-        return True
+    #def get_collage_preds(self, job_id):
+    #    return self.job_collage_preds_dict[job_id]
+    #def get_resnet_preds(self, job_id):
+    #    return self.job_resnet_preds_dict[job_id]
+    #def get_files(self, job_id): 
+    #    return self.job_files_dict[job_id]
+    #def delete_jobs(self, job_id):
+    #    if job_id in self.job_files_dict:
+    #        del self.job_files_dict[job_id]
+    #    if job_id in self.job_resnet_preds_dict:
+    #        del self.job_resnet_preds_dict[job_id]
+    #    if job_id in self.job_collage_preds_dict:
+    #        del self.job_collage_preds_dict[job_id]
+    #    return True
     def get_missing_dict(self):
     # There is collage prediction and some missing resnet predictions
         missing_files_preds_dict = {}
         job_ids = list(self.job_files_dict.keys())
+        print("already processed job_ids")
+        print(self.processed_jobids)
+        print("all job ids")
+        print(job_ids)
         for job_id in job_ids:
+            if job_id in self.processed_jobids: # already processed
+                continue
             missing = []
-            for idx, p in enumerate(self.job_resnet_preds_dict[job_id]):# Find missing resnet predictions
-                if p == -1:
-                    missing.append(idx)
+            if len(self.job_resnet_preds_dict[job_id]) == 0:
+                for i in range(self.num_tasks):
+                    missing.append(i)
+            else:
+                for idx, p in enumerate(self.job_resnet_preds_dict[job_id]):# Find missing resnet predictions
+                    if p == -1:
+                        missing.append(idx)
+            print("missing tasks nums for jobid %s are %s" %(job_id, missing))
             if len(missing) > 0:
                 if job_id in self.job_collage_preds_dict:# if collage predictions found
                     for idx in missing:
@@ -113,9 +128,10 @@ class collageJobs(object):
                         if missing_pred != -1:
                             missing_file = self.job_files_dict[job_id][idx]
                             missing_files_preds_dict[missing_file] = missing_pred
-                    self.delete_jobs(job_id) # Does this needs to be deleted at all?
-            else:
-                self.delete_jobs(job_id) # Does this needs to be deleted at all?
+                    self.processed_jobids.append(job_id)
+            else: # len(missing) == 0. all resnet predictions are available.
+                self.processed_jobids.append(job_id)
+                
         return missing_files_preds_dict
 ### Krishna
 
