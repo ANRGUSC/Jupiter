@@ -135,7 +135,7 @@ def put_filenames(job_id, filelist):
         next_job_id = 1
     return next_job_id
 
-def get_and_send_missing_images():
+def get_and_send_missing_images(pathin):
     # Check with global info server
     hdr = {
             'Content-Type': 'application/json',
@@ -250,7 +250,7 @@ def task(filelist, pathin, pathout):
         outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f_new))
         print(outlist)
     next_job_id = put_filenames(job_id, filelist_flask)
-    get_and_send_missing_images() 
+    get_and_send_missing_images(pathin) 
     return outlist
 
 def main():
