@@ -17,8 +17,8 @@ def request_resnet_prediction():
     job_id = recv['job_id']
     prediction = recv['msg']
     resnet_task_num = recv['resnet_task_num']
-    collagejobs.put_resnet_pred(job_id, prediction, resnet_task_num)
-    response = job_id
+    ret_val = collagejobs.put_resnet_pred(job_id, prediction, resnet_task_num)
+    response = ret_val
     print(collagejobs.job_resnet_preds_dict)
     return json.dumps(response)
 
@@ -83,7 +83,11 @@ class collageJobs(object):
         return self.current_job_id
     def put_resnet_pred(self, job_id, pred, task_num):
         print("job_id, task_num, resnet preds for this job ", job_id, task_num, self.job_resnet_preds_dict[job_id])
-        self.job_resnet_preds_dict[job_id][task_num] = pred
+        if job_id in self.processed_jobids:
+            return -1
+        else:
+            self.job_resnet_preds_dict[job_id][task_num] = pred
+            return job_id
     def put_collage_preds(self, job_id, preds):
         self.job_collage_preds_dict[job_id] = preds
     #def get_collage_preds(self, job_id):
