@@ -117,7 +117,7 @@ class collageJobs(object):
             if job_id in self.processed_jobids: # already processed
                 continue
             missing = []
-            if self.job_resnet_preds_dict[job_id].count(-1) <= RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
+            if self.job_resnet_preds_dict[job_id].count(-1) >= RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
                 continue
                 #for i in range(self.num_tasks):
                 #    missing.append(i)
