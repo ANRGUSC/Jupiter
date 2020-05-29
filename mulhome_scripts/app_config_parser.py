@@ -28,6 +28,7 @@ def parse_datasources(app_config):
         datasources[source['name']]['dataset']  = source['dataset']
         datasources[source['name']]['datapath'] = source['datapath']
         datasources[source['name']]['stream_image'] = source['stream_image']
+        datasources[source['name']]['node_placement'] = source['node_placement']
     return datasources
 
 

@@ -126,9 +126,15 @@ def prepare_global():
     global first_task
     first_task = os.environ['CHILD_NODES']
 
-    global resource_profiler_ips
+    global resource_profiler_ips, resource_profiler_nodes, network_profiler_nodes, profiler_nodes
     resource_profiler_ips = os.environ['ALL_RESOURCES_IPS'].split(':')
     resource_profiler_ips = resource_profiler_ips[1:]
+    resource_profiler_nodes = os.environ['ALL_RESOURCES'].split(':')
+    resource_profiler_nodes= resource_profiler_nodes[1:]
+    network_profiler_nodes = os.environ['ALL_PROFILERS'].split(':')
+    network_profiler_nodes = network_profiler_nodes[1:]
+    profiler_nodes = [x for x in resource_profiler_nodes if not x.startswith('home')]
+
 
 
 def init_task_topology():
@@ -313,11 +319,13 @@ def assign_children_task(children_task):
             logging.debug("Waiting for the profiler data")
             time.sleep(100)
     res = False
+    logging.debug('Profiler data is ready!!!!!')
     # if 'app' in children_task:
     #     appname = children_task.split('-')[0]
     #     sample_file = '/' + appname + '-1botnet.ipsum'
     # else:
     #     sample_file = '/1botnet.ipsum'
+    
     sample_file = os.path.join('/sample_input',os.listdir('/sample_input')[0])
     sample_size = cal_file_size(sample_file)
     assign_to_node = get_most_suitable_node(sample_size)
@@ -340,52 +348,80 @@ def get_most_suitable_node(file_size):
     Returns:
         str: result_node_name - assigned node for the current task
     """
-    logging.debug('Trying to get the most suitable node')
-    weight_network = 1
-    weight_cpu = 1
-    weight_memory = 1
-
-    valid_nodes = []
-    min_value = sys.maxsize
-
-    valid_net_data = dict()
-    for tmp_node_name in network_profile_data:
-        data = network_profile_data[tmp_node_name]
-        delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
-        valid_net_data[tmp_node_name] = delay
-        if delay < min_value:
-            min_value = delay
-
-    for item in valid_net_data:
-        if valid_net_data[item] < min_value * threshold:
-            valid_nodes.append(item)
-
-    min_value = sys.maxsize
-    result_node_name = ''
-
-    task_price_summary = dict()
-
-    for item in valid_nodes:
-        tmp_value = valid_net_data[item]
-        tmp_cpu = sys.maxsize
-        tmp_memory = sys.maxsize
-        if item in resource_data.keys():
-            tmp_cpu = resource_data[item]['cpu']
-            tmp_memory = resource_data[item]['memory']
-
-        tmp_cost = weight_network * tmp_value + weight_cpu * tmp_cpu + \
-            weight_memory * tmp_memory
-
-        task_price_summary[item] = weight_network * tmp_value + weight_cpu * \
-            tmp_cpu + weight_memory * tmp_memory
-        if tmp_cost < min_value:
-            min_value = tmp_cost
-            result_node_name = item
-
-    logging.debug('Task price summary')
-    logging.debug(task_price_summary)
-
     try:
+        logging.debug('Trying to get the most suitable node')
+        weight_network = 1
+        weight_cpu = 1
+        weight_memory = 1
+
+        valid_nodes = []
+        min_value = sys.maxsize
+
+        valid_net_data = dict()
+        # for tmp_node_name in network_profile_data:
+        logging.debug('Network profile data ')
+        logging.debug(network_profile_data)
+        logging.debug('Resource data ')
+        logging.debug(resource_data)
+        logging.debug('Profiler nodes ')
+        logging.debug(profiler_nodes)
+        for tmp_node_name in profiler_nodes:
+            logging.debug("Node name : "+ tmp_node_name)
+            data = network_profile_data[tmp_node_name]
+            logging.debug('File size' + str(file_size))
+            logging.debug(data)
+            delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
+            logging.debug('------------------')
+            logging.debug(delay)
+            valid_net_data[tmp_node_name] = delay
+            logging.debug('------------------2')
+            logging.debug(valid_net_data)
+            logging.debug('------------------3')
+            if delay < min_value:
+                min_value = delay
+            logging.debug(min_value)
+            logging.debug('------------------4')
+
+        logging.debug('------------------5')
+
+
+        logging.debug('Valid net data :')
+        logging.debug(valid_net_data)
+        for item in valid_net_data:
+            if valid_net_data[item] < min_value * threshold:
+                valid_nodes.append(item)
+
+        logging.debug('Valid nodes ')
+        logging.debug(valid_nodes)
+        min_value = sys.maxsize
+        logging.debug(min_value)
+        result_node_name = ''
+
+        task_price_summary = dict()
+
+        for item in valid_nodes:
+            tmp_value = valid_net_data[item]
+            logging.debug('---------------- 6')
+            logging.debug(tmp_value)
+            tmp_cpu = sys.maxsize
+            tmp_memory = sys.maxsize
+            if item in resource_data.keys():
+                tmp_cpu = resource_data[item]['cpu']
+                tmp_memory = resource_data[item]['memory']
+                logging.debug('-----------' + tmp_cpu + '----------' + tmp_memory)
+            tmp_cost = weight_network * tmp_value + weight_cpu * tmp_cpu + \
+                weight_memory * tmp_memory
+
+            task_price_summary[item] = weight_network * tmp_value + weight_cpu * \
+                tmp_cpu + weight_memory * tmp_memory
+            if tmp_cost < min_value:
+                min_value = tmp_cost
+                result_node_name = item
+
+        logging.debug('Task price summary')
+        logging.debug(task_price_summary)
+
+    
         best_node = min(task_price_summary, key=task_price_summary.get)
         logging.debug('Best node for is %s', best_node)
         return best_node
@@ -586,10 +622,12 @@ class MyEventHandler(pyinotify.ProcessEvent):
     """
 
     def process_IN_CLOSE_WRITE(self, event):
-        logging.debug("CREATE CLOSE event:", event.pathname)
+        logging.debug("CREATE CLOSE event: " + event.pathname)
+
         t = time.time()
         # logging.debug(t)
         new_task = os.path.split(event.pathname)[-1]
+        logging.debug(new_task)
         _thread.start_new_thread(assign_children_task, (new_task,))
 
 

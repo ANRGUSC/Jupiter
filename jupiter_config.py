@@ -93,7 +93,7 @@ def set_globals():
     
 
     """Modules path of Jupiter"""
-    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH, STREAM_PRICING_PATH, GLOBALINFO_PATH, SINK_PATH, STREAMS_PATH
+    global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH, STREAM_PRICING_PATH, GLOBALINFO_PATH, SINK_PATH, STREAMS_PATH, STREAMS_PRICING_PATH
 
     # default network and resource profiler: DRUPE
     # default wave mapper: random wave
@@ -111,6 +111,7 @@ def set_globals():
     GLOBALINFO_PATH               = HERE + 'simulation/global_info_center/'
     SINK_PATH               = HERE + 'simulation/data_sinks/'
     STREAMS_PATH               = HERE + 'simulation/demo_multiple_sources/'
+    STREAMS_PRICING_PATH       = HERE + 'simulation/demo_multiple_sources_decoupled/'
 
     global heft_option, wave_option
     heft_option             = 'original'    

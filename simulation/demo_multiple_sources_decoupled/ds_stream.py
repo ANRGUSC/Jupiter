@@ -46,7 +46,7 @@ def gen_stream_data(interval,data_path,original_data_path):
 
 def gen_stream_fixed_data(num_images,data_path,original_data_path):
     for i in range(0,num_images):
-        time.sleep(1)
+        time.sleep(5)
         logging.debug('--- Copy new file')
         filename = find_next_file(original_data_path)
         source = os.path.join(original_data_path,filename)
@@ -125,7 +125,7 @@ class Handler(pyinotify.ProcessEvent):
         start_times[inputfile] = t
         new_file_name = os.path.split(event.pathname)[-1]
 
-        ID = os.environ['CHILD_NODES']
+        ID = 'home'
         source = event.pathname
         destination = os.path.join('/centralized_scheduler/input', new_file_name)
 
@@ -193,8 +193,9 @@ def main():
 
     global combined_ip_map
     combined_ip_map = dict()
-    combined_ip_map[os.environ['CHILD_NODES']]= os.environ['CHILD_NODES_IPS']
-    
+    combined_ip_map[os.environ['DEST_NODES']]= os.environ['DEST_NODES_IPS']
+    logging.debug('Retrieve destination nodes for the datasources')
+    logging.debug(combined_ip_map)
 
 
     global home_node_host_port
@@ -217,7 +218,7 @@ def main():
     # _thread.start_new_thread(gen_stream_data,(interval,data_path,original_data_path))  
 
     # Generate fixed number of images
-    num = 100
+    num = 10
     _thread.start_new_thread(gen_stream_fixed_data,(num,data_path,original_data_path)) 
 
     # watch manager
