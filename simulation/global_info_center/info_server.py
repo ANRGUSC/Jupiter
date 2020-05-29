@@ -82,7 +82,8 @@ class collageJobs(object):
         self.current_job_id += 1
         return self.current_job_id
     def put_resnet_pred(self, job_id, pred, task_num):
-        print("job_id, task_num, resnet preds for this job ", job_id, task_num, self.job_resnet_preds_dict[job_id])
+        print("job_id, resnet task_num, resnet preds for this job id", job_id, task_num, self.job_resnet_preds_dict[job_id])
+        print("already processed job_ids", self.processed_jobids)
         if job_id in self.processed_jobids:
             return -1
         else:
@@ -116,9 +117,10 @@ class collageJobs(object):
             if job_id in self.processed_jobids: # already processed
                 continue
             missing = []
-            if len(self.job_resnet_preds_dict[job_id]) == 0:
-                for i in range(self.num_tasks):
-                    missing.append(i)
+            if self.job_resnet_preds_dict[job_id].count(-1) <= RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
+                continue
+                #for i in range(self.num_tasks):
+                #    missing.append(i)
             else:
                 for idx, p in enumerate(self.job_resnet_preds_dict[job_id]):# Find missing resnet predictions
                     if p == -1:
@@ -182,12 +184,13 @@ class EventLog(object):
 
 
 if __name__ == '__main__':
-    global FLASK_DOCKER
+    global FLASK_DOCKER, RESNETS_THRESHOLD
 
     INI_PATH = 'jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
     FLASK_DOCKER  = int(config['PORT']['FLASK_DOCKER'])
+    RESNETS_THRESHOLD = int(config['OTHER']['RESNETS_THRESHOLD'])
 
     num_class = 2
     log = []

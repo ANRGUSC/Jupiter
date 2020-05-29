@@ -65,6 +65,7 @@ def task(file_, pathin, pathout):
             ### To simulate slow downs
             # purposely add delay time to slow down the sending
             if random.random() > STRAGGLER_THRESHOLD:
+                print("Sleeping")
                 time.sleep(SLEEP_TIME) #>=2 
             ### Contact flask server
             f_stripped = f.split(".JPEG")[0]

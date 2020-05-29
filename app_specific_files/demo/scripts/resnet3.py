@@ -9,10 +9,11 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 from torchvision import datasets
 import shutil
+import time
 import configparser
 import requests
 import json
-
+import random
 #Krishna
 import urllib
 import logging
@@ -26,9 +27,11 @@ INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
 config.read(INI_PATH)
 
-global FLASK_DOCKER, FLASK_SVC
+global FLASK_DOCKER, FLASK_SVC, SLEEP_TIME, STRAGGLER_THRESHOLD
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+SLEEP_TIME   = int(config['OTHER']['SLEEP_TIME'])
+STRAGGLER_THRESHOLD   = float(config['OTHER']['STRAGGLER_THRESHOLD'])
 
 global global_info_ip, global_info_ip_port
 
@@ -62,42 +65,45 @@ def task(file_, pathin, pathout):
             output = model(img_tensor) 
             pred = torch.argmax(output, dim=1).detach().numpy().tolist()
             ### To simulate slow downs
-            #distrib = np.load('/home/collage_inference/resnet/latency_distribution.npy')
-            # s = np.random.choice(distrib)
-            ### Copy to appropriate destination paths
-            if pred[0] == 555: ### fire engine. class 1
-                source = os.path.join(pathin, f)
-                # f_split = f.split("prefix_")[1]
-                #destination = os.path.join(pathout, "class1_" + f)
-                destination = os.path.join(pathout,  "resnet" + str(resnet_task_num)+ "_storeclass1_" + f)
-                # destination = os.path.join(pathout, "storeclass1_" + f)
-                out_list.append(shutil.copyfile(source, destination))
-            elif pred[0] == 779: ### school bus. class 2
-                source = os.path.join(pathin, f)
-                # f_split = f.split("prefix_")[1]
-                # destination = os.path.join(pathout, "class2_" + f)
-                destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass2_"+ f)
-                # destination = os.path.join(pathout, "storeclass2_" + f)
-                out_list.append(shutil.copyfile(source, destination))
-            else: ### not either of the classes # do nothing
-                print('This does not belong to any classes!!!')
-                #source = os.path.join(pathin, f)
-                #destination = os.path.join(pathout, "classNA_" + f)
-                #out_list.append(shutil.copyfile(source, destination))
+            # purposely add delay time to slow down the sending
+            if random.random() > STRAGGLER_THRESHOLD:
+                print("Sleeping")
+                time.sleep(SLEEP_TIME) #>=2 
+            ### Contact flask server
+            f_stripped = f.split(".JPEG")[0]
+            job_id = int(f_stripped.split("_jobid_")[1])
+            print('job_id from the file is: ', job_id)
+            global_info_ip = os.environ['GLOBAL_IP']
+            global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+            ret_job_id = send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
+            if ret_job_id >= 0: # This job_id has not been processed by the global flask server
+                ### Copy to appropriate destination paths
+                if pred[0] == 555: ### fire engine. class 1
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    #destination = os.path.join(pathout, "class1_" + f)
+                    destination = os.path.join(pathout,  "resnet" + str(resnet_task_num)+ "_storeclass1_" + f)
+                    # destination = os.path.join(pathout, "storeclass1_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 779: ### school bus. class 2
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass2_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                else: ### not either of the classes # do nothing
+                    print('This does not belong to any classes!!!')
+                    #source = os.path.join(pathin, f)
+                    #destination = os.path.join(pathout, "classNA_" + f)
+                    #out_list.append(shutil.copyfile(source, destination))
+            else: # ret_job_id < 0
+                print("The jobid %s has already been processed by the flask server" % (job_id))
+                return [] #slow resnet node: return empty
         except Exception as e:
             logging.debug("Exception during Resnet prediction")
             logging.debug(e)
 
-        #Krishna
-        f_stripped = f.split(".JPEG")[0]
-        job_id = int(f_stripped.split("_jobid_")[1])
-        try:
-            global_info_ip = os.environ['GLOBAL_IP']
-            global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-            send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
-        except Exception as e:
-            print('Possibly running on the execution profiler')
-        #Krishna
     return out_list
 
 #Krishna
@@ -126,8 +132,8 @@ def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
     except Exception as e:
         logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
         #logging.debug(e)
-        return "not ok"
-    return res
+        ret_job_id = 0
+    return ret_job_id
 #Krishna
 def main():
     filelist = ['master_resnet3_n03345487_135_jobid_0.JPEG','master_resnet3_n04146614_209_jobid_0.JPEG','master_resnet3_n04146614_231_jobid_0.JPEG',
