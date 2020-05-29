@@ -25,11 +25,12 @@ INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
 config.read(INI_PATH)
 
-global FLASK_DOCKER, FLASK_SVC, SLEEP_TIME, STRAGGLER_THRESHOLD
+global FLASK_DOCKER, FLASK_SVC, SLEEP_TIME, STRAGGLER_THRESHOLD, CODING_PART1
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 SLEEP_TIME   = int(config['OTHER']['SLEEP_TIME'])
 STRAGGLER_THRESHOLD   = float(config['OTHER']['STRAGGLER_THRESHOLD'])
+CODING_PART1 = int(config['OTHER']['CODING_PART1'])
 
 global global_info_ip, global_info_ip_port
 
@@ -73,7 +74,10 @@ def task(file_, pathin, pathout):
             print('job_id from the file is: ', job_id)
             global_info_ip = os.environ['GLOBAL_IP']
             global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-            ret_job_id = send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
+            if CODING_PART1:
+                ret_job_id = send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
+            else:
+                ret_job_id = 0
             if ret_job_id >= 0: # This job_id has not been processed by the global flask server
                 ### Copy to appropriate destination paths
                 if pred[0] == 555: ### fire engine. class 1

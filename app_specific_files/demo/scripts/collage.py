@@ -21,9 +21,10 @@ INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
 config.read(INI_PATH)
 
-global FLASK_DOCKER, FLASK_SVC
+global FLASK_DOCKER, FLASK_SVC, CODING_PART1
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+CODING_PART1 = int(config['OTHER']['CODING_PART1'])
 
 global global_info_ip, global_info_ip_port
 
@@ -142,7 +143,8 @@ def task(file_, pathin, pathout):
             global_info_ip = os.environ['GLOBAL_IP']
             global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
             print("global info ip port: ", global_info_ip_port)
-            send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
+            if CODING_PART1:
+                send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
         except Exception as e:
             print('Possibly running on the execution profiler: ', e)
     out_list = []

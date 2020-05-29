@@ -38,14 +38,14 @@ INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
 config.read(INI_PATH)
 
-global FLASK_DOCKER, FLASK_SVC, num_retries, ssh_port, username, password
+global FLASK_DOCKER, FLASK_SVC, num_retries, ssh_port, username, password, CODING_PART1
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
 ssh_port    = int(config['PORT']['SSH_SVC'])
 username    = config['AUTH']['USERNAME']
 password    = config['AUTH']['PASSWORD']
-coding_part1 = int(config['OTHER']['CODING_PART1'])
+CODING_PART1 = int(config['OTHER']['CODING_PART1'])
 
 global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
 all_nodes = os.environ["ALL_NODES"].split(":")
@@ -251,7 +251,7 @@ def task(filelist, pathin, pathout):
         outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f_new))
         print(outlist)
     next_job_id = put_filenames(job_id, filelist_flask)
-    if coding_part1:
+    if CODING_PART1:
         get_and_send_missing_images(pathin) 
     return outlist
 

@@ -30,8 +30,8 @@ def request_collage_prediction():
     final_preds = recv['msg']
     collagejobs.put_collage_preds(job_id, final_preds)
     response = job_id
-    print("posted predictions from collage: ", job_id, final_preds)
-    print("collage preds dict: ", collagejobs.job_collage_preds_dict)
+    #print("posted predictions from collage: ", job_id, final_preds)
+    #print("collage preds dict: ", collagejobs.job_collage_preds_dict)
     return json.dumps(response)
 
 @app.route('/post-id-master', methods=['POST'])
@@ -46,7 +46,7 @@ def request_post_files():
     recv = request.get_json()
     job_id = recv['job_id']
     filelist = recv['filelist']
-    print("File list for job id %s is %s " % (job_id, filelist))
+    #print("File list for job id %s is %s " % (job_id, filelist))
     response = collagejobs.put_files(job_id, filelist)
     print(collagejobs.job_files_dict)
     return json.dumps(response)
@@ -54,16 +54,16 @@ def request_post_files():
 @app.route('/post-get-images-master', methods=['POST'])
 def request_post_get_images():
     recv = request.get_json()
-    print("post-get-images: before processing")
-    print(collagejobs.job_files_dict)
-    print(collagejobs.job_resnet_preds_dict)
-    print(collagejobs.job_collage_preds_dict)
+    #print("post-get-images: before processing")
+    #print(collagejobs.job_files_dict)
+    #print(collagejobs.job_resnet_preds_dict)
+    #print(collagejobs.job_collage_preds_dict)
     response = collagejobs.get_missing_dict()
     print("missing files dict: ", response)
-    print("post-get-images: after processing")
-    print(collagejobs.job_files_dict)
-    print(collagejobs.job_resnet_preds_dict)
-    print(collagejobs.job_collage_preds_dict)
+    #print("post-get-images: after processing")
+    #print(collagejobs.job_files_dict)
+    #print(collagejobs.job_resnet_preds_dict)
+    #print(collagejobs.job_collage_preds_dict)
     return json.dumps(response)
     
 class collageJobs(object):
@@ -82,7 +82,7 @@ class collageJobs(object):
         self.current_job_id += 1
         return self.current_job_id
     def put_resnet_pred(self, job_id, pred, task_num):
-        print("job_id, resnet task_num, resnet preds for this job id", job_id, task_num, self.job_resnet_preds_dict[job_id])
+        #print("job_id, resnet task_num, resnet preds for this job id", job_id, task_num, self.job_resnet_preds_dict[job_id])
         print("already processed job_ids", self.processed_jobids)
         if job_id in self.processed_jobids:
             return -1
@@ -111,8 +111,8 @@ class collageJobs(object):
         job_ids = list(self.job_files_dict.keys())
         print("already processed job_ids")
         print(self.processed_jobids)
-        print("all job ids")
-        print(job_ids)
+        #print("all job ids")
+        #print(job_ids)
         for job_id in job_ids:
             if job_id in self.processed_jobids: # already processed
                 continue
