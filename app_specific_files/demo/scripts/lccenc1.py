@@ -13,6 +13,7 @@ config.read(INI_PATH)
 global FLASK_DOCKER, FLASK_SVC
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
 
 global global_info_ip
 
@@ -81,62 +82,98 @@ def task(filelist, pathin, pathout):
     height = 400
     dim = (width, height)
     
-    
-    #Read M batches
+    if FLAG_PART2: #Coding Version
+        #Read M batches
+        Image_Batch = []
+        count_file = 0
+        for j in range(M):
+            count = 0
+            while count < L:
+                print(os.path.join(pathin, filelist[count_file]))
+                img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
+                if img is not None:
+                # resize image
+                    img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+                    img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
+                    img -= img.mean()
+                    img /= img.std()
+                    img_w ,img_l = img.shape
+                    img = img.reshape(1,img_w*img_l)
+                    if count == 0:
+                       Images = img
+                    else:
+                       Images = np.concatenate((Images,img), axis=0)  
+                    count+=1
+                count_file+=1
+            Image_Batch.append(Images)
 
-    Image_Batch = []
-    count_file = 0
-    for j in range(M):
-        count = 0
-        while count < L:
-            img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
-            if img is not None:
-            # resize image
-                img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-                img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
-                img -= img.mean()
-                img /= img.std()
-                img_w ,img_l = img.shape
-                img = img.reshape(1,img_w*img_l)
-                if count == 0:
-                   Images = img
-                else:
-                   Images = np.concatenate((Images,img), axis=0)  
-                count+=1
-            count_file+=1
-        Image_Batch.append(Images)
-    
-    # Encode M data batches to N encoded data
-    En_Image_Batch = LCC_encoding(Image_Batch,N,M)
-    
-    out_list = []
-    
-    # Save each encoded data-batch i to a csv 
-    for i in range(N):
-        destination = os.path.join(pathout,'lccenc1_score1'+chr(i+97)+'_'+'job'+str(job_id)+'_'+snapshot_time+'.csv')
-        np.savetxt(destination, En_Image_Batch[i], delimiter=',')
-        out_list.append(destination)
-    return out_list
+        # Encode M data batches to N encoded data
+        En_Image_Batch = LCC_encoding(Image_Batch,N,M)
 
+        out_list = []
+
+        # Save each encoded data-batch i to a csv 
+        for i in range(N):
+            destination = os.path.join(pathout,'lccenc1_score1'+chr(i+97)+'_'+'job'+str(job_id)+'_'+snapshot_time+'.csv')
+            np.savetxt(destination, En_Image_Batch[i], delimiter=',')
+            out_list.append(destination)
+        return out_list
+    
+    else: # Uncoding version
+        #Read M batches
+        Image_Batch = []
+        count_file = 0
+        for j in range(N):
+            count = 0
+            while count < L:
+                img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
+                if img is not None:
+                # resize image
+                    img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+                    img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
+                    img -= img.mean()
+                    img /= img.std()
+                    img_w ,img_l = img.shape
+                    img = img.reshape(1,img_w*img_l)
+                    if count == 0:
+                       Images = img
+                    else:
+                       Images = np.concatenate((Images,img), axis=0)  
+                    count+=1
+                count_file+=1
+            Image_Batch.append(Images)
+
+        En_Image_Batch = LCC_encoding(Image_Batch,N,N)
+
+        out_list = []
+
+        # Save each encoded data-batch i to a csv 
+        for i in range(N):
+            destination = os.path.join(pathout,'lccenc1_score1'+chr(i+97)+'_'+'job'+str(job_id)+'_'+snapshot_time+'.csv')
+            np.savetxt(destination, En_Image_Batch[i], delimiter=',')
+            out_list.append(destination)
+        return out_list
+
+        
 def main():
-    filelist = ['storeclass1_resnet0_storeclass1_master_resnet0_n03345487_10.JPEG',
-    'storeclass1_resnet1_storeclass1_master_resnet1_n03345487_108.JPEG',
-    'storeclass1_resnet2_storeclass1_master_resnet2_n03345487_133.JPEG',
-    'storeclass1_resnet3_storeclass1_master_resnet3_n03345487_135.JPEG',
-    'storeclass1_resnet4_storeclass1_master_resnet4_n03345487_136.JPEG',
-    'storeclass1_resnet5_storeclass1_master_resnet5_n03345487_144.JPEG','storeclass1_resnet5_storeclass1_master_resnet5_n03345487_163.JPEG','storeclass1_resnet5_storeclass1_master_resnet5_n03345487_192.JPEG',
-       'storeclass1_resnet5_storeclass1_master_resnet5_n03345487_205.JPEG',
-       'storeclass1_resnet6_storeclass1_master_resnet6_n03345487_18.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_206.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_208.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_209.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_210.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_241.JPEG',
-       'storeclass1_resnet7_storeclass1_master_resnet7_n03345487_40.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_243.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_245.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_267.JPEG',
-       'storeclass1_resnet7_storeclass1_master_resnet7_n03345487_279.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_282.JPEG',
-       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_78.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_284.JPEG',
-       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_311.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_317.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_328.JPEG',
-       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_334.JPEG',
-       'storeclass1_resnet0_storeclass1_master_resnet0_n03345487_351.JPEG',
-       'storeclass1_resnet1_storeclass1_master_resnet1_n03345487_360.JPEG',
-       'storeclass1_resnet2_storeclass1_master_resnet2_n03345487_386.JPEG',
-       'storeclass1_resnet3_storeclass1_master_resnet3_n03345487_410.JPEG',
-       'storeclass1_resnet4_storeclass1_master_resnet4_n03345487_417.JPEG'] 
+    filelist = ['storeclass1_resnet0_storeclass1_master_resnet0_n03345487_10_jobid_0.JPEG',
+    'storeclass1_resnet1_storeclass1_master_resnet1_n03345487_108_jobid_0.JPEG',
+    'storeclass1_resnet2_storeclass1_master_resnet2_n03345487_133_jobid_0.JPEG',
+    'storeclass1_resnet3_storeclass1_master_resnet3_n03345487_135_jobid_0.JPEG',
+    'storeclass1_resnet4_storeclass1_master_resnet4_n03345487_136_jobid_0.JPEG',
+    'storeclass1_resnet5_storeclass1_master_resnet5_n03345487_144_jobid_0.JPEG','storeclass1_resnet5_storeclass1_master_resnet5_n03345487_163_jobid_0.JPEG','storeclass1_resnet5_storeclass1_master_resnet5_n03345487_192_jobid_0.JPEG',
+       'storeclass1_resnet5_storeclass1_master_resnet5_n03345487_205_jobid_0.JPEG',
+       'storeclass1_resnet6_storeclass1_master_resnet6_n03345487_18_jobid_0.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_206_jobid_0.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_208_jobid_0.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_209_jobid_0.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_210_jobid_0.JPEG','storeclass1_resnet6_storeclass1_master_resnet6_n03345487_241_jobid_0.JPEG',
+       'storeclass1_resnet7_storeclass1_master_resnet7_n03345487_40_jobid_0.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_243_jobid_0.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_245_jobid_0.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_267_jobid_0.JPEG',
+       'storeclass1_resnet7_storeclass1_master_resnet7_n03345487_279_jobid_0.JPEG','storeclass1_resnet7_storeclass1_master_resnet7_n03345487_282_jobid_0.JPEG',
+       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_78_jobid_0.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_284_jobid_0.JPEG',
+       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_311_jobid_0.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_317_jobid_0.JPEG','storeclass1_resnet8_storeclass1_master_resnet8_n03345487_328_jobid_0.JPEG',
+       'storeclass1_resnet8_storeclass1_master_resnet8_n03345487_334_jobid_0.JPEG',
+       'storeclass1_resnet0_storeclass1_master_resnet0_n03345487_351_jobid_0.JPEG',
+       'storeclass1_resnet1_storeclass1_master_resnet1_n03345487_360_jobid_0.JPEG',
+       'storeclass1_resnet2_storeclass1_master_resnet2_n03345487_386_jobid_0.JPEG',
+       'storeclass1_resnet3_storeclass1_master_resnet3_n03345487_410_jobid_0.JPEG',
+       'storeclass1_resnet4_storeclass1_master_resnet4_n03345487_417_jobid_0.JPEG'] 
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile

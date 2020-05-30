@@ -80,7 +80,7 @@ def prepare_global():
         node_count += 1
 
     # Get nodes to profiler_ip mapping
-    for name, node_ip in zip(os.environ['ALL_PROFILERS'].split(":"), os.environ['ALL_PROFILERS_IPS'].split(":")):
+    for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
         if name == "":
             continue
         #First get mapping like {node: profiler_ip}, and later convert it to {profiler_ip: node}
@@ -126,15 +126,9 @@ def prepare_global():
     global first_task
     first_task = os.environ['CHILD_NODES']
 
-    global resource_profiler_ips, resource_profiler_nodes, network_profiler_nodes, profiler_nodes
-    resource_profiler_ips = os.environ['ALL_RESOURCES_IPS'].split(':')
-    resource_profiler_ips = resource_profiler_ips[1:]
-    resource_profiler_nodes = os.environ['ALL_RESOURCES'].split(':')
-    resource_profiler_nodes= resource_profiler_nodes[1:]
-    network_profiler_nodes = os.environ['ALL_PROFILERS'].split(':')
-    network_profiler_nodes = network_profiler_nodes[1:]
-    profiler_nodes = [x for x in resource_profiler_nodes if not x.startswith('home')]
-
+    global profiler_ips
+    profiler_ips = os.environ['ALL_PROFILERS'].split(':')
+    profiler_ips = profiler_ips[1:]
 
 
 def init_task_topology():
@@ -145,15 +139,10 @@ def init_task_topology():
         - Write control relations to ``DAG/parent_controller.txt``
     """
 
-    logging.debug(application)
-
     for line in application:
         line = line.strip()
         items = line.split()
-        logging.debug(items)
-        logging.debug(len(items))
-        if len(items)<4: 
-            continue #parent tasks having no children
+
         parent = items[0]
         if parent == items[3] or items[3] == "home":
             continue
@@ -319,14 +308,11 @@ def assign_children_task(children_task):
             logging.debug("Waiting for the profiler data")
             time.sleep(100)
     res = False
-    logging.debug('Profiler data is ready!!!!!')
-    # if 'app' in children_task:
-    #     appname = children_task.split('-')[0]
-    #     sample_file = '/' + appname + '-1botnet.ipsum'
-    # else:
-    #     sample_file = '/1botnet.ipsum'
-    
-    sample_file = os.path.join('/sample_input',os.listdir('/sample_input')[0])
+    if 'app' in children_task:
+        appname = children_task.split('-')[0]
+        sample_file = '/' + appname + '-1botnet.ipsum'
+    else:
+        sample_file = '/1botnet.ipsum'
     sample_size = cal_file_size(sample_file)
     assign_to_node = get_most_suitable_node(sample_size)
     if not assign_to_node:
@@ -348,83 +334,52 @@ def get_most_suitable_node(file_size):
     Returns:
         str: result_node_name - assigned node for the current task
     """
+    logging.debug('Trying to get the most suitable node')
+    weight_network = 1
+    weight_cpu = 1
+    weight_memory = 1
+
+    valid_nodes = []
+    min_value = sys.maxsize
+
+    valid_net_data = dict()
+    for tmp_node_name in network_profile_data:
+        data = network_profile_data[tmp_node_name]
+        delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
+        valid_net_data[tmp_node_name] = delay
+        if delay < min_value:
+            min_value = delay
+
+    for item in valid_net_data:
+        if valid_net_data[item] < min_value * threshold:
+            valid_nodes.append(item)
+
+    min_value = sys.maxsize
+    result_node_name = ''
+
+    task_price_summary = dict()
+
+    for item in valid_nodes:
+        tmp_value = valid_net_data[item]
+        tmp_cpu = sys.maxsize
+        tmp_memory = sys.maxsize
+        if item in resource_data.keys():
+            tmp_cpu = resource_data[item]['cpu']
+            tmp_memory = resource_data[item]['memory']
+
+        tmp_cost = weight_network * tmp_value + weight_cpu * tmp_cpu + \
+            weight_memory * tmp_memory
+
+        task_price_summary[item] = weight_network * tmp_value + weight_cpu * \
+            tmp_cpu + weight_memory * tmp_memory
+        if tmp_cost < min_value:
+            min_value = tmp_cost
+            result_node_name = item
+
+    logging.debug('Task price summary')
+    logging.debug(task_price_summary)
+
     try:
-        logging.debug('Trying to get the most suitable node')
-        weight_network = 1
-        weight_cpu = 1
-        weight_memory = 1
-
-        valid_nodes = []
-        min_value = sys.maxsize
-
-        valid_net_data = dict()
-        # for tmp_node_name in network_profile_data:
-        logging.debug('Network profile data ')
-        logging.debug(network_profile_data)
-        logging.debug('Resource data ')
-        logging.debug(resource_data)
-        logging.debug('Profiler nodes ')
-        logging.debug(profiler_nodes)
-        for tmp_node_name in profiler_nodes:
-            logging.debug("Node name : "+ tmp_node_name)
-            logging.debug(network_profile_data.keys())
-            data = network_profile_data[tmp_node_name]
-            logging.debug('Data : ')
-            logging.debug(data)
-            logging.debug('File size' + str(file_size))
-            
-            delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
-            logging.debug('------------------')
-            logging.debug(delay)
-            valid_net_data[tmp_node_name] = delay
-            logging.debug('------------------2')
-            logging.debug(valid_net_data)
-            logging.debug('------------------3')
-            if delay < min_value:
-                min_value = delay
-            logging.debug(min_value)
-            logging.debug('------------------4')
-
-        logging.debug('------------------5')
-
-
-        logging.debug('Valid net data :')
-        logging.debug(valid_net_data)
-        for item in valid_net_data:
-            if valid_net_data[item] < min_value * threshold:
-                valid_nodes.append(item)
-
-        logging.debug('Valid nodes ')
-        logging.debug(valid_nodes)
-        min_value = sys.maxsize
-        logging.debug(min_value)
-        result_node_name = ''
-
-        task_price_summary = dict()
-
-        for item in valid_nodes:
-            tmp_value = valid_net_data[item]
-            logging.debug('---------------- 6')
-            logging.debug(tmp_value)
-            tmp_cpu = sys.maxsize
-            tmp_memory = sys.maxsize
-            if item in resource_data.keys():
-                tmp_cpu = resource_data[item]['cpu']
-                tmp_memory = resource_data[item]['memory']
-                logging.debug('-----------' + tmp_cpu + '----------' + tmp_memory)
-            tmp_cost = weight_network * tmp_value + weight_cpu * tmp_cpu + \
-                weight_memory * tmp_memory
-
-            task_price_summary[item] = weight_network * tmp_value + weight_cpu * \
-                tmp_cpu + weight_memory * tmp_memory
-            if tmp_cost < min_value:
-                min_value = tmp_cost
-                result_node_name = item
-
-        logging.debug('Task price summary')
-        logging.debug(task_price_summary)
-
-    
         best_node = min(task_price_summary, key=task_price_summary.get)
         logging.debug('Best node for is %s', best_node)
         return best_node
@@ -466,9 +421,8 @@ def output(msg):
 def get_resource_data_drupe(MONGO_SVC_PORT):
     """Collect the resource profile from local MongoDB peer
     """
-    logging.debug('Retrieve resource information for profiler')
-    logging.debug(resource_profiler_ips)
-    for profiler_ip in resource_profiler_ips:
+
+    for profiler_ip in profiler_ips:
         logging.debug('Check Resource Profiler IP: %s', profiler_ip)
         client_mongo = MongoClient('mongodb://' + profiler_ip + ':' +
                                    str(MONGO_SVC_PORT) + '/')
@@ -512,10 +466,10 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     logdb = db[my_profiler_ip].find().skip(db[my_profiler_ip].count() - num_nb)
 
 
-
     c = 0
     for record in logdb:
         # Destination ID -> Parameters(a,b,c) , Destination IP
+
         if record['Destination[IP]'] in home_profiler_ip:
             continue
         params = re.split(r'\s+', record['Parameters'])
@@ -523,10 +477,6 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
                                                             'c': float(params[2]), 'ip': record['Destination[IP]']}
         c = c + 1
     logging.debug('Network information has already been provided')
-    
-    # Self parameters
-    network_profile_data[network_map[record['Source[IP]']]] = {'a': 0, 'b': 0, 'c': 0, 'ip': record['Source[IP]']}
-    logging.debug(network_profile_data)
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
@@ -629,12 +579,10 @@ class MyEventHandler(pyinotify.ProcessEvent):
     """
 
     def process_IN_CLOSE_WRITE(self, event):
-        logging.debug("CREATE CLOSE event: " + event.pathname)
-
+        logging.debug("CREATE CLOSE event:", event.pathname)
         t = time.time()
         # logging.debug(t)
         new_task = os.path.split(event.pathname)[-1]
-        logging.debug(new_task)
         _thread.start_new_thread(assign_children_task, (new_task,))
 
 

@@ -838,13 +838,7 @@ spec:
         - name: PROFILER
           value: {profiler_ip}
         - name: ALL_PROFILERS
-          value: {all_profiler_nodes}
-        - name: ALL_PROFILERS_IPS
           value: {all_profiler_ips}
-        - name: ALL_RESOURCES
-          value: {all_resources_nodes}
-        - name: ALL_RESOURCES_IPS
-          value: {all_resources_ips}
         - name: HOME_PROFILER_IP
           value: {home_profiler_ip}
         - name: COMPUTE_HOME_IP
@@ -929,13 +923,7 @@ spec:
         - name: PROFILER
           value: {profiler_ip}
         - name: ALL_PROFILERS
-          value: {all_profiler_nodes}
-        - name: ALL_PROFILERS_IPS
           value: {all_profiler_ips}
-        - name: ALL_RESOURCES
-          value: {all_resources_nodes}
-        - name: ALL_RESOURCES_IPS
-          value: {all_resources_ips}
         - name: HOME_PROFILER_IP
           value: {home_profiler_ip}
         - name: CHILD_NODES
@@ -1002,9 +990,9 @@ spec:
         - containerPort: {ssh_port}
         - containerPort: 80
         env:
-        - name: ALL_NODES
+        - name: ALL_COMPUTING_NODES
           value: {all_computing_nodes}
-        - name: ALL_NODES_IPS
+        - name: ALL_COMPUTING_IPS
           value: {all_computing_ips}
         - name: NODE_NAME
           value: {node_name}

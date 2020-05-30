@@ -9,6 +9,24 @@ from darknet_models import Darknet
 from utils.utils import *
 from utils import torch_utils
 import pickle
+import requests
+import json
+import configparser
+import logging
+
+global logging
+logging.basicConfig(level = logging.DEBUG)
+
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+global FLASK_DOCKER, FLASK_SVC, CODING_PART1
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+CODING_PART1 = int(config['OTHER']['CODING_PART1'])
+
+global global_info_ip, global_info_ip_port
 
 def calculate_iou(L1, R1, T1, B1, L2, R2, T2, B2):
     L = max(L1, L2)
@@ -119,15 +137,46 @@ def task(file_, pathin, pathout):
         ### Process predictions	to get a list of final predictions
         final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
     ### Write predictions to a file and send it to decoder task's folder
+        f_stripped = f.split(".JPEG")[0]
+        job_id = int(f_stripped.split("_jobid_")[1])
+        try:
+            global_info_ip = os.environ['GLOBAL_IP']
+            global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+            print("global info ip port: ", global_info_ip_port)
+            if CODING_PART1:
+                send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
+        except Exception as e:
+            print('Possibly running on the execution profiler: ', e)
     out_list = []
-    pickle_file = os.path.join(pathout,"collage_decoder_preds.pickle")
-    with open(pickle_file, "wb") as outfile:
-        pickle.dump(final_preds, outfile)
-    out_list.append(pickle_file)
+    out_name = pathout + "collage.txt"
+    with open(out_name, "w") as out_file:
+        out_file.write("dummy output file")
+        out_list.append(out_name)
     return out_list
 
+#Krishna
+def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
+    try:
+        hdr = {
+                'Content-Type': 'application/json',
+                'Authorization': None #not using HTTP secure
+                                        }
+        logging.debug('Send prediction to the decoder')
+        url = "http://" + global_info_ip_port + "/post-predictions-collage"
+        logging.debug(url)
+        params = {"job_id": job_id, 'msg': final_preds}
+        response = requests.post(url, headers = hdr, data = json.dumps(params))
+        logging.debug(response)
+        ret_job_id = response.json()
+        logging.debug(ret_job_id)
+    except Exception as e:
+        logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
+        logging.debug(e)
+        return "not ok"
+    return "ok"
+
 def main():
-    filelist = ["master_collage.JPEG"]
+    filelist = ["master_collage_jobid_0.JPEG"]
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
