@@ -62,35 +62,31 @@ def task(file_, pathin, pathout):
         img_tensor.unsqueeze_(0) 
         #img_tensor =  input_batch[0]
         ### call the ResNet model
-        try:
-            output = model(img_tensor) 
-            pred = torch.argmax(output, dim=1).detach().numpy().tolist()
-            ### To simulate slow downs
-            #distrib = np.load('/home/collage_inference/resnet/latency_distribution.npy')
-            # s = np.random.choice(distrib)
-            ### Copy to appropriate destination paths
-            if pred[0] == 555: ### fire engine. class 1
-                source = os.path.join(pathin, f)
-                # f_split = f.split("prefix_")[1]
-                #destination = os.path.join(pathout, "class1_" + f)
-                destination = os.path.join(pathout,  "resnet" + str(resnet_task_num)+ "_storeclass1_" + f)
-                # destination = os.path.join(pathout, "storeclass1_" + f)
-                out_list.append(shutil.copyfile(source, destination))
-            elif pred[0] == 779: ### school bus. class 2
-                source = os.path.join(pathin, f)
-                # f_split = f.split("prefix_")[1]
-                # destination = os.path.join(pathout, "class2_" + f)
-                destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass2_"+ f)
-                # destination = os.path.join(pathout, "storeclass2_" + f)
-                out_list.append(shutil.copyfile(source, destination))
-            else: ### not either of the classes # do nothing
-                print('This does not belong to any classes!!!')
-                #source = os.path.join(pathin, f)
-                #destination = os.path.join(pathout, "classNA_" + f)
-                #out_list.append(shutil.copyfile(source, destination))
-        except Exception as e:
-            logging.debug("Exception during Resnet prediction")
-            logging.debug(e)
+        output = model(img_tensor) 
+        pred = torch.argmax(output, dim=1).detach().numpy().tolist()
+        ### To simulate slow downs
+        #distrib = np.load('/home/collage_inference/resnet/latency_distribution.npy')
+        # s = np.random.choice(distrib)
+        ### Copy to appropriate destination paths
+        if pred[0] == 555: ### fire engine. class 1
+            source = os.path.join(pathin, f)
+            # f_split = f.split("prefix_")[1]
+            #destination = os.path.join(pathout, "class1_" + f)
+            destination = os.path.join(pathout,  "resnet" + str(resnet_task_num)+ "_storeclass1_" + f)
+            # destination = os.path.join(pathout, "storeclass1_" + f)
+            out_list.append(shutil.copyfile(source, destination))
+        elif pred[0] == 779: ### school bus. class 2
+            source = os.path.join(pathin, f)
+            # f_split = f.split("prefix_")[1]
+            # destination = os.path.join(pathout, "class2_" + f)
+            destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass2_"+ f)
+            # destination = os.path.join(pathout, "storeclass2_" + f)
+            out_list.append(shutil.copyfile(source, destination))
+        else: ### not either of the classes # do nothing
+            print('This does not belong to any classes!!!')
+            #source = os.path.join(pathin, f)
+            #destination = os.path.join(pathout, "classNA_" + f)
+            #out_list.append(shutil.copyfile(source, destination))
 
         #Krishna
         send_prediction_to_decoder_task(pred[0], decoder_node_port)

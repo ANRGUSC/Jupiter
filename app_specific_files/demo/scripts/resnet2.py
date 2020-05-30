@@ -74,12 +74,19 @@ def task(file_, pathin, pathout):
             f_stripped = f.split(".JPEG")[0]
             job_id = int(f_stripped.split("_jobid_")[1])
             print('job_id from the file is: ', job_id)
-            global_info_ip = os.environ['GLOBAL_IP']
-            global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-            if CODING_PART1:
-                ret_job_id = send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
-            else:
-                ret_job_id = 0
+           
+            ret_job_id = 0
+            try:
+                global_info_ip = os.environ['GLOBAL_IP']
+                global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+                if CODING_PART1:
+                    ret_job_id = send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
+                
+                    
+            except Exception as e:
+                print('Possibly running on the execution profiler')
+
+            
             if ret_job_id >= 0: # This job_id has not been processed by the global flask server
                 ### Copy to appropriate destination paths
                 if pred[0] == 555: ### fire engine. class 1

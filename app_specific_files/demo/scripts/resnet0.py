@@ -60,51 +60,54 @@ def task(file_, pathin, pathout):
         img_tensor.unsqueeze_(0) 
         #img_tensor =  input_batch[0]
         ### call the ResNet model
+        
+        output = model(img_tensor) 
+        pred = torch.argmax(output, dim=1).detach().numpy().tolist()
+        ### To simulate slow downs
+        # purposely add delay time to slow down the sending
+        if random.random() > STRAGGLER_THRESHOLD:
+            print("Sleeping")
+            time.sleep(SLEEP_TIME) #>=2 
+        ### Contact flask server
+        f_stripped = f.split(".JPEG")[0]
+        job_id = int(f_stripped.split("_jobid_")[1])
+        print('job_id from the file is: ', job_id)
+
+        ret_job_id = 0
         try:
-            output = model(img_tensor) 
-            pred = torch.argmax(output, dim=1).detach().numpy().tolist()
-            ### To simulate slow downs
-            # purposely add delay time to slow down the sending
-            if random.random() > STRAGGLER_THRESHOLD:
-                print("Sleeping")
-                time.sleep(SLEEP_TIME) #>=2 
-            ### Contact flask server
-            f_stripped = f.split(".JPEG")[0]
-            job_id = int(f_stripped.split("_jobid_")[1])
-            print('job_id from the file is: ', job_id)
             global_info_ip = os.environ['GLOBAL_IP']
             global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
             if CODING_PART1:
                 ret_job_id = send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
-            else:
-                ret_job_id = 0
-            if ret_job_id >= 0: # This job_id has not been processed by the global flask server
-                ### Copy to appropriate destination paths
-                if pred[0] == 555: ### fire engine. class 1
-                    source = os.path.join(pathin, f)
-                    # f_split = f.split("prefix_")[1]
-                    #destination = os.path.join(pathout, "class1_" + f)
-                    destination = os.path.join(pathout,  "resnet" + str(resnet_task_num)+ "_storeclass1_" + f)
-                    # destination = os.path.join(pathout, "storeclass1_" + f)
-                    out_list.append(shutil.copyfile(source, destination))
-                elif pred[0] == 779: ### school bus. class 2
-                    source = os.path.join(pathin, f)
-                    # f_split = f.split("prefix_")[1]
-                    # destination = os.path.join(pathout, "class2_" + f)
-                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass2_"+ f)
-                    # destination = os.path.join(pathout, "storeclass2_" + f)
-                    out_list.append(shutil.copyfile(source, destination))
-                else: ### not either of the classes # do nothing
-                    print('This does not belong to any classes!!!')
-                    #source = os.path.join(pathin, f)
-                    #destination = os.path.join(pathout, "classNA_" + f)
-                    #out_list.append(shutil.copyfile(source, destination))
-            else: # ret_job_id < 0
-                print("The jobid %s has already been processed by the flask server" % (job_id))
-                return [] #slow resnet node: return empty
         except Exception as e:
-            logging.debug("Exception during Resnet prediction")
-            logging.debug(e)
+            print('Possibly running on the execution profiler')
+
+        
+        if ret_job_id >= 0: # This job_id has not been processed by the global flask server
+            ### Copy to appropriate destination paths
+            if pred[0] == 555: ### fire engine. class 1
+                source = os.path.join(pathin, f)
+                # f_split = f.split("prefix_")[1]
+                #destination = os.path.join(pathout, "class1_" + f)
+                destination = os.path.join(pathout,  "resnet" + str(resnet_task_num)+ "_storeclass1_" + f)
+                # destination = os.path.join(pathout, "storeclass1_" + f)
+                out_list.append(shutil.copyfile(source, destination))
+            elif pred[0] == 779: ### school bus. class 2
+                source = os.path.join(pathin, f)
+                # f_split = f.split("prefix_")[1]
+                # destination = os.path.join(pathout, "class2_" + f)
+                destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass2_"+ f)
+                # destination = os.path.join(pathout, "storeclass2_" + f)
+                out_list.append(shutil.copyfile(source, destination))
+            else: ### not either of the classes # do nothing
+                print('This does not belong to any classes!!!')
+                #source = os.path.join(pathin, f)
+                #destination = os.path.join(pathout, "classNA_" + f)
+                #out_list.append(shutil.copyfile(source, destination))
+        else: # ret_job_id < 0
+            print("The jobid %s has already been processed by the flask server" % (job_id))
+            return [] #slow resnet node: return empty
+        
 
     return out_list
 
