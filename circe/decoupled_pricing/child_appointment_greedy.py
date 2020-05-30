@@ -367,9 +367,12 @@ def get_most_suitable_node(file_size):
         logging.debug(profiler_nodes)
         for tmp_node_name in profiler_nodes:
             logging.debug("Node name : "+ tmp_node_name)
+            logging.debug(network_profile_data.keys())
             data = network_profile_data[tmp_node_name]
-            logging.debug('File size' + str(file_size))
+            logging.debug('Data : ')
             logging.debug(data)
+            logging.debug('File size' + str(file_size))
+            
             delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
             logging.debug('------------------')
             logging.debug(delay)
@@ -509,10 +512,10 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     logdb = db[my_profiler_ip].find().skip(db[my_profiler_ip].count() - num_nb)
 
 
+
     c = 0
     for record in logdb:
         # Destination ID -> Parameters(a,b,c) , Destination IP
-
         if record['Destination[IP]'] in home_profiler_ip:
             continue
         params = re.split(r'\s+', record['Parameters'])
@@ -520,6 +523,10 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
                                                             'c': float(params[2]), 'ip': record['Destination[IP]']}
         c = c + 1
     logging.debug('Network information has already been provided')
+    
+    # Self parameters
+    network_profile_data[network_map[record['Source[IP]']]] = {'a': 0, 'b': 0, 'c': 0, 'ip': record['Source[IP]']}
+    logging.debug(network_profile_data)
 
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
