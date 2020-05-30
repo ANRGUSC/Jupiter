@@ -20,9 +20,9 @@ def ubuntu(name, version, min_memory=2):
 
 net = mx.Topology('k8s-bootstrap-example', addressing == ipv4)
 
-JUPITER_MASTER_NODES = ["master"]
+JUPITER_MASTER_NODE = ["master"]
 JUPITER_WORKER_NODES = ["n%d" % (x) for x in range(0, NUM_WORKER_NODES)]
-ALL_NODES = JUPITER_MASTER_NODES + JUPITER_WORKER_NODES
+ALL_NODES = JUPITER_MASTER_NODE + JUPITER_WORKER_NODES
 nodes = [ubuntu(name, '1804', MIN_MEMORY) for name in ALL_NODES]
 net.connect(nodes)
 
