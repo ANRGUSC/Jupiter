@@ -13,6 +13,7 @@ config.read(INI_PATH)
 global FLASK_DOCKER, FLASK_SVC
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
 
 global global_info_ip
 
@@ -81,43 +82,79 @@ def task(filelist, pathin, pathout):
     height = 400
     dim = (width, height)
     
-    
-    #Read M batches
+    if FLAG_PART2: #Coding Version
+        #Read M batches
+        Image_Batch = []
+        count_file = 0
+        for j in range(M):
+            count = 0
+            while count < L:
+                print(os.path.join(pathin, filelist[count_file]))
+                img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
+                if img is not None:
+                # resize image
+                    img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+                    img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
+                    img -= img.mean()
+                    img /= img.std()
+                    img_w ,img_l = img.shape
+                    img = img.reshape(1,img_w*img_l)
+                    if count == 0:
+                       Images = img
+                    else:
+                       Images = np.concatenate((Images,img), axis=0)  
+                    count+=1
+                count_file+=1
+            Image_Batch.append(Images)
 
-    Image_Batch = []
-    count_file = 0
-    for j in range(M):
-        count = 0
-        while count < L:
-            img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
-            if img is not None:
-            # resize image
-                img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-                img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
-                img -= img.mean()
-                img /= img.std()
-                img_w ,img_l = img.shape
-                img = img.reshape(1,img_w*img_l)
-                if count == 0:
-                   Images = img
-                else:
-                   Images = np.concatenate((Images,img), axis=0)  
-                count+=1
-            count_file+=1
-        Image_Batch.append(Images)
-    
-    # Encode M data batches to N encoded data
-    En_Image_Batch = LCC_encoding(Image_Batch,N,M)
-    
-    out_list = []
-    
-    # Save each encoded data-batch i to a csv 
-    for i in range(N):
-        destination = os.path.join(pathout,'lccenc1_score1'+chr(i+97)+'_'+'job'+str(job_id)+'_'+snapshot_time+'.csv')
-        np.savetxt(destination, En_Image_Batch[i], delimiter=',')
-        out_list.append(destination)
-    return out_list
+        # Encode M data batches to N encoded data
+        En_Image_Batch = LCC_encoding(Image_Batch,N,M)
 
+        out_list = []
+
+        # Save each encoded data-batch i to a csv 
+        for i in range(N):
+            destination = os.path.join(pathout,'lccenc1_score1'+chr(i+97)+'_'+'job'+str(job_id)+'_'+snapshot_time+'.csv')
+            np.savetxt(destination, En_Image_Batch[i], delimiter=',')
+            out_list.append(destination)
+        return out_list
+    
+    else: # Uncoding version
+        #Read M batches
+        Image_Batch = []
+        count_file = 0
+        for j in range(N):
+            count = 0
+            while count < L:
+                img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
+                if img is not None:
+                # resize image
+                    img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+                    img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
+                    img -= img.mean()
+                    img /= img.std()
+                    img_w ,img_l = img.shape
+                    img = img.reshape(1,img_w*img_l)
+                    if count == 0:
+                       Images = img
+                    else:
+                       Images = np.concatenate((Images,img), axis=0)  
+                    count+=1
+                count_file+=1
+            Image_Batch.append(Images)
+
+        En_Image_Batch = LCC_encoding(Image_Batch,N,N)
+
+        out_list = []
+
+        # Save each encoded data-batch i to a csv 
+        for i in range(N):
+            destination = os.path.join(pathout,'lccenc1_score1'+chr(i+97)+'_'+'job'+str(job_id)+'_'+snapshot_time+'.csv')
+            np.savetxt(destination, En_Image_Batch[i], delimiter=',')
+            out_list.append(destination)
+        return out_list
+
+        
 def main():
     filelist = ['storeclass1_resnet0_storeclass1_master_resnet0_n03345487_10_jobid_0.JPEG',
     'storeclass1_resnet1_storeclass1_master_resnet1_n03345487_108_jobid_0.JPEG',
