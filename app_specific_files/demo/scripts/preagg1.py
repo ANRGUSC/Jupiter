@@ -13,7 +13,6 @@ config.read(INI_PATH)
 global FLASK_DOCKER, FLASK_SVC
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
-FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
 
 global global_info_ip
 
@@ -55,44 +54,27 @@ def task(filelist, pathin, pathout):
     except Exception as e:
         print('Possibly running on the execution profiler')
         # job_dict = {'1':['score1a_preagg1_job1_20200424.csv', 'score1b_preagg1_job1_20200424.csv']}
-        job_dict = {'1':['score1a_preagg1_job2_resnet0_storeclass1_master_resnet0_n03345487_10_jobid_0.csv','score1b_preagg1_job2_resnet0_storeclass1_master_resnet0_n03345487_10_jobid_0.csv']}
+        job_dict = {'1':['score1a_preagg1_job2_resnet0_storeclass1_master_resnet0_n03345487_10.csv','score1b_preagg1_job2_resnet0_storeclass1_master_resnet0_n03345487_10.csv']}
         
     #Parameters
     M = 2 # Number of data-batches
-    N = 3 # Number of workers
     
-    if FLAG_PART2: #Coding Version
-        #Check if number of received results for the same job is equal to M
-        outlist = []
-        if len(job_dict[job_id]) == M:
-            print('Receive enough results for job '+job_id)
-            for i in range(M):
-                En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
-                destination = os.path.join(pathout,'preagg1_lccdec1_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+snapshot_time+'.csv')
-                np.savetxt(destination, En_Image_Batch, delimiter=',')
-                outlist.append(destination)
-        else:
-            print('Not receive enough results for job '+job_id)
-        return outlist
-    
+    #Check if number of received results for the same job is equal to M
+    outlist = []
+    if len(job_dict[job_id]) == M:
+        print('Receive enough results for job '+job_id)
+        for i in range(M):
+            En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
+            destination = os.path.join(pathout,'preagg1_lccdec1_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+snapshot_time+'.csv')
+            np.savetxt(destination, En_Image_Batch, delimiter=',')
+            outlist.append(destination)
     else:
-        #Check if number of received results for the same job is equal to N
-        outlist = []
-        if len(job_dict[job_id]) == N:
-            print('Receive enough results for job '+job_id)
-            for i in range(N):
-                En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
-                destination = os.path.join(pathout,'preagg1_lccdec1_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+snapshot_time+'.csv')
-                np.savetxt(destination, En_Image_Batch, delimiter=',')
-                outlist.append(destination)
-        else:
-            print('Not receive enough results for job '+job_id)
-        return outlist
+        print('Not receive enough results for job '+job_id)
+    return outlist
 
-    
-    
 def main():
     filelist= ['score1a_preagg1_job1_20200424.csv']  
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
+

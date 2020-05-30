@@ -2,11 +2,6 @@ import numpy as np
 import time
 import os
 import cv2
-import configparser
-
-INI_PATH = 'jupiter_config.ini'
-config = configparser.ConfigParser()
-config.read(INI_PATH)
 
 def gen_Lagrange_coeffs(alpha_s,beta_s):
     U = np.zeros((len(alpha_s), len(beta_s)))
@@ -33,7 +28,6 @@ def LCC_decoding(f_eval,N,M,worker_idx):
         f_recon.append(x_zero)
     return f_recon
 
-FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
 
 def task(filelist, pathin, pathout): 
     filelist = [filelist] if isinstance(filelist, str) else filelist  
@@ -48,62 +42,33 @@ def task(filelist, pathin, pathout):
     M = 2 # Number of data-batches
     K = 10 # Number of referenced Images
 
-    if FLAG_PART2:
-        # Results recieved from M workers
-        worker_idx = [ord((filelist[i].partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(M)]
-        worker_eval = [np.loadtxt(os.path.join(pathin, filelist[i]), delimiter=',') for i in range(M)]
-
-        # Decoding Process 
-        results = [] 
-        for i in range(K):
-            f_eval = []
-            for j in range(M):
-                a = worker_eval[j]
-                f_eval.append(a[i,:])  
-            f_dec = LCC_decoding(f_eval,N,M,worker_idx) 
-            if i ==0:
-                for j in range(M):
-                    results.append(f_dec[j])
-            else:
-                for j in range(M):
-                    results[j] = np.concatenate((results[j],f_dec[j]), axis = 0)
-
-
-        #Save desired scores of M data-batches
-        outlist = []
+    # Results recieved from M workers
+    worker_idx = [ord((filelist[i].partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(M)]
+    worker_eval = [np.loadtxt(os.path.join(pathin, filelist[i]), delimiter=',') for i in range(M)]
+    
+    # Decoding Process 
+    results = [] 
+    for i in range(K):
+        f_eval = []
         for j in range(M):
-            destination = os.path.join(pathout,'job'+job_id+'lccdec2'+str(j)+'_'+snapshot_time+'.csv')
-            np.savetxt(destination, results[j], delimiter=',')
-            outlist.append(destination)
-        return outlist
-    else:
-        # Results recieved from M workers
-        worker_idx = [ord((filelist[i].partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(N)]
-        worker_eval = [np.loadtxt(os.path.join(pathin, filelist[i]), delimiter=',') for i in range(N)]
-
-        # Decoding Process 
-        results = [] 
-        for i in range(K):
-            f_eval = []
-            for j in range(N):
-                a = worker_eval[j]
-                f_eval.append(a[i,:])  
-            f_dec = LCC_decoding(f_eval,N,N,worker_idx) 
-            if i ==0:
-                for j in range(N):
-                    results.append(f_dec[j])
-            else:
-                for j in range(N):
-                    results[j] = np.concatenate((results[j],f_dec[j]), axis = 0)
-
-
-        #Save desired scores of M data-batches
-        outlist = []
-        for j in range(N):
-            destination = os.path.join(pathout,'job'+job_id+'lccdec2'+str(j)+'_'+snapshot_time+'.csv')
-            np.savetxt(destination, results[j], delimiter=',')
-            outlist.append(destination)
-        return outlist
+            a = worker_eval[j]
+            f_eval.append(a[i,:])  
+        f_dec = LCC_decoding(f_eval,N,M,worker_idx) 
+        if i ==0:
+            for j in range(M):
+                results.append(f_dec[j])
+        else:
+            for j in range(M):
+                results[j] = np.concatenate((results[j],f_dec[j]), axis = 0)
+    
+    
+    #Save desired scores of M data-batches
+    outlist = []
+    for j in range(M):
+        destination = os.path.join(pathout,'job'+job_id+'lccdec2'+str(j)+'_'+snapshot_time+'.csv')
+        np.savetxt(destination, results[j], delimiter=',')
+        outlist.append(destination)
+    return outlist
 
 def main():
     filelist= ['preagg2_lccdec2_score2a_job1_20200424.csv',
@@ -111,3 +76,4 @@ def main():
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
+    

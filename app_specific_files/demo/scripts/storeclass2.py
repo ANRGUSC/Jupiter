@@ -23,23 +23,23 @@ def task(file_, pathin, pathout):
 
 
 def main():
-    #filelist = ['resnet5_storeclass2_master_resnet5_n04146614_16038_jobid_0.JPEG']
-    filelist = ['resnet0_storeclass2_master_resnet0_n04146614_1_jobid_0.JPEG','resnet0_storeclass2_master_resnet0_n04146614_25_jobid_0.JPEG','resnet0_storeclass2_master_resnet0_n04146614_27_jobid_0.JPEG',
-       'resnet0_storeclass2_master_resnet0_n04146614_30_jobid_0.JPEG','resnet0_storeclass2_master_resnet0_n04146614_36_jobid_0.JPEG',
-       'resnet1_storeclass2_master_resnet1_n04146614_39_jobid_0.JPEG',
-       'resnet1_storeclass2_master_resnet1_n04146614_53_jobid_0.JPEG','resnet1_storeclass2_master_resnet1_n04146614_69_jobid_0.JPEG','resnet1_storeclass2_master_resnet1_n04146614_79_jobid_0.JPEG',
-       'resnet1_storeclass2_master_resnet1_n04146614_84_jobid_0.JPEG',
-       'resnet2_storeclass2_master_resnet2_n04146614_152_jobid_0.JPEG','resnet2_storeclass2_master_resnet2_n04146614_158_jobid_0.JPEG','resnet2_storeclass2_master_resnet2_n04146614_186_jobid_0.JPEG','resnet2_storeclass2_master_resnet2_n04146614_187_jobid_0.JPEG',
-       'resnet2_storeclass2_master_resnet2_n04146614_199_jobid_0.JPEG',
-       'resnet3_storeclass2_master_resnet3_n04146614_209_jobid_0.JPEG','resnet3_storeclass2_master_resnet3_n04146614_231_jobid_0.JPEG',
-       'resnet3_storeclass2_master_resnet3_n04146614_232_jobid_0.JPEG','resnet3_storeclass2_master_resnet3_n04146614_237_jobid_0.JPEG','resnet3_storeclass2_master_resnet3_n04146614_245_jobid_0.JPEG',
-       'resnet4_storeclass2_master_resnet4_n04146614_263_jobid_0.JPEG','resnet4_storeclass2_master_resnet4_n04146614_284_jobid_0.JPEG','resnet4_storeclass2_master_resnet4_n04146614_295_jobid_0.JPEG',
-       'resnet4_storeclass2_master_resnet4_n04146614_309_jobid_0.JPEG','resnet4_storeclass2_master_resnet4_n04146614_312_jobid_0.JPEG',
-       'resnet5_storeclass2_master_resnet5_n04146614_16038_jobid_0.JPEG','resnet5_storeclass2_master_resnet5_n04146614_318_jobid_0.JPEG',
-       'resnet5_storeclass2_master_resnet5_n04146614_330_jobid_0.JPEG',
-       'resnet6_storeclass2_master_resnet6_n04146614_363_jobid_0.JPEG',
-       'resnet7_storeclass2_master_resnet7_n04146614_377_jobid_0.JPEG',
-       'resnet8_storeclass2_master_resnet8_n04146614_387_jobid_0.JPEG']
+    #filelist = ['resnet5_storeclass2_master_resnet5_n04146614_16038.JPEG']
+    filelist = ['resnet0_storeclass2_master_resnet0_n04146614_1.JPEG','resnet0_storeclass2_master_resnet0_n04146614_25.JPEG','resnet0_storeclass2_master_resnet0_n04146614_27.JPEG',
+       'resnet0_storeclass2_master_resnet0_n04146614_30.JPEG','resnet0_storeclass2_master_resnet0_n04146614_36.JPEG',
+       'resnet1_storeclass2_master_resnet1_n04146614_39.JPEG',
+       'resnet1_storeclass2_master_resnet1_n04146614_53.JPEG','resnet1_storeclass2_master_resnet1_n04146614_69.JPEG','resnet1_storeclass2_master_resnet1_n04146614_79.JPEG',
+       'resnet1_storeclass2_master_resnet1_n04146614_84.JPEG',
+       'resnet2_storeclass2_master_resnet2_n04146614_152.JPEG','resnet2_storeclass2_master_resnet2_n04146614_158.JPEG','resnet2_storeclass2_master_resnet2_n04146614_186.JPEG','resnet2_storeclass2_master_resnet2_n04146614_187.JPEG',
+       'resnet2_storeclass2_master_resnet2_n04146614_199.JPEG',
+       'resnet3_storeclass2_master_resnet3_n04146614_209.JPEG','resnet3_storeclass2_master_resnet3_n04146614_231.JPEG',
+       'resnet3_storeclass2_master_resnet3_n04146614_232.JPEG','resnet3_storeclass2_master_resnet3_n04146614_237.JPEG','resnet3_storeclass2_master_resnet3_n04146614_245.JPEG',
+       'resnet4_storeclass2_master_resnet4_n04146614_263.JPEG','resnet4_storeclass2_master_resnet4_n04146614_284.JPEG','resnet4_storeclass2_master_resnet4_n04146614_295.JPEG',
+       'resnet4_storeclass2_master_resnet4_n04146614_309.JPEG','resnet4_storeclass2_master_resnet4_n04146614_312.JPEG',
+       'resnet5_storeclass2_master_resnet5_n04146614_16038.JPEG','resnet5_storeclass2_master_resnet5_n04146614_318.JPEG',
+       'resnet5_storeclass2_master_resnet5_n04146614_330.JPEG',
+       'resnet6_storeclass2_master_resnet6_n04146614_363.JPEG',
+       'resnet7_storeclass2_master_resnet7_n04146614_377.JPEG',
+       'resnet8_storeclass2_master_resnet8_n04146614_387.JPEG']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
