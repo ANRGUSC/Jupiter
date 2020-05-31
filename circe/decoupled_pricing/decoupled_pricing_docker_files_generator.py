@@ -26,8 +26,8 @@ RUN mkdir -p DAG
 COPY circe/{pricing_option}/start_home_controller.sh /start.sh
 
 ADD {app_file}/configuration.txt DAG/DAG_application.txt
-ADD {app_file}/input_node.txt DAG
-ADD {app_file}/sample_input /
+# ADD {app_file}/input_node.txt DAG
+ADD {app_file}/sample_input /sample_input
 
 ADD jupiter_config.ini /jupiter_config.ini
 
@@ -62,9 +62,9 @@ RUN mkdir -p DAG
 COPY circe/{pricing_option}/start_worker_controller.sh /start.sh
 
 ADD {app_file}/configuration.txt DAG/DAG_application.txt
-ADD {app_file}/input_node.txt DAG
+# ADD {app_file}/input_node.txt DAG
 # ADD {app_file}/sample_input/1botnet.ipsum /1botnet.ipsum
-ADD {app_file}/sample_input /
+ADD {app_file}/sample_input /sample_input
 
 ADD jupiter_config.ini /jupiter_config.ini
 
@@ -138,11 +138,8 @@ RUN mkdir -p /mongodb/data
 RUN mkdir -p /mongodb/log
 
 # Create the input, output
-RUN mkdir -p /input
-RUN mkdir -p /output
-
-# Add input files
-COPY  {app_file}/sample_input /sample_input
+RUN mkdir -p /centralized_scheduler/input
+RUN mkdir -p /centralized_scheduler/output
 
 # Add the mongodb scripts
 ADD circe/{pricing_option}/runtime_profiler_mongodb /central_mongod
@@ -161,10 +158,14 @@ ADD jupiter_config.ini /jupiter_config.ini
 ADD circe/{pricing_option}/start_home_compute.sh /start.sh
 RUN chmod +x /start.sh
 RUN chmod +x /central_mongod
-ADD {app_file}/name_convert.txt /centralized_scheduler/name_convert.txt
-ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
-ADD {app_file}/scripts/config.json /centralized_scheduler/config.json
-ADD {app_file}/configuration.txt  /centralized_scheduler/dag.txt
+
+#Add input files
+#COPY  {app_file}/sample_input /sample_input
+ADD {app_file}/name_convert.txt /name_convert.txt
+#ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD {app_file}/sample_input/ /centralized_scheduler/sample_input/
+ADD {app_file}/scripts/config.json config.json
+ADD {app_file}/configuration.txt  dag.txt
 
 WORKDIR /
 
@@ -179,25 +180,28 @@ CMD ["./start.sh"]
 
 template_worker_compute ="""\
 # Instructions copied from - https://hub.docker.com/_/python/
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
+RUN apt-get -yqq update
+
+RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get -yqq update && apt-get install -y --no-install-recommends apt-utils
-RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev 
+RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -yqq openssh-client openssh-server bzip2 wget net-tools sshpass screen
 RUN apt-get install -y vim
 RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
 RUN apt-get install sudo -y
 RUN apt-get install iproute2 -y
 
+# Chien's 2nd DAG
+RUN apt-get install -y libsm6 libxext6 libxrender-dev
+
 ## Install TASK specific needs. The hadoop is a requirement for the network profiler application
 ##RUN wget http://supergsego.com/apache/hadoop/common/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
-RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
-RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
-RUN rm ~/hadoop-2.8.1.tar.gz
-ADD circe/{pricing_option}/requirements_compute.txt /requirements.txt
+# RUN wget https://archive.apache.org/dist/hadoop/core/hadoop-2.8.1/hadoop-2.8.1.tar.gz -P ~/
+# RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
+# RUN rm ~/hadoop-2.8.1.tar.gz
 
-RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 RUN sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -208,6 +212,11 @@ RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so
 
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
+
+ADD circe/{pricing_option}/requirements_compute.txt /requirements.txt
+
+RUN pip3 install --upgrade pip
+RUN pip3 install -r requirements.txt
 
 RUN mkdir -p /centralized_scheduler/input
 RUN mkdir -p /centralized_scheduler/output
@@ -223,7 +232,8 @@ ADD circe/{pricing_option}/start_worker_compute.sh /start.sh
 ADD mulhome_scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD {app_file}/configuration.txt  /centralized_scheduler/dag.txt
 ADD {app_file}/scripts/config.json /centralized_scheduler/config.json
-ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+# ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD {app_file}/sample_input/ /centralized_scheduler/
 ADD nodes.txt /centralized_scheduler/nodes.txt
 
 ADD circe/{pricing_option}/compute.py /centralized_scheduler/compute.py

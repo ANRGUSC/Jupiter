@@ -15,12 +15,15 @@ import yaml
 from kubernetes import client, config
 from pprint import *
 import jupiter_config
-import utilities
+from utilities import *
 
 import sys, json
 sys.path.append("../")
 import logging
 from pathlib import Path
+
+from k8s_sink_scheduler import *
+from k8s_stream_scheduler import *
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -220,6 +223,13 @@ def k8s_pricing_circe_scheduler(dag_info, temp_info, profiler_ips, execution_ips
 
         service_ips[key] = resp.spec.cluster_ip
 
+    # given that there is only one home
+    service_ips_sinks = k8s_sink_scheduler(app_name,service_ips['home'])
+    logging.debug('Data sinks')
+    logging.debug(service_ips_sinks)
+    all_sinks = ' '.join(service_ips_sinks.keys())
+    all_sinks_ips = ' '.join(service_ips_sinks.values())
+
     """
         Iterate through the list of tasks and run the related k8 deployment, replicaset, pod, and service on the respective node.
         You can always check if a service/pod/deployment is running after running this script via kubectl command.
@@ -310,6 +320,7 @@ def k8s_pricing_circe_scheduler(dag_info, temp_info, profiler_ips, execution_ips
 
     home_nodes_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(home_nodes.items()))
 
+    logging.debug(nodes)
     for i in nodes:
 
         
@@ -780,15 +791,23 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name,
         This loads the node list
     """
     all_profiler_ips = ''
+    all_profiler_nodes = ''
+    all_resources_nodes = ''
+    all_resources_ips = ''
     nexthost_ips = ''
     nexthost_names = ''
     path2 = jupiter_config.HERE + 'nodes.txt'
-    nodes, homes = utilities.k8s_get_nodes_worker(path2)
-    pprint(nodes)
+    # nodes, homes = utilities.k8s_get_nodes_worker(path2)
+    nodes, homes,datasources,datasinks = k8s_get_all_elements(path2)
 
     #get DAG and home machine info
     first_task = dag_info[0]
     dag = dag_info[1]
+
+    logging.debug('-------- Add datasources profiler ips')
+    for ds in datasources:
+        all_profiler_nodes = all_profiler_nodes + ':' + ds
+        all_profiler_ips = all_profiler_ips + ':' +   profiler_ips[ds] 
 
 
     """
@@ -834,11 +853,24 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name,
     service_ips['home'] = resp.spec.cluster_ip
     home_ip = service_ips['home']
 
+    all_profiler_nodes = all_profiler_nodes + ':' + 'home'
+    all_profiler_ips = all_profiler_ips + ':' + profiler_ips['home']
+    all_resources_nodes = all_resources_nodes + ':' + 'home'
+    all_resources_ips = all_resources_ips + ':' + profiler_ips['home']
+
+
+    logging.debug('Create controller services for the following nodes')
+    logging.debug(nodes)
+
     for i in nodes:
 
         """
             Generate the yaml description of the required service for each task
         """
+        all_profiler_nodes = all_profiler_nodes + ':' + i
+        all_profiler_ips = all_profiler_ips + ':' + profiler_ips[i]
+        all_resources_nodes = all_resources_nodes + ':' + i
+        all_resources_ips = all_resources_ips + ':' + profiler_ips[i]
         if i != 'home':
             pod_name = app_name+'-controller'+i
             pod_label = app_name+'-controller'+i
@@ -858,7 +890,11 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name,
             service_ips[i] = resp.spec.cluster_ip
             nexthost_ips = nexthost_ips + ':' + service_ips[i]
             nexthost_names = nexthost_names + ':' + i
-            all_profiler_ips = all_profiler_ips + ':' + profiler_ips[i]
+            
+
+    logging.debug('All provided network profilers for the decoupled pricing circe module')
+    logging.debug(all_profiler_ips)
+    logging.debug(all_profiler_nodes)
 
     home_profiler_ips = {}
     for key in homes:
@@ -891,7 +927,10 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name,
                                              profiler_ip = profiler_ips[i],
                                              child = jupiter_config.HOME_CHILD,
                                              all_profiler_ips = all_profiler_ips,
-                                             home_profiler_ip = home_profiler_str)
+                                             all_profiler_nodes = all_profiler_nodes,
+                                             home_profiler_ip = home_profiler_str,
+                                             all_resources_nodes = all_resources_nodes,
+                                             all_resources_ips = all_resources_ips)
             # # pprint(dep)
             # # Call the Kubernetes API to create the deployment
             resp = k8s_apps_v1.create_namespaced_deployment(body = dep, namespace = namespace)
@@ -910,6 +949,7 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name,
     label_name = app_name+'-controllerhome'
 
 
+
     home_dep = write_decoupled_pricing_controller_home_specs(name = home_name, label = label_name,
                                 image = jupiter_config.PRICING_HOME_CONTROLLER, 
                                 host = jupiter_config.HOME_NODE, all_node = nexthost_names,
@@ -919,12 +959,15 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name,
                                              home_name = home_name,
                                              serv_ip = service_ips['home'],
                                              profiler_ip = profiler_ips['home'],
+                                             all_profiler_nodes = all_profiler_nodes,
                                              all_profiler_ips = all_profiler_ips,
                                              home_profiler_ip = home_profiler_str,
                                              compute_home_ip = compute_service_ips['home'],
                                              child = jupiter_config.HOME_CHILD,
                                              app_name = app_name,
-                                             app_option =jupiter_config.APP_OPTION)
+                                             app_option =jupiter_config.APP_OPTION,
+                                             all_resources_nodes = all_resources_nodes,
+                                             all_resources_ips = all_resources_ips)
     resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
     logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
@@ -954,16 +997,17 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info, profiler_ips, execution_ip
     global configs, taskmap, path1
 
     path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes, homes = utilities.k8s_get_nodes_worker(path1)
+    # nodes, homes = utilities.k8s_get_nodes_worker(path1)
+    nodes, homes,datasources,datasinks = k8s_get_all_elements(path1)
 
     #get DAG and home machine info
     first_task = dag_info[0]
     dag = dag_info[1]
 
     logging.debug('Starting to deploy decoupled CIRCE dispatcher')
+    start_time = time.time()
     if jupiter_config.BOKEH == 3:
         latency_file = utilities.prepare_stat_path(nodes, homes, dag)
-        start_time = time.time()
         msg = 'CIRCE decoupled deploystart %f \n'%(start_time)
         write_file(latency_file, msg)
 
@@ -996,7 +1040,11 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info, profiler_ips, execution_ip
     computing_service_ips = {}
     all_profiler_ips = ''
     all_profiler_nodes = ''
-    
+
+    logging.debug('-------- Add datasources profiler ips')
+    for ds in datasources:
+        all_profiler_nodes = all_profiler_nodes + ':' + ds
+        all_profiler_ips = all_profiler_ips + ':' +   profiler_ips[ds]  
 
     logging.debug('-------- First create the home node service')
     """
@@ -1058,6 +1106,11 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info, profiler_ips, execution_ip
 
     all_computing_ips = ':'.join(computing_service_ips.values())
     all_computing_nodes = ':'.join(computing_service_ips.keys())
+
+    logging.debug('Checking network profilers')
+    logging.debug(all_profiler_nodes)
+    logging.debug(all_profiler_ips)
+
 
 
     """
@@ -1131,6 +1184,7 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info, profiler_ips, execution_ip
         logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 
     pprint(service_ips)
+
     return service_ips, start_time
 
 def k8s_decoupled_pricing_circe_scheduler(dag_info , profiler_ips, execution_ips,app_name):
