@@ -66,7 +66,7 @@ def task(filelist, pathin, pathout):
 
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
         job_id = response.json()
-        printprint(job_id)
+        print(job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
         job_id = 2
