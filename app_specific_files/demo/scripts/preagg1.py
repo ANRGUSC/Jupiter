@@ -22,7 +22,7 @@ global global_info_ip
 def task(filelist, pathin, pathout):     
     filelist = [filelist] if isinstance(filelist, str) else filelist  
     #snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
-    job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[0]
+    job_id = filelist[0].partition('_')[2].partition('_')[2].partition('.')[0]
     job_id = job_id[3:]
     # job_id = int(job_id)
     
