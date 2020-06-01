@@ -20,7 +20,7 @@ def task(filelist, pathin, pathout):
     
     # Load id of incoming job (id_job=1,2,3,...)
     #job_id = filelist[0].partition('outlccencoder')[0]
-    job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[0]
+    job_id = filelist[0].partition('_')[2].partition('_')[2].partition('.')[0]
     job_id = job_id[3:]
     
 
