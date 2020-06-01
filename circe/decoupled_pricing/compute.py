@@ -317,6 +317,7 @@ def execute_task(home_id,task_name,file_name, filenames, input_path, output_path
         input_path (str): input file path
         output_path (str): output file path
     """
+    logging.debug('Starting to execute task')
     ts = time.time()
     runtime_info = 'rt_exec '+ file_name+ ' '+str(ts)
     send_runtime_profile_computingnode(runtime_info,task_name,home_id)
@@ -442,11 +443,11 @@ def retrieve_input_enter(task_name, file_name):
         file_name (str): name of the file enter at the INPUT folder
     """
     suffix = name_convert_in[task_name]
-    logging.debug(suffix)
+    # logging.debug(suffix)
     prefix = file_name.split(suffix)
-    logging.debug(prefix)
+    # logging.debug(prefix)
     input_name = prefix[0]+name_convert_in['input']
-    logging.debug(input_name)
+    # logging.debug(input_name)
     return input_name
 
 def retrieve_input_finish(task_name, file_name):
@@ -579,15 +580,21 @@ class Handler(pyinotify.ProcessEvent):
 
 
         new_file = os.path.split(event.pathname)[-1]
+        logging.debug(new_file)
         if '_' in new_file:
             file_name = new_file.split('_')[0]
         else:
             file_name = new_file.split('.')[0]
         ts = time.time()
         home_id = event.pathname.split('/')[-2]
+        logging.debug(home_id)
         task_name = event.pathname.split('/')[-3]
-        
+        logging.debug(task_name)
+
+
         input_name = retrieve_input_enter(task_name, file_name)
+        logging.debug(input_name)
+
         runtime_info = 'rt_enter '+ input_name + ' '+str(ts)
         key = (home_id,task_name,input_name)
         send_runtime_profile_computingnode(runtime_info,task_name,home_id)
@@ -602,18 +609,25 @@ class Handler(pyinotify.ProcessEvent):
             task_mul[key] = task_mul[key] + [new_file]
             count_mul[key]=count_mul[key]-1
 
+        logging.debug('Mul')
+        logging.debug(task_mul)
+        logging.debug(count_mul)
+        logging.debug(next_mul)
+
         if count_mul[key] == 0: # enough input files
             incoming_file = task_mul[key]
             if len(incoming_file)==1: 
                 filenames = incoming_file[0]
             else:
                 filenames = incoming_file
-
+            logging.debug(filenames)
             queue_mul[key] = False 
             
             input_path = os.path.split(event.pathname)[0]
             output_path = input_path.replace("input","output")
-
+            logging.debug('Path')
+            logging.debug(input_path)
+            logging.debug(output_path)
             execute_task(home_id,task_name,input_name, filenames, input_path, output_path)
             queue_mul[key] = True
             

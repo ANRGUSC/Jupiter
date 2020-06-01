@@ -52,7 +52,7 @@ ADD mulhome_scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD app_specific_files/demotest/configuration.txt  /centralized_scheduler/dag.txt
 ADD app_specific_files/demotest/scripts/config.json /centralized_scheduler/config.json
 # ADD app_specific_files/demotest/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
-ADD app_specific_files/demotest/sample_input/ /centralized_scheduler/
+ADD app_specific_files/demotest/sample_input/ /centralized_scheduler/sample_input/
 ADD nodes.txt /centralized_scheduler/nodes.txt
 
 ADD circe/decoupled_pricing/compute.py /centralized_scheduler/compute.py

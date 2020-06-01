@@ -367,58 +367,33 @@ def get_most_suitable_node(file_size):
         logging.debug(profiler_nodes)
         
         for tmp_node_name in profiler_nodes:
-            logging.debug("Node name : "+ tmp_node_name)
             data = network_profile_data[tmp_node_name]
-            logging.debug('File size' + str(file_size))
-            logging.debug(data)
             delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
-            logging.debug('------------------')
-            logging.debug(delay)
             valid_net_data[tmp_node_name] = delay
-            logging.debug('------------------2')
-            logging.debug(valid_net_data)
-            logging.debug('------------------3')
-            # if delay < min_value:
-            #     min_value = delay
-            # logging.debug(min_value)
-            # logging.debug('------------------4')
 
-        logging.debug('Second lowest value (not including myself):')
+        
         sorted_net = sorted(valid_net_data.values())
-        logging.debug(sorted_net) 
         min_value = sorted_net[1]
-        logging.debug(min_value)
 
-
-        logging.debug('Valid net data :')
-        logging.debug(valid_net_data.keys())
-        logging.debug(valid_net_data.values())
-        logging.debug(min_value * threshold)
         for item in valid_net_data:
             if valid_net_data[item] <= min_value * threshold:
                 valid_nodes.append(item)
 
-        logging.debug('Valid nodes ')
-        logging.debug(valid_nodes)
         min_value = sys.maxsize
-        logging.debug(min_value)
         result_node_name = ''
 
         task_price_summary = dict()
 
         for item in valid_nodes:
             tmp_value = valid_net_data[item]
-            logging.debug('---------------- 6')
-            logging.debug(tmp_value)
             tmp_cpu = sys.maxsize
             tmp_memory = sys.maxsize
             if item in resource_data.keys():
                 tmp_cpu = resource_data[item]['cpu']
                 tmp_memory = resource_data[item]['memory']
-                logging.debug('-----------' + tmp_cpu + '----------' + tmp_memory)
+            
             tmp_cost = weight_network * tmp_value + weight_cpu * tmp_cpu + \
                 weight_memory * tmp_memory
-
             task_price_summary[item] = weight_network * tmp_value + weight_cpu * \
                 tmp_cpu + weight_memory * tmp_memory
             if tmp_cost < min_value:

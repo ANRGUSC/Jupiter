@@ -233,7 +233,7 @@ ADD mulhome_scripts/keep_alive.py /centralized_scheduler/keep_alive.py
 ADD {app_file}/configuration.txt  /centralized_scheduler/dag.txt
 ADD {app_file}/scripts/config.json /centralized_scheduler/config.json
 # ADD {app_file}/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
-ADD {app_file}/sample_input/ /centralized_scheduler/
+ADD {app_file}/sample_input/ /centralized_scheduler/sample_input/
 ADD nodes.txt /centralized_scheduler/nodes.txt
 
 ADD circe/{pricing_option}/compute.py /centralized_scheduler/compute.py
