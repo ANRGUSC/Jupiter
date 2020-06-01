@@ -365,6 +365,11 @@ def get_most_suitable_node(file_size):
         logging.debug(resource_data)
         logging.debug('Profiler nodes ')
         logging.debug(profiler_nodes)
+        logging.debug('Second lowest value (not including myself):')
+        sorted_net = sorted(network_profile_data.items(), key=lambda x: x[1]) 
+        logging.debug(sorted_net) 
+        min_value = sorted_net[1]
+        logging.debug(min_value)
         for tmp_node_name in profiler_nodes:
             logging.debug("Node name : "+ tmp_node_name)
             data = network_profile_data[tmp_node_name]
@@ -377,18 +382,20 @@ def get_most_suitable_node(file_size):
             logging.debug('------------------2')
             logging.debug(valid_net_data)
             logging.debug('------------------3')
-            if delay < min_value:
-                min_value = delay
-            logging.debug(min_value)
-            logging.debug('------------------4')
+            # if delay < min_value:
+            #     min_value = delay
+            # logging.debug(min_value)
+            # logging.debug('------------------4')
 
         logging.debug('------------------5')
 
 
         logging.debug('Valid net data :')
-        logging.debug(valid_net_data)
+        logging.debug(valid_net_data.keys())
+        logging.debug(valid_net_data.values())
+        logging.debug(min_value * threshold)
         for item in valid_net_data:
-            if valid_net_data[item] < min_value * threshold:
+            if valid_net_data[item] <= min_value * threshold:
                 valid_nodes.append(item)
 
         logging.debug('Valid nodes ')
