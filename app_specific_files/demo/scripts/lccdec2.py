@@ -37,10 +37,10 @@ FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
 
 def task(filelist, pathin, pathout): 
     filelist = [filelist] if isinstance(filelist, str) else filelist  
-    snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
+    #snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     # Load id of incoming job (id_job=1,2,3,...)
-    job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('_')[0]
+    job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]
     job_id = job_id[3:]
    
     #Parameters 
@@ -72,7 +72,7 @@ def task(filelist, pathin, pathout):
         #Save desired scores of M data-batches
         outlist = []
         for j in range(M):
-            destination = os.path.join(pathout,'job'+job_id+'lccdec2'+str(j)+'_'+snapshot_time+'.csv')
+            destination = os.path.join(pathout,'job'+job_id+'lccdec2'+str(j)+'.csv')
             np.savetxt(destination, results[j], delimiter=',')
             outlist.append(destination)
         return outlist
@@ -100,7 +100,7 @@ def task(filelist, pathin, pathout):
         #Save desired scores of M data-batches
         outlist = []
         for j in range(N):
-            destination = os.path.join(pathout,'job'+job_id+'lccdec2'+str(j)+'_'+snapshot_time+'.csv')
+            destination = os.path.join(pathout,'job'+job_id+'lccdec2'+str(j)+'.csv')
             np.savetxt(destination, results[j], delimiter=',')
             outlist.append(destination)
         return outlist
