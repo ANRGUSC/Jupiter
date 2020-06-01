@@ -16,7 +16,7 @@ def score (En_Image_Batch, Ref_Images):
 
 def task(filelist, pathin, pathout):    
     filelist = [filelist] if isinstance(filelist, str) else filelist  
-    snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
+    #snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     # Load id of incoming job (id_job=1,2,3,...)
     #job_id = filelist[0].partition('outlccencoder')[0]
@@ -63,7 +63,8 @@ def task(filelist, pathin, pathout):
     # Save the encoded score to a csv file 
         # Save the encoded score to a csv file 
     outlist = []
-    destination = os.path.join(pathout,'score2' + worker_id + '_'+'preagg2'+ '_' +'job' + job_id +'_'+snapshot_time+'.csv')
+    #destination = os.path.join(pathout,'score2' + worker_id + '_'+'preagg2'+ '_' +'job' + job_id +'_'+snapshot_time+'.csv')
+    destination = os.path.join(pathout,'score2' + worker_id + '_'+'preagg2'+ '_' +'job' + job_id +'.csv')
     np.savetxt(destination, sc, delimiter=',')
     outlist.append(destination)
     return outlist
