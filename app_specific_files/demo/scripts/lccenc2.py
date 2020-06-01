@@ -47,7 +47,7 @@ def LCC_encoding(X,N,M):
 
 def task(filelist, pathin, pathout):    
     filelist = [filelist] if isinstance(filelist, str) else filelist  
-    snapshot_time = filelist[0].partition('_')[2].partition('.')[0]  #store the data&time info 
+    #snapshot_time = filelist[0].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     hdr = {
             'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ def task(filelist, pathin, pathout):
 
         # Save each encoded data-batch i to a csv 
         for i in range(N):
-            destination = os.path.join(pathout,'lccenc2_score2'+chr(i+97)+'_'+'job'+str(job_id)+'_'+snapshot_time+'.csv')
+            destination = os.path.join(pathout,'lccenc2_score2'+chr(i+97)+'_'+'job'+str(job_id)+'.csv')
             np.savetxt(destination, En_Image_Batch[i], delimiter=',')
             out_list.append(destination)
         return out_list
