@@ -21,7 +21,7 @@ global global_info_ip
 
 def task(filelist, pathin, pathout):     
     filelist = [filelist] if isinstance(filelist, str) else filelist  
-    snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
+    #snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[0]
     job_id = job_id[3:]
     # job_id = int(job_id)
@@ -68,7 +68,7 @@ def task(filelist, pathin, pathout):
             print('Receive enough results for job '+job_id)
             for i in range(M):
                 En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
-                destination = os.path.join(pathout,'preagg1_lccdec1_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+snapshot_time+'.csv')
+                destination = os.path.join(pathout,'preagg1_lccdec1_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
         else:
@@ -82,7 +82,7 @@ def task(filelist, pathin, pathout):
             print('Receive enough results for job '+job_id)
             for i in range(N):
                 En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
-                destination = os.path.join(pathout,'preagg1_lccdec1_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+snapshot_time+'.csv')
+                destination = os.path.join(pathout,'preagg1_lccdec1_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
         else:
