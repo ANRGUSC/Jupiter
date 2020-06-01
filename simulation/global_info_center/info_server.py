@@ -144,7 +144,7 @@ class collageJobs(object):
 # function of job_id response
 @app.route('/post-id', methods=['POST'])
 def request_id():
-    print('Receive job id request')
+    print('Receive LCC job id request')
     recv = request.get_json()
     class_image = recv['class_image']
     response = str(log[class_image-1].get_id())
@@ -157,7 +157,7 @@ def request_id():
 # function of dictionary response
 @app.route('/post-dict',methods=['POST'])
 def request_dict():
-    print('Receive job dictionary request')
+    print('Receive LCC job dictionary request')
     recv = request.get_json()
     print(recv['job_id'])
     print(recv['filename'])
