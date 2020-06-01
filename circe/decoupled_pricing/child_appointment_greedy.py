@@ -365,11 +365,7 @@ def get_most_suitable_node(file_size):
         logging.debug(resource_data)
         logging.debug('Profiler nodes ')
         logging.debug(profiler_nodes)
-        logging.debug('Second lowest value (not including myself):')
-        sorted_net = sorted(network_profile_data.items(), key=lambda x: x[1]) 
-        logging.debug(sorted_net) 
-        min_value = sorted_net[1]
-        logging.debug(min_value)
+        
         for tmp_node_name in profiler_nodes:
             logging.debug("Node name : "+ tmp_node_name)
             data = network_profile_data[tmp_node_name]
@@ -387,7 +383,11 @@ def get_most_suitable_node(file_size):
             # logging.debug(min_value)
             # logging.debug('------------------4')
 
-        logging.debug('------------------5')
+        logging.debug('Second lowest value (not including myself):')
+        sorted_net = sorted(valid_net_data.values())
+        logging.debug(sorted_net) 
+        min_value = sorted_net[1]
+        logging.debug(min_value)
 
 
         logging.debug('Valid net data :')
