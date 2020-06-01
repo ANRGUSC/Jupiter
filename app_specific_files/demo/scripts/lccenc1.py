@@ -69,6 +69,7 @@ def task(filelist, pathin, pathout):
         print(job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
+        print(e)
         job_id = 2
 
     # Parameters
