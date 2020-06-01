@@ -74,7 +74,7 @@ def task(filelist, pathin, pathout):
         #Save desired scores of M data-batches
         outlist = []
         for j in range(M):
-            destination = os.path.join(pathout,'job'+job_id+'lccdec1'+str(j)+'_'+snapshot_time+'.csv')
+            destination = os.path.join(pathout,'job'+job_id+'lccdec1'+str(j)+'.csv')
             np.savetxt(destination, results[j], delimiter=',')
             outlist.append(destination)
         return outlist
