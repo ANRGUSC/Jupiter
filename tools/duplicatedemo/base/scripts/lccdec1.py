@@ -5,6 +5,9 @@ import cv2
 import configparser
 from pathlib import Path
 from os import listdir
+import logging
+
+logging.basicConfig(level = logging.DEBUG)
 
 taskname = Path(__file__).stem
 classnum = taskname.split('lccdec')[1]
@@ -47,8 +50,12 @@ def task(filelist, pathin, pathout):
     #snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     # Load id of incoming job (id_job=1,2,3,...)
-    job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]
-    job_id = job_id[3:]
+    # job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]
+    # job_id = job_id[3:]
+    job_id = filelist[0].split('_')[3].split('job')[1]
+    print(job_id)
+    filesuffixs = filelist[0].split('_')[4:]
+    filesuffix = '_'.join(filesuffixs)
    
     #Parameters 
     N = 3 # Number of workers (encoded data-batches)
@@ -79,8 +86,8 @@ def task(filelist, pathin, pathout):
         #Save desired scores of M data-batches
         outlist = []
         for j in range(M):
-            destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'.csv')
-            #destination = os.path.join(pathout,'job'+job_id+'lccdec1'+str(j)+'.csv')
+            #destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'.csv')
+            destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+filesuffix)
             np.savetxt(destination, results[j], delimiter=',')
             outlist.append(destination)
         return outlist
@@ -108,7 +115,8 @@ def task(filelist, pathin, pathout):
         #Save desired scores of N data-batches
         outlist = []
         for j in range(N):
-            destination = os.path.join(pathout,'job'+job_id+'lccdec'+classnum+str(j)+'.csv')
+            #destination = os.path.join(pathout,'job'+job_id+'lccdec'+classnum+str(j)+'.csv')
+            destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'_'+filesuffix)
             np.savetxt(destination, results[j], delimiter=',')
             outlist.append(destination)
         return outlist

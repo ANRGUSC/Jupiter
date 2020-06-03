@@ -7,9 +7,13 @@ import json
 import configparser
 from pathlib import Path
 from os import listdir
+import logging
 
+logging.basicConfig(level = logging.DEBUG)
 taskname = Path(__file__).stem
 classnum = taskname.split('lccenc')[1]
+classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'kitfox', 'persiancat', 'leopard', 'lion', 'tiger', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+classname = classlist[int(classnum)-1]
 
 INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
@@ -52,6 +56,13 @@ def LCC_encoding(X,N,M):
 
 def task(filelist, pathin, pathout):    
     filelist = [filelist] if isinstance(filelist, str) else filelist  
+    logging.debug(filelist)
+
+    fileid = [x.split('_')[6] for x in filelist]
+    logging.debug(fileid)
+    filesuffix = classname+'_'+'_'.join(fileid)
+    logging.debug(filesuffix)
+
     #snapshot_time = filelist[0].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     hdr = {
@@ -120,7 +131,8 @@ def task(filelist, pathin, pathout):
 
         # Save each encoded data-batch i to a csv 
         for i in range(N):
-            destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'.csv')
+            #destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'.csv')
+            destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+filesuffix+'.csv')
             np.savetxt(destination, En_Image_Batch[i], delimiter=',')
             out_list.append(destination)
         return out_list
@@ -155,7 +167,7 @@ def task(filelist, pathin, pathout):
 
         # Save each encoded data-batch i to a csv 
         for i in range(N):
-            destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+snapshot_time+'.csv')
+            destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+filesuffix+'.csv')
             np.savetxt(destination, En_Image_Batch[i], delimiter=',')
             out_list.append(destination)
         return out_list
@@ -164,7 +176,8 @@ def task(filelist, pathin, pathout):
 def main():
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     c = 'storeclass%s'%(classnum)
-    filelist = [f for f in listdir(outpath) if f.startswith(c)]
+    filelists = [f for f in listdir(outpath) if f.startswith(c)]
+    filelist = filelists[0:4] #4 files
     outfile = task(filelist, outpath, outpath)
     return outfile
     
