@@ -55,7 +55,7 @@ def task(filelist, pathin, pathout):
     except Exception as e:
         print('Possibly running on the execution profiler')
         # job_dict = {'1':['score2a_preagg2_job1_20200424.csv', 'score2b_preagg2_job1_20200424.csv']}
-        job_dict = {'1':['score2a_preagg2_job2_resnet0_storeclass2_master_resnet0_n04146614_1_jobid_0.csv','score2b_preagg2_job2_resnet0_storeclass2_master_resnet0_n04146614_1_jobid_0.csv']}
+        job_dict = {'2':['score2a_preagg2_job2.csv','score2b_preagg2_job2.csv']}
         
     #Parameters
     M = 2 # Number of data-batches
@@ -85,7 +85,7 @@ def task(filelist, pathin, pathout):
         return outlist
 
 def main():
-    filelist= ['score2a_preagg2_job1_20200424.csv']  
+    filelist= ['score2a_preagg2_job2.csv']  
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
