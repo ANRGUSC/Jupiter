@@ -87,7 +87,7 @@ def task(filelist, pathin, pathout):
         outlist = []
         for j in range(M):
             #destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'.csv')
-            destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+filesuffix)
+            destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'_'+filesuffix)
             np.savetxt(destination, results[j], delimiter=',')
             outlist.append(destination)
         return outlist

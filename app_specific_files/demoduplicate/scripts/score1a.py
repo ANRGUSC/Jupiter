@@ -4,6 +4,16 @@ import os
 import cv2
 from pathlib import Path
 from os import listdir
+import configparser
+import random
+
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+global SLEEP_TIME, STRAGGLER_THRESHOLD
+SLEEP_TIME   = int(config['OTHER']['SLEEP_TIME'])
+STRAGGLER_THRESHOLD   = float(config['OTHER']['STRAGGLER_THRESHOLD'])
+
 
 taskname = Path(__file__).stem
 classnum = taskname.split('score')[1][0]
@@ -65,6 +75,12 @@ def task(filelist, pathin, pathout):
             Ref_Images = img
         else:
             Ref_Images = np.concatenate((Ref_Images,img), axis=0)    
+
+    ### To simulate slow downs
+    # purposely add delay time to slow down the sending
+    if random.random() > STRAGGLER_THRESHOLD:
+        print("Sleeping")
+        time.sleep(SLEEP_TIME) #>=2 
     
     
     # Read Encoded data-batch   

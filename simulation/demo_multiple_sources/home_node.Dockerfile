@@ -30,7 +30,7 @@ ADD jupiter_config.ini /jupiter_config.ini
 RUN mkdir generated_stream 
 ADD simulation/demo_multiple_sources/start_home.sh /start.sh
 ADD simulation/demo_multiple_sources/ds_stream.py /ds_stream.py
-ADD simulation/demo_multiple_sources/data/schoolbus /data
+ADD simulation/demo_multiple_sources/data/fireengine /data
 
 RUN chmod +x /start.sh
 
