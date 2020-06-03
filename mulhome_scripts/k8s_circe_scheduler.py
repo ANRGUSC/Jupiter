@@ -296,7 +296,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     pprint(service_ips)
     logging.debug('Successfully deploy CIRCE dispatcher')
 
-    k8s_stream_scheduler(app_name)
+    # k8s_stream_scheduler(app_name)
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
         msg = 'CIRCE deployend %f \n'%(end_time)

@@ -54,7 +54,8 @@ def build_push_exec():
     import exec_docker_files_generator as dc
 
 
-    os.chdir(jupiter_config.EXEC_PROFILER_PATH )
+    os.chdir(jupiter_config.EXEC_PROFILER_PATH)
+    logging.debug(jupiter_config.EXEC_PROFILER_PATH)
 
     home_file = dc.write_exec_home_docker(username = jupiter_config.USERNAME,
                      password = jupiter_config.PASSWORD,
@@ -66,9 +67,13 @@ def build_push_exec():
                      app_file=jupiter_config.APP_NAME,
                      ports = " ".join(port_list_worker))
 
+    logging.debug('Build and push home exec image')
+
     cmd = "sudo docker build -f %s ../.. -t %s"%(home_file,jupiter_config.EXEC_HOME_IMAGE)
     os.system(cmd)
     os.system("sudo docker push " + jupiter_config.EXEC_HOME_IMAGE)
+
+    logging.debug('Build and push worker exec image')
 
     cmd = "sudo docker build -f %s ../.. -t %s"%(worker_file,jupiter_config.EXEC_WORKER_IMAGE)
     os.system(cmd)

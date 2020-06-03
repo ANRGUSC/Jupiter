@@ -1,0 +1,262 @@
+ 
+node_list:
+  home: k8sworkersb-ubuntu-s-4vcpu-8gb-0-blr1
+  node2: k8sworkersb-ubuntu-s-4vcpu-8gb-1-nyc1
+  node3: k8sworkersb-ubuntu-s-4vcpu-8gb-2-fra1
+  node4: k8sworkersb-ubuntu-s-4vcpu-8gb-3-fra1 
+  node5: k8sworkersb-ubuntu-s-4vcpu-8gb-4-lon1
+  node6: k8sworkersb-ubuntu-s-4vcpu-8gb-5-nyc3
+  node7: k8sworkersb-ubuntu-s-4vcpu-8gb-6-tor1
+  node8: k8sworkersb-ubuntu-s-4vcpu-8gb-7-tor1
+  node9: k8sworkersb-ubuntu-s-4vcpu-8gb-8-tor1
+  node10: k8sworkersb-ubuntu-s-4vcpu-8gb-9-ams3 
+  node11: k8sworkersb-ubuntu-s-4vcpu-8gb-10-fra1
+  node12: k8sworkersb-ubuntu-s-4vcpu-8gb-11-ams3
+  node13: k8sworkersb-ubuntu-s-4vcpu-8gb-12-ams3
+  #TODO: datasources will eventually be removed from here
+  datasource1: k8sworkersb-ubuntu-s-4vcpu-8gb-13-ams3
+  datasource2: k8sworkersb-ubuntu-s-4vcpu-8gb-14-nyc1
+application:
+  sources:
+  - name: datasource1
+    dataset: fireengine
+    datapath: data/fireengine
+    stream_image: docker.io/anrg/streams_home:fireengine
+    #this should be a node that jupiter wont schedule nodes on   
+    node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-13-ams3 
+  - name: datasource2
+    dataset: schoolbus
+    datapath: data/schoolbus
+    stream_image: docker.io/anrg/streams_home:schoolbus
+    #this should be a node that jupiter wont schedule nodes on   
+    node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-14-nyc1 
+  ports:
+    # these ports are to be exposed by app docker containers and also exposed via k8s service
+    # available range: 50000-60000
+    - 57021
+  num_tasks: 25 #base is 18, add 7 everytime adding a new set
+  task_list:
+    home: home  #TODO
+    worker_tasks:
+      - name: master
+        # node_placement: n2
+        inputs_to_wait_for: 9
+        output_policy: BATCHED_CUSTOM_ORDER
+        children:  # child order determines round robin sequence
+          - resnet0
+          - resnet1
+          - resnet2
+          - resnet3
+          - resnet4
+          - resnet5
+          - resnet6
+          - resnet7
+          - resnet8
+          - collage
+        infile_prefix: n0
+        outfile_prefix: master
+        dag_task: True
+      - name: resnet0
+        inputs_to_wait_for: 1
+        output_policy: UNICAST
+        children:
+          - storeclass1
+          - storeclass2
+        infile_prefix: master
+        outfile_prefix: resnet0
+        dag_task: True
+      - name: resnet1
+        inputs_to_wait_for: 1
+        output_policy: UNICAST
+        children:
+          - storeclass1
+          - storeclass2
+        infile_prefix: master
+        outfile_prefix: resnet1
+        dag_task: True
+      - name: resnet2
+        inputs_to_wait_for: 1
+        output_policy: UNICAST
+        children:
+          - storeclass1
+          - storeclass2
+        infile_prefix: master
+        outfile_prefix: resnet2
+        dag_task: True
+      - name: resnet3
+        inputs_to_wait_for: 1
+        output_policy: UNICAST
+        children:
+          - storeclass1
+          - storeclass2
+        infile_prefix: master
+        outfile_prefix: resnet3
+        dag_task: True
+      - name: resnet4
+        inputs_to_wait_for: 1
+        output_policy: UNICAST
+        children:
+          - storeclass1
+          - storeclass2
+        infile_prefix: master
+        outfile_prefix: resnet4
+        dag_task: True
+      - name: resnet5
+        inputs_to_wait_for: 1
+        output_policy: UNICAST
+        children:
+          - storeclass1
+          - storeclass2
+        infile_prefix: master
+        outfile_prefix: resnet5
+        dag_task: True
+      - name: resnet6
+        inputs_to_wait_for: 1
+        output_policy: UNICAST
+        children:
+          - storeclass1
+          - storeclass2
+        infile_prefix: master
+        outfile_prefix: resnet6
+        dag_task: True
+      - name: resnet7
+        inputs_to_wait_for: 1
+        output_policy: UNICAST
+        children:
+          - storeclass1
+          - storeclass2
+        infile_prefix: master
+        outfile_prefix: resnet7
+        dag_task: True
+      - name: resnet8
+        inputs_to_wait_for: 1
+        output_policy: UNICAST
+        children:
+          - storeclass1
+          - storeclass2
+        infile_prefix: master
+        outfile_prefix: resnet8
+        dag_task: True
+      - name: collage
+        inputs_to_wait_for: 1
+        output_policy: POINT_TO_POINT_BROADCAST
+        infile_prefix: master
+        outfile_prefix: collage
+        dag_task: True
+      - name: storeclass1
+        inputs_to_wait_for: 1
+        output_policy: POINT_TO_POINT_BROADCAST
+        children:
+          - lccenc1
+        infile_prefix: resnet
+        outfile_prefix: storeclass1
+        dag_task: True
+      - name: storeclass2
+        inputs_to_wait_for: 1
+        output_policy: POINT_TO_POINT_BROADCAST
+        children:
+          - lccenc2
+        infile_prefix: resnet
+        outfile_prefix: storeclass2
+        dag_task: True
+      - name: lccenc1
+        inputs_to_wait_for: 4
+        output_policy: BATCHED_CUSTOM_ORDER
+        children:
+          - score1a
+          - score1b
+          - score1c
+        infile_prefix: storeclass1
+        outfile_prefix: lccenc1
+        dag_task: True
+      - name: lccenc2
+        inputs_to_wait_for: 4
+        output_policy: BATCHED_CUSTOM_ORDER
+        children:
+          - score2a
+          - score2b
+          - score2c
+        infile_prefix: storeclass2
+        outfile_prefix: lccenc2
+        dag_task: True
+      - name: score1a
+        inputs_to_wait_for: 1
+        output_policy: POINT_TO_POINT_BROADCAST
+        children: 
+          - preagg1
+        infile_prefix: lccenc1
+        outfile_prefix: score1a
+        dag_task: True
+      - name: score1b
+        inputs_to_wait_for: 1
+        output_policy: POINT_TO_POINT_BROADCAST
+        children: 
+          - preagg1
+        infile_prefix: lccenc1
+        outfile_prefix: score1b
+        dag_task: True
+      - name: score1c
+        inputs_to_wait_for: 1
+        output_policy: POINT_TO_POINT_BROADCAST
+        children: 
+          - preagg1
+        infile_prefix: lccenc1
+        outfile_prefix: score1c
+        dag_task: True
+      - name: score2a
+        inputs_to_wait_for: 1
+        output_policy: POINT_TO_POINT_BROADCAST
+        children: 
+          - preagg2
+        infile_prefix: lccenc2
+        outfile_prefix: score2a
+        dag_task: True
+      - name: score2b
+        inputs_to_wait_for: 1
+        output_policy: POINT_TO_POINT_BROADCAST
+        children: 
+          - preagg2
+        infile_prefix: lccenc2
+        outfile_prefix: score2b
+        dag_task: True
+      - name: score2c
+        inputs_to_wait_for: 1
+        output_policy: POINT_TO_POINT_BROADCAST
+        children: 
+          - preagg2
+        infile_prefix: lccenc2
+        outfile_prefix: score2c
+        dag_task: True
+      - name: preagg1
+        inputs_to_wait_for: 3
+        output_policy: POINT_TO_POINT_BROADCAST
+        children: 
+          - lccdec1
+        infile_prefix: score1
+        outfile_prefix: preagg1
+        dag_task: True
+      - name: preagg2
+        inputs_to_wait_for: 3
+        output_policy: POINT_TO_POINT_BROADCAST
+        children: 
+          - lccdec2
+        infile_prefix: score2
+        outfile_prefix: preagg2
+        dag_task: True
+      - name: lccdec1
+        inputs_to_wait_for: 2
+        output_policy: POINT_TO_POINT_BROADCAST
+        children: 
+          - home
+        infile_prefix: preagg1
+        outfile_prefix: lccdec1
+        dag_task: True
+      - name: lccdec2
+        inputs_to_wait_for: 2
+        output_policy: POINT_TO_POINT_BROADCAST
+        children: 
+          - home
+        infile_prefix: preagg2
+        outfile_prefix: lccdec2
+        dag_task: True
+     

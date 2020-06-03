@@ -42,9 +42,9 @@ ADD mulhome_scripts/keep_alive.py /heft/keep_alive.py
 
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh
-RUN echo app_specific_files/demo
-ADD app_specific_files/demo/configuration.txt  /heft/dag.txt
-ADD app_specific_files/demo/scripts/config.json /heft/config.json
+RUN echo app_specific_files/demoduplicate
+ADD app_specific_files/demoduplicate/configuration.txt  /heft/dag.txt
+ADD app_specific_files/demoduplicate/scripts/config.json /heft/config.json
 
 WORKDIR /heft/
 

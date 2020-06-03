@@ -13,43 +13,101 @@ import os
 import json
 import shutil
 from collections import defaultdict
+import logging
+import shutil
+from pathlib import Path
 
-def prepare_new_dag(demo_original_path,demo_app_path,num_branch,base_tasks,dyn_tasks):
-	old_dag = os.path.join(demo_original_path,'configuration.txt')
-	new_dag = os.path.join(demo_app_path,'configuration.txt')
-	num_new_tasks = len(base_tasks)+len(dyn_tasks)*num_branch
-	
 
+logging.basicConfig(level=logging.DEBUG)
+
+
+
+def load_yaml(filename):
+    """
+    Parse yaml file into python dictionary
+    :type       filename:  path to file
+    :param      filename:  string
+    :returns:   python dictionary of yaml contents
+    :rtype:     dict
+    """
+    with open(filename) as f:
+        app_config = yaml.load(f, Loader=yaml.FullLoader)
+        # logging.debug(app_config)
+    return app_config
+
+def copy_scripts(app_path, base_path):
+    try:
+        os.rename(os.path.join(app_path,'scripts'),os.path.join(app_path,'dupscripts'))
+        shutil.copytree(os.path.join(base_path,'scripts'),os.path.join(app_path,'scripts'))
+        shutil.copy(os.path.join(app_path,'dupscripts/config.json'),os.path.join(app_path,'scripts/config.json'))
+        shutil.rmtree(os.path.join(app_path,'dupscripts'))
+        shutil.copytree(os.path.join(base_path,'sample_input'),os.path.join(app_path,'sample_input'))
+        shutil.copytree(os.path.join(base_path,'reference'),os.path.join(app_path,'scripts/reference'))
+    except Exception as e:
+        logging.debug('Something wrong in copy scripts')
+
+def gen_duplicate_scripts(app_config, app_path, base_path, base_tasks):
+    copy_scripts(app_path, base_path)
+    tasklist = ['home']  # 'home' always exists
+    for task in app_config['application']['task_list']['worker_tasks']:
+        tasklist.append(task['name'])
+    for task in tasklist:
+        if task in base_tasks or task == 'home':
+            logging.debug('The task is a base task : ' + task)
+        else:
+            logging.debug('This is a new task : '+ task)
+            if task.startswith('resnet'):
+                # logging.debug('Resnet duplication')
+                basefile = os.path.join(app_path,'scripts/resnet0.py')
+                newfile = app_path+'/scripts/'+ task+'.py'
+                shutil.copy(basefile,newfile)
+            elif task.startswith('lccdec'):
+                basefile = os.path.join(app_path,'scripts/lccdec1.py')
+                newfile = app_path+'/scripts/'+ task+'.py'
+                shutil.copy(basefile,newfile)
+            elif task.startswith('lccenc'):
+                basefile = os.path.join(app_path,'scripts/lccenc1.py')
+                newfile = app_path+'/scripts/'+ task+'.py'
+                shutil.copy(basefile,newfile)
+            elif task.startswith('preagg'):
+                basefile = os.path.join(app_path,'scripts/preagg1.py')
+                newfile = app_path+'/scripts/'+ task+'.py'
+                shutil.copy(basefile,newfile)
+            elif task.startswith('storeclass'):
+                basefile = os.path.join(app_path,'scripts/storeclass1.py')
+                newfile = app_path+'/scripts/'+ task+'.py'
+                shutil.copy(basefile,newfile)
+            else:
+                logging.debug(task)
+                ch = task.split('score')[1][0]
+                logging.debug(ch)
+                if ch=='a':
+                    basefile = os.path.join(app_path,'scripts/score1a.py')
+                    newfile = app_path+'/scripts/'+ task+'.py'
+                    shutil.copy(basefile,newfile)
+                elif ch=='b':
+                    basefile = os.path.join(app_path,'scripts/score1b.py')
+                    newfile = app_path+'/scripts/'+ task+'.py'
+                    shutil.copy(basefile,newfile)
+                else:
+                    basefile = os.path.join(app_path,'scripts/score1c.py')
+                    newfile = app_path+'/scripts/'+ task+'.py'
+                    shutil.copy(basefile,newfile)
+
+    #Copy to app_specific_files
+    try:
+        logging.debug('Copy app folder')
+        app_folder = '../../app_specific_files/demotest'
+        shutil.rmtree(app_folder)
+        shutil.copytree(app_path,app_folder)
+    except Exception as e:
+        logging.debug('Error copy app folder')
+    
 if __name__ == '__main__':
-	demo_original_path = 'demo'
-	demo_app_path = 'newdemo'
-	demo_config_path = demo_app_path + 'configuration.txt'
-	demo_script_path = demo_app_path + 'scripts/'
-	demo_json_path = demo_script_path + 'config.json' 
-	demo_sample_path = demo_app_path + 'sample_input/'
-	demo_name_path = demo_app_path + "name_convert.txt"
+    base_path = 'base'
+    app_path = 'demotest'
+    app_config = load_yaml(app_path + "/app_config.yaml")
+    base_tasks = ['master','collage','decoder','storeclass1','resnet0','lccenc1','lccdec1','score1a','score1b','score1c','preagg1']
+    gen_duplicate_scripts(app_config, app_path, base_path, base_tasks)
+    print('The application is duplicated successfully!')
 
-	if os.path.isdir(demo_app_path):
-		shutil.rmtree(demo_app_path)
-	os.mkdir(demo_app_path)
-
-	print('Generate new DAG')	
-	base_tasks = ['master','resnet0','resnet1','resnet3','resnet4','resnet5','resnet6','resnet7','resnet8','collage','decoder','home']
-	dyn_tasks = ['storeclass1','lccenc1','score1a','score1b','score1c','preagg1','lccdec1']
-	num_branch = 3
-	prepare_new_dag(demo_original_path,demo_app_path,num_branch,base_tasks,dyn_tasks)
-
-	# print('Generate configuration.txt')
-	# generate_config(dag,demo_config_path)
-
-	# os.mkdir(demo_script_path)
-
-	# print('Generate application scripts')
-	# generate_scripts(dag,demo_config_path,demo_script_path,demo_app_path,demo_sample_path)
-
-	# print('Generate config.json file')
-	# generate_json(dag,demo_json_path)
-
-	# print('Generate name_convert.txt')
-	# generate_nameconvert(dag,demo_name_path)
-	print('The application is duplicated successfully!')
