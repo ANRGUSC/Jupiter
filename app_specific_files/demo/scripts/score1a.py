@@ -2,6 +2,7 @@ import numpy as np
 import time
 import os
 import cv2
+import random
 
 INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
