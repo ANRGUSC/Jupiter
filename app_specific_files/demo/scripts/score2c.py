@@ -2,6 +2,16 @@ import numpy as np
 import time
 import os
 import cv2
+import random
+
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
+
+global SLEEP_TIME, STRAGGLER_THRESHOLD
+SLEEP_TIME   = int(config['OTHER']['SLEEP_TIME'])
+STRAGGLER_THRESHOLD   = float(config['OTHER']['STRAGGLER_THRESHOLD'])
+
 
 # Similarity score (zero-normalized cross correlation)
 def score (En_Image_Batch, Ref_Images):
@@ -52,7 +62,13 @@ def task(filelist, pathin, pathout):
         else:
             Ref_Images = np.concatenate((Ref_Images,img), axis=0)    
     
-    
+     ### To simulate slow downs
+    # purposely add delay time to slow down the sending
+    if random.random() > STRAGGLER_THRESHOLD:
+        print("Sleeping")
+        time.sleep(SLEEP_TIME) #>=2 
+        
+        
     # Read Encoded data-batch   
     En_Image_Batch = np.loadtxt(os.path.join(pathin, filelist[0]), delimiter=',')
     
