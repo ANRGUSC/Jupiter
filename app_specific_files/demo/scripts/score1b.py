@@ -84,7 +84,7 @@ def task(filelist, pathin, pathout):
     return outlist
 
 def main():
-    filelist= [''lccenc1_score1b_job2.csv']
+    filelist= ['lccenc1_score1b_job2.csv']
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
