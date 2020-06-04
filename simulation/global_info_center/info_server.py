@@ -192,7 +192,7 @@ if __name__ == '__main__':
     FLASK_DOCKER  = int(config['PORT']['FLASK_DOCKER'])
     RESNETS_THRESHOLD = int(config['OTHER']['RESNETS_THRESHOLD'])
 
-    num_class = 2
+    num_class = 5
     log = []
     for i in range(num_class):
         event = EventLog()

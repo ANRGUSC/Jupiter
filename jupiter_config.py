@@ -188,9 +188,9 @@ def set_globals():
     
 
     HOME_CHILD                = 'master'
-    APP_PATH                  = HERE  + 'app_specific_files/demoduplicate/'
-    APP_NAME                  = 'app_specific_files/demoduplicate'
-    APP_OPTION                = 'demoduplicate'
+    APP_PATH                  = HERE  + 'app_specific_files/demo5/'
+    APP_NAME                  = 'app_specific_files/demo5'
+    APP_OPTION                = 'demo5'
 
 
     # HOME_CHILD                = 'master'

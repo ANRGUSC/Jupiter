@@ -290,6 +290,46 @@ def transfer_data(ID,user,pword,source, destination):
     return transfer_data_scp(ID,user,pword,source, destination) #default
 
 
+# class MyHandler(pyinotify.ProcessEvent):
+#     """Setup the event handler for all the events
+#     """
+
+
+#     def process_IN_CLOSE_WRITE(self, event):
+#         """On every node, whenever there is scheduling information sent from the central network profiler:
+#             - Connect the database
+#             - Scheduling measurement procedure
+#             - Scheduling regression procedure
+#             - Start the schedulers
+        
+#         Args:
+#             event (ProcessEvent): a new file is created
+#         """
+
+#         global start_times, end_times
+#         global exec_times
+#         global count
+
+#         logging.debug("Received file as output - %s." % event.pathname) 
+#         outputfile = event.pathname.split('/')[-1].split('_')[0]
+#         logging.debug(outputfile)
+
+#         end_times[outputfile] = time.time()
+        
+#         exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
+#         logging.debug("execution time is: %s", exec_times)
+
+#         if BOKEH == 2: #used for combined_app with distribute script
+#             app_name = outputfile.split('-')[0]
+#             msg = 'makespan '+ app_name + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) 
+#             demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
+
+#         if BOKEH == 3:
+#             msg = 'makespan ' + appoption + ' ' + appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+#             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
+
+
+# Demo application
 class MyHandler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
     """
@@ -311,12 +351,21 @@ class MyHandler(pyinotify.ProcessEvent):
         global count
 
         logging.debug("Received file as output - %s." % event.pathname) 
-        outputfile = event.pathname.split('/')[-1].split('_')[0]
-        logging.debug(outputfile)
-
-        end_times[outputfile] = time.time()
-        
-        exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
+        outputfile = event.pathname.split('.')[0].split('/')[-1].split('_')[2:]
+        filen = outputfile[0]
+        fileid = outputfile[1:]
+        # 4 files at a time
+        outputfiles = [x+'img'+filen+'.JPEG' for x in fileid]
+        logging.debug(outputfiles)
+        logging.debug(start_times)
+        t= time.time()
+        for f in outputfiles:
+            end_times[f] = t 
+            try:
+                exec_times[f] = end_times[f] - start_times[f]
+            except Exception as e:
+                logging.debug('Could not find the start time information for the file!!!!')
+                logging.debug(f)
         logging.debug("execution time is: %s", exec_times)
 
         if BOKEH == 2: #used for combined_app with distribute script
@@ -327,6 +376,7 @@ class MyHandler(pyinotify.ProcessEvent):
         if BOKEH == 3:
             msg = 'makespan ' + appoption + ' ' + appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
+
 
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
