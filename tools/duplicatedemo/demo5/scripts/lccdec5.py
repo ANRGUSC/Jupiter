@@ -86,10 +86,13 @@ def task(filelist, pathin, pathout):
         #Save desired scores of M data-batches
         outlist = []
         for j in range(M):
-            #destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'.csv')
-            destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'_'+filesuffix)
-            np.savetxt(destination, results[j], delimiter=',')
-            outlist.append(destination)
+            if j== 0:
+                result = results[j]
+            else:
+                result = np.concatenate((result, results[j]), axis = 0)
+        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffix)
+        np.savetxt(destination, result, delimiter=',')
+        outlist.append(destination)
         return outlist
     else:
         # Results recieved from N workers
@@ -112,13 +115,16 @@ def task(filelist, pathin, pathout):
                     results[j] = np.concatenate((results[j],f_dec[j]), axis = 0)
 
 
-        #Save desired scores of N data-batches
+        #Save desired scores of M data-batches
         outlist = []
-        for j in range(N):
-            #destination = os.path.join(pathout,'job'+job_id+'lccdec'+classnum+str(j)+'.csv')
-            destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'_'+filesuffix)
-            np.savetxt(destination, results[j], delimiter=',')
-            outlist.append(destination)
+        for j in range(M):
+            if j== 0:
+                result = results[j]
+            else:
+                result = np.concatenate((result, results[j]), axis = 0)
+        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffix)
+        np.savetxt(destination, result, delimiter=',')
+        outlist.append(destination)
         return outlist
 
 def main():

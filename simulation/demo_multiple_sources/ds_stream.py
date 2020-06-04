@@ -20,6 +20,7 @@ import urllib
 import logging
 import random
 import shutil
+from datetime import datetime
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -28,6 +29,11 @@ app = Flask(__name__)
 start_times = dict()
 end_times = dict()
 exec_times = dict()
+
+def unix_time(dt):
+    epoch = datetime.utcfromtimestamp(0)
+    delta = dt - epoch
+    return delta.total_seconds()
 
 def find_next_file(local_folder):
     list_files = os.listdir(local_folder)
@@ -121,8 +127,11 @@ class Handler(pyinotify.ProcessEvent):
 
 
         inputfile = event.pathname.split('/')[-1]
-        t = time.time()
-        start_times[inputfile] = t
+        t = datetime.utcnow()
+        t = unix_time(t)
+        logging.debug(t)
+
+        start_times[inputfile] =t
         new_file_name = os.path.split(event.pathname)[-1]
 
         ID = os.environ['CHILD_NODES']

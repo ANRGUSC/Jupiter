@@ -34,10 +34,17 @@ import paho.mqtt.client as mqtt
 import jupiter_config
 import logging
 import pyinotify
+from datetime import datetime
+
 
 
 
 app = Flask(__name__)
+
+def unix_time(dt):
+    epoch = datetime.utcfromtimestamp(0)
+    delta = dt - epoch
+    return delta.total_seconds()
 
 def demo_help(server,port,topic,msg):
     logging.debug('Sending demo')
@@ -67,6 +74,7 @@ def recv_datasource():
         ts = request.args.get('time')
 
         logging.debug("Received flask message: %s %s %s", filename, filetype,ts)
+        logging.debug('The data source generates the input file: ')
         if filetype == 'input':
             start_times[filename]=float(ts)
             logging.debug(start_times)
@@ -98,7 +106,7 @@ def recv_datasink():
 
         logging.debug("Received flask message: %s %s %s", filename, filetype,ts)
         if filetype == 'output':
-            end_times[filename]=float(ts)
+            end_times[filename]=float(unix_time(ts))
             logging.debug(start_times)
         else:
             print('Something wrong with receiving monitor information from data sinks')
@@ -124,13 +132,13 @@ def recv_mapping():
     try:
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg')
-        ts = time.time()
+        ts = datetime.utcnow()
 
         logging.debug("Received flask message:%s %s %s", worker_node, msg, ts)
         if msg == 'start':
-            start_time[worker_node].append(ts)
+            start_time[worker_node].append(unix_time(ts))
         else:
-            end_time[worker_node].append(ts)
+            end_time[worker_node].append(unix_time(ts))
             if worker_node in last_tasks:
                 logging.debug("Start time stats: %s", start_time)
                 logging.debug("End time stats: %s", end_time)
@@ -254,8 +262,8 @@ def transfer_data_scp(ID,user,pword,source, destination):
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
             logging.debug('data transfer complete\n')
-            ts = time.time()
-            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,ts)
+            ts = datetime.utcnow()
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,unix_time(ts))
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
@@ -313,8 +321,8 @@ def transfer_data(ID,user,pword,source, destination):
 #         logging.debug("Received file as output - %s." % event.pathname) 
 #         outputfile = event.pathname.split('/')[-1].split('_')[0]
 #         logging.debug(outputfile)
-
-#         end_times[outputfile] = time.time()
+#         t = datetime.utcnow()
+#         end_times[outputfile] = unix_time(t)
         
 #         exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
 #         logging.debug("execution time is: %s", exec_times)
@@ -358,9 +366,9 @@ class MyHandler(pyinotify.ProcessEvent):
         outputfiles = [x+'img'+filen+'.JPEG' for x in fileid]
         logging.debug(outputfiles)
         logging.debug(start_times)
-        t= time.time()
+        t = datetime.now()
         for f in outputfiles:
-            end_times[f] = t 
+            end_times[f] = unix_time(t) 
             try:
                 exec_times[f] = end_times[f] - start_times[f]
             except Exception as e:
@@ -398,15 +406,18 @@ class Handler(pyinotify.ProcessEvent):
         logging.debug("Received file as input - %s." % event.pathname)  
 
         if RUNTIME == 1:   
-            ts = time.time() 
+            #ts = time.time() 
+            ts = datetime.now()
+            ts = unix_time(ts)
             s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.pathname,ts)
             runtime_receiver_log.write(s)
             runtime_receiver_log.flush()
 
         inputfile = event.pathname.split('/')[-1]
         logging.debug(inputfile)
-        t = time.time()
-        start_times[inputfile] = t
+        #t = time.time()
+        t = datetime.now()
+        start_times[inputfile] = unix_time(t)
         new_file_name = os.path.split(event.pathname)[-1]
 
 
