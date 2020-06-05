@@ -185,7 +185,7 @@ def get_and_send_missing_images(pathin):
         logging.debug(image_file)
         file_name_wo_jobid = image_file.split("_jobid_")[0]
         source_path = os.path.join(pathin, file_name_wo_jobid + ".JPEG")
-        file_name = 'master_' + image_file
+        file_name = 'master_master_master_master_' + image_file
         logging.debug('Transfer the file')
         destination_path = os.path.join('/centralized_scheduler/input',file_name)
         logging.debug(destination_path)
