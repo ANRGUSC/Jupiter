@@ -38,8 +38,9 @@ def task(filelist, pathin, pathout):
     #job_id = filelist[0].partition('outlccencoder')[0]
     # job_id = filelist[0].partition('_')[2].partition('_')[2].partition('.')[0]
     # job_id = job_id[3:]
-    job_id = filelist[0].split('.csv')[0].split('job')[1]
-    print(job_id)
+    job_id = filelist[0].split('.csv')[0].split('_')[-2].split('job')[1]
+    
+    filesuffixs = filelist[0].split('.csv')[0].split('_')[-1]
     
 
     #Worker ID: a,b,c,...
@@ -90,7 +91,7 @@ def task(filelist, pathin, pathout):
     
     outlist = []
     # destination = os.path.join(pathout,'score1' + worker_id + '_'+'preagg1'+ '_' +'job' + job_id +'.csv')
-    destination = os.path.join(pathout,'score'+classnum + worker_id + '_'+'preagg'+classnum+ '_' +'job' + job_id +'.csv')
+    destination = os.path.join(pathout,'score'+classnum + worker_id + '_'+'preagg'+classnum+ '_' +'job' + job_id +'_'+filesuffixs+'.csv')
     np.savetxt(destination, sc, delimiter=',')
     outlist.append(destination)
     return outlist

@@ -201,10 +201,16 @@ class Handler1(pyinotify.ProcessEvent):
         """
         new_file = os.path.split(event.pathname)[-1]
 
-        if '_' in new_file:
-            temp_name = new_file.split('_')[0]
-        else:
-            temp_name = new_file.split('.')[0]
+        #dummy application
+        # if '_' in new_file:
+        #     temp_name = new_file.split('_')[0]
+        # else:
+        #     temp_name = new_file.split('.')[0]
+
+        logging.debug(new_file)
+        temp_name = new_file.split('.')[0]
+        logging.debug(temp_name)
+        
         global files_out
 
         #based on flag2 decide whether to send one output to all children or different outputs to different children in
@@ -417,10 +423,16 @@ class Handler(pyinotify.ProcessEvent):
         """
         
         new_file = os.path.split(event.pathname)[-1]
-        if '_' in new_file:
-            temp_name = new_file.split('_')[0]
-        else:
-            temp_name = new_file.split('.')[0]
+        # dummy app
+        # if '_' in new_file:
+        #     temp_name = new_file.split('_')[0]
+        # else:
+        #     temp_name = new_file.split('.')[0]
+
+        # demo app
+        logging.debug(new_file)
+        temp_name = new_file.split('.')[0]
+        logging.debug(temp_name)
 
 
         queue_mul.put(new_file)

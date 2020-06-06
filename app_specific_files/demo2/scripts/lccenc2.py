@@ -58,9 +58,9 @@ def task(filelist, pathin, pathout):
     filelist = [filelist] if isinstance(filelist, str) else filelist  
     logging.debug(filelist)
 
-    fileid = [x.split('_')[6] for x in filelist]
+    fileid = [x.split('.')[0].split('_')[-1].split('img')[0] for x in filelist]
     logging.debug(fileid)
-    filesuffix = classname+'_'+'_'.join(fileid)
+    filesuffix = classname+'-'+'-'.join(fileid)
     logging.debug(filesuffix)
 
     #snapshot_time = filelist[0].partition('_')[2].partition('.')[0]  #store the data&time info 

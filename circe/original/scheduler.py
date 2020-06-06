@@ -359,13 +359,12 @@ class MyHandler(pyinotify.ProcessEvent):
         global count
 
         logging.debug("Received file as output - %s." % event.pathname) 
-        outputfile = event.pathname.split('.')[0].split('/')[-1].split('_')[2:]
+        outputfile = event.pathname.split('.')[0].split('/')[-1].split('_')[-1].split('-')
         filen = outputfile[0]
         fileid = outputfile[1:]
         # 4 files at a time
         outputfiles = [x+'img'+filen+'.JPEG' for x in fileid]
         logging.debug(outputfiles)
-        logging.debug(start_times)
         t = datetime.now()
         for f in outputfiles:
             end_times[f] = unix_time(t) 

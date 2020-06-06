@@ -52,10 +52,9 @@ def task(filelist, pathin, pathout):
     # Load id of incoming job (id_job=1,2,3,...)
     # job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]
     # job_id = job_id[3:]
-    job_id = filelist[0].split('_')[3].split('job')[1]
+    job_id = filelist[0].split('_')[-2].split('job')[1]
     print(job_id)
-    filesuffixs = filelist[0].split('_')[4:]
-    filesuffix = '_'.join(filesuffixs)
+    filesuffixs = filelist[0].split('_')[-1]
    
     #Parameters 
     N = 3 # Number of workers (encoded data-batches)
@@ -86,10 +85,13 @@ def task(filelist, pathin, pathout):
         #Save desired scores of M data-batches
         outlist = []
         for j in range(M):
-            #destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'.csv')
-            destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'_'+filesuffix)
-            np.savetxt(destination, results[j], delimiter=',')
-            outlist.append(destination)
+            if j== 0:
+                result = results[j]
+            else:
+                result = np.concatenate((result, results[j]), axis = 0)
+        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs + '.csv')
+        np.savetxt(destination, result, delimiter=',')
+        outlist.append(destination)
         return outlist
     else:
         # Results recieved from N workers
@@ -112,13 +114,16 @@ def task(filelist, pathin, pathout):
                     results[j] = np.concatenate((results[j],f_dec[j]), axis = 0)
 
 
-        #Save desired scores of N data-batches
+        #Save desired scores of M data-batches
         outlist = []
-        for j in range(N):
-            #destination = os.path.join(pathout,'job'+job_id+'lccdec'+classnum+str(j)+'.csv')
-            destination = os.path.join(pathout,'job'+job_id+'_'+taskname+str(j)+'_'+filesuffix)
-            np.savetxt(destination, results[j], delimiter=',')
-            outlist.append(destination)
+        for j in range(M):
+            if j== 0:
+                result = results[j]
+            else:
+                result = np.concatenate((result, results[j]), axis = 0)
+        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs+'.csv')
+        np.savetxt(destination, result, delimiter=',')
+        outlist.append(destination)
         return outlist
 
 def main():
