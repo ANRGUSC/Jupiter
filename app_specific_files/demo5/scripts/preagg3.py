@@ -31,11 +31,11 @@ def task(filelist, pathin, pathout):
     #snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     # job_id = filelist[0].partition('_')[2].partition('_')[2].partition('.')[0]
     # job_id = job_id[3:]
-    job_id = filelist[0].split('_')[2].split('job')[1]
+    job_id = filelist[0].split('.csv')[0].split('_')[-2].split('job')[1]
     print(job_id)
-    filesuffixs = filelist[0].split('_')[3:]
+    filesuffixs = filelist[0].split('.csv')[0].split('_')[-1]
     print(filesuffixs)
-    filesuffix = '_'.join(filesuffixs)
+    
     # job_id = int(job_id)
     
     
@@ -85,7 +85,7 @@ def task(filelist, pathin, pathout):
                 print(os.path.join(pathin, (job_dict[job_id])[i]))
                 En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                 # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
-                destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffix)
+                destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs)
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
         else:
@@ -100,7 +100,7 @@ def task(filelist, pathin, pathout):
             for i in range(N):
                 En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                 # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
-                destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffix)
+                destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs)
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
         else:

@@ -52,10 +52,9 @@ def task(filelist, pathin, pathout):
     # Load id of incoming job (id_job=1,2,3,...)
     # job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]
     # job_id = job_id[3:]
-    job_id = filelist[0].split('_')[3].split('job')[1]
+    job_id = filelist[0].split('_')[-2].split('job')[1]
     print(job_id)
-    filesuffixs = filelist[0].split('_')[4:]
-    filesuffix = '_'.join(filesuffixs)
+    filesuffixs = filelist[0].split('_')[-1]
    
     #Parameters 
     N = 3 # Number of workers (encoded data-batches)
@@ -90,7 +89,7 @@ def task(filelist, pathin, pathout):
                 result = results[j]
             else:
                 result = np.concatenate((result, results[j]), axis = 0)
-        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffix)
+        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs + '.csv')
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
         return outlist
@@ -122,7 +121,7 @@ def task(filelist, pathin, pathout):
                 result = results[j]
             else:
                 result = np.concatenate((result, results[j]), axis = 0)
-        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffix)
+        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs+'.csv')
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
         return outlist

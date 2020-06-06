@@ -83,6 +83,7 @@ def send_runtime_profile(msg):
         Exception: if sending message to flask server on home is failed
     """
     try:
+        logging.debug('Sending runtime stats')
         url = "http://" + home_node_host_port + "/recv_runtime_profile"
         params = {'msg': msg, "work_node": taskname}
         params = urllib.parse.urlencode(params)
@@ -208,7 +209,8 @@ class Handler1(pyinotify.ProcessEvent):
         #     temp_name = new_file.split('.')[0]
 
         logging.debug(new_file)
-        temp_name = new_file.split('.')[0]
+        original_name = new_file.split('.')[0]
+        temp_name= original_name.split('_')[-1]
         logging.debug(temp_name)
         
         global files_out
@@ -422,7 +424,6 @@ class Handler(pyinotify.ProcessEvent):
             The output time is stored in the file central_scheduler/runtime/droplet_runtime_input_(%node name)
         """
         
-        new_file = os.path.split(event.pathname)[-1]
         # dummy app
         # if '_' in new_file:
         #     temp_name = new_file.split('_')[0]

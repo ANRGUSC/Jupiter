@@ -76,8 +76,11 @@ def task(file_, pathin, pathout):
                 time.sleep(SLEEP_TIME) #>=2 
             ### Contact flask server
             f_stripped = f.split(".JPEG")[0]
-            job_id = int(f_stripped.split("_jobid_")[1])
+            # job_id = int(f_stripped.split("_jobid_")[1])
+            job_id = f_stripped.split('_')[-2]
+            job_id = int(f_stripped.split('_')[-2].split('jobid')[1])
             print('job_id from the file is: ', job_id)
+            print(job_id)
 
             ret_job_id = 0
             try:
@@ -281,7 +284,7 @@ def main():
     for i in classlist:
         for j in range(resnet_task_num+1,num+1,9):
             #filename = 'master_'+taskname+'_'+i+'_'+str(j)+'_jobid_0.JPEG'
-            filename = 'master_'+taskname+'_'+str(j)+'img'+i+'_jobid_0.JPEG'
+            filename = 'master_'+taskname+'_jobid0_'+ str(j)+'img'+i+'.JPEG'
             filelist.append(filename)
     # outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     # filelist = [f for f in listdir(outpath) if f.startswith('master')]

@@ -252,10 +252,10 @@ def task(filelist, pathin, pathout):
     print('got job id: ', job_id)
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     collage_file_split = collage_file.split(".JPEG")[0] 
-    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+ collage_file_split + "_jobid_" + str(job_id) + ".JPEG"))
+    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+  collage_file_split + "_jobid" + str(job_id)  + ".JPEG"))
     print('Receive collage file:')
     ### send to collage task
-    outlist = [os.path.join(pathout,"master_"+ collage_file_split + "_jobid_" + str(job_id) + ".JPEG")]
+    outlist = [os.path.join(pathout,"master_"+  collage_file_split+ "_jobid" + str(job_id) + ".JPEG")]
     print(outlist)
     ### send to resnet tasks
     print('Receive resnet files: ')
@@ -264,7 +264,7 @@ def task(filelist, pathin, pathout):
         idx  = i%num_images
         f_split = f.split(".JPEG")[0]
         print('got job id 2: ', job_id)
-        f_new = f_split + "_jobid_"+ str(job_id) + ".JPEG" 
+        f_new = "jobid"+ str(job_id) + '_'+ f_split +  ".JPEG" 
         shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(idx)+'_'+ f_new))
         filelist_flask.append(f_new)
         outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f_new))

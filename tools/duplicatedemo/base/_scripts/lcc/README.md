@@ -1,1 +1,0 @@
-# DCOMP_LCC

@@ -134,7 +134,7 @@ def recv_mapping():
         msg = request.args.get('msg')
         ts = datetime.utcnow()
 
-        logging.debug("Received flask message:%s %s %s", worker_node, msg, ts)
+        logging.debug("Received monitor flask message:%s %s %s", worker_node, msg, ts)
         if msg == 'start':
             start_time[worker_node].append(unix_time(ts))
         else:
@@ -177,7 +177,7 @@ def recv_runtime_profile():
     global rt_finish_time
 
     try:
-        
+        logging.debug('Receive runtime stats information: ')
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg').split()
         
@@ -204,10 +204,15 @@ def recv_runtime_profile():
                 """
                 log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks.txt'), "w")
                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
+                logging.debug(s)
                 log_file.write(s)
+
                 for k, v in rt_enter_time.items():
-                    worker, file = k
+                    logging.debug(k)
+                    logging.debug(rt_finish_time)
+                    logging.debug(msg[1])
                     if k in rt_finish_time:
+                        print('-----')
                         elapse = rt_finish_time[k]-v
                         duration = rt_finish_time[k]-rt_exec_time[k]
                         waiting = rt_exec_time[k]-v
@@ -514,6 +519,9 @@ def main():
     for task in dag_info[1]:
         if 'home' in dag_info[1][task]:
             last_tasks.add(task)
+
+    logging.debug('Last tasks')
+    logging.debug(last_tasks)
 
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH
