@@ -213,7 +213,7 @@ class Handler1(pyinotify.ProcessEvent):
         temp_name= original_name.split('_')[-1]
         logging.debug(temp_name)
         
-        global files_out
+        global files_out, files_out_set
 
         #based on flag2 decide whether to send one output to all children or different outputs to different children in
         #order given in the config file
@@ -300,8 +300,10 @@ class Handler1(pyinotify.ProcessEvent):
         elif flag2 == 'false':
             logging.debug('Flag is false')
             num_child = (len(sys.argv) - 4) / 4
-            files_out.append(new_file)
-            if (len(files_out) == num_child):
+            #files_out.append(new_file)
+            files_out_set.add(new_file)
+            # if (len(files_out) == num_child):
+            if (len(files_out_set) == num_child):
                 # send runtime profiling information
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
@@ -332,11 +334,12 @@ class Handler1(pyinotify.ProcessEvent):
                     cur_tasks.append(sys.argv[i])
                     users.append(sys.argv[i+2])
                     passwords.append(sys.argv[i+3])
-                destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in files_out]
-                sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in files_out]
+                destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in list(files_out_set)]
+                sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in list(files_out_set)]
 
                 transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
-                files_out=[]
+                #files_out=[]
+                files_out_set=set()
         elif flag2 == 'exclusive':#exclusive
             logging.debug('Sending exclusive information to the corresponding children')
             source = event.pathname
@@ -364,8 +367,10 @@ class Handler1(pyinotify.ProcessEvent):
         else: #ordered
             logging.debug('Sending all the information to the corresponding children based on order')
             num_child = (len(sys.argv) - 4) / 4
-            files_out.append(new_file)
-            if (len(files_out) == num_child):
+            # files_out.append(new_file)
+            files_out_set.add(new_file)
+            # if (len(files_out) == num_child):
+            if (len(files_out_set) == num_child):
                 # send runtime profiling information
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
@@ -392,8 +397,8 @@ class Handler1(pyinotify.ProcessEvent):
                 cur_tasks =[]
                 users = []
                 passwords = []
-                logging.debug(files_out)
-                for fout in files_out:
+                logging.debug(files_out_set)
+                for fout in list(files_out_set):
                     dest = fout.split('.')[0].split('_')[1]
                     logging.debug(dest)
                     for i in range(3, len(sys.argv)-1,4):
@@ -403,11 +408,12 @@ class Handler1(pyinotify.ProcessEvent):
                             passwords.append(sys.argv[i+3])
                             break
                 logging.debug(cur_tasks)
-                destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in files_out]
-                sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in files_out]
+                destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in list(files_out_set)]
+                sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in list(files_out_set)]
                 logging.debug('Transfer the output files to the corresponding destinations')
                 transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
-                files_out=[]
+                # files_out=[]
+                files_out_set=set()
 
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
@@ -550,7 +556,7 @@ def main():
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
 
 
-    global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips, all_sinks, all_sinks_ips
+    global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips, all_sinks, all_sinks_ips, files_out_set
 
     configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
@@ -561,6 +567,7 @@ def main():
     #target port for SSHing into a container
     filenames=[]
     files_out=[]
+    files_out_set = set()
     node_name = os.environ['NODE_NAME']
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
 
