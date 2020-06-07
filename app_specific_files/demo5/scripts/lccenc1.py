@@ -133,6 +133,7 @@ def task(filelist, pathin, pathout):
         for i in range(N):
             #destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'.csv')
             destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+filesuffix+'.csv')
+            print(destination)
             np.savetxt(destination, En_Image_Batch[i], delimiter=',')
             out_list.append(destination)
         return out_list
