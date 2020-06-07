@@ -163,6 +163,77 @@ def return_output_files():
     return json.dumps(num_files)
 app.add_url_rule('/', 'return_output_files', return_output_files)
 
+# def recv_runtime_profile():
+#     """
+
+#     Receiving run-time profiling information for every task (task name, start time stats, waiting time stats, end time stats)
+    
+#     Raises:
+#         Exception: failed processing in Flask
+#     """
+
+#     global rt_enter_time
+#     global rt_exec_time
+#     global rt_finish_time
+
+#     try:
+#         logging.debug('Receive runtime stats information: ')
+#         worker_node = request.args.get('work_node')
+#         msg = request.args.get('msg').split()
+        
+        
+#         if msg[0] == 'rt_enter':
+#             rt_enter_time[(worker_node,msg[1])] = float(msg[2])
+#         elif msg[0] == 'rt_exec' :
+#             rt_exec_time[(worker_node,msg[1])] = float(msg[2])
+#         else: #rt_finish
+#             rt_finish_time[(worker_node,msg[1])] = float(msg[2])
+#             if worker_node in last_tasks:
+#                 # Per task stats:
+#                 logging.debug('********************************************') 
+#                 logging.debug("Received final output at home: Runtime profiling info:")
+#                 """
+#                     - Worker node: task name
+#                     - Input file: input files
+#                     - Enter time: time the input file enter the queue
+#                     - Execute time: time the input file is processed
+#                     - Finish time: time the output file is generated
+#                     - Elapse time: total time since the input file is created till the output file is created
+#                     - Duration time: total execution time of the task
+#                     - Waiting time: total time since the input file is created till it is processed
+#                 """
+#                 log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks.txt'), "w")
+#                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
+#                 logging.debug(s)
+#                 log_file.write(s)
+
+#                 for k, v in rt_enter_time.items():
+#                     logging.debug(k)
+#                     logging.debug(rt_finish_time)
+#                     logging.debug(msg[1])
+#                     if k in rt_finish_time:
+#                         print('-----')
+#                         elapse = rt_finish_time[k]-v
+#                         duration = rt_finish_time[k]-rt_exec_time[k]
+#                         waiting = rt_exec_time[k]-v
+#                         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
+#                         logging.debug(s)
+#                         log_file.write(s)
+#                         log_file.flush()
+
+#                 log_file.close()
+#                 logging.debug('********************************************')
+        
+
+                
+#     except Exception as e:
+#         logging.debug("Bad reception or failed processing in Flask for runtime profiling")
+#         logging.debug(e)
+#         return "not ok"
+#     return "ok"
+# app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
+
+#demo application
 def recv_runtime_profile():
     """
 

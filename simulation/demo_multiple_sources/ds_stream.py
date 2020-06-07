@@ -50,9 +50,9 @@ def gen_stream_data(interval,data_path,original_data_path):
         destination = os.path.join(data_path,filename)
         shutil.copyfile(source, destination)
 
-def gen_stream_fixed_data(num_images,data_path,original_data_path):
+def gen_stream_fixed_data(interval,num_images,data_path,original_data_path):
     for i in range(0,num_images):
-        time.sleep(1)
+        time.sleep(interval)
         logging.debug('--- Copy new file')
         filename = find_next_file(original_data_path)
         source = os.path.join(original_data_path,filename)
@@ -195,6 +195,7 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     PRICING  = int(config['CONFIG']['PRICING'])
+    STREAM_INTERVAL = int(config['PORT']['STREAM_INTERVAL'])
 
 
     global current_idx
@@ -218,16 +219,15 @@ def main():
     web_server.start()
     
     logging.debug('Starting to generate the streaming files')
-    # interval = 5
     data_path = "generated_stream"
     original_data_path = "data"
     time.sleep(30) #waiting for the circe home to be deployed
     # Generate streaming data
-    # _thread.start_new_thread(gen_stream_data,(interval,data_path,original_data_path))  
+    # _thread.start_new_thread(gen_stream_data,(STREAM_INTERVAL,data_path,original_data_path))  
 
     # Generate fixed number of images
     num = 100
-    _thread.start_new_thread(gen_stream_fixed_data,(num,data_path,original_data_path)) 
+    _thread.start_new_thread(gen_stream_fixed_data,(STREAM_INTERVAL,num,data_path,original_data_path)) 
 
     # watch manager
     wm = pyinotify.WatchManager()

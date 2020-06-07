@@ -22,7 +22,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 
 # Add the task speficific configuration files
-ADD app_specific_files/demo2/configuration.txt /configuration.txt
+ADD app_specific_files/demo5/configuration.txt /configuration.txt
 
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
@@ -30,7 +30,7 @@ ADD jupiter_config.ini /jupiter_config.ini
 RUN mkdir generated_stream 
 ADD simulation/demo_multiple_sources/start_home.sh /start.sh
 ADD simulation/demo_multiple_sources/ds_stream.py /ds_stream.py
-ADD simulation/demo_multiple_sources/data/schoolbus /data
+ADD simulation/demo_multiple_sources/data/kitfox /data
 
 RUN chmod +x /start.sh
 

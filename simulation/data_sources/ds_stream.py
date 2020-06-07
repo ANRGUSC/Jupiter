@@ -167,6 +167,7 @@ def main():
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     ssh_port    = int(config['PORT']['SSH_SVC'])
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+    STREAM_INTERVAL = int(config['PORT']['STREAM_INTERVAL'])
 
 
     global combined_ip_map
@@ -185,9 +186,8 @@ def main():
     web_server.start()
     
     logging.debug('Starting to generate the streaming files')
-    interval = 60
     data_path = "generated_stream"
-    _thread.start_new_thread(gen_stream_data,(interval,data_path,))  
+    _thread.start_new_thread(gen_stream_data,(STREAM_INTERVAL,data_path,))  
 
     # watch manager
     wm = pyinotify.WatchManager()
