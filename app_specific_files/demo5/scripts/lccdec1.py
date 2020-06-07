@@ -90,6 +90,7 @@ def task(filelist, pathin, pathout):
             else:
                 result = np.concatenate((result, results[j]), axis = 0)
         destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs + '.csv')
+        print(destination)
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
         return outlist
@@ -122,6 +123,7 @@ def task(filelist, pathin, pathout):
             else:
                 result = np.concatenate((result, results[j]), axis = 0)
         destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs+'.csv')
+        print(destination)
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
         return outlist
