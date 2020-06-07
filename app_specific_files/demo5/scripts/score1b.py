@@ -83,6 +83,7 @@ def task(filelist, pathin, pathout):
     
     
     # Read Encoded data-batch   
+    print(os.path.join(pathin, filelist[0]))
     En_Image_Batch = np.loadtxt(os.path.join(pathin, filelist[0]), delimiter=',')
     
     
@@ -92,6 +93,7 @@ def task(filelist, pathin, pathout):
     outlist = []
     # destination = os.path.join(pathout,'score1' + worker_id + '_'+'preagg1'+ '_' +'job' + job_id +'.csv')
     destination = os.path.join(pathout,'score'+classnum + worker_id + '_'+'preagg'+classnum+ '_' +'job' + job_id +'_'+filesuffixs+'.csv')
+    print(destination)
     np.savetxt(destination, sc, delimiter=',')
     outlist.append(destination)
     return outlist
