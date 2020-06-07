@@ -185,7 +185,7 @@ def main():
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     ssh_port    = int(config['PORT']['SSH_SVC'])
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
-    STREAM_INTERVAL = int(config['PORT']['STREAM_INTERVAL'])
+    STREAM_INTERVAL = int(config['OTHER']['STREAM_INTERVAL'])
 
     global current_idx
     current_idx = 0

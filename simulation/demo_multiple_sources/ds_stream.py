@@ -195,7 +195,7 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     PRICING  = int(config['CONFIG']['PRICING'])
-    STREAM_INTERVAL = int(config['PORT']['STREAM_INTERVAL'])
+    STREAM_INTERVAL = int(config['OTHER']['STREAM_INTERVAL'])
 
 
     global current_idx
