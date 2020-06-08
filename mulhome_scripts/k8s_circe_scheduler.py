@@ -289,9 +289,6 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     except ApiException as e:
         logging.debug(e)
 
-
-    for datasource in datasources:
-        logging.debug(datasource)
        
 
        

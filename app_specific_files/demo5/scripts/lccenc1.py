@@ -142,9 +142,11 @@ def task(filelist, pathin, pathout):
         #Read M batches
         Image_Batch = []
         count_file = 0
+        print(filelist)
         for j in range(N):
             count = 0
             while count < L:
+                print(os.path.join(pathin, filelist[count_file]))
                 img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
                 if img is not None:
                 # resize image
@@ -178,7 +180,10 @@ def main():
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     c = 'storeclass%s'%(classnum)
     filelists = [f for f in listdir(outpath) if f.startswith(c)]
-    filelist = filelists[0:4] #4 files
+    if FLAG_PART2 == 1:
+        filelist = filelists[0:4] #conding part 2
+    else:
+        filelist = filelists[0:6] #noncoding part 2
     outfile = task(filelist, outpath, outpath)
     return outfile
     

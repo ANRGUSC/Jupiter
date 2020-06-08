@@ -17,6 +17,8 @@ from kubernetes.client.rest import ApiException
 import logging
 from pathlib import Path
 import shutil
+import subprocess
+from subprocess import call
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -98,7 +100,10 @@ def extract_log(namespace,label):
           pod_name = resp.items[0].metadata.name
           file_name = os.path.join(log_folder,pod_name.split('-')[1])
           cmd = 'kubectl logs -n%s %s > %s' %(namespace,pod_name,file_name)
-          os.system(cmd)
+          proc = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE)
+          tmp = proc.stdout.read().strip().decode("utf-8")
+          logging.debug(tmp)
+
 def extract_log_circe(log_folder):
     """
     This function logging.debugs out all the tasks that are not running.
@@ -156,7 +161,14 @@ def extract_log_circe(log_folder):
 
 
 if __name__ == '__main__':
-    log_folder = 'circe11default'
+    # log_folder = 'circe11default'
+    # log_folder = 'circe01default'
+    # log_folder = 'circe11sleep'
+    # log_folder = 'circe01sleep'
+    # log_folder = 'circe10default'
+    # log_folder = 'circe00default'
+    # log_folder = 'circe00sleep'
+    log_folder = 'circe10sleep'
     if os.path.exists(log_folder):
         shutil.rmtree(log_folder)
     os.mkdir(log_folder)

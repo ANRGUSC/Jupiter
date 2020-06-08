@@ -1,0 +1,788 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+my child nodes are:
+lccdec3
+their IPs are:
+10.103.54.96
+my task is:
+preagg3
+flag is:
+true
+number of inputs for my task:
+1
+home node is:
+10.108.37.39
+monitor.py input args are:
+1 true lccdec3 10.103.54.96 root PASSWORD
+python3 centralized_scheduler/monitor.py 1 true  lccdec3 10.103.54.96 root PASSWORD preagg3
+DEBUG:root:Combined IP Map
+DEBUG:root:{'lccdec3': '10.103.54.96', '': ''}
+DEBUG:root:starting the input monitoring process
+
+DEBUG:root:starting the output monitoring process
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv.
+DEBUG:root:score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv
+DEBUG:root:score3b_preagg3_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+whitewolf-475-618-694-498-188-61
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 77
+{'2': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv.
+DEBUG:root:score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv
+DEBUG:root:score3c_preagg3_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+whitewolf-475-618-694-498-188-61
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 138
+{'2': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv.
+DEBUG:root:score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv
+DEBUG:root:score3a_preagg3_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+whitewolf-475-618-694-498-188-61
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 199
+{'2': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv']}
+Receive enough results for job 1
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3b_job1_whitewolf-475-618-694-498-188-61.
+DEBUG:root:preagg3_lccdec3_score3b_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:whitewolf-475-618-694-498-188-61
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv.
+DEBUG:root:score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv
+DEBUG:root:score3b_preagg3_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3b_job1_whitewolf-475-618-694-498-188-61.
+DEBUG:root:preagg3_lccdec3_score3b_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:whitewolf-475-618-694-498-188-61
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3b_job1_whitewolf-475-618-694-498-188-61 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3b_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+Warning: Permanently added '[10.103.54.96]:5000' (ECDSA) to the list of known hosts.
+DEBUG:root:data transfer complete
+
+1
+whitewolf-475-618-694-498-188-61
+http://10.101.45.92:6100/post-dict
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3c_job1_whitewolf-475-618-694-498-188-61.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3b_job1_whitewolf-475-618-694-498-188-61 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3b_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:preagg3_lccdec3_score3c_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:whitewolf-475-618-694-498-188-61
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3c_job1_whitewolf-475-618-694-498-188-61.
+DEBUG:root:preagg3_lccdec3_score3c_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:whitewolf-475-618-694-498-188-61
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3c_job1_whitewolf-475-618-694-498-188-61 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3c_job1_whitewolf-475-618-694-498-188-61
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 260
+{'2': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv.
+DEBUG:root:score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv
+DEBUG:root:score3c_preagg3_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job1_whitewolf-475-618-694-498-188-61.
+DEBUG:root:preagg3_lccdec3_score3a_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:whitewolf-475-618-694-498-188-61
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3c_job1_whitewolf-475-618-694-498-188-61 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3c_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+1
+whitewolf-475-618-694-498-188-61
+http://10.101.45.92:6100/post-dict
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job1_whitewolf-475-618-694-498-188-61.
+DEBUG:root:preagg3_lccdec3_score3a_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:whitewolf-475-618-694-498-188-61
+DEBUG:root:Flag is true
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job1_whitewolf-475-618-694-498-188-61 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:Sending runtime stats
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job1_whitewolf-475-618-694-498-188-61 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job1_whitewolf-475-618-694-498-188-61
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 321
+{'2': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv.
+DEBUG:root:score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv
+DEBUG:root:score3a_preagg3_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+whitewolf-475-618-694-498-188-61
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 382
+{'2': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv.
+DEBUG:root:score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv
+DEBUG:root:score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+whitewolf-16-1167-514-352-836-1073
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 452
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': []}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv.
+DEBUG:root:score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv
+DEBUG:root:score3c_preagg3_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+whitewolf-475-618-694-498-188-61
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 513
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': []}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv.
+DEBUG:root:score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv
+DEBUG:root:score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+whitewolf-16-1167-514-352-836-1073
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 576
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': []}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv.
+DEBUG:root:score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv
+DEBUG:root:score3c_preagg3_job1_whitewolf-475-618-694-498-188-61
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+whitewolf-475-618-694-498-188-61
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 637
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': []}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv.
+DEBUG:root:score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv
+DEBUG:root:score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+whitewolf-16-1167-514-352-836-1073
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 700
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': []}
+Receive enough results for job 2
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073.
+DEBUG:root:preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv.
+DEBUG:root:score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv
+DEBUG:root:score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073.
+DEBUG:root:preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073.
+DEBUG:root:preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073
+2
+whitewolf-16-1167-514-352-836-1073
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073.
+DEBUG:root:preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:whitewolf-16-1167-514-352-836-1073
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 763
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': []}
+Not receive enough results for job 2
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3b_job2_whitewolf-16-1167-514-352-836-1073.
+DEBUG:root:preagg3_lccdec3_score3b_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3b_job2_whitewolf-16-1167-514-352-836-1073.
+DEBUG:root:preagg3_lccdec3_score3b_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3b_job2_whitewolf-16-1167-514-352-836-1073 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3b_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3b_job2_whitewolf-16-1167-514-352-836-1073 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3b_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv.
+DEBUG:root:score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv
+DEBUG:root:score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+whitewolf-16-1167-514-352-836-1073
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 835
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': []}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv.
+DEBUG:root:score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv
+DEBUG:root:score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+whitewolf-1012-667-250-660-954-81
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 895
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv.
+DEBUG:root:score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv
+DEBUG:root:score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+whitewolf-16-1167-514-352-836-1073
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 958
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv.
+DEBUG:root:score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv
+DEBUG:root:score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+whitewolf-16-1167-514-352-836-1073
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1021
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv.
+DEBUG:root:score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv
+DEBUG:root:score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+whitewolf-1012-667-250-660-954-81
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1083
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv.
+DEBUG:root:score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv
+DEBUG:root:score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+whitewolf-16-1167-514-352-836-1073
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1146
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv.
+DEBUG:root:score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv
+DEBUG:root:score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+whitewolf-1012-667-250-660-954-81
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1208
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Receive enough results for job 3
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81.
+DEBUG:root:preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:whitewolf-1012-667-250-660-954-81
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv.
+DEBUG:root:score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv
+DEBUG:root:score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81.
+DEBUG:root:preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:whitewolf-1012-667-250-660-954-81
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:data transfer complete
+
+3
+whitewolf-1012-667-250-660-954-81
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81.
+DEBUG:root:preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:whitewolf-1012-667-250-660-954-81
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:data transfer complete
+
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1270
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv.
+DEBUG:root:score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv
+DEBUG:root:score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81.
+DEBUG:root:preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:whitewolf-1012-667-250-660-954-81
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:data transfer complete
+
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3b_job3_whitewolf-1012-667-250-660-954-81.
+DEBUG:root:preagg3_lccdec3_score3b_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:whitewolf-1012-667-250-660-954-81
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:data transfer complete
+
+3
+whitewolf-1012-667-250-660-954-81
+http://10.101.45.92:6100/post-dict
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3b_job3_whitewolf-1012-667-250-660-954-81.
+DEBUG:root:preagg3_lccdec3_score3b_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:whitewolf-1012-667-250-660-954-81
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3b_job3_whitewolf-1012-667-250-660-954-81 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3b_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:data transfer complete
+
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1332
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv.
+DEBUG:root:score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv
+DEBUG:root:score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3b_job3_whitewolf-1012-667-250-660-954-81 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3b_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:data transfer complete
+
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+whitewolf-1012-667-250-660-954-81
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1394
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv.
+DEBUG:root:score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv
+DEBUG:root:score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+whitewolf-1012-667-250-660-954-81
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1456
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv.
+DEBUG:root:score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv
+DEBUG:root:score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+whitewolf-1012-667-250-660-954-81
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1518
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv.
+DEBUG:root:score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv
+DEBUG:root:score3b_preagg3_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+whitewolf-172-165-794-743-246-207
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1587
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': ['score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv'], '5': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv.
+DEBUG:root:score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv
+DEBUG:root:score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+whitewolf-1012-667-250-660-954-81
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1649
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': ['score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv'], '5': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv.
+DEBUG:root:score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv
+DEBUG:root:score3b_preagg3_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+whitewolf-172-165-794-743-246-207
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1711
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': ['score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv'], '5': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv.
+DEBUG:root:score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv
+DEBUG:root:score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+whitewolf-1012-667-250-660-954-81
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1773
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': ['score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv'], '5': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv.
+DEBUG:root:score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv
+DEBUG:root:score3a_preagg3_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+whitewolf-172-165-794-743-246-207
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1835
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': ['score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv'], '5': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Receive enough results for job 4
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207.
+DEBUG:root:preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:whitewolf-172-165-794-743-246-207
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv.
+DEBUG:root:score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv
+DEBUG:root:score3a_preagg3_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207.
+DEBUG:root:preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:whitewolf-172-165-794-743-246-207
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207.
+DEBUG:root:preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:whitewolf-172-165-794-743-246-207
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207
+4
+whitewolf-172-165-794-743-246-207
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207.
+DEBUG:root:preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:whitewolf-172-165-794-743-246-207
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1897
+{'2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv'], '4': ['score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv'], '5': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv']}
+Not receive enough results for job 4
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job4_whitewolf-172-165-794-743-246-207.
+DEBUG:root:preagg3_lccdec3_score3a_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:whitewolf-172-165-794-743-246-207
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3b_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job4_whitewolf-172-165-794-743-246-207.
+DEBUG:root:preagg3_lccdec3_score3a_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:whitewolf-172-165-794-743-246-207
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job4_whitewolf-172-165-794-743-246-207 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job4_whitewolf-172-165-794-743-246-207 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv.
+DEBUG:root:score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv
+DEBUG:root:score3c_preagg3_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+whitewolf-172-165-794-743-246-207
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 1968
+{'6': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv'], '5': [], '4': ['score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv'], '2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv.
+DEBUG:root:score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv
+DEBUG:root:score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+whitewolf-1219-568-760-753-391-579
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 2029
+{'6': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv'], '5': ['score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv'], '4': ['score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv'], '2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv.
+DEBUG:root:score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv
+DEBUG:root:score3c_preagg3_job4_whitewolf-172-165-794-743-246-207
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+whitewolf-172-165-794-743-246-207
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 2091
+{'6': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv'], '5': ['score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv'], '4': ['score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv'], '2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv.
+DEBUG:root:score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv
+DEBUG:root:score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+whitewolf-1219-568-760-753-391-579
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 2154
+{'6': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv'], '5': ['score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv', 'score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv'], '4': ['score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv'], '2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv.
+DEBUG:root:score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv
+DEBUG:root:score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+whitewolf-1219-568-760-753-391-579
+http://10.101.45.92:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.101.45.92
+DEBUG:urllib3.connectionpool:http://10.101.45.92:6100 "POST /post-dict HTTP/1.1" 200 2217
+{'6': [], '1': ['score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3b_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3a_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv', 'score3c_preagg3_job1_whitewolf-475-618-694-498-188-61.csv'], '3': ['score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3b_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3a_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv', 'score3c_preagg3_job3_whitewolf-1012-667-250-660-954-81.csv'], '5': ['score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv', 'score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv', 'score3a_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv'], '4': ['score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3b_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3a_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv', 'score3c_preagg3_job4_whitewolf-172-165-794-743-246-207.csv'], '2': ['score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3a_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3c_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv', 'score3b_preagg3_job2_whitewolf-16-1167-514-352-836-1073.csv']}
+Receive enough results for job 5
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579.
+DEBUG:root:preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:whitewolf-1219-568-760-753-391-579
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score3c_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv.
+DEBUG:root:score3c_preagg3_job5_whitewolf-1219-568-760-753-391-579.csv
+DEBUG:root:score3c_preagg3_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579.
+DEBUG:root:preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:whitewolf-1219-568-760-753-391-579
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579.
+DEBUG:root:preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:whitewolf-1219-568-760-753-391-579
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+5
+whitewolf-1219-568-760-753-391-579
+http://10.101.45.92:6100/post-dict
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579.
+DEBUG:root:preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:whitewolf-1219-568-760-753-391-579
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579.
+DEBUG:root:preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:whitewolf-1219-568-760-753-391-579
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579.
+DEBUG:root:preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:whitewolf-1219-568-760-753-391-579
+DEBUG:root:Flag is true
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579 root@10.103.54.96:/centralized_scheduler/input/preagg3_lccdec3_score3a_job5_whitewolf-1219-568-760-753-391-579
+DEBUG:root:data transfer complete
+

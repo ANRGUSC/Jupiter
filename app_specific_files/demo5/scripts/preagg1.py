@@ -66,9 +66,15 @@ def task(filelist, pathin, pathout):
         print(job_dict)
     except Exception as e:
         print('Possibly running on the execution profiler')
-        sample1 = [f for f in listdir(pathout) if f.startswith('score2a_preagg2_job2')]
-        sample2 = [f for f in listdir(pathout) if f.startswith('score2b_preagg2_job2')]
-        job_dict = {'2':[sample1[0],sample2[0]]}
+        if FLAG_PART2 == 1:
+            sample1 = [f for f in listdir(pathout) if f.startswith('score2a_preagg2_job2')]
+            sample2 = [f for f in listdir(pathout) if f.startswith('score2b_preagg2_job2')]
+            job_dict = {'2':[sample1[0],sample2[0]]}
+        else:
+            sample1 = [f for f in listdir(pathout) if f.startswith('score2a_preagg2_job2')]
+            sample2 = [f for f in listdir(pathout) if f.startswith('score2b_preagg2_job2')]
+            sample3 = [f for f in listdir(pathout) if f.startswith('score2c_preagg2_job2')]
+            job_dict = {'2':[sample1[0],sample2[0],sample3[0]]}
         
     #Parameters
     M = 2 # Number of data-batches

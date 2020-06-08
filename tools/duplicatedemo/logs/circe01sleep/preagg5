@@ -1,0 +1,894 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+my child nodes are:
+lccdec5
+their IPs are:
+10.108.183.101
+my task is:
+preagg5
+flag is:
+true
+number of inputs for my task:
+1
+home node is:
+10.97.249.86
+monitor.py input args are:
+1 true lccdec5 10.108.183.101 root PASSWORD
+python3 centralized_scheduler/monitor.py 1 true  lccdec5 10.108.183.101 root PASSWORD preagg5
+DEBUG:root:Combined IP Map
+DEBUG:root:{'lccdec5': '10.108.183.101', '': ''}
+DEBUG:root:starting the input monitoring process
+
+DEBUG:root:starting the output monitoring process
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job1_kitfox-430-836-345-1196.csv.
+DEBUG:root:score5a_preagg5_job1_kitfox-430-836-345-1196.csv
+DEBUG:root:score5a_preagg5_job1_kitfox-430-836-345-1196
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+kitfox-430-836-345-1196
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 68
+{'2': [], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job1_kitfox-430-836-345-1196.csv.
+DEBUG:root:score5c_preagg5_job1_kitfox-430-836-345-1196.csv
+DEBUG:root:score5c_preagg5_job1_kitfox-430-836-345-1196
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+kitfox-430-836-345-1196
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 120
+{'2': [], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Receive enough results for job 1
+1
+['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']
+/centralized_scheduler/input/score5a_preagg5_job1_kitfox-430-836-345-1196.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job1_kitfox-430-836-345-1196.
+DEBUG:root:preagg5_lccdec5_score5a_job1_kitfox-430-836-345-1196
+DEBUG:root:kitfox-430-836-345-1196
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+1
+['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']
+/centralized_scheduler/input/score5c_preagg5_job1_kitfox-430-836-345-1196.csv
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job1_kitfox-430-836-345-1196.csv.
+DEBUG:root:score5a_preagg5_job1_kitfox-430-836-345-1196.csv
+DEBUG:root:score5a_preagg5_job1_kitfox-430-836-345-1196
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job1_kitfox-430-836-345-1196 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job1_kitfox-430-836-345-1196
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job1_kitfox-430-836-345-1196.
+DEBUG:root:preagg5_lccdec5_score5a_job1_kitfox-430-836-345-1196
+DEBUG:root:kitfox-430-836-345-1196
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+Warning: Permanently added '[10.108.183.101]:5000' (ECDSA) to the list of known hosts.
+DEBUG:root:data transfer complete
+
+1
+kitfox-430-836-345-1196
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5c_job1_kitfox-430-836-345-1196.
+DEBUG:root:preagg5_lccdec5_score5c_job1_kitfox-430-836-345-1196
+DEBUG:root:kitfox-430-836-345-1196
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job1_kitfox-430-836-345-1196 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job1_kitfox-430-836-345-1196
+DEBUG:root:data transfer complete
+
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 172
+{'2': [], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job1_kitfox-430-836-345-1196.csv.
+DEBUG:root:score5c_preagg5_job1_kitfox-430-836-345-1196.csv
+DEBUG:root:score5c_preagg5_job1_kitfox-430-836-345-1196
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5c_job1_kitfox-430-836-345-1196.
+DEBUG:root:preagg5_lccdec5_score5c_job1_kitfox-430-836-345-1196
+DEBUG:root:kitfox-430-836-345-1196
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5c_job1_kitfox-430-836-345-1196 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5c_job1_kitfox-430-836-345-1196
+DEBUG:root:data transfer complete
+
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5c_job1_kitfox-430-836-345-1196 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5c_job1_kitfox-430-836-345-1196
+DEBUG:root:data transfer complete
+
+1
+kitfox-430-836-345-1196
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 224
+{'2': [], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job1_kitfox-430-836-345-1196.csv.
+DEBUG:root:score5b_preagg5_job1_kitfox-430-836-345-1196.csv
+DEBUG:root:score5b_preagg5_job1_kitfox-430-836-345-1196
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+kitfox-430-836-345-1196
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 276
+{'2': [], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job1_kitfox-430-836-345-1196.csv.
+DEBUG:root:score5b_preagg5_job1_kitfox-430-836-345-1196.csv
+DEBUG:root:score5b_preagg5_job1_kitfox-430-836-345-1196
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+kitfox-430-836-345-1196
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 328
+{'2': [], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job2_kitfox-1033-182-476-378.csv.
+DEBUG:root:score5b_preagg5_job2_kitfox-1033-182-476-378.csv
+DEBUG:root:score5b_preagg5_job2_kitfox-1033-182-476-378
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+kitfox-1033-182-476-378
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+{'3': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv']}
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 387
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job1_kitfox-430-836-345-1196.csv.
+DEBUG:root:score5c_preagg5_job1_kitfox-430-836-345-1196.csv
+DEBUG:root:score5c_preagg5_job1_kitfox-430-836-345-1196
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+kitfox-430-836-345-1196
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 439
+{'3': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job2_kitfox-1033-182-476-378.csv.
+DEBUG:root:score5a_preagg5_job2_kitfox-1033-182-476-378.csv
+DEBUG:root:score5a_preagg5_job2_kitfox-1033-182-476-378
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+kitfox-1033-182-476-378
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 491
+{'3': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Receive enough results for job 2
+2
+['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv']
+/centralized_scheduler/input/score5b_preagg5_job2_kitfox-1033-182-476-378.csv
+2
+['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv']
+/centralized_scheduler/input/score5a_preagg5_job2_kitfox-1033-182-476-378.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5b_job2_kitfox-1033-182-476-378.
+DEBUG:root:preagg5_lccdec5_score5b_job2_kitfox-1033-182-476-378
+DEBUG:root:kitfox-1033-182-476-378
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job1_kitfox-430-836-345-1196.csv.
+DEBUG:root:score5c_preagg5_job1_kitfox-430-836-345-1196.csv
+DEBUG:root:score5c_preagg5_job1_kitfox-430-836-345-1196
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5b_job2_kitfox-1033-182-476-378 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5b_job2_kitfox-1033-182-476-378
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5b_job2_kitfox-1033-182-476-378.
+DEBUG:root:preagg5_lccdec5_score5b_job2_kitfox-1033-182-476-378
+DEBUG:root:kitfox-1033-182-476-378
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+1
+kitfox-430-836-345-1196
+http://10.103.94.204:6100/post-dict
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job2_kitfox-1033-182-476-378.
+DEBUG:root:preagg5_lccdec5_score5a_job2_kitfox-1033-182-476-378
+DEBUG:root:kitfox-1033-182-476-378
+DEBUG:root:Flag is true
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5b_job2_kitfox-1033-182-476-378 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5b_job2_kitfox-1033-182-476-378
+DEBUG:root:Sending runtime stats
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job2_kitfox-1033-182-476-378.
+DEBUG:root:preagg5_lccdec5_score5a_job2_kitfox-1033-182-476-378
+DEBUG:root:kitfox-1033-182-476-378
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job2_kitfox-1033-182-476-378 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job2_kitfox-1033-182-476-378
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 543
+{'3': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job2_kitfox-1033-182-476-378.csv.
+DEBUG:root:score5b_preagg5_job2_kitfox-1033-182-476-378.csv
+DEBUG:root:score5b_preagg5_job2_kitfox-1033-182-476-378
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job2_kitfox-1033-182-476-378 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job2_kitfox-1033-182-476-378
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+2
+kitfox-1033-182-476-378
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 595
+{'3': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job2_kitfox-1033-182-476-378.csv.
+DEBUG:root:score5a_preagg5_job2_kitfox-1033-182-476-378.csv
+DEBUG:root:score5a_preagg5_job2_kitfox-1033-182-476-378
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+kitfox-1033-182-476-378
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 647
+{'3': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job3_kitfox-956-1114-167-20.csv.
+DEBUG:root:score5a_preagg5_job3_kitfox-956-1114-167-20.csv
+DEBUG:root:score5a_preagg5_job3_kitfox-956-1114-167-20
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+kitfox-956-1114-167-20
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 705
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job3_kitfox-956-1114-167-20.csv.
+DEBUG:root:score5a_preagg5_job3_kitfox-956-1114-167-20.csv
+DEBUG:root:score5a_preagg5_job3_kitfox-956-1114-167-20
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+kitfox-956-1114-167-20
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 756
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Receive enough results for job 3
+3
+['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv']
+/centralized_scheduler/input/score5a_preagg5_job3_kitfox-956-1114-167-20.csv
+3
+['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv']
+/centralized_scheduler/input/score5a_preagg5_job3_kitfox-956-1114-167-20.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20.
+DEBUG:root:preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20
+DEBUG:root:kitfox-956-1114-167-20
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20.
+DEBUG:root:preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20
+DEBUG:root:kitfox-956-1114-167-20
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20.
+DEBUG:root:preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20
+DEBUG:root:kitfox-956-1114-167-20
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20.
+DEBUG:root:preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20
+DEBUG:root:kitfox-956-1114-167-20
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job3_kitfox-956-1114-167-20
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job2_kitfox-1033-182-476-378.csv.
+DEBUG:root:score5b_preagg5_job2_kitfox-1033-182-476-378.csv
+DEBUG:root:score5b_preagg5_job2_kitfox-1033-182-476-378
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+kitfox-1033-182-476-378
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 817
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job2_kitfox-1033-182-476-378.csv.
+DEBUG:root:score5c_preagg5_job2_kitfox-1033-182-476-378.csv
+DEBUG:root:score5c_preagg5_job2_kitfox-1033-182-476-378
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+kitfox-1033-182-476-378
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 869
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job2_kitfox-1033-182-476-378.csv.
+DEBUG:root:score5c_preagg5_job2_kitfox-1033-182-476-378.csv
+DEBUG:root:score5c_preagg5_job2_kitfox-1033-182-476-378
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+kitfox-1033-182-476-378
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 921
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job2_kitfox-1033-182-476-378.csv.
+DEBUG:root:score5b_preagg5_job2_kitfox-1033-182-476-378.csv
+DEBUG:root:score5b_preagg5_job2_kitfox-1033-182-476-378
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+kitfox-1033-182-476-378
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 973
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job3_kitfox-956-1114-167-20.csv.
+DEBUG:root:score5b_preagg5_job3_kitfox-956-1114-167-20.csv
+DEBUG:root:score5b_preagg5_job3_kitfox-956-1114-167-20
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+kitfox-956-1114-167-20
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1024
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job3_kitfox-956-1114-167-20.csv.
+DEBUG:root:score5c_preagg5_job3_kitfox-956-1114-167-20.csv
+DEBUG:root:score5c_preagg5_job3_kitfox-956-1114-167-20
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+kitfox-956-1114-167-20
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1075
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job3_kitfox-956-1114-167-20.csv.
+DEBUG:root:score5a_preagg5_job3_kitfox-956-1114-167-20.csv
+DEBUG:root:score5a_preagg5_job3_kitfox-956-1114-167-20
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+kitfox-956-1114-167-20
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1126
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job3_kitfox-956-1114-167-20.csv.
+DEBUG:root:score5b_preagg5_job3_kitfox-956-1114-167-20.csv
+DEBUG:root:score5b_preagg5_job3_kitfox-956-1114-167-20
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+kitfox-956-1114-167-20
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1177
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job3_kitfox-956-1114-167-20.csv.
+DEBUG:root:score5c_preagg5_job3_kitfox-956-1114-167-20.csv
+DEBUG:root:score5c_preagg5_job3_kitfox-956-1114-167-20
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+kitfox-956-1114-167-20
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1228
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job3_kitfox-956-1114-167-20.csv.
+DEBUG:root:score5a_preagg5_job3_kitfox-956-1114-167-20.csv
+DEBUG:root:score5a_preagg5_job3_kitfox-956-1114-167-20
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+kitfox-956-1114-167-20
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1279
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job3_kitfox-956-1114-167-20.csv.
+DEBUG:root:score5c_preagg5_job3_kitfox-956-1114-167-20.csv
+DEBUG:root:score5c_preagg5_job3_kitfox-956-1114-167-20
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+kitfox-956-1114-167-20
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1330
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': []}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job4_kitfox-700-804-3-758.csv.
+DEBUG:root:score5b_preagg5_job4_kitfox-700-804-3-758.csv
+DEBUG:root:score5b_preagg5_job4_kitfox-700-804-3-758
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+kitfox-700-804-3-758
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1377
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job3_kitfox-956-1114-167-20.csv.
+DEBUG:root:score5c_preagg5_job3_kitfox-956-1114-167-20.csv
+DEBUG:root:score5c_preagg5_job3_kitfox-956-1114-167-20
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+kitfox-956-1114-167-20
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1428
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job4_kitfox-700-804-3-758.csv.
+DEBUG:root:score5b_preagg5_job4_kitfox-700-804-3-758.csv
+DEBUG:root:score5b_preagg5_job4_kitfox-700-804-3-758
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+kitfox-700-804-3-758
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1477
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv']}
+Receive enough results for job 4
+4
+['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv']
+/centralized_scheduler/input/score5b_preagg5_job4_kitfox-700-804-3-758.csv
+4
+['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv']
+/centralized_scheduler/input/score5b_preagg5_job4_kitfox-700-804-3-758.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758.
+DEBUG:root:preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758
+DEBUG:root:kitfox-700-804-3-758
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758.
+DEBUG:root:preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758
+DEBUG:root:kitfox-700-804-3-758
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758.
+DEBUG:root:preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758
+DEBUG:root:kitfox-700-804-3-758
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758.
+DEBUG:root:preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758
+DEBUG:root:kitfox-700-804-3-758
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5b_job4_kitfox-700-804-3-758
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job4_kitfox-700-804-3-758.csv.
+DEBUG:root:score5a_preagg5_job4_kitfox-700-804-3-758.csv
+DEBUG:root:score5a_preagg5_job4_kitfox-700-804-3-758
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+kitfox-700-804-3-758
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1526
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job4_kitfox-700-804-3-758.csv.
+DEBUG:root:score5a_preagg5_job4_kitfox-700-804-3-758.csv
+DEBUG:root:score5a_preagg5_job4_kitfox-700-804-3-758
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+kitfox-700-804-3-758
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1575
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv'], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job5_kitfox-1035-1019-193-882.csv.
+DEBUG:root:score5a_preagg5_job5_kitfox-1035-1019-193-882.csv
+DEBUG:root:score5a_preagg5_job5_kitfox-1035-1019-193-882
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+kitfox-1035-1019-193-882
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1635
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job4_kitfox-700-804-3-758.csv.
+DEBUG:root:score5c_preagg5_job4_kitfox-700-804-3-758.csv
+DEBUG:root:score5c_preagg5_job4_kitfox-700-804-3-758
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 5
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+kitfox-700-804-3-758
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1684
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job4_kitfox-700-804-3-758.csv.
+DEBUG:root:score5b_preagg5_job4_kitfox-700-804-3-758.csv
+DEBUG:root:score5b_preagg5_job4_kitfox-700-804-3-758
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+kitfox-700-804-3-758
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 4
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1733
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job4_kitfox-700-804-3-758.csv.
+DEBUG:root:score5c_preagg5_job4_kitfox-700-804-3-758.csv
+DEBUG:root:score5c_preagg5_job4_kitfox-700-804-3-758
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+kitfox-700-804-3-758
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1782
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job4_kitfox-700-804-3-758.csv.
+DEBUG:root:score5b_preagg5_job4_kitfox-700-804-3-758.csv
+DEBUG:root:score5b_preagg5_job4_kitfox-700-804-3-758
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+kitfox-700-804-3-758
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1831
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job5_kitfox-1035-1019-193-882.csv.
+DEBUG:root:score5a_preagg5_job5_kitfox-1035-1019-193-882.csv
+DEBUG:root:score5a_preagg5_job5_kitfox-1035-1019-193-882
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+kitfox-1035-1019-193-882
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1884
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Receive enough results for job 5
+5
+['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv']
+/centralized_scheduler/input/score5a_preagg5_job5_kitfox-1035-1019-193-882.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882.
+DEBUG:root:preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882
+DEBUG:root:kitfox-1035-1019-193-882
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+5
+['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv']
+/centralized_scheduler/input/score5a_preagg5_job5_kitfox-1035-1019-193-882.csv
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job5_kitfox-1035-1019-193-882.csv.
+DEBUG:root:score5c_preagg5_job5_kitfox-1035-1019-193-882.csv
+DEBUG:root:score5c_preagg5_job5_kitfox-1035-1019-193-882
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882.
+DEBUG:root:preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882
+DEBUG:root:kitfox-1035-1019-193-882
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882.
+DEBUG:root:preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882
+DEBUG:root:kitfox-1035-1019-193-882
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882
+5
+kitfox-1035-1019-193-882
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882.
+DEBUG:root:preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882
+DEBUG:root:kitfox-1035-1019-193-882
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1937
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job5_kitfox-1035-1019-193-882.csv.
+DEBUG:root:score5b_preagg5_job5_kitfox-1035-1019-193-882.csv
+DEBUG:root:score5b_preagg5_job5_kitfox-1035-1019-193-882
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job5_kitfox-1035-1019-193-882
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+5
+kitfox-1035-1019-193-882
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 1990
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job5_kitfox-1035-1019-193-882.csv.
+DEBUG:root:score5c_preagg5_job5_kitfox-1035-1019-193-882.csv
+DEBUG:root:score5c_preagg5_job5_kitfox-1035-1019-193-882
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+kitfox-1035-1019-193-882
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 2043
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job5_kitfox-1035-1019-193-882.csv.
+DEBUG:root:score5b_preagg5_job5_kitfox-1035-1019-193-882.csv
+DEBUG:root:score5b_preagg5_job5_kitfox-1035-1019-193-882
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+kitfox-1035-1019-193-882
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 2096
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job5_kitfox-1035-1019-193-882.csv.
+DEBUG:root:score5a_preagg5_job5_kitfox-1035-1019-193-882.csv
+DEBUG:root:score5a_preagg5_job5_kitfox-1035-1019-193-882
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+kitfox-1035-1019-193-882
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 2149
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job5_kitfox-1035-1019-193-882.csv.
+DEBUG:root:score5a_preagg5_job5_kitfox-1035-1019-193-882.csv
+DEBUG:root:score5a_preagg5_job5_kitfox-1035-1019-193-882
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+kitfox-1035-1019-193-882
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 2202
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': [], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job6_kitfox-910-586-235-586.csv.
+DEBUG:root:score5a_preagg5_job6_kitfox-910-586-235-586.csv
+DEBUG:root:score5a_preagg5_job6_kitfox-910-586-235-586
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+6
+kitfox-910-586-235-586
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 2260
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': ['score5a_preagg5_job6_kitfox-910-586-235-586.csv'], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '7': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 6
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job5_kitfox-1035-1019-193-882.csv.
+DEBUG:root:score5c_preagg5_job5_kitfox-1035-1019-193-882.csv
+DEBUG:root:score5c_preagg5_job5_kitfox-1035-1019-193-882
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+kitfox-1035-1019-193-882
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 2313
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': ['score5a_preagg5_job6_kitfox-910-586-235-586.csv'], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '7': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job6_kitfox-910-586-235-586.csv.
+DEBUG:root:score5b_preagg5_job6_kitfox-910-586-235-586.csv
+DEBUG:root:score5b_preagg5_job6_kitfox-910-586-235-586
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+6
+kitfox-910-586-235-586
+http://10.103.94.204:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.103.94.204
+{'3': ['score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5b_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5a_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv', 'score5c_preagg5_job3_kitfox-956-1114-167-20.csv'], '5': ['score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5b_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5a_preagg5_job5_kitfox-1035-1019-193-882.csv', 'score5c_preagg5_job5_kitfox-1035-1019-193-882.csv'], '6': ['score5a_preagg5_job6_kitfox-910-586-235-586.csv', 'score5b_preagg5_job6_kitfox-910-586-235-586.csv'], '4': ['score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5a_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv', 'score5c_preagg5_job4_kitfox-700-804-3-758.csv', 'score5b_preagg5_job4_kitfox-700-804-3-758.csv'], '7': [], '2': ['score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5a_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5c_preagg5_job2_kitfox-1033-182-476-378.csv', 'score5b_preagg5_job2_kitfox-1033-182-476-378.csv'], '1': ['score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5a_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5b_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv', 'score5c_preagg5_job1_kitfox-430-836-345-1196.csv']}
+Receive enough results for job 6
+6
+['score5a_preagg5_job6_kitfox-910-586-235-586.csv', 'score5b_preagg5_job6_kitfox-910-586-235-586.csv']
+/centralized_scheduler/input/score5a_preagg5_job6_kitfox-910-586-235-586.csv
+DEBUG:urllib3.connectionpool:http://10.103.94.204:6100 "POST /post-dict HTTP/1.1" 200 2364
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job6_kitfox-910-586-235-586.
+DEBUG:root:preagg5_lccdec5_score5a_job6_kitfox-910-586-235-586
+DEBUG:root:kitfox-910-586-235-586
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+6
+['score5a_preagg5_job6_kitfox-910-586-235-586.csv', 'score5b_preagg5_job6_kitfox-910-586-235-586.csv']
+/centralized_scheduler/input/score5b_preagg5_job6_kitfox-910-586-235-586.csv
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job6_kitfox-910-586-235-586.csv.
+DEBUG:root:score5a_preagg5_job6_kitfox-910-586-235-586.csv
+DEBUG:root:score5a_preagg5_job6_kitfox-910-586-235-586
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job6_kitfox-910-586-235-586 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job6_kitfox-910-586-235-586
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job6_kitfox-910-586-235-586.
+DEBUG:root:preagg5_lccdec5_score5a_job6_kitfox-910-586-235-586
+DEBUG:root:kitfox-910-586-235-586
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5b_job6_kitfox-910-586-235-586.
+DEBUG:root:preagg5_lccdec5_score5b_job6_kitfox-910-586-235-586
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job6_kitfox-910-586-235-586 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5a_job6_kitfox-910-586-235-586
+6
+kitfox-910-586-235-586
+http://10.103.94.204:6100/post-dict
+DEBUG:root:kitfox-910-586-235-586
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5b_job6_kitfox-910-586-235-586.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5b_job6_kitfox-910-586-235-586 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5b_job6_kitfox-910-586-235-586
+DEBUG:root:preagg5_lccdec5_score5b_job6_kitfox-910-586-235-586
+DEBUG:root:kitfox-910-586-235-586
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5b_job6_kitfox-910-586-235-586 root@10.108.183.101:/centralized_scheduler/input/preagg5_lccdec5_score5b_job6_kitfox-910-586-235-586
+DEBUG:root:data transfer complete
+

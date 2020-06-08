@@ -177,7 +177,10 @@ def main():
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     c = 'storeclass%s'%(classnum)
     filelists = [f for f in listdir(outpath) if f.startswith(c)]
-    filelist = filelists[0:4] #4 files
+    if FLAG_PART2 == 1:
+        filelist = filelists[0:4] #conding part 2
+    else:
+        filelist = filelists[0:6] #noncoding part 2
     outfile = task(filelist, outpath, outpath)
     return outfile
     

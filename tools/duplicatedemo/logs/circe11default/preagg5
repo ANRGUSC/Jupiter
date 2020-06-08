@@ -1,0 +1,105 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+my child nodes are:
+lccdec5
+their IPs are:
+10.102.28.195
+my task is:
+preagg5
+flag is:
+true
+number of inputs for my task:
+1
+home node is:
+10.107.64.38
+monitor.py input args are:
+1 true lccdec5 10.102.28.195 root PASSWORD
+python3 centralized_scheduler/monitor.py 1 true  lccdec5 10.102.28.195 root PASSWORD preagg5
+DEBUG:root:Combined IP Map
+DEBUG:root:{'lccdec5': '10.102.28.195', '': ''}
+DEBUG:root:starting the input monitoring process
+
+DEBUG:root:starting the output monitoring process
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5a_preagg5_job1_kitfox-954-71-1005-612.csv.
+DEBUG:root:score5a_preagg5_job1_kitfox-954-71-1005-612.csv
+DEBUG:root:score5a_preagg5_job1_kitfox-954-71-1005-612
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+kitfox-954-71-1005-612
+http://10.100.249.67:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.100.249.67
+DEBUG:urllib3.connectionpool:http://10.100.249.67:6100 "POST /post-dict HTTP/1.1" 200 67
+{'1': ['score5a_preagg5_job1_kitfox-954-71-1005-612.csv'], '2': []}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5b_preagg5_job1_kitfox-954-71-1005-612.csv.
+DEBUG:root:score5b_preagg5_job1_kitfox-954-71-1005-612.csv
+DEBUG:root:score5b_preagg5_job1_kitfox-954-71-1005-612
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+kitfox-954-71-1005-612
+http://10.100.249.67:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.100.249.67
+DEBUG:urllib3.connectionpool:http://10.100.249.67:6100 "POST /post-dict HTTP/1.1" 200 118
+{'1': ['score5a_preagg5_job1_kitfox-954-71-1005-612.csv', 'score5b_preagg5_job1_kitfox-954-71-1005-612.csv'], '2': []}
+Receive enough results for job 1
+1
+['score5a_preagg5_job1_kitfox-954-71-1005-612.csv', 'score5b_preagg5_job1_kitfox-954-71-1005-612.csv']
+/centralized_scheduler/input/score5a_preagg5_job1_kitfox-954-71-1005-612.csv
+1
+['score5a_preagg5_job1_kitfox-954-71-1005-612.csv', 'score5b_preagg5_job1_kitfox-954-71-1005-612.csv']
+/centralized_scheduler/input/score5b_preagg5_job1_kitfox-954-71-1005-612.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job1_kitfox-954-71-1005-612.
+DEBUG:root:preagg5_lccdec5_score5a_job1_kitfox-954-71-1005-612
+DEBUG:root:kitfox-954-71-1005-612
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score5c_preagg5_job1_kitfox-954-71-1005-612.csv.
+DEBUG:root:score5c_preagg5_job1_kitfox-954-71-1005-612.csv
+DEBUG:root:score5c_preagg5_job1_kitfox-954-71-1005-612
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5a_job1_kitfox-954-71-1005-612.
+DEBUG:root:preagg5_lccdec5_score5a_job1_kitfox-954-71-1005-612
+DEBUG:root:kitfox-954-71-1005-612
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job1_kitfox-954-71-1005-612 root@10.102.28.195:/centralized_scheduler/input/preagg5_lccdec5_score5a_job1_kitfox-954-71-1005-612
+Warning: Permanently added '[10.102.28.195]:5000' (ECDSA) to the list of known hosts.
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5b_job1_kitfox-954-71-1005-612.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5a_job1_kitfox-954-71-1005-612 root@10.102.28.195:/centralized_scheduler/input/preagg5_lccdec5_score5a_job1_kitfox-954-71-1005-612
+DEBUG:root:preagg5_lccdec5_score5b_job1_kitfox-954-71-1005-612
+DEBUG:root:kitfox-954-71-1005-612
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+1
+kitfox-954-71-1005-612
+http://10.100.249.67:6100/post-dict
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg5_lccdec5_score5b_job1_kitfox-954-71-1005-612.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5b_job1_kitfox-954-71-1005-612 root@10.102.28.195:/centralized_scheduler/input/preagg5_lccdec5_score5b_job1_kitfox-954-71-1005-612
+DEBUG:root:preagg5_lccdec5_score5b_job1_kitfox-954-71-1005-612
+DEBUG:root:kitfox-954-71-1005-612
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg5_lccdec5_score5b_job1_kitfox-954-71-1005-612 root@10.102.28.195:/centralized_scheduler/input/preagg5_lccdec5_score5b_job1_kitfox-954-71-1005-612
+DEBUG:root:data transfer complete
+
