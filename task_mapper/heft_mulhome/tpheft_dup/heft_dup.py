@@ -31,6 +31,7 @@ import numpy as np
 import os
 import time
 import split
+import duplication
 
 class Duration:
     """Time duration about a task
@@ -193,13 +194,13 @@ class HEFT:
                 res += self.cal_comm_quadratic(self.data[task1.number][task2.number],self.quaratic_profile[i][j])
         if(res < 0):
             print("got negative communication cost from network profiler, something wrong with DRUPE")
-            #print(self.task_names[task1.number], self.task_names[task2.number])
-            #for i in range(self.num_processor):
-            #    for j in range(self.num_processor):
-            #        if i==j: continue
-            #        print(i, j)
-            #        print(self.cal_comm_quadratic(self.data[task1.number][task2.number],self.quaratic_profile[i][j]))
-            #exit()
+            print(self.task_names[task1.number], self.task_names[task2.number])
+            for i in range(self.num_processor):
+                for j in range(self.num_processor):
+                    if i==j: continue
+                    print(i, j)
+                    print(self.cal_comm_quadratic(self.data[task1.number][task2.number],self.quaratic_profile[i][j]))
+            exit()
         return res / (self.num_processor ** 2 - self.num_processor)
 
 
@@ -289,16 +290,29 @@ class HEFT:
                         l.time_line.append(ld)
     
     
-    def run_dup_split(self):     
+    def run_dup_split(self):
+    
         while True:
             btnk_id = self.get_btnk_id()
+            print("\n-------------------------------")
+            print("current system bottleneck: %s" % str(btnk_id))
             if self.is_link(btnk_id):
-                break
-            else:
-                spt = split.Split()
-                flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
-                if flag == False:
+                dup = duplication.Duplication()
+                new_node_id, min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, files_to_dst, files_from_src = dup.get_dup_node(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
+                if new_node_id == -1:
                     break
+                print("-------------------------------")
+                print("Conclusion for this round of duplication: chose new node and duplicate following tasks on it")
+                print(new_node_id, task_ids_to_dup)
+                new_node = self.processors[new_node_id]
+                dup.duplicate(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, 
+                btnk_id, new_node, min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, self.task_names, files_to_dst, files_from_src)
+            else:
+                break
+                #spt = split.Split()
+                #flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
+                #if flag == False:
+                #    break
             
     def get_link_by_id(self, link_id):
         for l in self.links:
@@ -367,11 +381,8 @@ class HEFT:
         Returns:
             dict: assignments of tasks and corresponding computing nodes & portion
         """
-        # eg a['task0'] = ['node1', 0.5, 'node2', 0.5], a['task1'] = 'node1'
-        # if task wasn't split, value is a string specifying the node
-        # else, value is a list, [node, portion, node, portion, etc]
+        # with duplication: send a serialized value (string) of updated graph to circe
         assignments = {}
-        
         for task in self.tasks:
             if len(task.proc_num_to_portion) == 0:
                 assignments[self.task_names[task.number]] = self.node_info[task.processor_num+1]
@@ -381,7 +392,10 @@ class HEFT:
                 for proc_num in task.proc_num_to_portion:
                     assignments[task_name].append(self.node_info[proc_num+1])
                     assignments[task_name].append(task.proc_num_to_portion[proc_num])
-                    
+        dag_str = self.serialize_dag_file("dag.txt")
+        assignments["UPDATED_DAG_FILE_WITH_DUPICATION"] = dag_str
+        print("\nassignments\n")
+        print(assignments)
         return assignments
 
     def print_level(self, level):
@@ -420,20 +434,20 @@ class HEFT:
         input: an array of links and an array of processors (with takeup time)
         output: id of bottleneck resource (string)
         """
-        max_time = 0.0
+        max_time = 0
         btnk_id = ""
         for link in self.links:
             if len(link.time_line) != 0:
                 if link.time_line[-1].end > max_time:
                     max_time = link.time_line[-1].end
                     btnk_id = link.id
-                    
+        '''
         for processor in self.processors:
             if len(processor.time_line) != 0:
                 if processor.time_line[-1].end > max_time:
                     max_time = processor.time_line[-1].end
                     btnk_id = str(processor.number)
-                    
+        '''         
         return btnk_id
         
     def is_link(self, btnk_id):
@@ -445,3 +459,15 @@ class HEFT:
             if c == '_':
                 return True
         return False
+        
+    def serialize_dag_file(self, path):
+        
+        dag_str = ""
+        f = open(path, "r")
+        while(1):
+            line = f.readline()
+            if len(line) == 0:
+                break
+            dag_str += line
+        f.close()
+        return dag_str
