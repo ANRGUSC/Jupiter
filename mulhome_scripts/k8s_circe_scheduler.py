@@ -328,6 +328,8 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
      'task3': 'node4'}
 
     """
+    print("MAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
+    print(mapp)
     child_spec = ""
     child_spec_ips = ""
     DNS_to_nodename = {}
@@ -342,7 +344,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         nodeDNS = val
         nodename = DNS_to_nodename[nodeDNS]
         idx = mapp[entry_task].index(nodename)
-        portion = str(round(float(mapp[entry_task][idx+1]), 3))
+        portion = str(round(mapp[entry_task][idx+1], 3))
         child_spec = child_spec + taskname + '/' + portion + ':'
         child_spec_ips = child_spec_ips + service_ips[taskname] + '/' + portion + ':'
     child_spec = child_spec.rstrip(':')
