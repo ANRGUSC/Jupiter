@@ -117,39 +117,39 @@ def recv_datasink():
     return "ok"
 app.add_url_rule('/recv_monitor_datasink', 'recv_datasink', recv_datasink)
 
-def recv_mapping():
-    """
+# def recv_mapping():
+#     """
 
-    Receiving run-time profiling information from WAVE/HEFT for every task (task name, start time stats, end time stats)
+#     Receiving run-time profiling information from WAVE/HEFT for every task (task name, start time stats, end time stats)
     
-    Raises:
-        Exception: failed processing in Flask
-    """
+#     Raises:
+#         Exception: failed processing in Flask
+#     """
 
-    global start_time
-    global end_time
+#     global start_time
+#     global end_time
 
-    try:
-        worker_node = request.args.get('work_node')
-        msg = request.args.get('msg')
-        ts = datetime.utcnow()
+#     try:
+#         worker_node = request.args.get('work_node')
+#         msg = request.args.get('msg')
+#         ts = datetime.utcnow()
 
-        logging.debug("Received monitor flask message:%s %s %s", worker_node, msg, ts)
-        if msg == 'start':
-            start_time[worker_node].append(unix_time(ts))
-        else:
-            end_time[worker_node].append(unix_time(ts))
-            if worker_node in last_tasks:
-                logging.debug("Start time stats: %s", start_time)
-                logging.debug("End time stats: %s", end_time)
+#         logging.debug("Received monitor flask message:%s %s %s", worker_node, msg, ts)
+#         if msg == 'start':
+#             start_time[worker_node].append(unix_time(ts))
+#         else:
+#             end_time[worker_node].append(unix_time(ts))
+#             # if worker_node in last_tasks:
+#             #     logging.debug("Start time stats: %s", start_time)
+#             #     logging.debug("End time stats: %s", end_time)
 
 
-    except Exception as e:
-        logging.debug("Bad reception or failed processing in Flask")
-        logging.debug(e)
-        return "not ok"
-    return "ok"
-app.add_url_rule('/recv_monitor_data', 'recv_mapping', recv_mapping)
+#     except Exception as e:
+#         logging.debug("Bad reception or failed processing in Flask")
+#         logging.debug(e)
+#         return "not ok"
+#     return "ok"
+# app.add_url_rule('/recv_monitor_data', 'recv_mapping', recv_mapping)
 
 def return_output_files():
     """
@@ -252,6 +252,9 @@ def recv_runtime_profile():
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg').split()
         
+        logging.debug(worker_node)
+        logging.debug(msg[0])
+        logging.debug(msg[1])
         
         if msg[0] == 'rt_enter':
             rt_enter_time[(worker_node,msg[1])] = float(msg[2])
@@ -277,20 +280,25 @@ def recv_runtime_profile():
                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
                 logging.debug(s)
                 log_file.write(s)
-
-                for k, v in rt_enter_time.items():
-                    logging.debug(k)
-                    logging.debug(rt_finish_time)
-                    logging.debug(msg[1])
-                    if k in rt_finish_time:
-                        print('-----')
-                        elapse = rt_finish_time[k]-v
-                        duration = rt_finish_time[k]-rt_exec_time[k]
+                logging.debug('=========***')
+                logging.debug(rt_enter_time)
+                logging.debug('=========***2')
+                logging.debug(rt_exec_time)
+                logging.debug('=========***3')
+                logging.debug(rt_finish_time)
+                logging.debug('=========***4')
+                
+                for k,v in rt_finish_time:
+                    if k in rt_enter_time and k in rt_exec_time:
+                        elapse = rt_finish_time[k]-v   
+                        duration = rt_finish_time[k]-rt_exec_time[k] 
                         waiting = rt_exec_time[k]-v
                         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
                         logging.debug(s)
                         log_file.write(s)
                         log_file.flush()
+                    else:
+                        logging.debug('Missing profiling file information...')
 
                 log_file.close()
                 logging.debug('********************************************')
@@ -435,30 +443,35 @@ class MyHandler(pyinotify.ProcessEvent):
         global count
 
         logging.debug("Received file as output - %s." % event.pathname) 
-        outputfile = event.pathname.split('.')[0].split('/')[-1].split('_')[-1].split('-')
-        filen = outputfile[0]
-        fileid = outputfile[1:]
-        # 4 files at a time
-        outputfiles = [x+'img'+filen+'.JPEG' for x in fileid]
-        logging.debug(outputfiles)
-        t = datetime.now()
-        for f in outputfiles:
-            end_times[f] = unix_time(t) 
-            try:
-                exec_times[f] = end_times[f] - start_times[f]
-            except Exception as e:
-                logging.debug('Could not find the start time information for the file!!!!')
-                logging.debug(f)
-        logging.debug("execution time is: %s", exec_times)
+        outfile =  event.pathname.split('.')[0].split('/')[-1].split('_')[-1]
+        outputfile =outfile.split('-')
 
-        if BOKEH == 2: #used for combined_app with distribute script
-            app_name = outputfile.split('-')[0]
-            msg = 'makespan '+ app_name + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) 
-            demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
+        if not (outfile in files_out_set):
+            files_out_set.add(outfile)
+            filen = outputfile[0]
+            fileid = outputfile[1:]
+            # 4 files at a time
+            outputfiles = [x+'img'+filen+'.JPEG' for x in fileid]
+            logging.debug(outputfiles)
+            t = datetime.now()
+            logging.debug('Received time %f',unix_time(t))
+            for f in outputfiles:
+                end_times[f] = unix_time(t) 
+                try:
+                    exec_times[f] = end_times[f] - start_times[f]
+                except Exception as e:
+                    logging.debug('Could not find the start time information for the file!!!!')
+                    logging.debug(f)
+            logging.debug("execution time is: %s", exec_times)
 
-        if BOKEH == 3:
-            msg = 'makespan ' + appoption + ' ' + appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
-            demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
+            if BOKEH == 2: #used for combined_app with distribute script
+                app_name = outputfile.split('-')[0]
+                msg = 'makespan '+ app_name + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) 
+                demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
+
+            if BOKEH == 3:
+                msg = 'makespan ' + appoption + ' ' + appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+                demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
 
 class Handler(pyinotify.ProcessEvent):
@@ -488,21 +501,25 @@ class Handler(pyinotify.ProcessEvent):
             runtime_receiver_log.write(s)
             runtime_receiver_log.flush()
 
+
+
         inputfile = event.pathname.split('/')[-1]
         logging.debug(inputfile)
-        #t = time.time()
-        t = datetime.now()
-        start_times[inputfile] = unix_time(t)
-        new_file_name = os.path.split(event.pathname)[-1]
+        if not (inputfile in files_in_set): 
+            #t = time.time()
+            t = datetime.now()
+            start_times[inputfile] = unix_time(t)
+            logging.debug('Received time %f',unix_time(t))
+            new_file_name = os.path.split(event.pathname)[-1]
 
 
-        #This part should be optimized to avoid hardcoding IP, user and password
-        #of the first task node
-        # IP = os.environ['CHILD_NODES_IPS']
-        ID = os.environ['CHILD_NODES']
-        source = event.pathname
-        destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
-        transfer_data(ID,username, password,source, destination)
+            #This part should be optimized to avoid hardcoding IP, user and password
+            #of the first task node
+            # IP = os.environ['CHILD_NODES_IPS']
+            ID = os.environ['CHILD_NODES']
+            source = event.pathname
+            destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
+            transfer_data(ID,username, password,source, destination)
 
 def main():
     """
@@ -570,7 +587,7 @@ def main():
     end_times = manager.dict()
     exec_times = manager.dict()
     
-    global count, start_time,end_time, rt_enter_time, rt_exec_time, rt_finish_time
+    global count, start_time,end_time, rt_enter_time, rt_exec_time, rt_finish_time, files_in_set, files_out_set
     count = 0
     start_time = defaultdict(list)
     end_time = defaultdict(list)
@@ -578,6 +595,9 @@ def main():
     rt_enter_time = defaultdict(list)
     rt_exec_time = defaultdict(list)
     rt_finish_time = defaultdict(list)
+
+    files_in_set = set()
+    files_out_set = set()
 
 
     #get DAG and home machine info

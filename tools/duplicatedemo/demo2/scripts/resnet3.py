@@ -122,41 +122,42 @@ def task(file_, pathin, pathout):
                     destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass4_"+ f)
                     # destination = os.path.join(pathout, "storeclass2_" + f)
                     out_list.append(shutil.copyfile(source, destination))
-                elif pred[0] == 278: ### kitfox. class 5
+                elif pred[0] == 292: ### tiger. class 5
                     source = os.path.join(pathin, f)
                     # f_split = f.split("prefix_")[1]
                     # destination = os.path.join(pathout, "class2_" + f)
                     destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass5_"+ f)
                     # destination = os.path.join(pathout, "storeclass2_" + f)
                     out_list.append(shutil.copyfile(source, destination))
-                elif pred[0] == 283: ### persian cat. class 6
+                elif pred[0] == 278: ### kitfox. class 5
                     source = os.path.join(pathin, f)
                     # f_split = f.split("prefix_")[1]
                     # destination = os.path.join(pathout, "class2_" + f)
                     destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass6_"+ f)
                     # destination = os.path.join(pathout, "storeclass2_" + f)
                     out_list.append(shutil.copyfile(source, destination))
-                elif pred[0] == 288: ### leopard. class 7
+                elif pred[0] == 283: ### persian cat. class 6
                     source = os.path.join(pathin, f)
                     # f_split = f.split("prefix_")[1]
                     # destination = os.path.join(pathout, "class2_" + f)
                     destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass7_"+ f)
                     # destination = os.path.join(pathout, "storeclass2_" + f)
                     out_list.append(shutil.copyfile(source, destination))
-                elif pred[0] == 291: ### lion. class 8
+                elif pred[0] == 288: ### leopard. class 7
                     source = os.path.join(pathin, f)
                     # f_split = f.split("prefix_")[1]
                     # destination = os.path.join(pathout, "class2_" + f)
                     destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass8_"+ f)
                     # destination = os.path.join(pathout, "storeclass2_" + f)
                     out_list.append(shutil.copyfile(source, destination))
-                elif pred[0] == 292: ### tiger. class 9
+                elif pred[0] == 291: ### lion. class 8
                     source = os.path.join(pathin, f)
                     # f_split = f.split("prefix_")[1]
                     # destination = os.path.join(pathout, "class2_" + f)
                     destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass9_"+ f)
                     # destination = os.path.join(pathout, "storeclass2_" + f)
                     out_list.append(shutil.copyfile(source, destination))
+                
                 elif pred[0] == 295: ### black bear. class 10
                     source = os.path.join(pathin, f)
                     # f_split = f.split("prefix_")[1]
@@ -277,7 +278,7 @@ def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
 #Krishna
 
 def main():
-    classlists = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'kitfox', 'persiancat', 'leopard', 'lion', 'tiger', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+    classlists = ['fireengine', 'schoolbus', 'whitewolf', 'hyena','tiger','kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
     classlist = classlists[0:5]
     num = 27
     filelist = []

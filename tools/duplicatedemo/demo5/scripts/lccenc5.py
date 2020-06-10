@@ -12,7 +12,7 @@ import logging
 logging.basicConfig(level = logging.DEBUG)
 taskname = Path(__file__).stem
 classnum = taskname.split('lccenc')[1]
-classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'kitfox', 'persiancat', 'leopard', 'lion', 'tiger', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
 classname = classlist[int(classnum)-1]
 
 INI_PATH = 'jupiter_config.ini'
@@ -177,7 +177,10 @@ def main():
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     c = 'storeclass%s'%(classnum)
     filelists = [f for f in listdir(outpath) if f.startswith(c)]
-    filelist = filelists[0:4] #4 files
+    if FLAG_PART2 == 1:
+        filelist = filelists[0:4] #conding part 2
+    else:
+        filelist = filelists[0:6] #noncoding part 2
     outfile = task(filelist, outpath, outpath)
     return outfile
     

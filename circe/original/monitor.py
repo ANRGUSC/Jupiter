@@ -38,36 +38,42 @@ import _thread
 import threading
 import logging
 import importlib
+from datetime import datetime
 
 
 
+def unix_time(dt):
+    epoch = datetime.utcfromtimestamp(0)
+    delta = dt - epoch
+    return delta.total_seconds()
 
-def send_monitor_data(msg):
-    """
-    Sending message to flask server on home
 
-    Args:
-        msg (str): the message to be sent
+# def send_monitor_data(msg):
+#     """
+#     Sending message to flask server on home
 
-    Returns:
-        str: the message if successful, "not ok" otherwise.
+#     Args:
+#         msg (str): the message to be sent
 
-    Raises:
-        Exception: if sending message to flask server on home is failed
-    """
-    try:
-        url = "http://" + home_node_host_port + "/recv_monitor_data"
-        params = {'msg': msg, "work_node": taskname}
-        params = urllib.parse.urlencode(params)
-        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-        res = urllib.request.urlopen(req)
-        res = res.read()
-        res = res.decode('utf-8')
-    except Exception as e:
-        logging.debug("Sending message to flask server on home FAILED!!!")
-        logging.debug(e)
-        return "not ok"
-    return res
+#     Returns:
+#         str: the message if successful, "not ok" otherwise.
+
+#     Raises:
+#         Exception: if sending message to flask server on home is failed
+#     """
+#     try:
+#         url = "http://" + home_node_host_port + "/recv_monitor_data"
+#         params = {'msg': msg, "work_node": taskname}
+#         params = urllib.parse.urlencode(params)
+#         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+#         res = urllib.request.urlopen(req)
+#         res = res.read()
+#         res = res.decode('utf-8')
+#     except Exception as e:
+#         logging.debug("Sending message to flask server on home FAILED!!!")
+#         logging.debug(e)
+#         return "not ok"
+#     return res
 
 def send_runtime_profile(msg):
     """
@@ -84,6 +90,7 @@ def send_runtime_profile(msg):
     """
     try:
         logging.debug('Sending runtime stats')
+        logging.debug(msg)
         url = "http://" + home_node_host_port + "/recv_runtime_profile"
         params = {'msg': msg, "work_node": taskname}
         params = urllib.parse.urlencode(params)
@@ -210,7 +217,8 @@ class Handler1(pyinotify.ProcessEvent):
 
         logging.debug(new_file)
         original_name = new_file.split('.')[0]
-        temp_name= original_name.split('_')[-1]
+        logging.debug(original_name)
+        temp_name= original_name.split('_')[-1]+'.JPEG'
         logging.debug(temp_name)
         
         global files_out, files_out_set
@@ -218,12 +226,16 @@ class Handler1(pyinotify.ProcessEvent):
         #based on flag2 decide whether to send one output to all children or different outputs to different children in
         #order given in the config file
         flag2 = sys.argv[2]
-        ts = time.time()
+        # ts = time.time()
+        t = datetime.now()
+        ts = unix_time(t)
+        logging.debug('Received time %f',ts)
         if taskname == 'distribute':
             logging.debug('This is the distribution point')
-            ts = time.time()
+            # ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
+
             if BOKEH == 1:
                 runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
@@ -238,7 +250,7 @@ class Handler1(pyinotify.ProcessEvent):
             transfer_data(next_task,user,password,source, destination)
         elif sys.argv[3] == 'home':
             logging.debug('Next node is home')
-            ts = time.time()
+            # ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
             if BOKEH == 1:
@@ -258,7 +270,7 @@ class Handler1(pyinotify.ProcessEvent):
 
         elif flag2 == 'true':
             logging.debug('Flag is true')
-            ts = time.time()
+            # ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
             if BOKEH == 1:
@@ -305,7 +317,7 @@ class Handler1(pyinotify.ProcessEvent):
             # if (len(files_out) == num_child):
             if (len(files_out_set) == num_child):
                 # send runtime profiling information
-                ts = time.time()
+                # ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
                 if BOKEH == 1:
@@ -372,7 +384,7 @@ class Handler1(pyinotify.ProcessEvent):
             # if (len(files_out) == num_child):
             if (len(files_out_set) == num_child):
                 # send runtime profiling information
-                ts = time.time()
+                # ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
                 if BOKEH == 1:
@@ -438,67 +450,76 @@ class Handler(pyinotify.ProcessEvent):
 
         # demo app
         logging.debug(new_file)
-        temp_name = new_file.split('.')[0]
+        original_name = new_file.split('.')[0]
+        logging.debug(original_name)
+        temp_name= original_name.split('_')[-1]+'.JPEG'
         logging.debug(temp_name)
 
+        if not (new_file in files_in_set):
+            files_in_set.add(new_file)
+            queue_mul.put(new_file)
+            logging.debug(queue_mul)
+            
+            # ts = time.time()
+            t = datetime.now()
+            ts = unix_time(t)
+            logging.debug('Received time %f',ts)
+            
+            if RUNTIME == 1:
+                s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,event.pathname,ts)
+                runtime_receiver_log.write(s)
+                runtime_receiver_log.flush()
 
-        queue_mul.put(new_file)
-        
-        ts = time.time()
-        if RUNTIME == 1:
-            s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,event.pathname,ts)
-            runtime_receiver_log.write(s)
-            runtime_receiver_log.flush()
+            """
+                Save the time the input file enters the queue
+            """
+            filename = new_file
+            global filenames
 
-        """
-            Save the time the input file enters the queue
-        """
-        filename = new_file
-        global filenames
-
-        if len(filenames) == 0:
+            # if len(filenames) == 0:
             runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
             if BOKEH == 1:
                 runtimebk = 'rt_enter '+ taskname+' '+ temp_name+ ' '+str(ts)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-        flag1 = sys.argv[1]
-        logging.debug(flag1)
-        if flag1 == "1":
-            ts = time.time()
-            runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-            send_runtime_profile(runtime_info)  
-            if BOKEH == 1:
-                runtimebk = 'rt_exec '+ taskname + ' '+temp_name+ ' '+str(ts)
-                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-            if BOKEH == 0:
-                msg = taskname + " starts"
-                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)                
-            inputfile=queue_mul.get()
-            input_path = os.path.split(event.pathname)[0]
-            output_path = os.path.join(os.path.split(input_path)[0],'output')
-            dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
-            dag_task.start()
-            dag_task.join()
-           
-        else:
-            filenames.append(queue_mul.get())
-            if (len(filenames) == int(flag1)):
+
+            flag1 = sys.argv[1]
+            logging.debug(flag1)
+            if flag1 == "1":
                 ts = time.time()
                 runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)           
+                send_runtime_profile(runtime_info)  
                 if BOKEH == 1:
-                    runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
+                    runtimebk = 'rt_exec '+ taskname + ' '+temp_name+ ' '+str(ts)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
                 if BOKEH == 0:
                     msg = taskname + " starts"
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)                
+                inputfile=queue_mul.get()
                 input_path = os.path.split(event.pathname)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
-                dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
+                dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
                 dag_task.start()
                 dag_task.join()
-                filenames = []
+               
+            else:
+                filenames.append(queue_mul.get())
+                if (len(filenames) == int(flag1)):
+                    ts = time.time()
+                    runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+                    send_runtime_profile(runtime_info)           
+                    if BOKEH == 1:
+                        runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
+                        demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+                    if BOKEH == 0:
+                        msg = taskname + " starts"
+                        demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                    input_path = os.path.split(event.pathname)[0]
+                    output_path = os.path.join(os.path.split(input_path)[0],'output')
+                    dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
+                    dag_task.start()
+                    dag_task.join()
+                    filenames = []
 
 
 
@@ -556,7 +577,7 @@ def main():
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
 
 
-    global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips, all_sinks, all_sinks_ips, files_out_set
+    global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips, all_sinks, all_sinks_ips, files_out_set, files_in_set
 
     configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
@@ -567,6 +588,7 @@ def main():
     #target port for SSHing into a container
     filenames=[]
     files_out=[]
+    files_in_set = set()
     files_out_set = set()
     node_name = os.environ['NODE_NAME']
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)

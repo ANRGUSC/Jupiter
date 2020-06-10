@@ -52,9 +52,6 @@ def task(filelist, pathin, pathout):
     # Load id of incoming job (id_job=1,2,3,...)
     # job_id = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]
     # job_id = job_id[3:]
-    print(filelist[0].split('_'))
-    print(filelist[0].split('_')[-2])
-    print(filelist[0].split('_')[-2].split('job'))
     job_id = filelist[0].split('_')[-2].split('job')[1]
     print(job_id)
     filesuffixs = filelist[0].split('_')[-1]
@@ -93,7 +90,6 @@ def task(filelist, pathin, pathout):
             else:
                 result = np.concatenate((result, results[j]), axis = 0)
         destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs + '.csv')
-        print(destination)
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
         return outlist
@@ -126,7 +122,6 @@ def task(filelist, pathin, pathout):
             else:
                 result = np.concatenate((result, results[j]), axis = 0)
         destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs+'.csv')
-        print(destination)
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
         return outlist

@@ -12,7 +12,7 @@ import logging
 logging.basicConfig(level = logging.DEBUG)
 taskname = Path(__file__).stem
 classnum = taskname.split('lccenc')[1]
-classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'kitfox', 'persiancat', 'leopard', 'lion', 'tiger', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
 classname = classlist[int(classnum)-1]
 
 INI_PATH = 'jupiter_config.ini'
@@ -133,7 +133,6 @@ def task(filelist, pathin, pathout):
         for i in range(N):
             #destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'.csv')
             destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+filesuffix+'.csv')
-            print(destination)
             np.savetxt(destination, En_Image_Batch[i], delimiter=',')
             out_list.append(destination)
         return out_list
@@ -142,11 +141,9 @@ def task(filelist, pathin, pathout):
         #Read M batches
         Image_Batch = []
         count_file = 0
-        print(filelist)
         for j in range(N):
             count = 0
             while count < L:
-                print(os.path.join(pathin, filelist[count_file]))
                 img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
                 if img is not None:
                 # resize image

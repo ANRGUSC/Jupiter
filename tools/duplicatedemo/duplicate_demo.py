@@ -106,8 +106,9 @@ def gen_duplicate_scripts(app_config, app_path, base_path, base_tasks):
     
 if __name__ == '__main__':
     base_path = 'base'
-    app_path = 'demo5'
-    #app_path = 'demo2'
+    #app_path = 'demo5'
+    # app_path = 'demo2'
+    app_path = 'demo'
     app_config = load_yaml(app_path + "/app_config.yaml")
     base_tasks = ['master','collage','decoder','storeclass1','resnet0','lccenc1','lccdec1','score1a','score1b','score1c','preagg1']
     gen_duplicate_scripts(app_config, app_path, base_path, base_tasks)

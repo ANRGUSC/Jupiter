@@ -168,7 +168,8 @@ if __name__ == '__main__':
     # log_folder = 'circe10default'
     # log_folder = 'circe00default'
     # log_folder = 'circe00sleep'
-    log_folder = 'circe10sleep'
+    # log_folder = 'circe10sleep'
+    log_folder = 'new11default'
     if os.path.exists(log_folder):
         shutil.rmtree(log_folder)
     os.mkdir(log_folder)

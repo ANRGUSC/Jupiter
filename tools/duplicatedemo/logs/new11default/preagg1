@@ -1,0 +1,1996 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+my child nodes are:
+lccdec1
+their IPs are:
+10.99.210.101
+my task is:
+preagg1
+flag is:
+true
+number of inputs for my task:
+1
+home node is:
+10.97.213.73
+monitor.py input args are:
+1 true lccdec1 10.99.210.101 root PASSWORD
+python3 centralized_scheduler/monitor.py 1 true  lccdec1 10.99.210.101 root PASSWORD preagg1
+DEBUG:root:Combined IP Map
+DEBUG:root:{'lccdec1': '10.99.210.101', '': ''}
+DEBUG:root:starting the input monitoring process
+
+DEBUG:root:starting the output monitoring process
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job1_fireengine-623-495-848-1087.csv.
+DEBUG:root:score1a_preagg1_job1_fireengine-623-495-848-1087.csv
+DEBUG:root:score1a_preagg1_job1_fireengine-623-495-848-1087
+DEBUG:root:fireengine-623-495-848-1087.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718351.763771
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+fireengine-623-495-848-1087
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 72
+{'2': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job1_fireengine-623-495-848-1087.csv.
+DEBUG:root:score1b_preagg1_job1_fireengine-623-495-848-1087.csv
+DEBUG:root:score1b_preagg1_job1_fireengine-623-495-848-1087
+DEBUG:root:fireengine-623-495-848-1087.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718353.226473
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+fireengine-623-495-848-1087
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 128
+{'2': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 1
+1
+['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv']
+/centralized_scheduler/input/score1a_preagg1_job1_fireengine-623-495-848-1087.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job1_fireengine-623-495-848-1087
+1
+['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv']
+/centralized_scheduler/input/score1b_preagg1_job1_fireengine-623-495-848-1087.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job1_fireengine-623-495-848-1087
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job1_fireengine-623-495-848-1087.
+DEBUG:root:preagg1_lccdec1_score1a_job1_fireengine-623-495-848-1087
+DEBUG:root:preagg1_lccdec1_score1a_job1_fireengine-623-495-848-1087
+DEBUG:root:fireengine-623-495-848-1087.JPEG
+DEBUG:root:Received time 1591718354.703599
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job1_fireengine-623-495-848-1087.csv.
+DEBUG:root:score1c_preagg1_job1_fireengine-623-495-848-1087.csv
+DEBUG:root:score1c_preagg1_job1_fireengine-623-495-848-1087
+DEBUG:root:fireengine-623-495-848-1087.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718354.706044
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job1_fireengine-623-495-848-1087 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job1_fireengine-623-495-848-1087
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job1_fireengine-623-495-848-1087.
+DEBUG:root:preagg1_lccdec1_score1a_job1_fireengine-623-495-848-1087
+DEBUG:root:preagg1_lccdec1_score1a_job1_fireengine-623-495-848-1087
+DEBUG:root:fireengine-623-495-848-1087.JPEG
+DEBUG:root:Received time 1591718355.178885
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+Warning: Permanently added '[10.99.210.101]:5000' (ECDSA) to the list of known hosts.
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job1_fireengine-623-495-848-1087.
+DEBUG:root:preagg1_lccdec1_score1b_job1_fireengine-623-495-848-1087
+DEBUG:root:preagg1_lccdec1_score1b_job1_fireengine-623-495-848-1087
+DEBUG:root:fireengine-623-495-848-1087.JPEG
+DEBUG:root:Received time 1591718355.656740
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job1_fireengine-623-495-848-1087 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job1_fireengine-623-495-848-1087
+1
+fireengine-623-495-848-1087
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job1_fireengine-623-495-848-1087.
+DEBUG:root:preagg1_lccdec1_score1b_job1_fireengine-623-495-848-1087
+DEBUG:root:preagg1_lccdec1_score1b_job1_fireengine-623-495-848-1087
+DEBUG:root:fireengine-623-495-848-1087.JPEG
+DEBUG:root:Received time 1591718356.132771
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job1_fireengine-623-495-848-1087 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job1_fireengine-623-495-848-1087
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 184
+{'2': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job1_fireengine-623-495-848-1087.csv.
+DEBUG:root:score1a_preagg1_job1_fireengine-623-495-848-1087.csv
+DEBUG:root:score1a_preagg1_job1_fireengine-623-495-848-1087
+DEBUG:root:fireengine-623-495-848-1087.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job1_fireengine-623-495-848-1087.csv.
+DEBUG:root:score1c_preagg1_job1_fireengine-623-495-848-1087.csv
+DEBUG:root:score1c_preagg1_job1_fireengine-623-495-848-1087
+DEBUG:root:fireengine-623-495-848-1087.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job1_fireengine-623-495-848-1087.csv.
+DEBUG:root:score1b_preagg1_job1_fireengine-623-495-848-1087.csv
+DEBUG:root:score1b_preagg1_job1_fireengine-623-495-848-1087
+DEBUG:root:fireengine-623-495-848-1087.JPEG
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job1_fireengine-623-495-848-1087 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job1_fireengine-623-495-848-1087
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job2_fireengine-435-788-770-979.csv.
+DEBUG:root:score1a_preagg1_job2_fireengine-435-788-770-979.csv
+DEBUG:root:score1a_preagg1_job2_fireengine-435-788-770-979
+DEBUG:root:fireengine-435-788-770-979.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718387.247427
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+fireengine-435-788-770-979
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 246
+{'3': [], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job2_fireengine-435-788-770-979.csv.
+DEBUG:root:score1a_preagg1_job2_fireengine-435-788-770-979.csv
+DEBUG:root:score1a_preagg1_job2_fireengine-435-788-770-979
+DEBUG:root:fireengine-435-788-770-979.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job2_fireengine-435-788-770-979.csv.
+DEBUG:root:score1b_preagg1_job2_fireengine-435-788-770-979.csv
+DEBUG:root:score1b_preagg1_job2_fireengine-435-788-770-979
+DEBUG:root:fireengine-435-788-770-979.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718388.717449
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+fireengine-435-788-770-979
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 301
+{'3': [], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 2
+2
+['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv']
+/centralized_scheduler/input/score1a_preagg1_job2_fireengine-435-788-770-979.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job2_fireengine-435-788-770-979
+2
+['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv']
+/centralized_scheduler/input/score1b_preagg1_job2_fireengine-435-788-770-979.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job2_fireengine-435-788-770-979
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job2_fireengine-435-788-770-979.
+DEBUG:root:preagg1_lccdec1_score1a_job2_fireengine-435-788-770-979
+DEBUG:root:preagg1_lccdec1_score1a_job2_fireengine-435-788-770-979
+DEBUG:root:fireengine-435-788-770-979.JPEG
+DEBUG:root:Received time 1591718390.186489
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job2_fireengine-435-788-770-979.csv.
+DEBUG:root:score1b_preagg1_job2_fireengine-435-788-770-979.csv
+DEBUG:root:score1b_preagg1_job2_fireengine-435-788-770-979
+DEBUG:root:fireengine-435-788-770-979.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job2_fireengine-435-788-770-979 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job2_fireengine-435-788-770-979
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job2_fireengine-435-788-770-979.
+DEBUG:root:preagg1_lccdec1_score1a_job2_fireengine-435-788-770-979
+DEBUG:root:preagg1_lccdec1_score1a_job2_fireengine-435-788-770-979
+DEBUG:root:fireengine-435-788-770-979.JPEG
+DEBUG:root:Received time 1591718390.667305
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job2_fireengine-435-788-770-979.
+DEBUG:root:preagg1_lccdec1_score1b_job2_fireengine-435-788-770-979
+DEBUG:root:preagg1_lccdec1_score1b_job2_fireengine-435-788-770-979
+DEBUG:root:fireengine-435-788-770-979.JPEG
+DEBUG:root:Received time 1591718391.156713
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job2_fireengine-435-788-770-979 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job2_fireengine-435-788-770-979
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job2_fireengine-435-788-770-979.
+DEBUG:root:preagg1_lccdec1_score1b_job2_fireengine-435-788-770-979
+DEBUG:root:preagg1_lccdec1_score1b_job2_fireengine-435-788-770-979
+DEBUG:root:fireengine-435-788-770-979.JPEG
+DEBUG:root:Received time 1591718391.631345
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job2_fireengine-435-788-770-979 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job2_fireengine-435-788-770-979
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job2_fireengine-435-788-770-979 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job2_fireengine-435-788-770-979
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job3_fireengine-99-79-305-974.csv.
+DEBUG:root:score1a_preagg1_job3_fireengine-99-79-305-974.csv
+DEBUG:root:score1a_preagg1_job3_fireengine-99-79-305-974
+DEBUG:root:fireengine-99-79-305-974.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718406.264111
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+fireengine-99-79-305-974
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 361
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv'], '4': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job2_fireengine-435-788-770-979.csv.
+DEBUG:root:score1c_preagg1_job2_fireengine-435-788-770-979.csv
+DEBUG:root:score1c_preagg1_job2_fireengine-435-788-770-979
+DEBUG:root:fireengine-435-788-770-979.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718407.722987
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+fireengine-435-788-770-979
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 416
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '4': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job3_fireengine-99-79-305-974.csv.
+DEBUG:root:score1a_preagg1_job3_fireengine-99-79-305-974.csv
+DEBUG:root:score1a_preagg1_job3_fireengine-99-79-305-974
+DEBUG:root:fireengine-99-79-305-974.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job2_fireengine-435-788-770-979.csv.
+DEBUG:root:score1c_preagg1_job2_fireengine-435-788-770-979.csv
+DEBUG:root:score1c_preagg1_job2_fireengine-435-788-770-979
+DEBUG:root:fireengine-435-788-770-979.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job3_fireengine-99-79-305-974.csv.
+DEBUG:root:score1b_preagg1_job3_fireengine-99-79-305-974.csv
+DEBUG:root:score1b_preagg1_job3_fireengine-99-79-305-974
+DEBUG:root:fireengine-99-79-305-974.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718409.215717
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+fireengine-99-79-305-974
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 469
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '4': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 3
+3
+['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv']
+/centralized_scheduler/input/score1a_preagg1_job3_fireengine-99-79-305-974.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job3_fireengine-99-79-305-974
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job3_fireengine-99-79-305-974.
+DEBUG:root:preagg1_lccdec1_score1a_job3_fireengine-99-79-305-974
+DEBUG:root:preagg1_lccdec1_score1a_job3_fireengine-99-79-305-974
+DEBUG:root:fireengine-99-79-305-974.JPEG
+DEBUG:root:Received time 1591718410.713112
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+3
+['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv']
+/centralized_scheduler/input/score1b_preagg1_job3_fireengine-99-79-305-974.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job3_fireengine-99-79-305-974
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job3_fireengine-99-79-305-974.csv.
+DEBUG:root:score1b_preagg1_job3_fireengine-99-79-305-974.csv
+DEBUG:root:score1b_preagg1_job3_fireengine-99-79-305-974
+DEBUG:root:fireengine-99-79-305-974.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job3_fireengine-99-79-305-974.csv.
+DEBUG:root:score1c_preagg1_job3_fireengine-99-79-305-974.csv
+DEBUG:root:score1c_preagg1_job3_fireengine-99-79-305-974
+DEBUG:root:fireengine-99-79-305-974.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718410.720367
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job3_fireengine-99-79-305-974 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job3_fireengine-99-79-305-974
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job3_fireengine-99-79-305-974.
+DEBUG:root:preagg1_lccdec1_score1a_job3_fireengine-99-79-305-974
+DEBUG:root:preagg1_lccdec1_score1a_job3_fireengine-99-79-305-974
+DEBUG:root:fireengine-99-79-305-974.JPEG
+DEBUG:root:Received time 1591718411.202078
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+3
+fireengine-99-79-305-974
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job3_fireengine-99-79-305-974.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job3_fireengine-99-79-305-974 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job3_fireengine-99-79-305-974
+DEBUG:root:preagg1_lccdec1_score1b_job3_fireengine-99-79-305-974
+DEBUG:root:preagg1_lccdec1_score1b_job3_fireengine-99-79-305-974
+DEBUG:root:fireengine-99-79-305-974.JPEG
+DEBUG:root:Received time 1591718411.685858
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 522
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '4': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job3_fireengine-99-79-305-974.csv.
+DEBUG:root:score1c_preagg1_job3_fireengine-99-79-305-974.csv
+DEBUG:root:score1c_preagg1_job3_fireengine-99-79-305-974
+DEBUG:root:fireengine-99-79-305-974.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job3_fireengine-99-79-305-974.
+DEBUG:root:preagg1_lccdec1_score1b_job3_fireengine-99-79-305-974
+DEBUG:root:preagg1_lccdec1_score1b_job3_fireengine-99-79-305-974
+DEBUG:root:fireengine-99-79-305-974.JPEG
+DEBUG:root:Received time 1591718412.167506
+DEBUG:root:Flag is true
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job3_fireengine-99-79-305-974 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job3_fireengine-99-79-305-974
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job3_fireengine-99-79-305-974 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job3_fireengine-99-79-305-974
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv.
+DEBUG:root:score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv
+DEBUG:root:score1a_preagg1_job4_fireengine-1057-716-1135-1081
+DEBUG:root:fireengine-1057-716-1135-1081.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718441.658970
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+fireengine-1057-716-1135-1081
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 587
+{'5': [], '3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv.
+DEBUG:root:score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv
+DEBUG:root:score1b_preagg1_job4_fireengine-1057-716-1135-1081
+DEBUG:root:fireengine-1057-716-1135-1081.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718443.158732
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+fireengine-1057-716-1135-1081
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 645
+{'5': [], '3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 4
+4
+['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv']
+/centralized_scheduler/input/score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job4_fireengine-1057-716-1135-1081
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job4_fireengine-1057-716-1135-1081.
+DEBUG:root:preagg1_lccdec1_score1a_job4_fireengine-1057-716-1135-1081
+DEBUG:root:preagg1_lccdec1_score1a_job4_fireengine-1057-716-1135-1081
+DEBUG:root:fireengine-1057-716-1135-1081.JPEG
+DEBUG:root:Received time 1591718444.619196
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+4
+['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv']
+/centralized_scheduler/input/score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job4_fireengine-1057-716-1135-1081
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv.
+DEBUG:root:score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv
+DEBUG:root:score1a_preagg1_job4_fireengine-1057-716-1135-1081
+DEBUG:root:fireengine-1057-716-1135-1081.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv.
+DEBUG:root:score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv
+DEBUG:root:score1b_preagg1_job4_fireengine-1057-716-1135-1081
+DEBUG:root:fireengine-1057-716-1135-1081.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job4_fireengine-1057-716-1135-1081 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job4_fireengine-1057-716-1135-1081
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job4_fireengine-1057-716-1135-1081.
+DEBUG:root:preagg1_lccdec1_score1a_job4_fireengine-1057-716-1135-1081
+DEBUG:root:preagg1_lccdec1_score1a_job4_fireengine-1057-716-1135-1081
+DEBUG:root:fireengine-1057-716-1135-1081.JPEG
+DEBUG:root:Received time 1591718445.120932
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job4_fireengine-1057-716-1135-1081.
+DEBUG:root:preagg1_lccdec1_score1b_job4_fireengine-1057-716-1135-1081
+DEBUG:root:preagg1_lccdec1_score1b_job4_fireengine-1057-716-1135-1081
+DEBUG:root:fireengine-1057-716-1135-1081.JPEG
+DEBUG:root:Received time 1591718445.598429
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job4_fireengine-1057-716-1135-1081 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job4_fireengine-1057-716-1135-1081
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job4_fireengine-1057-716-1135-1081.
+DEBUG:root:preagg1_lccdec1_score1b_job4_fireengine-1057-716-1135-1081
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job4_fireengine-1057-716-1135-1081 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job4_fireengine-1057-716-1135-1081
+DEBUG:root:preagg1_lccdec1_score1b_job4_fireengine-1057-716-1135-1081
+DEBUG:root:fireengine-1057-716-1135-1081.JPEG
+DEBUG:root:Received time 1591718446.075003
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job4_fireengine-1057-716-1135-1081 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job4_fireengine-1057-716-1135-1081
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job5_fireengine-1092-572-1200-72.csv.
+DEBUG:root:score1a_preagg1_job5_fireengine-1092-572-1200-72.csv
+DEBUG:root:score1a_preagg1_job5_fireengine-1092-572-1200-72
+DEBUG:root:fireengine-1092-572-1200-72.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718464.018734
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+fireengine-1092-572-1200-72
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 708
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job5_fireengine-1092-572-1200-72.csv.
+DEBUG:root:score1a_preagg1_job5_fireengine-1092-572-1200-72.csv
+DEBUG:root:score1a_preagg1_job5_fireengine-1092-572-1200-72
+DEBUG:root:fireengine-1092-572-1200-72.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job5_fireengine-1092-572-1200-72.csv.
+DEBUG:root:score1b_preagg1_job5_fireengine-1092-572-1200-72.csv
+DEBUG:root:score1b_preagg1_job5_fireengine-1092-572-1200-72
+DEBUG:root:fireengine-1092-572-1200-72.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718465.517847
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+fireengine-1092-572-1200-72
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 764
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 5
+5
+['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv']
+/centralized_scheduler/input/score1a_preagg1_job5_fireengine-1092-572-1200-72.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job5_fireengine-1092-572-1200-72
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job5_fireengine-1092-572-1200-72.
+DEBUG:root:preagg1_lccdec1_score1a_job5_fireengine-1092-572-1200-72
+DEBUG:root:preagg1_lccdec1_score1a_job5_fireengine-1092-572-1200-72
+DEBUG:root:fireengine-1092-572-1200-72.JPEG
+DEBUG:root:Received time 1591718467.012764
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+5
+['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv']
+/centralized_scheduler/input/score1b_preagg1_job5_fireengine-1092-572-1200-72.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job5_fireengine-1092-572-1200-72
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job5_fireengine-1092-572-1200-72.csv.
+DEBUG:root:score1b_preagg1_job5_fireengine-1092-572-1200-72.csv
+DEBUG:root:score1b_preagg1_job5_fireengine-1092-572-1200-72
+DEBUG:root:fireengine-1092-572-1200-72.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job5_fireengine-1092-572-1200-72 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job5_fireengine-1092-572-1200-72
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job5_fireengine-1092-572-1200-72.
+DEBUG:root:preagg1_lccdec1_score1a_job5_fireengine-1092-572-1200-72
+DEBUG:root:preagg1_lccdec1_score1a_job5_fireengine-1092-572-1200-72
+DEBUG:root:fireengine-1092-572-1200-72.JPEG
+DEBUG:root:Received time 1591718467.495403
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv.
+DEBUG:root:score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv
+DEBUG:root:score1c_preagg1_job4_fireengine-1057-716-1135-1081
+DEBUG:root:fireengine-1057-716-1135-1081.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718467.755728
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job5_fireengine-1092-572-1200-72.
+DEBUG:root:preagg1_lccdec1_score1b_job5_fireengine-1092-572-1200-72
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job5_fireengine-1092-572-1200-72 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job5_fireengine-1092-572-1200-72
+DEBUG:root:preagg1_lccdec1_score1b_job5_fireengine-1092-572-1200-72
+DEBUG:root:fireengine-1092-572-1200-72.JPEG
+DEBUG:root:Received time 1591718467.972319
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job5_fireengine-1092-572-1200-72.
+DEBUG:root:preagg1_lccdec1_score1b_job5_fireengine-1092-572-1200-72
+DEBUG:root:preagg1_lccdec1_score1b_job5_fireengine-1092-572-1200-72
+DEBUG:root:fireengine-1092-572-1200-72.JPEG
+DEBUG:root:Received time 1591718468.470729
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job5_fireengine-1092-572-1200-72 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job5_fireengine-1092-572-1200-72
+DEBUG:root:data transfer complete
+
+4
+fireengine-1057-716-1135-1081
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job5_fireengine-1092-572-1200-72 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job5_fireengine-1092-572-1200-72
+DEBUG:root:data transfer complete
+
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 822
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv.
+DEBUG:root:score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv
+DEBUG:root:score1c_preagg1_job4_fireengine-1057-716-1135-1081
+DEBUG:root:fireengine-1057-716-1135-1081.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job5_fireengine-1092-572-1200-72.csv.
+DEBUG:root:score1c_preagg1_job5_fireengine-1092-572-1200-72.csv
+DEBUG:root:score1c_preagg1_job5_fireengine-1092-572-1200-72
+DEBUG:root:fireengine-1092-572-1200-72.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718469.241878
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+fireengine-1092-572-1200-72
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 878
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job5_fireengine-1092-572-1200-72.csv.
+DEBUG:root:score1c_preagg1_job5_fireengine-1092-572-1200-72.csv
+DEBUG:root:score1c_preagg1_job5_fireengine-1092-572-1200-72
+DEBUG:root:fireengine-1092-572-1200-72.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job6_fireengine-778-567-220-129.csv.
+DEBUG:root:score1a_preagg1_job6_fireengine-778-567-220-129.csv
+DEBUG:root:score1a_preagg1_job6_fireengine-778-567-220-129
+DEBUG:root:fireengine-778-567-220-129.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718506.396904
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+6
+fireengine-778-567-220-129
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 940
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': [], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 6
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job6_fireengine-778-567-220-129.csv.
+DEBUG:root:score1a_preagg1_job6_fireengine-778-567-220-129.csv
+DEBUG:root:score1a_preagg1_job6_fireengine-778-567-220-129
+DEBUG:root:fireengine-778-567-220-129.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job6_fireengine-778-567-220-129.csv.
+DEBUG:root:score1b_preagg1_job6_fireengine-778-567-220-129.csv
+DEBUG:root:score1b_preagg1_job6_fireengine-778-567-220-129
+DEBUG:root:fireengine-778-567-220-129.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718507.874041
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+6
+fireengine-778-567-220-129
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 995
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': [], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 6
+6
+['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv']
+/centralized_scheduler/input/score1a_preagg1_job6_fireengine-778-567-220-129.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job6_fireengine-778-567-220-129
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job6_fireengine-778-567-220-129.
+DEBUG:root:preagg1_lccdec1_score1a_job6_fireengine-778-567-220-129
+DEBUG:root:preagg1_lccdec1_score1a_job6_fireengine-778-567-220-129
+DEBUG:root:fireengine-778-567-220-129.JPEG
+DEBUG:root:Received time 1591718509.328320
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+6
+['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv']
+/centralized_scheduler/input/score1b_preagg1_job6_fireengine-778-567-220-129.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job6_fireengine-778-567-220-129
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job6_fireengine-778-567-220-129.csv.
+DEBUG:root:score1b_preagg1_job6_fireengine-778-567-220-129.csv
+DEBUG:root:score1b_preagg1_job6_fireengine-778-567-220-129
+DEBUG:root:fireengine-778-567-220-129.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job6_fireengine-778-567-220-129 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job6_fireengine-778-567-220-129
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job6_fireengine-778-567-220-129.
+DEBUG:root:preagg1_lccdec1_score1a_job6_fireengine-778-567-220-129
+DEBUG:root:preagg1_lccdec1_score1a_job6_fireengine-778-567-220-129
+DEBUG:root:fireengine-778-567-220-129.JPEG
+DEBUG:root:Received time 1591718509.792646
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job6_fireengine-778-567-220-129.
+DEBUG:root:preagg1_lccdec1_score1b_job6_fireengine-778-567-220-129
+DEBUG:root:preagg1_lccdec1_score1b_job6_fireengine-778-567-220-129
+DEBUG:root:fireengine-778-567-220-129.JPEG
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job6_fireengine-778-567-220-129 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job6_fireengine-778-567-220-129
+DEBUG:root:Received time 1591718510.261472
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job6_fireengine-778-567-220-129.
+DEBUG:root:preagg1_lccdec1_score1b_job6_fireengine-778-567-220-129
+DEBUG:root:preagg1_lccdec1_score1b_job6_fireengine-778-567-220-129
+DEBUG:root:fireengine-778-567-220-129.JPEG
+DEBUG:root:Received time 1591718510.745038
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job6_fireengine-778-567-220-129 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job6_fireengine-778-567-220-129
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job6_fireengine-778-567-220-129 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job6_fireengine-778-567-220-129
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job7_fireengine-920-414-745-1196.csv.
+DEBUG:root:score1a_preagg1_job7_fireengine-920-414-745-1196.csv
+DEBUG:root:score1a_preagg1_job7_fireengine-920-414-745-1196
+DEBUG:root:fireengine-920-414-745-1196.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718546.926797
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+7
+fireengine-920-414-745-1196
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1058
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 7
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job6_fireengine-778-567-220-129.csv.
+DEBUG:root:score1c_preagg1_job6_fireengine-778-567-220-129.csv
+DEBUG:root:score1c_preagg1_job6_fireengine-778-567-220-129
+DEBUG:root:fireengine-778-567-220-129.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718548.398357
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+6
+fireengine-778-567-220-129
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1113
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 6
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job7_fireengine-920-414-745-1196.csv.
+DEBUG:root:score1a_preagg1_job7_fireengine-920-414-745-1196.csv
+DEBUG:root:score1a_preagg1_job7_fireengine-920-414-745-1196
+DEBUG:root:fireengine-920-414-745-1196.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job6_fireengine-778-567-220-129.csv.
+DEBUG:root:score1c_preagg1_job6_fireengine-778-567-220-129.csv
+DEBUG:root:score1c_preagg1_job6_fireengine-778-567-220-129
+DEBUG:root:fireengine-778-567-220-129.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job7_fireengine-920-414-745-1196.csv.
+DEBUG:root:score1b_preagg1_job7_fireengine-920-414-745-1196.csv
+DEBUG:root:score1b_preagg1_job7_fireengine-920-414-745-1196
+DEBUG:root:fireengine-920-414-745-1196.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718549.844324
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+7
+fireengine-920-414-745-1196
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1169
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 7
+7
+['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv']
+/centralized_scheduler/input/score1a_preagg1_job7_fireengine-920-414-745-1196.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job7_fireengine-920-414-745-1196
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job7_fireengine-920-414-745-1196.
+DEBUG:root:preagg1_lccdec1_score1a_job7_fireengine-920-414-745-1196
+DEBUG:root:preagg1_lccdec1_score1a_job7_fireengine-920-414-745-1196
+DEBUG:root:fireengine-920-414-745-1196.JPEG
+DEBUG:root:Received time 1591718551.332119
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+7
+['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv']
+/centralized_scheduler/input/score1b_preagg1_job7_fireengine-920-414-745-1196.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job7_fireengine-920-414-745-1196
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job7_fireengine-920-414-745-1196.csv.
+DEBUG:root:score1b_preagg1_job7_fireengine-920-414-745-1196.csv
+DEBUG:root:score1b_preagg1_job7_fireengine-920-414-745-1196
+DEBUG:root:fireengine-920-414-745-1196.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job7_fireengine-920-414-745-1196.csv.
+DEBUG:root:score1c_preagg1_job7_fireengine-920-414-745-1196.csv
+DEBUG:root:score1c_preagg1_job7_fireengine-920-414-745-1196
+DEBUG:root:fireengine-920-414-745-1196.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718551.339395
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job7_fireengine-920-414-745-1196 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job7_fireengine-920-414-745-1196
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job7_fireengine-920-414-745-1196.
+DEBUG:root:preagg1_lccdec1_score1a_job7_fireengine-920-414-745-1196
+DEBUG:root:preagg1_lccdec1_score1a_job7_fireengine-920-414-745-1196
+DEBUG:root:fireengine-920-414-745-1196.JPEG
+DEBUG:root:Received time 1591718551.803325
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job7_fireengine-920-414-745-1196.
+DEBUG:root:preagg1_lccdec1_score1b_job7_fireengine-920-414-745-1196
+DEBUG:root:preagg1_lccdec1_score1b_job7_fireengine-920-414-745-1196
+DEBUG:root:fireengine-920-414-745-1196.JPEG
+DEBUG:root:Received time 1591718552.302887
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job7_fireengine-920-414-745-1196 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job7_fireengine-920-414-745-1196
+7
+fireengine-920-414-745-1196
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job7_fireengine-920-414-745-1196.
+DEBUG:root:preagg1_lccdec1_score1b_job7_fireengine-920-414-745-1196
+DEBUG:root:preagg1_lccdec1_score1b_job7_fireengine-920-414-745-1196
+DEBUG:root:fireengine-920-414-745-1196.JPEG
+DEBUG:root:Received time 1591718552.788380
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job7_fireengine-920-414-745-1196 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job7_fireengine-920-414-745-1196
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1225
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 7
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job7_fireengine-920-414-745-1196.csv.
+DEBUG:root:score1c_preagg1_job7_fireengine-920-414-745-1196.csv
+DEBUG:root:score1c_preagg1_job7_fireengine-920-414-745-1196
+DEBUG:root:fireengine-920-414-745-1196.JPEG
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job7_fireengine-920-414-745-1196 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job7_fireengine-920-414-745-1196
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job8_fireengine-880-337-682-968.csv.
+DEBUG:root:score1a_preagg1_job8_fireengine-880-337-682-968.csv
+DEBUG:root:score1a_preagg1_job8_fireengine-880-337-682-968
+DEBUG:root:fireengine-880-337-682-968.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718575.825017
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+8
+fireengine-880-337-682-968
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1287
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv'], '9': []}
+Not receive enough results for job 8
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job8_fireengine-880-337-682-968.csv.
+DEBUG:root:score1b_preagg1_job8_fireengine-880-337-682-968.csv
+DEBUG:root:score1b_preagg1_job8_fireengine-880-337-682-968
+DEBUG:root:fireengine-880-337-682-968.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718577.288908
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+8
+fireengine-880-337-682-968
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1342
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv'], '9': []}
+Receive enough results for job 8
+8
+['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv']
+/centralized_scheduler/input/score1a_preagg1_job8_fireengine-880-337-682-968.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job8_fireengine-880-337-682-968
+8
+['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv']
+/centralized_scheduler/input/score1b_preagg1_job8_fireengine-880-337-682-968.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job8_fireengine-880-337-682-968
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job8_fireengine-880-337-682-968.
+DEBUG:root:preagg1_lccdec1_score1a_job8_fireengine-880-337-682-968
+DEBUG:root:preagg1_lccdec1_score1a_job8_fireengine-880-337-682-968
+DEBUG:root:fireengine-880-337-682-968.JPEG
+DEBUG:root:Received time 1591718578.724969
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job8_fireengine-880-337-682-968.csv.
+DEBUG:root:score1a_preagg1_job8_fireengine-880-337-682-968.csv
+DEBUG:root:score1a_preagg1_job8_fireengine-880-337-682-968
+DEBUG:root:fireengine-880-337-682-968.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job8_fireengine-880-337-682-968.csv.
+DEBUG:root:score1b_preagg1_job8_fireengine-880-337-682-968.csv
+DEBUG:root:score1b_preagg1_job8_fireengine-880-337-682-968
+DEBUG:root:fireengine-880-337-682-968.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job8_fireengine-880-337-682-968 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job8_fireengine-880-337-682-968
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job8_fireengine-880-337-682-968.
+DEBUG:root:preagg1_lccdec1_score1a_job8_fireengine-880-337-682-968
+DEBUG:root:preagg1_lccdec1_score1a_job8_fireengine-880-337-682-968
+DEBUG:root:fireengine-880-337-682-968.JPEG
+DEBUG:root:Received time 1591718579.220382
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job8_fireengine-880-337-682-968.
+DEBUG:root:preagg1_lccdec1_score1b_job8_fireengine-880-337-682-968
+DEBUG:root:preagg1_lccdec1_score1b_job8_fireengine-880-337-682-968
+DEBUG:root:fireengine-880-337-682-968.JPEG
+DEBUG:root:Received time 1591718579.684597
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job8_fireengine-880-337-682-968 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job8_fireengine-880-337-682-968
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job8_fireengine-880-337-682-968.
+DEBUG:root:preagg1_lccdec1_score1b_job8_fireengine-880-337-682-968
+DEBUG:root:preagg1_lccdec1_score1b_job8_fireengine-880-337-682-968
+DEBUG:root:fireengine-880-337-682-968.JPEG
+DEBUG:root:Received time 1591718580.166855
+DEBUG:root:Flag is true
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job8_fireengine-880-337-682-968 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job8_fireengine-880-337-682-968
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job8_fireengine-880-337-682-968 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job8_fireengine-880-337-682-968
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job9_fireengine-877-45-1269-556.csv.
+DEBUG:root:score1a_preagg1_job9_fireengine-877-45-1269-556.csv
+DEBUG:root:score1a_preagg1_job9_fireengine-877-45-1269-556
+DEBUG:root:fireengine-877-45-1269-556.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718612.207716
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+9
+fireengine-877-45-1269-556
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1405
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '10': [], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv']}
+Not receive enough results for job 9
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job9_fireengine-877-45-1269-556.csv.
+DEBUG:root:score1a_preagg1_job9_fireengine-877-45-1269-556.csv
+DEBUG:root:score1a_preagg1_job9_fireengine-877-45-1269-556
+DEBUG:root:fireengine-877-45-1269-556.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job9_fireengine-877-45-1269-556.csv.
+DEBUG:root:score1b_preagg1_job9_fireengine-877-45-1269-556.csv
+DEBUG:root:score1b_preagg1_job9_fireengine-877-45-1269-556
+DEBUG:root:fireengine-877-45-1269-556.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718613.667298
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+9
+fireengine-877-45-1269-556
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1460
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '10': [], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv']}
+Receive enough results for job 9
+9
+['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv']
+/centralized_scheduler/input/score1a_preagg1_job9_fireengine-877-45-1269-556.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job9_fireengine-877-45-1269-556
+9
+['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv']
+/centralized_scheduler/input/score1b_preagg1_job9_fireengine-877-45-1269-556.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job9_fireengine-877-45-1269-556.
+DEBUG:root:preagg1_lccdec1_score1a_job9_fireengine-877-45-1269-556
+DEBUG:root:preagg1_lccdec1_score1a_job9_fireengine-877-45-1269-556
+DEBUG:root:fireengine-877-45-1269-556.JPEG
+DEBUG:root:Received time 1591718615.142831
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job9_fireengine-877-45-1269-556
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job9_fireengine-877-45-1269-556.csv.
+DEBUG:root:score1b_preagg1_job9_fireengine-877-45-1269-556.csv
+DEBUG:root:score1b_preagg1_job9_fireengine-877-45-1269-556
+DEBUG:root:fireengine-877-45-1269-556.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job8_fireengine-880-337-682-968.csv.
+DEBUG:root:score1c_preagg1_job8_fireengine-880-337-682-968.csv
+DEBUG:root:score1c_preagg1_job8_fireengine-880-337-682-968
+DEBUG:root:fireengine-880-337-682-968.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718615.460182
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job9_fireengine-877-45-1269-556 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job9_fireengine-877-45-1269-556
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job9_fireengine-877-45-1269-556.
+DEBUG:root:preagg1_lccdec1_score1a_job9_fireengine-877-45-1269-556
+DEBUG:root:preagg1_lccdec1_score1a_job9_fireengine-877-45-1269-556
+DEBUG:root:fireengine-877-45-1269-556.JPEG
+DEBUG:root:Received time 1591718615.639692
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job9_fireengine-877-45-1269-556.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job9_fireengine-877-45-1269-556 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job9_fireengine-877-45-1269-556
+DEBUG:root:preagg1_lccdec1_score1b_job9_fireengine-877-45-1269-556
+DEBUG:root:preagg1_lccdec1_score1b_job9_fireengine-877-45-1269-556
+DEBUG:root:fireengine-877-45-1269-556.JPEG
+DEBUG:root:Received time 1591718616.126623
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+8
+fireengine-880-337-682-968
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job9_fireengine-877-45-1269-556.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job9_fireengine-877-45-1269-556 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job9_fireengine-877-45-1269-556
+DEBUG:root:preagg1_lccdec1_score1b_job9_fireengine-877-45-1269-556
+DEBUG:root:preagg1_lccdec1_score1b_job9_fireengine-877-45-1269-556
+DEBUG:root:fireengine-877-45-1269-556.JPEG
+DEBUG:root:Received time 1591718616.613332
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1515
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '10': [], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv']}
+Not receive enough results for job 8
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job8_fireengine-880-337-682-968.csv.
+DEBUG:root:score1c_preagg1_job8_fireengine-880-337-682-968.csv
+DEBUG:root:score1c_preagg1_job8_fireengine-880-337-682-968
+DEBUG:root:fireengine-880-337-682-968.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job9_fireengine-877-45-1269-556.csv.
+DEBUG:root:score1c_preagg1_job9_fireengine-877-45-1269-556.csv
+DEBUG:root:score1c_preagg1_job9_fireengine-877-45-1269-556
+DEBUG:root:fireengine-877-45-1269-556.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718616.919254
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job9_fireengine-877-45-1269-556 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job9_fireengine-877-45-1269-556
+DEBUG:root:data transfer complete
+
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+9
+fireengine-877-45-1269-556
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1570
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '10': [], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv']}
+Not receive enough results for job 9
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job9_fireengine-877-45-1269-556.csv.
+DEBUG:root:score1c_preagg1_job9_fireengine-877-45-1269-556.csv
+DEBUG:root:score1c_preagg1_job9_fireengine-877-45-1269-556
+DEBUG:root:fireengine-877-45-1269-556.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job10_fireengine-860-164-2-109.csv.
+DEBUG:root:score1a_preagg1_job10_fireengine-860-164-2-109.csv
+DEBUG:root:score1a_preagg1_job10_fireengine-860-164-2-109
+DEBUG:root:fireengine-860-164-2-109.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718641.387426
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+10
+fireengine-860-164-2-109
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1632
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '11': [], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv']}
+Not receive enough results for job 10
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job10_fireengine-860-164-2-109.csv.
+DEBUG:root:score1a_preagg1_job10_fireengine-860-164-2-109.csv
+DEBUG:root:score1a_preagg1_job10_fireengine-860-164-2-109
+DEBUG:root:fireengine-860-164-2-109.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job10_fireengine-860-164-2-109.csv.
+DEBUG:root:score1b_preagg1_job10_fireengine-860-164-2-109.csv
+DEBUG:root:score1b_preagg1_job10_fireengine-860-164-2-109
+DEBUG:root:fireengine-860-164-2-109.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718642.876024
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+10
+fireengine-860-164-2-109
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1686
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '11': [], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv']}
+Receive enough results for job 10
+10
+['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv']
+/centralized_scheduler/input/score1a_preagg1_job10_fireengine-860-164-2-109.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job10_fireengine-860-164-2-109
+10
+['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv']
+/centralized_scheduler/input/score1b_preagg1_job10_fireengine-860-164-2-109.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job10_fireengine-860-164-2-109
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job10_fireengine-860-164-2-109.
+DEBUG:root:preagg1_lccdec1_score1a_job10_fireengine-860-164-2-109
+DEBUG:root:preagg1_lccdec1_score1a_job10_fireengine-860-164-2-109
+DEBUG:root:fireengine-860-164-2-109.JPEG
+DEBUG:root:Received time 1591718644.347472
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job10_fireengine-860-164-2-109.csv.
+DEBUG:root:score1b_preagg1_job10_fireengine-860-164-2-109.csv
+DEBUG:root:score1b_preagg1_job10_fireengine-860-164-2-109
+DEBUG:root:fireengine-860-164-2-109.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job10_fireengine-860-164-2-109 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job10_fireengine-860-164-2-109
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job10_fireengine-860-164-2-109.
+DEBUG:root:preagg1_lccdec1_score1a_job10_fireengine-860-164-2-109
+DEBUG:root:preagg1_lccdec1_score1a_job10_fireengine-860-164-2-109
+DEBUG:root:fireengine-860-164-2-109.JPEG
+DEBUG:root:Received time 1591718644.834842
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job10_fireengine-860-164-2-109.
+DEBUG:root:preagg1_lccdec1_score1b_job10_fireengine-860-164-2-109
+DEBUG:root:preagg1_lccdec1_score1b_job10_fireengine-860-164-2-109
+DEBUG:root:fireengine-860-164-2-109.JPEG
+DEBUG:root:Received time 1591718645.309968
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job10_fireengine-860-164-2-109 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job10_fireengine-860-164-2-109
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job10_fireengine-860-164-2-109.
+DEBUG:root:preagg1_lccdec1_score1b_job10_fireengine-860-164-2-109
+DEBUG:root:preagg1_lccdec1_score1b_job10_fireengine-860-164-2-109
+DEBUG:root:fireengine-860-164-2-109.JPEG
+DEBUG:root:Received time 1591718645.791293
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job10_fireengine-860-164-2-109 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job10_fireengine-860-164-2-109
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job10_fireengine-860-164-2-109 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job10_fireengine-860-164-2-109
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv.
+DEBUG:root:score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv
+DEBUG:root:score1a_preagg1_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:fireengine-1274-1120-1104-1040.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718661.290917
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+11
+fireengine-1274-1120-1104-1040
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1754
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '12': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 11
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv.
+DEBUG:root:score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv
+DEBUG:root:score1a_preagg1_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:fireengine-1274-1120-1104-1040.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job10_fireengine-860-164-2-109.csv.
+DEBUG:root:score1c_preagg1_job10_fireengine-860-164-2-109.csv
+DEBUG:root:score1c_preagg1_job10_fireengine-860-164-2-109
+DEBUG:root:fireengine-860-164-2-109.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718662.779326
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+10
+fireengine-860-164-2-109
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1808
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '12': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 10
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job10_fireengine-860-164-2-109.csv.
+DEBUG:root:score1c_preagg1_job10_fireengine-860-164-2-109.csv
+DEBUG:root:score1c_preagg1_job10_fireengine-860-164-2-109
+DEBUG:root:fireengine-860-164-2-109.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv.
+DEBUG:root:score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv
+DEBUG:root:score1b_preagg1_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:fireengine-1274-1120-1104-1040.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718664.238927
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+11
+fireengine-1274-1120-1104-1040
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1868
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '12': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 11
+11
+['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv']
+/centralized_scheduler/input/score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job11_fireengine-1274-1120-1104-1040
+11
+['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv']
+/centralized_scheduler/input/score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job11_fireengine-1274-1120-1104-1040.
+DEBUG:root:preagg1_lccdec1_score1a_job11_fireengine-1274-1120-1104-1040
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:preagg1_lccdec1_score1a_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:fireengine-1274-1120-1104-1040.JPEG
+DEBUG:root:Received time 1591718665.668416
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv.
+DEBUG:root:score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv
+DEBUG:root:score1b_preagg1_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:fireengine-1274-1120-1104-1040.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv.
+DEBUG:root:score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv
+DEBUG:root:score1c_preagg1_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:fireengine-1274-1120-1104-1040.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718665.672381
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job11_fireengine-1274-1120-1104-1040 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job11_fireengine-1274-1120-1104-1040.
+DEBUG:root:preagg1_lccdec1_score1a_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:preagg1_lccdec1_score1a_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:fireengine-1274-1120-1104-1040.JPEG
+DEBUG:root:Received time 1591718666.140101
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+11
+fireengine-1274-1120-1104-1040
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job11_fireengine-1274-1120-1104-1040.
+DEBUG:root:preagg1_lccdec1_score1b_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:preagg1_lccdec1_score1b_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:fireengine-1274-1120-1104-1040.JPEG
+DEBUG:root:Received time 1591718666.633310
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job11_fireengine-1274-1120-1104-1040 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1928
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '12': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 11
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv.
+DEBUG:root:score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv
+DEBUG:root:score1c_preagg1_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:fireengine-1274-1120-1104-1040.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job11_fireengine-1274-1120-1104-1040.
+DEBUG:root:preagg1_lccdec1_score1b_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:preagg1_lccdec1_score1b_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:fireengine-1274-1120-1104-1040.JPEG
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job11_fireengine-1274-1120-1104-1040 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:Received time 1591718667.126279
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job11_fireengine-1274-1120-1104-1040 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job11_fireengine-1274-1120-1104-1040
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job12_fireengine-353-343-175-386.csv.
+DEBUG:root:score1a_preagg1_job12_fireengine-353-343-175-386.csv
+DEBUG:root:score1a_preagg1_job12_fireengine-353-343-175-386
+DEBUG:root:fireengine-353-343-175-386.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718688.778933
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+12
+fireengine-353-343-175-386
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1992
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 12
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job12_fireengine-353-343-175-386.csv.
+DEBUG:root:score1b_preagg1_job12_fireengine-353-343-175-386.csv
+DEBUG:root:score1b_preagg1_job12_fireengine-353-343-175-386
+DEBUG:root:fireengine-353-343-175-386.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718690.261907
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+12
+fireengine-353-343-175-386
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2048
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': [], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 12
+12
+['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv']
+/centralized_scheduler/input/score1a_preagg1_job12_fireengine-353-343-175-386.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job12_fireengine-353-343-175-386
+12
+['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv']
+/centralized_scheduler/input/score1b_preagg1_job12_fireengine-353-343-175-386.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job12_fireengine-353-343-175-386
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job12_fireengine-353-343-175-386.
+DEBUG:root:preagg1_lccdec1_score1a_job12_fireengine-353-343-175-386
+DEBUG:root:preagg1_lccdec1_score1a_job12_fireengine-353-343-175-386
+DEBUG:root:fireengine-353-343-175-386.JPEG
+DEBUG:root:Received time 1591718691.721992
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job12_fireengine-353-343-175-386.csv.
+DEBUG:root:score1a_preagg1_job12_fireengine-353-343-175-386.csv
+DEBUG:root:score1a_preagg1_job12_fireengine-353-343-175-386
+DEBUG:root:fireengine-353-343-175-386.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job12_fireengine-353-343-175-386.csv.
+DEBUG:root:score1b_preagg1_job12_fireengine-353-343-175-386.csv
+DEBUG:root:score1b_preagg1_job12_fireengine-353-343-175-386
+DEBUG:root:fireengine-353-343-175-386.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job12_fireengine-353-343-175-386 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job12_fireengine-353-343-175-386
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job12_fireengine-353-343-175-386.
+DEBUG:root:preagg1_lccdec1_score1a_job12_fireengine-353-343-175-386
+DEBUG:root:preagg1_lccdec1_score1a_job12_fireengine-353-343-175-386
+DEBUG:root:fireengine-353-343-175-386.JPEG
+DEBUG:root:Received time 1591718692.191944
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job12_fireengine-353-343-175-386.
+DEBUG:root:preagg1_lccdec1_score1b_job12_fireengine-353-343-175-386
+DEBUG:root:preagg1_lccdec1_score1b_job12_fireengine-353-343-175-386
+DEBUG:root:fireengine-353-343-175-386.JPEG
+DEBUG:root:Received time 1591718692.661623
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job12_fireengine-353-343-175-386 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job12_fireengine-353-343-175-386
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job12_fireengine-353-343-175-386.
+DEBUG:root:preagg1_lccdec1_score1b_job12_fireengine-353-343-175-386
+DEBUG:root:preagg1_lccdec1_score1b_job12_fireengine-353-343-175-386
+DEBUG:root:fireengine-353-343-175-386.JPEG
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job12_fireengine-353-343-175-386 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job12_fireengine-353-343-175-386
+DEBUG:root:Received time 1591718693.165763
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job12_fireengine-353-343-175-386 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job12_fireengine-353-343-175-386
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv.
+DEBUG:root:score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv
+DEBUG:root:score1a_preagg1_job13_fireengine-718-1079-1277-1037
+DEBUG:root:fireengine-718-1079-1277-1037.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718707.360150
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+13
+fireengine-718-1079-1277-1037
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2115
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': [], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 13
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv.
+DEBUG:root:score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv
+DEBUG:root:score1a_preagg1_job13_fireengine-718-1079-1277-1037
+DEBUG:root:fireengine-718-1079-1277-1037.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job12_fireengine-353-343-175-386.csv.
+DEBUG:root:score1c_preagg1_job12_fireengine-353-343-175-386.csv
+DEBUG:root:score1c_preagg1_job12_fireengine-353-343-175-386
+DEBUG:root:fireengine-353-343-175-386.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718710.724638
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+12
+fireengine-353-343-175-386
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2171
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': [], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 12
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job12_fireengine-353-343-175-386.csv.
+DEBUG:root:score1c_preagg1_job12_fireengine-353-343-175-386.csv
+DEBUG:root:score1c_preagg1_job12_fireengine-353-343-175-386
+DEBUG:root:fireengine-353-343-175-386.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv.
+DEBUG:root:score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv
+DEBUG:root:score1b_preagg1_job13_fireengine-718-1079-1277-1037
+DEBUG:root:fireengine-718-1079-1277-1037.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718712.221462
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+13
+fireengine-718-1079-1277-1037
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2230
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': [], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 13
+13
+['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv']
+/centralized_scheduler/input/score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job13_fireengine-718-1079-1277-1037
+13
+['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv']
+/centralized_scheduler/input/score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job13_fireengine-718-1079-1277-1037
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job13_fireengine-718-1079-1277-1037.
+DEBUG:root:preagg1_lccdec1_score1a_job13_fireengine-718-1079-1277-1037
+DEBUG:root:preagg1_lccdec1_score1a_job13_fireengine-718-1079-1277-1037
+DEBUG:root:fireengine-718-1079-1277-1037.JPEG
+DEBUG:root:Received time 1591718713.704464
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv.
+DEBUG:root:score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv
+DEBUG:root:score1b_preagg1_job13_fireengine-718-1079-1277-1037
+DEBUG:root:fireengine-718-1079-1277-1037.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv.
+DEBUG:root:score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv
+DEBUG:root:score1c_preagg1_job13_fireengine-718-1079-1277-1037
+DEBUG:root:fireengine-718-1079-1277-1037.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718713.707777
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job13_fireengine-718-1079-1277-1037 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job13_fireengine-718-1079-1277-1037
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job13_fireengine-718-1079-1277-1037.
+DEBUG:root:preagg1_lccdec1_score1a_job13_fireengine-718-1079-1277-1037
+DEBUG:root:preagg1_lccdec1_score1a_job13_fireengine-718-1079-1277-1037
+DEBUG:root:fireengine-718-1079-1277-1037.JPEG
+DEBUG:root:Received time 1591718714.182620
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+13
+fireengine-718-1079-1277-1037
+http://10.96.204.69:6100/post-dict
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job13_fireengine-718-1079-1277-1037.
+DEBUG:root:preagg1_lccdec1_score1b_job13_fireengine-718-1079-1277-1037
+DEBUG:root:preagg1_lccdec1_score1b_job13_fireengine-718-1079-1277-1037
+DEBUG:root:fireengine-718-1079-1277-1037.JPEG
+DEBUG:root:Received time 1591718714.671025
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job13_fireengine-718-1079-1277-1037 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job13_fireengine-718-1079-1277-1037
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:data transfer complete
+
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2289
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': [], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 13
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv.
+DEBUG:root:score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv
+DEBUG:root:score1c_preagg1_job13_fireengine-718-1079-1277-1037
+DEBUG:root:fireengine-718-1079-1277-1037.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job13_fireengine-718-1079-1277-1037.
+DEBUG:root:preagg1_lccdec1_score1b_job13_fireengine-718-1079-1277-1037
+DEBUG:root:preagg1_lccdec1_score1b_job13_fireengine-718-1079-1277-1037
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job13_fireengine-718-1079-1277-1037 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job13_fireengine-718-1079-1277-1037
+DEBUG:root:fireengine-718-1079-1277-1037.JPEG
+DEBUG:root:Received time 1591718715.169817
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job13_fireengine-718-1079-1277-1037 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job13_fireengine-718-1079-1277-1037
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job14_fireengine-27-714-119-151.csv.
+DEBUG:root:score1a_preagg1_job14_fireengine-27-714-119-151.csv
+DEBUG:root:score1a_preagg1_job14_fireengine-27-714-119-151
+DEBUG:root:fireengine-27-714-119-151.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718736.743112
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+14
+fireengine-27-714-119-151
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2352
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': [], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 14
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job14_fireengine-27-714-119-151.csv.
+DEBUG:root:score1a_preagg1_job14_fireengine-27-714-119-151.csv
+DEBUG:root:score1a_preagg1_job14_fireengine-27-714-119-151
+DEBUG:root:fireengine-27-714-119-151.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job14_fireengine-27-714-119-151.csv.
+DEBUG:root:score1b_preagg1_job14_fireengine-27-714-119-151.csv
+DEBUG:root:score1b_preagg1_job14_fireengine-27-714-119-151
+DEBUG:root:fireengine-27-714-119-151.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718738.171735
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+14
+fireengine-27-714-119-151
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2407
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': [], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 14
+14
+['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv']
+/centralized_scheduler/input/score1a_preagg1_job14_fireengine-27-714-119-151.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job14_fireengine-27-714-119-151
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job14_fireengine-27-714-119-151.
+DEBUG:root:preagg1_lccdec1_score1a_job14_fireengine-27-714-119-151
+DEBUG:root:preagg1_lccdec1_score1a_job14_fireengine-27-714-119-151
+DEBUG:root:fireengine-27-714-119-151.JPEG
+DEBUG:root:Received time 1591718739.634813
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+14
+['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv']
+/centralized_scheduler/input/score1b_preagg1_job14_fireengine-27-714-119-151.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job14_fireengine-27-714-119-151
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job14_fireengine-27-714-119-151.csv.
+DEBUG:root:score1b_preagg1_job14_fireengine-27-714-119-151.csv
+DEBUG:root:score1b_preagg1_job14_fireengine-27-714-119-151
+DEBUG:root:fireengine-27-714-119-151.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job14_fireengine-27-714-119-151.
+DEBUG:root:preagg1_lccdec1_score1a_job14_fireengine-27-714-119-151
+DEBUG:root:preagg1_lccdec1_score1a_job14_fireengine-27-714-119-151
+DEBUG:root:fireengine-27-714-119-151.JPEG
+DEBUG:root:Received time 1591718740.104484
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job14_fireengine-27-714-119-151 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job14_fireengine-27-714-119-151
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job14_fireengine-27-714-119-151.
+DEBUG:root:preagg1_lccdec1_score1b_job14_fireengine-27-714-119-151
+DEBUG:root:preagg1_lccdec1_score1b_job14_fireengine-27-714-119-151
+DEBUG:root:fireengine-27-714-119-151.JPEG
+DEBUG:root:Received time 1591718740.592365
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job14_fireengine-27-714-119-151 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job14_fireengine-27-714-119-151
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job14_fireengine-27-714-119-151.
+DEBUG:root:preagg1_lccdec1_score1b_job14_fireengine-27-714-119-151
+DEBUG:root:preagg1_lccdec1_score1b_job14_fireengine-27-714-119-151
+DEBUG:root:fireengine-27-714-119-151.JPEG
+DEBUG:root:Received time 1591718741.076655
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job14_fireengine-27-714-119-151 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job14_fireengine-27-714-119-151
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job14_fireengine-27-714-119-151 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job14_fireengine-27-714-119-151
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job15_fireengine-432-1252-1268-459.csv.
+DEBUG:root:score1a_preagg1_job15_fireengine-432-1252-1268-459.csv
+DEBUG:root:score1a_preagg1_job15_fireengine-432-1252-1268-459
+DEBUG:root:fireengine-432-1252-1268-459.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718755.795107
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+15
+fireengine-432-1252-1268-459
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2473
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': ['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '16': [], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 15
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job14_fireengine-27-714-119-151.csv.
+DEBUG:root:score1c_preagg1_job14_fireengine-27-714-119-151.csv
+DEBUG:root:score1c_preagg1_job14_fireengine-27-714-119-151
+DEBUG:root:fireengine-27-714-119-151.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718757.231394
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+14
+fireengine-27-714-119-151
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2528
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': ['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv', 'score1c_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '16': [], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 14
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job15_fireengine-432-1252-1268-459.csv.
+DEBUG:root:score1a_preagg1_job15_fireengine-432-1252-1268-459.csv
+DEBUG:root:score1a_preagg1_job15_fireengine-432-1252-1268-459
+DEBUG:root:fireengine-432-1252-1268-459.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job14_fireengine-27-714-119-151.csv.
+DEBUG:root:score1c_preagg1_job14_fireengine-27-714-119-151.csv
+DEBUG:root:score1c_preagg1_job14_fireengine-27-714-119-151
+DEBUG:root:fireengine-27-714-119-151.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job15_fireengine-432-1252-1268-459.csv.
+DEBUG:root:score1b_preagg1_job15_fireengine-432-1252-1268-459.csv
+DEBUG:root:score1b_preagg1_job15_fireengine-432-1252-1268-459
+DEBUG:root:fireengine-432-1252-1268-459.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718758.678575
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+15
+fireengine-432-1252-1268-459
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2586
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': ['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1b_preagg1_job15_fireengine-432-1252-1268-459.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv', 'score1c_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '16': [], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 15
+15
+['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1b_preagg1_job15_fireengine-432-1252-1268-459.csv']
+/centralized_scheduler/input/score1a_preagg1_job15_fireengine-432-1252-1268-459.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job15_fireengine-432-1252-1268-459
+15
+['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1b_preagg1_job15_fireengine-432-1252-1268-459.csv']
+/centralized_scheduler/input/score1b_preagg1_job15_fireengine-432-1252-1268-459.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job15_fireengine-432-1252-1268-459
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job15_fireengine-432-1252-1268-459.
+DEBUG:root:preagg1_lccdec1_score1a_job15_fireengine-432-1252-1268-459
+DEBUG:root:preagg1_lccdec1_score1a_job15_fireengine-432-1252-1268-459
+DEBUG:root:fireengine-432-1252-1268-459.JPEG
+DEBUG:root:Received time 1591718760.163481
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job15_fireengine-432-1252-1268-459.csv.
+DEBUG:root:score1b_preagg1_job15_fireengine-432-1252-1268-459.csv
+DEBUG:root:score1b_preagg1_job15_fireengine-432-1252-1268-459
+DEBUG:root:fireengine-432-1252-1268-459.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job15_fireengine-432-1252-1268-459.csv.
+DEBUG:root:score1c_preagg1_job15_fireengine-432-1252-1268-459.csv
+DEBUG:root:score1c_preagg1_job15_fireengine-432-1252-1268-459
+DEBUG:root:fireengine-432-1252-1268-459.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718760.166022
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job15_fireengine-432-1252-1268-459 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job15_fireengine-432-1252-1268-459
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job15_fireengine-432-1252-1268-459.
+DEBUG:root:preagg1_lccdec1_score1a_job15_fireengine-432-1252-1268-459
+DEBUG:root:preagg1_lccdec1_score1a_job15_fireengine-432-1252-1268-459
+DEBUG:root:fireengine-432-1252-1268-459.JPEG
+DEBUG:root:Received time 1591718760.640719
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+15
+fireengine-432-1252-1268-459
+http://10.96.204.69:6100/post-dict
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job15_fireengine-432-1252-1268-459.
+DEBUG:root:preagg1_lccdec1_score1b_job15_fireengine-432-1252-1268-459
+DEBUG:root:preagg1_lccdec1_score1b_job15_fireengine-432-1252-1268-459
+DEBUG:root:fireengine-432-1252-1268-459.JPEG
+DEBUG:root:Received time 1591718761.134183
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job15_fireengine-432-1252-1268-459 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job15_fireengine-432-1252-1268-459
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job15_fireengine-432-1252-1268-459.
+DEBUG:root:preagg1_lccdec1_score1b_job15_fireengine-432-1252-1268-459
+DEBUG:root:preagg1_lccdec1_score1b_job15_fireengine-432-1252-1268-459
+DEBUG:root:fireengine-432-1252-1268-459.JPEG
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job15_fireengine-432-1252-1268-459 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job15_fireengine-432-1252-1268-459
+DEBUG:root:Received time 1591718761.593364
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2644
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': ['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1b_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1c_preagg1_job15_fireengine-432-1252-1268-459.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv', 'score1c_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '16': [], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 15
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job15_fireengine-432-1252-1268-459.csv.
+DEBUG:root:score1c_preagg1_job15_fireengine-432-1252-1268-459.csv
+DEBUG:root:score1c_preagg1_job15_fireengine-432-1252-1268-459
+DEBUG:root:fireengine-432-1252-1268-459.JPEG
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job15_fireengine-432-1252-1268-459 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job15_fireengine-432-1252-1268-459
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job16_fireengine-969-703-573-1016.csv.
+DEBUG:root:score1a_preagg1_job16_fireengine-969-703-573-1016.csv
+DEBUG:root:score1a_preagg1_job16_fireengine-969-703-573-1016
+DEBUG:root:fireengine-969-703-573-1016.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718777.056563
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+16
+fireengine-969-703-573-1016
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2709
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': ['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1b_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1c_preagg1_job15_fireengine-432-1252-1268-459.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '17': [], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv', 'score1c_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '16': ['score1a_preagg1_job16_fireengine-969-703-573-1016.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 16
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job16_fireengine-969-703-573-1016.csv.
+DEBUG:root:score1b_preagg1_job16_fireengine-969-703-573-1016.csv
+DEBUG:root:score1b_preagg1_job16_fireengine-969-703-573-1016
+DEBUG:root:fireengine-969-703-573-1016.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718778.512618
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+16
+fireengine-969-703-573-1016
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2766
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': ['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1b_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1c_preagg1_job15_fireengine-432-1252-1268-459.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '17': [], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv', 'score1c_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '16': ['score1a_preagg1_job16_fireengine-969-703-573-1016.csv', 'score1b_preagg1_job16_fireengine-969-703-573-1016.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 16
+16
+['score1a_preagg1_job16_fireengine-969-703-573-1016.csv', 'score1b_preagg1_job16_fireengine-969-703-573-1016.csv']
+/centralized_scheduler/input/score1a_preagg1_job16_fireengine-969-703-573-1016.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job16_fireengine-969-703-573-1016
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job16_fireengine-969-703-573-1016.
+DEBUG:root:preagg1_lccdec1_score1a_job16_fireengine-969-703-573-1016
+DEBUG:root:preagg1_lccdec1_score1a_job16_fireengine-969-703-573-1016
+DEBUG:root:fireengine-969-703-573-1016.JPEG
+DEBUG:root:Received time 1591718779.966217
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+16
+['score1a_preagg1_job16_fireengine-969-703-573-1016.csv', 'score1b_preagg1_job16_fireengine-969-703-573-1016.csv']
+/centralized_scheduler/input/score1b_preagg1_job16_fireengine-969-703-573-1016.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job16_fireengine-969-703-573-1016
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job16_fireengine-969-703-573-1016.csv.
+DEBUG:root:score1a_preagg1_job16_fireengine-969-703-573-1016.csv
+DEBUG:root:score1a_preagg1_job16_fireengine-969-703-573-1016
+DEBUG:root:fireengine-969-703-573-1016.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job16_fireengine-969-703-573-1016.csv.
+DEBUG:root:score1b_preagg1_job16_fireengine-969-703-573-1016.csv
+DEBUG:root:score1b_preagg1_job16_fireengine-969-703-573-1016
+DEBUG:root:fireengine-969-703-573-1016.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job16_fireengine-969-703-573-1016.
+DEBUG:root:preagg1_lccdec1_score1a_job16_fireengine-969-703-573-1016
+DEBUG:root:preagg1_lccdec1_score1a_job16_fireengine-969-703-573-1016
+DEBUG:root:fireengine-969-703-573-1016.JPEG
+DEBUG:root:Received time 1591718780.450616
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job16_fireengine-969-703-573-1016 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job16_fireengine-969-703-573-1016
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job16_fireengine-969-703-573-1016.
+DEBUG:root:preagg1_lccdec1_score1b_job16_fireengine-969-703-573-1016
+DEBUG:root:preagg1_lccdec1_score1b_job16_fireengine-969-703-573-1016
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job16_fireengine-969-703-573-1016 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job16_fireengine-969-703-573-1016
+DEBUG:root:fireengine-969-703-573-1016.JPEG
+DEBUG:root:Received time 1591718780.938826
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job16_fireengine-969-703-573-1016.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job16_fireengine-969-703-573-1016 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job16_fireengine-969-703-573-1016
+DEBUG:root:preagg1_lccdec1_score1b_job16_fireengine-969-703-573-1016
+DEBUG:root:preagg1_lccdec1_score1b_job16_fireengine-969-703-573-1016
+DEBUG:root:fireengine-969-703-573-1016.JPEG
+DEBUG:root:Received time 1591718781.417974
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job16_fireengine-969-703-573-1016 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job16_fireengine-969-703-573-1016
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job17_fireengine-1085-583-256-915.csv.
+DEBUG:root:score1a_preagg1_job17_fireengine-1085-583-256-915.csv
+DEBUG:root:score1a_preagg1_job17_fireengine-1085-583-256-915
+DEBUG:root:fireengine-1085-583-256-915.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718811.451819
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+17
+fireengine-1085-583-256-915
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2831
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': ['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1b_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1c_preagg1_job15_fireengine-432-1252-1268-459.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '17': ['score1a_preagg1_job17_fireengine-1085-583-256-915.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv', 'score1c_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '18': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '16': ['score1a_preagg1_job16_fireengine-969-703-573-1016.csv', 'score1b_preagg1_job16_fireengine-969-703-573-1016.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 17
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job16_fireengine-969-703-573-1016.csv.
+DEBUG:root:score1c_preagg1_job16_fireengine-969-703-573-1016.csv
+DEBUG:root:score1c_preagg1_job16_fireengine-969-703-573-1016
+DEBUG:root:fireengine-969-703-573-1016.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718812.896191
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+16
+fireengine-969-703-573-1016
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2888
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': ['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1b_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1c_preagg1_job15_fireengine-432-1252-1268-459.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '17': ['score1a_preagg1_job17_fireengine-1085-583-256-915.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv', 'score1c_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '18': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '16': ['score1a_preagg1_job16_fireengine-969-703-573-1016.csv', 'score1b_preagg1_job16_fireengine-969-703-573-1016.csv', 'score1c_preagg1_job16_fireengine-969-703-573-1016.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 16
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1a_preagg1_job17_fireengine-1085-583-256-915.csv.
+DEBUG:root:score1a_preagg1_job17_fireengine-1085-583-256-915.csv
+DEBUG:root:score1a_preagg1_job17_fireengine-1085-583-256-915
+DEBUG:root:fireengine-1085-583-256-915.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job16_fireengine-969-703-573-1016.csv.
+DEBUG:root:score1c_preagg1_job16_fireengine-969-703-573-1016.csv
+DEBUG:root:score1c_preagg1_job16_fireengine-969-703-573-1016
+DEBUG:root:fireengine-969-703-573-1016.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job17_fireengine-1085-583-256-915.csv.
+DEBUG:root:score1b_preagg1_job17_fireengine-1085-583-256-915.csv
+DEBUG:root:score1b_preagg1_job17_fireengine-1085-583-256-915
+DEBUG:root:fireengine-1085-583-256-915.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718814.358764
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+17
+fireengine-1085-583-256-915
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2945
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': ['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1b_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1c_preagg1_job15_fireengine-432-1252-1268-459.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '17': ['score1a_preagg1_job17_fireengine-1085-583-256-915.csv', 'score1b_preagg1_job17_fireengine-1085-583-256-915.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv', 'score1c_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '18': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '16': ['score1a_preagg1_job16_fireengine-969-703-573-1016.csv', 'score1b_preagg1_job16_fireengine-969-703-573-1016.csv', 'score1c_preagg1_job16_fireengine-969-703-573-1016.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Receive enough results for job 17
+17
+['score1a_preagg1_job17_fireengine-1085-583-256-915.csv', 'score1b_preagg1_job17_fireengine-1085-583-256-915.csv']
+/centralized_scheduler/input/score1a_preagg1_job17_fireengine-1085-583-256-915.csv
+/centralized_scheduler/output/preagg1_lccdec1_score1a_job17_fireengine-1085-583-256-915
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job17_fireengine-1085-583-256-915.
+DEBUG:root:preagg1_lccdec1_score1a_job17_fireengine-1085-583-256-915
+DEBUG:root:preagg1_lccdec1_score1a_job17_fireengine-1085-583-256-915
+DEBUG:root:fireengine-1085-583-256-915.JPEG
+17
+['score1a_preagg1_job17_fireengine-1085-583-256-915.csv', 'score1b_preagg1_job17_fireengine-1085-583-256-915.csv']
+/centralized_scheduler/input/score1b_preagg1_job17_fireengine-1085-583-256-915.csv
+DEBUG:root:Received time 1591718815.813742
+/centralized_scheduler/output/preagg1_lccdec1_score1b_job17_fireengine-1085-583-256-915
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1b_preagg1_job17_fireengine-1085-583-256-915.csv.
+DEBUG:root:score1b_preagg1_job17_fireengine-1085-583-256-915.csv
+DEBUG:root:score1b_preagg1_job17_fireengine-1085-583-256-915
+DEBUG:root:fireengine-1085-583-256-915.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job17_fireengine-1085-583-256-915.csv.
+DEBUG:root:score1c_preagg1_job17_fireengine-1085-583-256-915.csv
+DEBUG:root:score1c_preagg1_job17_fireengine-1085-583-256-915
+DEBUG:root:fireengine-1085-583-256-915.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1dd78fec88>
+DEBUG:root:Received time 1591718815.819246
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job17_fireengine-1085-583-256-915 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job17_fireengine-1085-583-256-915
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1a_job17_fireengine-1085-583-256-915.
+DEBUG:root:preagg1_lccdec1_score1a_job17_fireengine-1085-583-256-915
+DEBUG:root:preagg1_lccdec1_score1a_job17_fireengine-1085-583-256-915
+DEBUG:root:fireengine-1085-583-256-915.JPEG
+DEBUG:root:Received time 1591718816.297040
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job17_fireengine-1085-583-256-915.
+DEBUG:root:preagg1_lccdec1_score1b_job17_fireengine-1085-583-256-915
+DEBUG:root:preagg1_lccdec1_score1b_job17_fireengine-1085-583-256-915
+DEBUG:root:fireengine-1085-583-256-915.JPEG
+DEBUG:root:Received time 1591718816.770144
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1a_job17_fireengine-1085-583-256-915 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1a_job17_fireengine-1085-583-256-915
+17
+fireengine-1085-583-256-915
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg1_lccdec1_score1b_job17_fireengine-1085-583-256-915.
+DEBUG:root:preagg1_lccdec1_score1b_job17_fireengine-1085-583-256-915
+DEBUG:root:preagg1_lccdec1_score1b_job17_fireengine-1085-583-256-915
+DEBUG:root:fireengine-1085-583-256-915.JPEG
+DEBUG:root:Received time 1591718817.242611
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job17_fireengine-1085-583-256-915 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job17_fireengine-1085-583-256-915
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 3002
+{'3': ['score1a_preagg1_job3_fireengine-99-79-305-974.csv', 'score1b_preagg1_job3_fireengine-99-79-305-974.csv', 'score1c_preagg1_job3_fireengine-99-79-305-974.csv'], '15': ['score1a_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1b_preagg1_job15_fireengine-432-1252-1268-459.csv', 'score1c_preagg1_job15_fireengine-432-1252-1268-459.csv'], '5': ['score1a_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1b_preagg1_job5_fireengine-1092-572-1200-72.csv', 'score1c_preagg1_job5_fireengine-1092-572-1200-72.csv'], '2': ['score1a_preagg1_job2_fireengine-435-788-770-979.csv', 'score1b_preagg1_job2_fireengine-435-788-770-979.csv', 'score1c_preagg1_job2_fireengine-435-788-770-979.csv'], '10': ['score1a_preagg1_job10_fireengine-860-164-2-109.csv', 'score1b_preagg1_job10_fireengine-860-164-2-109.csv', 'score1c_preagg1_job10_fireengine-860-164-2-109.csv'], '6': ['score1a_preagg1_job6_fireengine-778-567-220-129.csv', 'score1b_preagg1_job6_fireengine-778-567-220-129.csv', 'score1c_preagg1_job6_fireengine-778-567-220-129.csv'], '17': ['score1a_preagg1_job17_fireengine-1085-583-256-915.csv', 'score1b_preagg1_job17_fireengine-1085-583-256-915.csv', 'score1c_preagg1_job17_fireengine-1085-583-256-915.csv'], '9': ['score1a_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1b_preagg1_job9_fireengine-877-45-1269-556.csv', 'score1c_preagg1_job9_fireengine-877-45-1269-556.csv'], '8': ['score1a_preagg1_job8_fireengine-880-337-682-968.csv', 'score1b_preagg1_job8_fireengine-880-337-682-968.csv', 'score1c_preagg1_job8_fireengine-880-337-682-968.csv'], '11': ['score1a_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1b_preagg1_job11_fireengine-1274-1120-1104-1040.csv', 'score1c_preagg1_job11_fireengine-1274-1120-1104-1040.csv'], '14': ['score1a_preagg1_job14_fireengine-27-714-119-151.csv', 'score1b_preagg1_job14_fireengine-27-714-119-151.csv', 'score1c_preagg1_job14_fireengine-27-714-119-151.csv'], '12': ['score1a_preagg1_job12_fireengine-353-343-175-386.csv', 'score1b_preagg1_job12_fireengine-353-343-175-386.csv', 'score1c_preagg1_job12_fireengine-353-343-175-386.csv'], '18': [], '4': ['score1a_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1b_preagg1_job4_fireengine-1057-716-1135-1081.csv', 'score1c_preagg1_job4_fireengine-1057-716-1135-1081.csv'], '16': ['score1a_preagg1_job16_fireengine-969-703-573-1016.csv', 'score1b_preagg1_job16_fireengine-969-703-573-1016.csv', 'score1c_preagg1_job16_fireengine-969-703-573-1016.csv'], '7': ['score1a_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1b_preagg1_job7_fireengine-920-414-745-1196.csv', 'score1c_preagg1_job7_fireengine-920-414-745-1196.csv'], '13': ['score1a_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1b_preagg1_job13_fireengine-718-1079-1277-1037.csv', 'score1c_preagg1_job13_fireengine-718-1079-1277-1037.csv'], '1': ['score1a_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1b_preagg1_job1_fireengine-623-495-848-1087.csv', 'score1c_preagg1_job1_fireengine-623-495-848-1087.csv']}
+Not receive enough results for job 17
+DEBUG:root:Received file as input - /centralized_scheduler/input/score1c_preagg1_job17_fireengine-1085-583-256-915.csv.
+DEBUG:root:score1c_preagg1_job17_fireengine-1085-583-256-915.csv
+DEBUG:root:score1c_preagg1_job17_fireengine-1085-583-256-915
+DEBUG:root:fireengine-1085-583-256-915.JPEG
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg1_lccdec1_score1b_job17_fireengine-1085-583-256-915 root@10.99.210.101:/centralized_scheduler/input/preagg1_lccdec1_score1b_job17_fireengine-1085-583-256-915
+DEBUG:root:data transfer complete
+

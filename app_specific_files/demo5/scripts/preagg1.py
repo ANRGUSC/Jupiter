@@ -92,7 +92,6 @@ def task(filelist, pathin, pathout):
                 En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                 # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
                 destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs)
-                print(destination)
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
         else:
@@ -108,7 +107,6 @@ def task(filelist, pathin, pathout):
                 En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                 # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
                 destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs)
-                print(destination)
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
         else:

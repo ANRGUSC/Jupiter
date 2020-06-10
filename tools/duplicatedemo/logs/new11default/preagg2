@@ -1,0 +1,1954 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+my child nodes are:
+lccdec2
+their IPs are:
+10.103.159.2
+my task is:
+preagg2
+flag is:
+true
+number of inputs for my task:
+1
+home node is:
+10.97.213.73
+monitor.py input args are:
+1 true lccdec2 10.103.159.2 root PASSWORD
+python3 centralized_scheduler/monitor.py 1 true  lccdec2 10.103.159.2 root PASSWORD preagg2
+DEBUG:root:Combined IP Map
+DEBUG:root:{'lccdec2': '10.103.159.2', '': ''}
+DEBUG:root:starting the input monitoring process
+
+DEBUG:root:starting the output monitoring process
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job1_schoolbus-1014-654-578-32.csv.
+DEBUG:root:score2a_preagg2_job1_schoolbus-1014-654-578-32.csv
+DEBUG:root:score2a_preagg2_job1_schoolbus-1014-654-578-32
+DEBUG:root:schoolbus-1014-654-578-32.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718361.427271
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+schoolbus-1014-654-578-32
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 70
+{'2': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job1_schoolbus-1014-654-578-32.csv.
+DEBUG:root:score2b_preagg2_job1_schoolbus-1014-654-578-32.csv
+DEBUG:root:score2b_preagg2_job1_schoolbus-1014-654-578-32
+DEBUG:root:schoolbus-1014-654-578-32.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718362.725320
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+1
+schoolbus-1014-654-578-32
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 124
+{'2': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 1
+1
+['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv']
+/centralized_scheduler/input/score2a_preagg2_job1_schoolbus-1014-654-578-32.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job1_schoolbus-1014-654-578-32.
+DEBUG:root:preagg2_lccdec2_score2a_job1_schoolbus-1014-654-578-32
+DEBUG:root:preagg2_lccdec2_score2a_job1_schoolbus-1014-654-578-32
+DEBUG:root:schoolbus-1014-654-578-32.JPEG
+DEBUG:root:Received time 1591718363.969034
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+1
+['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv']
+/centralized_scheduler/input/score2b_preagg2_job1_schoolbus-1014-654-578-32.csv
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job1_schoolbus-1014-654-578-32.csv.
+DEBUG:root:score2c_preagg2_job1_schoolbus-1014-654-578-32.csv
+DEBUG:root:score2c_preagg2_job1_schoolbus-1014-654-578-32
+DEBUG:root:schoolbus-1014-654-578-32.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718363.972966
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job1_schoolbus-1014-654-578-32.
+DEBUG:root:preagg2_lccdec2_score2a_job1_schoolbus-1014-654-578-32
+DEBUG:root:preagg2_lccdec2_score2a_job1_schoolbus-1014-654-578-32
+DEBUG:root:schoolbus-1014-654-578-32.JPEG
+DEBUG:root:Received time 1591718364.376020
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job1_schoolbus-1014-654-578-32 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job1_schoolbus-1014-654-578-32
+Warning: Permanently added '[10.103.159.2]:5000' (ECDSA) to the list of known hosts.
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job1_schoolbus-1014-654-578-32.
+DEBUG:root:preagg2_lccdec2_score2b_job1_schoolbus-1014-654-578-32
+DEBUG:root:preagg2_lccdec2_score2b_job1_schoolbus-1014-654-578-32
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job1_schoolbus-1014-654-578-32 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job1_schoolbus-1014-654-578-32
+DEBUG:root:schoolbus-1014-654-578-32.JPEG
+DEBUG:root:Received time 1591718364.796074
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+1
+schoolbus-1014-654-578-32
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job1_schoolbus-1014-654-578-32.
+DEBUG:root:preagg2_lccdec2_score2b_job1_schoolbus-1014-654-578-32
+DEBUG:root:preagg2_lccdec2_score2b_job1_schoolbus-1014-654-578-32
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job1_schoolbus-1014-654-578-32 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job1_schoolbus-1014-654-578-32
+DEBUG:root:schoolbus-1014-654-578-32.JPEG
+DEBUG:root:Received time 1591718365.210359
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 178
+{'2': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 1
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job1_schoolbus-1014-654-578-32.csv.
+DEBUG:root:score2a_preagg2_job1_schoolbus-1014-654-578-32.csv
+DEBUG:root:score2a_preagg2_job1_schoolbus-1014-654-578-32
+DEBUG:root:schoolbus-1014-654-578-32.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job1_schoolbus-1014-654-578-32.csv.
+DEBUG:root:score2b_preagg2_job1_schoolbus-1014-654-578-32.csv
+DEBUG:root:score2b_preagg2_job1_schoolbus-1014-654-578-32
+DEBUG:root:schoolbus-1014-654-578-32.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job1_schoolbus-1014-654-578-32.csv.
+DEBUG:root:score2c_preagg2_job1_schoolbus-1014-654-578-32.csv
+DEBUG:root:score2c_preagg2_job1_schoolbus-1014-654-578-32
+DEBUG:root:schoolbus-1014-654-578-32.JPEG
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job1_schoolbus-1014-654-578-32 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job1_schoolbus-1014-654-578-32
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job2_schoolbus-77-127-662-228.csv.
+DEBUG:root:score2b_preagg2_job2_schoolbus-77-127-662-228.csv
+DEBUG:root:score2b_preagg2_job2_schoolbus-77-127-662-228
+DEBUG:root:schoolbus-77-127-662-228.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718379.007266
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+schoolbus-77-127-662-228
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 238
+{'3': [], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job2_schoolbus-77-127-662-228.csv.
+DEBUG:root:score2a_preagg2_job2_schoolbus-77-127-662-228.csv
+DEBUG:root:score2a_preagg2_job2_schoolbus-77-127-662-228
+DEBUG:root:schoolbus-77-127-662-228.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718380.302678
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+schoolbus-77-127-662-228
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 291
+{'3': [], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 2
+2
+['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv']
+/centralized_scheduler/input/score2b_preagg2_job2_schoolbus-77-127-662-228.csv
+2
+['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv']
+/centralized_scheduler/input/score2a_preagg2_job2_schoolbus-77-127-662-228.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job2_schoolbus-77-127-662-228.
+DEBUG:root:preagg2_lccdec2_score2b_job2_schoolbus-77-127-662-228
+DEBUG:root:preagg2_lccdec2_score2b_job2_schoolbus-77-127-662-228
+DEBUG:root:schoolbus-77-127-662-228.JPEG
+DEBUG:root:Received time 1591718382.650204
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job2_schoolbus-77-127-662-228.csv.
+DEBUG:root:score2b_preagg2_job2_schoolbus-77-127-662-228.csv
+DEBUG:root:score2b_preagg2_job2_schoolbus-77-127-662-228
+DEBUG:root:schoolbus-77-127-662-228.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job2_schoolbus-77-127-662-228.csv.
+DEBUG:root:score2a_preagg2_job2_schoolbus-77-127-662-228.csv
+DEBUG:root:score2a_preagg2_job2_schoolbus-77-127-662-228
+DEBUG:root:schoolbus-77-127-662-228.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job2_schoolbus-77-127-662-228 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job2_schoolbus-77-127-662-228
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job2_schoolbus-77-127-662-228.
+DEBUG:root:preagg2_lccdec2_score2b_job2_schoolbus-77-127-662-228
+DEBUG:root:preagg2_lccdec2_score2b_job2_schoolbus-77-127-662-228
+DEBUG:root:schoolbus-77-127-662-228.JPEG
+DEBUG:root:Received time 1591718383.073533
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job2_schoolbus-77-127-662-228.
+DEBUG:root:preagg2_lccdec2_score2a_job2_schoolbus-77-127-662-228
+DEBUG:root:preagg2_lccdec2_score2a_job2_schoolbus-77-127-662-228
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job2_schoolbus-77-127-662-228 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job2_schoolbus-77-127-662-228
+DEBUG:root:schoolbus-77-127-662-228.JPEG
+DEBUG:root:Received time 1591718383.506080
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job2_schoolbus-77-127-662-228.
+DEBUG:root:preagg2_lccdec2_score2a_job2_schoolbus-77-127-662-228
+DEBUG:root:preagg2_lccdec2_score2a_job2_schoolbus-77-127-662-228
+DEBUG:root:schoolbus-77-127-662-228.JPEG
+DEBUG:root:Received time 1591718383.940313
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job2_schoolbus-77-127-662-228 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job2_schoolbus-77-127-662-228
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job2_schoolbus-77-127-662-228 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job2_schoolbus-77-127-662-228
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job2_schoolbus-77-127-662-228.csv.
+DEBUG:root:score2c_preagg2_job2_schoolbus-77-127-662-228.csv
+DEBUG:root:score2c_preagg2_job2_schoolbus-77-127-662-228
+DEBUG:root:schoolbus-77-127-662-228.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718405.665824
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+2
+schoolbus-77-127-662-228
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 353
+{'3': [], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '4': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 2
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job3_schoolbus-458-970-1298-105.csv.
+DEBUG:root:score2a_preagg2_job3_schoolbus-458-970-1298-105.csv
+DEBUG:root:score2a_preagg2_job3_schoolbus-458-970-1298-105
+DEBUG:root:schoolbus-458-970-1298-105.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718406.963567
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+schoolbus-458-970-1298-105
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 406
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '4': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job2_schoolbus-77-127-662-228.csv.
+DEBUG:root:score2c_preagg2_job2_schoolbus-77-127-662-228.csv
+DEBUG:root:score2c_preagg2_job2_schoolbus-77-127-662-228
+DEBUG:root:schoolbus-77-127-662-228.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job3_schoolbus-458-970-1298-105.csv.
+DEBUG:root:score2a_preagg2_job3_schoolbus-458-970-1298-105.csv
+DEBUG:root:score2a_preagg2_job3_schoolbus-458-970-1298-105
+DEBUG:root:schoolbus-458-970-1298-105.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job3_schoolbus-458-970-1298-105.csv.
+DEBUG:root:score2b_preagg2_job3_schoolbus-458-970-1298-105.csv
+DEBUG:root:score2b_preagg2_job3_schoolbus-458-970-1298-105
+DEBUG:root:schoolbus-458-970-1298-105.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718408.263965
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+3
+schoolbus-458-970-1298-105
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 461
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '4': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 3
+3
+['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv']
+/centralized_scheduler/input/score2a_preagg2_job3_schoolbus-458-970-1298-105.csv
+3
+['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv']
+/centralized_scheduler/input/score2b_preagg2_job3_schoolbus-458-970-1298-105.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job3_schoolbus-458-970-1298-105.
+DEBUG:root:preagg2_lccdec2_score2a_job3_schoolbus-458-970-1298-105
+DEBUG:root:preagg2_lccdec2_score2a_job3_schoolbus-458-970-1298-105
+DEBUG:root:schoolbus-458-970-1298-105.JPEG
+DEBUG:root:Received time 1591718409.531468
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job3_schoolbus-458-970-1298-105.csv.
+DEBUG:root:score2b_preagg2_job3_schoolbus-458-970-1298-105.csv
+DEBUG:root:score2b_preagg2_job3_schoolbus-458-970-1298-105
+DEBUG:root:schoolbus-458-970-1298-105.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job3_schoolbus-458-970-1298-105.csv.
+DEBUG:root:score2c_preagg2_job3_schoolbus-458-970-1298-105.csv
+DEBUG:root:score2c_preagg2_job3_schoolbus-458-970-1298-105
+DEBUG:root:schoolbus-458-970-1298-105.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718409.534083
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job3_schoolbus-458-970-1298-105 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job3_schoolbus-458-970-1298-105
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job3_schoolbus-458-970-1298-105.
+DEBUG:root:preagg2_lccdec2_score2a_job3_schoolbus-458-970-1298-105
+DEBUG:root:preagg2_lccdec2_score2a_job3_schoolbus-458-970-1298-105
+DEBUG:root:schoolbus-458-970-1298-105.JPEG
+DEBUG:root:Received time 1591718409.950458
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job3_schoolbus-458-970-1298-105.
+DEBUG:root:preagg2_lccdec2_score2b_job3_schoolbus-458-970-1298-105
+DEBUG:root:preagg2_lccdec2_score2b_job3_schoolbus-458-970-1298-105
+DEBUG:root:schoolbus-458-970-1298-105.JPEG
+DEBUG:root:Received time 1591718410.383873
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job3_schoolbus-458-970-1298-105 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job3_schoolbus-458-970-1298-105
+3
+schoolbus-458-970-1298-105
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job3_schoolbus-458-970-1298-105.
+DEBUG:root:preagg2_lccdec2_score2b_job3_schoolbus-458-970-1298-105
+DEBUG:root:preagg2_lccdec2_score2b_job3_schoolbus-458-970-1298-105
+DEBUG:root:schoolbus-458-970-1298-105.JPEG
+DEBUG:root:Received time 1591718410.794378
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job3_schoolbus-458-970-1298-105 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job3_schoolbus-458-970-1298-105
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 516
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '4': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 3
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job3_schoolbus-458-970-1298-105.csv.
+DEBUG:root:score2c_preagg2_job3_schoolbus-458-970-1298-105.csv
+DEBUG:root:score2c_preagg2_job3_schoolbus-458-970-1298-105
+DEBUG:root:schoolbus-458-970-1298-105.JPEG
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job3_schoolbus-458-970-1298-105 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job3_schoolbus-458-970-1298-105
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv.
+DEBUG:root:score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv
+DEBUG:root:score2b_preagg2_job4_schoolbus-150-664-1125-1002
+DEBUG:root:schoolbus-150-664-1125-1002.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718431.268951
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+schoolbus-150-664-1125-1002
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 579
+{'5': [], '3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv.
+DEBUG:root:score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv
+DEBUG:root:score2b_preagg2_job4_schoolbus-150-664-1125-1002
+DEBUG:root:schoolbus-150-664-1125-1002.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv.
+DEBUG:root:score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv
+DEBUG:root:score2a_preagg2_job4_schoolbus-150-664-1125-1002
+DEBUG:root:schoolbus-150-664-1125-1002.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718434.205662
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+schoolbus-150-664-1125-1002
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 635
+{'5': [], '3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 4
+4
+['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv']
+/centralized_scheduler/input/score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv
+4
+['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv']
+/centralized_scheduler/input/score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job4_schoolbus-150-664-1125-1002.
+DEBUG:root:preagg2_lccdec2_score2b_job4_schoolbus-150-664-1125-1002
+DEBUG:root:preagg2_lccdec2_score2b_job4_schoolbus-150-664-1125-1002
+DEBUG:root:schoolbus-150-664-1125-1002.JPEG
+DEBUG:root:Received time 1591718435.517659
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv.
+DEBUG:root:score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv
+DEBUG:root:score2a_preagg2_job4_schoolbus-150-664-1125-1002
+DEBUG:root:schoolbus-150-664-1125-1002.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job4_schoolbus-150-664-1125-1002.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job4_schoolbus-150-664-1125-1002 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job4_schoolbus-150-664-1125-1002
+DEBUG:root:preagg2_lccdec2_score2b_job4_schoolbus-150-664-1125-1002
+DEBUG:root:preagg2_lccdec2_score2b_job4_schoolbus-150-664-1125-1002
+DEBUG:root:schoolbus-150-664-1125-1002.JPEG
+DEBUG:root:Received time 1591718435.951955
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job4_schoolbus-150-664-1125-1002.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job4_schoolbus-150-664-1125-1002 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job4_schoolbus-150-664-1125-1002
+DEBUG:root:preagg2_lccdec2_score2a_job4_schoolbus-150-664-1125-1002
+DEBUG:root:preagg2_lccdec2_score2a_job4_schoolbus-150-664-1125-1002
+DEBUG:root:schoolbus-150-664-1125-1002.JPEG
+DEBUG:root:Received time 1591718436.360714
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job4_schoolbus-150-664-1125-1002.
+DEBUG:root:preagg2_lccdec2_score2a_job4_schoolbus-150-664-1125-1002
+DEBUG:root:preagg2_lccdec2_score2a_job4_schoolbus-150-664-1125-1002
+DEBUG:root:schoolbus-150-664-1125-1002.JPEG
+DEBUG:root:Received time 1591718436.789720
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job4_schoolbus-150-664-1125-1002 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job4_schoolbus-150-664-1125-1002
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job4_schoolbus-150-664-1125-1002 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job4_schoolbus-150-664-1125-1002
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv.
+DEBUG:root:score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv
+DEBUG:root:score2c_preagg2_job4_schoolbus-150-664-1125-1002
+DEBUG:root:schoolbus-150-664-1125-1002.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718461.670245
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+4
+schoolbus-150-664-1125-1002
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 700
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': [], '6': [], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 4
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job5_schoolbus-814-292-117-646.csv.
+DEBUG:root:score2a_preagg2_job5_schoolbus-814-292-117-646.csv
+DEBUG:root:score2a_preagg2_job5_schoolbus-814-292-117-646
+DEBUG:root:schoolbus-814-292-117-646.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718463.011519
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+schoolbus-814-292-117-646
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 752
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': [], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv.
+DEBUG:root:score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv
+DEBUG:root:score2c_preagg2_job4_schoolbus-150-664-1125-1002
+DEBUG:root:schoolbus-150-664-1125-1002.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job5_schoolbus-814-292-117-646.csv.
+DEBUG:root:score2b_preagg2_job5_schoolbus-814-292-117-646.csv
+DEBUG:root:score2b_preagg2_job5_schoolbus-814-292-117-646
+DEBUG:root:schoolbus-814-292-117-646.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718464.289246
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+5
+schoolbus-814-292-117-646
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 806
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': [], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 5
+5
+['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv']
+/centralized_scheduler/input/score2a_preagg2_job5_schoolbus-814-292-117-646.csv
+5
+['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv']
+/centralized_scheduler/input/score2b_preagg2_job5_schoolbus-814-292-117-646.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job5_schoolbus-814-292-117-646.
+DEBUG:root:preagg2_lccdec2_score2a_job5_schoolbus-814-292-117-646
+DEBUG:root:preagg2_lccdec2_score2a_job5_schoolbus-814-292-117-646
+DEBUG:root:schoolbus-814-292-117-646.JPEG
+DEBUG:root:Received time 1591718465.587569
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job5_schoolbus-814-292-117-646.csv.
+DEBUG:root:score2a_preagg2_job5_schoolbus-814-292-117-646.csv
+DEBUG:root:score2a_preagg2_job5_schoolbus-814-292-117-646
+DEBUG:root:schoolbus-814-292-117-646.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job5_schoolbus-814-292-117-646.csv.
+DEBUG:root:score2b_preagg2_job5_schoolbus-814-292-117-646.csv
+DEBUG:root:score2b_preagg2_job5_schoolbus-814-292-117-646
+DEBUG:root:schoolbus-814-292-117-646.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job5_schoolbus-814-292-117-646.csv.
+DEBUG:root:score2c_preagg2_job5_schoolbus-814-292-117-646.csv
+DEBUG:root:score2c_preagg2_job5_schoolbus-814-292-117-646
+DEBUG:root:schoolbus-814-292-117-646.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718465.591859
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job5_schoolbus-814-292-117-646.
+DEBUG:root:preagg2_lccdec2_score2a_job5_schoolbus-814-292-117-646
+DEBUG:root:preagg2_lccdec2_score2a_job5_schoolbus-814-292-117-646
+DEBUG:root:schoolbus-814-292-117-646.JPEG
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job5_schoolbus-814-292-117-646 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job5_schoolbus-814-292-117-646
+DEBUG:root:Received time 1591718466.026722
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job5_schoolbus-814-292-117-646.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job5_schoolbus-814-292-117-646 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job5_schoolbus-814-292-117-646
+DEBUG:root:preagg2_lccdec2_score2b_job5_schoolbus-814-292-117-646
+DEBUG:root:preagg2_lccdec2_score2b_job5_schoolbus-814-292-117-646
+DEBUG:root:schoolbus-814-292-117-646.JPEG
+DEBUG:root:Received time 1591718466.451696
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+5
+schoolbus-814-292-117-646
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job5_schoolbus-814-292-117-646.
+DEBUG:root:preagg2_lccdec2_score2b_job5_schoolbus-814-292-117-646
+DEBUG:root:preagg2_lccdec2_score2b_job5_schoolbus-814-292-117-646
+DEBUG:root:schoolbus-814-292-117-646.JPEG
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job5_schoolbus-814-292-117-646 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job5_schoolbus-814-292-117-646
+DEBUG:root:Received time 1591718466.860694
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 860
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': [], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 5
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job5_schoolbus-814-292-117-646.csv.
+DEBUG:root:score2c_preagg2_job5_schoolbus-814-292-117-646.csv
+DEBUG:root:score2c_preagg2_job5_schoolbus-814-292-117-646
+DEBUG:root:schoolbus-814-292-117-646.JPEG
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job5_schoolbus-814-292-117-646 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job5_schoolbus-814-292-117-646
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job6_schoolbus-472-795-858-1150.csv.
+DEBUG:root:score2a_preagg2_job6_schoolbus-472-795-858-1150.csv
+DEBUG:root:score2a_preagg2_job6_schoolbus-472-795-858-1150
+DEBUG:root:schoolbus-472-795-858-1150.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718478.978482
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+6
+schoolbus-472-795-858-1150
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 922
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': [], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 6
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job6_schoolbus-472-795-858-1150.csv.
+DEBUG:root:score2b_preagg2_job6_schoolbus-472-795-858-1150.csv
+DEBUG:root:score2b_preagg2_job6_schoolbus-472-795-858-1150
+DEBUG:root:schoolbus-472-795-858-1150.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718480.233247
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+6
+schoolbus-472-795-858-1150
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 977
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': [], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 6
+6
+['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv']
+/centralized_scheduler/input/score2a_preagg2_job6_schoolbus-472-795-858-1150.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job6_schoolbus-472-795-858-1150.
+DEBUG:root:preagg2_lccdec2_score2a_job6_schoolbus-472-795-858-1150
+DEBUG:root:preagg2_lccdec2_score2a_job6_schoolbus-472-795-858-1150
+DEBUG:root:schoolbus-472-795-858-1150.JPEG
+6
+['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv']
+/centralized_scheduler/input/score2b_preagg2_job6_schoolbus-472-795-858-1150.csv
+DEBUG:root:Received time 1591718481.549955
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job6_schoolbus-472-795-858-1150.csv.
+DEBUG:root:score2a_preagg2_job6_schoolbus-472-795-858-1150.csv
+DEBUG:root:score2a_preagg2_job6_schoolbus-472-795-858-1150
+DEBUG:root:schoolbus-472-795-858-1150.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job6_schoolbus-472-795-858-1150.csv.
+DEBUG:root:score2b_preagg2_job6_schoolbus-472-795-858-1150.csv
+DEBUG:root:score2b_preagg2_job6_schoolbus-472-795-858-1150
+DEBUG:root:schoolbus-472-795-858-1150.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job6_schoolbus-472-795-858-1150 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job6_schoolbus-472-795-858-1150
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job6_schoolbus-472-795-858-1150.
+DEBUG:root:preagg2_lccdec2_score2a_job6_schoolbus-472-795-858-1150
+DEBUG:root:preagg2_lccdec2_score2a_job6_schoolbus-472-795-858-1150
+DEBUG:root:schoolbus-472-795-858-1150.JPEG
+DEBUG:root:Received time 1591718481.988309
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job6_schoolbus-472-795-858-1150.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job6_schoolbus-472-795-858-1150 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job6_schoolbus-472-795-858-1150
+DEBUG:root:preagg2_lccdec2_score2b_job6_schoolbus-472-795-858-1150
+DEBUG:root:preagg2_lccdec2_score2b_job6_schoolbus-472-795-858-1150
+DEBUG:root:schoolbus-472-795-858-1150.JPEG
+DEBUG:root:Received time 1591718482.411870
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job6_schoolbus-472-795-858-1150.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job6_schoolbus-472-795-858-1150 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job6_schoolbus-472-795-858-1150
+DEBUG:root:preagg2_lccdec2_score2b_job6_schoolbus-472-795-858-1150
+DEBUG:root:preagg2_lccdec2_score2b_job6_schoolbus-472-795-858-1150
+DEBUG:root:schoolbus-472-795-858-1150.JPEG
+DEBUG:root:Received time 1591718482.840921
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job6_schoolbus-472-795-858-1150 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job6_schoolbus-472-795-858-1150
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv.
+DEBUG:root:score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv
+DEBUG:root:score2a_preagg2_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:schoolbus-994-1135-1263-1286.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718507.488423
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+7
+schoolbus-994-1135-1263-1286
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1041
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 7
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job6_schoolbus-472-795-858-1150.csv.
+DEBUG:root:score2c_preagg2_job6_schoolbus-472-795-858-1150.csv
+DEBUG:root:score2c_preagg2_job6_schoolbus-472-795-858-1150
+DEBUG:root:schoolbus-472-795-858-1150.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718508.810341
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+6
+schoolbus-472-795-858-1150
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1096
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 6
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv.
+DEBUG:root:score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv
+DEBUG:root:score2a_preagg2_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:schoolbus-994-1135-1263-1286.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job6_schoolbus-472-795-858-1150.csv.
+DEBUG:root:score2c_preagg2_job6_schoolbus-472-795-858-1150.csv
+DEBUG:root:score2c_preagg2_job6_schoolbus-472-795-858-1150
+DEBUG:root:schoolbus-472-795-858-1150.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv.
+DEBUG:root:score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv
+DEBUG:root:score2b_preagg2_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:schoolbus-994-1135-1263-1286.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718510.064092
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+7
+schoolbus-994-1135-1263-1286
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1153
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 7
+7
+['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv']
+/centralized_scheduler/input/score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job7_schoolbus-994-1135-1263-1286.
+DEBUG:root:preagg2_lccdec2_score2a_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:preagg2_lccdec2_score2a_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:schoolbus-994-1135-1263-1286.JPEG
+DEBUG:root:Received time 1591718511.349073
+DEBUG:root:Flag is true
+7
+['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv']
+DEBUG:root:Sending runtime stats
+/centralized_scheduler/input/score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv.
+DEBUG:root:score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv
+DEBUG:root:score2b_preagg2_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:schoolbus-994-1135-1263-1286.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv.
+DEBUG:root:score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv
+DEBUG:root:score2c_preagg2_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:schoolbus-994-1135-1263-1286.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718511.354612
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job7_schoolbus-994-1135-1263-1286 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job7_schoolbus-994-1135-1263-1286.
+DEBUG:root:preagg2_lccdec2_score2a_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:preagg2_lccdec2_score2a_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:schoolbus-994-1135-1263-1286.JPEG
+DEBUG:root:Received time 1591718511.774575
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+7
+schoolbus-994-1135-1263-1286
+http://10.96.204.69:6100/post-dict
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job7_schoolbus-994-1135-1263-1286.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job7_schoolbus-994-1135-1263-1286 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:preagg2_lccdec2_score2b_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:preagg2_lccdec2_score2b_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:schoolbus-994-1135-1263-1286.JPEG
+DEBUG:root:Received time 1591718512.190227
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job7_schoolbus-994-1135-1263-1286.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job7_schoolbus-994-1135-1263-1286 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:preagg2_lccdec2_score2b_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:preagg2_lccdec2_score2b_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:schoolbus-994-1135-1263-1286.JPEG
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1210
+DEBUG:root:Received time 1591718512.614276
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 7
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv.
+DEBUG:root:score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv
+DEBUG:root:score2c_preagg2_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:schoolbus-994-1135-1263-1286.JPEG
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job7_schoolbus-994-1135-1263-1286 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job7_schoolbus-994-1135-1263-1286
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv.
+DEBUG:root:score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv
+DEBUG:root:score2a_preagg2_job8_schoolbus-155-1235-67-1204
+DEBUG:root:schoolbus-155-1235-67-1204.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718526.789394
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+8
+schoolbus-155-1235-67-1204
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1272
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv'], '9': []}
+Not receive enough results for job 8
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv.
+DEBUG:root:score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv
+DEBUG:root:score2a_preagg2_job8_schoolbus-155-1235-67-1204
+DEBUG:root:schoolbus-155-1235-67-1204.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv.
+DEBUG:root:score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv
+DEBUG:root:score2b_preagg2_job8_schoolbus-155-1235-67-1204
+DEBUG:root:schoolbus-155-1235-67-1204.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718529.791316
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+8
+schoolbus-155-1235-67-1204
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1327
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv'], '9': []}
+Receive enough results for job 8
+8
+['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv']
+/centralized_scheduler/input/score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv
+8
+['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv']
+/centralized_scheduler/input/score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job8_schoolbus-155-1235-67-1204.
+DEBUG:root:preagg2_lccdec2_score2a_job8_schoolbus-155-1235-67-1204
+DEBUG:root:preagg2_lccdec2_score2a_job8_schoolbus-155-1235-67-1204
+DEBUG:root:schoolbus-155-1235-67-1204.JPEG
+DEBUG:root:Received time 1591718531.093084
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv.
+DEBUG:root:score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv
+DEBUG:root:score2b_preagg2_job8_schoolbus-155-1235-67-1204
+DEBUG:root:schoolbus-155-1235-67-1204.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job8_schoolbus-155-1235-67-1204 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job8_schoolbus-155-1235-67-1204
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job8_schoolbus-155-1235-67-1204.
+DEBUG:root:preagg2_lccdec2_score2a_job8_schoolbus-155-1235-67-1204
+DEBUG:root:preagg2_lccdec2_score2a_job8_schoolbus-155-1235-67-1204
+DEBUG:root:schoolbus-155-1235-67-1204.JPEG
+DEBUG:root:Received time 1591718531.511139
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job8_schoolbus-155-1235-67-1204.
+DEBUG:root:preagg2_lccdec2_score2b_job8_schoolbus-155-1235-67-1204
+DEBUG:root:preagg2_lccdec2_score2b_job8_schoolbus-155-1235-67-1204
+DEBUG:root:schoolbus-155-1235-67-1204.JPEG
+DEBUG:root:Received time 1591718531.918285
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job8_schoolbus-155-1235-67-1204 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job8_schoolbus-155-1235-67-1204
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job8_schoolbus-155-1235-67-1204.
+DEBUG:root:preagg2_lccdec2_score2b_job8_schoolbus-155-1235-67-1204
+DEBUG:root:preagg2_lccdec2_score2b_job8_schoolbus-155-1235-67-1204
+DEBUG:root:schoolbus-155-1235-67-1204.JPEG
+DEBUG:root:Received time 1591718532.352704
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job8_schoolbus-155-1235-67-1204 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job8_schoolbus-155-1235-67-1204
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job8_schoolbus-155-1235-67-1204 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job8_schoolbus-155-1235-67-1204
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv.
+DEBUG:root:score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv
+DEBUG:root:score2c_preagg2_job8_schoolbus-155-1235-67-1204
+DEBUG:root:schoolbus-155-1235-67-1204.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718548.875730
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+8
+schoolbus-155-1235-67-1204
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1392
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '10': [], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv'], '9': []}
+Not receive enough results for job 8
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job9_schoolbus-649-977-54-885.csv.
+DEBUG:root:score2a_preagg2_job9_schoolbus-649-977-54-885.csv
+DEBUG:root:score2a_preagg2_job9_schoolbus-649-977-54-885
+DEBUG:root:schoolbus-649-977-54-885.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718550.152329
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+9
+schoolbus-649-977-54-885
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1443
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '10': [], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv']}
+Not receive enough results for job 9
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv.
+DEBUG:root:score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv
+DEBUG:root:score2c_preagg2_job8_schoolbus-155-1235-67-1204
+DEBUG:root:schoolbus-155-1235-67-1204.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job9_schoolbus-649-977-54-885.csv.
+DEBUG:root:score2b_preagg2_job9_schoolbus-649-977-54-885.csv
+DEBUG:root:score2b_preagg2_job9_schoolbus-649-977-54-885
+DEBUG:root:schoolbus-649-977-54-885.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718551.435241
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+9
+schoolbus-649-977-54-885
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1496
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '10': [], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv']}
+Receive enough results for job 9
+9
+['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv']
+/centralized_scheduler/input/score2a_preagg2_job9_schoolbus-649-977-54-885.csv
+9
+['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv']
+/centralized_scheduler/input/score2b_preagg2_job9_schoolbus-649-977-54-885.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job9_schoolbus-649-977-54-885.
+DEBUG:root:preagg2_lccdec2_score2a_job9_schoolbus-649-977-54-885
+DEBUG:root:preagg2_lccdec2_score2a_job9_schoolbus-649-977-54-885
+DEBUG:root:schoolbus-649-977-54-885.JPEG
+DEBUG:root:Received time 1591718552.740164
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job9_schoolbus-649-977-54-885.csv.
+DEBUG:root:score2a_preagg2_job9_schoolbus-649-977-54-885.csv
+DEBUG:root:score2a_preagg2_job9_schoolbus-649-977-54-885
+DEBUG:root:schoolbus-649-977-54-885.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job9_schoolbus-649-977-54-885.csv.
+DEBUG:root:score2b_preagg2_job9_schoolbus-649-977-54-885.csv
+DEBUG:root:score2b_preagg2_job9_schoolbus-649-977-54-885
+DEBUG:root:schoolbus-649-977-54-885.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job9_schoolbus-649-977-54-885.csv.
+DEBUG:root:score2c_preagg2_job9_schoolbus-649-977-54-885.csv
+DEBUG:root:score2c_preagg2_job9_schoolbus-649-977-54-885
+DEBUG:root:schoolbus-649-977-54-885.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718552.742240
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job9_schoolbus-649-977-54-885 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job9_schoolbus-649-977-54-885
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job9_schoolbus-649-977-54-885.
+DEBUG:root:preagg2_lccdec2_score2a_job9_schoolbus-649-977-54-885
+DEBUG:root:preagg2_lccdec2_score2a_job9_schoolbus-649-977-54-885
+DEBUG:root:schoolbus-649-977-54-885.JPEG
+DEBUG:root:Received time 1591718553.161378
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+9
+schoolbus-649-977-54-885
+http://10.96.204.69:6100/post-dict
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job9_schoolbus-649-977-54-885.
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job9_schoolbus-649-977-54-885 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job9_schoolbus-649-977-54-885
+DEBUG:root:preagg2_lccdec2_score2b_job9_schoolbus-649-977-54-885
+DEBUG:root:preagg2_lccdec2_score2b_job9_schoolbus-649-977-54-885
+DEBUG:root:schoolbus-649-977-54-885.JPEG
+DEBUG:root:Received time 1591718553.597907
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '10': [], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv']}
+Not receive enough results for job 9
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1549
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job9_schoolbus-649-977-54-885.csv.
+DEBUG:root:score2c_preagg2_job9_schoolbus-649-977-54-885.csv
+DEBUG:root:score2c_preagg2_job9_schoolbus-649-977-54-885
+DEBUG:root:schoolbus-649-977-54-885.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job9_schoolbus-649-977-54-885.
+DEBUG:root:preagg2_lccdec2_score2b_job9_schoolbus-649-977-54-885
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job9_schoolbus-649-977-54-885 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job9_schoolbus-649-977-54-885
+DEBUG:root:preagg2_lccdec2_score2b_job9_schoolbus-649-977-54-885
+DEBUG:root:schoolbus-649-977-54-885.JPEG
+DEBUG:root:Received time 1591718554.015691
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job9_schoolbus-649-977-54-885 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job9_schoolbus-649-977-54-885
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job10_schoolbus-501-562-96-1231.csv.
+DEBUG:root:score2b_preagg2_job10_schoolbus-501-562-96-1231.csv
+DEBUG:root:score2b_preagg2_job10_schoolbus-501-562-96-1231
+DEBUG:root:schoolbus-501-562-96-1231.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718566.930170
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+10
+schoolbus-501-562-96-1231
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1612
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '11': [], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv']}
+Not receive enough results for job 10
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job10_schoolbus-501-562-96-1231.csv.
+DEBUG:root:score2b_preagg2_job10_schoolbus-501-562-96-1231.csv
+DEBUG:root:score2b_preagg2_job10_schoolbus-501-562-96-1231
+DEBUG:root:schoolbus-501-562-96-1231.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job10_schoolbus-501-562-96-1231.csv.
+DEBUG:root:score2a_preagg2_job10_schoolbus-501-562-96-1231.csv
+DEBUG:root:score2a_preagg2_job10_schoolbus-501-562-96-1231
+DEBUG:root:schoolbus-501-562-96-1231.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718569.870735
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+10
+schoolbus-501-562-96-1231
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1667
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '11': [], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv']}
+Receive enough results for job 10
+10
+['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv']
+/centralized_scheduler/input/score2b_preagg2_job10_schoolbus-501-562-96-1231.csv
+10
+['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv']
+/centralized_scheduler/input/score2a_preagg2_job10_schoolbus-501-562-96-1231.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job10_schoolbus-501-562-96-1231.
+DEBUG:root:preagg2_lccdec2_score2b_job10_schoolbus-501-562-96-1231
+DEBUG:root:preagg2_lccdec2_score2b_job10_schoolbus-501-562-96-1231
+DEBUG:root:schoolbus-501-562-96-1231.JPEG
+DEBUG:root:Received time 1591718571.160303
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job10_schoolbus-501-562-96-1231.csv.
+DEBUG:root:score2a_preagg2_job10_schoolbus-501-562-96-1231.csv
+DEBUG:root:score2a_preagg2_job10_schoolbus-501-562-96-1231
+DEBUG:root:schoolbus-501-562-96-1231.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job10_schoolbus-501-562-96-1231 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job10_schoolbus-501-562-96-1231
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job10_schoolbus-501-562-96-1231.
+DEBUG:root:preagg2_lccdec2_score2b_job10_schoolbus-501-562-96-1231
+DEBUG:root:preagg2_lccdec2_score2b_job10_schoolbus-501-562-96-1231
+DEBUG:root:schoolbus-501-562-96-1231.JPEG
+DEBUG:root:Received time 1591718571.577837
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job10_schoolbus-501-562-96-1231.
+DEBUG:root:preagg2_lccdec2_score2a_job10_schoolbus-501-562-96-1231
+DEBUG:root:preagg2_lccdec2_score2a_job10_schoolbus-501-562-96-1231
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job10_schoolbus-501-562-96-1231 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job10_schoolbus-501-562-96-1231
+DEBUG:root:schoolbus-501-562-96-1231.JPEG
+DEBUG:root:Received time 1591718571.994483
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job10_schoolbus-501-562-96-1231.
+DEBUG:root:preagg2_lccdec2_score2a_job10_schoolbus-501-562-96-1231
+DEBUG:root:preagg2_lccdec2_score2a_job10_schoolbus-501-562-96-1231
+DEBUG:root:schoolbus-501-562-96-1231.JPEG
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job10_schoolbus-501-562-96-1231 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job10_schoolbus-501-562-96-1231
+DEBUG:root:Received time 1591718572.432314
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job10_schoolbus-501-562-96-1231 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job10_schoolbus-501-562-96-1231
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job11_schoolbus-252-324-533-1186.csv.
+DEBUG:root:score2a_preagg2_job11_schoolbus-252-324-533-1186.csv
+DEBUG:root:score2a_preagg2_job11_schoolbus-252-324-533-1186
+DEBUG:root:schoolbus-252-324-533-1186.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718591.109384
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+11
+schoolbus-252-324-533-1186
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1731
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv'], '12': [], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 11
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job10_schoolbus-501-562-96-1231.csv.
+DEBUG:root:score2c_preagg2_job10_schoolbus-501-562-96-1231.csv
+DEBUG:root:score2c_preagg2_job10_schoolbus-501-562-96-1231
+DEBUG:root:schoolbus-501-562-96-1231.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718592.399548
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+10
+schoolbus-501-562-96-1231
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1786
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv'], '12': [], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 10
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job11_schoolbus-252-324-533-1186.csv.
+DEBUG:root:score2a_preagg2_job11_schoolbus-252-324-533-1186.csv
+DEBUG:root:score2a_preagg2_job11_schoolbus-252-324-533-1186
+DEBUG:root:schoolbus-252-324-533-1186.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job10_schoolbus-501-562-96-1231.csv.
+DEBUG:root:score2c_preagg2_job10_schoolbus-501-562-96-1231.csv
+DEBUG:root:score2c_preagg2_job10_schoolbus-501-562-96-1231
+DEBUG:root:schoolbus-501-562-96-1231.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job11_schoolbus-252-324-533-1186.csv.
+DEBUG:root:score2b_preagg2_job11_schoolbus-252-324-533-1186.csv
+DEBUG:root:score2b_preagg2_job11_schoolbus-252-324-533-1186
+DEBUG:root:schoolbus-252-324-533-1186.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718593.697344
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+11
+schoolbus-252-324-533-1186
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1842
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv'], '12': [], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 11
+11
+['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv']
+/centralized_scheduler/input/score2a_preagg2_job11_schoolbus-252-324-533-1186.csv
+11
+['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv']
+/centralized_scheduler/input/score2b_preagg2_job11_schoolbus-252-324-533-1186.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job11_schoolbus-252-324-533-1186.
+DEBUG:root:preagg2_lccdec2_score2a_job11_schoolbus-252-324-533-1186
+DEBUG:root:preagg2_lccdec2_score2a_job11_schoolbus-252-324-533-1186
+DEBUG:root:schoolbus-252-324-533-1186.JPEG
+DEBUG:root:Received time 1591718594.966245
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job11_schoolbus-252-324-533-1186.csv.
+DEBUG:root:score2b_preagg2_job11_schoolbus-252-324-533-1186.csv
+DEBUG:root:score2b_preagg2_job11_schoolbus-252-324-533-1186
+DEBUG:root:schoolbus-252-324-533-1186.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job11_schoolbus-252-324-533-1186.csv.
+DEBUG:root:score2c_preagg2_job11_schoolbus-252-324-533-1186.csv
+DEBUG:root:score2c_preagg2_job11_schoolbus-252-324-533-1186
+DEBUG:root:schoolbus-252-324-533-1186.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718594.969176
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job11_schoolbus-252-324-533-1186 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job11_schoolbus-252-324-533-1186
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job11_schoolbus-252-324-533-1186.
+DEBUG:root:preagg2_lccdec2_score2a_job11_schoolbus-252-324-533-1186
+DEBUG:root:preagg2_lccdec2_score2a_job11_schoolbus-252-324-533-1186
+DEBUG:root:schoolbus-252-324-533-1186.JPEG
+DEBUG:root:Received time 1591718595.382412
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+11
+schoolbus-252-324-533-1186
+http://10.96.204.69:6100/post-dict
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job11_schoolbus-252-324-533-1186.
+DEBUG:root:preagg2_lccdec2_score2b_job11_schoolbus-252-324-533-1186
+DEBUG:root:preagg2_lccdec2_score2b_job11_schoolbus-252-324-533-1186
+DEBUG:root:schoolbus-252-324-533-1186.JPEG
+DEBUG:root:Received time 1591718595.814535
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job11_schoolbus-252-324-533-1186 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job11_schoolbus-252-324-533-1186
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:data transfer complete
+
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1898
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '12': [], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 11
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job11_schoolbus-252-324-533-1186.csv.
+DEBUG:root:score2c_preagg2_job11_schoolbus-252-324-533-1186.csv
+DEBUG:root:score2c_preagg2_job11_schoolbus-252-324-533-1186
+DEBUG:root:schoolbus-252-324-533-1186.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job11_schoolbus-252-324-533-1186.
+DEBUG:root:preagg2_lccdec2_score2b_job11_schoolbus-252-324-533-1186
+DEBUG:root:preagg2_lccdec2_score2b_job11_schoolbus-252-324-533-1186
+DEBUG:root:schoolbus-252-324-533-1186.JPEG
+DEBUG:root:Received time 1591718596.239110
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job11_schoolbus-252-324-533-1186 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job11_schoolbus-252-324-533-1186
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job11_schoolbus-252-324-533-1186 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job11_schoolbus-252-324-533-1186
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv.
+DEBUG:root:score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv
+DEBUG:root:score2b_preagg2_job12_schoolbus-9-1183-742-1065
+DEBUG:root:schoolbus-9-1183-742-1065.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718622.842723
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+12
+schoolbus-9-1183-742-1065
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 1961
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 12
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv.
+DEBUG:root:score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv
+DEBUG:root:score2a_preagg2_job12_schoolbus-9-1183-742-1065
+DEBUG:root:schoolbus-9-1183-742-1065.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718624.152289
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+12
+schoolbus-9-1183-742-1065
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2016
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': [], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 12
+12
+['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv']
+/centralized_scheduler/input/score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job12_schoolbus-9-1183-742-1065.
+DEBUG:root:preagg2_lccdec2_score2b_job12_schoolbus-9-1183-742-1065
+DEBUG:root:preagg2_lccdec2_score2b_job12_schoolbus-9-1183-742-1065
+DEBUG:root:schoolbus-9-1183-742-1065.JPEG
+DEBUG:root:Received time 1591718625.459078
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+12
+['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv']
+/centralized_scheduler/input/score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv.
+DEBUG:root:score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv
+DEBUG:root:score2b_preagg2_job12_schoolbus-9-1183-742-1065
+DEBUG:root:schoolbus-9-1183-742-1065.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv.
+DEBUG:root:score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv
+DEBUG:root:score2a_preagg2_job12_schoolbus-9-1183-742-1065
+DEBUG:root:schoolbus-9-1183-742-1065.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job12_schoolbus-9-1183-742-1065 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job12_schoolbus-9-1183-742-1065
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job12_schoolbus-9-1183-742-1065.
+DEBUG:root:preagg2_lccdec2_score2b_job12_schoolbus-9-1183-742-1065
+DEBUG:root:preagg2_lccdec2_score2b_job12_schoolbus-9-1183-742-1065
+DEBUG:root:schoolbus-9-1183-742-1065.JPEG
+DEBUG:root:Received time 1591718625.867581
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job12_schoolbus-9-1183-742-1065.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job12_schoolbus-9-1183-742-1065 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job12_schoolbus-9-1183-742-1065
+DEBUG:root:preagg2_lccdec2_score2a_job12_schoolbus-9-1183-742-1065
+DEBUG:root:preagg2_lccdec2_score2a_job12_schoolbus-9-1183-742-1065
+DEBUG:root:schoolbus-9-1183-742-1065.JPEG
+DEBUG:root:Received time 1591718626.286899
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job12_schoolbus-9-1183-742-1065.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job12_schoolbus-9-1183-742-1065 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job12_schoolbus-9-1183-742-1065
+DEBUG:root:preagg2_lccdec2_score2a_job12_schoolbus-9-1183-742-1065
+DEBUG:root:preagg2_lccdec2_score2a_job12_schoolbus-9-1183-742-1065
+DEBUG:root:schoolbus-9-1183-742-1065.JPEG
+DEBUG:root:Received time 1591718626.722430
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job12_schoolbus-9-1183-742-1065 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job12_schoolbus-9-1183-742-1065
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job13_schoolbus-384-635-375-160.csv.
+DEBUG:root:score2a_preagg2_job13_schoolbus-384-635-375-160.csv
+DEBUG:root:score2a_preagg2_job13_schoolbus-384-635-375-160
+DEBUG:root:schoolbus-384-635-375-160.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718641.514064
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+13
+schoolbus-384-635-375-160
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2079
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': [], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 13
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv.
+DEBUG:root:score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv
+DEBUG:root:score2c_preagg2_job12_schoolbus-9-1183-742-1065
+DEBUG:root:schoolbus-9-1183-742-1065.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718642.800298
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+12
+schoolbus-9-1183-742-1065
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2134
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': [], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 12
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job13_schoolbus-384-635-375-160.csv.
+DEBUG:root:score2a_preagg2_job13_schoolbus-384-635-375-160.csv
+DEBUG:root:score2a_preagg2_job13_schoolbus-384-635-375-160
+DEBUG:root:schoolbus-384-635-375-160.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job13_schoolbus-384-635-375-160.csv.
+DEBUG:root:score2b_preagg2_job13_schoolbus-384-635-375-160.csv
+DEBUG:root:score2b_preagg2_job13_schoolbus-384-635-375-160
+DEBUG:root:schoolbus-384-635-375-160.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718644.099061
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+13
+schoolbus-384-635-375-160
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2189
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': [], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 13
+13
+['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv']
+/centralized_scheduler/input/score2a_preagg2_job13_schoolbus-384-635-375-160.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job13_schoolbus-384-635-375-160.
+DEBUG:root:preagg2_lccdec2_score2a_job13_schoolbus-384-635-375-160
+DEBUG:root:preagg2_lccdec2_score2a_job13_schoolbus-384-635-375-160
+DEBUG:root:schoolbus-384-635-375-160.JPEG
+DEBUG:root:Received time 1591718645.360523
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+13
+['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv']
+/centralized_scheduler/input/score2b_preagg2_job13_schoolbus-384-635-375-160.csv
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv.
+DEBUG:root:score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv
+DEBUG:root:score2c_preagg2_job12_schoolbus-9-1183-742-1065
+DEBUG:root:schoolbus-9-1183-742-1065.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job13_schoolbus-384-635-375-160.csv.
+DEBUG:root:score2b_preagg2_job13_schoolbus-384-635-375-160.csv
+DEBUG:root:score2b_preagg2_job13_schoolbus-384-635-375-160
+DEBUG:root:schoolbus-384-635-375-160.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job13_schoolbus-384-635-375-160.csv.
+DEBUG:root:score2c_preagg2_job13_schoolbus-384-635-375-160.csv
+DEBUG:root:score2c_preagg2_job13_schoolbus-384-635-375-160
+DEBUG:root:schoolbus-384-635-375-160.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718645.363463
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job13_schoolbus-384-635-375-160.
+DEBUG:root:preagg2_lccdec2_score2a_job13_schoolbus-384-635-375-160
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job13_schoolbus-384-635-375-160 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job13_schoolbus-384-635-375-160
+DEBUG:root:preagg2_lccdec2_score2a_job13_schoolbus-384-635-375-160
+DEBUG:root:schoolbus-384-635-375-160.JPEG
+DEBUG:root:Received time 1591718645.799595
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+13
+schoolbus-384-635-375-160
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job13_schoolbus-384-635-375-160.
+DEBUG:root:preagg2_lccdec2_score2b_job13_schoolbus-384-635-375-160
+DEBUG:root:preagg2_lccdec2_score2b_job13_schoolbus-384-635-375-160
+DEBUG:root:schoolbus-384-635-375-160.JPEG
+DEBUG:root:Received time 1591718646.215267
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job13_schoolbus-384-635-375-160 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job13_schoolbus-384-635-375-160
+DEBUG:root:data transfer complete
+
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2244
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': [], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 13
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job13_schoolbus-384-635-375-160.
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job13_schoolbus-384-635-375-160.csv.
+DEBUG:root:preagg2_lccdec2_score2b_job13_schoolbus-384-635-375-160
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job13_schoolbus-384-635-375-160 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job13_schoolbus-384-635-375-160
+DEBUG:root:score2c_preagg2_job13_schoolbus-384-635-375-160.csv
+DEBUG:root:preagg2_lccdec2_score2b_job13_schoolbus-384-635-375-160
+DEBUG:root:score2c_preagg2_job13_schoolbus-384-635-375-160
+DEBUG:root:schoolbus-384-635-375-160.JPEG
+DEBUG:root:schoolbus-384-635-375-160.JPEG
+DEBUG:root:Received time 1591718646.657662
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job13_schoolbus-384-635-375-160 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job13_schoolbus-384-635-375-160
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job14_schoolbus-1050-286-299-717.csv.
+DEBUG:root:score2b_preagg2_job14_schoolbus-1050-286-299-717.csv
+DEBUG:root:score2b_preagg2_job14_schoolbus-1050-286-299-717
+DEBUG:root:schoolbus-1050-286-299-717.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718668.855046
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+14
+schoolbus-1050-286-299-717
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2308
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '15': [], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': ['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 14
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job14_schoolbus-1050-286-299-717.csv.
+DEBUG:root:score2a_preagg2_job14_schoolbus-1050-286-299-717.csv
+DEBUG:root:score2a_preagg2_job14_schoolbus-1050-286-299-717
+DEBUG:root:schoolbus-1050-286-299-717.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718670.164068
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+14
+schoolbus-1050-286-299-717
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2364
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '15': [], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': ['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 14
+14
+['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv']
+/centralized_scheduler/input/score2b_preagg2_job14_schoolbus-1050-286-299-717.csv
+14
+['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv']
+/centralized_scheduler/input/score2a_preagg2_job14_schoolbus-1050-286-299-717.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job14_schoolbus-1050-286-299-717.
+DEBUG:root:preagg2_lccdec2_score2b_job14_schoolbus-1050-286-299-717
+DEBUG:root:preagg2_lccdec2_score2b_job14_schoolbus-1050-286-299-717
+DEBUG:root:schoolbus-1050-286-299-717.JPEG
+DEBUG:root:Received time 1591718671.467342
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job14_schoolbus-1050-286-299-717.csv.
+DEBUG:root:score2b_preagg2_job14_schoolbus-1050-286-299-717.csv
+DEBUG:root:score2b_preagg2_job14_schoolbus-1050-286-299-717
+DEBUG:root:schoolbus-1050-286-299-717.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job14_schoolbus-1050-286-299-717.csv.
+DEBUG:root:score2a_preagg2_job14_schoolbus-1050-286-299-717.csv
+DEBUG:root:score2a_preagg2_job14_schoolbus-1050-286-299-717
+DEBUG:root:schoolbus-1050-286-299-717.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job14_schoolbus-1050-286-299-717 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job14_schoolbus-1050-286-299-717
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job14_schoolbus-1050-286-299-717.
+DEBUG:root:preagg2_lccdec2_score2b_job14_schoolbus-1050-286-299-717
+DEBUG:root:preagg2_lccdec2_score2b_job14_schoolbus-1050-286-299-717
+DEBUG:root:schoolbus-1050-286-299-717.JPEG
+DEBUG:root:Received time 1591718671.894080
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job14_schoolbus-1050-286-299-717.
+DEBUG:root:preagg2_lccdec2_score2a_job14_schoolbus-1050-286-299-717
+DEBUG:root:preagg2_lccdec2_score2a_job14_schoolbus-1050-286-299-717
+DEBUG:root:schoolbus-1050-286-299-717.JPEG
+DEBUG:root:Received time 1591718672.325086
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job14_schoolbus-1050-286-299-717 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job14_schoolbus-1050-286-299-717
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job14_schoolbus-1050-286-299-717.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job14_schoolbus-1050-286-299-717 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job14_schoolbus-1050-286-299-717
+DEBUG:root:preagg2_lccdec2_score2a_job14_schoolbus-1050-286-299-717
+DEBUG:root:preagg2_lccdec2_score2a_job14_schoolbus-1050-286-299-717
+DEBUG:root:schoolbus-1050-286-299-717.JPEG
+DEBUG:root:Received time 1591718672.747099
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job14_schoolbus-1050-286-299-717 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job14_schoolbus-1050-286-299-717
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job15_schoolbus-579-659-79-1299.csv.
+DEBUG:root:score2a_preagg2_job15_schoolbus-579-659-79-1299.csv
+DEBUG:root:score2a_preagg2_job15_schoolbus-579-659-79-1299
+DEBUG:root:schoolbus-579-659-79-1299.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718691.421335
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+15
+schoolbus-579-659-79-1299
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2427
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '15': ['score2a_preagg2_job15_schoolbus-579-659-79-1299.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': ['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '16': [], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 15
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job14_schoolbus-1050-286-299-717.csv.
+DEBUG:root:score2c_preagg2_job14_schoolbus-1050-286-299-717.csv
+DEBUG:root:score2c_preagg2_job14_schoolbus-1050-286-299-717
+DEBUG:root:schoolbus-1050-286-299-717.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718692.706338
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+14
+schoolbus-1050-286-299-717
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2483
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '15': ['score2a_preagg2_job15_schoolbus-579-659-79-1299.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': ['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2c_preagg2_job14_schoolbus-1050-286-299-717.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '16': [], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 14
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job15_schoolbus-579-659-79-1299.csv.
+DEBUG:root:score2a_preagg2_job15_schoolbus-579-659-79-1299.csv
+DEBUG:root:score2a_preagg2_job15_schoolbus-579-659-79-1299
+DEBUG:root:schoolbus-579-659-79-1299.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job14_schoolbus-1050-286-299-717.csv.
+DEBUG:root:score2c_preagg2_job14_schoolbus-1050-286-299-717.csv
+DEBUG:root:score2c_preagg2_job14_schoolbus-1050-286-299-717
+DEBUG:root:schoolbus-1050-286-299-717.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job15_schoolbus-579-659-79-1299.csv.
+DEBUG:root:score2b_preagg2_job15_schoolbus-579-659-79-1299.csv
+DEBUG:root:score2b_preagg2_job15_schoolbus-579-659-79-1299
+DEBUG:root:schoolbus-579-659-79-1299.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718693.986910
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+15
+schoolbus-579-659-79-1299
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2538
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '15': ['score2a_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2b_preagg2_job15_schoolbus-579-659-79-1299.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': ['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2c_preagg2_job14_schoolbus-1050-286-299-717.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '16': [], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 15
+15
+['score2a_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2b_preagg2_job15_schoolbus-579-659-79-1299.csv']
+/centralized_scheduler/input/score2a_preagg2_job15_schoolbus-579-659-79-1299.csv
+15
+['score2a_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2b_preagg2_job15_schoolbus-579-659-79-1299.csv']
+/centralized_scheduler/input/score2b_preagg2_job15_schoolbus-579-659-79-1299.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job15_schoolbus-579-659-79-1299.
+DEBUG:root:preagg2_lccdec2_score2a_job15_schoolbus-579-659-79-1299
+DEBUG:root:preagg2_lccdec2_score2a_job15_schoolbus-579-659-79-1299
+DEBUG:root:schoolbus-579-659-79-1299.JPEG
+DEBUG:root:Received time 1591718695.282487
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job15_schoolbus-579-659-79-1299.csv.
+DEBUG:root:score2b_preagg2_job15_schoolbus-579-659-79-1299.csv
+DEBUG:root:score2b_preagg2_job15_schoolbus-579-659-79-1299
+DEBUG:root:schoolbus-579-659-79-1299.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job15_schoolbus-579-659-79-1299.csv.
+DEBUG:root:score2c_preagg2_job15_schoolbus-579-659-79-1299.csv
+DEBUG:root:score2c_preagg2_job15_schoolbus-579-659-79-1299
+DEBUG:root:schoolbus-579-659-79-1299.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718695.285212
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job15_schoolbus-579-659-79-1299 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job15_schoolbus-579-659-79-1299
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job15_schoolbus-579-659-79-1299.
+DEBUG:root:preagg2_lccdec2_score2a_job15_schoolbus-579-659-79-1299
+DEBUG:root:preagg2_lccdec2_score2a_job15_schoolbus-579-659-79-1299
+DEBUG:root:schoolbus-579-659-79-1299.JPEG
+DEBUG:root:Received time 1591718695.707198
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job15_schoolbus-579-659-79-1299.
+DEBUG:root:preagg2_lccdec2_score2b_job15_schoolbus-579-659-79-1299
+DEBUG:root:preagg2_lccdec2_score2b_job15_schoolbus-579-659-79-1299
+DEBUG:root:schoolbus-579-659-79-1299.JPEG
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job15_schoolbus-579-659-79-1299 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job15_schoolbus-579-659-79-1299
+DEBUG:root:Received time 1591718696.123244
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+15
+schoolbus-579-659-79-1299
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job15_schoolbus-579-659-79-1299.
+DEBUG:root:preagg2_lccdec2_score2b_job15_schoolbus-579-659-79-1299
+DEBUG:root:preagg2_lccdec2_score2b_job15_schoolbus-579-659-79-1299
+DEBUG:root:schoolbus-579-659-79-1299.JPEG
+DEBUG:root:Received time 1591718696.558292
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job15_schoolbus-579-659-79-1299 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job15_schoolbus-579-659-79-1299
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2593
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '15': ['score2a_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2b_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2c_preagg2_job15_schoolbus-579-659-79-1299.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': ['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2c_preagg2_job14_schoolbus-1050-286-299-717.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '16': [], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 15
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job15_schoolbus-579-659-79-1299.csv.
+DEBUG:root:score2c_preagg2_job15_schoolbus-579-659-79-1299.csv
+DEBUG:root:score2c_preagg2_job15_schoolbus-579-659-79-1299
+DEBUG:root:schoolbus-579-659-79-1299.JPEG
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job15_schoolbus-579-659-79-1299 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job15_schoolbus-579-659-79-1299
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv.
+DEBUG:root:score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv
+DEBUG:root:score2b_preagg2_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:schoolbus-481-1054-1259-1242.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718706.944629
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+16
+schoolbus-481-1054-1259-1242
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2659
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '15': ['score2a_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2b_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2c_preagg2_job15_schoolbus-579-659-79-1299.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '17': [], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': ['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2c_preagg2_job14_schoolbus-1050-286-299-717.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '16': ['score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 16
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv.
+DEBUG:root:score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv
+DEBUG:root:score2b_preagg2_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:schoolbus-481-1054-1259-1242.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job16_schoolbus-481-1054-1259-1242.csv.
+DEBUG:root:score2a_preagg2_job16_schoolbus-481-1054-1259-1242.csv
+DEBUG:root:score2a_preagg2_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:schoolbus-481-1054-1259-1242.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718709.962099
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+16
+schoolbus-481-1054-1259-1242
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2717
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '15': ['score2a_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2b_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2c_preagg2_job15_schoolbus-579-659-79-1299.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '17': [], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': ['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2c_preagg2_job14_schoolbus-1050-286-299-717.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '16': ['score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv', 'score2a_preagg2_job16_schoolbus-481-1054-1259-1242.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 16
+16
+['score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv', 'score2a_preagg2_job16_schoolbus-481-1054-1259-1242.csv']
+/centralized_scheduler/input/score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv
+16
+['score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv', 'score2a_preagg2_job16_schoolbus-481-1054-1259-1242.csv']
+/centralized_scheduler/input/score2a_preagg2_job16_schoolbus-481-1054-1259-1242.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job16_schoolbus-481-1054-1259-1242.
+DEBUG:root:preagg2_lccdec2_score2b_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:preagg2_lccdec2_score2b_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:schoolbus-481-1054-1259-1242.JPEG
+DEBUG:root:Received time 1591718711.281959
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job16_schoolbus-481-1054-1259-1242.csv.
+DEBUG:root:score2a_preagg2_job16_schoolbus-481-1054-1259-1242.csv
+DEBUG:root:score2a_preagg2_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:schoolbus-481-1054-1259-1242.JPEG
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job16_schoolbus-481-1054-1259-1242 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job16_schoolbus-481-1054-1259-1242.
+DEBUG:root:preagg2_lccdec2_score2b_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:preagg2_lccdec2_score2b_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:schoolbus-481-1054-1259-1242.JPEG
+DEBUG:root:Received time 1591718711.702871
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job16_schoolbus-481-1054-1259-1242.
+DEBUG:root:preagg2_lccdec2_score2a_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:preagg2_lccdec2_score2a_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:schoolbus-481-1054-1259-1242.JPEG
+DEBUG:root:Received time 1591718712.119046
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job16_schoolbus-481-1054-1259-1242 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job16_schoolbus-481-1054-1259-1242.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job16_schoolbus-481-1054-1259-1242 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:preagg2_lccdec2_score2a_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:preagg2_lccdec2_score2a_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:schoolbus-481-1054-1259-1242.JPEG
+DEBUG:root:Received time 1591718712.544049
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job16_schoolbus-481-1054-1259-1242 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job16_schoolbus-481-1054-1259-1242.csv.
+DEBUG:root:score2c_preagg2_job16_schoolbus-481-1054-1259-1242.csv
+DEBUG:root:score2c_preagg2_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:schoolbus-481-1054-1259-1242.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718736.269317
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+16
+schoolbus-481-1054-1259-1242
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2785
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '15': ['score2a_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2b_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2c_preagg2_job15_schoolbus-579-659-79-1299.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '17': [], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': ['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2c_preagg2_job14_schoolbus-1050-286-299-717.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '18': [], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '16': ['score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv', 'score2a_preagg2_job16_schoolbus-481-1054-1259-1242.csv', 'score2c_preagg2_job16_schoolbus-481-1054-1259-1242.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 16
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job17_schoolbus-104-1077-683-647.csv.
+DEBUG:root:score2a_preagg2_job17_schoolbus-104-1077-683-647.csv
+DEBUG:root:score2a_preagg2_job17_schoolbus-104-1077-683-647
+DEBUG:root:schoolbus-104-1077-683-647.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718737.550902
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+17
+schoolbus-104-1077-683-647
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2839
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '15': ['score2a_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2b_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2c_preagg2_job15_schoolbus-579-659-79-1299.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '17': ['score2a_preagg2_job17_schoolbus-104-1077-683-647.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': ['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2c_preagg2_job14_schoolbus-1050-286-299-717.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '18': [], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '16': ['score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv', 'score2a_preagg2_job16_schoolbus-481-1054-1259-1242.csv', 'score2c_preagg2_job16_schoolbus-481-1054-1259-1242.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Not receive enough results for job 17
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job16_schoolbus-481-1054-1259-1242.csv.
+DEBUG:root:score2c_preagg2_job16_schoolbus-481-1054-1259-1242.csv
+DEBUG:root:score2c_preagg2_job16_schoolbus-481-1054-1259-1242
+DEBUG:root:schoolbus-481-1054-1259-1242.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2a_preagg2_job17_schoolbus-104-1077-683-647.csv.
+DEBUG:root:score2a_preagg2_job17_schoolbus-104-1077-683-647.csv
+DEBUG:root:score2a_preagg2_job17_schoolbus-104-1077-683-647
+DEBUG:root:schoolbus-104-1077-683-647.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job17_schoolbus-104-1077-683-647.csv.
+DEBUG:root:score2b_preagg2_job17_schoolbus-104-1077-683-647.csv
+DEBUG:root:score2b_preagg2_job17_schoolbus-104-1077-683-647
+DEBUG:root:schoolbus-104-1077-683-647.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718738.842667
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+17
+schoolbus-104-1077-683-647
+http://10.96.204.69:6100/post-dict
+DEBUG:urllib3.connectionpool:Starting new HTTP connection (1): 10.96.204.69
+DEBUG:urllib3.connectionpool:http://10.96.204.69:6100 "POST /post-dict HTTP/1.1" 200 2895
+{'3': ['score2a_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2b_preagg2_job3_schoolbus-458-970-1298-105.csv', 'score2c_preagg2_job3_schoolbus-458-970-1298-105.csv'], '15': ['score2a_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2b_preagg2_job15_schoolbus-579-659-79-1299.csv', 'score2c_preagg2_job15_schoolbus-579-659-79-1299.csv'], '5': ['score2a_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2b_preagg2_job5_schoolbus-814-292-117-646.csv', 'score2c_preagg2_job5_schoolbus-814-292-117-646.csv'], '2': ['score2b_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2a_preagg2_job2_schoolbus-77-127-662-228.csv', 'score2c_preagg2_job2_schoolbus-77-127-662-228.csv'], '10': ['score2b_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2a_preagg2_job10_schoolbus-501-562-96-1231.csv', 'score2c_preagg2_job10_schoolbus-501-562-96-1231.csv'], '6': ['score2a_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2b_preagg2_job6_schoolbus-472-795-858-1150.csv', 'score2c_preagg2_job6_schoolbus-472-795-858-1150.csv'], '17': ['score2a_preagg2_job17_schoolbus-104-1077-683-647.csv', 'score2b_preagg2_job17_schoolbus-104-1077-683-647.csv'], '9': ['score2a_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2b_preagg2_job9_schoolbus-649-977-54-885.csv', 'score2c_preagg2_job9_schoolbus-649-977-54-885.csv'], '8': ['score2a_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2b_preagg2_job8_schoolbus-155-1235-67-1204.csv', 'score2c_preagg2_job8_schoolbus-155-1235-67-1204.csv'], '11': ['score2a_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2b_preagg2_job11_schoolbus-252-324-533-1186.csv', 'score2c_preagg2_job11_schoolbus-252-324-533-1186.csv'], '14': ['score2b_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2a_preagg2_job14_schoolbus-1050-286-299-717.csv', 'score2c_preagg2_job14_schoolbus-1050-286-299-717.csv'], '12': ['score2b_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2a_preagg2_job12_schoolbus-9-1183-742-1065.csv', 'score2c_preagg2_job12_schoolbus-9-1183-742-1065.csv'], '18': [], '4': ['score2b_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2a_preagg2_job4_schoolbus-150-664-1125-1002.csv', 'score2c_preagg2_job4_schoolbus-150-664-1125-1002.csv'], '16': ['score2b_preagg2_job16_schoolbus-481-1054-1259-1242.csv', 'score2a_preagg2_job16_schoolbus-481-1054-1259-1242.csv', 'score2c_preagg2_job16_schoolbus-481-1054-1259-1242.csv'], '7': ['score2a_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2b_preagg2_job7_schoolbus-994-1135-1263-1286.csv', 'score2c_preagg2_job7_schoolbus-994-1135-1263-1286.csv'], '13': ['score2a_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2b_preagg2_job13_schoolbus-384-635-375-160.csv', 'score2c_preagg2_job13_schoolbus-384-635-375-160.csv'], '1': ['score2a_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2b_preagg2_job1_schoolbus-1014-654-578-32.csv', 'score2c_preagg2_job1_schoolbus-1014-654-578-32.csv']}
+Receive enough results for job 17
+17
+['score2a_preagg2_job17_schoolbus-104-1077-683-647.csv', 'score2b_preagg2_job17_schoolbus-104-1077-683-647.csv']
+/centralized_scheduler/input/score2a_preagg2_job17_schoolbus-104-1077-683-647.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job17_schoolbus-104-1077-683-647.
+DEBUG:root:preagg2_lccdec2_score2a_job17_schoolbus-104-1077-683-647
+DEBUG:root:preagg2_lccdec2_score2a_job17_schoolbus-104-1077-683-647
+DEBUG:root:schoolbus-104-1077-683-647.JPEG
+DEBUG:root:Received time 1591718740.140205
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+17
+['score2a_preagg2_job17_schoolbus-104-1077-683-647.csv', 'score2b_preagg2_job17_schoolbus-104-1077-683-647.csv']
+/centralized_scheduler/input/score2b_preagg2_job17_schoolbus-104-1077-683-647.csv
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2b_preagg2_job17_schoolbus-104-1077-683-647.csv.
+DEBUG:root:score2b_preagg2_job17_schoolbus-104-1077-683-647.csv
+DEBUG:root:score2b_preagg2_job17_schoolbus-104-1077-683-647
+DEBUG:root:schoolbus-104-1077-683-647.JPEG
+DEBUG:root:Received file as input - /centralized_scheduler/input/score2c_preagg2_job17_schoolbus-104-1077-683-647.csv.
+DEBUG:root:score2c_preagg2_job17_schoolbus-104-1077-683-647.csv
+DEBUG:root:score2c_preagg2_job17_schoolbus-104-1077-683-647
+DEBUG:root:schoolbus-104-1077-683-647.JPEG
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7fb6c9b40c88>
+DEBUG:root:Received time 1591718740.143356
+DEBUG:root:Sending runtime stats
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job17_schoolbus-104-1077-683-647 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job17_schoolbus-104-1077-683-647
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2a_job17_schoolbus-104-1077-683-647.
+DEBUG:root:preagg2_lccdec2_score2a_job17_schoolbus-104-1077-683-647
+DEBUG:root:preagg2_lccdec2_score2a_job17_schoolbus-104-1077-683-647
+DEBUG:root:schoolbus-104-1077-683-647.JPEG
+DEBUG:root:Received time 1591718740.565269
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job17_schoolbus-104-1077-683-647.
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2a_job17_schoolbus-104-1077-683-647 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2a_job17_schoolbus-104-1077-683-647
+DEBUG:root:preagg2_lccdec2_score2b_job17_schoolbus-104-1077-683-647
+DEBUG:root:preagg2_lccdec2_score2b_job17_schoolbus-104-1077-683-647
+DEBUG:root:schoolbus-104-1077-683-647.JPEG
+DEBUG:root:Received time 1591718741.002529
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+17
+schoolbus-104-1077-683-647
+http://10.96.204.69:6100/post-dict
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/preagg2_lccdec2_score2b_job17_schoolbus-104-1077-683-647.
+DEBUG:root:preagg2_lccdec2_score2b_job17_schoolbus-104-1077-683-647
+DEBUG:root:preagg2_lccdec2_score2b_job17_schoolbus-104-1077-683-647
+DEBUG:root:schoolbus-104-1077-683-647.JPEG
+DEBUG:root:Received time 1591718741.422798
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job17_schoolbus-104-1077-683-647 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job17_schoolbus-104-1077-683-647
+DEBUG:root:data transfer complete
+
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/preagg2_lccdec2_score2b_job17_schoolbus-104-1077-683-647 root@10.103.159.2:/centralized_scheduler/input/preagg2_lccdec2_score2b_job17_schoolbus-104-1077-683-647
+DEBUG:root:data transfer complete
+

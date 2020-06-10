@@ -16,7 +16,7 @@ STRAGGLER_THRESHOLD   = float(config['OTHER']['STRAGGLER_THRESHOLD'])
 
 taskname = Path(__file__).stem
 classnum = taskname.split('score')[1][0]
-classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'kitfox', 'persiancat', 'leopard', 'lion', 'tiger', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
 classname = classlist[int(classnum)-1]
 
 # Similarity score (zero-normalized cross correlation)
@@ -83,7 +83,6 @@ def task(filelist, pathin, pathout):
     
     
     # Read Encoded data-batch   
-    print(os.path.join(pathin, filelist[0]))
     En_Image_Batch = np.loadtxt(os.path.join(pathin, filelist[0]), delimiter=',')
     
     
@@ -93,7 +92,6 @@ def task(filelist, pathin, pathout):
     outlist = []
     # destination = os.path.join(pathout,'score1' + worker_id + '_'+'preagg1'+ '_' +'job' + job_id +'.csv')
     destination = os.path.join(pathout,'score'+classnum + worker_id + '_'+'preagg'+classnum+ '_' +'job' + job_id +'_'+filesuffixs+'.csv')
-    print(destination)
     np.savetxt(destination, sc, delimiter=',')
     outlist.append(destination)
     return outlist

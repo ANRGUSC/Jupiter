@@ -1,8 +1,6 @@
 import torch
 from torchvision import models
 from torchvision import transforms
-# import torchvision.models as models
-# import torchvision.transforms as transforms
 import os
 import numpy as np
 from PIL import Image
@@ -17,11 +15,15 @@ import random
 #Krishna
 import urllib
 import logging
+from pathlib import Path
+from os import listdir
+
+taskname = Path(__file__).stem
+resnet_task_num = int(taskname.split('resnet')[1])
+
 global logging
 logging.basicConfig(level = logging.DEBUG)
 #Krishna
-
-resnet_task_num = 8
 
 INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
@@ -54,6 +56,7 @@ def task(file_, pathin, pathout):
 
     for i, f in enumerate(file_):
         ### Read input files.
+        print(os.path.join(pathin, f))
         img = Image.open(os.path.join(pathin, f))
 
         ### Apply transforms.
@@ -63,6 +66,7 @@ def task(file_, pathin, pathout):
         #img_tensor =  input_batch[0]
         ### call the ResNet model
         try:
+            print('Calling the resnet model')
             output = model(img_tensor) 
             pred = torch.argmax(output, dim=1).detach().numpy().tolist()
             ### To simulate slow downs
@@ -72,9 +76,12 @@ def task(file_, pathin, pathout):
                 time.sleep(SLEEP_TIME) #>=2 
             ### Contact flask server
             f_stripped = f.split(".JPEG")[0]
-            job_id = int(f_stripped.split("_jobid_")[1])
+            # job_id = int(f_stripped.split("_jobid_")[1])
+            job_id = f_stripped.split('_')[-2]
+            job_id = int(f_stripped.split('_')[-2].split('jobid')[1])
             print('job_id from the file is: ', job_id)
-            
+            print(job_id)
+
             ret_job_id = 0
             try:
                 global_info_ip = os.environ['GLOBAL_IP']
@@ -83,7 +90,7 @@ def task(file_, pathin, pathout):
                     ret_job_id = send_prediction_to_decoder_task(job_id, pred[0], global_info_ip_port)
             except Exception as e:
                 print('Possibly running on the execution profiler')
-            
+
             
             if ret_job_id >= 0: # This job_id has not been processed by the global flask server
                 ### Copy to appropriate destination paths
@@ -101,17 +108,142 @@ def task(file_, pathin, pathout):
                     destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass2_"+ f)
                     # destination = os.path.join(pathout, "storeclass2_" + f)
                     out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 270: ### white wolf. class 3
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass3_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 276: ### hyena. class 4
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass4_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 292: ### tiger. class 5
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass5_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 278: ### kitfox. class 5
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass6_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 283: ### persian cat. class 6
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass7_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 288: ### leopard. class 7
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass8_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 291: ### lion. class 8
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass9_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                
+                elif pred[0] == 295: ### black bear. class 10
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass10_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 298: ### moongoose. class 11
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass11_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 340: ### zebra. class 12
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass12_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 341: ### hog. class 13
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass13_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 344: ### hippo. class 14
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass14_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 345: ### ox. class 15
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass15_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 346: ### buffallo. class 16
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass16_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 348: ### ram. class 17
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass17_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 352: ### impala . class 18
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass18_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 354: ### camel. class 19
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass19_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
+                elif pred[0] == 360: ### otter. class 20
+                    source = os.path.join(pathin, f)
+                    # f_split = f.split("prefix_")[1]
+                    # destination = os.path.join(pathout, "class2_" + f)
+                    destination = os.path.join(pathout, "resnet" + str(resnet_task_num) + "_storeclass20_"+ f)
+                    # destination = os.path.join(pathout, "storeclass2_" + f)
+                    out_list.append(shutil.copyfile(source, destination))
                 else: ### not either of the classes # do nothing
                     print('This does not belong to any classes!!!')
-                    #source = os.path.join(pathin, f)
-                    #destination = os.path.join(pathout, "classNA_" + f)
-                    #out_list.append(shutil.copyfile(source, destination))
             else: # ret_job_id < 0
                 print("The jobid %s has already been processed by the flask server" % (job_id))
                 return [] #slow resnet node: return empty
         except Exception as e:
-            logging.debug("Exception during Resnet prediction")
-            logging.debug(e)
+            print('This might be a black and white image')
+            print(e)
+            return []
 
     return out_list
 
@@ -144,11 +276,19 @@ def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
         ret_job_id = 0
     return ret_job_id
 #Krishna
+
 def main():
-    filelist = ['master_resnet8_n03345487_78_jobid_0.JPEG','master_resnet8_n03345487_284_jobid_0.JPEG',
-       'master_resnet8_n03345487_311_jobid_0.JPEG','master_resnet8_n03345487_317_jobid_0.JPEG','master_resnet8_n03345487_328_jobid_0.JPEG',
-       'master_resnet8_n03345487_334_jobid_0.JPEG','master_resnet8_n04146614_387_jobid_0.JPEG']
+    classlists = ['fireengine', 'schoolbus', 'whitewolf', 'hyena','tiger','kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+    classlist = classlists[0:5]
+    num = 27
+    filelist = []
+    for i in classlist:
+        for j in range(resnet_task_num+1,num+1,9):
+            #filename = 'master_'+taskname+'_'+i+'_'+str(j)+'_jobid_0.JPEG'
+            filename = 'master_'+taskname+'_jobid0_'+ str(j)+'img'+i+'.JPEG'
+            filelist.append(filename)
+    # outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
+    # filelist = [f for f in listdir(outpath) if f.startswith('master')]
     outpath = os.path.join(os.path.dirname(__file__), 'sample_input/')
     outfile = task(filelist, outpath, outpath)
     return outfile
-
