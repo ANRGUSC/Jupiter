@@ -95,6 +95,9 @@ def build_push_streams():
     app_config = load_app_config(app_config_path)
     datasources = parse_datasources(app_config)
 
+    logging.debug(app_config_path)
+    logging.debug(datasources)
+
 
     for name in datasources:
         logging.debug('Building data sources image '+name)

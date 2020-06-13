@@ -255,13 +255,26 @@ def recv_runtime_profile():
         logging.debug(worker_node)
         logging.debug(msg[0])
         logging.debug(msg[1])
-        
+
+        if '-' in msg[1]:
+            outputfile = msg[1].split('.')[0].split('-')
+            filen = outputfile[0]
+            fileid = outputfile[1:]
+            outputfiles = [x+'img'+filen+'.JPEG' for x in fileid]
+        else:
+            outputfiles = [msg[1]]
+        print('^^^^^^^^^^^^^^^^^^')
+        logging.debug(outputfiles)
+
         if msg[0] == 'rt_enter':
-            rt_enter_time[(worker_node,msg[1])] = float(msg[2])
+            for i in range(0,len(outputfiles)):
+                rt_enter_time[(worker_node,outputfiles[i])] = float(msg[2])
         elif msg[0] == 'rt_exec' :
-            rt_exec_time[(worker_node,msg[1])] = float(msg[2])
+            for i in range(0,len(outputfiles)):
+                rt_exec_time[(worker_node,outputfiles[i])] = float(msg[2])
         else: #rt_finish
-            rt_finish_time[(worker_node,msg[1])] = float(msg[2])
+            for i in range(0,len(outputfiles)):
+                rt_finish_time[(worker_node,outputfiles[i])] = float(msg[2])
             if worker_node in last_tasks:
                 # Per task stats:
                 logging.debug('********************************************') 
@@ -281,15 +294,18 @@ def recv_runtime_profile():
                 logging.debug(s)
                 log_file.write(s)
                 logging.debug('=========***')
-                logging.debug(rt_enter_time)
+                logging.debug(rt_enter_time.keys())
                 logging.debug('=========***2')
-                logging.debug(rt_exec_time)
+                logging.debug(rt_exec_time.keys())
                 logging.debug('=========***3')
-                logging.debug(rt_finish_time)
+                logging.debug(rt_finish_time.keys())
                 logging.debug('=========***4')
                 
                 for k,v in rt_finish_time:
+                    logging.debug('---')
+                    logging.debug(k)
                     if k in rt_enter_time and k in rt_exec_time:
+                        logging.debug('Horayyyyyyyyy')
                         elapse = rt_finish_time[k]-v   
                         duration = rt_finish_time[k]-rt_exec_time[k] 
                         waiting = rt_exec_time[k]-v

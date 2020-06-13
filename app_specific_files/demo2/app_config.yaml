@@ -1,11 +1,10 @@
- 
 node_list:
-  home: k8sworkersb-ubuntu-s-4vcpu-8gb-0-sgp1
-  node2: k8sworkersb-ubuntu-s-4vcpu-8gb-1-blr1
-  node3: k8sworkersb-ubuntu-s-4vcpu-8gb-2-lon1
+  home: k8sworkersb-ubuntu-s-4vcpu-8gb-0-blr1
+  node2: k8sworkersb-ubuntu-s-4vcpu-8gb-1-nyc1
+  node3: k8sworkersb-ubuntu-s-4vcpu-8gb-2-fra1
   #TODO: datasources will eventually be removed from here
-  datasource1: k8sworkersb-ubuntu-s-4vcpu-8gb-3-nyc3
-  datasource2: k8sworkersb-ubuntu-s-4vcpu-8gb-4-tor1
+  datasource1: k8sworkersb-ubuntu-s-4vcpu-8gb-13-ams3
+  datasource2: k8sworkersb-ubuntu-s-4vcpu-8gb-14-nyc1
 application:
   sources:
   - name: datasource1
@@ -13,13 +12,13 @@ application:
     datapath: data/fireengine
     stream_image: docker.io/anrg/streams_home:fireengine
     #this should be a node that jupiter wont schedule nodes on   
-    node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-3-nyc3
+    node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-13-ams3
   - name: datasource2
     dataset: schoolbus
     datapath: data/schoolbus
     stream_image: docker.io/anrg/streams_home:schoolbus
     #this should be a node that jupiter wont schedule nodes on   
-    node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-4-tor1 
+    node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-14-nyc1
   ports:
     # these ports are to be exposed by app docker containers and also exposed via k8s service
     # available range: 50000-60000
@@ -218,7 +217,7 @@ application:
         outfile_prefix: score2c
         dag_task: True
       - name: preagg1
-        inputs_to_wait_for: 3
+        inputs_to_wait_for: 1
         output_policy: POINT_TO_POINT_BROADCAST
         children: 
           - lccdec1
@@ -226,7 +225,7 @@ application:
         outfile_prefix: preagg1
         dag_task: True
       - name: preagg2
-        inputs_to_wait_for: 3
+        inputs_to_wait_for: 1
         output_policy: POINT_TO_POINT_BROADCAST
         children: 
           - lccdec2

@@ -218,7 +218,13 @@ class Handler1(pyinotify.ProcessEvent):
         logging.debug(new_file)
         original_name = new_file.split('.')[0]
         logging.debug(original_name)
-        temp_name= original_name.split('_')[-1]+'.JPEG'
+        tmp_name = original_name.split('_')[-1]
+        temp_name= tmp_name+'.JPEG'
+        # temp_name= [tmp_name+'.JPEG']
+        # if '-' not in tmp_name:
+        #     temp_name= [tmp_name+'.JPEG']
+        # else:
+        #     temp_name = [x+'.JPEG' for x in tmp_name.split('-')]
         logging.debug(temp_name)
         
         global files_out, files_out_set
@@ -233,12 +239,15 @@ class Handler1(pyinotify.ProcessEvent):
         if taskname == 'distribute':
             logging.debug('This is the distribution point')
             # ts = time.time()
+            # for i in range(0,len(temp_name)):
+            #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
+            #     send_runtime_profile(runtime_info)
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
 
-            if BOKEH == 1:
-                runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+            # if BOKEH == 1:
+            #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+            #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
             appname = temp_name.split('-')[0]
             source = event.pathname
             next_node = appname+'-task0'
@@ -253,13 +262,16 @@ class Handler1(pyinotify.ProcessEvent):
             # ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
-            if BOKEH == 1:
-                runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+            # for i in range(0,len(temp_name)):
+            #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
+            #     send_runtime_profile(runtime_info)
+            # if BOKEH == 1:
+            #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+            #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
 
-            if BOKEH == 0:
-                msg = taskname + " ends"
-                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+            # if BOKEH == 0:
+            #     msg = taskname + " ends"
+            #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
             
             user = sys.argv[5]
             password=sys.argv[6]
@@ -273,13 +285,16 @@ class Handler1(pyinotify.ProcessEvent):
             # ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
-            if BOKEH == 1:
-                runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+            # for i in range(0,len(temp_name)):
+                # runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
+                # send_runtime_profile(runtime_info)
+            # if BOKEH == 1:
+            #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+            #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
 
-            if BOKEH == 0:
-                msg = taskname + " ends"
-                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+            # if BOKEH == 0:
+            #     msg = taskname + " ends"
+            #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
             
             # Using unicast 
             # for i in range(3, len(sys.argv)-1,4):
@@ -320,12 +335,15 @@ class Handler1(pyinotify.ProcessEvent):
                 # ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
-                if BOKEH == 1:
-                    runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-                if BOKEH == 0:
-                    msg = taskname + " ends"
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                # for i in range(0,len(temp_name)):
+                #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
+                #     send_runtime_profile(runtime_info)
+                # if BOKEH == 1:
+                #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+                # if BOKEH == 0:
+                #     msg = taskname + " ends"
+                #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     
                 # Using unicast
                 # for i in range(3, len(sys.argv)-1,4):
@@ -354,6 +372,14 @@ class Handler1(pyinotify.ProcessEvent):
                 files_out_set=set()
         elif flag2 == 'exclusive':#exclusive
             logging.debug('Sending exclusive information to the corresponding children')
+
+            runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+            send_runtime_profile(runtime_info)
+
+            # for i in range(0,len(temp_name)):
+            #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
+            #     send_runtime_profile(runtime_info)
+
             source = event.pathname
             destination = os.path.join('/centralized_scheduler', 'input', new_file)
             
@@ -378,6 +404,12 @@ class Handler1(pyinotify.ProcessEvent):
             transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
         else: #ordered
             logging.debug('Sending all the information to the corresponding children based on order')
+            runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+            send_runtime_profile(runtime_info)
+
+            # for i in range(0,len(temp_name)):
+            #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
+            #     send_runtime_profile(runtime_info)
             num_child = (len(sys.argv) - 4) / 4
             # files_out.append(new_file)
             files_out_set.add(new_file)
@@ -455,6 +487,7 @@ class Handler(pyinotify.ProcessEvent):
         temp_name= original_name.split('_')[-1]+'.JPEG'
         logging.debug(temp_name)
 
+
         if not (new_file in files_in_set):
             files_in_set.add(new_file)
             queue_mul.put(new_file)
@@ -506,14 +539,20 @@ class Handler(pyinotify.ProcessEvent):
                 filenames.append(queue_mul.get())
                 if (len(filenames) == int(flag1)):
                     ts = time.time()
-                    runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-                    send_runtime_profile(runtime_info)           
-                    if BOKEH == 1:
-                        runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
-                        demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-                    if BOKEH == 0:
-                        msg = taskname + " starts"
-                        demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                    for i in range(0,len(filenames)):
+                        tmp_name= filenames[i].split('_')[-1]
+                        runtime_info = 'rt_exec '+ tmp_name+ ' '+str(ts)
+                        send_runtime_profile(runtime_info)   
+
+                    # runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+                    # send_runtime_profile(runtime_info)   
+
+                    # if BOKEH == 1:
+                    #     runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
+                    #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+                    # if BOKEH == 0:
+                    #     msg = taskname + " starts"
+                    #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     input_path = os.path.split(event.pathname)[0]
                     output_path = os.path.join(os.path.split(input_path)[0],'output')
                     dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
