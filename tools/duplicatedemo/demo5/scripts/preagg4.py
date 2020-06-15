@@ -69,11 +69,16 @@ def task(filelist, pathin, pathout):
         if FLAG_PART2 == 1:
             sample1 = [f for f in listdir(pathout) if f.startswith('score2a_preagg2_job2')]
             sample2 = [f for f in listdir(pathout) if f.startswith('score2b_preagg2_job2')]
+            print(sample1)
+            print(sample2)
             job_dict = {'2':[sample1[0],sample2[0]]}
         else:
             sample1 = [f for f in listdir(pathout) if f.startswith('score2a_preagg2_job2')]
             sample2 = [f for f in listdir(pathout) if f.startswith('score2b_preagg2_job2')]
             sample3 = [f for f in listdir(pathout) if f.startswith('score2c_preagg2_job2')]
+            print(sample1)
+            print(sample2)
+            print(sample3)
             job_dict = {'2':[sample1[0],sample2[0],sample3[0]]}
         
     #Parameters

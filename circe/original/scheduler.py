@@ -79,7 +79,7 @@ def recv_datasource():
             start_times[filename]=float(ts)
             logging.debug(start_times)
         else:
-            print('Something wrong with receiving monitor information from data sources')
+            logging.debug('Something wrong with receiving monitor information from data sources')
 
         
     except Exception as e:
@@ -109,7 +109,7 @@ def recv_datasink():
             end_times[filename]=float(unix_time(ts))
             logging.debug(start_times)
         else:
-            print('Something wrong with receiving monitor information from data sinks')
+            logging.debug('Something wrong with receiving monitor information from data sinks')
     except Exception as e:
         logging.debug("Bad reception or failed processing in Flask")
         logging.debug(e)
@@ -252,9 +252,9 @@ def recv_runtime_profile():
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg').split()
         
-        logging.debug(worker_node)
-        logging.debug(msg[0])
-        logging.debug(msg[1])
+        # logging.debug(worker_node)
+        # logging.debug(msg[0])
+        # logging.debug(msg[1])
 
         if '-' in msg[1]:
             outputfile = msg[1].split('.')[0].split('-')
@@ -263,7 +263,6 @@ def recv_runtime_profile():
             outputfiles = [x+'img'+filen+'.JPEG' for x in fileid]
         else:
             outputfiles = [msg[1]]
-        print('^^^^^^^^^^^^^^^^^^')
         logging.debug(outputfiles)
 
         if msg[0] == 'rt_enter':
@@ -289,27 +288,27 @@ def recv_runtime_profile():
                     - Duration time: total execution time of the task
                     - Waiting time: total time since the input file is created till it is processed
                 """
+                # logging.debug('Enter time')
+                # logging.debug(rt_enter_time)
+                # logging.debug('Exec time')
+                # logging.debug(rt_exec_time)
+                # logging.debug('Finish time')
+                # logging.debug(rt_finish_time)
                 log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks.txt'), "w")
                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
-                logging.debug(s)
                 log_file.write(s)
-                logging.debug('=========***')
-                logging.debug(rt_enter_time.keys())
-                logging.debug('=========***2')
-                logging.debug(rt_exec_time.keys())
-                logging.debug('=========***3')
-                logging.debug(rt_finish_time.keys())
-                logging.debug('=========***4')
-                
-                for k,v in rt_finish_time:
-                    logging.debug('---')
-                    logging.debug(k)
+                logging.debug(s)
+
+
+
+                for k,v in rt_finish_time.items():
                     if k in rt_enter_time and k in rt_exec_time:
-                        logging.debug('Horayyyyyyyyy')
-                        elapse = rt_finish_time[k]-v   
-                        duration = rt_finish_time[k]-rt_exec_time[k] 
-                        waiting = rt_exec_time[k]-v
-                        s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, file, v, rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
+                        elapse = rt_finish_time[k]-rt_enter_time[k]  
+                        duration = rt_finish_time[k]-rt_exec_time[k]
+                        waiting = rt_exec_time[k] - rt_enter_time[k]
+                        image_set.add(k[1])
+                        s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
+                        statstime[k] = [rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting)]
                         logging.debug(s)
                         log_file.write(s)
                         log_file.flush()
@@ -318,9 +317,40 @@ def recv_runtime_profile():
 
                 log_file.close()
                 logging.debug('********************************************')
-        
+                logging.debug("Communication time :")
+
+                for item in image_set:
+                    timeseq = [(k[0],v) for k,v in statstime.items() if k[1]==item]
+                    timedict = dict(timeseq)
+                    comm_time[(item,'datasource','master')] = np.abs(timedict['master'][0] - start_times[item])
+                    # logging.debug(comm_time)
+                    for task in dag:
+                        if task.startswith('lccdec'):
+                            try:
+                                # logging.debug('last task')
+                                comm_time[(item, task,'home')] = np.abs(end_times[item] - timedict[task][2]) 
+
+                            except Exception as e:
+                                pass
+                                # logging.debug('Last task: only belong to one class')
+                        else:
+                            for next_task in dag[task][2:]:
+                                try:
+                                    comm_time[(item, task,next_task)] = np.abs(timedict[next_task][0]-timedict[task][2]) 
+                                except Exception as e:
+                                    pass
+                                    # logging.debug('Only belong to one class / collage task')
+                                    # logging.debug(e)
 
                 
+                logging.debug(comm_time)
+                # s = "{:<10} {:<10} {:<10} {:<10}\n".format('File name','From task','To task','Transfer time')
+                # logging.debug(s)
+                # for k,v in comm_time.items():
+                #     s = "{:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], k[2],v)
+                #     logging.debug(s)
+
+                logging.debug('********************************************') 
     except Exception as e:
         logging.debug("Bad reception or failed processing in Flask for runtime profiling")
         logging.debug(e)
@@ -603,7 +633,7 @@ def main():
     end_times = manager.dict()
     exec_times = manager.dict()
     
-    global count, start_time,end_time, rt_enter_time, rt_exec_time, rt_finish_time, files_in_set, files_out_set
+    global dag,count, start_time,end_time, rt_enter_time, rt_exec_time, rt_finish_time, files_in_set, files_out_set
     count = 0
     start_time = defaultdict(list)
     end_time = defaultdict(list)
@@ -620,6 +650,11 @@ def main():
     first_task = dag_info[0]
     dag = dag_info[1]
     hosts=dag_info[2]
+
+    global statstime, image_set, comm_time
+    statstime = dict()
+    image_set = set()
+    comm_time = dict()
 
     global last_tasks
     last_tasks = set()

@@ -97,14 +97,14 @@ def extract_log(namespace,label):
           logging.debug(label)
       else:
           logging.debug('Pod information :')
-          pod_name = resp.items[0].metadata.name
+          pod_name = namespace+'-'+resp.items[0].metadata.name
           file_name = os.path.join(log_folder,pod_name.split('-')[1])
           cmd = 'kubectl logs -n%s %s > %s' %(namespace,pod_name,file_name)
           proc = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE)
           tmp = proc.stdout.read().strip().decode("utf-8")
           logging.debug(tmp)
 
-def extract_log_circe(log_folder):
+def extract_log_circe_heft(log_folder):
     """
     This function logging.debugs out all the tasks that are not running.
     If all the tasks are running: return ``True``; else return ``False``.
@@ -157,6 +157,12 @@ def extract_log_circe(log_folder):
       label = "app=" + app_name+'-stream'+datasource
       extract_log(namespace,label)
 
+    namespace = jupiter_config.MAPPER_NAMESPACE
+    logging.debug(namespace)
+    label = "app=" + app_name+'-home'#heft
+    extract_log(namespace,label)
+
+
 
 
 
@@ -173,4 +179,4 @@ if __name__ == '__main__':
     if os.path.exists(log_folder):
         shutil.rmtree(log_folder)
     os.mkdir(log_folder)
-    extract_log_circe(log_folder)
+    extract_log_circe_heft(log_folder)
