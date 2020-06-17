@@ -8,6 +8,11 @@ import configparser
 from pathlib import Path
 from os import listdir
 import logging
+from datetime import datetime
+import urllib
+
+global circe_home_ip, circe_home_ip_port, taskname
+
 
 logging.basicConfig(level = logging.DEBUG)
 taskname = Path(__file__).stem
@@ -25,6 +30,54 @@ FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
 
 global global_info_ip
+
+def unix_time(dt):
+    epoch = datetime.utcfromtimestamp(0)
+    delta = dt - epoch
+    return delta.total_seconds()
+
+def send_runtime_profile(msg):
+    """
+    Sending runtime profiling information to flask server on home
+
+    Args:
+        msg (str): the message to be sent
+
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+
+    Raises:
+        Exception: if sending message to flask server on home is failed
+    """
+    try:
+        logging.debug('Sending runtime stats')
+        logging.debug(msg)
+        circe_home_ip_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
+        url = "http://" + circe_home_ip_port + "/recv_runtime_profile"
+        params = {'msg': msg, "work_node": taskname}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
+        logging.debug(e)
+        return "not ok"
+    return res
+
+def send_runtime_stats(action, file_names):
+    t = datetime.now()
+    ts = unix_time(t)
+    for i in range(0,len(file_names)):
+        file_name = file_names[i]
+        new_file = os.path.split(file_name)[-1]
+        original_name = new_file.split('.')[0]
+        logging.debug(original_name)
+        tmp_name = original_name.split('_')[-1]
+        temp_name= tmp_name+'.JPEG'
+        runtime_info = action +' '+ temp_name+ ' '+str(ts)
+        send_runtime_profile(runtime_info)
 
 
 def gen_Lagrange_coeffs(alpha_s,beta_s):
@@ -56,6 +109,9 @@ def LCC_encoding(X,N,M):
 
 def task(filelist, pathin, pathout):    
     filelist = [filelist] if isinstance(filelist, str) else filelist  
+    logging.debug(filelist)
+    send_runtime_stats('rt_enter_task', filelist)
+
     logging.debug(filelist)
 
     fileid = [x.split('.')[0].split('_')[-1].split('img')[0] for x in filelist]
@@ -106,7 +162,8 @@ def task(filelist, pathin, pathout):
         for j in range(M):
             count = 0
             while count < L:
-                print(os.path.join(pathin, filelist[count_file]))
+                logging.debug(count_file)
+                logging.debug(os.path.join(pathin, filelist[count_file]))
                 img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
                 if img is not None:
                 # resize image
@@ -135,6 +192,8 @@ def task(filelist, pathin, pathout):
             destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+filesuffix+'.csv')
             np.savetxt(destination, En_Image_Batch[i], delimiter=',')
             out_list.append(destination)
+
+        send_runtime_stats('rt_finish_task', out_list)
         return out_list
     
     else: # Uncoding version
@@ -144,6 +203,7 @@ def task(filelist, pathin, pathout):
         for j in range(N):
             count = 0
             while count < L:
+                logging.debug(count_file)
                 img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
                 if img is not None:
                 # resize image
@@ -170,6 +230,8 @@ def task(filelist, pathin, pathout):
             destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+filesuffix+'.csv')
             np.savetxt(destination, En_Image_Batch[i], delimiter=',')
             out_list.append(destination)
+
+        send_runtime_stats('rt_finish_task', out_list)
         return out_list
 
         

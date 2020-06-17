@@ -6,6 +6,10 @@ from pathlib import Path
 from os import listdir
 import configparser
 import random
+import logging 
+global logging
+import urllib
+logging.basicConfig(level = logging.DEBUG)
 
 INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
@@ -14,10 +18,70 @@ global SLEEP_TIME, STRAGGLER_THRESHOLD
 SLEEP_TIME   = int(config['OTHER']['SLEEP_TIME'])
 STRAGGLER_THRESHOLD   = float(config['OTHER']['STRAGGLER_THRESHOLD'])
 
+
+from datetime import datetime
+global circe_home_ip, circe_home_ip_port, taskname
+
+global FLASK_DOCKER, FLASK_SVC, num_retries, ssh_port, username, password, CODING_PART1
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+ssh_port    = int(config['PORT']['SSH_SVC'])
+username    = config['AUTH']['USERNAME']
+password    = config['AUTH']['PASSWORD']
+
 taskname = Path(__file__).stem
 classnum = taskname.split('score')[1][0]
 classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger','kitfox', 'persiancat', 'leopard', 'lion', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
 classname = classlist[int(classnum)-1]
+
+def unix_time(dt):
+    epoch = datetime.utcfromtimestamp(0)
+    delta = dt - epoch
+    return delta.total_seconds()
+
+def send_runtime_profile(msg):
+    """
+    Sending runtime profiling information to flask server on home
+
+    Args:
+        msg (str): the message to be sent
+
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+
+    Raises:
+        Exception: if sending message to flask server on home is failed
+    """
+    try:
+        logging.debug('Sending runtime stats')
+        logging.debug(msg)
+        circe_home_ip_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
+        url = "http://" + circe_home_ip_port + "/recv_runtime_profile"
+        params = {'msg': msg, "work_node": taskname}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
+        logging.debug(e)
+        return "not ok"
+    return res
+
+def send_runtime_stats(action, file_names):
+    t = datetime.now()
+    ts = unix_time(t)
+    for i in range(0,len(file_names)):
+        file_name = file_names[i]
+        new_file = os.path.split(file_name)[-1]
+        original_name = new_file.split('.')[0]
+        logging.debug(original_name)
+        tmp_name = original_name.split('_')[-1]
+        temp_name= tmp_name+'.JPEG'
+        runtime_info = action +' '+ temp_name+ ' '+str(ts)
+        send_runtime_profile(runtime_info)
 
 # Similarity score (zero-normalized cross correlation)
 def score (En_Image_Batch, Ref_Images):
@@ -32,6 +96,7 @@ def score (En_Image_Batch, Ref_Images):
 
 def task(filelist, pathin, pathout):   
     filelist = [filelist] if isinstance(filelist, str) else filelist   
+    send_runtime_stats('rt_enter_task', filelist)
     #snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     # Load id of incoming job (id_job=1,2,3,...)
@@ -76,7 +141,8 @@ def task(filelist, pathin, pathout):
 
     ### To simulate slow downs
     # purposely add delay time to slow down the sending
-    if random.random() > STRAGGLER_THRESHOLD:
+    if (random.random() > STRAGGLER_THRESHOLD) and (classnum=='a'):
+        print(classnum)
         print("Sleeping")
         time.sleep(SLEEP_TIME) #>=2 
     
@@ -94,6 +160,7 @@ def task(filelist, pathin, pathout):
     destination = os.path.join(pathout,'score'+classnum + worker_id + '_'+'preagg'+classnum+ '_' +'job' + job_id+'_'+filesuffixs +'.csv')
     np.savetxt(destination, sc, delimiter=',')
     outlist.append(destination)
+    send_runtime_stats('rt_finish_task', outlist)
     return outlist
 
 def main():

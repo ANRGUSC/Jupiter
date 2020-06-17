@@ -168,12 +168,14 @@ def k8s_jupiter_deploy(app_id,app_name,port):
 
             pprint(mapping)
             schedule = utilities.k8s_get_hosts(path1, path2, mapping)
-            logging.debug("logging.debuging schedule")
+            logging.debug("Begin logging.debuging schedule")
             pprint(schedule)
-            logging.debug("End logging.debug")
+            logging.debug("End logging.debuging schedule")
+            logging.debug("Begin logging.debuging DAG:")
             dag = utilities.k8s_read_dag(path1)
+            pprint(dag)
             dag.append(mapping)
-            logging.debug("logging.debuging DAG:")
+            logging.debug("End logging.debuging DAG")
             pprint(dag)
         else: #integrated_pricing 
             dag = utilities.k8s_read_dag(path1)
@@ -181,7 +183,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
             pprint(dag)
     
     else:
-        import static_assignment1 as st
+        import static_assignment as st
         dag = st.dag
         schedule = st.schedule
 
@@ -408,8 +410,7 @@ def main():
     circe_port = int(jupiter_config.FLASK_CIRCE)
     flask_deploy = int(jupiter_config.FLASK_DEPLOY )
     
-    
-    num_samples_files = 10
+    num_samples_files = 300
     num_runs = 1
     num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]

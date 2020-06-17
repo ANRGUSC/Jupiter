@@ -14,9 +14,14 @@ import multiprocessing
 from multiprocessing import Process, Manager
 import collections
 from os import listdir
-
 import requests
 import json
+
+from pathlib import Path
+from datetime import datetime
+global circe_home_ip, circe_home_ip_port, taskname
+taskname = Path(__file__).stem
+
 #Krishna
 
 """
@@ -57,6 +62,8 @@ store_class_list = ['storeclass1','storeclass2']
 
 global global_info_ip, global_info_ip_port
 
+
+
 store_class_tasks_dict = {}
 store_class_tasks_dict[555] = "storeclass1"
 store_class_tasks_dict[779] = "storeclass2"
@@ -78,6 +85,56 @@ store_class_tasks_dict[348] = "storeclass17"
 store_class_tasks_dict[352] = "storeclass18"
 store_class_tasks_dict[354] = "storeclass19"
 store_class_tasks_dict[360] = "storeclass20"
+
+
+def unix_time(dt):
+    epoch = datetime.utcfromtimestamp(0)
+    delta = dt - epoch
+    return delta.total_seconds()
+
+def send_runtime_profile(msg):
+    """
+    Sending runtime profiling information to flask server on home
+
+    Args:
+        msg (str): the message to be sent
+
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+
+    Raises:
+        Exception: if sending message to flask server on home is failed
+    """
+    try:
+        logging.debug('Sending runtime stats')
+        logging.debug(msg)
+        circe_home_ip_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
+        url = "http://" + circe_home_ip_port + "/recv_runtime_profile"
+        params = {'msg': msg, "work_node": taskname}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
+        logging.debug(e)
+        return "not ok"
+    return res
+
+def send_runtime_stats(action, file_names):
+    t = datetime.now()
+    ts = unix_time(t)
+    for i in range(0,len(file_names)):
+        file_name = file_names[i]
+        new_file = os.path.split(file_name)[-1]
+        original_name = new_file.split('.')[0]
+        logging.debug(original_name)
+        tmp_name = original_name.split('_')[-1]
+        temp_name= tmp_name+'.JPEG'
+        runtime_info = action +' '+ temp_name+ ' '+str(ts)
+        send_runtime_profile(runtime_info)
+
 
 def transfer_data_scp(ID,user,pword,source, destination):
     """Transfer data using SCP
@@ -230,6 +287,8 @@ def task(filelist, pathin, pathout):
     ### send to collage task
     ### Collage image is arranged as a rectangular grid of shape w x w 
     filelist = [filelist] if isinstance(filelist, str) else filelist  
+
+    send_runtime_stats('rt_enter_task', filelist)
     w = 3 
     num_images = w * w
     collage_spatial = 416
@@ -272,6 +331,8 @@ def task(filelist, pathin, pathout):
     next_job_id = put_filenames(job_id, filelist_flask)
     if CODING_PART1:
         get_and_send_missing_images(pathin) 
+
+    send_runtime_stats('rt_finish_task', outlist)
     return outlist
 
 def main():

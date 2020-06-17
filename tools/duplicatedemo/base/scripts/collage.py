@@ -13,6 +13,13 @@ import requests
 import json
 import configparser
 import logging
+import urllib
+
+from pathlib import Path
+from datetime import datetime
+global circe_home_ip, circe_home_ip_port, taskname
+taskname = Path(__file__).stem
+
 
 global logging
 logging.basicConfig(level = logging.DEBUG)
@@ -27,6 +34,54 @@ FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 CODING_PART1 = int(config['OTHER']['CODING_PART1'])
 
 global global_info_ip, global_info_ip_port
+
+def unix_time(dt):
+    epoch = datetime.utcfromtimestamp(0)
+    delta = dt - epoch
+    return delta.total_seconds()
+
+def send_runtime_profile(msg):
+    """
+    Sending runtime profiling information to flask server on home
+
+    Args:
+        msg (str): the message to be sent
+
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+
+    Raises:
+        Exception: if sending message to flask server on home is failed
+    """
+    try:
+        logging.debug('Sending runtime stats')
+        logging.debug(msg)
+        circe_home_ip_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
+        url = "http://" + circe_home_ip_port + "/recv_runtime_profile"
+        params = {'msg': msg, "work_node": taskname}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
+        logging.debug(e)
+        return "not ok"
+    return res
+
+def send_runtime_stats(action, file_names):
+    t = datetime.now()
+    ts = unix_time(t)
+    for i in range(0,len(file_names)):
+        file_name = file_names[i]
+        new_file = os.path.split(file_name)[-1]
+        original_name = new_file.split('.')[0]
+        logging.debug(original_name)
+        tmp_name = original_name.split('_')[-1]
+        temp_name= tmp_name+'.JPEG'
+        runtime_info = action +' '+ temp_name+ ' '+str(ts)
+        send_runtime_profile(runtime_info)
 
 def calculate_iou(L1, R1, T1, B1, L2, R2, T2, B2):
     L = max(L1, L2)
@@ -101,6 +156,9 @@ def process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial
 	
 def task(file_, pathin, pathout):
     file_ = [file_] if isinstance(file_, str) else file_
+
+    send_runtime_stats('rt_enter_task', file_)
+
     img_size=416
     w = 3
     single_spatial = math.ceil(img_size*1.0/w)
@@ -152,6 +210,8 @@ def task(file_, pathin, pathout):
     with open(out_name, "w") as out_file:
         out_file.write("dummy output file")
         out_list.append(out_name)
+
+    send_runtime_stats('rt_finish_task', out_list)
     return out_list
 
 #Krishna

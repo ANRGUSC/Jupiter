@@ -236,7 +236,7 @@ def main():
     # _thread.start_new_thread(gen_stream_data,(STREAM_INTERVAL,data_path,original_data_path))  
 
     # Generate fixed number of images
-    num = 100
+    num = 300
     # _thread.start_new_thread(gen_stream_fixed_data,(STREAM_INTERVAL,num,data_path,original_data_path)) 
     _thread.start_new_thread(gen_stream_fixed_set_data,(STREAM_INTERVAL,num,data_path,original_data_path)) 
 

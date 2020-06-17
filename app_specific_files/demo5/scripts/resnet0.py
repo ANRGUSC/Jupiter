@@ -17,6 +17,10 @@ import urllib
 import logging
 from pathlib import Path
 from os import listdir
+import urllib
+
+from datetime import datetime
+global circe_home_ip, circe_home_ip_port, taskname
 
 taskname = Path(__file__).stem
 resnet_task_num = int(taskname.split('resnet')[1])
@@ -38,9 +42,59 @@ CODING_PART1 = int(config['OTHER']['CODING_PART1'])
 
 global global_info_ip, global_info_ip_port
 
+def unix_time(dt):
+    epoch = datetime.utcfromtimestamp(0)
+    delta = dt - epoch
+    return delta.total_seconds()
+
+def send_runtime_profile(msg):
+    """
+    Sending runtime profiling information to flask server on home
+
+    Args:
+        msg (str): the message to be sent
+
+    Returns:
+        str: the message if successful, "not ok" otherwise.
+
+    Raises:
+        Exception: if sending message to flask server on home is failed
+    """
+    try:
+        logging.debug('Sending runtime stats')
+        logging.debug(msg)
+        circe_home_ip_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
+        url = "http://" + circe_home_ip_port + "/recv_runtime_profile"
+        params = {'msg': msg, "work_node": taskname}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
+        logging.debug(e)
+        return "not ok"
+    return res
+
+def send_runtime_stats(action, file_names):
+    t = datetime.now()
+    ts = unix_time(t)
+    for i in range(0,len(file_names)):
+        file_name = file_names[i]
+        new_file = os.path.split(file_name)[-1]
+        original_name = new_file.split('.')[0]
+        logging.debug(original_name)
+        tmp_name = original_name.split('_')[-1]
+        temp_name= tmp_name+'.JPEG'
+        runtime_info = action +' '+ temp_name+ ' '+str(ts)
+        send_runtime_profile(runtime_info)
+
 def task(file_, pathin, pathout):
     global resnet_task_num
     file_ = [file_] if isinstance(file_, str) else file_ 
+
+    send_runtime_stats('rt_enter_task', file_)
     ### set device to CPU
     device = torch.device("cpu")
     ### Load model
@@ -71,7 +125,8 @@ def task(file_, pathin, pathout):
             pred = torch.argmax(output, dim=1).detach().numpy().tolist()
             ### To simulate slow downs
             # purposely add delay time to slow down the sending
-            if random.random() > STRAGGLER_THRESHOLD:
+            if (random.random() > STRAGGLER_THRESHOLD) and (taskname=='resnet0') :
+                print(taskname)
                 print("Sleeping")
                 time.sleep(SLEEP_TIME) #>=2 
             ### Contact flask server
@@ -245,6 +300,7 @@ def task(file_, pathin, pathout):
             print(e)
             return []
 
+    send_runtime_stats('rt_finish_task', out_list)
     return out_list
 
 #Krishna

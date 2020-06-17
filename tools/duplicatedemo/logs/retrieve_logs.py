@@ -97,9 +97,11 @@ def extract_log(namespace,label):
           logging.debug(label)
       else:
           logging.debug('Pod information :')
-          pod_name = namespace+'-'+resp.items[0].metadata.name
+          pod_name = resp.items[0].metadata.name
           file_name = os.path.join(log_folder,pod_name.split('-')[1])
-          cmd = 'kubectl logs -n%s %s > %s' %(namespace,pod_name,file_name)
+          output_file = file_name + '-'+namespace
+          logging.debug(output_file)
+          cmd = 'kubectl logs -n%s %s > %s' %(namespace,pod_name,output_file)
           proc = subprocess.Popen(cmd, shell = True, stdout = subprocess.PIPE)
           tmp = proc.stdout.read().strip().decode("utf-8")
           logging.debug(tmp)
@@ -157,25 +159,25 @@ def extract_log_circe_heft(log_folder):
       label = "app=" + app_name+'-stream'+datasource
       extract_log(namespace,label)
 
-    namespace = jupiter_config.MAPPER_NAMESPACE
-    logging.debug(namespace)
-    label = "app=" + app_name+'-home'#heft
-    extract_log(namespace,label)
+    # namespace = jupiter_config.MAPPER_NAMESPACE
+    # logging.debug(namespace)
+    # label = "app=" + app_name+'-home'#heft
+    # extract_log(namespace,label)
 
 
 
 
 
 if __name__ == '__main__':
-    # log_folder = 'circe11default'
-    # log_folder = 'circe01default'
-    # log_folder = 'circe11sleep'
-    # log_folder = 'circe01sleep'
-    # log_folder = 'circe10default'
-    # log_folder = 'circe00default'
-    # log_folder = 'circe00sleep'
-    # log_folder = 'circe10sleep'
-    log_folder = 'new11default'
+    # log_folder = 'new01default'
+    # log_folder = 'new00default'
+    log_folder = 'nosleepfixedmapDO-11default'
+    # log_folder = 'new10default2'
+    # log_folder = 'new11sleep'
+    # log_folder = 'new01sleep'
+    # log_folder = 'new00sleep'
+    # log_folder = 'new10sleep'
+    
     if os.path.exists(log_folder):
         shutil.rmtree(log_folder)
     os.mkdir(log_folder)
