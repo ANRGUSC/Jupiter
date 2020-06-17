@@ -5,11 +5,17 @@ from pathlib import Path
 from os import listdir
 import logging
 import urllib
+import configparser
 
 from datetime import datetime
 global circe_home_ip, circe_home_ip_port, taskname
 global logging
+
 logging.basicConfig(level = logging.DEBUG)
+
+INI_PATH = 'jupiter_config.ini'
+config = configparser.ConfigParser()
+config.read(INI_PATH)
 
 taskname = Path(__file__).stem
 classnum = taskname.split('storeclass')[1]
