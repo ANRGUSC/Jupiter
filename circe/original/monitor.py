@@ -42,10 +42,10 @@ from datetime import datetime
 
 
 
-def unix_time(dt):
-    epoch = datetime.utcfromtimestamp(0)
-    delta = dt - epoch
-    return delta.total_seconds()
+# def unix_time(dt):
+#     epoch = datetime.utcfromtimestamp(0)
+#     delta = dt - epoch
+#     return delta.total_seconds()
 
 
 # def send_monitor_data(msg):
@@ -125,9 +125,9 @@ def transfer_data_scp(ID,user,pword,source, destination):
             logging.debug(cmd)
             os.system(cmd)
             logging.debug('data transfer complete\n')
-            # ts = time.time()
-            t = datetime.now()
-            ts = unix_time(t)
+            ts = time.time()
+            # t = datetime.now()
+            # ts = unix_time(t)
             s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
@@ -234,9 +234,9 @@ class Handler1(pyinotify.ProcessEvent):
         #based on flag2 decide whether to send one output to all children or different outputs to different children in
         #order given in the config file
         flag2 = sys.argv[2]
-        # ts = time.time()
-        t = datetime.now()
-        ts = unix_time(t)
+        ts = time.time()
+        # t = datetime.now()
+        # ts = unix_time(t)
         logging.debug('Received time %f',ts)
         if taskname == 'distribute':
             logging.debug('This is the distribution point')
@@ -495,9 +495,9 @@ class Handler(pyinotify.ProcessEvent):
             queue_mul.put(new_file)
             logging.debug(queue_mul)
             
-            # ts = time.time()
-            t = datetime.now()
-            ts = unix_time(t)
+            ts = time.time()
+            # t = datetime.now()
+            # ts = unix_time(t)
             logging.debug('Received time %f',ts)
             
             if RUNTIME == 1:

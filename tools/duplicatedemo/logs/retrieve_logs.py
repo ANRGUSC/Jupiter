@@ -169,10 +169,10 @@ def extract_log_circe_heft(log_folder):
 
 
 if __name__ == '__main__':
-    # log_folder = 'new01default'
-    # log_folder = 'new00default'
-    log_folder = 'nosleepfixedmapDO-11default'
-    # log_folder = 'new10default2'
+    # log_folder = 'nosleepfixedmapDO-01default'
+    # log_folder = 'nosleepfixedmapDO-00default'
+    # log_folder = 'nosleepfixedmapDO-11default'
+    log_folder = 'nosleepfixedmapDO-10default'
     # log_folder = 'new11sleep'
     # log_folder = 'new01sleep'
     # log_folder = 'new00sleep'

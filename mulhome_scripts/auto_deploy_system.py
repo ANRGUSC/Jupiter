@@ -183,9 +183,13 @@ def k8s_jupiter_deploy(app_id,app_name,port):
             pprint(dag)
     
     else:
+        logging.debug('******************************')
+        logging.debug('Start the global information center')
+        k8s_globalinfo_scheduler(app_name)
         import static_assignment as st
         dag = st.dag
         schedule = st.schedule
+
 
     #Start CIRCE
     if pricing == 0: #original non-pricing

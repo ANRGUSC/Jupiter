@@ -41,10 +41,10 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-def unix_time(dt):
-    epoch = datetime.utcfromtimestamp(0)
-    delta = dt - epoch
-    return delta.total_seconds()
+# def unix_time(dt):
+#     epoch = datetime.utcfromtimestamp(0)
+#     delta = dt - epoch
+#     return delta.total_seconds()
 
 def demo_help(server,port,topic,msg):
     logging.debug('Sending demo')
@@ -83,7 +83,7 @@ def recv_datasource():
 
         
     except Exception as e:
-        logging.debug("Bad reception or failed processing in Flask")
+        logging.debug("Bad reception or failed processing in Flask receiving datasource")
         logging.debug(e)
         return "not ok"
     return "ok"
@@ -106,12 +106,12 @@ def recv_datasink():
 
         logging.debug("Received flask message: %s %s %s", filename, filetype,ts)
         if filetype == 'output':
-            end_times[filename]=float(unix_time(ts))
+            end_times[filename]=float(ts)
             logging.debug(start_times)
         else:
             logging.debug('Something wrong with receiving monitor information from data sinks')
     except Exception as e:
-        logging.debug("Bad reception or failed processing in Flask")
+        logging.debug("Bad reception or failed processing in Flask receiving datasink")
         logging.debug(e)
         return "not ok"
     return "ok"
@@ -265,7 +265,10 @@ def recv_runtime_profile():
             outputfiles = [x+'img'+filen+'.JPEG' for x in fileid]
         else:
             outputfiles = [msg[1]]
-        logging.debug(outputfiles)
+
+        if worker_node=='master':
+            logging.debug('*******************')
+            logging.debug(outputfiles)
 
         if msg[0] == 'rt_enter':
             for i in range(0,len(outputfiles)):
@@ -342,57 +345,73 @@ def recv_runtime_profile():
                     else:
                         logging.debug('Missing profiling file information...')
                         logging.debug(k)
+                        logging.debug('+++++')
+                        if k in rt_enter_time:
+                            print('Yes enter')
+                        logging.debug(len(rt_enter_time.keys()))
+                        logging.debug('+++++ebter')
+                        if k in rt_exec_time:
+                            print('Yes exec ')
+                        logging.debug(len(rt_exec_time.keys()))
+                        logging.debug('+++++exec')
+                        if k in rt_finish_time:
+                            print('Yes finish')
+                        logging.debug(len(rt_finish_time.keys()))
+                        logging.debug('+++++finish')
+                        if k in rt_enter_task_time:
+                            print('Yes enter task')
+                        logging.debug(len(rt_enter_task_time.keys()))
+                        logging.debug('+++++entertask')
+                        if k in rt_finish_task_time:
+                            print('Yes finish task')
+                        logging.debug(len(rt_finish_task_time.keys()))
+                        logging.debug('+++++finishtask')
 
 
                 log_file.close()
-                logging.debug('********************************************')
-                logging.debug('Intermediate tasks :')
-                logging.debug(statstime)
-                logging.debug('********************************************')
-                logging.debug("Communication time :")
+                # logging.debug('********************************************')
+                # logging.debug('Intermediate tasks :')
+                # logging.debug(statstime)
+                # logging.debug('********************************************')
+                # logging.debug("Communication time :")
 
-                for item in image_set:
-                    timeseq = [(k[0],v) for k,v in statstime.items() if k[1]==item]
-                    timedict = dict(timeseq)
-                    # logging.debug(timedict)
-                    try:
-                        comm_time[(item,'datasource','master')] = timedict['master'][0] - start_times[item]
-                    except Exception as e:
-                        logging.debug('Missing stats information')
-                        logging.debug(e)
-                        # logging.debug(timedict['master'][0])
-                        # logging.debug(start_times[item])
-                    # logging.debug(comm_time)
-                    for task in dag:
-                        if task.startswith('lccdec'):
-                            try:
-                                # logging.debug('last task')
-                                comm_time[(item, task,'home')] = end_times[item] - timedict[task][2] 
+                # for item in image_set:
+                #     timeseq = [(k[0],v) for k,v in statstime.items() if k[1]==item]
+                #     timedict = dict(timeseq)
+                #     # logging.debug(timedict)
+                #     try:
+                #         comm_time[(item,'datasource','master')] = timedict['master'][0] - start_times[item]
+                #     except Exception as e:
+                #         logging.debug('Missing datasource stats information')
+                #         logging.debug(e)
+                #         # logging.debug(timedict['master'][0])
+                #         # logging.debug(start_times[item])
+                #     # logging.debug(comm_time)
+                #     for task in dag:
+                #         if task.startswith('lccdec'):
+                #             try:
+                #                 # logging.debug('last task')
+                #                 comm_time[(item, task,'home')] = end_times[item] - timedict[task][2] 
 
-                            except Exception as e:
-                                pass
-                                # logging.debug('Missing stats information')
-                                # logging.debug(e)
-                                # logging.debug('Last task: only belong to one class')
-                        else:
-                            for next_task in dag[task][2:]:
-                                try:
-                                    comm_time[(item, task,next_task)] = timedict[next_task][0]-timedict[task][2]
-                                except Exception as e:
-                                    pass
-                                    # logging.debug('Missing stats information')
-                                    # logging.debug(e)
-                                    # logging.debug('Only belong to one class / collage task')
-                                    # logging.debug(e)
+                #             except Exception as e:
+                #                 # pass
+                #                 logging.debug('Missing lccdec stats information')
+                #                 logging.debug(end_times.keys())
+                #                 logging.debug(timedict.keys())
+                #                 # logging.debug(e)
+                #                 # logging.debug('Last task: only belong to one class')
+                #         else:
+                #             for next_task in dag[task][2:]:
+                #                 try:
+                #                     comm_time[(item, task,next_task)] = timedict[next_task][0]-timedict[task][2]
+                #                 except Exception as e:
+                #                     # pass
+                #                     logging.debug('Missing task stats information')
+                #                     # logging.debug(e)
+                #                     # logging.debug('Only belong to one class / collage task')
+                #                     # logging.debug(e)
 
-                logging.debug('******#####')
-                logging.debug(comm_time)
-                logging.debug('******#####')
-                # s = "{:<10} {:<10} {:<10} {:<10}\n".format('File name','From task','To task','Transfer time')
-                # logging.debug(s)
-                # for k,v in comm_time.items():
-                #     s = "{:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], k[2],v)
-                #     logging.debug(s)
+                
 
                 logging.debug('********************************************') 
             #logging.debug('---Check3')
@@ -437,8 +456,9 @@ def transfer_data_scp(ID,user,pword,source, destination):
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
             os.system(cmd)
             logging.debug('data transfer complete\n')
-            ts = datetime.utcnow()
-            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,unix_time(ts))
+            ts = time.time()
+            # ts = datetime.utcnow()
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
@@ -544,10 +564,11 @@ class MyHandler(pyinotify.ProcessEvent):
             # 4 files at a time
             outputfiles = [x+'img'+filen+'.JPEG' for x in fileid]
             logging.debug(outputfiles)
-            t = datetime.now()
-            logging.debug('Received time %f',unix_time(t))
+            # t = datetime.now()
+            t = time.time()
+            logging.debug('Received time %f',t)
             for f in outputfiles:
-                end_times[f] = unix_time(t) 
+                end_times[f] = t
                 try:
                     exec_times[f] = end_times[f] - start_times[f]
                 except Exception as e:
@@ -585,9 +606,9 @@ class Handler(pyinotify.ProcessEvent):
         logging.debug("Received file as input - %s." % event.pathname)  
 
         if RUNTIME == 1:   
-            #ts = time.time() 
-            ts = datetime.now()
-            ts = unix_time(ts)
+            ts = time.time() 
+            # ts = datetime.now()
+            # ts = unix_time(ts)
             s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.pathname,ts)
             runtime_receiver_log.write(s)
             runtime_receiver_log.flush()
@@ -597,10 +618,10 @@ class Handler(pyinotify.ProcessEvent):
         inputfile = event.pathname.split('/')[-1]
         logging.debug(inputfile)
         if not (inputfile in files_in_set): 
-            #t = time.time()
-            t = datetime.now()
-            start_times[inputfile] = unix_time(t)
-            logging.debug('Received time %f',unix_time(t))
+            t = time.time()
+            # t = datetime.now()
+            start_times[inputfile] = t
+            logging.debug('Received time %f',t)
             new_file_name = os.path.split(event.pathname)[-1]
 
 
@@ -680,14 +701,22 @@ def main():
     
     global dag,count, start_time,end_time, rt_enter_time, rt_exec_time, rt_finish_time, files_in_set, files_out_set, rt_enter_task_time,rt_finish_task_time
     count = 0
-    start_time = defaultdict(list)
-    end_time = defaultdict(list)
+    # start_time = defaultdict(list)
+    # end_time = defaultdict(list)
 
-    rt_enter_time = defaultdict(list)
-    rt_exec_time = defaultdict(list)
-    rt_finish_time = defaultdict(list)
-    rt_enter_task_time = defaultdict(list)
-    rt_finish_task_time = defaultdict(list)
+    # rt_enter_time = defaultdict(list)
+    # rt_exec_time = defaultdict(list)
+    # rt_finish_time = defaultdict(list)
+    # rt_enter_task_time = defaultdict(list)
+    # rt_finish_task_time = defaultdict(list)
+    start_time = manager.dict()
+    end_time = manager.dict()
+
+    rt_enter_time = manager.dict()
+    rt_exec_time = manager.dict()
+    rt_finish_time = manager.dict()
+    rt_enter_task_time = manager.dict()
+    rt_finish_task_time = manager.dict()
 
     files_in_set = set()
     files_out_set = set()
@@ -699,9 +728,9 @@ def main():
     hosts=dag_info[2]
 
     global statstime, image_set, comm_time
-    statstime = dict()
+    statstime = manager.dict()
     image_set = set()
-    comm_time = dict()
+    comm_time = manager.dict()
 
     global last_tasks
     last_tasks = set()

@@ -122,16 +122,11 @@ def task(filelist, pathin, pathout):
         if FLAG_PART2 == 1:
             sample1 = [f for f in listdir(pathout) if f.startswith('score2a_preagg2_job2')]
             sample2 = [f for f in listdir(pathout) if f.startswith('score2b_preagg2_job2')]
-            print(sample1)
-            print(sample2)
             job_dict = {'2':[sample1[0],sample2[0]]}
         else:
             sample1 = [f for f in listdir(pathout) if f.startswith('score2a_preagg2_job2')]
             sample2 = [f for f in listdir(pathout) if f.startswith('score2b_preagg2_job2')]
             sample3 = [f for f in listdir(pathout) if f.startswith('score2c_preagg2_job2')]
-            print(sample1)
-            print(sample2)
-            print(sample3)
             job_dict = {'2':[sample1[0],sample2[0],sample3[0]]}
         
     #Parameters
@@ -152,10 +147,11 @@ def task(filelist, pathin, pathout):
                 destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs)
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
+                send_runtime_stats('rt_finish_task', outlist)
         else:
             print('Not receive enough results for job '+job_id)
 
-        send_runtime_stats('rt_finish_task', outlist)
+        
         return outlist
     
     else:
@@ -169,10 +165,11 @@ def task(filelist, pathin, pathout):
                 destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs)
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
+                send_runtime_stats('rt_finish_task', outlist)
         else:
             print('Not receive enough results for job '+job_id)
 
-            send_runtime_stats('rt_finish_task', outlist)
+            
         return outlist
 
     
