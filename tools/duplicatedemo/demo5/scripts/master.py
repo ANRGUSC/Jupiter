@@ -313,16 +313,16 @@ def task(filelist, pathin, pathout):
     collage_file_split = collage_file.split(".JPEG")[0] 
 
 
-    # fileid = [x.split('/')[-1].split('img')[0] for x in input_list]
-    # classname = input_list[0].split('/')[-1].split('.')[0].split('img')[1]
-    # filesuffix = classname+'-'+'-'.join(fileid)
-    # logging.debug(filesuffix)
+    fileid = [x.split('/')[-1].split('img')[0] for x in input_list]
+    classname = input_list[0].split('/')[-1].split('.')[0].split('img')[1]
+    filesuffix = classname+'-'+'-'.join(fileid)
+    logging.debug(filesuffix)
 
 
-    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+  collage_file_split + "_jobid" + str(job_id) + ".JPEG"))
+    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+  collage_file_split + "_jobid" + str(job_id) +'_'+filesuffix+ ".JPEG"))
     print('Receive collage file:')
     ### send to collage task
-    outlist = [os.path.join(pathout,"master_"+  collage_file_split+ "_jobid" + str(job_id) + ".JPEG")]
+    outlist = [os.path.join(pathout,"master_"+  collage_file_split+ "_jobid" + str(job_id) +'_'+filesuffix+ ".JPEG")]
     print(outlist)
     ### send to resnet tasks
     print('Receive resnet files: ')

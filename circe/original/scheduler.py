@@ -407,7 +407,7 @@ def recv_runtime_profile():
                                 except Exception as e:
                                     # pass
                                     logging.debug('Missing task stats information')
-                                    # logging.debug(e)
+                                    logging.debug(e)
                                     # logging.debug('Only belong to one class / collage task')
                                     # logging.debug(e)
 
