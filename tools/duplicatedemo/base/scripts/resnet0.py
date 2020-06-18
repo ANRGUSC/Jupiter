@@ -42,10 +42,6 @@ CODING_PART1 = int(config['OTHER']['CODING_PART1'])
 
 global global_info_ip, global_info_ip_port
 
-def unix_time(dt):
-    epoch = datetime.utcfromtimestamp(0)
-    delta = dt - epoch
-    return delta.total_seconds()
 
 def send_runtime_profile(msg):
     """
@@ -78,8 +74,7 @@ def send_runtime_profile(msg):
     return res
 
 def send_runtime_stats(action, file_names):
-    t = datetime.now()
-    ts = unix_time(t)
+    ts = time.time()
     for i in range(0,len(file_names)):
         file_name = file_names[i]
         new_file = os.path.split(file_name)[-1]

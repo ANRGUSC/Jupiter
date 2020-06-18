@@ -35,11 +35,6 @@ classnum = taskname.split('score')[1][0]
 classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
 classname = classlist[int(classnum)-1]
 
-def unix_time(dt):
-    epoch = datetime.utcfromtimestamp(0)
-    delta = dt - epoch
-    return delta.total_seconds()
-
 def send_runtime_profile(msg):
     """
     Sending runtime profiling information to flask server on home
@@ -71,8 +66,7 @@ def send_runtime_profile(msg):
     return res
 
 def send_runtime_stats(action, file_names):
-    t = datetime.now()
-    ts = unix_time(t)
+    ts = time.time()
     for i in range(0,len(file_names)):
         file_name = file_names[i]
         new_file = os.path.split(file_name)[-1]

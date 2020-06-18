@@ -25,10 +25,7 @@ FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
 
-def unix_time(dt):
-    epoch = datetime.utcfromtimestamp(0)
-    delta = dt - epoch
-    return delta.total_seconds()
+
 
 def send_runtime_profile(msg):
     """
@@ -61,8 +58,7 @@ def send_runtime_profile(msg):
     return res
 
 def send_runtime_stats(action, file_names):
-    t = datetime.now()
-    ts = unix_time(t)
+    ts = time.time()
     for i in range(0,len(file_names)):
         file_name = file_names[i]
         new_file = os.path.split(file_name)[-1]
