@@ -157,6 +157,9 @@ def process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial
 def task(file_, pathin, pathout):
     file_ = [file_] if isinstance(file_, str) else file_
 
+    filesuffix = file_[0].split('.')[0].split('_')[-1]
+    logging.debug(filesuffix)
+
     send_runtime_stats('rt_enter_task', file_)
 
     img_size=416
@@ -206,7 +209,7 @@ def task(file_, pathin, pathout):
         except Exception as e:
             print('Possibly running on the execution profiler: ', e)
     out_list = []
-    out_name = pathout + "collage.txt"
+    out_name = pathout + "collage"+'_'+filesuffix+".txt"
     with open(out_name, "w") as out_file:
         out_file.write("dummy output file")
         out_list.append(out_name)

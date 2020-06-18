@@ -345,71 +345,71 @@ def recv_runtime_profile():
                     else:
                         logging.debug('Missing profiling file information...')
                         logging.debug(k)
-                        logging.debug('+++++')
-                        if k in rt_enter_time:
-                            print('Yes enter')
-                        logging.debug(len(rt_enter_time.keys()))
-                        logging.debug('+++++ebter')
-                        if k in rt_exec_time:
-                            print('Yes exec ')
-                        logging.debug(len(rt_exec_time.keys()))
-                        logging.debug('+++++exec')
-                        if k in rt_finish_time:
-                            print('Yes finish')
-                        logging.debug(len(rt_finish_time.keys()))
-                        logging.debug('+++++finish')
-                        if k in rt_enter_task_time:
-                            print('Yes enter task')
-                        logging.debug(len(rt_enter_task_time.keys()))
-                        logging.debug('+++++entertask')
-                        if k in rt_finish_task_time:
-                            print('Yes finish task')
-                        logging.debug(len(rt_finish_task_time.keys()))
-                        logging.debug('+++++finishtask')
+                        # logging.debug('+++++')
+                        # if k in rt_enter_time:
+                        #     print('Yes enter')
+                        # logging.debug(len(rt_enter_time.keys()))
+                        # logging.debug('+++++ebter')
+                        # if k in rt_exec_time:
+                        #     print('Yes exec ')
+                        # logging.debug(len(rt_exec_time.keys()))
+                        # logging.debug('+++++exec')
+                        # if k in rt_finish_time:
+                        #     print('Yes finish')
+                        # logging.debug(len(rt_finish_time.keys()))
+                        # logging.debug('+++++finish')
+                        # if k in rt_enter_task_time:
+                        #     print('Yes enter task')
+                        # logging.debug(len(rt_enter_task_time.keys()))
+                        # logging.debug('+++++entertask')
+                        # if k in rt_finish_task_time:
+                        #     print('Yes finish task')
+                        # logging.debug(len(rt_finish_task_time.keys()))
+                        # logging.debug('+++++finishtask')
 
 
                 log_file.close()
-                # logging.debug('********************************************')
-                # logging.debug('Intermediate tasks :')
-                # logging.debug(statstime)
-                # logging.debug('********************************************')
-                # logging.debug("Communication time :")
+                logging.debug('********************************************')
+                logging.debug('Intermediate tasks :')
+                logging.debug(statstime)
+                logging.debug('********************************************')
+                logging.debug("Communication time :")
 
-                # for item in image_set:
-                #     timeseq = [(k[0],v) for k,v in statstime.items() if k[1]==item]
-                #     timedict = dict(timeseq)
-                #     # logging.debug(timedict)
-                #     try:
-                #         comm_time[(item,'datasource','master')] = timedict['master'][0] - start_times[item]
-                #     except Exception as e:
-                #         logging.debug('Missing datasource stats information')
-                #         logging.debug(e)
-                #         # logging.debug(timedict['master'][0])
-                #         # logging.debug(start_times[item])
-                #     # logging.debug(comm_time)
-                #     for task in dag:
-                #         if task.startswith('lccdec'):
-                #             try:
-                #                 # logging.debug('last task')
-                #                 comm_time[(item, task,'home')] = end_times[item] - timedict[task][2] 
+                for item in image_set:
+                    timeseq = [(k[0],v) for k,v in statstime.items() if k[1]==item]
+                    timedict = dict(timeseq)
+                    # logging.debug(timedict)
+                    try:
+                        comm_time[(item,'datasource','master')] = timedict['master'][0] - start_times[item]
+                    except Exception as e:
+                        logging.debug('Missing datasource stats information')
+                        logging.debug(e)
+                        # logging.debug(timedict['master'][0])
+                        # logging.debug(start_times[item])
+                    # logging.debug(comm_time)
+                    for task in dag:
+                        if task.startswith('lccdec'):
+                            try:
+                                # logging.debug('last task')
+                                comm_time[(item, task,'home')] = end_times[item] - timedict[task][2] 
 
-                #             except Exception as e:
-                #                 # pass
-                #                 logging.debug('Missing lccdec stats information')
-                #                 logging.debug(end_times.keys())
-                #                 logging.debug(timedict.keys())
-                #                 # logging.debug(e)
-                #                 # logging.debug('Last task: only belong to one class')
-                #         else:
-                #             for next_task in dag[task][2:]:
-                #                 try:
-                #                     comm_time[(item, task,next_task)] = timedict[next_task][0]-timedict[task][2]
-                #                 except Exception as e:
-                #                     # pass
-                #                     logging.debug('Missing task stats information')
-                #                     # logging.debug(e)
-                #                     # logging.debug('Only belong to one class / collage task')
-                #                     # logging.debug(e)
+                            except Exception as e:
+                                pass
+                                # logging.debug('Missing lccdec stats information')
+                                # logging.debug(end_times.keys())
+                                # logging.debug(timedict.keys())
+                                # logging.debug(e)
+                                # logging.debug('Last task: only belong to one class')
+                        else:
+                            for next_task in dag[task][2:]:
+                                try:
+                                    comm_time[(item, task,next_task)] = timedict[next_task][0]-timedict[task][2]
+                                except Exception as e:
+                                    # pass
+                                    logging.debug('Missing task stats information')
+                                    # logging.debug(e)
+                                    # logging.debug('Only belong to one class / collage task')
+                                    # logging.debug(e)
 
                 
 

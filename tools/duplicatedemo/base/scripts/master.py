@@ -311,7 +311,15 @@ def task(filelist, pathin, pathout):
     print('got job id: ', job_id)
     collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
     collage_file_split = collage_file.split(".JPEG")[0] 
-    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+  collage_file_split + "_jobid" + str(job_id)  + ".JPEG"))
+
+
+    # fileid = [x.split('/')[-1].split('img')[0] for x in input_list]
+    # classname = input_list[0].split('/')[-1].split('.')[0].split('img')[1]
+    # filesuffix = classname+'-'+'-'.join(fileid)
+    # logging.debug(filesuffix)
+
+
+    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+  collage_file_split + "_jobid" + str(job_id) + ".JPEG"))
     print('Receive collage file:')
     ### send to collage task
     outlist = [os.path.join(pathout,"master_"+  collage_file_split+ "_jobid" + str(job_id) + ".JPEG")]
