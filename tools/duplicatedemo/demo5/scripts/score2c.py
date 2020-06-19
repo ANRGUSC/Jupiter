@@ -9,6 +9,7 @@ import random
 import logging 
 global logging
 import urllib
+import time
 logging.basicConfig(level = logging.DEBUG)
 
 INI_PATH = 'jupiter_config.ini'

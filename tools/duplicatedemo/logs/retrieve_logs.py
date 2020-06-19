@@ -172,11 +172,11 @@ if __name__ == '__main__':
     # log_folder = 'nosleepfixedmapDO-01default'
     # log_folder = 'nosleepfixedmapDO-00default'
     # log_folder = 'nosleepfixedmapDO-11default'
-    log_folder = 'nosleepfixedmapDO-10default'
-    # log_folder = 'new11sleep'
-    # log_folder = 'new01sleep'
-    # log_folder = 'new00sleep'
-    # log_folder = 'new10sleep'
+    # log_folder = 'nosleepfixedmapDO-10default'
+    # log_folder = 'sleepfixedmapDO-01default'
+    # log_folder = 'sleepfixedmapDO-00default'
+    log_folder = 'sleepfixedmapDO-11default'
+    # log_folder = 'sleepfixedmapDO-10default'
     
     if os.path.exists(log_folder):
         shutil.rmtree(log_folder)

@@ -41,10 +41,10 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-# def unix_time(dt):
-#     epoch = datetime.utcfromtimestamp(0)
-#     delta = dt - epoch
-#     return delta.total_seconds()
+def unix_time(dt):
+    epoch = datetime.utcfromtimestamp(0)
+    delta = dt - epoch
+    return delta.total_seconds()
 
 def demo_help(server,port,topic,msg):
     logging.debug('Sending demo')
@@ -329,22 +329,65 @@ def recv_runtime_profile():
                 #         logging.debug('Missing profiling file information...')
 
                 for k,v in rt_finish_time.items():
-                    if (k in rt_enter_time) and (k in rt_exec_time) and (k in rt_enter_task_time) and (k in rt_finish_task_time):
+                    logging.debug(k)
+                    elaspe = 0
+                    duration = 0
+                    waiting = 0
+                    duration_task = 0
+                    pre_waiting = 0
+                    post_waiting = 0
+                    try:
                         elapse = rt_finish_time[k]-rt_enter_time[k]  
+                    except:
+                        rt_enter_time[k] = 0
+                        logging.debug('no enter time')
+
+                    try:
                         duration = rt_finish_time[k]-rt_exec_time[k]
+                    except:
+                        rt_exec_time[k] = 0
+                        logging.debug('no exec time')
+                    
+                    try:
                         waiting = rt_exec_time[k] - rt_enter_time[k]
+                    except:
+                        logging.debug('no enter/exec time')
+
+                    try:
                         duration_task = rt_finish_task_time[k]-rt_enter_task_time[k]
+                    except:
+                        logging.debug('no finish/enter task time')
+
+                    try:
                         pre_waiting = rt_enter_task_time[k] - rt_enter_time[k] 
+                    except:
+                        logging.debug('no enter/enter task time')
+
+                    try:
                         post_waiting = rt_finish_time[k] - rt_finish_task_time[k]
-                        image_set.add(k[1])
-                        s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting))
-                        statstime[k] = [rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting)]
-                        #logging.debug(s)
-                        log_file.write(s)
-                        log_file.flush()
-                    else:
-                        logging.debug('Missing profiling file information...')
-                        logging.debug(k)
+                    except:
+                        logging.debug('no finish/finish task time')
+
+                    image_set.add(k[1])
+                    # s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting))
+                    statstime[k] = [rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting)]
+
+                    # if (k in rt_enter_time) and (k in rt_exec_time) and (k in rt_enter_task_time) and (k in rt_finish_task_time):
+                    #     elapse = rt_finish_time[k]-rt_enter_time[k]  
+                    #     duration = rt_finish_time[k]-rt_exec_time[k]
+                    #     waiting = rt_exec_time[k] - rt_enter_time[k]
+                    #     duration_task = rt_finish_task_time[k]-rt_enter_task_time[k]
+                    #     pre_waiting = rt_enter_task_time[k] - rt_enter_time[k] 
+                    #     post_waiting = rt_finish_time[k] - rt_finish_task_time[k]
+                    #     image_set.add(k[1])
+                    #     s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting))
+                    #     statstime[k] = [rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting)]
+                    #     #logging.debug(s)
+                    #     log_file.write(s)
+                    #     log_file.flush()
+                    # else:
+                    #     logging.debug('Missing profiling file information...')
+                    #     logging.debug(k)
                         # logging.debug('+++++')
                         # if k in rt_enter_time:
                         #     print('Yes enter')
@@ -368,7 +411,7 @@ def recv_runtime_profile():
                         # logging.debug('+++++finishtask')
 
 
-                log_file.close()
+                # log_file.close()
                 logging.debug('********************************************')
                 logging.debug('Intermediate tasks :')
                 logging.debug(statstime)
@@ -382,8 +425,9 @@ def recv_runtime_profile():
                     try:
                         comm_time[(item,'datasource','master')] = timedict['master'][0] - start_times[item]
                     except Exception as e:
-                        logging.debug('Missing datasource stats information')
-                        logging.debug(e)
+                        pass
+                        # logging.debug('Missing datasource stats information')
+                        # logging.debug(e)
                         # logging.debug(timedict['master'][0])
                         # logging.debug(start_times[item])
                     # logging.debug(comm_time)
@@ -405,14 +449,13 @@ def recv_runtime_profile():
                                 try:
                                     comm_time[(item, task,next_task)] = timedict[next_task][0]-timedict[task][2]
                                 except Exception as e:
-                                    # pass
-                                    logging.debug('Missing task stats information')
-                                    logging.debug(e)
+                                    pass
                                     # logging.debug('Only belong to one class / collage task')
                                     # logging.debug(e)
+                                    # logging.debug(e)
 
-                
 
+                logging.debug(comm_time)
                 logging.debug('********************************************') 
             #logging.debug('---Check3')
     except Exception as e:

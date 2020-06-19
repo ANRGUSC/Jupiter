@@ -30,10 +30,6 @@ start_times = dict()
 end_times = dict()
 exec_times = dict()
 
-def unix_time(dt):
-    epoch = datetime.utcfromtimestamp(0)
-    delta = dt - epoch
-    return delta.total_seconds()
 
 def find_next_file(local_folder):
     list_files = os.listdir(local_folder)
@@ -137,8 +133,7 @@ class Handler(pyinotify.ProcessEvent):
 
 
         inputfile = event.pathname.split('/')[-1]
-        t = datetime.utcnow()
-        t = unix_time(t)
+        t = time.time()
         logging.debug(t)
 
         start_times[inputfile] =t
@@ -236,7 +231,7 @@ def main():
     # _thread.start_new_thread(gen_stream_data,(STREAM_INTERVAL,data_path,original_data_path))  
 
     # Generate fixed number of images
-    num = 300
+    num = 100
     # _thread.start_new_thread(gen_stream_fixed_data,(STREAM_INTERVAL,num,data_path,original_data_path)) 
     _thread.start_new_thread(gen_stream_fixed_set_data,(STREAM_INTERVAL,num,data_path,original_data_path)) 
 

@@ -8,6 +8,7 @@ import configparser
 from pathlib import Path
 from os import listdir
 import logging
+import time
 
 from datetime import datetime
 global circe_home_ip, circe_home_ip_port, taskname
@@ -138,7 +139,7 @@ def task(filelist, pathin, pathout):
                 print(os.path.join(pathin, (job_dict[job_id])[i]))
                 En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                 # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
-                destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs)
+                destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
                 send_runtime_stats('rt_finish_task', outlist)
@@ -156,7 +157,7 @@ def task(filelist, pathin, pathout):
             for i in range(N):
                 En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                 # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
-                destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs)
+                destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
                 send_runtime_stats('rt_finish_task', outlist)

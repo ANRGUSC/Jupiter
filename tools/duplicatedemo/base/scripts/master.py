@@ -16,9 +16,12 @@ import collections
 from os import listdir
 import requests
 import json
+import time
 
 from pathlib import Path
 from datetime import datetime
+import numpy as np
+
 global circe_home_ip, circe_home_ip_port, taskname
 taskname = Path(__file__).stem
 
@@ -86,6 +89,11 @@ store_class_tasks_dict[352] = "storeclass18"
 store_class_tasks_dict[354] = "storeclass19"
 store_class_tasks_dict[360] = "storeclass20"
 
+classlists = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard',  'lion', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+classids = np.array(0,len(classlists),1)
+classmap = dict(zip(classlists, classids))
+
+
 
 def send_runtime_profile(msg):
     """
@@ -146,11 +154,11 @@ def transfer_data_scp(ID,user,pword,source, destination):
     ts = -1
     while retry < num_retries:
         try:
-            logging.debug(map_nodes_ip)
+            # logging.debug(map_nodes_ip)
             nodeIP = map_nodes_ip[ID]
-            logging.debug(nodeIP)
+            # logging.debug(nodeIP)
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
-            logging.debug(cmd)
+            # logging.debug(cmd)
             os.system(cmd)
             logging.debug('data transfer complete\n')
             break

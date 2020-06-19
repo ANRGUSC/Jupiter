@@ -186,12 +186,19 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         logging.debug('******************************')
         logging.debug('Start the global information center')
         k8s_globalinfo_scheduler(app_name)
-        import static_assignment as st
+        import static_assignment_code as st
         dag = st.dag
         schedule = st.schedule
+        logging.debug('*************************')
+        logging.debug('Static schedule information')
+        logging.debug('DAG')
+        logging.debug(dag)
+        logging.debug('schedule')
+        logging.debug(schedule)
+        logging.debug('*************************')
 
 
-    #Start CIRCE
+    # Start CIRCE
     if pricing == 0: #original non-pricing
         logging.debug('Non pricing evaluation')
         k8s_circe_scheduler(dag,schedule,app_name)
@@ -335,7 +342,7 @@ def redeploy_system(app_id,app_name,port):
 
     
     else:
-        import static_assignment
+        import static_assignment_noncode
         # dag = static_assignment.dag
         # schedule = static_assignment.schedule
 
