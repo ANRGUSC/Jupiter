@@ -11,6 +11,7 @@ import logging
 from datetime import datetime
 import urllib
 import time
+import numpy as np
 
 global circe_home_ip, circe_home_ip_port, taskname
 
@@ -20,6 +21,8 @@ taskname = Path(__file__).stem
 classnum = taskname.split('lccenc')[1]
 classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
 classname = classlist[int(classnum)-1]
+classids = np.arange(0,len(classlist),1)
+classmap = dict(zip(classlist, classids))
 
 INI_PATH = 'jupiter_config.ini'
 config = configparser.ConfigParser()
@@ -112,8 +115,16 @@ def task(filelist, pathin, pathout):
 
     fileid = [x.split('.')[0].split('_')[-1].split('img')[0] for x in filelist]
     logging.debug(fileid)
-    filesuffix = classname+'-'+'-'.join(fileid)
+    classname = [x.split('.')[0].split('img')[1] for x in filelist]
+    classid = [classmap[x] for x in classname]
+    filesuffixlist = []
+    for x,y in zip(classid, fileid):
+        tmp = str(x)+'#'+y
+        filesuffixlist.append(tmp)
+    filesuffix = '-'.join(filesuffixlist)
     logging.debug(filesuffix)
+
+    
 
     #snapshot_time = filelist[0].partition('_')[2].partition('.')[0]  #store the data&time info 
     

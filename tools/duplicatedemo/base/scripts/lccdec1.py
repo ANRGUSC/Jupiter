@@ -9,6 +9,7 @@ import logging
 from datetime import datetime
 import urllib
 import time
+import numpy as np
 
 global circe_home_ip, circe_home_ip_port, taskname
 
@@ -25,6 +26,10 @@ global FLASK_DOCKER, FLASK_SVC
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
+
+classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+classids = np.arange(0,len(classlist),1)
+classmap = dict(zip(classlist, classids))
 
 
 
@@ -111,6 +116,7 @@ def task(filelist, pathin, pathout):
     job_id = filelist[0].split('_')[-2].split('job')[1]
     print(job_id)
     filesuffixs = filelist[0].split('_')[-1]
+    print(filesuffixs)
    
     #Parameters 
     N = 3 # Number of workers (encoded data-batches)
@@ -145,7 +151,7 @@ def task(filelist, pathin, pathout):
                 result = results[j]
             else:
                 result = np.concatenate((result, results[j]), axis = 0)
-        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs + '.csv')
+        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs)
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
 
@@ -179,7 +185,7 @@ def task(filelist, pathin, pathout):
                 result = results[j]
             else:
                 result = np.concatenate((result, results[j]), axis = 0)
-        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs+'.csv')
+        destination = os.path.join(pathout,taskname+'_'+'job'+job_id+'_'+filesuffixs)
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
 

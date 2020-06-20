@@ -20,6 +20,8 @@ import time
 
 from pathlib import Path
 from datetime import datetime
+import numpy as np
+
 global circe_home_ip, circe_home_ip_port, taskname
 taskname = Path(__file__).stem
 
@@ -87,6 +89,11 @@ store_class_tasks_dict[352] = "storeclass18"
 store_class_tasks_dict[354] = "storeclass19"
 store_class_tasks_dict[360] = "storeclass20"
 
+classlists = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard',  'lion', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+classids = np.arange(0,len(classlists),1)
+classmap = dict(zip(classlists, classids))
+
+
 
 def send_runtime_profile(msg):
     """
@@ -147,11 +154,11 @@ def transfer_data_scp(ID,user,pword,source, destination):
     ts = -1
     while retry < num_retries:
         try:
-            logging.debug(map_nodes_ip)
+            # logging.debug(map_nodes_ip)
             nodeIP = map_nodes_ip[ID]
-            logging.debug(nodeIP)
+            # logging.debug(nodeIP)
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
-            logging.debug(cmd)
+            # logging.debug(cmd)
             os.system(cmd)
             logging.debug('data transfer complete\n')
             break
@@ -309,8 +316,13 @@ def task(filelist, pathin, pathout):
 
 
     fileid = [x.split('/')[-1].split('img')[0] for x in input_list]
-    classname = input_list[0].split('/')[-1].split('.')[0].split('img')[1]
-    filesuffix = classname+'-'+'-'.join(fileid)
+    classname = [x.split('/')[-1].split('.')[0].split('img')[1] for x in input_list]
+    classid = [classmap[x] for x in classname]
+    filesuffixlist = []
+    for x,y in zip(classid, fileid):
+        tmp = str(x)+'#'+y
+        filesuffixlist.append(tmp)
+    filesuffix = '-'.join(filesuffixlist)
     logging.debug(filesuffix)
 
 

@@ -253,22 +253,25 @@ def recv_runtime_profile():
         logging.debug('Receive runtime stats information: ')
         worker_node = request.args.get('work_node')
         msg = request.args.get('msg').split()
-        
-        # logging.debug(worker_node)
-        # logging.debug(msg[0])
-        # logging.debug(msg[1])
+
+        classlists = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard',  'lion', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+        classids = np.arange(0,len(classlists),1)
+        classids = [str(x) for x in classids]
+        classmap = dict(zip(classids,classlists))
 
         if '-' in msg[1]:
             outputfile = msg[1].split('.')[0].split('-')
-            filen = outputfile[0]
-            fileid = outputfile[1:]
-            outputfiles = [x+'img'+filen+'.JPEG' for x in fileid]
+            # logging.debug(outputfile)
+            outputfiles = []
+            # logging.debug(classmap)
+            for fi in outputfile:
+                tmp = classmap[fi.split('#')[0]]+'img'+fi.split('#')[1]+ '.JPEG'
+                outputfiles.append(tmp)
         else:
             outputfiles = [msg[1]]
 
-        if worker_node=='master':
-            logging.debug('*******************')
-            logging.debug(outputfiles)
+        logging.debug(outputfiles)
+
 
         if msg[0] == 'rt_enter':
             for i in range(0,len(outputfiles)):

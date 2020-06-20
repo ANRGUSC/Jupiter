@@ -90,7 +90,7 @@ store_class_tasks_dict[354] = "storeclass19"
 store_class_tasks_dict[360] = "storeclass20"
 
 classlists = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard',  'lion', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
-classids = np.array(0,len(classlists),1)
+classids = np.arange(0,len(classlists),1)
 classmap = dict(zip(classlists, classids))
 
 
@@ -316,8 +316,13 @@ def task(filelist, pathin, pathout):
 
 
     fileid = [x.split('/')[-1].split('img')[0] for x in input_list]
-    classname = input_list[0].split('/')[-1].split('.')[0].split('img')[1]
-    filesuffix = classname+'-'+'-'.join(fileid)
+    classname = [x.split('/')[-1].split('.')[0].split('img')[1] for x in input_list]
+    classid = [classmap[x] for x in classname]
+    filesuffixlist = []
+    for x,y in zip(classid, fileid):
+        tmp = str(x)+'#'+y
+        filesuffixlist.append(tmp)
+    filesuffix = '-'.join(filesuffixlist)
     logging.debug(filesuffix)
 
 

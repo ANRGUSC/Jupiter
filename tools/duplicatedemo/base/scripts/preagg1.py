@@ -13,6 +13,7 @@ import time
 from datetime import datetime
 global circe_home_ip, circe_home_ip_port, taskname
 import urllib
+import numpy as np
 
 logging.basicConfig(level = logging.DEBUG)
 taskname = Path(__file__).stem
@@ -28,6 +29,10 @@ FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
 
 global global_info_ip
+
+classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+classids = np.arange(0,len(classlist),1)
+classmap = dict(zip(classlist, classids))
 
 def send_runtime_profile(msg):
     """
@@ -76,9 +81,6 @@ def task(filelist, pathin, pathout):
 
     send_runtime_stats('rt_enter_task', filelist)
 
-    #snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
-    # job_id = filelist[0].partition('_')[2].partition('_')[2].partition('.')[0]
-    # job_id = job_id[3:]
     job_id = filelist[0].split('.csv')[0].split('_')[-2].split('job')[1]
     print(job_id)
     filesuffixs = filelist[0].split('.csv')[0].split('_')[-1]
