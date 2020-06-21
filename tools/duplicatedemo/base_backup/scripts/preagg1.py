@@ -64,22 +64,22 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def send_runtime_stats(action, file_names):
+def send_runtime_stats(action, file_name):
     ts = time.time()
-    for i in range(0,len(file_names)):
-        file_name = file_names[i]
-        new_file = os.path.split(file_name)[-1]
-        original_name = new_file.split('.')[0]
-        logging.debug(original_name)
-        tmp_name = original_name.split('_')[-1]
-        temp_name= tmp_name+'.JPEG'
-        runtime_info = action +' '+ temp_name+ ' '+str(ts)
-        send_runtime_profile(runtime_info)
+    new_file = os.path.split(file_name)[-1]
+    original_name = new_file.split('.')[0]
+    logging.debug(original_name)
+    tmp_name = original_name.split('_')[-1]
+    temp_name= tmp_name+'.JPEG'
+    runtime_info = action +' '+ temp_name+ ' '+str(ts)
+    send_runtime_profile(runtime_info)
+
 
 def task(filelist, pathin, pathout):     
     filelist = [filelist] if isinstance(filelist, str) else filelist  
 
-    send_runtime_stats('rt_enter_task', filelist)
+    for f in filelist:
+        send_runtime_stats('rt_enter_task', f)
 
     job_id = filelist[0].split('.csv')[0].split('_')[-2].split('job')[1]
     print(job_id)
@@ -144,7 +144,7 @@ def task(filelist, pathin, pathout):
                 destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
-                send_runtime_stats('rt_finish_task', outlist)
+                send_runtime_stats('rt_finish_task', destination)
         else:
             print('Not receive enough results for job '+job_id)
 
@@ -162,7 +162,7 @@ def task(filelist, pathin, pathout):
                 destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
-                send_runtime_stats('rt_finish_task', outlist)
+                send_runtime_stats('rt_finish_task', destination)
         else:
             print('Not receive enough results for job '+job_id)
 

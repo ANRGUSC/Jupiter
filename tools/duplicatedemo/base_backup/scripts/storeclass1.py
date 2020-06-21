@@ -59,25 +59,23 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def send_runtime_stats(action, file_names):
+def send_runtime_stats(action, file_name):
     ts = time.time()
-    for i in range(0,len(file_names)):
-        file_name = file_names[i]
-        new_file = os.path.split(file_name)[-1]
-        original_name = new_file.split('.')[0]
-        logging.debug(original_name)
-        tmp_name = original_name.split('_')[-1]
-        temp_name= tmp_name+'.JPEG'
-        runtime_info = action +' '+ temp_name+ ' '+str(ts)
-        send_runtime_profile(runtime_info)
+    new_file = os.path.split(file_name)[-1]
+    original_name = new_file.split('.')[0]
+    logging.debug(original_name)
+    tmp_name = original_name.split('_')[-1]
+    temp_name= tmp_name+'.JPEG'
+    runtime_info = action +' '+ temp_name+ ' '+str(ts)
+    send_runtime_profile(runtime_info)
 
 """
 Task for node that stores classified images belonding to it's assigned class.
 """
 def task(file_, pathin, pathout):
     file_ = [file_] if isinstance(file_, str) else file_
-
-    send_runtime_stats('rt_enter_task', file_)
+    for f in file_:
+        send_runtime_stats('rt_enter_task', f)
 
     out_list = []
     for i, f in enumerate(file_):
@@ -89,10 +87,11 @@ def task(file_, pathin, pathout):
         try: 
             shutil.copyfile(source, destination)
             out_list.append(destination)
+            send_runtime_stats('rt_finish_task', destination)
         except: 
             print("ERROR while copying file in store_class_task.py")
 
-    send_runtime_stats('rt_finish_task', out_list)
+    
     return out_list
 
 def main():

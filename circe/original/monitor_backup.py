@@ -519,7 +519,7 @@ class Handler(pyinotify.ProcessEvent):
             global filenames
 
             # if len(filenames) == 0:
-            runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts) 
+            runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
             if BOKEH == 1:
                 runtimebk = 'rt_enter '+ taskname+' '+ temp_name+ ' '+str(ts)
