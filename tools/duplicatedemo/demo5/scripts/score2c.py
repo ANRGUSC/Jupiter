@@ -67,17 +67,15 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def send_runtime_stats(action, file_names):
+def send_runtime_stats(action, file_name):
     ts = time.time()
-    for i in range(0,len(file_names)):
-        file_name = file_names[i]
-        new_file = os.path.split(file_name)[-1]
-        original_name = new_file.split('.')[0]
-        logging.debug(original_name)
-        tmp_name = original_name.split('_')[-1]
-        temp_name= tmp_name+'.JPEG'
-        runtime_info = action +' '+ temp_name+ ' '+str(ts)
-        send_runtime_profile(runtime_info)
+    new_file = os.path.split(file_name)[-1]
+    original_name = new_file.split('.')[0]
+    logging.debug(original_name)
+    tmp_name = original_name.split('_')[-1]
+    temp_name= tmp_name+'.JPEG'
+    runtime_info = action +' '+ temp_name+ ' '+str(ts)
+    send_runtime_profile(runtime_info)
 
 # Similarity score (zero-normalized cross correlation)
 def score (En_Image_Batch, Ref_Images):
@@ -92,7 +90,8 @@ def score (En_Image_Batch, Ref_Images):
 
 def task(filelist, pathin, pathout):   
     filelist = [filelist] if isinstance(filelist, str) else filelist   
-    send_runtime_stats('rt_enter_task', filelist)
+    for f in filelist:
+        send_runtime_stats('rt_enter_task', f)
     #snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     # Load id of incoming job (id_job=1,2,3,...)
@@ -156,7 +155,7 @@ def task(filelist, pathin, pathout):
     destination = os.path.join(pathout,'score'+classnum + worker_id + '_'+'preagg'+classnum+ '_' +'job' + job_id+'_'+filesuffixs +'.csv')
     np.savetxt(destination, sc, delimiter=',')
     outlist.append(destination)
-    send_runtime_stats('rt_finish_task', outlist)
+    send_runtime_stats('rt_finish_task', destination)
     return outlist
 
 def main():

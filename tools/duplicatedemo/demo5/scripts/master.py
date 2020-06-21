@@ -125,17 +125,16 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def send_runtime_stats(action, file_names):
+def send_runtime_stats(action, file_name):
     ts = time.time()
-    for i in range(0,len(file_names)):
-        file_name = file_names[i]
-        new_file = os.path.split(file_name)[-1]
-        original_name = new_file.split('.')[0]
-        logging.debug(original_name)
-        tmp_name = original_name.split('_')[-1]
-        temp_name= tmp_name+'.JPEG'
-        runtime_info = action +' '+ temp_name+ ' '+str(ts)
-        send_runtime_profile(runtime_info)
+    new_file = os.path.split(file_name)[-1]
+    original_name = new_file.split('.')[0]
+    logging.debug(original_name)
+    tmp_name = original_name.split('_')[-1]
+    temp_name= tmp_name+'.JPEG'
+    runtime_info = action +' '+ temp_name+ ' '+str(ts)
+    send_runtime_profile(runtime_info)
+
 
 
 def transfer_data_scp(ID,user,pword,source, destination):
@@ -289,8 +288,8 @@ def task(filelist, pathin, pathout):
     ### send to collage task
     ### Collage image is arranged as a rectangular grid of shape w x w 
     filelist = [filelist] if isinstance(filelist, str) else filelist  
-
-    send_runtime_stats('rt_enter_task', filelist)
+    for f in filelist:
+        send_runtime_stats('rt_enter_task', f)
     w = 3 
     num_images = w * w
     collage_spatial = 416
@@ -331,6 +330,7 @@ def task(filelist, pathin, pathout):
     ### send to collage task
     outlist = [os.path.join(pathout,"master_"+  collage_file_split+ "_jobid" + str(job_id) +'_'+filesuffix+ ".JPEG")]
     print(outlist)
+    send_runtime_stats('rt_finish_task', outlist[0])
     ### send to resnet tasks
     print('Receive resnet files: ')
     filelist_flask = []
@@ -341,13 +341,15 @@ def task(filelist, pathin, pathout):
         f_new = "jobid"+ str(job_id) + '_'+ f_split +  ".JPEG" 
         shutil.copyfile(os.path.join(pathin,f), os.path.join(pathout,"master_resnet"+str(idx)+'_'+ f_new))
         filelist_flask.append(f_new)
-        outlist.append(os.path.join(pathout,"master_resnet"+str(idx)+'_'+f_new))
+        tmp = os.path.join(pathout,"master_resnet"+str(idx)+'_'+f_new)
+        outlist.append(tmp)
         print(outlist)
+        send_runtime_stats('rt_finish_task', tmp)
     next_job_id = put_filenames(job_id, filelist_flask)
     if CODING_PART1:
         get_and_send_missing_images(pathin) 
 
-    send_runtime_stats('rt_finish_task', outlist)
+    
     return outlist
 
 def main():

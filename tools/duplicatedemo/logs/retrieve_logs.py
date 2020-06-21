@@ -175,7 +175,7 @@ if __name__ == '__main__':
     # log_folder = 'nosleepfixedmapDO-10default'
     # log_folder = 'sleepfixedmapDO-01default'
     # log_folder = 'sleepfixedmapDO-00default'
-    log_folder = 'sleepfixedmapDO-11default'
+    log_folder = '11a-sleep'
     # log_folder = 'sleepfixedmapDO-10default'
     
     if os.path.exists(log_folder):

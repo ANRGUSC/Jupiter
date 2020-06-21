@@ -66,17 +66,16 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def send_runtime_stats(action, file_names):
+def send_runtime_stats(action, file_name):
     ts = time.time()
-    for i in range(0,len(file_names)):
-        file_name = file_names[i]
-        new_file = os.path.split(file_name)[-1]
-        original_name = new_file.split('.')[0]
-        logging.debug(original_name)
-        tmp_name = original_name.split('_')[-1]
-        temp_name= tmp_name+'.JPEG'
-        runtime_info = action +' '+ temp_name+ ' '+str(ts)
-        send_runtime_profile(runtime_info)
+    new_file = os.path.split(file_name)[-1]
+    original_name = new_file.split('.')[0]
+    logging.debug(original_name)
+    tmp_name = original_name.split('_')[-1]
+    temp_name= tmp_name+'.JPEG'
+    runtime_info = action +' '+ temp_name+ ' '+str(ts)
+    send_runtime_profile(runtime_info)
+
 
 
 def gen_Lagrange_coeffs(alpha_s,beta_s):
@@ -109,7 +108,8 @@ def LCC_encoding(X,N,M):
 def task(filelist, pathin, pathout):    
     filelist = [filelist] if isinstance(filelist, str) else filelist  
     logging.debug(filelist)
-    send_runtime_stats('rt_enter_task', filelist)
+    for f in filelist:
+        send_runtime_stats('rt_enter_task', f)
 
     logging.debug(filelist)
 
@@ -199,8 +199,9 @@ def task(filelist, pathin, pathout):
             destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+filesuffix+'.csv')
             np.savetxt(destination, En_Image_Batch[i], delimiter=',')
             out_list.append(destination)
+            send_runtime_stats('rt_finish_task', destination)
 
-        send_runtime_stats('rt_finish_task', out_list)
+        
         return out_list
     
     else: # Uncoding version
@@ -237,8 +238,7 @@ def task(filelist, pathin, pathout):
             destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+filesuffix+'.csv')
             np.savetxt(destination, En_Image_Batch[i], delimiter=',')
             out_list.append(destination)
-
-        send_runtime_stats('rt_finish_task', out_list)
+            send_runtime_stats('rt_finish_task', destination)
         return out_list
 
         

@@ -63,17 +63,16 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def send_runtime_stats(action, file_names):
+def send_runtime_stats(action, file_name):
     ts = time.time()
-    for i in range(0,len(file_names)):
-        file_name = file_names[i]
-        new_file = os.path.split(file_name)[-1]
-        original_name = new_file.split('.')[0]
-        logging.debug(original_name)
-        tmp_name = original_name.split('_')[-1]
-        temp_name= tmp_name+'.JPEG'
-        runtime_info = action +' '+ temp_name+ ' '+str(ts)
-        send_runtime_profile(runtime_info)
+    new_file = os.path.split(file_name)[-1]
+    original_name = new_file.split('.')[0]
+    logging.debug(original_name)
+    tmp_name = original_name.split('_')[-1]
+    temp_name= tmp_name+'.JPEG'
+    runtime_info = action +' '+ temp_name+ ' '+str(ts)
+    send_runtime_profile(runtime_info)
+
         
 def gen_Lagrange_coeffs(alpha_s,beta_s):
     U = np.zeros((len(alpha_s), len(beta_s)))
@@ -107,7 +106,8 @@ FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
 def task(filelist, pathin, pathout): 
     filelist = [filelist] if isinstance(filelist, str) else filelist  
 
-    send_runtime_stats('rt_enter_task', filelist)
+    for f in filelist:
+        send_runtime_stats('rt_enter_task', f)
     #snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     # Load id of incoming job (id_job=1,2,3,...)
@@ -151,11 +151,11 @@ def task(filelist, pathin, pathout):
                 result = results[j]
             else:
                 result = np.concatenate((result, results[j]), axis = 0)
-        destination = os.path.join(pathout,'job'+job_id+'_'+taskname+'_'+filesuffixs)
+        destination = os.path.join(pathout,taskname+'_job'+job_id+'_'+filesuffixs)
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
 
-        send_runtime_stats('rt_finish_task', outlist)
+        send_runtime_stats('rt_finish_task', destination)
         return outlist
     else:
         # Results recieved from N workers
@@ -185,11 +185,11 @@ def task(filelist, pathin, pathout):
                 result = results[j]
             else:
                 result = np.concatenate((result, results[j]), axis = 0)
-        destination = os.path.join(pathout,taskname+'_'+'job'+job_id+'_'+filesuffixs)
+        destination = os.path.join(pathout,taskname+'_job'+job_id+'_'+filesuffixs)
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
 
-        send_runtime_stats('rt_finish_task', outlist)
+        send_runtime_stats('rt_finish_task', destination)
         
         return outlist
 

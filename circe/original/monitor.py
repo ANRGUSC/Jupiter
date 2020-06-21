@@ -211,129 +211,61 @@ class Handler1(pyinotify.ProcessEvent):
         """
         new_file = os.path.split(event.pathname)[-1]
 
-        #dummy application
-        # if '_' in new_file:
-        #     temp_name = new_file.split('_')[0]
-        # else:
-        #     temp_name = new_file.split('.')[0]
+        global files_out, files_out_set, total_files_out_set
 
-        logging.debug(new_file)
-        original_name = new_file.split('.')[0]
-        logging.debug(original_name)
-        tmp_name = original_name.split('_')[-1]
-        temp_name= tmp_name+'.JPEG'
-        # temp_name= [tmp_name+'.JPEG']
-        # if '-' not in tmp_name:
-        #     temp_name= [tmp_name+'.JPEG']
-        # else:
-        #     temp_name = [x+'.JPEG' for x in tmp_name.split('-')]
-        logging.debug(temp_name)
-        
-        global files_out, files_out_set
+        if not (new_file in total_files_out_set):
+            total_files_out_set.add(new_file)
 
-        #based on flag2 decide whether to send one output to all children or different outputs to different children in
-        #order given in the config file
-        flag2 = sys.argv[2]
-        ts = time.time()
-        # t = datetime.now()
-        # ts = unix_time(t)
-        logging.debug('Received time %f',ts)
-        if taskname == 'distribute':
-            logging.debug('This is the distribution point')
-            # ts = time.time()
-            # for i in range(0,len(temp_name)):
-            #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
-            #     send_runtime_profile(runtime_info)
-            runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-            send_runtime_profile(runtime_info)
+            #dummy application
+            # if '_' in new_file:
+            #     temp_name = new_file.split('_')[0]
+            # else:
+            #     temp_name = new_file.split('.')[0]
 
-            # if BOKEH == 1:
-            #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-            #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-            appname = temp_name.split('-')[0]
-            source = event.pathname
-            next_node = appname+'-task0'
-            idx = sys.argv.index(next_node)
-            next_task = sys.argv[idx]
-            user = sys.argv[idx+2]
-            password=sys.argv[idx+3]
-            destination = os.path.join('/centralized_scheduler', 'input', new_file)
-            transfer_data(next_task,user,password,source, destination)
-        elif sys.argv[3] == 'home':
-            logging.debug('Next node is home')
-            # ts = time.time()
-            runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-            send_runtime_profile(runtime_info)
-            # for i in range(0,len(temp_name)):
-            #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
-            #     send_runtime_profile(runtime_info)
-            # if BOKEH == 1:
-            #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-            #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-
-            # if BOKEH == 0:
-            #     msg = taskname + " ends"
-            #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+            logging.debug(new_file)
+            original_name = new_file.split('.')[0]
+            logging.debug(original_name)
+            tmp_name = original_name.split('_')[-1]
+            temp_name= tmp_name+'.JPEG'
+            # temp_name= [tmp_name+'.JPEG']
+            # if '-' not in tmp_name:
+            #     temp_name= [tmp_name+'.JPEG']
+            # else:
+            #     temp_name = [x+'.JPEG' for x in tmp_name.split('-')]
+            logging.debug(temp_name)
             
-            user = sys.argv[5]
-            password=sys.argv[6]
-            source = event.pathname
-            destination = os.path.join('/output', new_file)
-            transfer_data('home',user,password,source, destination)
             
 
-        elif flag2 == 'true':
-            logging.debug('Flag is true')
-            # ts = time.time()
-            runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-            send_runtime_profile(runtime_info)
-            # for i in range(0,len(temp_name)):
-                # runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
-                # send_runtime_profile(runtime_info)
-            # if BOKEH == 1:
-            #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-            #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+            #based on flag2 decide whether to send one output to all children or different outputs to different children in
+            #order given in the config file
+            flag2 = sys.argv[2]
+            ts = time.time()
+            # t = datetime.now()
+            # ts = unix_time(t)
+            logging.debug('Received time %f',ts)
+            if taskname == 'distribute':
+                logging.debug('This is the distribution point')
+                # ts = time.time()
+                # for i in range(0,len(temp_name)):
+                #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
+                #     send_runtime_profile(runtime_info)
+                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                send_runtime_profile(runtime_info)
 
-            # if BOKEH == 0:
-            #     msg = taskname + " ends"
-            #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
-            
-            # Using unicast 
-            # for i in range(3, len(sys.argv)-1,4):
-            #     cur_task = sys.argv[i]
-            #     # IPaddr = sys.argv[i+1]
-            #     user = sys.argv[i+2]
-            #     password = sys.argv[i+3]
-            #     source = event.pathname
-            #     destination = os.path.join('/centralized_scheduler', 'input', new_file)
-            #     transfer_data(cur_task,user,password,source, destination)
-            
-            # Using multicast
-            logging.debug('Using multicast instead')
-            cur_tasks =[]
-            users = []
-            passwords = []
-            source = event.pathname
-            destination = os.path.join('/centralized_scheduler', 'input', new_file)
-
-
-            for i in range(3, len(sys.argv)-1,4):
-                cur_tasks.append(sys.argv[i])
-                users.append(sys.argv[i+2])
-                passwords.append(sys.argv[i+3])
-
-            destinations = [destination] *len(cur_tasks)
-            sources = [source]*len(cur_tasks)
-                
-            transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
-        elif flag2 == 'false':
-            logging.debug('Flag is false')
-            num_child = (len(sys.argv) - 4) / 4
-            #files_out.append(new_file)
-            files_out_set.add(new_file)
-            # if (len(files_out) == num_child):
-            if (len(files_out_set) == num_child):
-                # send runtime profiling information
+                # if BOKEH == 1:
+                #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+                appname = temp_name.split('-')[0]
+                source = event.pathname
+                next_node = appname+'-task0'
+                idx = sys.argv.index(next_node)
+                next_task = sys.argv[idx]
+                user = sys.argv[idx+2]
+                password=sys.argv[idx+3]
+                destination = os.path.join('/centralized_scheduler', 'input', new_file)
+                transfer_data(next_task,user,password,source, destination)
+            elif sys.argv[3] == 'home':
+                logging.debug('Next node is home')
                 # ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
@@ -343,123 +275,198 @@ class Handler1(pyinotify.ProcessEvent):
                 # if BOKEH == 1:
                 #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
                 #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+
                 # if BOKEH == 0:
                 #     msg = taskname + " ends"
                 #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
-                    
-                # Using unicast
+                
+                user = sys.argv[5]
+                password=sys.argv[6]
+                source = event.pathname
+                destination = os.path.join('/output', new_file)
+                transfer_data('home',user,password,source, destination)
+                
+
+            elif flag2 == 'true':
+                logging.debug('Flag is true')
+                # ts = time.time()
+                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                send_runtime_profile(runtime_info)
+                # for i in range(0,len(temp_name)):
+                    # runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
+                    # send_runtime_profile(runtime_info)
+                # if BOKEH == 1:
+                #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+
+                # if BOKEH == 0:
+                #     msg = taskname + " ends"
+                #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                
+                # Using unicast 
                 # for i in range(3, len(sys.argv)-1,4):
-                #     myfile = files_out.pop(0)
-                #     event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
                 #     cur_task = sys.argv[i]
+                #     # IPaddr = sys.argv[i+1]
                 #     user = sys.argv[i+2]
                 #     password = sys.argv[i+3]
-                #     source = event_path
-                #     destination = os.path.join('/centralized_scheduler','input', myfile)
+                #     source = event.pathname
+                #     destination = os.path.join('/centralized_scheduler', 'input', new_file)
                 #     transfer_data(cur_task,user,password,source, destination)
                 
+                # Using multicast
                 logging.debug('Using multicast instead')
                 cur_tasks =[]
                 users = []
                 passwords = []
+                source = event.pathname
+                destination = os.path.join('/centralized_scheduler', 'input', new_file)
+
+
                 for i in range(3, len(sys.argv)-1,4):
                     cur_tasks.append(sys.argv[i])
                     users.append(sys.argv[i+2])
                     passwords.append(sys.argv[i+3])
-                destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in list(files_out_set)]
-                sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in list(files_out_set)]
 
+                destinations = [destination] *len(cur_tasks)
+                sources = [source]*len(cur_tasks)
+                    
                 transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
-                #files_out=[]
-                files_out_set=set()
-        elif flag2 == 'exclusive':#exclusive
-            logging.debug('Sending exclusive information to the corresponding children')
+            elif flag2 == 'false':
+                logging.debug('Flag is false')
+                num_child = (len(sys.argv) - 4) / 4
+                #files_out.append(new_file)
+                files_out_set.add(new_file)
+                # if (len(files_out) == num_child):
+                if (len(files_out_set) == num_child):
+                    # send runtime profiling information
+                    # ts = time.time()
+                    runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                    send_runtime_profile(runtime_info)
+                    # for i in range(0,len(temp_name)):
+                    #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
+                    #     send_runtime_profile(runtime_info)
+                    # if BOKEH == 1:
+                    #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                    #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+                    # if BOKEH == 0:
+                    #     msg = taskname + " ends"
+                    #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                        
+                    # Using unicast
+                    # for i in range(3, len(sys.argv)-1,4):
+                    #     myfile = files_out.pop(0)
+                    #     event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
+                    #     cur_task = sys.argv[i]
+                    #     user = sys.argv[i+2]
+                    #     password = sys.argv[i+3]
+                    #     source = event_path
+                    #     destination = os.path.join('/centralized_scheduler','input', myfile)
+                    #     transfer_data(cur_task,user,password,source, destination)
+                    
+                    logging.debug('Using multicast instead')
+                    cur_tasks =[]
+                    users = []
+                    passwords = []
+                    for i in range(3, len(sys.argv)-1,4):
+                        cur_tasks.append(sys.argv[i])
+                        users.append(sys.argv[i+2])
+                        passwords.append(sys.argv[i+3])
+                    destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in list(files_out_set)]
+                    sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in list(files_out_set)]
 
-            runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-            send_runtime_profile(runtime_info)
+                    transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
+                    #files_out=[]
+                    files_out_set=set()
+            elif flag2 == 'exclusive':#exclusive
+                logging.debug('Sending exclusive information to the corresponding children')
 
-            # for i in range(0,len(temp_name)):
-            #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
-            #     send_runtime_profile(runtime_info)
-
-            source = event.pathname
-            destination = os.path.join('/centralized_scheduler', 'input', new_file)
-            
-            new_file = os.path.split(event.pathname)[-1]
-            dest = new_file.split('.')[0].split('_')[1]
-            logging.debug(dest)
-
-            cur_tasks =[]
-            users = []
-            passwords = []
-
-            for i in range(3, len(sys.argv)-1,4):
-                if sys.argv[i]==dest:
-                    print(sys.argv[i])
-                    cur_tasks = [sys.argv[i]]
-                    users = [sys.argv[i+2]]
-                    passwords = [sys.argv[i+3]]
-                    break
-
-            destinations = [destination]
-            sources = [source]
-            transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
-        else: #ordered
-            logging.debug('Sending all the information to the corresponding children based on order')
-            runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
-            send_runtime_profile(runtime_info)
-
-            # for i in range(0,len(temp_name)):
-            #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
-            #     send_runtime_profile(runtime_info)
-            num_child = (len(sys.argv) - 4) / 4
-            # files_out.append(new_file)
-            files_out_set.add(new_file)
-            # if (len(files_out) == num_child):
-            if (len(files_out_set) == num_child):
-                # send runtime profiling information
-                # ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
-                if BOKEH == 1:
-                    runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-                if BOKEH == 0:
-                    msg = taskname + " ends"
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
-                    
-                # Using unicast
-                # for i in range(3, len(sys.argv)-1,4):
-                #     myfile = files_out.pop(0)
-                #     event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
-                #     cur_task = sys.argv[i]
-                #     user = sys.argv[i+2]
-                #     password = sys.argv[i+3]
-                #     source = event_path
-                #     destination = os.path.join('/centralized_scheduler','input', myfile)
-                #     transfer_data(cur_task,user,password,source, destination)
+
+                # for i in range(0,len(temp_name)):
+                #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
+                #     send_runtime_profile(runtime_info)
+
+                source = event.pathname
+                destination = os.path.join('/centralized_scheduler', 'input', new_file)
                 
-                logging.debug('Using multicast instead')
+                new_file = os.path.split(event.pathname)[-1]
+                dest = new_file.split('.')[0].split('_')[1]
+                logging.debug(dest)
+
                 cur_tasks =[]
                 users = []
                 passwords = []
-                logging.debug(files_out_set)
-                for fout in list(files_out_set):
-                    dest = fout.split('.')[0].split('_')[1]
-                    logging.debug(dest)
-                    for i in range(3, len(sys.argv)-1,4):
-                        if sys.argv[i]==dest:
-                            cur_tasks.append(sys.argv[i])
-                            users.append(sys.argv[i+2])
-                            passwords.append(sys.argv[i+3])
-                            break
-                logging.debug(cur_tasks)
-                destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in list(files_out_set)]
-                sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in list(files_out_set)]
-                logging.debug('Transfer the output files to the corresponding destinations')
+
+                for i in range(3, len(sys.argv)-1,4):
+                    if sys.argv[i]==dest:
+                        print(sys.argv[i])
+                        cur_tasks = [sys.argv[i]]
+                        users = [sys.argv[i+2]]
+                        passwords = [sys.argv[i+3]]
+                        break
+
+                destinations = [destination]
+                sources = [source]
                 transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
-                # files_out=[]
-                files_out_set=set()
+            else: #ordered
+                logging.debug('Sending all the information to the corresponding children based on order')
+                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                send_runtime_profile(runtime_info)
+
+                # for i in range(0,len(temp_name)):
+                #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
+                #     send_runtime_profile(runtime_info)
+                num_child = (len(sys.argv) - 4) / 4
+                # files_out.append(new_file)
+                files_out_set.add(new_file)
+                # if (len(files_out) == num_child):
+                if (len(files_out_set) == num_child):
+                    # send runtime profiling information
+                    # ts = time.time()
+                    runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                    send_runtime_profile(runtime_info)
+                    if BOKEH == 1:
+                        runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                        demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+                    if BOKEH == 0:
+                        msg = taskname + " ends"
+                        demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                        
+                    # Using unicast
+                    # for i in range(3, len(sys.argv)-1,4):
+                    #     myfile = files_out.pop(0)
+                    #     event_path = os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile)
+                    #     cur_task = sys.argv[i]
+                    #     user = sys.argv[i+2]
+                    #     password = sys.argv[i+3]
+                    #     source = event_path
+                    #     destination = os.path.join('/centralized_scheduler','input', myfile)
+                    #     transfer_data(cur_task,user,password,source, destination)
+                    
+                    logging.debug('Using multicast instead')
+                    cur_tasks =[]
+                    users = []
+                    passwords = []
+                    logging.debug(files_out_set)
+                    for fout in list(files_out_set):
+                        dest = fout.split('.')[0].split('_')[1]
+                        logging.debug(dest)
+                        for i in range(3, len(sys.argv)-1,4):
+                            if sys.argv[i]==dest:
+                                cur_tasks.append(sys.argv[i])
+                                users.append(sys.argv[i+2])
+                                passwords.append(sys.argv[i+3])
+                                break
+                    logging.debug(cur_tasks)
+                    destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in list(files_out_set)]
+                    sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in list(files_out_set)]
+                    logging.debug('Transfer the output files to the corresponding destinations')
+                    transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
+                    # files_out=[]
+                    files_out_set=set()
+        else:
+            logging.debug('Already received the file')
 
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
@@ -561,6 +568,8 @@ class Handler(pyinotify.ProcessEvent):
                     dag_task.start()
                     dag_task.join()
                     filenames = []
+        else:
+            logging.debug('Already received the files')
 
 
 
@@ -618,7 +627,7 @@ def main():
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
 
 
-    global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips, all_sinks, all_sinks_ips, files_out_set, files_in_set
+    global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips, all_sinks, all_sinks_ips, files_out_set, files_in_set,total_files_out_set
 
     configs = json.load(open('/centralized_scheduler/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
@@ -631,6 +640,7 @@ def main():
     files_out=[]
     files_in_set = set()
     files_out_set = set()
+    total_files_out_set = set()
     node_name = os.environ['NODE_NAME']
     home_node_host_port = os.environ['HOME_NODE'] + ":" + str(FLASK_SVC)
 

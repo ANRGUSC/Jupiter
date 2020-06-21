@@ -233,6 +233,145 @@ app.add_url_rule('/', 'return_output_files', return_output_files)
 #     return "ok"
 # app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
 
+# def update_demo_stats():
+#     global rt_enter_time
+#     global rt_exec_time
+#     global rt_finish_time
+#     global rt_enter_task_time
+#     global rt_finish_task_time 
+
+#     logging.debug('********************************************') 
+#     logging.debug("Update stats information")
+#     logging.debug(outputfiles)
+#     """
+#         - Worker node: task name
+#         - Input file: input files
+#         - Enter time: time the input file enter the queue
+#         - Execute time: time the input file is processed
+#         - Finish time: time the output file is generated
+#         - Elapse time: total time since the input file is created till the output file is created
+#         - Duration time: total execution time of the task
+#         - Waiting time: total time since the input file is created till it is processed
+#     """
+#     # logging.debug('Enter time')
+#     # logging.debug(rt_enter_time)
+#     # logging.debug('Exec time')
+#     # logging.debug(rt_exec_time)
+#     # logging.debug('Finish time')
+#     # logging.debug(rt_finish_time)
+#     log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks.txt'), "w")
+#     s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time','Real execution time', 'Prewaiting','Postwaiting')
+#     log_file.write(s)
+#     logging.debug(s)
+
+
+
+#     # for k,v in rt_finish_time.items():
+#     #     if k in rt_enter_time and k in rt_exec_time:
+#     #         elapse = rt_finish_time[k]-rt_enter_time[k]  
+#     #         duration = rt_finish_time[k]-rt_exec_time[k]
+#     #         waiting = rt_exec_time[k] - rt_enter_time[k]
+#     #         image_set.add(k[1])
+#     #         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
+#     #         statstime[k] = [rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting)]
+#     #         #logging.debug(s)
+#     #         log_file.write(s)
+#     #         log_file.flush()
+#     #     else:
+#     #         logging.debug('Missing profiling file information...')
+
+#     for k,v in rt_finish_time.items():
+#         elaspe = 0
+#         duration = 0
+#         waiting = 0
+#         duration_task = 0
+#         pre_waiting = 0
+#         post_waiting = 0
+#         try:
+#             elapse = rt_finish_time[k]-rt_enter_time[k]  
+#         except:
+#             rt_enter_time[k] = 0
+#             logging.debug('no enter time')
+
+#         try:
+#             duration = rt_finish_time[k]-rt_exec_time[k]
+#         except:
+#             rt_exec_time[k] = 0
+#             logging.debug('no exec time')
+        
+#         try:
+#             waiting = rt_exec_time[k] - rt_enter_time[k]
+#         except:
+#             logging.debug('no enter/exec time')
+
+#         try:
+#             duration_task = rt_finish_task_time[k]-rt_enter_task_time[k]
+#         except:
+#             logging.debug('no finish/enter task time')
+
+#         try:
+#             pre_waiting = rt_enter_task_time[k] - rt_enter_time[k] 
+#         except:
+#             logging.debug('no enter/enter task time')
+
+#         try:
+#             post_waiting = rt_finish_time[k] - rt_finish_task_time[k]
+#         except:
+#             logging.debug('no finish/finish task time')
+
+#         image_set.add(k[1])
+#         # s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting))
+#         statstime[k] = [rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting)]
+
+
+#     # log_file.close()
+#     logging.debug('********************************************')
+#     logging.debug('Intermediate tasks :')
+#     logging.debug(statstime)
+#     logging.debug('********************************************')
+#     logging.debug("Communication time :")
+
+#     for item in image_set:
+#         timeseq = [(k[0],v) for k,v in statstime.items() if k[1]==item]
+#         timedict = dict(timeseq)
+#         # logging.debug(timedict)
+#         try:
+#             comm_time[(item,'datasource','master')] = timedict['master'][0] - start_times[item]
+#         except Exception as e:
+#             pass
+#             # logging.debug('Missing datasource stats information')
+#             # logging.debug(e)
+#             # logging.debug(timedict['master'][0])
+#             # logging.debug(start_times[item])
+#         # logging.debug(comm_time)
+#         for task in dag:
+#             if task.startswith('lccdec'):
+#                 try:
+#                     # logging.debug('last task')
+#                     comm_time[(item, task,'home')] = end_times[item] - timedict[task][2] 
+
+#                 except Exception as e:
+#                     pass
+#                     # logging.debug('Missing lccdec stats information')
+#                     # logging.debug(end_times.keys())
+#                     # logging.debug(timedict.keys())
+#                     # logging.debug(e)
+#                     # logging.debug('Last task: only belong to one class')
+#             else:
+#                 for next_task in dag[task][2:]:
+#                     try:
+#                         comm_time[(item, task,next_task)] = timedict[next_task][0]-timedict[task][2]
+#                     except Exception as e:
+#                         pass
+#                         # logging.debug('Only belong to one class / collage task')
+#                         # logging.debug(e)
+#                         # logging.debug(e)
+
+
+#     logging.debug(comm_time)
+#     logging.debug('********************************************') 
+
+
 #demo application
 def recv_runtime_profile():
     """
@@ -265,35 +404,59 @@ def recv_runtime_profile():
             outputfiles = []
             # logging.debug(classmap)
             for fi in outputfile:
-                tmp = classmap[fi.split('#')[0]]+'img'+fi.split('#')[1]+ '.JPEG'
+                tmp = fi.split('#')[1]+'img'+ classmap[fi.split('#')[0]]+'.JPEG'
                 outputfiles.append(tmp)
         else:
             outputfiles = [msg[1]]
 
-        logging.debug(outputfiles)
-
 
         if msg[0] == 'rt_enter':
             for i in range(0,len(outputfiles)):
+                if (worker_node,outputfiles[i]) in rt_enter_time:
+                    print('Already exists enter...')
+                    print(msg)
+                    print(worker_node)
+                    continue
                 rt_enter_time[(worker_node,outputfiles[i])] = float(msg[2])
         elif msg[0] == 'rt_exec' :
             for i in range(0,len(outputfiles)):
+                if (worker_node,outputfiles[i]) in rt_exec_time:
+                    print('Already exists exec...')
+                    print(msg)
+                    print(worker_node)
+                    continue
                 rt_exec_time[(worker_node,outputfiles[i])] = float(msg[2])
         elif msg[0] == 'rt_enter_task' :
             for i in range(0,len(outputfiles)):
+                if (worker_node,outputfiles[i]) in rt_enter_task_time:
+                    print('Already exists enter task...')
+                    print(msg)
+                    print(worker_node)
+                    continue
                 rt_enter_task_time[(worker_node,outputfiles[i])] = float(msg[2])
         elif msg[0] == 'rt_finish_task' :
             for i in range(0,len(outputfiles)):
+                if (worker_node,outputfiles[i]) in rt_finish_task_time:
+                    print('Already exists finish task...')
+                    print(msg)
+                    print(worker_node)
+                    continue
                 rt_finish_task_time[(worker_node,outputfiles[i])] = float(msg[2])
         elif msg[0] == 'rt_finish' : #rt_finish
 
             for i in range(0,len(outputfiles)):
+                if (worker_node,outputfiles[i]) in rt_finish_time:
+                    print('Already exists finish...')
+                    print(msg)
+                    print(worker_node)
+                    continue
                 rt_finish_time[(worker_node,outputfiles[i])] = float(msg[2])
 
             if worker_node in last_tasks:
                 # Per task stats:
                 logging.debug('********************************************') 
                 logging.debug("Received final output at home: Runtime profiling info:")
+                logging.debug(outputfiles)
                 """
                     - Worker node: task name
                     - Input file: input files
@@ -315,24 +478,7 @@ def recv_runtime_profile():
                 log_file.write(s)
                 logging.debug(s)
 
-
-
-                # for k,v in rt_finish_time.items():
-                #     if k in rt_enter_time and k in rt_exec_time:
-                #         elapse = rt_finish_time[k]-rt_enter_time[k]  
-                #         duration = rt_finish_time[k]-rt_exec_time[k]
-                #         waiting = rt_exec_time[k] - rt_enter_time[k]
-                #         image_set.add(k[1])
-                #         s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting))
-                #         statstime[k] = [rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting)]
-                #         #logging.debug(s)
-                #         log_file.write(s)
-                #         log_file.flush()
-                #     else:
-                #         logging.debug('Missing profiling file information...')
-
                 for k,v in rt_finish_time.items():
-                    logging.debug(k)
                     elaspe = 0
                     duration = 0
                     waiting = 0
@@ -374,44 +520,6 @@ def recv_runtime_profile():
                     image_set.add(k[1])
                     # s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting))
                     statstime[k] = [rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting)]
-
-                    # if (k in rt_enter_time) and (k in rt_exec_time) and (k in rt_enter_task_time) and (k in rt_finish_task_time):
-                    #     elapse = rt_finish_time[k]-rt_enter_time[k]  
-                    #     duration = rt_finish_time[k]-rt_exec_time[k]
-                    #     waiting = rt_exec_time[k] - rt_enter_time[k]
-                    #     duration_task = rt_finish_task_time[k]-rt_enter_task_time[k]
-                    #     pre_waiting = rt_enter_task_time[k] - rt_enter_time[k] 
-                    #     post_waiting = rt_finish_time[k] - rt_finish_task_time[k]
-                    #     image_set.add(k[1])
-                    #     s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting))
-                    #     statstime[k] = [rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting)]
-                    #     #logging.debug(s)
-                    #     log_file.write(s)
-                    #     log_file.flush()
-                    # else:
-                    #     logging.debug('Missing profiling file information...')
-                    #     logging.debug(k)
-                        # logging.debug('+++++')
-                        # if k in rt_enter_time:
-                        #     print('Yes enter')
-                        # logging.debug(len(rt_enter_time.keys()))
-                        # logging.debug('+++++ebter')
-                        # if k in rt_exec_time:
-                        #     print('Yes exec ')
-                        # logging.debug(len(rt_exec_time.keys()))
-                        # logging.debug('+++++exec')
-                        # if k in rt_finish_time:
-                        #     print('Yes finish')
-                        # logging.debug(len(rt_finish_time.keys()))
-                        # logging.debug('+++++finish')
-                        # if k in rt_enter_task_time:
-                        #     print('Yes enter task')
-                        # logging.debug(len(rt_enter_task_time.keys()))
-                        # logging.debug('+++++entertask')
-                        # if k in rt_finish_task_time:
-                        #     print('Yes finish task')
-                        # logging.debug(len(rt_finish_task_time.keys()))
-                        # logging.debug('+++++finishtask')
 
 
                 # log_file.close()
@@ -457,10 +565,10 @@ def recv_runtime_profile():
                                     # logging.debug(e)
                                     # logging.debug(e)
 
-
+                logging.debug("****####")
                 logging.debug(comm_time)
+                logging.debug("****####")
                 logging.debug('********************************************') 
-            #logging.debug('---Check3')
     except Exception as e:
         logging.debug("Bad reception or failed processing in Flask for runtime profiling")
         logging.debug(e)
@@ -599,39 +707,32 @@ class MyHandler(pyinotify.ProcessEvent):
         global exec_times
         global count
 
+
         logging.debug("Received file as output - %s." % event.pathname) 
         outfile =  event.pathname.split('.')[0].split('/')[-1].split('_')[-1]
         outputfile =outfile.split('-')
+        logging.debug(outputfile)
 
-        if not (outfile in files_out_set):
-            files_out_set.add(outfile)
-            filen = outputfile[0]
-            fileid = outputfile[1:]
-            # 4 files at a time
-            outputfiles = [x+'img'+filen+'.JPEG' for x in fileid]
-            logging.debug(outputfiles)
-            # t = datetime.now()
+        classlists = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard',  'lion', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+        classids = np.arange(0,len(classlists),1)
+        classids = [str(x) for x in classids]
+        classmap = dict(zip(classids,classlists))
+
+        for fi in outputfile:
+            tmpfile = fi.split('#')[1]+'img'+ classmap[fi.split('#')[0]]+'.JPEG'
+            logging.debug(tmpfile)
             t = time.time()
-            logging.debug('Received time %f',t)
-            for f in outputfiles:
-                end_times[f] = t
+            if not (tmpfile in files_out_set):
+                logging.debug('Received time %f',t)
+                end_times[tmpfile] = t
                 try:
-                    exec_times[f] = end_times[f] - start_times[f]
+                    exec_times[tmpfile] = end_times[tmpfile] - start_times[tmpfile]
                 except Exception as e:
                     logging.debug('Could not find the start time information for the file!!!!')
                     logging.debug(f)
-            logging.debug("execution time is: %s", exec_times)
+                logging.debug("execution time is: %s", exec_times)
 
-            if BOKEH == 2: #used for combined_app with distribute script
-                app_name = outputfile.split('-')[0]
-                msg = 'makespan '+ app_name + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) 
-                demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
-
-            if BOKEH == 3:
-                msg = 'makespan ' + appoption + ' ' + appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
-                demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
-
-
+    
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
     """
