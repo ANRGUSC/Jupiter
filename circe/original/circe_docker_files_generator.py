@@ -143,8 +143,12 @@ RUN mkdir -p /home/darpa/apps/data
 #ADD circe/original/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
+ADD circe/original/readconfig.py /centralized_scheduler/readconfig.py
+ADD jupiter_config.py /centralized_scheduler/jupiter_config.py
+ADD jupiter_config.ini jupiter_config.ini
+ADD {app_file}/configuration.txt /centralized_scheduler/configuration.txt
+ADD nodes.txt /centralized_scheduler/nodes.txt
 ADD {app_file}/scripts/ /centralized_scheduler/
-ADD jupiter_config.ini /jupiter_config.ini
 ADD circe/original/start_worker.sh /start.sh
 RUN chmod +x /start.sh
 

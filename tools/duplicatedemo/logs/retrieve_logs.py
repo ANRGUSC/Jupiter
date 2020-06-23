@@ -169,16 +169,17 @@ def extract_log_circe_heft(log_folder):
 
 
 if __name__ == '__main__':
-    # log_folder = 'nosleepfixedmapDO-01default'
-    # log_folder = 'nosleepfixedmapDO-00default'
-    # log_folder = 'nosleepfixedmapDO-11default'
-    # log_folder = 'nosleepfixedmapDO-10default'
-    # log_folder = 'sleepfixedmapDO-01default'
-    # log_folder = 'sleepfixedmapDO-00default'
-    log_folder = '11a-sleep'
-    # log_folder = 'sleepfixedmapDO-10default'
-    
-    if os.path.exists(log_folder):
-        shutil.rmtree(log_folder)
-    os.mkdir(log_folder)
-    extract_log_circe_heft(log_folder)
+  setid = 'd'
+  # log_folder = '01%s-default'%(setid)
+  # log_folder = '11%s-default'%(setid)
+  # log_folder = '00%s-default'%(setid)
+  log_folder = '10%s-default'%(setid)
+  # log_folder = '01%s-sleep'%(setid)
+  # log_folder = '11%s-sleep'%(setid)
+  # log_folder = '00%s-sleep'%(setid)
+  # log_folder = '10%s-sleep'%(setid)
+
+  if os.path.exists(log_folder):
+      shutil.rmtree(log_folder)
+  os.mkdir(log_folder)
+  extract_log_circe_heft(log_folder)

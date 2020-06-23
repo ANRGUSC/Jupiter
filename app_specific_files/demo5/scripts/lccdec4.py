@@ -63,16 +63,15 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def send_runtime_stats(action, file_name):
+def send_runtime_stats(action, file_name,from_task):
     ts = time.time()
     new_file = os.path.split(file_name)[-1]
     original_name = new_file.split('.')[0]
     logging.debug(original_name)
     tmp_name = original_name.split('_')[-1]
     temp_name= tmp_name+'.JPEG'
-    runtime_info = action +' '+ temp_name+ ' '+str(ts)
+    runtime_info = action +' '+ from_task+' '+ temp_name+ ' '+str(ts) 
     send_runtime_profile(runtime_info)
-
         
 def gen_Lagrange_coeffs(alpha_s,beta_s):
     U = np.zeros((len(alpha_s), len(beta_s)))
@@ -106,8 +105,9 @@ FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
 def task(filelist, pathin, pathout): 
     filelist = [filelist] if isinstance(filelist, str) else filelist  
 
+    from_task = 'preagg' +classnum
     for f in filelist:
-        send_runtime_stats('rt_enter_task', f)
+        send_runtime_stats('rt_enter_task', f,from_task)
     #snapshot_time = filelist[0].partition('_')[2].partition('_')[2].partition('_')[2].partition('_')[2].partition('.')[0]  #store the data&time info 
     
     # Load id of incoming job (id_job=1,2,3,...)
@@ -155,7 +155,7 @@ def task(filelist, pathin, pathout):
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
 
-        send_runtime_stats('rt_finish_task', destination)
+        send_runtime_stats('rt_finish_task', destination,from_task)
         return outlist
     else:
         # Results recieved from N workers
@@ -189,7 +189,7 @@ def task(filelist, pathin, pathout):
         np.savetxt(destination, result, delimiter=',')
         outlist.append(destination)
 
-        send_runtime_stats('rt_finish_task', destination)
+        send_runtime_stats('rt_finish_task', destination,from_task)
         
         return outlist
 

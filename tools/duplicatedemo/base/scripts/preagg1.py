@@ -64,14 +64,14 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def send_runtime_stats(action, file_name, fromtask):
+def send_runtime_stats(action, file_name,from_task):
     ts = time.time()
     new_file = os.path.split(file_name)[-1]
     original_name = new_file.split('.')[0]
     logging.debug(original_name)
     tmp_name = original_name.split('_')[-1]
     temp_name= tmp_name+'.JPEG'
-    runtime_info = action +' '+ temp_name+ ' '+str(ts) 
+    runtime_info = action +' '+ from_task+' '+ temp_name+ ' '+str(ts) 
     send_runtime_profile(runtime_info)
 
 
@@ -79,7 +79,8 @@ def task(filelist, pathin, pathout):
     filelist = [filelist] if isinstance(filelist, str) else filelist  
 
     for f in filelist:
-        send_runtime_stats('rt_enter_task', f)
+        from_task = os.path.split(f)[-1].split('.')[0].split('_')[0]
+        send_runtime_stats('rt_enter_task', f,from_task)
 
     job_id = filelist[0].split('.csv')[0].split('_')[-2].split('job')[1]
     print(job_id)
@@ -144,7 +145,9 @@ def task(filelist, pathin, pathout):
                 destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
-                send_runtime_stats('rt_finish_task', destination)
+            
+                from_task = (job_dict[job_id])[i].partition('_')[0]
+                send_runtime_stats('rt_finish_task', destination,from_task)
         else:
             print('Not receive enough results for job '+job_id)
 
@@ -162,7 +165,10 @@ def task(filelist, pathin, pathout):
                 destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                 np.savetxt(destination, En_Image_Batch, delimiter=',')
                 outlist.append(destination)
-                send_runtime_stats('rt_finish_task', destination)
+                
+                from_task = (job_dict[job_id])[i].partition('_')[0]
+                send_runtime_stats('rt_finish_task', destination,from_task)
+
         else:
             print('Not receive enough results for job '+job_id)
 

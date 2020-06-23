@@ -66,14 +66,14 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def send_runtime_stats(action, file_name):
+def send_runtime_stats(action, file_name,from_task):
     ts = time.time()
     new_file = os.path.split(file_name)[-1]
     original_name = new_file.split('.')[0]
     logging.debug(original_name)
     tmp_name = original_name.split('_')[-1]
     temp_name= tmp_name+'.JPEG'
-    runtime_info = action +' '+ temp_name+ ' '+str(ts)
+    runtime_info = action +' '+ from_task+' '+ temp_name+ ' '+str(ts) 
     send_runtime_profile(runtime_info)
 
 
@@ -108,8 +108,11 @@ def LCC_encoding(X,N,M):
 def task(filelist, pathin, pathout):    
     filelist = [filelist] if isinstance(filelist, str) else filelist  
     logging.debug(filelist)
+
+    
     for f in filelist:
-        send_runtime_stats('rt_enter_task', f)
+        from_task = os.path.split(f)[-1].split('.')[0].split('_')[0]
+        send_runtime_stats('rt_enter_task', f,from_task)
 
     logging.debug(filelist)
 
@@ -199,7 +202,9 @@ def task(filelist, pathin, pathout):
             destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+filesuffix+'.csv')
             np.savetxt(destination, En_Image_Batch[i], delimiter=',')
             out_list.append(destination)
-            send_runtime_stats('rt_finish_task', destination)
+        
+        from_task = '_storeclass'+classnum
+        send_runtime_stats('rt_finish_task', destination,from_task)
 
         
         return out_list
@@ -238,7 +243,9 @@ def task(filelist, pathin, pathout):
             destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+filesuffix+'.csv')
             np.savetxt(destination, En_Image_Batch[i], delimiter=',')
             out_list.append(destination)
-            send_runtime_stats('rt_finish_task', destination)
+        
+        from_task = '_storeclass'+classnum
+        send_runtime_stats('rt_finish_task', destination,from_task)
         return out_list
 
         

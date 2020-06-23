@@ -39,6 +39,8 @@ import threading
 import logging
 import importlib
 from datetime import datetime
+import jupiter_config
+from readconfig import read_config
 
 
 
@@ -213,6 +215,28 @@ class Handler1(pyinotify.ProcessEvent):
 
         global files_out, files_out_set, total_files_out_set
 
+        
+        logging.debug(last_tasks_map)
+        last_tasks_map['master'] = ['datasource']
+        from_task = last_tasks_map[taskname][0]
+        logging.debug(from_task)
+
+        logging.debug(new_file)
+        original_name = new_file.split('.')[0]
+        logging.debug(original_name)
+        tmp_name = original_name.split('_')[-1]
+        temp_name= tmp_name+'.JPEG'
+
+        logging.debug(temp_name)
+
+        if taskname.startswith('storeclass'):
+            from_task = original_name.split('_')[1]
+            logging.debug(from_task)
+        if taskname.startswith('preagg'):
+            from_task = original_name.split('_')[2]
+            logging.debug(from_task)
+
+
         if not (new_file in total_files_out_set):
             total_files_out_set.add(new_file)
 
@@ -222,17 +246,13 @@ class Handler1(pyinotify.ProcessEvent):
             # else:
             #     temp_name = new_file.split('.')[0]
 
-            logging.debug(new_file)
-            original_name = new_file.split('.')[0]
-            logging.debug(original_name)
-            tmp_name = original_name.split('_')[-1]
-            temp_name= tmp_name+'.JPEG'
+            
             # temp_name= [tmp_name+'.JPEG']
             # if '-' not in tmp_name:
             #     temp_name= [tmp_name+'.JPEG']
             # else:
             #     temp_name = [x+'.JPEG' for x in tmp_name.split('-')]
-            logging.debug(temp_name)
+            
             
             
 
@@ -249,7 +269,7 @@ class Handler1(pyinotify.ProcessEvent):
                 # for i in range(0,len(temp_name)):
                 #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
                 #     send_runtime_profile(runtime_info)
-                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                runtime_info = 'rt_finish '+ from_task+' '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
 
                 # if BOKEH == 1:
@@ -267,7 +287,7 @@ class Handler1(pyinotify.ProcessEvent):
             elif sys.argv[3] == 'home':
                 logging.debug('Next node is home')
                 # ts = time.time()
-                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                runtime_info = 'rt_finish '+ from_task+' '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
                 # for i in range(0,len(temp_name)):
                 #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
@@ -290,7 +310,7 @@ class Handler1(pyinotify.ProcessEvent):
             elif flag2 == 'true':
                 logging.debug('Flag is true')
                 # ts = time.time()
-                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                runtime_info = 'rt_finish '+ from_task+' '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
                 # for i in range(0,len(temp_name)):
                     # runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
@@ -340,7 +360,7 @@ class Handler1(pyinotify.ProcessEvent):
                 if (len(files_out_set) == num_child):
                     # send runtime profiling information
                     # ts = time.time()
-                    runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                    runtime_info = 'rt_finish '+ from_task+' '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info)
                     # for i in range(0,len(temp_name)):
                     #     runtime_info = 'rt_finish '+ temp_name[i]+ ' '+str(ts)
@@ -380,7 +400,7 @@ class Handler1(pyinotify.ProcessEvent):
             elif flag2 == 'exclusive':#exclusive
                 logging.debug('Sending exclusive information to the corresponding children')
 
-                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                runtime_info = 'rt_finish '+ from_task+' '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
 
                 # for i in range(0,len(temp_name)):
@@ -411,7 +431,7 @@ class Handler1(pyinotify.ProcessEvent):
                 transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
             else: #ordered
                 logging.debug('Sending all the information to the corresponding children based on order')
-                runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                runtime_info = 'rt_finish '+ from_task+' '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
 
                 # for i in range(0,len(temp_name)):
@@ -424,10 +444,10 @@ class Handler1(pyinotify.ProcessEvent):
                 if (len(files_out_set) == num_child):
                     # send runtime profiling information
                     # ts = time.time()
-                    runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
+                    runtime_info = 'rt_finish '+ from_task+' '+ temp_name+ ' '+str(ts)
                     send_runtime_profile(runtime_info)
                     if BOKEH == 1:
-                        runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                        runtimebk = 'rt_finish '+ from_task+' '+temp_name+ ' '+str(ts)
                         demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
                     if BOKEH == 0:
                         msg = taskname + " ends"
@@ -496,6 +516,15 @@ class Handler(pyinotify.ProcessEvent):
         temp_name= original_name.split('_')[-1]+'.JPEG'
         logging.debug(temp_name)
 
+        #demo
+        logging.debug(last_tasks_map)
+        last_tasks_map['master'] = ['datasource']
+        from_task = last_tasks_map[taskname][0]
+        logging.debug(from_task)
+        if taskname.startswith('storeclass') or taskname.startswith('preagg')  :
+            from_task = original_name.split('_')[0]
+        logging.debug(from_task)
+
 
         if not (new_file in files_in_set):
             files_in_set.add(new_file)
@@ -519,20 +548,20 @@ class Handler(pyinotify.ProcessEvent):
             global filenames
 
             # if len(filenames) == 0:
-            runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts) 
+            runtime_info = 'rt_enter '+ from_task+' '+temp_name+ ' '+str(ts) 
             send_runtime_profile(runtime_info)
             if BOKEH == 1:
-                runtimebk = 'rt_enter '+ taskname+' '+ temp_name+ ' '+str(ts)
+                runtimebk = 'rt_enter '+ from_task+' '+ temp_name+ ' '+str(ts)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
 
             flag1 = sys.argv[1]
             logging.debug(flag1)
             if flag1 == "1":
                 ts = time.time()
-                runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+                runtime_info = 'rt_exec '+ from_task+' '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)  
                 if BOKEH == 1:
-                    runtimebk = 'rt_exec '+ taskname + ' '+temp_name+ ' '+str(ts)
+                    runtimebk = 'rt_exec '+ from_task + ' '+temp_name+ ' '+str(ts)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
                 if BOKEH == 0:
                     msg = taskname + " starts"
@@ -550,7 +579,8 @@ class Handler(pyinotify.ProcessEvent):
                     ts = time.time()
                     for i in range(0,len(filenames)):
                         tmp_name= filenames[i].split('_')[-1]
-                        runtime_info = 'rt_exec '+ tmp_name+ ' '+str(ts)
+                        # runtime_info = 'rt_exec '+ from_task+' '+ temp_name+ ' '+str(ts)
+                        runtime_info = 'rt_exec '+ from_task+' '+ tmp_name+ ' '+str(ts)
                         send_runtime_profile(runtime_info)   
 
                     # runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
@@ -655,6 +685,26 @@ def main():
     BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
     BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
     BOKEH = int(config['BOKEH_LIST']['BOKEH'])
+
+    global dag
+
+    path1 = '/centralized_scheduler/configuration.txt'
+    path2 = '/centralized_scheduler/nodes.txt'
+    dag_info = read_config(path1,path2)
+    dag = dag_info[1]
+
+    global last_tasks_map
+    last_tasks_map = dict()
+
+    for task in dag:
+        for last_task in dag[task][2:]:
+            if last_task not in last_tasks_map:
+                last_tasks_map[last_task] = [task]
+            else:    
+                last_tasks_map[last_task].append(task)
+
+    logging.debug('Last task map')
+    logging.debug(last_tasks_map)
 
     global combined_ip_map 
     combined_ip_map = dict()

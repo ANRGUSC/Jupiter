@@ -74,21 +74,21 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def send_runtime_stats(action, file_name):
+def send_runtime_stats(action, file_name,from_task):
     ts = time.time()
     new_file = os.path.split(file_name)[-1]
     original_name = new_file.split('.')[0]
     logging.debug(original_name)
     tmp_name = original_name.split('_')[-1]
     temp_name= tmp_name+'.JPEG'
-    runtime_info = action +' '+ temp_name+ ' '+str(ts)
+    runtime_info = action +' '+ from_task+' '+ temp_name+ ' '+str(ts) 
     send_runtime_profile(runtime_info)
 
 def task(file_, pathin, pathout):
     global resnet_task_num
     file_ = [file_] if isinstance(file_, str) else file_ 
     for f in file_:
-        send_runtime_stats('rt_enter_task', f)
+        send_runtime_stats('rt_enter_task', f,'master')
     ### set device to CPU
     device = torch.device("cpu")
     ### Load model
@@ -294,7 +294,7 @@ def task(file_, pathin, pathout):
             print(e)
             return []
 
-    send_runtime_stats('rt_finish_task', out_list[0])
+    send_runtime_stats('rt_finish_task', out_list[0],'master')
     return out_list
 
 #Krishna

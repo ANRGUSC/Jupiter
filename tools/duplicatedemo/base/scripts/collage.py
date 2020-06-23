@@ -69,14 +69,14 @@ def send_runtime_profile(msg):
         return "not ok"
     return res
 
-def send_runtime_stats(action, file_name):
+def send_runtime_stats(action, file_name,from_task):
     ts = time.time()
     new_file = os.path.split(file_name)[-1]
     original_name = new_file.split('.')[0]
     logging.debug(original_name)
     tmp_name = original_name.split('_')[-1]
     temp_name= tmp_name+'.JPEG'
-    runtime_info = action +' '+ temp_name+ ' '+str(ts)
+    runtime_info = action +' '+ from_task+' '+ temp_name+ ' '+str(ts) 
     send_runtime_profile(runtime_info)
 
 def calculate_iou(L1, R1, T1, B1, L2, R2, T2, B2):
@@ -157,7 +157,7 @@ def task(file_, pathin, pathout):
     logging.debug(filesuffix)
 
     for f in file_:
-        send_runtime_stats('rt_enter_task', f)
+        send_runtime_stats('rt_enter_task', f,'master')
 
     img_size=416
     w = 3
@@ -210,7 +210,7 @@ def task(file_, pathin, pathout):
     with open(out_name, "w") as out_file:
         out_list.append(out_name)
         out_file.write("dummy output file")
-        send_runtime_stats('rt_finish_task', out_name)
+        send_runtime_stats('rt_finish_task', out_name,'master')
         
     
     
