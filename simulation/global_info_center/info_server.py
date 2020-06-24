@@ -22,6 +22,15 @@ def request_resnet_prediction():
     print(collagejobs.job_resnet_preds_dict)
     return json.dumps(response)
 
+@app.route('/post-enough-resnet-preds', methods=['POST'])
+def request_enough_resnet_preds():
+    print('received enough resnet preds for jobid',)
+    recv = request.get_json()
+    job_id = recv['job_id']
+    ret_val = collagejobs.enough_resnet_preds(job_id)
+    response = ret_val
+    return json.dumps(response)
+
 @app.route('/post-predictions-collage', methods=['POST'])
 def request_collage_prediction():
     print('Receive the prediction from collage for job id')
@@ -105,6 +114,12 @@ class collageJobs(object):
     #    if job_id in self.job_collage_preds_dict:
     #        del self.job_collage_preds_dict[job_id]
     #    return True
+    def enough_resnet_preds(self, jobid):
+        if self.job_resnet_preds_dict[job_id].count(-1) >= RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
+            return False
+        else:
+            return True
+    
     def get_missing_dict(self):
     # There is collage prediction and some missing resnet predictions
         missing_files_preds_dict = {}

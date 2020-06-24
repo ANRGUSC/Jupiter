@@ -40,6 +40,7 @@ FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 SLEEP_TIME   = int(config['OTHER']['SLEEP_TIME'])
 STRAGGLER_THRESHOLD   = float(config['OTHER']['STRAGGLER_THRESHOLD'])
 CODING_PART1 = int(config['OTHER']['CODING_PART1'])
+MASTER_TIMEOUT = int(config['OTHER']['MASTER_TIMEOUT'])
 
 global global_info_ip, global_info_ip_port
 
@@ -140,6 +141,17 @@ def task(file_, pathin, pathout):
             except Exception as e:
                 print('Possibly running on the execution profiler')
 
+            try:
+                global_info_ip = os.environ['GLOBAL_IP']
+                global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+                slept = 0
+                while (slept < MASTER_TIMEOUT):
+                    if CODING_PART1:
+                        ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
+                        time.sleep(1)
+                        slept += 1
+            except Exception as e:
+                print('Possibly running on the execution profiler, get_enough_resnet_preds')
             
             if ret_job_id >= 0: # This job_id has not been processed by the global flask server
                 ### Copy to appropriate destination paths
@@ -296,6 +308,25 @@ def task(file_, pathin, pathout):
 
     send_runtime_stats('rt_finish_task', out_list[0],'master')
     return out_list
+
+#Krishna
+def get_enough_resnet_preds(job_id, global_info_ip_port):
+    hdr = {
+            'Content-Type': 'application/json',
+            'Authorization': None #not using HTTP secure
+                                    }
+    try:
+        logging.debug('get enough resnet predictions from the decoder')
+        url = "http://" + global_info_ip_port + "/post-enough-resnet-preds"
+        params = {"job_id": job_id}
+        response = requests.post(url, headers = hdr, data = json.dumps(params))
+        ret_val = response.json()
+        logging.debug(ret_val)
+    except Exception as e:
+        logging.debug("Get enough resnet predictions FAILED!!! - possibly running on the execution profiler")
+        #logging.debug(e)
+        ret_val = True
+    return ret_val
 
 #Krishna
 def send_prediction_to_decoder_task(job_id, prediction, global_info_ip_port):
