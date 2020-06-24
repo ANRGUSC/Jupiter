@@ -55,6 +55,7 @@ ssh_port    = int(config['PORT']['SSH_SVC'])
 username    = config['AUTH']['USERNAME']
 password    = config['AUTH']['PASSWORD']
 CODING_PART1 = int(config['OTHER']['CODING_PART1'])
+MASTER_TIMEOUT = int(config['OTHER']['MASTER_TIMEOUT'])
 
 global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
 all_nodes = os.environ["ALL_NODES"].split(":")
@@ -346,6 +347,7 @@ def task(filelist, pathin, pathout):
         send_runtime_stats('rt_finish_task', tmp,'datasource')
     next_job_id = put_filenames(job_id, filelist_flask)
     if CODING_PART1:
+        time.sleep(MASTER_TIMEOUT)
         get_and_send_missing_images(pathin) 
 
     
