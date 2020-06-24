@@ -55,7 +55,10 @@ ssh_port    = int(config['PORT']['SSH_SVC'])
 username    = config['AUTH']['USERNAME']
 password    = config['AUTH']['PASSWORD']
 CODING_PART1 = int(config['OTHER']['CODING_PART1'])
-MASTER_TIMEOUT = int(config['OTHER']['MASTER_TIMEOUT'])
+SLEEP_TIME = int(config['OTHER']['SLEEP_TIME'])
+MASTER_TO_RESNET_TIME = int(config['OTHER']['MASTER_TO_RESNET_TIME'])
+MASTER_POLL_INTERVAL = int(config['OTHER']['MASTER_POLL_INTERVAL'])
+RESNETS_THRESHOLD = int(config['OTHER']['RESNETS_THRESHOLD'])
 
 global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
 all_nodes = os.environ["ALL_NODES"].split(":")
@@ -213,6 +216,25 @@ def put_filenames(job_id, filelist):
         next_job_id = 1
     return next_job_id
 
+#Krishna
+def get_enough_resnet_preds(job_id, global_info_ip_port):
+    hdr = {
+            'Content-Type': 'application/json',
+            'Authorization': None #not using HTTP secure
+                                    }
+    try:
+        logging.debug('get enough resnet predictions from the decoder')
+        url = "http://" + global_info_ip_port + "/post-enough-resnet-preds"
+        params = {"job_id": job_id}
+        response = requests.post(url, headers = hdr, data = json.dumps(params))
+        ret_val = response.json()
+        logging.debug(ret_val)
+    except Exception as e:
+        logging.debug("Get enough resnet predictions FAILED!!! - possibly running on the execution profiler")
+        #logging.debug(e)
+        ret_val = True
+    return ret_val
+
 def get_and_send_missing_images(pathin):
     # Check with global info server
     hdr = {
@@ -347,7 +369,15 @@ def task(filelist, pathin, pathout):
         send_runtime_stats('rt_finish_task', tmp,'datasource')
     next_job_id = put_filenames(job_id, filelist_flask)
     if CODING_PART1:
-        time.sleep(MASTER_TIMEOUT)
+        slept = 0
+        if RESNETS_THRESHOLD > 1: # Coding configuration
+            while slept < MASTER_TO_RESNET_TIME:
+                ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
+                print("get_enough_resnet_preds fn. return value is: ", ret_val)
+                if ret_val:
+                    break
+                time.sleep(MASTER_POLL_INTERVAL)
+                slept += MASTER_POLL_INTERVAL
         get_and_send_missing_images(pathin) 
 
     

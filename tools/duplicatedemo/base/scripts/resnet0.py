@@ -40,8 +40,7 @@ FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 SLEEP_TIME   = int(config['OTHER']['SLEEP_TIME'])
 STRAGGLER_THRESHOLD   = float(config['OTHER']['STRAGGLER_THRESHOLD'])
 CODING_PART1 = int(config['OTHER']['CODING_PART1'])
-MASTER_TIMEOUT = int(config['OTHER']['MASTER_TIMEOUT'])
-MASTER_TO_RESNET_TIME = int(config['OTHER']['MASTER_TO_RESNET_TIME'])
+RESNET_POLL_INTERVAL = int(config['OTHER']['RESNET_POLL_INTERVAL'])
 
 global global_info_ip, global_info_ip_port
 
@@ -121,7 +120,7 @@ def task(file_, pathin, pathout):
             pred = torch.argmax(output, dim=1).detach().numpy().tolist()
             ### To simulate slow downs
             # purposely add delay time to slow down the sending
-            if (random.random() > STRAGGLER_THRESHOLD) and (taskname=='resnet0') :
+            if (random.random() > STRAGGLER_THRESHOLD) and (taskname=='resnet8') :
                 print(taskname)
                 print("Sleeping")
                 time.sleep(SLEEP_TIME) #>=2 
@@ -145,15 +144,15 @@ def task(file_, pathin, pathout):
             try:
                 global_info_ip = os.environ['GLOBAL_IP']
                 global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-                slept = 0
-                while (slept < MASTER_TIMEOUT - MASTER_TO_RESNET_TIME):
-                    if CODING_PART1:
+                if taskname != 'resnet8':
+                    slept = 0
+                    while slept < SLEEP_TIME:
                         ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
                         print("get_enough_resnet_preds fn. return value is: ", ret_val)
                         if ret_val:
                             break
-                        time.sleep(1)
-                        slept += 1
+                        time.sleep(RESNET_POLL_INTERVAL)
+                        slept += RESNET_POLL_INTERVAL
             except Exception as e:
                 print('Possibly running on the execution profiler, get_enough_resnet_preds')
             
