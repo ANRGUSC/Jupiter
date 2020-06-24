@@ -41,6 +41,7 @@ SLEEP_TIME   = int(config['OTHER']['SLEEP_TIME'])
 STRAGGLER_THRESHOLD   = float(config['OTHER']['STRAGGLER_THRESHOLD'])
 CODING_PART1 = int(config['OTHER']['CODING_PART1'])
 MASTER_TIMEOUT = int(config['OTHER']['MASTER_TIMEOUT'])
+MASTER_TO_RESNET_TIME = int(config['OTHER']['MASTER_TO_RESNET_TIME'])
 
 global global_info_ip, global_info_ip_port
 
@@ -145,9 +146,12 @@ def task(file_, pathin, pathout):
                 global_info_ip = os.environ['GLOBAL_IP']
                 global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
                 slept = 0
-                while (slept < MASTER_TIMEOUT):
+                while (slept < MASTER_TIMEOUT - MASTER_TO_RESNET_TIME):
                     if CODING_PART1:
                         ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
+                        print("get_enough_resnet_preds fn. return value is: ", ret_val)
+                        if ret_val:
+                            break
                         time.sleep(1)
                         slept += 1
             except Exception as e:
