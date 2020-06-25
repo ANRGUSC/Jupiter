@@ -370,15 +370,21 @@ def task(filelist, pathin, pathout):
     next_job_id = put_filenames(job_id, filelist_flask)
     if CODING_PART1:
         slept = 0
-        if RESNETS_THRESHOLD > 1: # Coding configuration
-            while slept < MASTER_TO_RESNET_TIME:
-                ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
-                print("get_enough_resnet_preds fn. return value is: ", ret_val)
-                if ret_val:
-                    break
-                time.sleep(MASTER_POLL_INTERVAL)
-                slept += MASTER_POLL_INTERVAL
-        get_and_send_missing_images(pathin) 
+        try:
+            global_info_ip = os.environ['GLOBAL_IP']
+            global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+            print("global info ip port: ", global_info_ip_port)
+            if RESNETS_THRESHOLD > 1: # Coding configuration
+                while slept < MASTER_TO_RESNET_TIME:
+                    ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
+                    print("get_enough_resnet_preds fn. return value is: ", ret_val)
+                    if ret_val:
+                        break
+                    time.sleep(MASTER_POLL_INTERVAL)
+                    slept += MASTER_POLL_INTERVAL
+            get_and_send_missing_images(pathin) 
+        except Exception as e:
+            print('Possibly running on execution profiler!!!') 
 
     
     return outlist

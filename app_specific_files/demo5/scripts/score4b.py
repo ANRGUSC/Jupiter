@@ -137,7 +137,7 @@ def task(filelist, pathin, pathout):
 
     ### To simulate slow downs
     # purposely add delay time to slow down the sending
-    if (random.random() > STRAGGLER_THRESHOLD) and (classnum=='a'):
+    if (random.random() > STRAGGLER_THRESHOLD) and (worker_id=='a'):
         print(classnum)
         print("Sleeping")
         time.sleep(SLEEP_TIME) #>=2  

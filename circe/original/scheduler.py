@@ -573,205 +573,7 @@ app.add_url_rule('/', 'return_output_files', return_output_files)
 # app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
 
 
-#demo application => using only rt_finish
-# def recv_runtime_profile():
-#     """
-
-#     Receiving run-time profiling information for every task (task name, start time stats, waiting time stats, end time stats)
-    
-#     Raises:
-#         Exception: failed processing in Flask
-#     """
-
-#     global rt_enter_time
-#     global rt_exec_time
-#     global rt_finish_time
-#     global rt_enter_task_time
-#     global rt_finish_task_time 
-
-#     try:
-#         logging.debug('Receive runtime stats information: ')
-#         worker_node = request.args.get('work_node')
-#         msg = request.args.get('msg').split()
-
-#         action = msg[0]
-#         from_task = msg[1]
-#         fname = msg[2]
-#         ts = float(msg[3])
-
-#         # logging.debug(msg)
-
-#         classlists = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard',  'lion', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
-#         classids = np.arange(0,len(classlists),1)
-#         classids = [str(x) for x in classids]
-#         classmap = dict(zip(classids,classlists))
-
-#         if '-' in fname:
-#             outputfile = fname.split('.')[0].split('-')
-#             logging.debug(outputfile)
-#             outputfiles = []
-#             logging.debug(classmap)
-#             for fi in outputfile:
-#                 tmp = fi.split('#')[1]+'img'+ classmap[fi.split('#')[0]]+'.JPEG'
-#                 outputfiles.append(tmp)
-#         else:
-#             outputfiles = [fname]
-
-#         # logging.debug(outputfiles)
-#         # logging.debug(from_task)
-#         # logging.debug(action)
-
-#         if action == 'rt_enter': # first file            
-#             for i in range(0,len(outputfiles)):
-#                 if (worker_node,from_task,outputfiles[i]) in rt_enter_time:
-#                     logging.debug('Already exists enter...')
-#                     logging.debug(rt_enter_time[(worker_node,from_task,outputfiles[i])])
-#                     continue
-#                 rt_enter_time[(worker_node,from_task,outputfiles[i])] = ts
-
-#             # logging.debug(rt_enter_time)
-                
-#         elif action == 'rt_exec' : # first file            
-#             for i in range(0,len(outputfiles)):
-#                 if (worker_node,from_task,outputfiles[i]) in rt_exec_time:
-#                     logging.debug('Already exists exec...')
-#                     logging.debug(rt_exec_time[(worker_node,from_task,outputfiles[i])])
-#                     continue
-#                 rt_exec_time[(worker_node,from_task,outputfiles[i])] = ts
-#             # logging.debug(rt_exec_time)
-#         elif action == 'rt_enter_task' : # first file            
-#             for i in range(0,len(outputfiles)):
-#                 if (worker_node,from_task,outputfiles[i]) in rt_enter_task_time:
-#                     logging.debug('Already exists enter task...')
-#                     logging.debug(rt_enter_task_time[(worker_node,from_task,outputfiles[i])])
-#                     continue
-#                 rt_enter_task_time[(worker_node,from_task,outputfiles[i])] = ts
-#         elif action == 'rt_finish_task' : #last file            
-#             for i in range(0,len(outputfiles)): 
-#                 rt_finish_task_time[(worker_node,from_task,outputfiles[i])] = ts                
-#         elif action == 'rt_finish' :#last file            
-#             for i in range(0,len(outputfiles)): 
-#                 rt_finish_time[(worker_node,from_task,outputfiles[i])] = ts
-            
-#             if worker_node in last_tasks:
-#                 # Per task stats:
-#                 logging.debug('********************************************') 
-#                 logging.debug("Received final output at home: Runtime profiling info:")
-#                 # logging.debug(outputfiles)
-#                 """
-#                     - Worker node: task name
-#                     - Input file: input files
-#                     - Enter time: time the input file enter the queue
-#                     - Execute time: time the input file is processed
-#                     - Finish time: time the output file is generated
-#                     - Elapse time: total time since the input file is created till the output file is created
-#                     - Duration time: total execution time of the task
-#                     - Waiting time: total time since the input file is created till it is processed
-#                 """
-#                 log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks.txt'), "w")
-#                 s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','From_task','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time','Real execution time', 'Prewaiting')
-#                 log_file.write(s)
-#                 logging.debug(s)
-
-#                 for k,v in rt_finish_time.items():
-#                     elaspe = 0
-#                     duration = 0
-#                     waiting = 0
-#                     duration_task = 0
-#                     pre_waiting = 0
-#                     # post_waiting = 0
-#                     try:
-#                         elapse = rt_finish_time[k]-rt_enter_time[k]  
-#                     except Exception as e:
-#                         rt_enter_time[k] = 0
-#                         logging.debug('no enter time')
-#                         logging.debug(e)
-
-#                     try:
-#                         duration = rt_finish_time[k]-rt_exec_time[k]
-#                     except Exception as e:
-#                         rt_exec_time[k] = 0
-#                         logging.debug('no exec time')
-#                         logging.debug(e)
-                    
-#                     try:
-#                         waiting = rt_exec_time[k] - rt_enter_time[k]
-#                     except Exception as e:
-#                         logging.debug('no enter/exec time')
-#                         logging.debug(e)
-                        
-#                     try:
-#                         # duration_task = rt_finish_task_time[k]-rt_enter_task_time[k]
-#                         duration_task = rt_finish_time[k]-rt_enter_task_time[k]
-#                     except Exception as e:
-#                         logging.debug('no finish/enter task time')
-#                         logging.debug(e)
-
-#                     try:
-#                         pre_waiting = rt_enter_task_time[k] - rt_enter_time[k] 
-#                     except Exception as e:
-#                         logging.debug('no enter/enter task time')
-#                         logging.debug(e)
-
-#                     # try:
-#                     #     post_waiting = rt_finish_time[k] - rt_finish_task_time[k]#not yet know why
-#                     #     if post_waiting<0: 
-#                     #         post_waiting = 0
-#                     # except Exception as e:
-#                     #     logging.debug('no finish/finish task time')
-#                     #     logging.debug(e)
-
-#                     for f in outputfiles:
-#                         image_set.add(f)
-#                     # s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting))
-#                     statstime[k] = [rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting)]
-
-
-#                 # log_file.close()
-#                 logging.debug('********************************************')
-#                 logging.debug('Intermediate tasks :')
-#                 logging.debug(statstime)
-#                 logging.debug('********************************************')
-#                 logging.debug("Communication time :")
-
-#                 for item in image_set:
-#                     timeseq = [(k[0],k[1],v) for k,v in statstime.items() if k[2]==item]
-#                     timedict = {(x,y):v for x,y,v in timeseq}
-#                     for key,value in timedict.items():
-#                         task = key[0]
-#                         last_task = key[1]
-#                         if task=='master':
-#                             try:
-#                                 comm_time[(item,'datasource','master')] = timedict[('master','datasource')][0] - start_times[item]
-#                             except Exception as e:
-#                                 logging.debug('Error calculating datasource to master')
-#                                 comm_time[(item,'datasource','master')] = 0
-#                         elif task.startswith('lccdec'):
-#                             try:
-#                                 tasknum = task.split('lccdec')[1]
-#                                 comm_time[(item, task,'home')] = end_times[item] - timedict[(task,'preagg'+tasknum)][2] 
-#                             except Exception as e:
-#                                 logging.debug('Error calculating lccdecoder to home - endtimes not ready')
-#                                 comm_time[(item, task,'home')] = 0
-#                         else:
-#                             previous_info = [item for item in timedict if item[0] == last_task]
-#                             try:
-#                                 comm_time[(item, task,last_task)] = timedict[(task,last_task)][0]-timedict[previous_info[0]][2]    
-#                             except Exception as e:
-#                                 logging.debug('Error calculating task communication!!!')
-#                                 comm_time[(item, task,last_task)] = 0
-
-#                 logging.debug("****##########")
-#                 logging.debug(comm_time)
-#                 logging.debug("****####$$$$$$")
-#                 logging.debug('********************************************') 
-#     except Exception as e:
-#         logging.debug("Bad reception or failed processing in Flask for runtime profiling")
-#         logging.debug(e)
-#         return "not ok"
-#     return "ok"
-# app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
-
+# demo application => using only rt_finish
 def recv_runtime_profile():
     """
 
@@ -815,6 +617,9 @@ def recv_runtime_profile():
         else:
             outputfiles = [fname]
 
+        # logging.debug(outputfiles)
+        # logging.debug(from_task)
+        # logging.debug(action)
 
         if action == 'rt_enter': # first file            
             for i in range(0,len(outputfiles)):
@@ -823,6 +628,8 @@ def recv_runtime_profile():
                     logging.debug(rt_enter_time[(worker_node,from_task,outputfiles[i])])
                     continue
                 rt_enter_time[(worker_node,from_task,outputfiles[i])] = ts
+
+            # logging.debug(rt_enter_time)
                 
         elif action == 'rt_exec' : # first file            
             for i in range(0,len(outputfiles)):
@@ -845,17 +652,212 @@ def recv_runtime_profile():
         elif action == 'rt_finish' :#last file            
             for i in range(0,len(outputfiles)): 
                 rt_finish_time[(worker_node,from_task,outputfiles[i])] = ts
+            
+            if worker_node in last_tasks:
+                # Per task stats:
+                logging.debug('********************************************') 
+                logging.debug("Received final output at home: Runtime profiling info:")
+                # logging.debug(outputfiles)
+                """
+                    - Worker node: task name
+                    - Input file: input files
+                    - Enter time: time the input file enter the queue
+                    - Execute time: time the input file is processed
+                    - Finish time: time the output file is generated
+                    - Elapse time: total time since the input file is created till the output file is created
+                    - Duration time: total execution time of the task
+                    - Waiting time: total time since the input file is created till it is processed
+                """
+                log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks.txt'), "w")
+                s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Task_name','From_task','local_input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time','Real execution time', 'Prewaiting')
+                log_file.write(s)
+                logging.debug(s)
 
-        for f in outputfiles:
-            if f not in image_set:
-                image_set[f]=1
-                
+                for k,v in rt_finish_time.items():
+                    elaspe = 0
+                    duration = 0
+                    waiting = 0
+                    duration_task = 0
+                    pre_waiting = 0
+                    # post_waiting = 0
+                    try:
+                        elapse = rt_finish_time[k]-rt_enter_time[k]  
+                    except Exception as e:
+                        rt_enter_time[k] = 0
+                        logging.debug('no enter time')
+                        logging.debug(e)
+
+                    try:
+                        duration = rt_finish_time[k]-rt_exec_time[k]
+                    except Exception as e:
+                        rt_exec_time[k] = 0
+                        logging.debug('no exec time')
+                        logging.debug(e)
+                    
+                    try:
+                        waiting = rt_exec_time[k] - rt_enter_time[k]
+                    except Exception as e:
+                        logging.debug('no enter/exec time')
+                        logging.debug(e)
+                        
+                    try:
+                        # duration_task = rt_finish_task_time[k]-rt_enter_task_time[k]
+                        duration_task = rt_finish_time[k]-rt_enter_task_time[k]
+                    except Exception as e:
+                        logging.debug('no finish/enter task time')
+                        logging.debug(e)
+
+                    try:
+                        pre_waiting = rt_enter_task_time[k] - rt_enter_time[k] 
+                    except Exception as e:
+                        logging.debug('no enter/enter task time')
+                        logging.debug(e)
+
+                    # try:
+                    #     post_waiting = rt_finish_time[k] - rt_finish_task_time[k]#not yet know why
+                    #     if post_waiting<0: 
+                    #         post_waiting = 0
+                    # except Exception as e:
+                    #     logging.debug('no finish/finish task time')
+                    #     logging.debug(e)
+
+                    for f in outputfiles:
+                        image_set.add(f)
+                    # s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(k[0], k[1], rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting),str(post_waiting))
+                    statstime[k] = [rt_enter_time[k], rt_exec_time[k],rt_finish_time[k],str(elapse),str(duration),str(waiting),str(duration_task),str(pre_waiting)]
+
+
+                # log_file.close()
+                logging.debug('********************************************')
+                logging.debug('Intermediate tasks :')
+                logging.debug(statstime)
+                logging.debug('********************************************')
+                logging.debug("Communication time :")
+
+                for item in image_set:
+                    timeseq = [(k[0],k[1],v) for k,v in statstime.items() if k[2]==item]
+                    timedict = {(x,y):v for x,y,v in timeseq}
+                    for key,value in timedict.items():
+                        task = key[0]
+                        last_task = key[1]
+                        if task=='master':
+                            try:
+                                comm_time[(item,'datasource','master')] = timedict[('master','datasource')][0] - start_times[item]
+                            except Exception as e:
+                                logging.debug('Error calculating datasource to master')
+                                comm_time[(item,'datasource','master')] = 0
+                        elif task.startswith('lccdec'):
+                            try:
+                                tasknum = task.split('lccdec')[1]
+                                comm_time[(item, task,'home')] = end_times[item] - timedict[(task,'preagg'+tasknum)][2] 
+                            except Exception as e:
+                                logging.debug('Error calculating lccdecoder to home - endtimes not ready')
+                                comm_time[(item, task,'home')] = 0
+                        else:
+                            previous_info = [item for item in timedict if item[0] == last_task]
+                            try:
+                                comm_time[(item, task,last_task)] = timedict[(task,last_task)][0]-timedict[previous_info[0]][2]    
+                            except Exception as e:
+                                logging.debug('Error calculating task communication!!!')
+                                comm_time[(item, task,last_task)] = 0
+
+                logging.debug("****##########")
+                logging.debug(comm_time)
+                logging.debug("****####$$$$$$")
+                logging.debug('********************************************') 
     except Exception as e:
         logging.debug("Bad reception or failed processing in Flask for runtime profiling")
         logging.debug(e)
         return "not ok"
     return "ok"
 app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
+
+
+#run every interval
+# def recv_runtime_profile():
+#     """
+
+#     Receiving run-time profiling information for every task (task name, start time stats, waiting time stats, end time stats)
+    
+#     Raises:
+#         Exception: failed processing in Flask
+#     """
+
+#     global rt_enter_time
+#     global rt_exec_time
+#     global rt_finish_time
+#     global rt_enter_task_time
+#     global rt_finish_task_time 
+
+#     try:
+#         logging.debug('Receive runtime stats information: ')
+#         worker_node = request.args.get('work_node')
+#         msg = request.args.get('msg').split()
+
+#         action = msg[0]
+#         from_task = msg[1]
+#         fname = msg[2]
+#         ts = float(msg[3])
+
+#         # logging.debug(msg)
+
+#         classlists = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard',  'lion', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
+#         classids = np.arange(0,len(classlists),1)
+#         classids = [str(x) for x in classids]
+#         classmap = dict(zip(classids,classlists))
+
+#         if '-' in fname:
+#             outputfile = fname.split('.')[0].split('-')
+#             logging.debug(outputfile)
+#             outputfiles = []
+#             logging.debug(classmap)
+#             for fi in outputfile:
+#                 tmp = fi.split('#')[1]+'img'+ classmap[fi.split('#')[0]]+'.JPEG'
+#                 outputfiles.append(tmp)
+#         else:
+#             outputfiles = [fname]
+
+
+#         if action == 'rt_enter': # first file            
+#             for i in range(0,len(outputfiles)):
+#                 if (worker_node,from_task,outputfiles[i]) in rt_enter_time:
+#                     logging.debug('Already exists enter...')
+#                     logging.debug(rt_enter_time[(worker_node,from_task,outputfiles[i])])
+#                     continue
+#                 rt_enter_time[(worker_node,from_task,outputfiles[i])] = ts
+                
+#         elif action == 'rt_exec' : # first file            
+#             for i in range(0,len(outputfiles)):
+#                 if (worker_node,from_task,outputfiles[i]) in rt_exec_time:
+#                     logging.debug('Already exists exec...')
+#                     logging.debug(rt_exec_time[(worker_node,from_task,outputfiles[i])])
+#                     continue
+#                 rt_exec_time[(worker_node,from_task,outputfiles[i])] = ts
+#             # logging.debug(rt_exec_time)
+#         elif action == 'rt_enter_task' : # first file            
+#             for i in range(0,len(outputfiles)):
+#                 if (worker_node,from_task,outputfiles[i]) in rt_enter_task_time:
+#                     logging.debug('Already exists enter task...')
+#                     logging.debug(rt_enter_task_time[(worker_node,from_task,outputfiles[i])])
+#                     continue
+#                 rt_enter_task_time[(worker_node,from_task,outputfiles[i])] = ts
+#         elif action == 'rt_finish_task' : #last file            
+#             for i in range(0,len(outputfiles)): 
+#                 rt_finish_task_time[(worker_node,from_task,outputfiles[i])] = ts                
+#         elif action == 'rt_finish' :#last file            
+#             for i in range(0,len(outputfiles)): 
+#                 rt_finish_time[(worker_node,from_task,outputfiles[i])] = ts
+
+#         for f in outputfiles:
+#             if f not in image_set:
+#                 image_set[f]=1
+                
+#     except Exception as e:
+#         logging.debug("Bad reception or failed processing in Flask for runtime profiling")
+#         logging.debug(e)
+#         return "not ok"
+#     return "ok"
+# app.add_url_rule('/recv_runtime_profile', 'recv_runtime_profile', recv_runtime_profile)
 
 
 
@@ -1311,8 +1313,8 @@ def main():
     BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
     BOKEH = int(config['BOKEH_LIST']['BOKEH'])
 
-    update_interval = 1
-    _thread.start_new_thread(schedule_update_stats, (update_interval,))
+    # update_interval = 1
+    # _thread.start_new_thread(schedule_update_stats, (update_interval,))
 
     web_server = MonitorRecv()
     web_server.start()

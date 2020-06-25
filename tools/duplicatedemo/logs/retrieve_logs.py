@@ -173,11 +173,11 @@ if __name__ == '__main__':
   # log_folder = '01%s-default'%(setid)
   # log_folder = '11%s-default'%(setid)
   # log_folder = '00%s-default'%(setid)
-  log_folder = '10%s-default'%(setid)
+  # log_folder = '10%s-default'%(setid)
   # log_folder = '01%s-sleep'%(setid)
   # log_folder = '11%s-sleep'%(setid)
   # log_folder = '00%s-sleep'%(setid)
-  # log_folder = '10%s-sleep'%(setid)
+  log_folder = '10%s-sleep'%(setid)
 
   if os.path.exists(log_folder):
       shutil.rmtree(log_folder)
