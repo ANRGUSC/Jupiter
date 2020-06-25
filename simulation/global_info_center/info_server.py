@@ -24,9 +24,9 @@ def request_resnet_prediction():
 
 @app.route('/post-enough-resnet-preds', methods=['POST'])
 def request_enough_resnet_preds():
-    print('received enough resnet preds for jobid',)
     recv = request.get_json()
     job_id = recv['job_id']
+    print('received enough resnet preds for jobid', job_id)
     ret_val = collagejobs.enough_resnet_preds(job_id)
     response = ret_val
     return json.dumps(response)
@@ -114,7 +114,7 @@ class collageJobs(object):
     #    if job_id in self.job_collage_preds_dict:
     #        del self.job_collage_preds_dict[job_id]
     #    return True
-    def enough_resnet_preds(self, jobid):
+    def enough_resnet_preds(self, job_id):
         if self.job_resnet_preds_dict[job_id].count(-1) >= RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
             return False
         else:
