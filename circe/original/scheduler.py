@@ -1279,8 +1279,9 @@ def main():
 
     global statstime, image_set, comm_time
     statstime = manager.dict()
-    image_set = manager.dict()
     comm_time = manager.dict()
+    # image_set = manager.dict() #new approach
+    image_set = set() 
 
     global last_tasks
     last_tasks = set()

@@ -186,8 +186,8 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         logging.debug('******************************')
         logging.debug('Start the global information center')
         k8s_globalinfo_scheduler(app_name)
-        import static_assignment_code as st
-        # import static_assignment_noncode as st
+        # import static_assignment_code as st
+        import static_assignment_noncode as st
         dag = st.dag
         schedule = st.schedule
         logging.debug('*************************')

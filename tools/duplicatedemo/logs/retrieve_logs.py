@@ -169,7 +169,7 @@ def extract_log_circe_heft(log_folder):
 
 
 if __name__ == '__main__':
-  setid = 'd'
+  setid = 'f'
   # log_folder = '01%s-default'%(setid)
   # log_folder = '11%s-default'%(setid)
   # log_folder = '00%s-default'%(setid)

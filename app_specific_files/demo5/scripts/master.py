@@ -76,11 +76,11 @@ store_class_tasks_dict[555] = "storeclass1"
 store_class_tasks_dict[779] = "storeclass2"
 store_class_tasks_dict[270] = "storeclass3"
 store_class_tasks_dict[276] = "storeclass4"
-store_class_tasks_dict[278] = "storeclass5"
-store_class_tasks_dict[283] = "storeclass6"
-store_class_tasks_dict[288] = "storeclass7"
-store_class_tasks_dict[291] = "storeclass8"
-store_class_tasks_dict[292] = "storeclass9"
+store_class_tasks_dict[292] = "storeclass5"
+store_class_tasks_dict[278] = "storeclass6"
+store_class_tasks_dict[283] = "storeclass7"
+store_class_tasks_dict[288] = "storeclass8"
+store_class_tasks_dict[291] = "storeclass9"
 store_class_tasks_dict[295] = "storeclass10"
 store_class_tasks_dict[298] = "storeclass11"
 store_class_tasks_dict[340] = "storeclass12"
@@ -272,7 +272,10 @@ def get_and_send_missing_images(pathin):
         try:
             next_store_class = store_class_tasks_dict[int(_class)]
             logging.debug(next_store_class)
-            transfer_data_scp(next_store_class,username,password,source_path, destination_path)
+            if next_store_class in ["storeclass1", "storeclass2", "storeclass3", "storeclass4", "storeclass5"]:
+                transfer_data_scp(next_store_class,username,password,source_path, destination_path)
+            else:
+                logging.debug("Next store class is outside the list of current store classes")
         except Exception as e:
             logging.debug('The predicted item is not available in the stored class')
     return "ok"
