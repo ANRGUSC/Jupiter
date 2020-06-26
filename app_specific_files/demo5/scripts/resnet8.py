@@ -303,6 +303,7 @@ def task(file_, pathin, pathout):
                     print('This does not belong to any classes!!!')
             else: # ret_job_id < 0
                 print("The jobid %s has already been processed by the flask server" % (job_id))
+                print("resnet_finish {} {}".format({f}, time.time()))
                 return [] #slow resnet node: return empty
         except Exception as e:
             print('This might be a black and white image')

@@ -12,11 +12,11 @@ app = Flask('Global_Server')
 ### Krishna
 @app.route('/post-prediction-resnet', methods=['POST'])
 def request_resnet_prediction():
-    print('Receive the prediction from resnet for job id')
     recv = request.get_json()
     job_id = recv['job_id']
     prediction = recv['msg']
     resnet_task_num = recv['resnet_task_num']
+    print('Receive the prediction from resnet for job id', job_id, resnet_task_num)
     ret_val = collagejobs.put_resnet_pred(job_id, prediction, resnet_task_num)
     response = ret_val
     print(collagejobs.job_resnet_preds_dict)
@@ -33,9 +33,9 @@ def request_enough_resnet_preds():
 
 @app.route('/post-predictions-collage', methods=['POST'])
 def request_collage_prediction():
-    print('Receive the prediction from collage for job id')
     recv = request.get_json()
     job_id = recv['job_id']
+    print('Receive the prediction from collage for job id', job_id)
     final_preds = recv['msg']
     collagejobs.put_collage_preds(job_id, final_preds)
     response = job_id
@@ -116,6 +116,7 @@ class collageJobs(object):
     #    return True
     def enough_resnet_preds(self, job_id):
         if self.job_resnet_preds_dict[job_id].count(-1) >= RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
+            print("current count {}, resnets_threshold {}".format(self.job_resnet_preds_dict[job_id].count(-1), RESNETS_THRESHOLD))
             return False
         else:
             return True
