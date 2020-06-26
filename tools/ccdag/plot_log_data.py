@@ -11,7 +11,7 @@ import signal
 # Letters indicate test number (to differentiate from the flags)
 # postfix "sleep" indicates if artificial sleeps are injected in the test
 # examples: "11a", "01a", "01b" "01a-sleep"
-TEST_INDICATORS = "10e-sleep"
+TEST_INDICATORS = "00z-sleep"
 # see how file names are structured in main
 
 def signal_handler(sig, frame):
@@ -32,24 +32,27 @@ def plot_makespan(makespan_log, file_prefix):
     plt.title("{} scatterplot of per-image makespan".format(file_prefix) +
               "\n Average: {}".format(avg_makespan))
     plt.ylabel("seconds")
+    plt.ylim(0, 300)
     plt.tight_layout()
     fig.savefig('figures/{}makespans.png'.format(file_prefix))
 
 
 def plot_comm_times(comm_log, file_prefix):
-
-    master_to_resnet = []
+    datasource_to_master = []
+    master_to_resnet = []   
     resnet_to_storeclass = []
     storeclass_to_lccenc = []
     lccenc_to_score = []
     score_to_preagg = []
     preagg_to_lccdec = []
 
-    source_to_dest = ['master_to_resnet', 'resnet_to_storeclass',
-    'storeclass_to_lccenc', 'lccenc_to_score', 'score_to_preagg', 
-    'preagg_to_lccdec']
+    source_to_dest = ['datasource_to_master', 'master_to_resnet', 
+    'resnet_to_storeclass', 'storeclass_to_lccenc', 'lccenc_to_score', 
+    'score_to_preagg', 'preagg_to_lccdec']
 
     for k, v in comm_log.items():
+        if k[2].startswith('master') and k[1].startswith('datasource'):
+            datasource_to_master.append(v)
         if k[2].startswith('master') and k[1].startswith('resnet'):
             master_to_resnet.append(v)
         if k[2].startswith('resnet') and k[1].startswith('storeclass'):
@@ -132,6 +135,27 @@ def plot_task_timings(task_log, file_prefix):
             score_exec_times.append(float(v[6]))
             score_wait_times.append(float(v[7]))
 
+    # straggling resnet logs don't hit home. manually insert them by parsing 
+    # the raw resnet8 log files
+    try:
+        with open(STRAGGLING_RESNET, 'r') as f:
+            for line in f:
+                if line.startswith('DEBUG:root:rt_enter '):
+                    straggler_arriv_time = line.split()
+                    straggler_arriv_time = float(straggler_arriv_time[-1])
+                if line.startswith('DEBUG:root:rt_enter_task'):
+                    straggler_start_time = line.split()
+                    straggler_start_time = float(straggler_start_time[-1])
+                    straggler_wait_time = straggler_start_time - straggler_arriv_time
+                    resnet_wait_times.append(straggler_wait_time)
+                if line.startswith('resnet_finish '): 
+                # if line.startswith('DEBUG:root:rt_finish '): # use this if krishna's print statements aren't coming out
+                    straggler_finish_time = line.split()
+                    resnet_exec_time = float(straggler_finish_time[-1])  - straggler_start_time
+                    resnet_exec_times.append(float(resnet_exec_time))
+    except FileNotFoundError:
+        print("{} does not exist".format(STRAGGLING_RESNET))
+
     for task in task_and_statistic:
         fig = plt.figure()
         plt.plot(eval(task[0]), '.')
@@ -156,6 +180,8 @@ if __name__ == '__main__':
     COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
     MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)
     TASK_TIMES = "filtered_logs/{}task.log".format(TEST_INDICATORS)
+    STRAGGLING_RESNET = "filtered_logs/{}resnet8.log".format(TEST_INDICATORS)
+    MASTER_SERVICE = "filtered_logs/{}master.log".format(TEST_INDICATORS)
 
     os.makedirs('figures', exist_ok=True)
 
