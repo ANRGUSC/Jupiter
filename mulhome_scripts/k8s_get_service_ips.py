@@ -30,6 +30,9 @@ def get_all_profilers():
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes = utilities.k8s_get_nodes(path1)
 
+    logging.debug('----')
+    logging.debug(nodes)
+
     """
         This loads the kubernetes instance configuration.
         In our case this is stored in admin.conf.

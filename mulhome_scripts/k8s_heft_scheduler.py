@@ -31,6 +31,10 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
         This script deploys HEFT in the system. 
     """
     
+    logging.debug('--------------------')
+    logging.debug(profiler_ips)
+    logging.debug(ex_profiler_ips)
+    logging.debug(node_names)
 
     jupiter_config.set_globals()
 
@@ -46,6 +50,7 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
     dag = dag_info[1]
 
     nodes, homes,datasources,datasinks = utilities.k8s_get_all_elements(path2)
+
     num_total_nodes = len(nodes)+len(homes)
     logging.debug('Number of nodes')
     logging.debug(num_total_nodes)
@@ -108,8 +113,19 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
         home_profiler_ips[key] = profiler_ips[key]
         del node_profiler_ips[key]
 
+
+    logging.debug('---------------')
+    logging.debug(node_profiler_ips)
+    logging.debug(home_profiler_ips)
+    logging.debug(home_ip)
+
+
     profiler_ips_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(node_profiler_ips.items()))
     home_profiler_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(home_profiler_ips.items()))
+
+
+    
+
     
     home_dep = write_heft_specs(name = home_name, label = home_name,
                                 image = jupiter_config.HEFT_IMAGE,

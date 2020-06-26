@@ -95,8 +95,9 @@ def k8s_profiler_scheduler():
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
     path2 = jupiter_config.HERE + 'nodes.txt'
     dag_info = utilities.k8s_read_dag(path1)
-    node_list, homes = utilities.k8s_get_nodes_worker(path2)
-    
+    # node_list, homes = utilities.k8s_get_nodes_worker(path2)
+    node_list, homes,datasources,datasinks = utilities.k8s_get_all_elements(path2)
+
     dag = dag_info[1]
 
     logging.debug('Starting to deploy DRUPE')
@@ -125,6 +126,7 @@ def k8s_profiler_scheduler():
     api = client.CoreV1Api()
     k8s_apps_v1 = client.AppsV1Api()
     nodes = utilities.k8s_get_nodes(path2)
+    
     service_ips = {}; 
 
     """
@@ -182,6 +184,8 @@ def k8s_profiler_scheduler():
     logging.debug(nexthost_ips)
     logging.debug(nexthost_names)
 
+    logging.debug(home_ips)
+    logging.debug(home_ids)
     for i in nodes:
         
         """
