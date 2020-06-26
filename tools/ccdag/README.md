@@ -39,3 +39,15 @@ more readable.
 'Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time', 'Real execution time', 'Prewaiting','Postwaiting'
 
 
+ * time when task() ends and when the process is killed has inconsistent
+   timestamps. sometimes the task ends after the process shuts down?! average of 10% offset
+ * post_waiting time (or proc_shutdown_interval) may be 0. this is forced to 0 when the number is negative.
+ * comm times might be 0
+ * communication times can also be, particularly for final lccdec task.
+ * communication times are all now correct
+ * preagg timestamps are more correct. but it's not 100% sure. all negative values are gone though.
+ * show waiting times are not interesting
+ * for the special case, real execution time (or service time) is only
+
+
+
