@@ -18,4 +18,4 @@ cp sample_input/1botnet.ipsum generated_files/25botnet.ipsum
 echo 'Automatically run the scheduler'
 
 python3 -u profiler_home.py &
-python3 -u keep_alive.py
+sleep infinity
