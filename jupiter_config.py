@@ -13,6 +13,12 @@ import configparser
 
 HERE       = path.abspath(path.dirname(__file__)) + "/"
 INI_PATH   = HERE + 'jupiter_config.ini'
+DOCKER_ORG = "anrg"
+
+def parse_config_ini():
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
+    return config
 
 def get_home_node(file_name):
     with open(file_name) as file:
@@ -172,8 +178,8 @@ def set_globals():
 
     HOME_CHILD                = 'task0'
     APP_PATH                  = HERE  + 'app_specific_files/apacdemo/'
-    APP_NAME                  = 'app_specific_files/apacdemo'
-    APP_OPTION                = 'demo'
+    APP_NAME                  = 'app_specific_files/example_incomplete'
+    APP_OPTION                = 'example'
 
 
     """pricing CIRCE home and worker images"""
@@ -217,8 +223,8 @@ def set_globals():
     global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-    EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s_%s'%(profiler_option,APP_OPTION,cluster_option)
-    EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s_%s'%(profiler_option,APP_OPTION,cluster_option)
+    EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s_%s'%(profiler_option, APP_OPTION, cluster_option)
+    EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s_%s'%(profiler_option, APP_OPTION, cluster_option)
 
     """HEFT docker image"""
     global HEFT_IMAGE
@@ -229,6 +235,28 @@ def set_globals():
     global NUM_STRESS, STRESS_IMAGE
     NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
     STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
+
+def get_ports():
+    """ Returns all ports in jupiter_config.ini """
+    config = parse_config_ini()
+    
+    ports = []
+    for port in config['PORT']:
+        ports.append(config.get('PORT', port))
+
+    return ports
+
+def get_exec_home_tag():
+    set_globals()
+    # TODO: "APP_OPTION" should be changed to "APP_NAME"
+    tag = '{}/exec_profiler_home:{}'.format(DOCKER_ORG, APP_OPTION)
+    return tag
+
+def get_exec_worker_tag():
+    set_globals()
+    # TODO: "APP_OPTION" should be changed to "APP_NAME"
+    tag = '{}/exec_profiler_worker:{}'.format(DOCKER_ORG, APP_OPTION)
+    return tag
 
 if __name__ == '__main__':
     set_globals()
