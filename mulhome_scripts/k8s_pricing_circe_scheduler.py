@@ -961,9 +961,9 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info, profiler_ips, execution_ip
     dag = dag_info[1]
 
     logging.debug('Starting to deploy decoupled CIRCE dispatcher')
+    start_time = time.time()
     if jupiter_config.BOKEH == 3:
         latency_file = utilities.prepare_stat_path(nodes, homes, dag)
-        start_time = time.time()
         msg = 'CIRCE decoupled deploystart %f \n'%(start_time)
         write_file(latency_file, msg)
 
