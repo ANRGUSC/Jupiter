@@ -48,6 +48,7 @@ def get_all_profilers():
             kubectl get pod -n "namespace name"
     """
     for key in nodes:
+        logging.debug(key)
 
         # We have defined the namespace for deployments in jupiter_config
         namespace = jupiter_config.PROFILER_NAMESPACE
