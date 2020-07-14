@@ -30,8 +30,10 @@ import numpy as np
 import psutil
 import paho.mqtt.client as mqtt
 import _thread
-from multiprocessing import Process, Manager
+from multiprocessing import Value, Process, Manager
+import multiprocessing
 import logging
+import math
 
 
 app = Flask(__name__)
@@ -194,7 +196,6 @@ class droplet_measurement():
     def __init__(self):
         self.username   = username
         self.password   = password
-        self.file_size  = [1,10,100,1000,10000]
         self.dir_local  = dir_local
         self.dir_remote = dir_remote
         self.my_host    = None
@@ -227,9 +228,13 @@ class droplet_measurement():
     def do_log_measurement(self):
         """This function pick a random file size, send the file to all of the neighbors and log the transfer time in the local Mongo database.
         """
+        global file_size, cur_idx, num_files
         for idx in range (0, len(self.hosts)):
             self.logging.debug('Probing random messages')
-            random_size = random.choice(self.file_size)
+            
+            random_size = file_size[cur_idx.value]
+            cur_idx.value = (cur_idx.value+1)%num_files
+            
             local_path  = '%s/%s_test_%dK'%(self.dir_local,self.my_host,random_size)
             remote_path = '%s'%(self.dir_remote)  
             # Run the measurement bash script     
@@ -419,19 +424,34 @@ def main():
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
-    global MONGO_DOCKER, FLASK_SVC, FLASK_DOCKER, num_retries, username, password, ssh_port, HOME_IP
+    global MONGO_DOCKER, FLASK_SVC, FLASK_DOCKER, num_retries, username, password, ssh_port, HOME_IP, min_file, max_file
 
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+    min_file = int(math.log10(int(config['OTHER']['MIN_SIZE'])))
+    max_file = int(math.log10(int(config['OTHER']['MAX_SIZE'])))
+
+    global file_size,num_files,cur_idx
+    file_size  = [10**x for x in range(min_file,max_file+1)]
+    num_files  = len(file_size)
+    cur_idx = multiprocessing.Value('i', random.choice([0,num_files]))
+
     retry       = 1
+    dir_local   = "generated_test"
+    dir_remote  = "networkprofiling/received_test"
+    dir_remote_central = "/network_profiling/parameters"
+    dir_scheduler      = "scheduling/scheduling.txt"
 
 
     MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
     MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
     FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+
+
+
 
     HOME_IP = os.environ["HOME_IP"]
 
