@@ -317,10 +317,6 @@ def update_exec_profile_file():
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
 
-    if BOKEH==3:    
-        topic = 'msgoverhead_%s'%(self_name)
-        msg = 'msgoverhead priceevent compute%s updateexec %d\n'%(self_name,c)
-        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     return
 
 
@@ -361,10 +357,6 @@ def get_updated_network_profile():
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c+=1
-        if BOKEH==3:    
-            topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceevent compute%s updatenetwork %d\n'%(self_name,c)
-            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return network_info
     except Exception as e:
         logging.debug("Network request failed. Will try again, details: %s",str(e))
@@ -383,10 +375,6 @@ def get_updated_resource_profile():
             for record in logging:
                 resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
-        if BOKEH==3:    
-            topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceevent compute%s updateresource %d\n'%(self_name,len(resource_info))
-            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return resource_info
     except Exception as e:
         logging.debug("Resource request failed. Will try again, details: %s",str(e))

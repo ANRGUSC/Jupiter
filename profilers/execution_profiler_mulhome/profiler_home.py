@@ -374,10 +374,12 @@ def main():
 
 
     if BOKEH==3:
-        msg = 'msgoverhead executionprofiler sendsample %d\n'%(len(profilers_ips))
-        demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
-        msg = 'msgoverhead executionprofiler startprofiler %d\n'%(len(profilers_ips))
-        demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
+        fsize = os.stat(ptFile).st_size
+        topic = 'msgoverhead_exechome'
+        msg = 'msgoverhead exechome files %d %d'%(fsize,len(profilers_ips))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+        msg = 'msgoverhead exechome requests startprofiler %d'%(fsize,len(profilers_ips))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
 

@@ -327,7 +327,7 @@ def send_assignment_info(node_ip,task_name,best_node):
         res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceintegrated %s updatebest 1\n'%(self_name)
+            msg = 'msgoverhead priceintegrated compute%s updatebest 1\n'%(self_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
@@ -360,7 +360,7 @@ def push_assignment_map():
         localmappingtime = time.time()-starttime
         if BOKEH==3:    
             topic = 'mappinglatency_%s'%(appoption)
-            msg = 'mappinglatency priceintegrated compute%s %s %f\n'%(self_name,appname,localmappingtime)
+            msg = 'mappinglatency priceintegrated %s localcompute%s %f\n'%(appname,self_name,localmappingtime)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
             starttime = time.time()
 
@@ -428,7 +428,7 @@ def update_global_assignment():
 
     if BOKEH==3:    
         topic = 'mappinglatency_%s'%(appoption)
-        msg = 'mappinglatency priceintegrated compute%s %s %f\n'%(self_name,appname,globalmappingtime)
+        msg = 'mappinglatency priceintegrated %s globalcompute%s %f\n'%(appname, self_name,globalmappingtime)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def receive_assignment_info():
@@ -484,10 +484,7 @@ def update_exec_profile_file():
     with open('execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
-    if BOKEH==3:    
-        topic = 'msgoverhead_%s'%(self_name)
-        msg = 'msgoverhead priceintegrated compute%s updateexec %d\n'%(self_name,c)
-        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+    
     return
 
 
@@ -537,10 +534,6 @@ def get_updated_network_profile():
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c = c+1
         logging.debug('Retrieve network information')
-        if BOKEH==3:    
-            topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceintegrated compute%s updatenetwork %d\n'%(self_name,c)
-            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return network_info
     except Exception as e:
         logging.debug("Network request failed. Will try again, details: %s",str(e))
@@ -562,10 +555,6 @@ def get_updated_resource_profile():
                 resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
         logging.debug("Resource profiles: %s", resource_info)
-        if BOKEH==3:    
-            topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceintegrated compute%s updateresource %d\n'%(self_name,len(resource_info))
-            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         return resource_info
     except Exception as e:
         logging.debug("Resource request failed. Will try again, details: %s",str(e))

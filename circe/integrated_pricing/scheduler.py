@@ -145,7 +145,7 @@ def send_assignment_info(node_ip,task_name,best_node):
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:    
-            msg = 'msgoverhead priceintegrated %s updatebest 1\n'%(my_id)
+            msg = 'msgoverhead priceintegrated home updatebest 1\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,'msgoverhead_home',msg)
     except Exception as e:
         logging.debug("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
@@ -178,7 +178,7 @@ def push_assignment_map():
         localmappingtime = time.time()-starttime
         if BOKEH==3:    
             topic = 'mappinglatency_%s'%(appoption)
-            msg = 'mappinglatency priceintegrated home %s %f\n'%(appname,localmappingtime)
+            msg = 'mappinglatency priceintegrated %s localhome %f\n'%(appname,localmappingtime)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
             
         for computing_ip in all_computing_ips:
@@ -218,7 +218,7 @@ def update_global_assignment():
         globalmappingtime = time.time()-starttime
         if BOKEH==3:    
             topic = 'mappinglatency_%s'%(appoption)
-            msg = 'mappinglatency priceintegrated %s %f\n'%(appname,globalmappingtime)
+            msg = 'mappinglatency priceintegrated %s globalhome %f\n'%(appname,globalmappingtime)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug('Local task node mapping not yet available')
@@ -383,10 +383,6 @@ def get_updated_network_profile():
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c = c+1
-        
-        if BOKEH==3:
-            msg = 'msgoverhead priceintegrated %s networkdata %d\n'%(my_id,c)
-            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
 
         return network_info
     except Exception as e:
@@ -597,7 +593,7 @@ def announce_input(input_file, input_time):
             res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_home'
-            msg = 'msgoverhead priceintegrated computehome announceinput %d\n'%(len(all_compute_host))
+            msg = 'msgoverhead priceintegrated home announceinput %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug('Announce input files to compute nodes failed')

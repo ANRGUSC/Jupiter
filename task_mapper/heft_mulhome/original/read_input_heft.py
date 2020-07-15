@@ -36,14 +36,6 @@ app = Flask(__name__)
 network_info = []
 execution_info = []
 
-def demo_help(server,port,topic,msg):
-    username = 'anrgusc'
-    password = 'anrgusc'
-    client = mqtt.Client()
-    client.username_pw_set(username,password)
-    client.connect(server, port,300)
-    client.publish(topic, msg,qos=1)
-    client.disconnect()
 
 def get_global_info():
     """Get all information of profilers (network profilers, execution profilers)
@@ -114,9 +106,6 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
 
-    if BOKEH==3:
-        msg = 'msgoverhead originalhefthome executiondata %d\n'%(c)
-        demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     return
 
 
@@ -180,11 +169,6 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
     with open('/heft/network_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(network_info)
-
-    if BOKEH==3:
-        n = len(profiler_ip)*num_nb
-        msg = 'msgoverhead originalhefthome networkdata %d\n'%(n)
-        demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
 
     return
 

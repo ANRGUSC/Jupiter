@@ -244,7 +244,7 @@ def announce_mapping_to_homecompute():
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:
-            msg = 'msgoverhead pricedecoupled controllerhome announcehomecompute 1 \n'
+            msg = 'msgoverhead pricedecoupled controllerhome requests_announcecompute 1 \n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         logging.debug('Announce full mapping to compute home node failed')
@@ -274,7 +274,7 @@ def restart_mapping_process():
     for node in nodes:
         trigger_restart(nodes[node])
     if BOKEH==3:
-        msg = 'msgoverhead pricedecoupled controllerhome triggerrestart %d\n'%(len(nodes))
+        msg = 'msgoverhead pricedecoupled controllerhome requests_restart %d\n'%(len(nodes))
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     logging.debug('Send the first task to the first node')
     _thread.start_new_thread(init_thread, ())
@@ -301,7 +301,7 @@ def assign_task_to_remote(assigned_node, task_name):
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:
-            msg = 'msgoverhead pricedecoupled controllerhome assignfirst 1 \n'
+            msg = 'msgoverhead pricedecoupled controllerhome requests_assignfirst 1 \n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         logging.debug(e)
@@ -342,7 +342,7 @@ def monitor_task_status(starting_time):
             logging.debug('Time to finish WAVE mapping %s',str(deploy_time))
             if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)
-                msg = 'mappinglatency pricedecoupled controllerhome %s %f \n' %(app_name,deploy_time)
+                msg = 'mappinglatency pricedecoupled %s controllerhome %f \n' %(app_name,deploy_time)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
             logging.debug("Announce assignment information to the compute home node")
@@ -403,10 +403,6 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
 
-    if BOKEH==3:
-        topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead pricedecoupled controllerhome%s networkdata %d \n' %(node_name,num_nb)
-        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def profilers_mapping_decorator(f):
     """General Mapping decorator function
@@ -433,10 +429,6 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
     global is_resource_data_ready
     is_resource_data_ready = True
 
-    if BOKEH==3:
-        topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead pricedecoupled controllerhome%s resourcedata %d \n' %(node_name,len(profiler_ips))
-        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def get_network_data_mapping():
     """Mapping the chosen TA2 module (network monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``

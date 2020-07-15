@@ -185,6 +185,10 @@ class droplet_measurement():
             bash_script = self.measurement_script + " " +self.username + "@" + self.hosts[idx]
             bash_script = bash_script + " " + str(random_size)
 
+            topic = 'msgoverhead_%s'%(SELF_NAME)
+            msg = 'msgoverhead drupenode%s files %d 1'%(SELF_NAME, random_size)
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
             proc = subprocess.Popen(bash_script, shell = True, stdout = subprocess.PIPE)
             tmp = proc.stdout.read().strip().decode("utf-8")
             results = tmp.split(" ")[1]

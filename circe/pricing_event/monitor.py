@@ -165,7 +165,7 @@ def default_best_node(source_node):
         mappinglatency = time.time() - starttime   
         if BOKEH==3:    
             topic = 'mappinglatency_%s'%(app_option)
-            msg = 'mappinglatency priceevent controller%s %s %f\n'%(self_task,app_name,mappinglatency)
+            msg = 'mappinglatency priceevent %s controller%s %f\n'%(app_name, self_task,mappinglatency)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     else:
         logging.debug('Task price summary is not ready yet.....') 

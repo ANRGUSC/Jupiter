@@ -406,7 +406,7 @@ def main():
     
     num_samples_files = 2
     num_runs = 1
-    num_dags_list = [5]
+    num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]
     for num_dags in num_dags_list:
         temp = app_name

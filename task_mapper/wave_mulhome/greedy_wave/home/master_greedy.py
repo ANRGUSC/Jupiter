@@ -263,8 +263,8 @@ def assign_task_to_remote(assigned_node, task_name):
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:
-            msg = 'msgoverhead greedywavehome assignfirst 1 \n'
-            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
+            msg = 'msgoverhead greedywavehome requests assignfirst 1 \n'
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_greedywavehome",msg)
     except Exception as e:
         logging.debug(e)
         return "not ok"
@@ -305,7 +305,7 @@ def monitor_task_status():
             logging.debug('Time to finish WAVE mapping '+ str(deploy_time))
             if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)
-                msg = 'mappinglatency greedywave %s %f \n' %(app_name,deploy_time)
+                msg = 'mappinglatency %s %s greedywave %f \n' %(app_option,app_name,deploy_time)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
             break
         time.sleep(5)
@@ -357,10 +357,6 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
 
-    if BOKEH==3:
-        topic = 'msgoverhead_home'
-        msg = 'msgoverhead greedywave%s networkdata %d \n' %('home',len(myneighbors))
-        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def profilers_mapping_decorator(f):
     """General Mapping decorator function
@@ -387,10 +383,6 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
     global is_resource_data_ready
     is_resource_data_ready = True
 
-    if BOKEH==3:
-        topic = 'msgoverhead_home'
-        msg = 'msgoverhead greedywave%s resourcedata %d \n' %('home',len(profiler_ips))
-        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
 
