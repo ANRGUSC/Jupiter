@@ -214,7 +214,7 @@ def announce_best_assignment(home_id,best_node, source_node, file_name,source_ke
 
         if BOKEH==3:    
             topic = 'msgoverhead_controller%s'%(self_task)
-            msg = 'msgoverhead priceevent controller%s announcebest %s 1\n'%(self_task,source_node)
+            msg = 'msgoverhead priceevent controller%s requests_announcebest 1\n'%(self_task)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug("Sending assignment information to flask server on computing nodes FAILED!!!")
@@ -242,7 +242,7 @@ def push_controller_map():
         send_controller_info(computing_ip)
     if BOKEH==3:    
         topic = 'msgoverhead_controller%s'%(self_task)
-        msg = 'msgoverhead priceevent controller%s pushcontroller %d \n'%(self_task,len(all_computing_ips))
+        msg = 'msgoverhead priceevent controller%s requests_pushcontroller %d \n'%(self_task,len(all_computing_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 class TimedValue:

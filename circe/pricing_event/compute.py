@@ -478,7 +478,8 @@ def push_updated_price():
 
     if BOKEH==3:    
         topic = 'msgoverhead_%s'%(self_name)
-        msg = 'msgoverhead priceevent compute%s pushprice %d\n'%(self_name,len(task_controllers))
+        msg = 'msgoverhead priceevent compute%s requests_pushprice %d\n'%(self_name,len(task_controllers))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
     
 def schedule_update_price(interval):
@@ -611,6 +612,8 @@ def send_runtime_profile_computingnode(msg,task_name,home_id):
         res = urllib.request.urlopen(req)
         res = res.read()
         res = res.decode('utf-8')
+
+        
     except Exception as e:
         logging.debug("Sending runtime profiling info to flask server on home FAILED!!!")
         logging.debug(e)
@@ -663,7 +666,7 @@ def request_best_assignment(home_id,task_name,file_name):
 
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceevent compute%s requestbest 1\n'%(self_name)
+            msg = 'msgoverhead priceevent compute%s requests_best 1\n'%(self_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
     except Exception as e:

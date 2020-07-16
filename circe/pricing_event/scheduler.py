@@ -96,7 +96,7 @@ def request_best_assignment(home_id,task_name,file_name):
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:    
-            msg = 'msgoverhead priceevent home requestbest 1 %s %s\n'%(home_id,task_name)
+            msg = 'msgoverhead priceevent home requests_best 1 \n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         logging.debug("Sending assignment request to flask server on controller node FAILED!!!")
@@ -286,10 +286,7 @@ def get_updated_resource_profile():
             resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
     logging.debug("Resource profiles: %s", resource_info)
-    if BOKEH==3:    
-        topic = 'msgoverhead_%s'%(self_name)
-        msg = 'msgoverhead priceevent compute%s updateresource %d\n'%(self_name,len(resource_info))
-        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+    
     return resource_info
     
 def get_updated_network_profile():
@@ -316,9 +313,6 @@ def get_updated_network_profile():
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
             c=c+1
         
-        if BOKEH==3:
-            msg = 'msgoverhead priceevent home networkdata %d\n'%(c)
-            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
         return network_info
     except Exception as e:
         logging.debug("Network request failed. Will try again, details: %s",str(e))
@@ -402,7 +396,7 @@ def announce_price(task_controller_ip, price):
         res = res.decode('utf-8')
 
         if BOKEH==3:
-            msg = 'msgoverhead priceevent home announceprice %d\n'%(len(price['network']))
+            msg = 'msgoverhead priceevent home requests_pushprice %d\n'%(len(price['network']))
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         logging.debug("Sending price message to flask server on controller node FAILED!!!")

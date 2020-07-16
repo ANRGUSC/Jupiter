@@ -145,7 +145,7 @@ def send_assignment_info(node_ip,task_name,best_node):
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:    
-            msg = 'msgoverhead priceintegrated home updatebest 1\n'
+            msg = 'msgoverhead priceintegrated home requests_updatebest 1\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,'msgoverhead_home',msg)
     except Exception as e:
         logging.debug("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")

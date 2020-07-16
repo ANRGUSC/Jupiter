@@ -327,7 +327,7 @@ def send_assignment_info(node_ip,task_name,best_node):
         res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceintegrated compute%s updatebest 1\n'%(self_name)
+            msg = 'msgoverhead priceintegrated compute%s requests_updatebest 1\n'%(self_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
@@ -766,7 +766,7 @@ def announce_price(price):
 
             if BOKEH==3:    
                 topic = 'msgoverhead_%s'%(self_name)
-                msg = 'msgoverhead priceintegrated compute%s updateprice 1\n'%(self_name)
+                msg = 'msgoverhead priceintegrated compute%s requests_updateprice 1\n'%(self_name)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         except Exception as e:
             logging.debug("Sending price message to flask server on other compute nodes FAILED!!!")

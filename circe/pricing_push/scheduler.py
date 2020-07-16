@@ -89,7 +89,7 @@ def announce_input(input_file, input_time):
             res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_home'
-            msg = 'msgoverhead pricepush home announceinput %d\n'%(len(all_compute_host))
+            msg = 'msgoverhead pricepush home requests_announceinput %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug('Announce input files to compute nodes failed')
@@ -335,10 +335,6 @@ def get_updated_network_profile():
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             network_info[ip_profilers_map[record['Destination[IP]']]] = str(record['Parameters'])
 
-        
-        if BOKEH==3:
-            msg = 'msgoverhead pricepush home networkdata %d\n'%(c)
-            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
 
         return network_info
     except Exception as e:
@@ -424,7 +420,7 @@ def announce_price(task_controller_ip, price):
         res = res.decode('utf-8')
 
         if BOKEH==3:
-            msg = 'msgoverhead pricepush home announceprice %d\n'%(len(price['network']))
+            msg = 'msgoverhead pricepush home requests_announceprice %d\n'%(len(price['network']))
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         logging.debug("Sending price message to flask server on controller node FAILED!!!")
