@@ -593,7 +593,7 @@ def announce_input(input_file, input_time):
             res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_home'
-            msg = 'msgoverhead priceintegrated home announceinput %d\n'%(len(all_compute_host))
+            msg = 'msgoverhead priceintegrated home requests_announceinput %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug('Announce input files to compute nodes failed')

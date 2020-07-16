@@ -105,7 +105,7 @@ def announce_mapping_to_workers():
             res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_home'
-            msg = 'msgoverhead pricedecoupled computehome announcemapping %d\n'%(len(all_compute_host))
+            msg = 'msgoverhead pricedecoupled computehome requests_announcemapping %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug('Announce full mapping to compute home node failed')
@@ -304,7 +304,7 @@ def announce_input(input_file, input_time):
             res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_home'
-            msg = 'msgoverhead pricedecoupled computehome announceinput %d\n'%(len(all_compute_host))
+            msg = 'msgoverhead pricedecoupled computehome requests_announceinput %d\n'%(len(all_compute_host))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug('Announce input files to compute nodes failed')
