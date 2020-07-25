@@ -293,11 +293,11 @@ def delete_all_decoupled_pricing_circe(app_name):
     nodes = k8s_get_nodes(path2)
 
     logging.debug('Starting to teardown decoupled pricing CIRCE')
-    # if jupiter_config.BOKEH == 3:
-    #     latency_file = utilities.prepare_stat_path(nodes,[],dag)
-    #     start_time = time.time()
-    #     msg = 'PRICEintegrated teardownstart %f \n'%(start_time)
-    #     write_file(latency_file,msg)
+    if jupiter_config.BOKEH == 3:
+        latency_file = utilities.prepare_stat_path(nodes,[],dag)
+        start_time = time.time()
+        msg = 'PRICEintegrated teardownstart %f \n'%(start_time)
+        write_file(latency_file,msg)
 
     """
         This loads the kubernetes instance configuration.
