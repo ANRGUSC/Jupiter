@@ -378,7 +378,7 @@ def main():
         topic = 'msgoverhead_exechome'
         msg = 'msgoverhead exechome files %d %d'%(fsize,len(profilers_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
-        msg = 'msgoverhead exechome requests startprofiler %d'%(fsize,len(profilers_ips))
+        msg = 'msgoverhead exechome requests startprofiler %d'%(len(profilers_ips))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
