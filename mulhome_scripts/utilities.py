@@ -231,7 +231,7 @@ def k8s_get_nodes_homes_string(node_info_file):
   return nodes,homes
 
 def prepare_stat_path(node_list,homes,dag):
-    stat_path = 'stats/'
+    stat_path = '../users/stats/'
     Path(stat_path).mkdir(parents=True, exist_ok=True)
     latency_path = os.path.join(stat_path,'summary_latency')
     Path(latency_path).mkdir(parents=True, exist_ok=True)
