@@ -208,7 +208,7 @@ def assign_task_to_remote(assigned_node, task_name):
             topic = 'msgoverhead_%s'%(node_name)
             msg = 'msgoverhead greedywave%s requests %s 1\n' %(node_name,task_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
-    except Exception:s
+    except Exception as e:
         return "not ok"
     return res
 
