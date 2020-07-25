@@ -42,16 +42,16 @@ def delete_all_pricing_circe(app_name):
     nodes = k8s_get_nodes(path2)
 
     logging.debug('Starting to teardown pricing CIRCE')
-    if jupiter_config.BOKEH == 3:
-        latency_file = utilities.prepare_stat_path(nodes,[],dag)
-        start_time = time.time()
-        if jupiter_config.PRICING == 1:
-            msg = 'PRICEpush teardownstart %f \n'%(start_time)
-        elif jupiter_config.PRICING == 2:
-            msg = 'PRICEevent teardownstart %f \n'%(start_time)
-        elif jupiter_config.PRICING == 4:
-            msg = 'PRICEdecoupled teardownstart %f \n'%(start_time)
-        write_file(latency_file,msg)
+    # if jupiter_config.BOKEH == 3:
+    #     latency_file = utilities.prepare_stat_path(nodes,[],dag)
+    #     start_time = time.time()
+    #     if jupiter_config.PRICING == 1:
+    #         msg = 'PRICEpush teardownstart %f \n'%(start_time)
+    #     elif jupiter_config.PRICING == 2:
+    #         msg = 'PRICEevent teardownstart %f \n'%(start_time)
+    #     elif jupiter_config.PRICING == 4:
+    #         msg = 'PRICEdecoupled teardownstart %f \n'%(start_time)
+    #     write_file(latency_file,msg)
 
 
     """
@@ -264,17 +264,17 @@ def delete_all_pricing_circe(app_name):
         delete_all_waves(app_name)
 
     logging.debug('Successfully teardown pricing CIRCE ')
-    if jupiter_config.BOKEH == 3:
-        end_time = time.time()
-        if jupiter_config.PRICING == 1:
-            msg = 'PRICEpush teardownend %f \n'%(start_time)
-        elif jupiter_config.PRICING == 2:
-            msg = 'PRICEevent teardownend %f \n'%(start_time)
-        elif jupiter_config.PRICING == 4:
-            msg = 'PRICEdecoupled teardownend %f \n'%(start_time)
-        write_file(latency_file,msg)
-        teardown_time = end_time - start_time
-        logging.debug('Time to teardown CIRCE'+ str(teardown_time))  
+    # if jupiter_config.BOKEH == 3:
+    #     end_time = time.time()
+    #     if jupiter_config.PRICING == 1:
+    #         msg = 'PRICEpush teardownend %f \n'%(start_time)
+    #     elif jupiter_config.PRICING == 2:
+    #         msg = 'PRICEevent teardownend %f \n'%(start_time)
+    #     elif jupiter_config.PRICING == 4:
+    #         msg = 'PRICEdecoupled teardownend %f \n'%(start_time)
+    #     write_file(latency_file,msg)
+    #     teardown_time = end_time - start_time
+    #     logging.debug('Time to teardown CIRCE'+ str(teardown_time))  
 
 
 def delete_all_decoupled_pricing_circe(app_name):
@@ -293,11 +293,11 @@ def delete_all_decoupled_pricing_circe(app_name):
     nodes = k8s_get_nodes(path2)
 
     logging.debug('Starting to teardown decoupled pricing CIRCE')
-    if jupiter_config.BOKEH == 3:
-        latency_file = utilities.prepare_stat_path(nodes,[],dag)
-        start_time = time.time()
-        msg = 'PRICEintegrated teardownstart %f \n'%(start_time)
-        write_file(latency_file,msg)
+    # if jupiter_config.BOKEH == 3:
+    #     latency_file = utilities.prepare_stat_path(nodes,[],dag)
+    #     start_time = time.time()
+    #     msg = 'PRICEintegrated teardownstart %f \n'%(start_time)
+    #     write_file(latency_file,msg)
 
     """
         This loads the kubernetes instance configuration.

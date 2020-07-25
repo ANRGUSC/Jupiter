@@ -44,6 +44,7 @@ def delete_all_profilers():
     logging.debug('Starting to teardown DRUPE')
     if jupiter_config.BOKEH == 3:
         latency_file = utilities.prepare_stat_path(nodes,[],dag)
+        print(latency_file)
         start_time = time.time()
         msg = 'DRUPE teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)
