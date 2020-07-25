@@ -104,7 +104,7 @@ if __name__ == '__main__':
     tasks,tasksid = retrieve_tasks(DAG_PATH)
     M = len(tasks)
 
-    main_folder = '../stats/exp8_data'
+    main_folder = 'stats/exp8_data'
     folder_list= ['makespan','msg_overhead','power_overhead','mapping_latency','summary_latency']
     try:
         os.mkdir(main_folder)
