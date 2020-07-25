@@ -102,6 +102,7 @@ def k8s_profiler_scheduler():
     logging.debug('Starting to deploy DRUPE')
     if jupiter_config.BOKEH == 3:
         latency_file = utilities.prepare_stat_path(node_list,homes,dag)
+        print(latency_file)
         start_time = time.time()
         msg = 'DRUPE deploystart %f \n'%(start_time)
         write_file(latency_file,msg,'w')
