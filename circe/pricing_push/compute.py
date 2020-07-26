@@ -796,6 +796,10 @@ class Handler1(pyinotify.ProcessEvent):
                     logging.debug('Not yet loaded assignment')
                     time.sleep(1)
 
+            logging.debug('Already loaded assignments')
+            logging.debug(task_node_map)
+
+
             logging.debug('Loaded all required assignment')
             next_hosts =  [task_node_map[x,mapping_input_id[(home_id,input_name)]] for x in next_tasks_map[task_name]]
 
