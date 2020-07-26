@@ -266,37 +266,37 @@ def send_assignment_info(node_ip):
         logging.debug(e)
         return "not ok"
 
-# def update_assignment_info_to_child(node_ip):
-#     """Update my current best compute node to my children tasks
+def update_assignment_info_to_child(node_ip):
+    """Update my current best compute node to my children tasks
     
-#     Args:
-#         node_ip (str): IP of my children task
-#     """
-#     try:
-#         logging.debug("Announce my current best computing node to children %s",node_ip)
-#         url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_assignment_info_child"
-#         assignment_info = self_task + "#"+task_node_map[self_task]
-#         params = {'assignment_info': assignment_info}
-#         params = urllib.parse.urlencode(params)
-#         req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
-#         res = urllib.request.urlopen(req)
-#         res = res.read()
-#         res = res.decode('utf-8')
-#     except Exception as e:
-#         logging.debug("Sending assignment message to flask server on child controller nodes FAILED!!!")
-#         logging.debug(e)
-#         return "not ok"
+    Args:
+        node_ip (str): IP of my children task
+    """
+    try:
+        logging.debug("Announce my current best computing node to children %s",node_ip)
+        url = "http://" + node_ip + ":" + str(FLASK_SVC) + "/update_assignment_info_child"
+        assignment_info = self_task + "#"+task_node_map[self_task]
+        params = {'assignment_info': assignment_info}
+        params = urllib.parse.urlencode(params)
+        req = urllib.request.Request(url='%s%s%s' % (url, '?', params))
+        res = urllib.request.urlopen(req)
+        res = res.read()
+        res = res.decode('utf-8')
+    except Exception as e:
+        logging.debug("Sending assignment message to flask server on child controller nodes FAILED!!!")
+        logging.debug(e)
+        return "not ok"
 
-# def announce_best_assignment_to_child():
-#     """Announce my current best assignment to all my children tasks
-#     """
-#     logging.debug('Announce best assignment to my children')
-#     for child_ip in child_nodes_ip_dag:
-#         update_assignment_info_to_child(child_ip)   
-#     if BOKEH==3:    
-#         topic = 'msgoverhead_controller%s'%(self_task)
-#         msg = 'msgoverhead pricepush controller%s requests_sendassignmentchild %d\n'%(self_task,len(child_nodes_ip_dag))
-#         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+def announce_best_assignment_to_child():
+    """Announce my current best assignment to all my children tasks
+    """
+    logging.debug('Announce best assignment to my children')
+    for child_ip in child_nodes_ip_dag:
+        update_assignment_info_to_child(child_ip)   
+    if BOKEH==3:    
+        topic = 'msgoverhead_controller%s'%(self_task)
+        msg = 'msgoverhead pricepush controller%s requests_sendassignmentchild %d\n'%(self_task,len(child_nodes_ip_dag))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def push_first_assignment_map():
     """Waiting for the first assignment
@@ -308,8 +308,8 @@ def push_first_assignment_map():
     
     logging.debug('Sucessfully assign the first best computing node')
     update_best_node()
-    # if 'home' not in child_nodes:
-    #     announce_best_assignment_to_child()
+    if 'home' not in child_nodes:
+        announce_best_assignment_to_child()
 
 def push_assignment_map():
     """Update assignment periodically
@@ -317,8 +317,8 @@ def push_assignment_map():
     logging.debug('Updated assignment periodically')
     default_best_node()
     update_best_node()
-    # if 'home' not in child_nodes:
-    #     announce_best_assignment_to_child()
+    if 'home' not in child_nodes:
+        announce_best_assignment_to_child()
 
 def schedule_update_assignment(interval):
     """
