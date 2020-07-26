@@ -792,6 +792,8 @@ class Handler1(pyinotify.ProcessEvent):
             logging.debug('----- next step is not home')
             for next_task in next_tasks_map[task_name]:
                 next_key = (next_task,mapping_input_id[(home_id,input_name)])
+                logging.debug(next_key)
+                logging.debug(task_node_map)
                 while next_key not in task_node_map:
                     logging.debug('Not yet loaded assignment')
                     time.sleep(1)
