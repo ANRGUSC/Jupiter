@@ -139,6 +139,9 @@ def default_best_node():
     best_node = -1
     task_price_network= dict()
     temp_parents = [x for x in last_tasks_map[self_task] if x not in super_tasks]
+    logging.debug(self_task)
+    logging.debug(last_tasks_map)
+    logging.debug(temp_parents)
     
     if temp_parents[0] not in task_node_map:
         logging.debug('Parent tasks not available yet!!!!')
