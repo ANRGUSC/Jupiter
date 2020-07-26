@@ -794,9 +794,11 @@ class Handler1(pyinotify.ProcessEvent):
                 next_key = (next_task,mapping_input_id[(home_id,input_name)])
                 logging.debug(next_key)
                 logging.debug(task_node_map)
+                logging.debug(task_node_map.keys())
                 while next_key not in task_node_map:
                     logging.debug('Not yet loaded assignment')
                     time.sleep(1)
+                logging.debug('Yeah')
 
             logging.debug('Already loaded assignments')
             logging.debug(task_node_map)
