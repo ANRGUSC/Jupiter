@@ -274,7 +274,7 @@ def restart_mapping_process():
     for node in nodes:
         trigger_restart(nodes[node])
     if BOKEH==3:
-        msg = 'msgoverhead pricedecoupled controllerhome requests_restart %d\n'%(len(nodes))
+        msg = 'msgoverhead pricedecoupled controllerhome requests_restart %d \n'%(len(nodes))
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     logging.debug('Send the first task to the first node')
     _thread.start_new_thread(init_thread, ())
