@@ -87,7 +87,7 @@ def delete_all_circe(app_name):
         pod_name = ""
         if(key.find('-') == -1):
             pod_name = app_name
-        else
+        else:
             pod_name = app_name+"-"+key
 
         # First check if there is a deployment existing with
