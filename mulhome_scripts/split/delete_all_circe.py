@@ -77,18 +77,13 @@ def delete_all_circe(app_name):
     """
     comb = []
     for key in dag:
-        comb.append(key)
         for i in range(1, node_num+2):
             comb.append(key+'-'+str(i))
         
     for key in comb:
 
         print(key)
-        pod_name = ""
-        if(key.find('-') == -1):
-            pod_name = app_name
-        else
-            pod_name = app_name+"-"+key
+        pod_name = app_name+"-"+key
 
         # First check if there is a deployment existing with
         # the name = key in the respective namespace
