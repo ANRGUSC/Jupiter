@@ -32,7 +32,7 @@ import numpy as np
 from collections import defaultdict
 import paho.mqtt.client as mqtt
 import jupiter_config
-
+import random
 import pyinotify
 
 
@@ -222,7 +222,9 @@ def transfer_data_scp(ID,user,pword,source, destination):
     while retry < num_retries:
         try:
             nodeIP = combined_ip_map[ID]
+            print(nodeIP)
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
+            print(cmd)
             os.system(cmd)
             print('data transfer complete\n')
             ts = time.time()
@@ -265,7 +267,6 @@ class MyHandler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
     """
 
-
     def process_IN_CLOSE_WRITE(self, event):
         """On every node, whenever there is scheduling information sent from the central network profiler:
             - Connect the database
@@ -302,10 +303,10 @@ class MyHandler(pyinotify.ProcessEvent):
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
+
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
     """
-
 
     def process_IN_CLOSE_WRITE(self, event):
         """On every node, whenever there is scheduling information sent from the central network profiler:
@@ -332,15 +333,48 @@ class Handler(pyinotify.ProcessEvent):
         start_times[inputfile] = t
         new_file_name = os.path.split(event.pathname)[-1]
 
-
-        #This part should be optimized to avoid hardcoding IP, user and password
-        #of the first task node
+        # This part should be optimized to avoid hardcoding IP, user and password
+        # of the first task node
         # IP = os.environ['CHILD_NODES_IPS']
-        ID = os.environ['CHILD_NODES']
+        # With split, example ENVs on CIRCE home node
+        # CHILD_NODES=task0-1/0.158:task0-2/0.363:task0-3/0.479
+        # CHILD_NODES_IPS=10.102.129.178/0.158:10.99.13.47/0.363:10.106.166.88/0.479
+        # for now only support one child node on home node
+        child_nodes = os.environ['CHILD_NODES']
         source = event.pathname
+        print("child_nodes")
+        print(child_nodes)
+        ID = self.random_select(child_nodes)
         destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
+        print(ID, destination)
         transfer_data(ID,username, password,source, destination)
-
+              
+    def random_select(self, child_nodes):
+        
+        # CHILD_NODES=task0-1/0.158:task0-2/0.363:task0-3/0.479
+        tmp = child_nodes.split(':')
+        tasks = []
+        probs = []
+        for var in tmp:
+            tasks.append(var.split('/')[0])
+            probs.append(var.split('/')[1])
+        if len(probs) == 1:
+            return tasks[0]
+        chosen_task = ""
+        rand = random.randint(1, 1000)
+        probs = [1000*float(v) for v in probs]
+        for k in range(len(probs)-1):
+            probs[k+1] = probs[k] + probs[k+1]
+        probs[len(probs)-1] = 1000
+        if rand <= probs[0]:
+            chosen_task = tasks[0]
+        else:
+            for k in range(len(probs)-1):
+                if rand > probs[k] and rand <= probs[k+1]:
+                    chosen_task = tasks[k+1]
+        return chosen_task
+        
+            
 def main():
     """
         -   Read configurations (DAG info, node info) from ``nodes.txt`` and ``configuration.txt``
@@ -390,12 +424,33 @@ def main():
 
     global combined_ip_map
     combined_ip_map = dict()
-    combined_ip_map[os.environ['CHILD_NODES']]= os.environ['CHILD_NODES_IPS']
+    #{'task0-1/0.159:task0-2/0.364:task0-3/0.477': '10.107.147.223/0.159:10.96.120.197/0.364:10.100.198.217/0.477'
+    child_names = os.environ['CHILD_NODES'].split(':')
+    child_names = [name.split('/')[0] for name in child_names]
+    child_ips = os.environ['CHILD_NODES_IPS'].split(':')
+    child_ips = [ip.split('/')[0] for ip in child_ips]
+    for i in range(len(child_names)):
+        combined_ip_map[child_names[i]] = child_ips[i] 
 
     path1 = 'configuration.txt'
     path2 = 'nodes.txt'
     dag_info = read_config(path1,path2)
-
+    """
+    example output:
+    [
+        'task0', 
+         {
+             'task0': ['1', 'true', 'task1', 'task2'], 
+             'task1': ['1', 'true', 'task3'], 
+             'task3': ['2', 'true', 'home'], 
+             'task2': ['1', 'true', 'task3']
+         }, 
+         {
+             'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01']
+         }
+    ]
+    """
+    
     global manager
     manager = Manager()
 
@@ -413,24 +468,6 @@ def main():
     rt_exec_time = defaultdict(list)
     rt_finish_time = defaultdict(list)
 
-    """
-    DAG info: something like this
-    [
-    'task0', 
-     {
-          'task0': ['1', 'false', 'task1', 'task3', 'task2', 'task4'], 
-          'task1': ['1', 'false', 'task4'], 
-          'task2': ['1', 'false', 'task5', 'task4', 'task6'], 
-          'task3': ['1', 'false', 'task5', 'task4', 'task6'], 
-          'task4': ['4', 'false', 'task6'], 
-          'task5': ['2', 'false', 'task6'], 
-          'task6': ['4', 'false', 'home']
-     }, 
-     {
-         'home': ['home', 'ubuntu-s-2vcpu-4gb-sfo2-01']
-     }
-    ]
-    """
     #get DAG and home machine info
     first_task = dag_info[0]
     dag = dag_info[1]
@@ -457,33 +494,6 @@ def main():
     web_server.start()
 
     # watch manager
-    """
-    filesystem change monitoring tool, something like this:
-    zxc@zxc-ThinkPad-T470-W10DG:~$ python3 -m pyinotify -v ~
-    [2020-03-14 14:56:35,773 pyinotify DEBUG] Start monitoring ['/home/zxc'], (press c^c to halt pyinotify)
-    [2020-03-14 14:56:35,773 pyinotify DEBUG] New <Watch wd=1 path=/home/zxc mask=4095 proc_fun=None auto_add=None exclude_filter=<function  
-    WatchManager.<lambda> at 0x7f022d455158> dir=True >
-    [2020-03-14 14:58:57,420 pyinotify DEBUG] Event queue size: 32
-    [2020-03-14 14:58:57,422 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x20 name=sshjupiter.sh wd=1 >
-    <Event dir=False mask=0x20 maskname=IN_OPEN name=sshjupiter.sh path=/home/zxc pathname=/home/zxc/sshjupiter.sh wd=1 >
-    [2020-03-14 14:58:57,423 pyinotify DEBUG] Event queue size: 272
-    [2020-03-14 14:58:57,424 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x100 name=sshjupiter (copy).sh wd=1 >
-    [2020-03-14 14:58:57,425 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x20 name=sshjupiter (copy).sh wd=1 >
-    [2020-03-14 14:58:57,425 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x2 name=sshjupiter (copy).sh wd=1 >
-    [2020-03-14 14:58:57,426 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x10 name=sshjupiter.sh wd=1 >
-    [2020-03-14 14:58:57,426 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x8 name=sshjupiter (copy).sh wd=1 >
-    [2020-03-14 14:58:57,426 pyinotify DEBUG] <_RawEvent cookie=0 mask=0x4 name=sshjupiter (copy).sh wd=1 >
-    <Event dir=False mask=0x100 maskname=IN_CREATE name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-    <Event dir=False mask=0x20 maskname=IN_OPEN name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-    <Event dir=False mask=0x2 maskname=IN_MODIFY name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-    <Event dir=False mask=0x10 maskname=IN_CLOSE_NOWRITE name=sshjupiter.sh path=/home/zxc pathname=/home/zxc/sshjupiter.sh wd=1 >
-    <Event dir=False mask=0x8 maskname=IN_CLOSE_WRITE name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-    <Event dir=False mask=0x4 maskname=IN_ATTRIB name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-    [2020-03-14 14:59:15,852 pyinotify DEBUG] Event queue size: 48
-    [2020-03-14 14:59:15,852 pyinotify DEBUG] <_RawEvent cookie=38622 mask=0x40 name=sshjupiter (copy).sh wd=1 >
-    <Event cookie=38622 dir=False mask=0x40 maskname=IN_MOVED_FROM name=sshjupiter (copy).sh path=/home/zxc pathname=/home/zxc/sshjupiter (copy).sh wd=1 >
-
-    """
     wm = pyinotify.WatchManager()
     input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
     wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
