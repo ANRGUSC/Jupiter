@@ -427,7 +427,7 @@ def main():
     global file_size,num_files,cur_idx
     file_size  = [10**x for x in range(min_file,max_file+1)]
     num_files  = len(file_size)
-    cur_idx = multiprocessing.Value('i', randomint(0,num_files))
+    cur_idx = multiprocessing.Value('i', random.randint(0, num_files - 1))
     retry       = 1
     dir_local   = "generated_test"
     dir_remote  = "networkprofiling/received_test"
