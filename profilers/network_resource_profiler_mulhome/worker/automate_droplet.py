@@ -31,8 +31,9 @@ import time
 import _thread
 import psutil
 import paho.mqtt.client as mqtt
-from multiprocessing import Process, Manager
-
+from multiprocessing import Value, Process, Manager
+import multiprocessing
+import math
 
 
 sys.path.append("../")
@@ -172,9 +173,12 @@ class droplet_measurement():
     def do_log_measurement(self):
         """This function pick a random file size, send the file to all of the neighbors and log the transfer time in the local Mongo database.
         """
+        global file_size, cur_idx, num_files
         for idx in range (0, len(self.hosts)):
             print('Probing random messages')
-            random_size = random.choice(self.file_size)
+            #random_size = random.choice(self.file_size)
+            random_size = file_size[cur_idx.value]
+            cur_idx.value = (cur_idx.value + 1) % num_files
             local_path  = '%s/%s_test_%dK'%(self.dir_local,self.my_host,random_size)
             remote_path = '%s'%(self.dir_remote)  
             # Run the measurement bash script     
@@ -391,7 +395,7 @@ def main():
     """Start watching process for ``scheduling`` folder.
     """
 
-    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER, HOME_IP, SELF_IP
+    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER, HOME_IP, SELF_IP, min_file, max_file
 
     # Load all the confuguration
     INI_PATH = '/network_profiling/jupiter_config.ini'
@@ -403,6 +407,13 @@ def main():
     password    = config['AUTH']['PASSWORD']
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
+    min_file = int(math.log10(int(config['OTHER']['MIN_SIZE'])))
+    max_file = int(math.log10(int(config['OTHER']['MAX_SIZE'])))
+
+    global file_size,num_files,cur_idx
+    file_size  = [10**x for x in range(min_file,max_file+1)]
+    num_files  = len(file_size)
+    cur_idx = multiprocessing.Value('i', random.choice([0,num_files-1]))
     retry       = 1
     dir_local   = "generated_test"
     dir_remote  = "networkprofiling/received_test"
