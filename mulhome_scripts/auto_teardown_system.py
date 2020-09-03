@@ -59,6 +59,12 @@ def teardown_system(app_name):
     if pricing == 0:
         logging.debug('Tear down all current Non-pricing CIRCE deployments')
         delete_all_circe(app_name)
+        if scheduler == 0 or scheduler==3: # HEFT
+            logging.debug('Tear down all current HEFT deployments')
+            delete_all_heft(app_name)
+        else:# WAVE
+            logging.debug('Tear down all current WAVE deployments')
+            delete_all_waves(app_name)
     elif pricing == 3:
         delete_all_integrated_pricing_circe(app_name)
     elif pricing == 4:
@@ -66,12 +72,7 @@ def teardown_system(app_name):
     else:
         logging.debug('Tear down all current Pricing CIRCE deployments')
         delete_all_pricing_circe(app_name)
-    if scheduler == 0 or scheduler==3: # HEFT
-        logging.debug('Tear down all current HEFT deployments')
-        delete_all_heft(app_name)
-    else:# WAVE
-        logging.debug('Tear down all current WAVE deployments')
-        delete_all_waves(app_name)
+    
 
 
 

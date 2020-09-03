@@ -36,15 +36,6 @@ network_info = []
 execution_info = []
 
 
-def demo_help(server,port,topic,msg):
-    username = 'anrgusc'
-    password = 'anrgusc'
-    client = mqtt.Client()
-    client.username_pw_set(username,password)
-    client.connect(server, port,300)
-    client.publish(topic, msg,qos=1)
-    client.disconnect()
-
 def get_global_info():
     """Get all information of profilers (network profilers, execution profilers)
     
@@ -69,10 +60,11 @@ def get_global_info():
     home_profiler_ip = [x.split(':')[1] for x in home_profiler]
 
 
-    global BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH, app_name,app_option
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
+
 
 def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
     """Collect the execution profile from the home execution profiler's MongoDB
@@ -116,10 +108,6 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
 
-    if BOKEH==3:
-        n = num_profilers*len(logging)
-        msg = 'msgoverhead balancehefthome resourcedata %d\n'%(n)
-        demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     return
 
 
@@ -183,10 +171,6 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(network_info)
 
-    if BOKEH==3:
-        n = len(profiler_ip)*num_nb
-        msg = 'msgoverhead balancehefthome networkdata %d\n'%(n)
-        demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     return
 
 if __name__ == '__main__':

@@ -17,6 +17,8 @@ from random import randint
 import configparser
 from os import path
 import logging
+import paho.mqtt.client as mqtt
+import logging
 
 
 
@@ -41,6 +43,17 @@ def read_file(file_name):
     return file_contents
     
 
+def demo_help(server,port,topic,msg):
+    logging.debug('Sending demo')
+    logging.debug(topic)
+    logging.debug(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
 
 assignments = {}
 
@@ -133,6 +146,11 @@ def main():
         - Check whether the input TGFF file has been generated
         - Assign random master and slaves for now
     """
+    HERE     = path.abspath(path.dirname(__file__)) + "/"
+    INI_PATH = HERE + 'jupiter_config.ini'
+
+    config = configparser.ConfigParser()
+    config.read(INI_PATH)
 
     global logging
     logging.basicConfig(level = logging.DEBUG)
@@ -149,6 +167,14 @@ def main():
     application = read_file("dag.txt")
     MAX_TASK_NUMBER = int(application[0])
 
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH, app_name,app_option
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
+
+    app_name = os.environ['APP_NAME']
+    app_option = os.environ['APP_OPTION']
+    
     ##
     ## Load all the confuguration
     ##
@@ -166,8 +192,11 @@ def main():
     tasks, task_order, super_tasks, non_tasks = get_taskmap()
     configuration_path='/heft/dag.txt'
     profiler_ip,exec_home_ip,num_nodes,network_map,node_list = get_global_info()
+
+    
     
     while True:
+        logging.debug('Checking available tgff file!')
         if os.path.isfile(tgff_file):
             heft_scheduler = heft_dup.HEFT(tgff_file)
             heft_scheduler.run()
@@ -183,6 +212,12 @@ def main():
                 end_time = time.time()
                 deploy_time = end_time - starting_time
                 logging.debug('Time to finish HEFT modified mapping %s', str(deploy_time))
+
+            if BOKEH==3:
+                topic = 'mappinglatency_%s'%(app_option)
+                msg = 'mappinglatency %s %s originalheft %f \n' %(app_option, app_name,deploy_time)
+                demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+                
             break;
         else:
             logging.debug('No input TGFF file found!')

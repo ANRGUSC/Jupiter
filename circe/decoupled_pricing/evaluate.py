@@ -60,6 +60,7 @@ def evaluate_interval(interval):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
         logging.debug('---- Generate random input files')
+        logging.debug(src)
         shutil.copyfile(src,dest)
 
 def evaluate_sequential():
@@ -197,4 +198,5 @@ if __name__ == '__main__':
     logging.debug('The delay to send sample files')
     time.sleep(sleep_time)
     logging.debug('Start copying sample files for evaluation')
-    evaluate_sequential()
+    # evaluate_sequential()
+    evaluate_interval(120)

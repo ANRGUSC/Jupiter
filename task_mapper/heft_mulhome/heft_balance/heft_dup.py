@@ -19,7 +19,7 @@ import logging
 
 logging.basicConfig(level = logging.DEBUG)
 
-MAX_TASK_ALLOWED = 2
+MAX_TASK_ALLOWED = 25
 
 class Duration:
     """Time duration about a task

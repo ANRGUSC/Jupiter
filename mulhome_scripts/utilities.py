@@ -13,6 +13,7 @@ from os import path
 from pprint import *
 import logging
 from pathlib import Path
+import jupiter_config
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -231,11 +232,36 @@ def k8s_get_nodes_homes_string(node_info_file):
   return nodes,homes
 
 def prepare_stat_path(node_list,homes,dag):
-    stat_path = '../users/stats/exp8_data'
+    # dag_type = 'chain'
+    # dag_type = 'simple'
+    dag_type = 'complex'
+    stat_path = '../users/stats/exp8_data_%s'%(dag_type)
     Path(stat_path).mkdir(parents=True, exist_ok=True)
     latency_path = os.path.join(stat_path,'summary_latency')
     Path(latency_path).mkdir(parents=True, exist_ok=True)
-    latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(node_list)+len(homes),len(dag))
+    folder = 'N%dM%d'%(len(node_list)+len(homes),len(dag))
+    folder_path = os.path.join(latency_path,folder)
+    Path(folder_path).mkdir(parents=True, exist_ok=True)
+    price_type = 'na'
+    # dyn_type = 'turnoff1node'
+    # dyn_type = 'turnoff10mins'
+    # dyn_type = 'safedrain'
+    dyn_type = 'safedraininterval'
+    
+    if jupiter_config.PRICING == 0:
+        if jupiter_config.SCHEDULER == 0:
+          price_type = 'heft'
+        elif jupiter_config.SCHEDULER == 2:
+          price_type = 'wave'
+    elif jupiter_config.PRICING == 1:
+        price_type = 'push'
+    elif jupiter_config.PRICING == 2:
+        price_type = 'event'
+    elif jupiter_config.PRICING == 3:
+        price_type = 'integrated'
+    else:
+        price_type = 'decoupled'      
+    latency_file = '%s/system_latency_%s_N%d_M%d_%s.log'%(folder_path,price_type,len(node_list)+len(homes),len(dag),dyn_type)
     return latency_file
 
 if __name__ == '__main__':

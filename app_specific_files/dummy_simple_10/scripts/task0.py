@@ -51,6 +51,8 @@ def task(filename,pathin,pathout):
 	if not os.path.isdir(pathout):
 		os.makedirs(pathout, exist_ok=True)
 	output_path=[]
+	print('Checking -----------------')
+	print(comm.keys())
 	if task_name in comm.keys():
 		print(comm[task_name])
 		dest=[x.split('-')[0] for x in comm[task_name]]

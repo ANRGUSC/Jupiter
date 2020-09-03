@@ -104,7 +104,17 @@ if __name__ == '__main__':
     tasks,tasksid = retrieve_tasks(DAG_PATH)
     M = len(tasks)
 
-    main_folder = 'stats/exp8_data'
+    # dag_type = 'chain'
+    # dag_type = 'simple'
+    dag_type = 'complex'
+    # dyn_type = 'turnoff1node'
+    # dyn_type = 'turnoff10mins'
+    # dyn_type = 'safedrain'
+    dyn_type = 'safedraininterval'
+
+    main_folder = 'stats/exp8_data_%s'%(dag_type)
+    
+
     folder_list= ['makespan','msg_overhead','power_overhead','mapping_latency','summary_latency']
     try:
         os.mkdir(main_folder)
@@ -146,14 +156,14 @@ if __name__ == '__main__':
 
     # Collect makespan
     exp_folder = main_folder+'/'+folder_list[0]
-    makespan_log = '%s/N%dM%d/%s_N%d_M%d.log'%(exp_folder,N,M,option,N,M)
+    makespan_log = '%s/N%dM%d/%s_N%d_M%d_%s.log'%(exp_folder,N,M,option,N,M,dyn_type)
     cur_app = jupiter_config.APP_OPTION
     _thread.start_new_thread(collector,(cur_app,cur_app,SERVER_IP,mqtt_port,mqtt_timeout,1,makespan_log))
     
     # Collect power overhead (CPU/ memory)
     exp_folder = main_folder+'/'+folder_list[2]
     for node in nodes:
-        node_log = '%s/N%dM%d/%s_%s_N%d_M%d.log'%(exp_folder,N,M,option,node,N,M)
+        node_log = '%s/N%dM%d/%s_%s_N%d_M%d_%s.log'%(exp_folder,N,M,option,node,N,M,dyn_type)
         cur_sub = 'poweroverhead_%s'%(node)
         print(cur_sub)
         _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,node_log))
@@ -162,7 +172,7 @@ if __name__ == '__main__':
     ## Collect message overhead # nonpricing
     # exp_folder = main_folder+'/'+folder_list[1]
     # for node in nodes:
-    #     node_log = '%s/N%dM%d/%s_%s_N%d_M%d.log'%(exp_folder,N,M,option,node,N,M)
+    #     node_log = '%s/N%dM%d/%s_%s_N%d_M%d_%s.log'%(exp_folder,N,M,option,node,N,M,dyn_type)
     #     cur_sub = 'msgoverhead_%s'%(node)
     #     print(cur_sub)
     #     _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,node_log))
@@ -170,13 +180,13 @@ if __name__ == '__main__':
     ## Collect message overhead # pricing
     exp_folder = main_folder+'/'+folder_list[1] 
     for node in nodes:
-        node_log = '%s/N%dM%d/%s_%s_N%d_M%d'%(exp_folder,N,M,option,node,N,M)
+        node_log = '%s/N%dM%d/%s_%s_N%d_M%d_%s'%(exp_folder,N,M,option,node,N,M,dyn_type)
         cur_sub = 'msgoverhead_%s'%(node)
         print(cur_sub)
         print(node_log)
         _thread.start_new_thread(collector,(node,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,node_log))
     # for task in tasks:
-    #     task_log = '%s/N%dM%d/%s_controller%s_N%d_M%d.log'%(exp_folder,N,M,option,task,N,M)
+    #     task_log = '%s/N%dM%d/%s_controller%s_N%d_M%d_%s.log'%(exp_folder,N,M,option,task,N,M,dyn_type)
     #     cur_sub = 'msgoverhead_controller%s'%(task)
     #     print(cur_sub)
     #     print(task_log)
@@ -184,7 +194,7 @@ if __name__ == '__main__':
 
     # Collect mapping latency 
     # exp_folder = main_folder+'/'+folder_list[3]
-    # mapping_log = '%s/N%dM%d/%s_N%d_M%d.log'%(exp_folder,N,M,option,N,M)
+    # mapping_log = '%s/N%dM%d/%s_N%d_M%d_%s.log'%(exp_folder,N,M,option,N,M,dyn_type)
     # print(mapping_log)
     # cur_app = jupiter_config.APP_OPTION
     # cur_sub = 'mappinglatency_%s'%(cur_app)

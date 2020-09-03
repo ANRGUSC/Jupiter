@@ -54,12 +54,12 @@ RUN mkdir -p /centralized_scheduler/profiler_files_processed
 
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/dummy_app_multicast/scripts/ /centralized_scheduler/
-COPY app_specific_files/dummy_app_multicast/sample_input /centralized_scheduler/sample_input
+ADD app_specific_files/dummy_complex_30/scripts/ /centralized_scheduler/
+COPY app_specific_files/dummy_complex_30/sample_input /centralized_scheduler/sample_input
 RUN mkdir -p /home/darpa/apps/data
 
 
-ADD app_specific_files/dummy_app_multicast/configuration.txt /centralized_scheduler/DAG.txt
+ADD app_specific_files/dummy_complex_30/configuration.txt /centralized_scheduler/DAG.txt
 ADD nodes.txt /centralized_scheduler/nodes.txt
 
 ADD profilers/execution_profiler_mulhome/start_home.sh /centralized_scheduler/start.sh

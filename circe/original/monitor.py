@@ -37,7 +37,7 @@ from collections import Counter
 import _thread
 import threading
 import logging
-
+import random
 
 
 
@@ -157,6 +157,8 @@ def transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destin
         destination (str): destination file path
     """
     for idx in range(len(ID_list)): 
+        r = random.randint(1,100001)
+        time.sleep(r/100000)
         _thread.start_new_thread(transfer_data_scp,(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx],))
 
 def transfer_multicast_data(ID_list,user_list,pword_list,source_list, destination_list):

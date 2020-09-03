@@ -36,6 +36,7 @@ import datetime
 from collections import defaultdict 
 import pyinotify
 import logging
+import random
 
 
 app = Flask(__name__)
@@ -343,6 +344,7 @@ def transfer_data_scp(ID,user,pword,source, destination):
                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
                 os.system(cmd)
                 logging.debug('data transfer complete\n')
+                logging.debug(cmd)
                 ts = time.time()
                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
                 runtime_sender_log.write(s)
@@ -385,6 +387,8 @@ def transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destin
         destination (str): destination file path
     """
     for idx in range(len(ID_list)): 
+        r = random.randint(1,100001)
+        time.sleep(r/100000)
         _thread.start_new_thread(transfer_data_scp,(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx],))
 
 def transfer_multicast_data(ID_list,user_list,pword_list,source_list, destination_list):
@@ -500,6 +504,7 @@ class Handler1(pyinotify.ProcessEvent):
                 logging.debug('Global task mapping is not loaded')
                 time.sleep(1)
             logging.debug('Current mapping input list')
+            logging.debug(global_task_node_map)
             next_hosts = [global_task_node_map[mapping_input_id[(home_id,input_name)],home_id,x] for x in next_tasks_map[task_name]]
             
             logging.debug('Sending the output files to the corresponding destinations')

@@ -404,7 +404,7 @@ def main():
     flask_deploy = int(jupiter_config.FLASK_DEPLOY )
     
     
-    num_samples_files = 2
+    num_samples_files = 10
     num_runs = 1
     num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]

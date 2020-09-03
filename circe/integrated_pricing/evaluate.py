@@ -71,8 +71,7 @@ def evaluate_sequential():
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
     logging.debug('---- Generate random input files')
-    # for i in range(1,file_count+1):
-    for i in range(1,4):
+    for i in range(1,file_count+1):
         src = "sample_input/%dbotnet.ipsum"%i
         dest = "input/%dbotnet.ipsum"%i
         logging.debug('---- Generate random input files')
