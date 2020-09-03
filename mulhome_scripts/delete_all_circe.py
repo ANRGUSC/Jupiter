@@ -86,7 +86,7 @@ def delete_all_circe(app_name):
         print(key)
         pod_name = ""
         if(key.find('-') == -1):
-            pod_name = app_name
+            pod_name = app_name + '1'
         else:
             pod_name = app_name+"-"+key
 
