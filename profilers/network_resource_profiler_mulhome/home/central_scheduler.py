@@ -230,7 +230,6 @@ class droplet_measurement():
             print('Probing random messages')
             #random_size = random.choice(self.file_size)
             random_size = file_size[cur_idx.value]
-            cur_idx.value = (cur_idx.value + 1) % num_files
             local_path  = '%s/%s_test_%dK'%(self.dir_local,self.my_host,random_size)
             remote_path = '%s'%(self.dir_remote)  
             # Run the measurement bash script     
@@ -255,7 +254,7 @@ class droplet_measurement():
                         "File_Size[KB]"     : random_size,
                         "Transfer_Time[s]"  : elapsed}
             log_id   = logging.insert_one(new_log).inserted_id
-
+        cur_idx.value = (cur_idx.value + 1) % num_files
 
 class droplet_regression():
     """This class is used for the regression of the collected data

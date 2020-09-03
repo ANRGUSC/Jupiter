@@ -85,10 +85,7 @@ def delete_all_circe(app_name):
 
         print(key)
         pod_name = ""
-        if(key.find('-') == -1):
-            pod_name = app_name
-        else:
-            pod_name = app_name+"-"+key
+        pod_name = app_name+"-"+key
 
         # First check if there is a deployment existing with
         # the name = key in the respective namespace
@@ -130,7 +127,7 @@ def delete_all_circe(app_name):
         try:
             resp = core_v1_api.read_namespaced_service(pod_name, namespace)
         except ApiException as e:
-            print("Exception Occurred")
+            print("No such service '%s' exists, Exception Occurred" % key)
         # if a service is running, kill it
         if resp:
             del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace, v1_delete_options)
