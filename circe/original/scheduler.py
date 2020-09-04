@@ -275,6 +275,13 @@ class MyHandler(pyinotify.ProcessEvent):
         Args:
             event (ProcessEvent): a new file is created
         """
+        logging.debug("Received file as output - %s." % event.pathname)  
+
+        if RUNTIME == 1:   
+            ts = time.time() 
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.pathname,ts)
+            runtime_receiver_log.write(s)
+            runtime_receiver_log.flush()
 
         global start_times, end_times
         global exec_times
