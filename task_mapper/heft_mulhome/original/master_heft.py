@@ -189,6 +189,7 @@ def main():
             heft_scheduler = heft_dup.HEFT(tgff_file)
             print('Start the HEFT scheduler')
             heft_scheduler.run()
+            print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
             #heft_scheduler.display_result(0)
             #heft_scheduler.run_dup_split()
             #print('Output of HEFT scheduler')
