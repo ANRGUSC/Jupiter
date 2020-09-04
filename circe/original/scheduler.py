@@ -278,7 +278,7 @@ class MyHandler(pyinotify.ProcessEvent):
             event (ProcessEvent): a new file is created
         """
 
-        logging.debug("Received file as output - %s." % event.pathname)  
+        print("Received file as output - %s." % event.pathname)  
 
         if RUNTIME == 1:   
             ts = time.time() 
