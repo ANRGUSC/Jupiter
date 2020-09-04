@@ -220,74 +220,38 @@ class HEFT:
         ################################################################################################
         
         for task in self.tasks:
-            if task == self.tasks[0]:
-                # no need to consider link when assigning entry task
-                w = min(task.comp_cost)
-                p = task.comp_cost.index(w)
-                task.processor_num = p
-                self.processors[p].time_line.append(Duration(task.number, 0, w))
-                cur_max_time = w
-                max_takeup_time[p] = w
-                #cur_bottleneck_resource = str(task.number)
-                #mapping[task[0]] = p
-            else:
-                # try assigning task to each processor, update max takeup time, choose the minimum one
-                # if task is assigned to processor, the overall system max takeup time (bottleneck) would be:
-                # processor id (int) -> expected system max time (float) if assigned to this processor
-                tmp = {}
-                for processor in self.processors:
-                
-                    updated_node_time_here = task.comp_cost[processor.number] if len(processor.time_line) == 0 else \
-                      processor.time_line[-1].end + task.comp_cost[processor.number]
-                        
-                    updated_link_time_here = 0
-                    parent_tasks = [self.tasks[n] for n in task.parents_numbers]
-                    for parent in parent_tasks:
-                        parent_processor_number = parent.processor_num
-                        # parent assigned to the same node as child, no comm cost
-                        if parent_processor_number == processor.number:
-                            continue
-                        else:
-                            l = self.get_link_by_id(str(parent_processor_number) + "_" + str(processor.number))
-                            cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
-                            updated_link_time_here = max(updated_link_time_here, cur_end_time_for_l + \
-                              self.cal_comm_quadratic(self.data[parent.number][task.number],
-                              self.quaratic_profile[parent_processor_number][processor.number]))
-                    
-                    updated_time_here = max(updated_node_time_here, updated_link_time_here)
-                    #updated_system_max_time_here = max(updated_time_here, cur_max_time)
-                    tmp[processor.number] = updated_time_here
-                    
-                # find the processor which will result in minimum max_updated_time
-                candidate = -1
-                min_max_time = time.time() # consider this value as infinity
-                for key in tmp:
-                    if tmp[key] < min_max_time:
-                        min_max_time = tmp[key]
-                        candidate = key
-                        
-                # assign task to candidate (candidate is a processor number)
-                node = self.processors[candidate]
-                task.processor_num = candidate
-                start_time = 0 if len(node.time_line) == 0 else node.time_line[-1].end
-                end_time = task.comp_cost[candidate] + start_time
-                node.time_line.append(Duration(task.number, start_time, end_time))
-                
-                # update ALL links takeup time from all parents
-                parent_tasks = [self.tasks[n] for n in task.parents_numbers]
-                for parent in parent_tasks:
-                    parent_processor_number = parent.processor_num
-                    link_takeup_time = self.cal_comm_quadratic(self.data[parent.number][task.number], 
-                      self.quaratic_profile[parent_processor_number][candidate])
-                    # parent assigned to the same node as child, no comm cost
-                    if parent_processor_number == candidate:
-                        continue
-                    else:
-                        l = self.get_link_by_id(str(parent_processor_number) + '_' + str(candidate))
-                        cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
-                        ld = LinkDuration(parent.number, task.number, cur_end_time_for_l, 
-                          cur_end_time_for_l + link_takeup_time) 
-                        l.time_line.append(ld)
+            candidate = -1
+            if task.number == 0:
+                candidate = 2
+            elif task.number == 1:
+                candidate = 3
+            elif task.number == 2:
+                candidate = 14
+            elif task.number == 3:
+                candidate = 5
+                          
+            # assign task to candidate (candidate is a processor number)
+            node = self.processors[candidate]
+            task.processor_num = candidate
+            start_time = 0 if len(node.time_line) == 0 else node.time_line[-1].end
+            end_time = task.comp_cost[candidate] + start_time
+            node.time_line.append(Duration(task.number, start_time, end_time))
+            
+            # update ALL links takeup time from all parents
+            parent_tasks = [self.tasks[n] for n in task.parents_numbers]
+            for parent in parent_tasks:
+                parent_processor_number = parent.processor_num
+                link_takeup_time = self.cal_comm_quadratic(self.data[parent.number][task.number], 
+                  self.quaratic_profile[parent_processor_number][candidate])
+                # parent assigned to the same node as child, no comm cost
+                if parent_processor_number == candidate:
+                    continue
+                else:
+                    l = self.get_link_by_id(str(parent_processor_number) + '_' + str(candidate))
+                    cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
+                    ld = LinkDuration(parent.number, task.number, cur_end_time_for_l, 
+                      cur_end_time_for_l + link_takeup_time) 
+                    l.time_line.append(ld)
     
     
     def run_dup_split(self):     
@@ -323,7 +287,7 @@ class HEFT:
     def display_result(self, level):
         """Display scheduling result to console
         """
-        self.print_level(level)
+        self.print_level(8)
         print("==============================================")
         print("               print task info")
         print("==============================================")
@@ -419,7 +383,7 @@ class HEFT:
             print("#############################################################################################")
         else:
             print("#############################################################################################")
-            print("                               INVALID PRINT LEVEL NUMBER!!!")
+            print("                                 random or manual mapping")
             print("#############################################################################################")
 
     def get_btnk_id(self):
