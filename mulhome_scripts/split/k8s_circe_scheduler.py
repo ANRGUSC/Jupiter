@@ -326,6 +326,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
      'task1': ['node2', 0.6756664055262795, 'node5', 0.32433359447372045], 
      'task2': 'node7', 
      'task3': 'node4'}
+
     """
     print("MAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
     print(mapp)
@@ -374,3 +375,5 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         write_file(latency_file,msg)
         deploy_time = end_time - start_time
         print('Time to deploy CIRCE '+ str(deploy_time))
+
+   

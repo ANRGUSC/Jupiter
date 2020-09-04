@@ -196,5 +196,3 @@ if __name__ == '__main__':
     app_name = jupiter_config.APP_OPTION
     app_name = app_name+'1'
     delete_all_circe(app_name)
-
-
