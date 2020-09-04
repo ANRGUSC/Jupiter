@@ -254,7 +254,8 @@ class HEFT:
                     l.time_line.append(ld)
     
     
-    def run_dup_split(self):     
+    def run_dup_split(self):
+    """
         while True:
             btnk_id = self.get_btnk_id()
             spt = split.Split()
@@ -272,6 +273,7 @@ class HEFT:
                 flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
                 if flag == False:
                     break
+    """
             
     def get_link_by_id(self, link_id):
         for l in self.links:
