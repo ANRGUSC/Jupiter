@@ -230,7 +230,7 @@ class Handler1(pyinotify.ProcessEvent):
         for i in range(3, len(sys.argv)-1,4):
             taskname = sys.argv[i].split('-')[0]
             task = sys.argv[i].split('/')[0]
-            portion = 1 if len(sys.argv[i].split('/')) == 0 else sys.argv[i].split('/')[1]
+            portion = 1 if len(sys.argv[i].split('/')) == 1 else sys.argv[i].split('/')[1]
             if not taskname in mapp:
                 mapp[taskname] = []
             mapp[taskname].append(task)
