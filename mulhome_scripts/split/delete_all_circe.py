@@ -77,14 +77,12 @@ def delete_all_circe(app_name):
     """
     comb = []
     for key in dag:
-        comb.append(key)
         for i in range(1, node_num+2):
             comb.append(key+'-'+str(i))
         
     for key in comb:
 
         print(key)
-        pod_name = ""
         pod_name = app_name+"-"+key
 
         # First check if there is a deployment existing with
@@ -127,7 +125,7 @@ def delete_all_circe(app_name):
         try:
             resp = core_v1_api.read_namespaced_service(pod_name, namespace)
         except ApiException as e:
-            print("No such service '%s' exists, Exception Occurred" % key)
+            print("Exception Occurred")
         # if a service is running, kill it
         if resp:
             del_resp_2 = core_v1_api.delete_namespaced_service(pod_name, namespace, v1_delete_options)
@@ -198,3 +196,5 @@ if __name__ == '__main__':
     app_name = jupiter_config.APP_OPTION
     app_name = app_name+'1'
     delete_all_circe(app_name)
+
+
