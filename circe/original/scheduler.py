@@ -278,21 +278,13 @@ class MyHandler(pyinotify.ProcessEvent):
             event (ProcessEvent): a new file is created
         """
 
-        global start_times, end_times
-        global exec_times
-        global count
+        print("Received file as output - %s." % event.pathname)  
 
-        print("Received file as output - %s." % event.pathname) 
-        # print(event.src_path, event.event_type)  # print now only for degug
-        outputfile = event.pathname.split('/')[-1].split('_')[0]
-
-        # print(outputfile)
-        end_times[outputfile] = time.time()
-        
-        exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
-        print("start time is: ", start_times)
-        print("end time is: ", end_times)
-        print("execution time is: ", exec_times)
+        if RUNTIME == 1:   
+            ts = time.time() 
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home',transfer_type,event.pathname,ts)
+            runtime_receiver_log.write(s)
+            runtime_receiver_log.flush()
 
         if BOKEH == 2: #used for combined_app with distribute script
             app_name = outputfile.split('-')[0]
