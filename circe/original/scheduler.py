@@ -349,7 +349,7 @@ class Handler(pyinotify.ProcessEvent):
         probs = []
         for var in tmp:
             tasks.append(var.split('/')[0])
-            probs.append(var.split('/')[1])
+            probs.append(1 if len(var.split('/')) == 1 else var.split('/')[1])
         if len(probs) == 1:
             return tasks[0]
         chosen_task = ""
