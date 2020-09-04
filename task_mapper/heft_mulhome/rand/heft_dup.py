@@ -206,19 +206,7 @@ class HEFT:
 
     def run(self):
         
-        # mapping from task number (int) to processor number (int)
-        #task_to_node = {}
-        # mapping from resource id (string) to current resource max takeup time (float)
-        max_takeup_time = {}
-        # current max takeup time (bottleneck) among all resources (links + nodes), i.e. the max value in dict {max_takeup_time}
-        cur_max_time = 0
-        # current bottleneck resource id
-        cur_bottleneck_resource = ""
-        
-        ################################################################################################
-                           # below part implements the core of throughput optimized HEFT
-        ################################################################################################
-        
+        print("Running Schedule")
         for task in self.tasks:
             candidate = -1
             if task.number == 0:
@@ -255,25 +243,7 @@ class HEFT:
     
     
     def run_dup_split(self):
-    """
-        while True:
-            btnk_id = self.get_btnk_id()
-            spt = split.Split()
-            if self.is_link(btnk_id):
-                src_node = btnk_id.split('_')[0]
-                dst_node = btnk_id.split('_')[1]
-                flag = True
-                if src_node.time_line[-1].end > dst_node.time_line[-1].end:
-                    flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, src_node)
-                else:
-                    flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, dst_node)
-                if flag == False:
-                    break
-            else:
-                flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
-                if flag == False:
-                    break
-    """
+        return 
             
     def get_link_by_id(self, link_id):
         for l in self.links:
