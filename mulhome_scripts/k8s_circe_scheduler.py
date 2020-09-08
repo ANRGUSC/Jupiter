@@ -118,6 +118,8 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     pprint(hosts)
     print('DAG info:')
     print(dag)
+    print('nodename to DNS')
+    print(nodename_to_DNS)
 
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
