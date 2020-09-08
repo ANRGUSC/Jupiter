@@ -111,7 +111,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
 
     # This loads the task graph and node list
     if not static_mapping:
-        path1 = jupiter_config.APP_PATH + 'configuration.txt'
+        path1 = 'new_dag.txt'
         path2 = jupiter_config.HERE + 'nodes.txt'
 
         # start the profilers
@@ -174,8 +174,8 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         """
         dag_str = mapping['UPDATED_DAG_FILE_WITH_DUPICATION']
         del mapping['UPDATED_DAG_FILE_WITH_DUPICATION']
-        rewrite_graph_file("new_dag.txt", dag_str)
-        path1 = "new_dag.txt"
+        print(dag_str)
+        rewrite_graph_file(path1, dag_str)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
