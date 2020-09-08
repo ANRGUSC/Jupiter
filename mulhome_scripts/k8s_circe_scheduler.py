@@ -178,27 +178,18 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     # if one replica of a task, just taskX
     # if multiple, will be called taskX-1, taskX-2, ...
     # Assign independent pods for each task's replica
-    replicas = {}
     all_tasks = []
     
     for key, value in mapp.items():
-        if type(value) is list:
-            for i in range(int(len(value)/2)):
-                all_tasks.append(key)
-        else:
-            all_tasks.append(key)
+        all_tasks.append(key)
             
     print('Create workers service')
     for task in all_tasks:
         nexthosts = ''
-        if task not in replicas:
-            replicas[task] = 1
-        else:
-            replicas[task] += 1
         """
             Generate the yaml description of the required service for each task
         """
-        pod_name = app_name + "-" + task + "-" + str(replicas[task])
+        pod_name = app_name + "-" + task
         body = write_circe_service_specs(name = pod_name)
 
         
