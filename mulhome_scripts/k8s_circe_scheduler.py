@@ -224,10 +224,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             """
             inputnum = str(value[0])
             flag = str(value[1])
-            print("===========================================HOSTS!!!!VALUES===================================================")
-            print(hosts)
-            print(value)
-            print(service_ips)
             for i in range(2,len(value)):
                 if i != 2:
                     nexthosts = nexthosts + ':'
@@ -267,34 +263,22 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     # get a list of home child's (consider task0) replicas and portion
     entry_task = jupiter_config.HOME_CHILD
     tmp = hosts[entry_task]
-    entry_nodeDNS_to_taskname = {}
     """
     tmp
     ['task0-1', 'ubuntu-s-1vcpu-2gb-nyc3-01', 'task0-2', 'ubuntu-s-1vcpu-2gb-sfo2-03', 'task0-3', 'ubuntu-s-1vcpu-2gb-sfo2-04']
     
-    mapp
-    {'task0': ['node1', 0.1296876493284042, 'node3', 0.48449175858909777, 'node6', 0.385820592082498], 
-     'task1': ['node2', 0.6756664055262795, 'node5', 0.32433359447372045], 
-     'task2': 'node7', 
-     'task3': 'node4'}
-
     """
     print("MAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
     print(mapp)
     child_spec = ""
     child_spec_ips = ""
-    DNS_to_nodename = {}
-    for key, val in nodename_to_DNS.items():
-        DNS_to_nodename[val[0]] = key
-    tmpmap = {}
-    for i in range(len(tmp)):
-        if i % 2 == 0:
-            tmpmap[tmp[i]] = tmp[i+1]   
-    for key, val in tmpmap.items():
-        taskname = key
-        nodeDNS = val
-        nodename = DNS_to_nodename[nodeDNS]
-        idx = mapp[entry_task].index(nodename)
+    entry_tasks = []
+    entry_tasks.append(entry_task)
+    for key in hosts:
+        if key.split('-')[0] == entry_task:
+            entry_tasks.append(key)
+            
+    for taskname in entry_tasks:
         child_spec = child_spec + taskname + ':'
         child_spec_ips = child_spec_ips + service_ips[taskname] + ':'
     child_spec = child_spec.rstrip(':')
