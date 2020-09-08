@@ -120,7 +120,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     print(dag)
     DNS_to_nodename = {}
     for key, val in nodename_to_DNS.items():
-        DNS_to_nodename[val] = key
+        DNS_to_nodename[val[0]] = key
 
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
