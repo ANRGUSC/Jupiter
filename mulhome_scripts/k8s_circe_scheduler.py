@@ -224,6 +224,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             print("===========================================HOSTS!!!!VALUES===================================================")
             print(hosts)
             print(value)
+            print(service_ips)
             for i in range(2,len(value)):
                 nexthosts = nexthosts + str(hosts.get(value[i])[0]) + ":"
                 next_svc = next_svc + str(service_ips[hosts.get(value[i])[1]]) + ":"
