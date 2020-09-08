@@ -63,6 +63,12 @@ def task_mapping_decorator(f):
         return f(args[0],args[3])
     return task_mapping
 
+def rewrite_graph_file(self, path, dag_str):
+        
+        f = open(path, "w")
+        f.write(dag_str)
+        f.close()
+        
 def setup_port(port):
     """Automatically set up the proxy port
     
@@ -387,12 +393,6 @@ def redeploy_system(app_id,app_name,port):
     else:
         k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
 
-
-def rewrite_graph_file(self, path, dag_str):
-        
-        f = open(path, "w")
-        f.write(dag_str)
-        f.close()
 
 def check_finish_evaluation(app_name,port,num_samples):
     """Check if the evaluation script is finished
