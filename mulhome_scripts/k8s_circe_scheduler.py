@@ -80,7 +80,7 @@ def write_file(filename,message):
     with open(filename,'a') as f:
         f.write(message)
 
-def k8s_circe_scheduler(dag_info , temp_info,app_name):
+def k8s_circe_scheduler(dag_info, temp_info, app_name):
     """
         This script deploys CIRCE in the system. 
     """
@@ -109,10 +109,22 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     k8s_beta = client.ExtensionsV1beta1Api()
 
     #get DAG and home machine info
+    nodename_to_DNS = temp_info[3]
     first_task = dag_info[0]
     dag = dag_info[1]
     hosts = temp_info[2]
     
+    for key in hosts:
+        if len(hosts[key]) == 2:
+            if hosts[key][0] != 'home':
+                hosts[key][0] = hosts[key][0] + "-1"
+        else:
+            for i in range(len(hosts[key])):
+                if i % 2 == 1:
+                    continue
+                else:
+                    hosts[key][i] = hosts[key][i] + "-" + str(int(i/2 + 1))
+                    
     print("hosts:")
     pprint(hosts)
     print('DAG info:')
@@ -158,19 +170,22 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             kubectl get deployement -n "namespace name"
             kubectl get replicaset -n "namespace name"
             kubectl get pod -n "namespace name"
+        
+        For the purpose of split, assign a pod for each task's replica
     """ 
-   
+    mapp = dag_info[2]
+    all_tasks = []
+    
+    for key, value in mapp.items():
+        all_tasks.append(key)
+            
     print('Create workers service')
-    count = 0
-    for key, value in dag.items():
-        task = key
-        count = count+1
+    for task in all_tasks:
         nexthosts = ''
- 
         """
             Generate the yaml description of the required service for each task
         """
-        pod_name = app_name+"-"+task
+        pod_name = app_name + "-" + task
         body = write_circe_service_specs(name = pod_name)
 
         
@@ -186,9 +201,6 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             print(e)
             print("Exception Occurred")
 
-
-        
-    
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
     
@@ -199,69 +211,111 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     """
     Start circe
     """
-    count = 0
-    for key, value in dag.items():
-
-        task = key
-        nexthosts = ''
-        next_svc = ''
-
-        """
-            We inject the host info for the child task via an environment variable valled CHILD_NODES to each pod/deployment.
-            We perform it by concatenating the child-hosts via delimeter ':'
-            For example if the child nodes are k8node1 and k8node2, we will set CHILD_NODES=k8node1:k8node2
-            Note that the k8node1 and k8node2 in the example are the unique node ids of the kubernets cluster nodes.
-        """
-
-        count = count +1
-        inputnum = str(value[0])
-        flag = str(value[1])
-
-        for i in range(2,len(value)):
-            if i != 2:
-                nexthosts = nexthosts + ':'
-            nexthosts = nexthosts + str(hosts.get(value[i])[0])
-
-        for i in range(2, len(value)): 
-            if i != 2:
-                next_svc = next_svc + ':'
-            next_svc = next_svc + str(service_ips.get(value[i]))
     
-        pod_name = app_name+"-"+task
-        #Generate the yaml description of the required deployment for each task
-        dep = write_circe_deployment_specs(name = pod_name, node_name = hosts.get(task)[1],
-            image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
-            child_ips = next_svc, host = hosts.get(task)[1], dir = '{}',
-            home_node_ip = service_ips.get('home'),
-            own_ip = service_ips[task],
-            all_node = all_node,
-            all_node_ips = all_node_ips,
-            flag = str(flag), inputnum = str(inputnum))
-        # pprint(dep)
-        
+    
+    for key, value in dag.items():
+        for i in range(1):
+            task = key
+            nexthosts = ''
+            next_svc = ''
 
-        # # Call the Kubernetes API to create the deployment
-        try:
-            resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
-            print("Deployment created")
-            print("Deployment created. status = '%s'" % str(resp.status))
-        except ApiException as e:
-            print(e)
+            """
+                We inject the host info for the child task via an environment variable valled CHILD_NODES to each pod/deployment.
+                We perform it by concatenating the child-hosts via delimeter ':'
+                For example if the child nodes are k8node1 and k8node2, we will set CHILD_NODES=k8node1:k8node2
+                Note that the k8node1 and k8node2 in the example are the unique node ids of the kubernetes cluster nodes
+                
+                Example ENV for task0's pod:
+                CHILD_NODES=task1:task2
+                CHILD_NODES_IPS=10.103.170.159:10.110.186.67
+                (Xiangchen comment: the 'node' here means task/pod, not cluster node)
+            """
+            inputnum = str(value[0])
+            flag = str(value[1])
+                   
+            for i in range(2,len(value)):
+                child_hostnames = []
+                if type(hosts[value[i]]) is list:
+                    for j in range(len(hosts[value[i]])):
+                        if j % 2 == 0:
+                            child_hostnames.append(hosts[value[i]][j])
+                    for k in range(len(child_hostnames)):
+                        nexthosts = nexthosts + child_hostnames[k] + ":"
+                        next_svc = next_svc + str(service_ips[child_hostnames[k]]) + ":"
+                else:
+                    nexthosts = nexthosts + str(hosts.get(value[i])[0]) + ":"
+                    next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + ":"
+            
+            nexthosts = nexthosts.rstrip(':')
+            next_svc = next_svc.rstrip(':')
+            pod_name = app_name+"-"+task
+            #Generate the yaml description of the required deployment for each task
+            node_name_here = hosts[task.split('-')[0]][int(task.split('-')[-1])*2-1]
+            dep = write_circe_deployment_specs(name = pod_name, node_name = node_name_here,
+                image = jupiter_config.WORKER_IMAGE, child = nexthosts, task_name=task,
+                child_ips = next_svc, host = node_name_here, dir = '{}',
+                home_node_ip = service_ips.get('home'),
+                own_ip = service_ips[task],
+                all_node = all_node,
+                all_node_ips = all_node_ips,
+                flag = str(flag), inputnum = str(inputnum))
+
+            # # Call the Kubernetes API to create the deployment
+            try:
+                resp = k8s_beta.create_namespaced_deployment(body = dep, namespace = namespace)
+                print("Deployment created")
+                print("Deployment created. status = '%s'" % str(resp.status))
+            except ApiException as e:
+                print(e)
 
     while 1:
         print('Checking status CIRCE workers')
         if check_status_circe(dag,app_name):
             break
         time.sleep(30)
+    
+    # get a list of home child's (consider task0) replicas and portion
+    entry_task = jupiter_config.HOME_CHILD
+    tmp = hosts[entry_task]
+    entry_nodeDNS_to_taskname = {}
+    """
+    tmp
+    ['task0-1', 'ubuntu-s-1vcpu-2gb-nyc3-01', 'task0-2', 'ubuntu-s-1vcpu-2gb-sfo2-03', 'task0-3', 'ubuntu-s-1vcpu-2gb-sfo2-04']
+    
+    mapp
+    {'task0': ['node1', 0.1296876493284042, 'node3', 0.48449175858909777, 'node6', 0.385820592082498], 
+     'task1': ['node2', 0.6756664055262795, 'node5', 0.32433359447372045], 
+     'task2': 'node7', 
+     'task3': 'node4'}
 
-
-
-    # print(service_ips)
+    """
+    print("MAPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
+    print(mapp)
+    child_spec = ""
+    child_spec_ips = ""
+    DNS_to_nodename = {}
+    for key, val in nodename_to_DNS.items():
+        DNS_to_nodename[val[0]] = key
+    tmpmap = {}
+    for i in range(len(tmp)):
+        if i % 2 == 0:
+            tmpmap[tmp[i]] = tmp[i+1]   
+    for key, val in tmpmap.items():
+        taskname = key
+        nodeDNS = val
+        nodename = DNS_to_nodename[nodeDNS]
+        idx = mapp[entry_task].index(nodename)
+        portion = str(round(mapp[entry_task][idx+1], 3)) if type(mapp[entry_task]) is list else '1.000'
+        child_spec = child_spec + taskname + '/' + portion + ':'
+        child_spec_ips = child_spec_ips + service_ips[taskname] + '/' + portion + ':'
+    child_spec = child_spec.rstrip(':')
+    child_spec_ips = child_spec_ips.rstrip(':')
+    
     home_name =app_name+"-home"
     home_dep = write_circe_home_specs(name=home_name,image = jupiter_config.HOME_IMAGE, 
                                 host = jupiter_config.HOME_NODE, 
-                                child = jupiter_config.HOME_CHILD,
-                                child_ips = service_ips.get(jupiter_config.HOME_CHILD), 
+                                child = child_spec,
+                                child_ips = child_spec_ips, 
                                 appname = app_name,
                                 appoption = jupiter_config.APP_OPTION,
                                 dir = '{}')
@@ -270,12 +324,8 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
         resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
         print("Home deployment created")
         print("Home deployment created. status = '%s'" % str(resp.status))
-        # print(resp)
     except ApiException as e:
         print(e)
-       
-
-       
 
 
     pprint(service_ips)
@@ -287,3 +337,4 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
         deploy_time = end_time - start_time
         print('Time to deploy CIRCE '+ str(deploy_time))
 
+   
