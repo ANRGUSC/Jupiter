@@ -118,8 +118,9 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     pprint(hosts)
     print('DAG info:')
     print(dag)
-    print('nodename to DNS')
-    print(nodename_to_DNS)
+    DNS_to_nodename = {}
+    for key, val in nodename_to_DNS.items():
+        DNS_to_nodename[val] = key
 
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
@@ -229,7 +230,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             print(service_ips)
             for i in range(2,len(value)):
                 nexthosts = nexthosts + str(hosts.get(value[i])[0]) + ":"
-                next_svc = next_svc + str(service_ips[hosts.get(value[i])[1]]) + ":"
+                next_svc = next_svc + str(service_ips[DNS_to_nodename[hosts.get(value[i])[1]]]) + ":"
             
             nexthosts = nexthosts.rstrip(':')
             next_svc = next_svc.rstrip(':')
