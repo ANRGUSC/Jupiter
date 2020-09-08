@@ -169,6 +169,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         all_tasks.append(key)
             
     print('Create workers service')
+    print(all_tasks)
     for task in all_tasks:
         nexthosts = ''
         """
