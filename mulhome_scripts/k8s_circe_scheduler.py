@@ -117,14 +117,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     for key in hosts:
         if len(hosts[key]) == 2:
             if hosts[key][0] != 'home':
-                hosts[key][0] = hosts[key][0] + "-1"
-        else:
-            for i in range(len(hosts[key])):
-                if i % 2 == 1:
-                    continue
-                else:
-                    hosts[key][i] = hosts[key][i] + "-" + str(int(i/2 + 1))
-                    
+                hosts[key][0] = hosts[key][0]
     print("hosts:")
     pprint(hosts)
     print('DAG info:')
