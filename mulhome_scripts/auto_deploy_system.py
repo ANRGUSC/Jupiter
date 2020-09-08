@@ -62,12 +62,6 @@ def task_mapping_decorator(f):
         print('WAVE mapper')
         return f(args[0],args[3])
     return task_mapping
-
-def rewrite_graph_file(self, path, dag_str):
-        
-        f = open(path, "w")
-        f.write(dag_str)
-        f.close()
         
 def setup_port(port):
     """Automatically set up the proxy port
@@ -175,7 +169,9 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         dag_str = mapping['UPDATED_DAG_FILE_WITH_DUPICATION']
         del mapping['UPDATED_DAG_FILE_WITH_DUPICATION']
         print(dag_str)
-        rewrite_graph_file(path1, dag_str)
+        f = open(path1, "w")
+        f.write(dag_str)
+        f.close()
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
