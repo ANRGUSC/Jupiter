@@ -240,7 +240,7 @@ class HEFT:
                     ld = LinkDuration(parent.number, task.number, cur_end_time_for_l, 
                       cur_end_time_for_l + link_takeup_time) 
                     l.time_line.append(ld)
-
+    
     
     def run_dup_split(self):
     
@@ -364,7 +364,7 @@ class HEFT:
             print("#############################################################################################")
         elif level == 1:
             print("#############################################################################################")
-            print("                                 result for tpheft + dup")
+            print("                                 result for rand + dup")
             print("#############################################################################################")
         elif level == 2:
             print("#############################################################################################")
