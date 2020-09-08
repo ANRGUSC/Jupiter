@@ -331,6 +331,17 @@ def redeploy_system(app_id,app_name,port):
                 time.sleep(30)
         pprint(mapping)
 
+        """
+        for duplication: example mapping sent from scheduler
+        {'task0': 'node3', 'task1': 'node4', 'task2': 'node15', 'task3': 'node6', 
+         'UPDATED_DAG_FILE_WITH_DUPICATION': 
+         '15\ntask0 1 true task1 task2 task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup\ntask1 1 true task3\ntask2 1 true\ntask3 2 true home\ntask2-dup 1 true task3\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask0-dup 1 true task2-dup\n', 
+         'task2-dup': 'node14', 
+         'task0-dup': 'node13'}
+
+        """
+        dag_str = mapping['UPDATED_DAG_FILE_WITH_DUPICATION']
+        rewrite_graph_file(path1, dag_str):
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
@@ -355,6 +366,11 @@ def redeploy_system(app_id,app_name,port):
         k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
 
 
+def rewrite_graph_file(self, path, dag_str):
+        
+        f = open(path, "w")
+        f.write(dag_str)
+        f.close()
 
 def check_finish_evaluation(app_name,port,num_samples):
     """Check if the evaluation script is finished
