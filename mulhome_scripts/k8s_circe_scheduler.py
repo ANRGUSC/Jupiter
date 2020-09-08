@@ -234,17 +234,8 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             flag = str(value[1])
                    
             for i in range(2,len(value)):
-                child_hostnames = []
-                if type(hosts[value[i]]) is list:
-                    for j in range(len(hosts[value[i]])):
-                        if j % 2 == 0:
-                            child_hostnames.append(hosts[value[i]][j])
-                    for k in range(len(child_hostnames)):
-                        nexthosts = nexthosts + child_hostnames[k] + ":"
-                        next_svc = next_svc + str(service_ips[child_hostnames[k]]) + ":"
-                else:
-                    nexthosts = nexthosts + str(hosts.get(value[i])[0]) + ":"
-                    next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + ":"
+                nexthosts = nexthosts + str(hosts.get(value[i])[0]) + ":"
+                next_svc = next_svc + str(service_ips[hosts.get(value[i])]) + ":"
             
             nexthosts = nexthosts.rstrip(':')
             next_svc = next_svc.rstrip(':')
@@ -305,9 +296,8 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
         nodeDNS = val
         nodename = DNS_to_nodename[nodeDNS]
         idx = mapp[entry_task].index(nodename)
-        portion = str(round(mapp[entry_task][idx+1], 3)) if type(mapp[entry_task]) is list else '1.000'
-        child_spec = child_spec + taskname + '/' + portion + ':'
-        child_spec_ips = child_spec_ips + service_ips[taskname] + '/' + portion + ':'
+        child_spec = child_spec + taskname + ':'
+        child_spec_ips = child_spec_ips + service_ips[taskname] + ':'
     child_spec = child_spec.rstrip(':')
     child_spec_ips = child_spec_ips.rstrip(':')
     
