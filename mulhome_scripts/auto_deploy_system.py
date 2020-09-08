@@ -341,7 +341,7 @@ def redeploy_system(app_id,app_name,port):
 
         """
         dag_str = mapping['UPDATED_DAG_FILE_WITH_DUPICATION']
-        rewrite_graph_file(path1, dag_str):
+        rewrite_graph_file(path1, dag_str)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
