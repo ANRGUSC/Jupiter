@@ -47,7 +47,7 @@ def check_status_circe(dag,app_name):
 
     result = True
     for key, value in dag.items():
-        # print(key)
+        # print(key)hosts
         # print(value)
 
         # First check if there is a deployment existing with
@@ -228,7 +228,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                 print(service_ips)
                 print(value[i])
                 print(hosts)
-                next_svc = next_svc + str(service_ips[hosts.get(value[i])[1]]) + ":"
+                next_svc = next_svc + str(service_ips[nodename_to_DNS[hosts.get(value[i])[1]]]) + ":"
             
             nexthosts = nexthosts.rstrip(':')
             next_svc = next_svc.rstrip(':')
