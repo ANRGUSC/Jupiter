@@ -190,7 +190,7 @@ def main():
             print('Start the HEFT scheduler')
             heft_scheduler.run()
             heft_scheduler.display_result(0)
-            heft_scheduler.run_dup_split()
+            #heft_scheduler.run_dup_split()
             print('Output of HEFT scheduler')
             heft_scheduler.display_result(2)
             heft_scheduler.output_file(output_file)
