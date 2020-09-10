@@ -50,7 +50,7 @@ def return_assignment():
     """
     print("Recieved request for current mapping. Current mappings done:", len(assignments))
     print(assignments)
-    if len(assignments) == MAX_TASK_NUMBER:
+    if len(assignments) >= MAX_TASK_NUMBER:
         return json.dumps(assignments)
     else:
         return json.dumps(dict())
@@ -190,15 +190,15 @@ def main():
             print('Start the HEFT scheduler')
             heft_scheduler.run()
             heft_scheduler.display_result(0)
-            #heft_scheduler.run_dup_split()
+            heft_scheduler.run_dup_split()
             print('Output of HEFT scheduler')
-            heft_scheduler.display_result(2)
+            heft_scheduler.display_result(1)
             heft_scheduler.output_file(output_file)
             assignments = heft_scheduler.output_assignments()
             print('Assign random master and slaves')
             for i in range(0,len(non_tasks)):
                 assignments[non_tasks[i]] = node_info[randint(1,num_nodes)] 
-            #heft_scheduler.display_result(2)
+            #heft_scheduler.display_result(1)
             t = time.time()
             if len(assignments) == MAX_TASK_NUMBER:
                 print('Successfully finish HEFT mapping ')

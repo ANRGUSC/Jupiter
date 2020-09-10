@@ -31,7 +31,7 @@ import numpy as np
 import os
 import time
 import split
-import random
+import duplication
 
 class Duration:
     """Time duration about a task
@@ -243,7 +243,29 @@ class HEFT:
     
     
     def run_dup_split(self):
-        return 
+        
+        for i in range(4):
+        #while True:
+            btnk_id = self.get_btnk_id()
+            print("\n-------------------------------")
+            print("current system bottleneck: %s" % str(btnk_id))
+            if self.is_link(btnk_id):
+                dup = duplication.Duplication()
+                new_node_id, min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, files_to_dst, files_from_src = dup.get_dup_node(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
+                if new_node_id == -1:
+                    break
+                print("-------------------------------")
+                print("Conclusion for this round of duplication: chose new node and duplicate following tasks on it")
+                print(new_node_id, task_ids_to_dup)
+                new_node = self.processors[new_node_id]
+                dup.duplicate(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, 
+                btnk_id, new_node, min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, self.task_names, files_to_dst, files_from_src)
+            else:
+                break
+                #spt = split.Split()
+                #flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
+                #if flag == False:
+                #    break
             
     def get_link_by_id(self, link_id):
         for l in self.links:
@@ -259,7 +281,7 @@ class HEFT:
     def display_result(self, level):
         """Display scheduling result to console
         """
-        self.print_level(8)
+        self.print_level(level)
         print("==============================================")
         print("               print task info")
         print("==============================================")
@@ -312,11 +334,8 @@ class HEFT:
         Returns:
             dict: assignments of tasks and corresponding computing nodes & portion
         """
-        # eg a['task0'] = ['node1', 0.5, 'node2', 0.5], a['task1'] = 'node1'
-        # if task wasn't split, value is a string specifying the node
-        # else, value is a list, [node, portion, node, portion, etc]
+        # with duplication: send a serialized value (string) of updated graph to circe
         assignments = {}
-        
         for task in self.tasks:
             if len(task.proc_num_to_portion) == 0:
                 assignments[self.task_names[task.number]] = self.node_info[task.processor_num+1]
@@ -326,7 +345,10 @@ class HEFT:
                 for proc_num in task.proc_num_to_portion:
                     assignments[task_name].append(self.node_info[proc_num+1])
                     assignments[task_name].append(task.proc_num_to_portion[proc_num])
-                    
+        dag_str = self.serialize_dag_file("dag.txt")
+        assignments["UPDATED_DAG_FILE_WITH_DUPICATION"] = dag_str
+        print("\nassignments\n")
+        print(assignments)
         return assignments
 
     def print_level(self, level):
@@ -343,7 +365,7 @@ class HEFT:
             print("#############################################################################################")
         elif level == 1:
             print("#############################################################################################")
-            print("                                 result for tpheft + dup")
+            print("                                 result for rand + dup")
             print("#############################################################################################")
         elif level == 2:
             print("#############################################################################################")
@@ -355,7 +377,7 @@ class HEFT:
             print("#############################################################################################")
         else:
             print("#############################################################################################")
-            print("                                 random or manual mapping")
+            print("                               INVALID PRINT LEVEL NUMBER!!!")
             print("#############################################################################################")
 
     def get_btnk_id(self):
@@ -372,13 +394,13 @@ class HEFT:
                 if link.time_line[-1].end > max_time:
                     max_time = link.time_line[-1].end
                     btnk_id = link.id
-                    
+        '''
         for processor in self.processors:
             if len(processor.time_line) != 0:
                 if processor.time_line[-1].end > max_time:
                     max_time = processor.time_line[-1].end
                     btnk_id = str(processor.number)
-                    
+        '''         
         return btnk_id
         
     def is_link(self, btnk_id):
@@ -390,3 +412,15 @@ class HEFT:
             if c == '_':
                 return True
         return False
+        
+    def serialize_dag_file(self, path):
+        
+        dag_str = ""
+        f = open(path, "r")
+        while(1):
+            line = f.readline()
+            if len(line) == 0:
+                break
+            dag_str += line
+        f.close()
+        return dag_str
