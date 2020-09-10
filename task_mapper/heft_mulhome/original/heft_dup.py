@@ -244,7 +244,7 @@ class HEFT:
     
     def run_dup_split(self):
         
-        for i in range(4):
+        for i in range(1):
         #while True:
             btnk_id = self.get_btnk_id()
             print("\n-------------------------------")
