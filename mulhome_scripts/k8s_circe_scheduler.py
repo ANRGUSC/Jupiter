@@ -273,7 +273,6 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     child_spec = ""
     child_spec_ips = ""
     entry_tasks = []
-    entry_tasks.append(entry_task)
     for key in hosts:
         if key.split('-')[0] == entry_task:
             entry_tasks.append(key)
