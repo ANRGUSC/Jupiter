@@ -50,7 +50,7 @@ def return_assignment():
     """
     print("Recieved request for current mapping. Current mappings done:", len(assignments))
     print(assignments)
-    if len(assignments) == MAX_TASK_NUMBER:
+    if len(assignments) >= MAX_TASK_NUMBER:
         return json.dumps(assignments)
     else:
         return json.dumps(dict())
