@@ -438,7 +438,14 @@ def main():
     configs = json.load(open('/centralized_scheduler/config.json'))
     print("======================CONFIGS=======================")
     print(configs)
-    taskmap = configs["taskname_map"][sys.argv[-1].split('-')]
+    """
+    without dup: taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
+    configs:
+    {'taskname_map': {'task2': ['task2', True], 'task1': ['task1', True], 'task0': ['task0', True], 'task3': ['task3', True]}, 'exec_profiler':
+    {'task2': True, 'task1': True, 'task0': True, 'task3': True}}
+    taskname_map: {'task2': ['task2', True], 'task1': ['task1', True], 'task0': ['task0', True], 'task3': ['task3', True]}
+    """
+    taskmap = configs["taskname_map"][sys.argv[-1].split('-')[0]]
     taskname = taskmap[0]
     if taskmap[1] == True:
         taskmodule = __import__(taskname)
