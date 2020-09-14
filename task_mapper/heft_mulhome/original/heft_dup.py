@@ -272,8 +272,7 @@ class HEFT:
                 print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG')
                 print("task here %s" % task.number)
                 print("parent numbers")
-                for p in parent_tasks:
-                    print(p.number, end=' ')
+                print(pt.number for pt in parent_tasks)
                 for parent in parent_tasks:
                     parent_processor_number = parent.processor_num
                     link_takeup_time = self.cal_comm_quadratic(self.data[parent.number][task.number], 
