@@ -113,6 +113,9 @@ class HEFT:
         self.data: [[-1, 67108, 67108, -1], [-1, -1, -1, 67108], [-1, -1, -1, 67108], [-1, -1, -1, -1]]
         self.quaratic_profile: [[(0, 0, 0), (0.0002541701921502464, -2.2216230193642272, 1777.3867073476163)], [(-4.191647173339474e-07, 0.050132222312572056, 236.0932576449177), (0, 0, 0)]]
         '''
+        print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG')
+        print("data matrix")
+        print(self.data)
         self.tasks = [Task(n) for n in range(self.num_task)]
         self.processors = [Processor(n) for n in range(self.num_processor)]
         self.get_parents_for_all()
@@ -266,6 +269,11 @@ class HEFT:
                 
                 # update ALL links takeup time from all parents
                 parent_tasks = [self.tasks[n] for n in task.parents_numbers]
+                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG')
+                print("task here %s" % task.number)
+                print("parent numbers")
+                for p in parent_tasks:
+                    print(p.number, end=' ')
                 for parent in parent_tasks:
                     parent_processor_number = parent.processor_num
                     link_takeup_time = self.cal_comm_quadratic(self.data[parent.number][task.number], 
