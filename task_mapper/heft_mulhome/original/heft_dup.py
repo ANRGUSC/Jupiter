@@ -119,7 +119,7 @@ class HEFT:
         self.tasks = [Task(n) for n in range(self.num_task)]
         self.processors = [Processor(n) for n in range(self.num_processor)]
         self.get_parents_for_all()
-        print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG')
+        print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG1')
         for tk in self.tasks:
             print("task here %s" % tk.number)
             print("parent numbers")
@@ -144,7 +144,11 @@ class HEFT:
         self.cal_up_rank(self.tasks[self.start_task_num])
         # self.cal_down_rank(self.tasks[self.end_task_num])
         self.tasks.sort(cmp=lambda x, y: cmp(x.up_rank, y.up_rank), reverse=True)
-        
+        print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG2')
+        for tk in self.tasks:
+            print("task here %s" % tk.number)
+            print("parent numbers")
+            print([pt for pt in tk.parents_numbers])
 
     def cal_up_rank(self, task):
         """
@@ -217,7 +221,11 @@ class HEFT:
         cur_max_time = 0
         # current bottleneck resource id
         cur_bottleneck_resource = ""
-        
+        print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG3')
+        for tk in self.tasks:
+            print("task here %s" % tk.number)
+            print("parent numbers")
+            print([pt for pt in tk.parents_numbers])
         for task in self.tasks:
             if task == self.tasks[0]:
                 # no need to consider link when assigning entry task
@@ -256,7 +264,11 @@ class HEFT:
                     updated_time_here = max(updated_node_time_here, updated_link_time_here)
                     #updated_system_max_time_here = max(updated_time_here, cur_max_time)
                     tmp[processor.number] = updated_time_here
-                    
+                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG4')
+                for tk in self.tasks:
+                    print("task here %s" % tk.number)
+                    print("parent numbers")
+                    print([pt for pt in tk.parents_numbers])
                 # find the processor which will result in minimum max_updated_time
                 candidate = -1
                 min_max_time = time.time() # consider this value as infinity
@@ -264,6 +276,12 @@ class HEFT:
                     if tmp[key] < min_max_time:
                         min_max_time = tmp[key]
                         candidate = key
+                        
+                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG5')
+                for tk in self.tasks:
+                    print("task here %s" % tk.number)
+                    print("parent numbers")
+                    print([pt for pt in tk.parents_numbers])
                         
                 # assign task to candidate (candidate is a processor number)
                 node = self.processors[candidate]
@@ -274,7 +292,7 @@ class HEFT:
                 
                 # update ALL links takeup time from all parents
                 parent_tasks = [self.tasks[n] for n in task.parents_numbers]
-                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG')
+                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG6')
                 print("task here %s" % task.number)
                 print("parent numbers")
                 print([pt.number for pt in parent_tasks])
