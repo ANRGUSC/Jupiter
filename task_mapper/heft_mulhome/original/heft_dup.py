@@ -287,6 +287,7 @@ class HEFT:
                 # update ALL links takeup time from all parents
                 parent_tasks = [self.tasks[n] for n in task.parents_numbers]
                 print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG5')
+                print([p.number for p in parent_tasks])
                 for tk in self.tasks:
                     print("task here %s" % tk.number)
                     print("parent numbers")
