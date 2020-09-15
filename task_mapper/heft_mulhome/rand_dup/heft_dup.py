@@ -226,7 +226,7 @@ class HEFT:
             node.time_line.append(Duration(task.number, start_time, end_time))
             
             # update ALL links takeup time from all parents
-            parent_tasks = [self.tasks[n] for n in task.parents_numbers]
+            parent_tasks = [self.get_task_by_number(n) for n in task.parents_numbers]
             for parent in parent_tasks:
                 parent_processor_number = parent.processor_num
                 link_takeup_time = self.cal_comm_quadratic(self.data[parent.number][task.number], 
@@ -402,7 +402,12 @@ class HEFT:
                     btnk_id = str(processor.number)
         '''         
         return btnk_id
-        
+    
+    def get_task_by_number(self, task_num):
+        for tk in self.tasks:
+            if tk.number == task_num:
+                return tk
+
     def is_link(self, btnk_id):
         """
         return true if the bottleneck id represents a link
