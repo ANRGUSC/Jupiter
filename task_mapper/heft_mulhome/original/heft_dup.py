@@ -264,11 +264,7 @@ class HEFT:
                     updated_time_here = max(updated_node_time_here, updated_link_time_here)
                     #updated_system_max_time_here = max(updated_time_here, cur_max_time)
                     tmp[processor.number] = updated_time_here
-                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG4')
-                for tk in self.tasks:
-                    print("task here %s" % tk.number)
-                    print("parent numbers")
-                    print([pt for pt in tk.parents_numbers])
+                    
                 # find the processor which will result in minimum max_updated_time
                 candidate = -1
                 min_max_time = time.time() # consider this value as infinity
@@ -277,7 +273,7 @@ class HEFT:
                         min_max_time = tmp[key]
                         candidate = key
                         
-                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG5')
+                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG4')
                 for tk in self.tasks:
                     print("task here %s" % tk.number)
                     print("parent numbers")
@@ -292,10 +288,11 @@ class HEFT:
                 
                 # update ALL links takeup time from all parents
                 parent_tasks = [self.tasks[n] for n in task.parents_numbers]
-                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG6')
-                print("task here %s" % task.number)
-                print("parent numbers")
-                print([pt.number for pt in parent_tasks])
+                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG5')
+                for tk in self.tasks:
+                    print("task here %s" % tk.number)
+                    print("parent numbers")
+                    print([pt for pt in tk.parents_numbers])
                 for parent in parent_tasks:
                     parent_processor_number = parent.processor_num
                     link_takeup_time = self.cal_comm_quadratic(self.data[parent.number][task.number], 
