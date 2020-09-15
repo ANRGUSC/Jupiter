@@ -123,7 +123,7 @@ class HEFT:
         for tk in self.tasks:
             print("task here %s" % tk.number)
             print("parent numbers")
-            print([pt.number for pt in tk.parent_tasks])
+            print([pt.number for pt in tk.parents_tasks])
         self.start_task_num, self.end_task_num = 0, self.num_task-1
         self.dup_tasks = []
         self.critical_pre_task_num = -1
