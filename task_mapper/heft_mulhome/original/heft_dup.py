@@ -285,7 +285,7 @@ class HEFT:
                 node.time_line.append(Duration(task.number, start_time, end_time))
                 
                 # update ALL links takeup time from all parents
-                parent_tasks = [self.tasks[n] for n in task.parents_numbers]
+                parent_tasks = [self.get_task_by_number(n) for n in task.parents_numbers]
                 print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG5')
                 print([p.number for p in parent_tasks])
                 for tk in self.tasks:
@@ -318,6 +318,10 @@ class HEFT:
                 if self.data[parent.number][task.number] != -1:
                     task.parents_numbers.append(parent.number)
                     
+    def get_task_by_number(self, task_num):
+        for tk in self.tasks:
+            if tk.number == task_num:
+                return tk
     
     def display_result(self):
         """Display scheduling result to console
