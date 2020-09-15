@@ -119,6 +119,11 @@ class HEFT:
         self.tasks = [Task(n) for n in range(self.num_task)]
         self.processors = [Processor(n) for n in range(self.num_processor)]
         self.get_parents_for_all()
+        print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG')
+        for tk in self.tasks:
+            print("task here %s" % tk.number)
+            print("parent numbers")
+            print([pt.number for pt in tk.parent_tasks])
         self.start_task_num, self.end_task_num = 0, self.num_task-1
         self.dup_tasks = []
         self.critical_pre_task_num = -1
