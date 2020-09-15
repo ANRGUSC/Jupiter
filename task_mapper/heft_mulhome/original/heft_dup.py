@@ -274,7 +274,7 @@ class HEFT:
                         candidate = key
                         
                 print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG4')
-                print(task.number + "   " + task.parents_numbers)
+                print(str(task.number) + "   " + task.parents_numbers)
                         
                 # assign task to candidate (candidate is a processor number)
                 node = self.processors[candidate]
