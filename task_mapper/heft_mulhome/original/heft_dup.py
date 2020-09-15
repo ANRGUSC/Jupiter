@@ -113,17 +113,9 @@ class HEFT:
         self.data: [[-1, 67108, 67108, -1], [-1, -1, -1, 67108], [-1, -1, -1, 67108], [-1, -1, -1, -1]]
         self.quaratic_profile: [[(0, 0, 0), (0.0002541701921502464, -2.2216230193642272, 1777.3867073476163)], [(-4.191647173339474e-07, 0.050132222312572056, 236.0932576449177), (0, 0, 0)]]
         '''
-        print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG')
-        print("data matrix")
-        print(self.data)
         self.tasks = [Task(n) for n in range(self.num_task)]
         self.processors = [Processor(n) for n in range(self.num_processor)]
         self.get_parents_for_all()
-        print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG1')
-        for tk in self.tasks:
-            print("task here %s" % tk.number)
-            print("parent numbers")
-            print([pt for pt in tk.parents_numbers])
         self.start_task_num, self.end_task_num = 0, self.num_task-1
         self.dup_tasks = []
         self.critical_pre_task_num = -1
@@ -144,11 +136,6 @@ class HEFT:
         self.cal_up_rank(self.tasks[self.start_task_num])
         # self.cal_down_rank(self.tasks[self.end_task_num])
         self.tasks.sort(cmp=lambda x, y: cmp(x.up_rank, y.up_rank), reverse=True)
-        print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG2')
-        for tk in self.tasks:
-            print("task here %s" % tk.number)
-            print("parent numbers")
-            print([pt for pt in tk.parents_numbers])
 
     def cal_up_rank(self, task):
         """
@@ -221,11 +208,6 @@ class HEFT:
         cur_max_time = 0
         # current bottleneck resource id
         cur_bottleneck_resource = ""
-        print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG3')
-        for tk in self.tasks:
-            print("task here %s" % tk.number)
-            print("parent numbers")
-            print([pt for pt in tk.parents_numbers])
         for task in self.tasks:
             if task == self.tasks[0]:
                 # no need to consider link when assigning entry task
@@ -273,10 +255,6 @@ class HEFT:
                         min_max_time = tmp[key]
                         candidate = key
                         
-                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG4')
-                print(task.number)
-                print(task.parents_numbers)
-                        
                 # assign task to candidate (candidate is a processor number)
                 node = self.processors[candidate]
                 task.processor_num = candidate
@@ -286,12 +264,6 @@ class HEFT:
                 
                 # update ALL links takeup time from all parents
                 parent_tasks = [self.get_task_by_number(n) for n in task.parents_numbers]
-                print('+++++++++++++++++++++++++++++++++++++++++++++DEBUG5')
-                print([p.number for p in parent_tasks])
-                for tk in self.tasks:
-                    print("task here %s" % tk.number)
-                    print("parent numbers")
-                    print([pt for pt in tk.parents_numbers])
                 for parent in parent_tasks:
                     parent_processor_number = parent.processor_num
                     link_takeup_time = self.cal_comm_quadratic(self.data[parent.number][task.number], 
