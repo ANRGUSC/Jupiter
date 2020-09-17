@@ -36,7 +36,7 @@ RUN mkdir -p /output
 RUN apt-get install stress
 
 # Add input files
-COPY  app_specific_files/dummy_complex_50/sample_input /sample_input
+COPY  app_specific_files/dummy_complex_10/sample_input /sample_input
 
 # Add the mongodb scripts
 ADD circe/original/runtime_profiler_mongodb /central_mongod
@@ -49,7 +49,7 @@ ADD circe/original/evaluate.py /evaluate.py
 
 
 # Add the task speficific configuration files
-ADD app_specific_files/dummy_complex_50/configuration.txt /configuration.txt
+ADD app_specific_files/dummy_complex_10/configuration.txt /configuration.txt
 
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini

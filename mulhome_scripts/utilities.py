@@ -243,10 +243,11 @@ def prepare_stat_path(node_list,homes,dag):
     folder_path = os.path.join(latency_path,folder)
     Path(folder_path).mkdir(parents=True, exist_ok=True)
     price_type = 'na'
+    dyn_type = 'normal'
     # dyn_type = 'turnoff1node'
     # dyn_type = 'turnoff10mins'
     # dyn_type = 'safedrain'
-    dyn_type = 'safedraininterval'
+    # dyn_type = 'safedraininterval'
     
     if jupiter_config.PRICING == 0:
         if jupiter_config.SCHEDULER == 0:

@@ -207,11 +207,17 @@ def main():
                 assignments[non_tasks[i]] = node_info[randint(1,num_nodes)] 
             heft_scheduler.display_result()
             logging.debug(assignments)
+
             if len(assignments) == MAX_TASK_NUMBER:
                 logging.debug('Successfully finish HEFT mapping ')
                 end_time = time.time()
                 deploy_time = end_time - starting_time
                 logging.debug('Time to finish HEFT modified mapping %s', str(deploy_time))
+                assignments_str = ','.join("{!s}={!r}".format(k,v) for (k,v) in assignments.items())
+                if BOKEH==3:
+                    topic = 'mappinginfo_%s'%(app_option)
+                    msg = 'mappinginfo %s %s originalheft %s \n' %(app_name,assignments_str,str(end_time))
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
             if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)

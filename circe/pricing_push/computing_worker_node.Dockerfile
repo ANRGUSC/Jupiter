@@ -34,21 +34,21 @@ RUN mkdir -p /centralized_scheduler/output
 RUN mkdir -p /home/darpa/apps/data
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/dummy_complex_50/scripts/ /centralized_scheduler/
+ADD app_specific_files/dummy_complex_10/scripts/ /centralized_scheduler/
 
 ADD jupiter_config.ini /jupiter_config.ini
 ADD jupiter_config.py /jupiter_config.py
 
 ADD circe/pricing_push/start_computing_worker.sh /start.sh
 ADD mulhome_scripts/keep_alive.py /centralized_scheduler/keep_alive.py
-ADD app_specific_files/dummy_complex_50/configuration.txt  /centralized_scheduler/dag.txt
-ADD app_specific_files/dummy_complex_50/scripts/config.json /centralized_scheduler/config.json
-ADD app_specific_files/dummy_complex_50/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
+ADD app_specific_files/dummy_complex_10/configuration.txt  /centralized_scheduler/dag.txt
+ADD app_specific_files/dummy_complex_10/scripts/config.json /centralized_scheduler/config.json
+ADD app_specific_files/dummy_complex_10/sample_input/1botnet.ipsum /centralized_scheduler/1botnet.ipsum
 ADD nodes.txt /centralized_scheduler/nodes.txt
 
 ADD circe/pricing_push/compute.py /centralized_scheduler/compute.py
 ADD circe/pricing_push/readconfig.py /readconfig.py
-ADD app_specific_files/dummy_complex_50/name_convert.txt /centralized_scheduler/name_convert.txt
+ADD app_specific_files/dummy_complex_10/name_convert.txt /centralized_scheduler/name_convert.txt
 
 RUN chmod +x /start.sh
 

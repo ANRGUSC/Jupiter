@@ -268,13 +268,13 @@ def announce_input_worker():
         tmp_home = tmp_info.split('-')[1]
         logging.debug("Received input announcement from home compute")
         start_times[(tmp_home,tmp_file)] = tmp_time
-        logging.debug(global_task_node_map)
-        logging.debug(mapping_times)
+        # logging.debug(global_task_node_map)
+        # logging.debug(mapping_times)
         if len(mapping_times)==0: 
             mapping_input_id[(tmp_home,tmp_file)] = 0
         else:
             mapping_input_id[(tmp_home,tmp_file)] = len(mapping_times)-1 #ID of last mapping
-        logging.debug(mapping_input_id)
+        # logging.debug(mapping_input_id)
 
     except Exception as e:
         logging.debug("Received mapping announcement from controller failed")
@@ -344,7 +344,7 @@ def transfer_data_scp(ID,user,pword,source, destination):
                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
                 os.system(cmd)
                 logging.debug('data transfer complete\n')
-                logging.debug(cmd)
+                # logging.debug(cmd)
                 ts = time.time()
                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
                 runtime_sender_log.write(s)
@@ -504,7 +504,7 @@ class Handler1(pyinotify.ProcessEvent):
                 logging.debug('Global task mapping is not loaded')
                 time.sleep(1)
             logging.debug('Current mapping input list')
-            logging.debug(global_task_node_map)
+            # logging.debug(global_task_node_map)
             next_hosts = [global_task_node_map[mapping_input_id[(home_id,input_name)],home_id,x] for x in next_tasks_map[task_name]]
             
             logging.debug('Sending the output files to the corresponding destinations')

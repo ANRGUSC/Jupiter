@@ -522,6 +522,10 @@ class Handler1(pyinotify.ProcessEvent):
         if BOKEH == 3:
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
+
+            topic = 'outputinfo_%s'%(appoption)
+            msg = 'outputinfo priceintegrated %s %s %s \n' %(appname,outputfile,str(end_times[outputfile]))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
            
 
 def new_predict_best_node(task_name):

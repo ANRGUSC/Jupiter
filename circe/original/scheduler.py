@@ -297,6 +297,10 @@ class MyHandler(pyinotify.ProcessEvent):
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
+            topic = 'outputinfo_%s'%(appoption)
+            msg = 'outputinfo %s %s %s %s \n' %(scheduleinfo,appname,outputfile,str(end_times[outputfile]))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
     """
@@ -352,12 +356,17 @@ def main():
     config.read(INI_PATH)
 
     # Prepare transfer-runtime file:
-    global runtime_sender_log, RUNTIME,TRANSFER, transfer_type, appname,appoption
+    global runtime_sender_log, RUNTIME,TRANSFER, transfer_type, appname,appoption, scheduleinfo
 
     RUNTIME = int(config['CONFIG']['RUNTIME'])
     TRANSFER = int(config['CONFIG']['TRANSFER'])
     appname = os.environ['APPNAME']
     appoption = os.environ['APPOPTION']
+    scheduler_option = int(config['CONFIG']['SCHEDULER'])
+    if scheduler_option == 0 or scheduler_option == 3:
+        scheduleinfo = 'heft'
+    else:
+        scheduleinfo = 'greedywave'
 
     if TRANSFER == 0:
         transfer_type = 'scp'

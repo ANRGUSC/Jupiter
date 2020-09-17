@@ -193,6 +193,7 @@ def receive_best_assignment_request():
             best_node = predict_best_node(source_node)
             task_node_summary[key] = best_node
         announce_best_assignment(home_id,best_node, source_node, file_name,source_key)
+
         
     except Exception as e:
         logging.debug("Sending assignment message to flask server on computing node FAILED!!!")
@@ -216,6 +217,12 @@ def announce_best_assignment(home_id,best_node, source_node, file_name,source_ke
             topic = 'msgoverhead_controller%s'%(self_task)
             msg = 'msgoverhead priceevent controller%s requests_announcebest 1\n'%(self_task)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
+            assigned_time = time.time()
+            topic = 'mappinginfo_%s'%(app_option)
+            msg = 'mappinginfo priceevent controller%s %s %s\n' %(self_task,best_node,str(assigned_time))
+            demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
     except Exception as e:
         logging.debug("Sending assignment information to flask server on computing nodes FAILED!!!")
         logging.debug(e)

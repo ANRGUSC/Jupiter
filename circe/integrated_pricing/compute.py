@@ -426,10 +426,15 @@ def update_global_assignment():
 
     globalmappingtime = time.time()-starttime
 
-
+    global_assignment_str = ','.join("{!s}={!r}".format(k,v) for (k,v) in global_task_node_map.items())
+    assigned_time = time.time()
     if BOKEH==3:    
         topic = 'mappinglatency_%s'%(appoption)
         msg = 'mappinglatency priceintegrated %s globalcompute%s %f\n'%(appname, self_name,globalmappingtime)
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
+        topic = 'mappinginfo_%s'%(appoption)
+        msg = 'mappinginfo priceintegrated globalcompute%s %s %s\n' %(self_name,global_assignment_str,str(assigned_time))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def receive_assignment_info():

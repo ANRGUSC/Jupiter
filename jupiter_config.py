@@ -170,10 +170,15 @@ def set_globals():
     global APP_PATH, APP_NAME, APP_OPTION
     
 
+    # HOME_CHILD                = 'task0'
+    # APP_PATH                  = HERE  + 'app_specific_files/stresscpu30/'
+    # APP_NAME                  = 'app_specific_files/stresscpu30'
+    # APP_OPTION                = 'stress30'
+
     HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/dummy_complex_30/'
-    APP_NAME                  = 'app_specific_files/dummy_complex_30'
-    APP_OPTION                = 'complex30'
+    APP_PATH                  = HERE  + 'app_specific_files/dummy_complex_10/'
+    APP_NAME                  = 'app_specific_files/dummy_complex_10'
+    APP_OPTION                = 'complex10'
 
 
     """pricing CIRCE home and worker images"""

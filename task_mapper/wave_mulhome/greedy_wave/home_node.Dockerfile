@@ -13,9 +13,9 @@ RUN mkdir -p DAG
 
 COPY task_mapper/wave_mulhome/greedy_wave/home/start.sh /
 
-ADD app_specific_files/dummy_complex_50/configuration.txt DAG/DAG_application.txt
-ADD app_specific_files/dummy_complex_50/input_node.txt DAG
-ADD app_specific_files/dummy_complex_50/sample_input /
+ADD app_specific_files/dummy_complex_10/configuration.txt DAG/DAG_application.txt
+ADD app_specific_files/dummy_complex_10/input_node.txt DAG
+ADD app_specific_files/dummy_complex_10/sample_input /
 
 ADD jupiter_config.ini /jupiter_config.ini
 

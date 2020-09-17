@@ -343,6 +343,7 @@ def get_most_suitable_node(file_size):
     min_value = sys.maxsize
 
     valid_net_data = dict()
+    logging.debug(network_profile_data)
     for tmp_node_name in network_profile_data:
         data = network_profile_data[tmp_node_name]
         delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
@@ -354,11 +355,13 @@ def get_most_suitable_node(file_size):
         if valid_net_data[item] < min_value * threshold:
             valid_nodes.append(item)
 
+    logging.debug(valid_nodes)
+
     min_value = sys.maxsize
     result_node_name = ''
 
     task_price_summary = dict()
-
+    logging.debug(resource_data)
     for item in valid_nodes:
         tmp_value = valid_net_data[item]
         tmp_cpu = sys.maxsize

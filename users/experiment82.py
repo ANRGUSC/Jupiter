@@ -107,14 +107,15 @@ if __name__ == '__main__':
     # dag_type = 'chain'
     # dag_type = 'simple'
     dag_type = 'complex'
+    dyn_type = 'normal'
     # dyn_type = 'turnoff1node'
     # dyn_type = 'turnoff10mins'
     # dyn_type = 'safedrain'
-    dyn_type = 'safedraininterval'
+    # dyn_type = 'safedraininterval'
 
     main_folder = 'stats/exp8_data_%s'%(dag_type)
 
-    folder_list= ['makespan','msg_overhead','power_overhead','mapping_latency','summary_latency']
+    folder_list= ['makespan','msg_overhead','power_overhead','mapping_latency','summary_latency','mapping_info','output_info']
     try:
         os.mkdir(main_folder)
         for folder in folder_list:
@@ -191,6 +192,26 @@ if __name__ == '__main__':
     print(cur_sub)
     # SERVER_IP = '192.168.1.234'
     _thread.start_new_thread(collector,(cur_app,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,mapping_log))
+
+    # Collect mapping information
+    exp_folder = main_folder+'/'+folder_list[5]
+    mappinginfo_log = '%s/N%dM%d/%s_N%d_M%d_%s.log'%(exp_folder,N,M,option,N,M,dyn_type)
+    print(mappinginfo_log)
+    cur_app = jupiter_config.APP_OPTION
+    cur_sub = 'mappinginfo_%s'%(cur_app)
+    print(cur_sub)
+    # SERVER_IP = '192.168.1.234'
+    _thread.start_new_thread(collector,(cur_app,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,mappinginfo_log))
+
+    # Collect output information
+    exp_folder = main_folder+'/'+folder_list[6]
+    output_log = '%s/N%dM%d/%s_N%d_M%d_%s.log'%(exp_folder,N,M,option,N,M,dyn_type)
+    print(output_log)
+    cur_app = jupiter_config.APP_OPTION
+    cur_sub = 'outputinfo_%s'%(cur_app)
+    print(cur_sub)
+    # SERVER_IP = '192.168.1.234'
+    _thread.start_new_thread(collector,(cur_app,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,output_log))
 
 
 

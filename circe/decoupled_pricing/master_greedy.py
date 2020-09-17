@@ -276,7 +276,6 @@ def restart_mapping_process():
     if BOKEH==3:
         msg = 'msgoverhead pricedecoupled controllerhome requests_restart %d \n'%(len(nodes))
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
-    logging.debug('Send the first task to the first node')
     _thread.start_new_thread(init_thread, ())
 
 
@@ -316,6 +315,9 @@ def init_thread():
     """
     time.sleep(10)
     logging.debug('--------------- Init thread')
+    logging.debug('Send the first task to the first node')
+    logging.debug(time.localtime())
+    init_task_topology()
     for key in init_tasks:
         tasks = init_tasks[key]
         for _, task in enumerate(tasks):
@@ -340,10 +342,17 @@ def monitor_task_status(starting_time):
             end_time = time.time()
             deploy_time = end_time - starting_time
             logging.debug('Time to finish WAVE mapping %s',str(deploy_time))
+            assignments_str = ','.join("{!s}={!r}".format(k,v) for (k,v) in assignments.items()) 
             if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)
                 msg = 'mappinglatency pricedecoupled %s controllerhome %f \n' %(app_name,deploy_time)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
+                topic = 'mappinginfo_%s'%(app_option)
+                msg = 'mappinginfo %s %s greedywave %s \n' %(app_name,assignments_str,str(end_time))
+                demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
+
 
             logging.debug("Announce assignment information to the compute home node")
             announce_mapping_to_homecompute()
@@ -502,6 +511,7 @@ def get_most_suitable_node(file_size):
     min_value = sys.maxsize
 
     valid_net_data = dict()
+    logging.debug(network_profile_data)
     for tmp_node_name in network_profile_data:
         data = network_profile_data[tmp_node_name]
         delay = data['a'] * file_size * file_size + data['b'] * file_size + data['c']
@@ -514,10 +524,14 @@ def get_most_suitable_node(file_size):
         if valid_net_data[item] < min_value * threshold:
             valid_nodes.append(item)
 
+    logging.debug(valid_nodes)
+
     min_value = sys.maxsize
     result_node_name = ''
 
     task_price_summary = dict()
+
+    logging.debug(resource_data)
 
     for item in valid_nodes:
         tmp_value = valid_net_data[item]
@@ -563,8 +577,9 @@ def init_task_topology():
         time.sleep(60)
     init_tasks[assign_to_node] = [first_task]
 
-    logging.debug('------- Init tasks')
+    logging.debug('------- Init tasks topology')
     logging.debug("init_tasks %s" ,init_tasks)
+    logging.debug(time.localtime())
 
     for line in application:
         line = line.strip()
@@ -631,7 +646,7 @@ def main():
     update_interval = 1
     _thread.start_new_thread(schedule_update_profiling,(update_interval,))
 
-    init_task_topology()
+    # init_task_topology()
     _thread.start_new_thread(init_thread, ())
     _thread.start_new_thread(monitor_task_status, (starting_time,))
     app.run(host='0.0.0.0', port=int(FLASK_PORT))

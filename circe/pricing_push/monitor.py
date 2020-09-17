@@ -172,6 +172,8 @@ def default_best_node():
                     demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         else:
             logging.debug('Task price summary is not ready yet.....') 
+
+
         
     
     
@@ -307,6 +309,11 @@ def push_first_assignment_map():
         time.sleep(10) 
     
     logging.debug('Sucessfully assign the first best computing node')
+    assigned_time = time.time()
+    if BOKEH==3:  
+        topic = 'mappinginfo_%s'%(app_option)
+        msg = 'mappinginfo pricepush controller%s %s %s\n' %(self_task,task_node_map[self_task],str(assigned_time))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     update_best_node()
     if 'home' not in child_nodes:
         announce_best_assignment_to_child()
@@ -316,6 +323,13 @@ def push_assignment_map():
     """
     logging.debug('Updated assignment periodically')
     default_best_node()
+
+    #push case: periodically update my mapping info
+    assigned_time = time.time()
+    if BOKEH==3:  
+        topic = 'mappinginfo_%s'%(app_option)
+        msg = 'mappinginfo pricepush controller%s %s %s\n' %(self_task,task_node_map[self_task],str(assigned_time))
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     update_best_node()
     if 'home' not in child_nodes:
         announce_best_assignment_to_child()

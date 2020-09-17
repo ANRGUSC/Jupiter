@@ -206,7 +206,7 @@ def assign_task_to_remote(assigned_node, task_name):
         res = res.decode('utf-8')
         if BOKEH==3:
             topic = 'msgoverhead_%s'%(node_name)
-            msg = 'msgoverhead greedywave%s requests %s 1\n' %(node_name,task_name)
+            msg = 'msgoverhead greedywave %s requests_%s 1\n' %(node_name,task_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         return "not ok"
@@ -249,7 +249,7 @@ def call_send_mapping(mapping, node):
         local_mapping[mapping] = True
         if BOKEH == 3: 
             topic = 'msgoverhead_%s'%(node_name)
-            msg = 'msgoverhead greedywave%s requests home 1\n' %(node_name)
+            msg = 'msgoverhead greedywave %s requests_announcemaster 1\n' %(node_name)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         return "Announce the mapping to the master host failed"

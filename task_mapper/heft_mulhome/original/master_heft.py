@@ -209,6 +209,11 @@ def main():
                 end_time = time.time()
                 deploy_time = end_time - starting_time
                 logging.debug('Time to finish HEFT mapping %s',str(deploy_time))
+                assignments_str = ','.join("{!s}={!r}".format(k,v) for (k,v) in assignments.items())
+                if BOKEH==3:
+                    topic = 'mappinginfo_%s'%(app_option)
+                    msg = 'mappinginfo %s %s originalheft %s \n' %(app_name,assignments_str,str(end_time))
+                    demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
             if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)

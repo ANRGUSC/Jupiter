@@ -149,7 +149,7 @@ def send_schedule(ip):
 
                 fsize = os.stat(cur_schedule).st_size
                 topic = 'msgoverhead_%s'%(SELF_NAME)
-                msg = 'msgoverhead drupehome files %d 1 \n'%(fsize)
+                msg = 'msgoverhead drupe home files_%d 1 \n'%(fsize)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
                 success_flag = True
@@ -243,7 +243,7 @@ class droplet_measurement():
             bash_script = bash_script + " " + str(random_size)
 
             topic = 'msgoverhead_%s'%(SELF_NAME)
-            msg = 'msgoverhead drupehome files %d 1 \n'%(random_size)
+            msg = 'msgoverhead drupe home files_%d 1 \n'%(random_size)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
