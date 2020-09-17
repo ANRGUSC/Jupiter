@@ -212,11 +212,17 @@ class HEFT:
             if task.number == 0:
                 candidate = 2
             elif task.number == 1:
-                candidate = 3
+                candidate = 13
             elif task.number == 2:
                 candidate = 14
             elif task.number == 3:
+                candidate = 3
+            elif task.number == 4:
+                candidate = 4
+            elif task.number == 5:
                 candidate = 5
+            elif task.number == 6:
+                candidate = 6
                           
             # assign task to candidate (candidate is a processor number)
             node = self.processors[candidate]
@@ -244,7 +250,7 @@ class HEFT:
     
     def run_dup_split(self):
         
-        for i in range(1):
+        for i in range(4):
         #while True:
             btnk_id = self.get_btnk_id()
             print("\n-------------------------------")
