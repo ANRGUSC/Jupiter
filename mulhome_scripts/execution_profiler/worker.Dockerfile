@@ -1,5 +1,6 @@
 FROM ubuntu:18.04
 
+# Install required libraries
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -yqq openssh-client openssh-server wget net-tools sshpass
@@ -19,25 +20,24 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 ADD requirements.txt /jupiter/requirements.txt
 RUN pip3 install -r /jupiter/requirements.txt
 
-# add all jupiter application files and install any requirements
-COPY build/app_specific_files/ /jupiter/app_specific_files/
-RUN pip3 install -r /jupiter/app_specific_files/requirements.txt
+# Add all files in the ./build/ folder. This folder is created by
+# build_push_exec.py and contains copies of all files from Jupiter and the
+# application. If you need to add more files, make the script copy files into
+# ./build/ instead of adding it manually in this Dockerfile.
+COPY build/ /jupiter/build/
+RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
 
-# jupiter_utils library
-COPY build/jupiter_utils/ /jupiter/jupiter_utils/
-
-ADD profiler_worker.py /jupiter/profiler.py
+ADD profiler_worker.py /jupiter/profiler_worker.py
 
 ADD start_worker.sh /jupiter/start_worker.sh
-ADD get_files.py /jupiter/get_files.py
-ADD exec_profiler.py /jupiter/exec_profiler.py
-ADD build/jupiter_config.ini /jupiter/jupiter_config.ini
+ADD remote_start.py /jupiter/remote_start.py
+ADD utils.py /jupiter/utils.py
 
 RUN chmod +x /jupiter/start_worker.sh
 
 WORKDIR /jupiter/
 
 # Kubernetes handles exposing ports for us
-# EXPOSE {ports}
+EXPOSE 6100 6200 22
 
 CMD ["./start_worker.sh"]

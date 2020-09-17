@@ -14,42 +14,32 @@ from flask import Flask
 import configparser
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
-JUPITER_CONFIG_INI = '/jupiter/jupiter_config.ini'
+logging.basicConfig(level=logging.INFO)
+JUPITER_CONFIG_INI = '/jupiter/build/jupiter_config.ini'
 
 app = Flask(__name__)
 
 
-def performance():
-    """Send local stats
+def start():
+    os.system("python3 -u profiler_worker.py &")
+    logging.info("Started the profiler")
 
-    Returns:
-    json: local stats
-    """
-    data = {}
-    os.system("python3 -u profiler.py &")
-    logging.debug("Started the profiler")
-
-    js = json.dumps(data)
+    # return empty dict
+    js = json.dumps({})
     return js
 
 
-app.add_url_rule('/', 'performance', performance)
+app.add_url_rule('/', 'start', start)
 
 
 def main():
-    """
-    Load the Configuration File
-    """
     config = configparser.ConfigParser()
     config.read(JUPITER_CONFIG_INI)
 
-    global EXC_FPORT
+    portStr = config['PORT']['FLASK_DOCKER']
 
-    EXC_FPORT = config['PORT']['FLASK_DOCKER']
-
-    logging.debug("starting Flask")
-    app.run(host='0.0.0.0', port=int(EXC_FPORT))
+    logging.debug("Starting Flask server for remote starting of worker")
+    app.run(host='0.0.0.0', port=int(portStr))
 
 
 if __name__ == '__main__':

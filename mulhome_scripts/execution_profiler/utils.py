@@ -1,15 +1,14 @@
-import paho.mqtt.client as mqtt
 import os
 
 
 def demo_help(server, port, topic, msg):
     username = 'anrgusc'
     password = 'anrgusc'
-    client = mqtt.Client()
-    client.username_pw_set(username, password)
-    client.connect(server, port, 300)
-    client.publish(topic, msg, qos=1)
-    client.disconnect()
+    # client = mqtt.Client()
+    # client.username_pw_set(username, password)
+    # client.connect(server, port, 300)
+    # client.publish(topic, msg, qos=1)
+    # client.disconnect()
 
 
 def convert_bytes(num):

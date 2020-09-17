@@ -5,26 +5,56 @@ __author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar,  Jason A Tran, Bhas
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
-
-
 from os import path
 import os
 import configparser
+import logging
+from mulhome_scripts.jupiter_utils import app_config_parser
 
+logging.basicConfig(level=logging.INFO)
+
+# TODO: remove these globals
 HERE       = path.abspath(path.dirname(__file__)) + "/"
 INI_PATH   = HERE + 'jupiter_config.ini'
-DOCKER_ORG = "anrg"
+
+# this should be the same name as the app folder
+# APP_NAME must only contain alphanumerics or hyphens! Prefer only alphanumerics.
+APP_NAME = "example-incomplete"    
+APP_DIR = path.join("app_specific_files", APP_NAME)
+
+# TODO: deprecated, use jupiter_utils.app_config_parser to grab the docker
+# registry. Remove this after set_globals() is removed.
+DOCKER_REGISTRY = "anrg"
+
+# TODO: quynh - should use a getter function instead of a 
+BOKEH = -1
+
+def get_kubeconfig():
+    try:
+        kubeconfig_path = os.environ['KUBECONFIG']
+    except KeyError:
+        logging.info('$KUBECONFIG does not exist. Using default path ~/.kube/config.')
+        kubeconfig_path = "~/.kube/config"
+
+    return kubeconfig_path
 
 def parse_config_ini():
     config = configparser.ConfigParser()
-    config.read(INI_PATH)
+
+    # jupiter_config.ini should always be in the same dir as this file
+    config.read(path.join(
+        path.abspath(path.dirname(__file__)), 
+        "jupiter_config.ini")
+    )
     return config
 
+# used for nodes.txt only
 def get_home_node(file_name):
     with open(file_name) as file:
         line = file.readline().split()
     return line[1]
 
+# used for nodes.txt only
 def get_datasources(file_name):
     datasources = {}
     node_file = open(file_name, "r")
@@ -35,6 +65,7 @@ def get_datasources(file_name):
           datasources[node_line[0]].append(node_line[i])
     return datasources
 
+# TODO: remove all usage of this function
 def set_globals():
     """Set global configuration information
     """
@@ -160,10 +191,10 @@ def set_globals():
         KUBECONFIG_PATH = home + '/.kube/config'
 
     # Namespaces
-    DEPLOYMENT_NAMESPACE    = 'quynh-circe'
-    PROFILER_NAMESPACE      = 'quynh-profiler'
-    MAPPER_NAMESPACE        = 'quynh-mapper'
-    EXEC_NAMESPACE          = 'quynh-exec'
+    DEPLOYMENT_NAMESPACE    = 'jason-circe'
+    PROFILER_NAMESPACE      = 'jason-profiler'
+    MAPPER_NAMESPACE        = 'jason-mapper'
+    EXEC_NAMESPACE          = 'jason-exec'
 
     """ Node file path and first task information """
     global HOME_NODE, HOME_CHILD, STREAM_NODE
@@ -177,8 +208,8 @@ def set_globals():
     
 
     HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/apacdemo/'
-    APP_NAME                  = 'app_specific_files/example_incomplete'
+    APP_PATH                  = HERE  + 'app_specific_files/example/'
+    APP_NAME                  = 'app_specific_files/example'
     APP_OPTION                = 'example'
 
 
@@ -222,9 +253,8 @@ def set_globals():
     """Execution profiler home and worker images"""
     global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
-
-    EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s_%s'%(profiler_option, APP_OPTION, cluster_option)
-    EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s_%s'%(profiler_option, APP_OPTION, cluster_option)
+    EXEC_HOME_IMAGE         = '{}/exec_profiler_home:{}'.format(DOCKER_REGISTRY, APP_OPTION)
+    EXEC_WORKER_IMAGE       = '{}/exec_profiler_worker:{}'.format(DOCKER_REGISTRY, APP_OPTION)
 
     """HEFT docker image"""
     global HEFT_IMAGE
@@ -236,27 +266,32 @@ def set_globals():
     NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
     STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
 
-def get_ports():
-    """ Returns all ports in jupiter_config.ini """
+def k8s_service_port_mappings():
     config = parse_config_ini()
-    
     ports = []
-    for port in config['PORT']:
-        ports.append(config.get('PORT', port))
-
+    for name, portmap in config.items("PORT_MAPPINGS"):
+        svc, docker = portmap.split(":")
+        ports.append({
+            "name": name,
+            "port": int(svc),
+            "targetPort": int(docker)
+        })
     return ports
 
-def get_exec_home_tag():
-    set_globals()
-    # TODO: "APP_OPTION" should be changed to "APP_NAME"
-    tag = '{}/exec_profiler_home:{}'.format(DOCKER_ORG, APP_OPTION)
-    return tag
+def k8s_deployment_port_mappings():
+    config = parse_config_ini()
+    ports = []
+    for name, portmap in config.items("PORT_MAPPINGS"):
+        # k8s service port not needed here
+        svc, docker = portmap.split(":")
+        ports.append({
+            "name": name,
+            "containerPort": int(docker)
+        })
+    return ports
 
-def get_exec_worker_tag():
-    set_globals()
-    # TODO: "APP_OPTION" should be changed to "APP_NAME"
-    tag = '{}/exec_profiler_worker:{}'.format(DOCKER_ORG, APP_OPTION)
-    return tag
+def get_abs_app_dir():
+    abs_path = path.abspath(path.join(path.dirname(__file__), APP_DIR))
+    return abs_path
 
-if __name__ == '__main__':
-    set_globals()
+print(path.dirname(__file__))

@@ -48,7 +48,7 @@ def load_yaml(filename):
     :rtype:     dict
     """
     with open(filename) as f:
-        app_config = yaml.load(f, Loader=yaml.FullLoader)
+        app_config = yaml.load(f)
         logging.debug(app_config)
     return app_config
 

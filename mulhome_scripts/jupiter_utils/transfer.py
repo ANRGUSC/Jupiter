@@ -6,8 +6,8 @@ logging.basicConfig(level=logging.ERROR)
 
 NUM_RETRIES = 100
 
-
-def nodeid_to_ip(id):
+# warning: not all containers have these environment variables
+def profiler_id_to_ip(id):
     profilers_ips = os.environ['ALL_PROFILERS_IPS'].split(':')
     allprofiler_names = os.environ['ALL_PROFILERS_NAMES'].split(':')
     profilers_ips = profilers_ips[1:]
@@ -15,6 +15,14 @@ def nodeid_to_ip(id):
     ip = combined_ip_map[id]
     return ip
 
+# warning: not all containers have these environment variables
+def nodeid_to_ip(id):
+    node_ips = os.environ['ALL_NODES_IPS'].split(':')
+    node_ids = os.environ['ALL_NODES'].split(':')
+    node_ips = node_ips[1:]
+    combined_ip_map = dict(zip(node_ids, node_ips))
+    ip = combined_ip_map[id]
+    return ip
 
 def transfer_data_scp(ip, port, user, pw, src, dst):
     # Keep retrying in case the containers are still building/booting up on
