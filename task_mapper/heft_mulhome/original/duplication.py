@@ -228,7 +228,7 @@ class Duplication:
         for pid in task_ids_to_dup:
             for dr in dst_proc.time_line:
                 if data[pid][dr.task_num] > 0:
-                    print("pid, task_num", pid, task_num)
+                    print("pid, task_num", pid, dr.task_num)
                     data[ori_to_dup[pid]][dr.task_num] = data[pid][dr.task_num]
                     data[pid][dr.task_num] = -1
         print("updated data transfer matrix with task duplication")
