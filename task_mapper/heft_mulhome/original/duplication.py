@@ -161,6 +161,10 @@ class Duplication:
         '''
         return (nodeid, min_btnk, task_ids_to_dup, task_ids_to_recv, list(parent_tasks), files_to_dst, files_from_src)
     
+    def get_task_by_id(tasks, num):
+        for tk in tasks:
+            if tk.number == num:
+                return tk
     
     def duplicate(self, links, processors, tasks, comp_cost, data, quaratic_profile, btnk_id, new_node,
                   min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, task_names, files_to_dst, files_from_src):
@@ -172,8 +176,8 @@ class Duplication:
             2.2 remove children of original tasks
             2.3 add children to parent source tasks
         """
-        tasks_to_dup = [tasks[i] for i in task_ids_to_dup]
-        tasks_to_recv = [tasks[i] for i in task_ids_to_recv]
+        tasks_to_dup = [get_task_by_id(tasks, i) for i in task_ids_to_dup]
+        tasks_to_recv = [get_task_by_id(tasks, i) for i in task_ids_to_recv]
         src_proc = self.get_proc_by_id(processors, btnk_id.split('_')[0])
         dst_proc = self.get_proc_by_id(processors, btnk_id.split('_')[1])
         
@@ -283,7 +287,7 @@ class Duplication:
                     child_ids.append(ctid)
                     file_sizes.append(data[pt.number][ctid])
         if len(file_sizes) > 0:
-            procnum = tasks[parent_ids[idx]].processor_num
+            procnum = get_task_by_id(tasks, parent_ids[idx]).processor_num
             for idx in range(len(file_sizes)):
                 if procnum != new_node.number:
                     new_link = self.get_link_by_id(links, str(procnum)+'_'+str(new_node.number))
