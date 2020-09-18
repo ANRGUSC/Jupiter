@@ -220,9 +220,15 @@ class Duplication:
         for t in tasks_to_dup:
             for prnum in t.parents_numbers:
                 data[prnum][ori_to_dup[t.number]] = data[prnum][t.number]
+        print("##############################################  DEBUG")
+        print("ori_to_dup")
+        print(ori_to_dup)
+        print("data")
+        print(data)
         for pid in task_ids_to_dup:
             for dr in dst_proc.time_line:
                 if data[pid][dr.task_num] > 0:
+                    print("pid, task_num", pid, task_num)
                     data[ori_to_dup[pid]][dr.task_num] = data[pid][dr.task_num]
                     data[pid][dr.task_num] = -1
         print("updated data transfer matrix with task duplication")
