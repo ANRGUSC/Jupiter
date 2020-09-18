@@ -1,5 +1,7 @@
 ### Jupiter Web Application
 
+WARNING: This is currently unstable and not maintained.
+
 * Start backend
 ```console
 $ cd backend

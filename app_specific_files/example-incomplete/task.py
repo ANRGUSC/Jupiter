@@ -5,6 +5,7 @@ import queue
 import threading
 import logging
 
+
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -24,37 +25,37 @@ except ModuleNotFoundError:
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-# Run by dispatcher (e.g. CIRCE). Use task_name to differentiate the tasks by 
+# Run by dispatcher (e.g. CIRCE). Use task_name to differentiate the tasks by
 # name to reuse one base task file.
 def task(q, pathin, pathout, task_name):
     # Parse app_config.yaml which should be in the same directory. Abs path
     # necessary for container deployment.
-    
+
     app_config = app_config_parser.AppConfig(APP_DIR, "example-incomplete")
     children = app_config.child_tasks(task_name)
 
     cnt = 0
     while True:
         input_file = q.get()
-        src_task, this_task, base_fname = input_file.split("_", maxsplit=3) 
+        src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
         log.info(f"{task_name}: file rcvd from {src_task}")
 
-        # Process the file (this task just passes along the file as-is) 
+        # Process the file (this example just passes along the file as-is)
         # Once a file is copied to the `pathout` folder, CIRCE will inspect the
         # filename and pass the file to the next task.
         src = os.path.join(pathin, input_file)
-        dst_task = children[cnt % len(children)] # round robin selection
-        dst = os.path.join(pathout, task_name + "_" + dst_task + "_" + base_fname)
+        dst_task = children[cnt % len(children)]  # round robin selection
+        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
         shutil.copyfile(src, dst)
-        
+
         # read the generate output
         # based on that determine sleep and number of bytes in output file
-
 
         cnt += 1
         q.task_done()
 
     log.error("ERROR: should never reach this")
+
 
 # Run by execution profiler
 def profile_execution(task_name):
@@ -62,18 +63,36 @@ def profile_execution(task_name):
     input_dir = f"{APP_DIR}/sample_inputs/"
     output_dir = f"{APP_DIR}/sample_outputs/"
 
-    # TODO: manaully add the src_dst prefix to the filename here to illustrate how to use this to a developer
-    # src is parent, dst is this task
+    # manually add the src (parent) and dst (this task) prefix to the filename
+    # here to illustrate how Jupiter will enact this under the hood. the actual
+    # src (or parent) is not needed for profiling execution so we fake it here.
+    for file in os.listdir(input_dir):
+        # skip filse made by other threads when testing locally
+        if file.startswith("EXECPROFILER_") is True:
+            continue
+
+        new = f"{input_dir}/EXECPROFILER_{task_name}_{file}"
+        shutil.copyfile(os.path.join(input_dir, file), new)
 
     os.makedirs(output_dir, exist_ok=True)
     t = threading.Thread(target=task, args=(q, input_dir, output_dir, task_name))
     t.start()
 
     for file in os.listdir(input_dir):
-        src_task, dst_task, base_fname = file.split("_", maxsplit=3)
+        try:
+            src_task, dst_task, base_fname = file.split("_", maxsplit=3)
+        except ValueError:
+            # file is not in the correct format
+            continue
+
         if dst_task.startswith(task_name):
             q.put(file)
     q.join()
+
+    # clean up files
+    files = glob.glob(f"{input_dir}/EXECPROFILER_{dst_task}*")
+    for f in files:
+        os.remove(f)
 
     # execution profiler needs the name of ouput files to analyze sizes
     output_files = []
@@ -86,8 +105,8 @@ def profile_execution(task_name):
 
 if __name__ == '__main__':
     # Testing Only
+    import glob
     app_config = app_config_parser.AppConfig("./", "example-incomplete")
     log.info("Threads will run indefintely. Hit Ctrl+c to stop.")
     for dag_task in app_config.get_dag_tasks():
         log.debug(profile_execution(dag_task['name']))
-

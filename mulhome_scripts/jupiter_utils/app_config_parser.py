@@ -76,6 +76,7 @@ class AppConfig:
         raise ChildTasksNotFoundError("No child tasks found")
 
 if __name__ == '__main__':
+    # Test
     app_config = AppConfig("../../app_specific_files/example_incomplete/")
     for node in app_config.node_list():
         print(node)
