@@ -205,17 +205,17 @@ class HEFT:
         for task in self.tasks:
             candidate = -1
             if task.number == 0:
-                candidate = 2
+                candidate = 1
             elif task.number == 1:
-                candidate = 13
+                candidate = 2
             elif task.number == 2:
-                candidate = 14
-            elif task.number == 3:
                 candidate = 3
+            elif task.number == 3:
+                candidate = 13
             elif task.number == 4:
                 candidate = 4
             elif task.number == 5:
-                candidate = 5
+                candidate = 14
             elif task.number == 6:
                 candidate = 6
                           
