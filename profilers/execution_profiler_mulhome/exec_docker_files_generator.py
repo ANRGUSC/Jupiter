@@ -25,6 +25,11 @@ RUN apt-get install g++ make openmpi-bin libopenmpi-dev -y
 RUN apt-get install sudo -y
 RUN apt-get install iproute2 -y
 
+# for opencv
+RUN apt-get install 'ffmpeg'\
+                    'libsm6'\ 
+                    'libxext6'  -y
+
 RUN apt-get install -y openssh-server
 RUN echo '{username}:{password}' | chpasswd
 
