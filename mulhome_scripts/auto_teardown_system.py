@@ -93,7 +93,7 @@ def main():
 
     for app_name in app_list:
         teardown_system(app_name)   
-    os.system("sh teardown.sh")
+
 
 if __name__ == '__main__':
     main()

@@ -1,0 +1,39 @@
+{
+
+  "matrixConfigs": {
+    "dimension" : 4950,
+    "encoding" : [[1,0,1],
+                  [0,1,1]]
+  },
+
+  "PortNum" : "57021",
+  "ssh_port": "5000",
+
+  "masterConfigs": {
+    "PortNum" : "57021",
+    "IP": "nerv2"
+  },
+
+  "execTimes" : [2, 2, 2],
+
+  "chunks" : 1,
+
+  "taskname_map" : {
+     "dummy"	:	["dummy", true],
+     "preprocess1"       : ["preprocess1", true],
+     "preprocess2"       : ["preprocess2", true],
+     "stitch"       	: ["stitch", true],
+     "cardetection"  	: ["cardetection", true],
+     "humandetection"  : ["humandetection", true],
+     "fusion"           : ["fusion",true] },
+
+  "exec_profiler" : {
+     "dummy"	:	true,
+     "preprocess1"       : true,
+     "preprocess2"       : true,
+     "stitch"       	: true,
+     "cardetection"  	: true,
+     "humandetection"  : true,
+     "fusion"           : true }
+
+}
