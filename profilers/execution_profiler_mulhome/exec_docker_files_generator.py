@@ -102,7 +102,7 @@ RUN apt-get install -y openssh-server
 
 # Install required python libraries
 ADD profilers/execution_profiler_mulhome/requirements.txt /requirements.txt
-RUN pip3 --upgrade pip
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
 
