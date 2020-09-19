@@ -44,7 +44,7 @@ ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 ADD profilers/execution_profiler_mulhome/requirements.txt /requirements.txt
-
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 
 RUN mkdir -p /home/darpa/apps/data
