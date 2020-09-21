@@ -391,7 +391,7 @@ def main():
     """Start watching process for ``scheduling`` folder.
     """
 
-    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER, HHOME_NODE_IP, SELF_IP
+    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER, HOME_NODE_IP, SELF_IP
 
 
     logging.debug(JUPITER_CONFIG_INI_PATH)

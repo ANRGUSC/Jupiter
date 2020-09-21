@@ -95,11 +95,6 @@ def main():
 
     all_profiler_map = dict()
 
-
-    logging.debug('Double check~~~~~~~~~~~~~~~~~~~')
-    a = jupiter_config.k8s_service_port_mappings()
-    print(a)
-
     home_svc_name = app_config.app_name + "-home"
     home_svc_spec = k8s_spec.service.generate(
         name=home_svc_name,
