@@ -6,7 +6,7 @@ import time
 from kubernetes import client, config
 from pprint import *
 import json
-from kubernetes.client.apis import core_v1_api
+
 from kubernetes.client.rest import ApiException
 import k8s_spec.service
 import k8s_spec.deployment

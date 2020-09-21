@@ -9,16 +9,21 @@ __version__ = "2.1"
 import pandas as pd
 import itertools
 import logging
+# This exists in a build/ folder created by build_push_exec.py
+from build.jupiter_utils import app_config_parser
 
-logging.basicConfig(level = logging.DEBUG)
+logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+
 
 def main():
     """
         Read ``central_input/nodes.txt`` to get the list of nodes and output combination of link lists in ``central_input/link_list.txt``.
     """
     logging.debug('Preparing the link list text files')
-    input_node_info_file   = 'central_input/nodes.txt'
-    output_link_list       = 'central_input/link_list.txt'
+    input_node_info_file = 'central_input/nodes.txt'
+    output_link_list = 'central_input/link_list.txt'
 
     """
         read the input csv fine to get the list of nodes
@@ -30,13 +35,12 @@ def main():
         # first line of the output csv file
         f.write('Source,Destination\n')
 
-        for node_pair in itertools.combinations(input_node_list.keys(),2):
+        for node_pair in itertools.combinations(input_node_list.keys(), 2):
             # output the generated node pair separeated by a comma (,)
-            f.write(",".join(node_pair)+"\n")
-        
+            f.write(",".join(node_pair) + "\n")
             # output the reverse node pair separeated by a comma (,).
             # The "::-1" index reverses the node pair.
-            f.write(",".join(node_pair[::-1])+"\n")
+            f.write(",".join(node_pair[::-1]) + "\n")
 
 if __name__ == '__main__':
     main()

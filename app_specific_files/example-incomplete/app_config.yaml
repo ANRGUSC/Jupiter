@@ -6,18 +6,23 @@ jupiter_config:
   # jason-circe 
   # jason-profiler
   # jason-mapper
-  namespace_prefix: jason
+  namespace_prefix: quynh
   # Docker registry prefix for pulling and pushing images. Set to empty string for
   # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
   docker_registry: anrg
 node_list:
   # "home" is required. All other names should be "node*" where * is some
   # integer.
-  home: k8sworkersb-ubuntu-s-4vcpu-8gb-0-blr1
-  node1: k8sworkersb-ubuntu-s-4vcpu-8gb-1-sgp1
-  node2: k8sworkersb-ubuntu-s-4vcpu-8gb-2-blr1
-  node3: k8sworkersb-ubuntu-s-4vcpu-8gb-3-lon1
-  node4: k8sworkersb-ubuntu-s-4vcpu-8gb-4-nyc3
+  home: workers-s-1vcpu-3gb-0-nyc1
+  node1: workers-s-1vcpu-3gb-1-sgp1
+  node2: workers-s-1vcpu-3gb-2-fra1
+  node3: workers-s-1vcpu-3gb-3-tor1
+  node4: workers-s-1vcpu-3gb-4-lon1
+  node5: workers-s-1vcpu-3gb-5-fra1
+  node6: workers-s-1vcpu-3gb-6-fra1
+  node7: workers-s-1vcpu-3gb-7-ams3
+  node8: workers-s-1vcpu-3gb-8-nyc3
+  node9: workers-s-1vcpu-3gb-9-lon1
 application:
   ports:
     # these ports are to be exposed by app docker containers and also exposed via k8s service

@@ -191,10 +191,10 @@ def set_globals():
         KUBECONFIG_PATH = home + '/.kube/config'
 
     # Namespaces
-    DEPLOYMENT_NAMESPACE    = 'jason-circe'
-    PROFILER_NAMESPACE      = 'jason-profiler'
-    MAPPER_NAMESPACE        = 'jason-mapper'
-    EXEC_NAMESPACE          = 'jason-exec'
+    DEPLOYMENT_NAMESPACE    = 'quynh-circe'
+    PROFILER_NAMESPACE      = 'quynh-profiler'
+    MAPPER_NAMESPACE        = 'quynh-mapper'
+    EXEC_NAMESPACE          = 'quynh-exec'
 
     """ Node file path and first task information """
     global HOME_NODE, HOME_CHILD, STREAM_NODE
@@ -239,8 +239,11 @@ def set_globals():
     """DRUPE home and worker images"""
     global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
     
-    PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded_%s'%(profiler_option,cluster_option)
-    PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded_%s'%(profiler_option,cluster_option)
+    # PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded_%s'%(profiler_option,cluster_option)
+    # PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded_%s'%(profiler_option,cluster_option)
+
+    PROFILER_HOME_IMAGE         = '{}/drupe_profiler_home:{}'.format(DOCKER_REGISTRY, APP_OPTION)
+    PROFILER_WORKER_IMAGE       = '{}/drupe_profiler_worker:{}'.format(DOCKER_REGISTRY, APP_OPTION)
 
     """WAVE home and worker images"""
     global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE

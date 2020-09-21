@@ -60,6 +60,16 @@ class AppConfig:
         tag = "{}/exec_profiler_worker:{}".format(docker_registry, self.app_name)
         return tag
 
+    def get_drupe_home_tag(self):
+        docker_registry = self.cfg['jupiter_config']['docker_registry']
+        tag = "{}/drupe_profiler_home:{}".format(docker_registry, self.app_name)
+        return tag
+
+    def get_drupe_worker_tag(self):
+        docker_registry = self.cfg['jupiter_config']['docker_registry']
+        tag = "{}/drupe_profiler_worker:{}".format(docker_registry, self.app_name)
+        return tag
+
     def namespace_prefix(self):
         return self.cfg['jupiter_config']['namespace_prefix']
 

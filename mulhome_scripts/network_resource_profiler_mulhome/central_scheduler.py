@@ -1,6 +1,5 @@
-
 """
-.. note:: This is the main script to run in every node in the system for network profiling procedure.
+    .. note:: This is the main script to run in the central network profiler.
 """
 
 __author__ = "Quynh Nguyen, Pradipta Ghosh, Bhaskar Krishnamachari"
@@ -8,51 +7,50 @@ __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rig
 __license__ = "GPL"
 __version__ = "2.1"
 
-import random
-import subprocess
-import pyinotify
-from apscheduler.schedulers.background import BackgroundScheduler
+import pandas as pd
 import os
-import csv
+from pymongo import MongoClient
+import json
+from apscheduler.schedulers.background import BackgroundScheduler
+from multiprocessing import Process, Manager
+import time
+import subprocess
 import paramiko
 from scp import SCPClient
-from pymongo import MongoClient
-import datetime
-import pandas as pd
-import numpy as np
-import time
-import sys
-from os import listdir
-from os.path import isfile, join
 from os import path
 import configparser
-import requests
-import time
-import _thread
+from flask import Flask, Response, request, jsonify
+import csv
+import random
+import datetime
+import numpy as np
 import psutil
 import paho.mqtt.client as mqtt
-from multiprocessing import Process, Manager
+import _thread
 import logging
 
+logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+
+app = Flask(__name__)
+
+JUPITER_CONFIG_INI_PATH = '/build/jupiter_config.ini'
 
 
-
-
-sys.path.append("../")
 
 def retrieve_resource():
     mem = psutil.virtual_memory().percent
-    cpu = psutil.cpu_percent()/ psutil.cpu_count()
+    cpu = psutil.cpu_percent() / psutil.cpu_count()
     t = time.time()
-    return mem,cpu,t
+    return mem, cpu, t
+
 
 def schedule_monitor_resource(interval):
     """
     Schedulete the assignment update every interval
-    
     Args:
         interval (int): chosen interval (minutes)
-    
     """
     sched = BackgroundScheduler()
     sched.add_job(monitor_local_resources_EMA,'interval',id='assign_id', minutes=interval, replace_existing=True)
@@ -63,11 +61,10 @@ def monitor_local_resources_EMA():
     Obtain local resource stats (CPU, Memory usage and the lastest timestamp) from local node and store it to the variable ``local_resources``
     Using Exponential moving average
     """
-
+    num_periods = 10
     logging.debug('Updating local resource stats (EMA)')
-    num_periods = 10 # EMA 10 periods
-    cur_mem,cur_cpu,cur_time = retrieve_resource()
-    if resource_profiling["count"] < (num_periods+1):
+    cur_mem, cur_cpu, cur_time = retrieve_resource()
+    if resource_profiling["count"] < (num_periods + 1):
         resource_profiling["memory"] = (cur_mem + resource_profiling['memory'] * resource_profiling['count']) / (resource_profiling['count'] + 1)
         resource_profiling["cpu"] = (cur_cpu + resource_profiling['cpu'] * resource_profiling['count']) / (resource_profiling['count'] + 1)
     else:
@@ -77,7 +74,7 @@ def monitor_local_resources_EMA():
     resource_profiling['last_update'] = datetime.datetime.utcnow().strftime('%B %d %Y - %H:%M:%S')
 
     try:
-        logdb  = resource_db[SELF_IP]
+        logdb = resource_db[self_ip]
         new_log  = {'memory' : resource_profiling['memory'],
                     'cpu'    : resource_profiling['cpu'],
                     'count'  : resource_profiling['count'],
@@ -87,9 +84,9 @@ def monitor_local_resources_EMA():
     except Exception as e:
         logging.debug('Error logging resource profiling information')
         logging.debug(e)
-        
 
-def demo_help(server,port,topic,msg):
+
+def demo_help(server, port, topic, msg):
     try:
         logging.debug('Sending demo')
         username = 'anrgusc'
@@ -102,39 +99,91 @@ def demo_help(server,port,topic,msg):
     except Exception as e:
         logging.debug('Sending demo failed')
         logging.debug(e)
-    
 
-def does_file_exist_in_dir(path):
-    """Check if file exist in directory
-    
-    Args:
-        path (str): directory path
-    
-    Returns:
-        bool: ``True`` if exist, ``False`` otherwise
-    """
-
-    return any(isfile(join(path, i)) for i in listdir(path))
 
 def schedule_bokeh_profiling(interval):
     """
     Schedulete the assignment update every interval
-    
     Args:
         interval (int): chosen interval (minutes)
-    
     """
     sched = BackgroundScheduler()
     sched.add_job(announce_profiling,'interval',id='assign_id', seconds=interval, replace_existing=True)
     sched.start()
 
 def announce_profiling():
-    cur_mem,cur_cpu,cur_time = retrieve_resource()
+    cur_cpu = psutil.cpu_percent() / psutil.cpu_count()
+    cur_mem = psutil.virtual_memory().percent #used
+    cur_time = time.time()
     topic = 'poweroverhead_%s'%(SELF_NAME)
-    msg = 'poweroverhead %s cpu %f memory %f timestamp %d \n' %(SELF_NAME,cur_cpu,cur_mem,cur_time)
+    msg = 'poweroverhead %s cpu %f memory %f timestamp %f \n' %(SELF_NAME,cur_cpu,cur_mem,cur_time)
     demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
+def send_schedule(ip):
+    """
+    Sends the schedule to the requesting worker profiler
 
+    Args:
+        - ip (str): the ip address of the requesting worker
+
+    Returns:
+        dict: Status of the Schdule transfer ("Sucess" or "Fail")
+
+    """
+    cur_schedule = os.path.join(scheduling_folder, ip)
+    scheduler_file = os.path.join(cur_schedule, output_file)
+    retry = 1
+    success_flag = False
+    if path.isfile(scheduler_file):
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        while retry < num_retries:
+            try:
+                client.connect(ip, username = username, password = password,
+                        port = ssh_port)
+                scp = SCPClient(client.get_transport())
+                scp.put(scheduler_file, dir_remote)
+                scp.close()
+                logging.debug('File transfer complete to ' + ip + '\n')
+                success_flag = True
+                break
+            except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
+                logging.debug('SSH Connection refused, will retry in 2 seconds')
+                time.sleep(2)
+                retry += 1
+    else:
+        logging.debug('No such file exists...')
+
+    return_obj = {}
+    if success_flag:
+        return_obj['status'] = "Success"
+    else:
+        return_obj['status'] = "Fail"
+    return json.dumps(return_obj)
+app.add_url_rule('/schedule/<ip>', 'send_schedule', send_schedule)
+
+
+
+def do_update_quadratic():
+    """
+    This function updates the estimated quadratic parameters in the mongodb server, database ``central_network_profiler``, collection ``quadratic_parameters``. It checks for any received files 
+    from each of the worker droplets in the ``parameters/`` folder. If any a file exists, it updates the mongodb.
+    """
+    logging.debug('Update quadratic parameters from other nodes')
+    db = client_mongo.central_network_profiler
+    parameters_folder = os.path.join(os.getcwd(),'parameters')
+    logdb = db['quadratic_parameters']
+    try:
+        for subdir, dirs, files in os.walk(parameters_folder):
+            for file in files:
+                if file.startswith("."): 
+                    continue
+                measurement_file = os.path.join(subdir, file)
+                df = pd.read_csv(measurement_file, delimiter = ',', header = 0)
+                data_json = json.loads(df.to_json(orient = 'records'))
+                logdb.insert(data_json)
+    except Exception as e:
+        logging.debug(e)
 
 class droplet_measurement():
     """
@@ -154,7 +203,7 @@ class droplet_measurement():
         self.measurement_script = os.path.join(os.getcwd(),'droplet_scp_time_transfer')
         self.db = client_mongo.droplet_network_profiler
         self.logging = logging
-        
+
     def do_add_host(self, file_hosts):
         """This function reads the ``scheduler.txt`` file to add other droplets info 
         
@@ -192,7 +241,6 @@ class droplet_measurement():
             mins = float(results.split("m")[0])      # Get the minute part of the elapsed time
             secs = float(results.split("m")[1][:-1]) # Get the second potion of the elapsed time
             elapsed = mins * 60 + secs
-            
             # Log the information in local mongodb
             cur_time = datetime.datetime.utcnow()
             logging  = self.db[self.hosts[idx]]
@@ -215,14 +263,13 @@ class droplet_regression():
         self.my_region    = None
         self.hosts        = []
         self.regions      = []
-        self.parameters_file = 'parameters_%s'%(sys.argv[1])
+        self.parameters_file = 'parameters_%s'%(self_ip)
         self.dir_remote      = dir_remote_central
         self.scheduling_file = dir_scheduler
         self.db = client_mongo.droplet_network_profiler
         self.username = username
         self.password = password
-        self.central_IPs = HOME_IP.split(':')
-        self.central_IPs = self.central_IPs[1:]
+        self.central_IP = HOME_NODE_IP
         self.logging = logging
        
     def do_add_host(self, file_hosts):
@@ -297,133 +344,191 @@ class droplet_regression():
         """This function sends the local regression data to the central profiler
         """
         self.logging.debug('Send to central nodes')
-        self.logging.debug(self.central_IPs)
-        for central_IP in self.central_IPs:
-            client = paramiko.SSHClient()
-            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            client.connect(central_IP, username = self.username,
-                                password = self.password, port = ssh_port)
-            local_path  = os.path.join(os.getcwd(),self.parameters_file)
-            remote_path = '%s'%(self.dir_remote)
-            scp = SCPClient(client.get_transport())
-            scp.put(local_path, remote_path)
-            scp.close()
+        client = paramiko.SSHClient()
+        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.connect(self.central_IP, username = self.username,
+                            password = self.password, port = ssh_port)
+        local_path  = os.path.join(os.getcwd(),self.parameters_file)
+        remote_path = '%s'%(self.dir_remote)
+        scp = SCPClient(client.get_transport())
+        scp.put(local_path, remote_path)
+        scp.close()
 
 
-class MyEventHandler(pyinotify.ProcessEvent):
-    """Setup the event handler for all the events
+def regression_job():
+    """Scheduling regression process every 10 minutes
+    """
+    logging.debug('Log regression every 10 minutes ....')
+    d = droplet_regression()
+    d.do_add_host(d.scheduling_file)
+    d.do_regression()
+    
+
+def measurement_job():
+    """Scheduling logging measurement process every minute
+    """
+    logging.debug('Log measurement every minute ....')
+    d = droplet_measurement()
+    d.do_add_host(d.scheduling_file)
+    d.do_log_measurement()
+
+def prepare_database(filename):
+    """Connect to MongoDB server, prepare the database ``droplet_network_profiler`` at every node
+    
+    Args:
+        filename (str): info file having the node's name/IP address
     """
 
-    def __init__(self):
-        self.Mjob = None
-        self.Rjob = None
-        self.cur_file = None
-        self.logging = logging
-
-    def prepare_database(self,filename):
-        """Connect to MongoDB server, prepare the database ``droplet_network_profiler`` at every node
-        
-        Args:
-            filename (str): info file having the node's name/IP address
-        """
-
-        client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
-        db = client['droplet_network_profiler']
-        c = 0
-        with open(filename, 'r') as f:
-            next(f)
-            for line in f:
-                c =c+1
-                ip, region = line.split(',')
-                db.create_collection(ip, capped=True, size=10000, max=10)
-        with open(filename, 'r') as f:
-            first_line = f.readline()
-            ip, region = first_line.split(',')
-            db.create_collection(ip, capped=True, size=100000, max=c*100)
-
-    def regression_job(self):
-        """Scheduling regression process every 10 minutes
-        """
-        self.logging.debug('Log regression every 10 minutes ....')
-        d = droplet_regression()
-        d.do_add_host(d.scheduling_file)
-        d.do_regression()
-        # d.do_send_parameters()
-
-    def measurement_job(self):
-        """Scheduling logging measurement process every minute
-        """
-        self.logging.debug('Log measurement every minute ....')
-        d = droplet_measurement()
-        d.do_add_host(d.scheduling_file)
-        d.do_log_measurement()
-
-
-    def process_IN_CLOSE_WRITE(self, event):
-        """On every node, whenever there is scheduling information sent from the central network profiler:
-            - Connect the database
-            - Scheduling measurement procedure
-            - Scheduling regression procedure
-            - Start the schedulers
-        
-        Args:
-            event (ProcessEvent): a new file is created
-        """
-        self.logging.debug("CREATE event: %s", event.pathname)
-        if self.Mjob == None:
-            self.logging.debug('Step 1: Prepare the database')
-            self.prepare_database(event.pathname)
-            sched = BackgroundScheduler()
-
-            self.logging.debug('Step 2: Scheduling measurement job')
-            sched.add_job(self.measurement_job,'interval',id='measurement', minutes=1, replace_existing=True)
-
-            self.logging.debug('Step 3: Scheduling regression job')
-            sched.add_job(self.regression_job,'interval', id='regression', minutes=10, replace_existing=True)
-
-            self.logging.debug('Step 4: Start the schedulers')
-            sched.start()
-
-            while True:
-                time.sleep(10)
-            sched.shutdown()
-        else:
-             self.logging.debug('New scheduling file, setting up a new job')
-
-
+    client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+    db = client['droplet_network_profiler']
+    c = 0
+    with open(filename, 'r') as f:
+        next(f)
+        for line in f:
+            c =c+1
+            ip, region = line.split(',')
+            db.create_collection(ip, capped=True, size=10000, max=10)
+    with open(filename, 'r') as f:
+        first_line = f.readline()
+        ip, region = first_line.split(',')
+        db.create_collection(ip, capped=True, size=100000, max=c*100)
 
 def main():
-    """Start watching process for ``scheduling`` folder.
     """
-
-    global logging
-
-    logging.basicConfig(level = logging.DEBUG)
-
-    global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER, HOME_IP, SELF_IP
-
-    # Load all the confuguration
-    INI_PATH = '/network_profiling/jupiter_config.ini'
-
+        - Load node information from ``central_input/nodes.txt`` and link list information from ``central_input/link_list.txt``
+        - Create ``scheduling`` folder if not existed
+        - Write central profiler info where each node should send their data
+        - Create the central database
+        - Preparing the scheduling files (neighbors info for each node including IP, username, password)
+        - Copy files and network scripts to every droplets
+        - Transfer the ``scheduler.txt`` and ``central.txt`` file to proper folders in order to trigger the profiling
+        - Schedule updating the central database every minute
+    """
     config = configparser.ConfigParser()
-    config.read(INI_PATH)
+    config.read(JUPITER_CONFIG_INI_PATH)
+
+    print(config)
+
+    global MONGO_DOCKER, FLASK_SVC, FLASK_DOCKER, num_retries, username, password, ssh_port, HOME_NODE_IP
 
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
     ssh_port    = int(config['PORT']['SSH_SVC'])
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     retry       = 1
-    dir_local   = "generated_test"
-    dir_remote  = "networkprofiling/received_test"
-    dir_remote_central = "/network_profiling/parameters"
-    dir_scheduler      = "scheduling/scheduling.txt"
+
 
     MONGO_SVC    = int(config['PORT']['MONGO_SVC'])
     MONGO_DOCKER = int(config['PORT']['MONGO_DOCKER'])
     FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
     FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
-    SELF_IP = os.environ["SELF_IP"]
-    HOME_IP = os.environ["HOME_IP"]
+
+    HOME_NODE_IP = os.environ["HOME_NODE_IP"]
+
+    global dir_remote, dir_local, dir_scheduler, dir_remote_central, self_ip, filename
+    self_ip = os.environ['NODE_IP']
+    dir_remote         = '/jupiter/scheduling/'
+    dir_local          = "generated_test"
+    dir_remote_central = "/jupiter/parameters"
+    dir_scheduler      = "scheduling/%s/scheduling.txt"%(self_ip)
+    
+    
+    
+    nodes_file = 'central_input/nodes.txt'
+    homes_list = dict()
+    node_list = dict()
+    with open(nodes_file, 'r') as f:
+        first_line = f.readline()
+        lines = f.readlines()
+        for line in lines:
+            info = line.rstrip().split(',')
+            node_list[info[0]] = [info[1],info[2]]
+            if info[0].startswith('home'):
+                homes_list[info[0]] = [info[1],info[2]]
+                
+    
+    df_homes = pd.DataFrame.from_dict(homes_list, orient='index')  
+    df_nodes = pd.DataFrame.from_dict(node_list, orient='index')
+    df_homes.index.name = 'Tag'  
+    df_nodes.index.name = 'Tag'
+    df_homes.columns = ['Node', 'Region']
+    df_nodes.columns = ['Node', 'Region']
+    
+    # logging.debug(df_homes)
+    # logging.debug(df_nodes)
+
+    # load the list of links from the csv file
+    links_info = 'central_input/link_list.txt'
+    df_links   = pd.read_csv(links_info, header = 0)
+    df_links.replace('(^\s+|\s+$)', '', regex = True, inplace = True)
+
+    # check the folder for putting output files
+    global scheduling_folder, output_file
+    scheduling_folder = 'scheduling'
+    output_file = 'scheduling.txt'
+    if not os.path.exists(scheduling_folder):
+        os.makedirs(scheduling_folder)
+
+    global client_mongo
+    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
+
+
+    logging.debug('Step 1: Create the central database ')
+    db = client_mongo['central_network_profiler']
+    buffer_size = len(df_links.index) * 100
+    db.create_collection('quadratic_parameters', capped = True, size = 100000, max = buffer_size)
+    
+
+    logging.debug('Step 2: Preparing the scheduling text files')
+    for cur_node, row in df_nodes.iterrows():
+        # create separate scheduling folders for separate nodes
+        cur_schedule = os.path.join(scheduling_folder, node_list.get(cur_node)[0])
+        if not os.path.exists(cur_schedule):
+            os.makedirs(cur_schedule)
+
+        outgoing_links_info = df_links.loc[df_links['Source'] == cur_node]
+        outgoing_links_info = pd.merge(outgoing_links_info, df_nodes, left_on = 'Destination', right_index = True, how = 'inner')
+
+        # prepare the output schedule. it has two clumns Node and Region (location)
+        schedule_info = pd.DataFrame(columns = ['Node','Region'])
+
+        # Append the self ip address and the self region
+        schedule_info = schedule_info.append({'Node':node_list.get(cur_node)[0],
+                                    'Region':row['Region']}, ignore_index = True)
+        # append all destination address and their region
+        schedule_info = schedule_info.append(outgoing_links_info[['Node','Region']], ignore_index = False)
+        # write the schedule to the output csv file
+
+        scheduler_file = os.path.join(cur_schedule, output_file)
+
+        schedule_info.to_csv(scheduler_file, header = False, index = False)
+
+
+
+    filename = "scheduling/%s/scheduling.txt"%(self_ip)
+    logging.debug(filename)
+    prepare_database(filename)
+        
+    logging.debug('Step 3: Scheduling updating the central database')
+    # create the folder for each droplet/node to report the local data to
+    parameters_folder = 'parameters'
+    if not os.path.exists(parameters_folder):
+        os.makedirs(parameters_folder)
+
+    # create a background job to update the mongodb with the received parameters
+    sched = BackgroundScheduler()
+    sched.add_job(do_update_quadratic,'interval', id = 'update',
+                               minutes = 10,replace_existing = True)
+    
+
+    logging.debug('Step 4: Scheduling measurement job')
+    sched.add_job(measurement_job,'interval',id='measurement', minutes=1, replace_existing=True)
+
+    logging.debug('Step 5: Scheduling regression job')
+    sched.add_job(regression_job,'interval', id='regression', minutes=10, replace_existing=True)
+
+    logging.debug('Step 6: Start the schedulers')
+    sched.start()
 
 
     global BOKEH_SERVER, BOKEH_PORT, BOKEH, BOKEH_INTERVAL, SELF_NAME
@@ -431,7 +536,7 @@ def main():
     BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
     BOKEH = int(config['BOKEH_LIST']['BOKEH'])
     BOKEH_INTERVAL = int(config['BOKEH_LIST']['BOKEH_INTERVAL'])
-    SELF_NAME = os.environ['SELF_NAME']
+    SELF_NAME = os.environ['NODE_NAME']
 
     logging.debug('Bokeh information')
     logging.debug(BOKEH_SERVER)
@@ -439,9 +544,6 @@ def main():
     logging.debug(BOKEH)
     logging.debug(BOKEH_INTERVAL)
     logging.debug(SELF_NAME)
-
-    global client_mongo 
-    client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
 
     ## Resource profiling
     global manager,resource_profiling
@@ -457,28 +559,21 @@ def main():
     global resource_client, resource_db
     resource_client = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
     resource_db = resource_client['central_resource_profiler']
-    resource_db.create_collection(SELF_IP, capped=True, size = 100000, max=1000)
-
+    resource_db.create_collection(self_ip, capped=True, size = 100000,max=1000)
 
     if BOKEH==3:
-        logging.debug('Start sending profiling information (CPU,mem) to the bokeh server')
+        logging.debug('Step 7: Start sending profiling information (CPU,mem) to the bokeh server')
         _thread.start_new_thread(schedule_bokeh_profiling,(BOKEH_INTERVAL,))
-
-    # watch manager
-    wm = pyinotify.WatchManager()
-    wm.add_watch('scheduling', pyinotify.ALL_EVENTS, rec=True)
-    logging.debug('starting the process\n')
-    # event handler
-    eh = MyEventHandler()
-    # notifier
-    notifier = pyinotify.Notifier(wm, eh)
 
     _thread.start_new_thread(schedule_monitor_resource,(interval,))
 
-    notifier.loop()
+
+    
+
+
+    app.run(host='0.0.0.0', port=FLASK_DOCKER) #run this web application on 0.0.0.0 and default port is 5000
 
 if __name__ == '__main__':
     main()
-
-
+    
 
