@@ -35,7 +35,7 @@ log.setLevel(logging.DEBUG)
 
 app = Flask(__name__)
 
-JUPITER_CONFIG_INI_PATH = '/build/jupiter_config.ini'
+JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
 
 
 
@@ -404,10 +404,12 @@ def main():
         - Transfer the ``scheduler.txt`` and ``central.txt`` file to proper folders in order to trigger the profiling
         - Schedule updating the central database every minute
     """
+
+    logging.debug(JUPITER_CONFIG_INI_PATH)
     config = configparser.ConfigParser()
     config.read(JUPITER_CONFIG_INI_PATH)
 
-    print(config)
+
 
     global MONGO_DOCKER, FLASK_SVC, FLASK_DOCKER, num_retries, username, password, ssh_port, HOME_NODE_IP
 

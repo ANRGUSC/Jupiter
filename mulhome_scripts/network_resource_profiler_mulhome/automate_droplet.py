@@ -36,7 +36,7 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
 
 
-JUPITER_CONFIG_INI_PATH = '/build/jupiter_config.ini'
+JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
 
 def retrieve_resource():
     mem = psutil.virtual_memory().percent
@@ -393,10 +393,11 @@ def main():
 
     global username, password, ssh_port,num_retries, retry, dir_remote, dir_local, dir_scheduler, dir_remote_central, MONGO_DOCKER, MONGO_SVC, FLASK_SVC, FLASK_DOCKER, HHOME_NODE_IP, SELF_IP
 
+
+    logging.debug(JUPITER_CONFIG_INI_PATH)
     config = configparser.ConfigParser()
     config.read(JUPITER_CONFIG_INI_PATH)
 
-    print(config)
 
     username    = config['AUTH']['USERNAME']
     password    = config['AUTH']['PASSWORD']
