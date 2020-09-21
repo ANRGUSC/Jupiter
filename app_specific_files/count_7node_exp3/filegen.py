@@ -4,7 +4,7 @@ import sys
 
 '''
 python3 {THIS_SCRIPT} {INPUT_FILE_NUMBER} {TIME_INTERVAL}
-e.g. python3 filegen.py 100 1 &  // generate 10 files (input1 ~ input9), with interval of 1 sec
+e.g. python3 filegen.py 100 0.5 &  // generate 10 files (input1 ~ input9), with interval of 1 sec
 '''
 
 def main():
