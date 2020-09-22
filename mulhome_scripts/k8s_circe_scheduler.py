@@ -224,6 +224,11 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
             """
             inputnum = str(value[0])
             flag = str(value[1])
+            print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DEBUG")
+            print("HOSTS")
+            print(hosts)
+            print("VALUE")
+            print(value)
             for i in range(2,len(value)):
                 if i != 2:
                     nexthosts = nexthosts + ':'
