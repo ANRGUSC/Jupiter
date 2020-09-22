@@ -3,8 +3,8 @@ import time
 import sys
 
 LOOP_RANGE = 2000000
-TASK_NAME = "task2"
-NUM_BLOCK = 4500
+TASK_NAME = "task3"
+NUM_BLOCK = 5500
 
 def task(input_files, pathin, pathout):
 
