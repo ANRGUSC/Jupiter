@@ -212,7 +212,7 @@ class HEFT:
             if task.number == 0:
                 candidate = 2
             elif task.number == 1:
-                candidate = 13
+                candidate = 5
             elif task.number == 2:
                 candidate = 3
             elif task.number == 3:
@@ -243,7 +243,7 @@ class HEFT:
     
     
     def run_dup_split(self):
-        
+        return 
         for i in range(1):
         #while True:
             btnk_id = self.get_btnk_id()
