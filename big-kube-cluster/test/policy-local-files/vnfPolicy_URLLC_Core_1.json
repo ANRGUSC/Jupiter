@@ -1,0 +1,39 @@
+{
+  "OSDF_FRANKFURT.vnfPolicy_URLLC_Core_1": {
+    "type": "onap.policies.optimization.resource.VnfPolicy",
+    "version": "1.0.0",
+    "type_version": "1.0.0",
+    "metadata": {
+      "policy-id": "OSDF_FRANKFURT.vnfPolicy_URLLC_Core_1",
+      "policy-version": 1
+    },
+    "properties": {
+      "scope": [
+        "OSDF_FRANKFURT",
+        "EmbbNst",
+        "EmbbCn"
+      ],
+      "resources": [
+        "EmbbCn"
+      ],
+      "services": [
+        "EmbbNst"
+      ],
+      "identity": "vnf_URLLC_Core_1",
+      "applicableResources": "any",
+      "vnfProperties": [
+        {
+          "inventoryProvider": "aai",
+          "inventoryType": "nssi",
+          "region": "RegionOne",
+          "attributes": {
+            "orchestrationStatus": "active",
+            "service-role": "nssi",
+            "modelInvariantId":"12345",
+            "modelVersionId":"67890"
+          }
+        }
+      ]
+    }
+  }
+}
