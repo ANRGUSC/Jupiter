@@ -28,7 +28,7 @@ for line_num in hosts_file_ip_line:
     new_line = line[:index]
     new_line += ips[hosts_file_ip_line.index(line_num)]
     new_line += "\n"
-    new_line = new_line.replace('ubuntu', 'root')
+    new_line = new_line.replace('root', 'ubuntu')
     data2[line_num-1] = new_line
 with open('hosts', 'w') as file:
     file.writelines( data2 )
