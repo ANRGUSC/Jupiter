@@ -292,7 +292,7 @@ class HEFT:
     
     def run_dup_split(self):  
         i = 0
-        while True and i <= 7:
+        while True and i <= 5:
             i += 1
             btnk_id = self.get_btnk_id()
             spt = split.Split()
