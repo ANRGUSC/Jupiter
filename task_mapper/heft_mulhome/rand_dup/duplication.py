@@ -277,7 +277,7 @@ class Duplication:
                     child_ids.append(ctid)
                     file_sizes.append(data[pt.number][ctid])
         if len(file_sizes) > 0:
-            procnum = tasks[self.get_task_by_number(tasks, parent_ids[idx])].processor_num
+            procnum = self.get_task_by_number(tasks, parent_ids[idx]).processor_num
             for idx in range(len(file_sizes)):
                 if procnum != new_node.number:
                     new_link = self.get_link_by_id(links, str(procnum)+'_'+str(new_node.number))
