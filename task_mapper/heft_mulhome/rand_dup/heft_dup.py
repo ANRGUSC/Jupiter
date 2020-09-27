@@ -208,15 +208,10 @@ class HEFT:
         
         print("Running Schedule")
         for task in self.tasks:
-            candidate = -1
-            if task.number == 0:
-                candidate = 2
-            elif task.number == 1:
-                candidate = 13
-            elif task.number == 2:
-                candidate = 3
-            elif task.number == 3:
-                candidate = 4
+            if task.number != 6
+                candidate = task.number + 1
+            else:
+                candidate = 28
                           
             # assign task to candidate (candidate is a processor number)
             node = self.processors[candidate]
@@ -244,11 +239,13 @@ class HEFT:
     
     def run_dup_split(self):
         
-        for i in range(4):
+        st = set()
+        for i in range(2):
         #while True:
-            btnk_id = self.get_btnk_id()
+            btnk_id = self.get_btnk_id(st)
             print("\n-------------------------------")
             print("current system bottleneck: %s" % str(btnk_id))
+            st.add(str(btnk_id))
             if self.is_link(btnk_id):
                 dup = duplication.Duplication()
                 new_node_id, min_btnk, task_ids_to_dup, task_ids_to_recv, parent_tasks, files_to_dst, files_from_src = dup.get_dup_node(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
@@ -380,7 +377,7 @@ class HEFT:
             print("                               INVALID PRINT LEVEL NUMBER!!!")
             print("#############################################################################################")
 
-    def get_btnk_id(self):
+    def get_btnk_id(self, st):
         """
         given current processor and link usage, return the id of resource with max takeup time 
         (without considering pipelined wait times)
@@ -391,7 +388,7 @@ class HEFT:
         btnk_id = ""
         for link in self.links:
             if len(link.time_line) != 0:
-                if link.time_line[-1].end > max_time:
+                if link.time_line[-1].end > max_time and link.id not in st:
                     max_time = link.time_line[-1].end
                     btnk_id = link.id
         '''
