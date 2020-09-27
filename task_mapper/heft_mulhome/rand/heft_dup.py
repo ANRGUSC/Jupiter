@@ -203,22 +203,11 @@ class HEFT:
         
         print("Running Schedule")
         for task in self.tasks:
-            candidate = -1
-            if task.number == 0:
-                candidate = 2
-            elif task.number == 1:
-                candidate = 13
-            elif task.number == 2:
-                candidate = 14
-            elif task.number == 3:
-                candidate = 3
-            elif task.number == 4:
-                candidate = 4
-            elif task.number == 5:
-                candidate = 5
-            elif task.number == 6:
-                candidate = 6
-                          
+            if task.number != 6
+                candidate = task.number + 1
+            else:
+                candidate = 28
+
             # assign task to candidate (candidate is a processor number)
             node = self.processors[candidate]
             task.processor_num = candidate
