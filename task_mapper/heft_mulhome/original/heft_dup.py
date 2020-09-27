@@ -208,7 +208,7 @@ class HEFT:
         
         print("Running Schedule")
         for task in self.tasks:
-            if task.number != 6
+            if task.number != 6:
                 candidate = task.number + 1
             else:
                 candidate = 28
