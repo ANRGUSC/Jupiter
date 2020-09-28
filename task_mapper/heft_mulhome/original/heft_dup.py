@@ -239,10 +239,10 @@ class HEFT:
     
     def run_dup_split(self):
         
-        st = set()
-        for i in range(2):
+        #st = set()
+        for i in range(1):
         #while True:
-            btnk_id = self.get_btnk_id(st)
+            btnk_id = "28_8"
             print("\n-------------------------------")
             print("current system bottleneck: %s" % str(btnk_id))
             st.add(str(btnk_id))
