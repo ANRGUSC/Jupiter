@@ -126,7 +126,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     if jupiter_config.BOKEH == 3:
         latency_file = utilities.prepare_stat_path(nodes,homes,dag)
         start_time = time.time()
-        msg = 'CIRCE deploystart %f \n'%(start_time)
+        msg = 'circe deploystart %f \n'%(start_time)
         write_file(latency_file,msg)
 
     service_ips = {}; #list of all service IPs
@@ -283,7 +283,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     logging.debug('Successfully deploy CIRCE dispatcher')
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
-        msg = 'CIRCE deployend %f \n'%(end_time)
+        msg = 'circe deployend %f \n'%(end_time)
         write_file(latency_file,msg)
         deploy_time = end_time - start_time
         logging.debug('Time to deploy CIRCE '+ str(deploy_time))

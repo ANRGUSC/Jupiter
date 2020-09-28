@@ -43,7 +43,7 @@ def delete_all_waves(app_name):
     if jupiter_config.BOKEH == 3:
         latency_file = utilities.prepare_stat_path(nodes,[],dag)
         start_time = time.time()
-        msg = 'WAVE teardownstart %f \n' % start_time
+        msg = 'wave teardownstart %f \n' % start_time
         write_file(latency_file, msg)
 
     """
@@ -139,7 +139,7 @@ def delete_all_waves(app_name):
     logging.debug('Successfully teardown WAVE ')
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
-        msg = 'WAVE teardownend %f \n' % (end_time)
+        msg = 'wave teardownend %f \n' % (end_time)
         write_file(latency_file, msg)
         teardown_time = end_time - start_time
         logging.debug('Time to teardown WAVE' + str(teardown_time))

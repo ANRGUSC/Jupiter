@@ -89,7 +89,7 @@ def announce_input(input_file, input_time):
             res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_home'
-            msg = 'msgoverhead pricepush home requests_announceinput %d\n'%(len(all_compute_host))
+            msg = 'push home requests_announceinput %d %f\n'%(len(all_compute_host),time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug('Announce input files to compute nodes failed')
@@ -420,7 +420,7 @@ def announce_price(task_controller_ip, price):
         res = res.decode('utf-8')
 
         if BOKEH==3:
-            msg = 'msgoverhead pricepush home requests_announceprice %d\n'%(len(price['network']))
+            msg = 'push home requests_announceprice %d %f\n'%(len(price['network']),time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         logging.debug("Sending price message to flask server on controller node FAILED!!!")
@@ -511,7 +511,7 @@ class MyHandler(pyinotify.ProcessEvent):
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
             topic = 'outputinfo_%s'%(appoption)
-            msg = 'outputinfo pricepush %s %s %s \n' %(appname,outputfile,str(end_times[outputfile]))
+            msg = 'outputinfo push %s %s %s \n' %(appname,outputfile,str(end_times[outputfile]))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 

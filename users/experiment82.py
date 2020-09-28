@@ -194,14 +194,14 @@ if __name__ == '__main__':
     _thread.start_new_thread(collector,(cur_app,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,mapping_log))
 
     # Collect mapping information
-    exp_folder = main_folder+'/'+folder_list[5]
-    mappinginfo_log = '%s/N%dM%d/%s_N%d_M%d_%s.log'%(exp_folder,N,M,option,N,M,dyn_type)
-    print(mappinginfo_log)
-    cur_app = jupiter_config.APP_OPTION
-    cur_sub = 'mappinginfo_%s'%(cur_app)
-    print(cur_sub)
-    # SERVER_IP = '192.168.1.234'
-    _thread.start_new_thread(collector,(cur_app,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,mappinginfo_log))
+    # exp_folder = main_folder+'/'+folder_list[5]
+    # mappinginfo_log = '%s/N%dM%d/%s_N%d_M%d_%s.log'%(exp_folder,N,M,option,N,M,dyn_type)
+    # print(mappinginfo_log)
+    # cur_app = jupiter_config.APP_OPTION
+    # cur_sub = 'mappinginfo_%s'%(cur_app)
+    # print(cur_sub)
+    # # SERVER_IP = '192.168.1.234'
+    # _thread.start_new_thread(collector,(cur_app,cur_sub,SERVER_IP,mqtt_port,mqtt_timeout,1,mappinginfo_log))
 
     # Collect output information
     exp_folder = main_folder+'/'+folder_list[6]

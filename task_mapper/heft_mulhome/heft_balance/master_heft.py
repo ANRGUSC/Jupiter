@@ -216,12 +216,12 @@ def main():
                 assignments_str = ','.join("{!s}={!r}".format(k,v) for (k,v) in assignments.items())
                 if BOKEH==3:
                     topic = 'mappinginfo_%s'%(app_option)
-                    msg = 'mappinginfo %s %s originalheft %s \n' %(app_name,assignments_str,str(end_time))
+                    msg = 'mappinginfo heft home %s %s\n' %(assignments_str,str(end_time))
                     demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
             if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)
-                msg = 'mappinglatency %s %s originalheft %f \n' %(app_option, app_name,deploy_time)
+                msg = 'mappinglatency %s %s heft %f \n' %(app_option, app_name,deploy_time)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
                 
             break;

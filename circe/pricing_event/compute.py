@@ -479,7 +479,7 @@ def push_updated_price():
 
     if BOKEH==3:    
         topic = 'msgoverhead_%s'%(self_name)
-        msg = 'msgoverhead priceevent compute%s requests_pushprice %d\n'%(self_name,len(task_controllers))
+        msg = 'event compute%s requests_pushprice %d %f\n'%(self_name,len(task_controllers),time.time())
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
     
@@ -670,7 +670,7 @@ def request_best_assignment(home_id,task_name,file_name):
 
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceevent compute%s requests_best 1\n'%(self_name)
+            msg = 'event compute%s requests_best 1 %f\n'%(self_name,time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
     except Exception as e:

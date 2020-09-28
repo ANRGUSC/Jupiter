@@ -577,7 +577,7 @@ def push_updated_price():
 
     if BOKEH==3:    
         topic = 'msgoverhead_%s'%(self_name)
-        msg = 'msgoverhead pricepush compute%s requests_pushprice %d\n'%(self_name,len(task_controllers))
+        msg = 'push compute%s requests_pushprice %d %f\n'%(self_name,len(task_controllers),time.time())
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)    
 def schedule_update_price(interval):
     """Schedule the price update procedure every interval

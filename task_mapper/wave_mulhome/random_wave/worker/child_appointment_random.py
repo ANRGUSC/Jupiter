@@ -209,7 +209,7 @@ def assign_task_to_remote(assigned_node, task_name):
         res = res.decode('utf-8')
         if BOKEH==3:
             topic = 'msgoverhead_%s'%(node_name)
-            msg = 'msgoverhead greedywave%s assignremote 1 %s %s \n' %(node_name,task_name,assigned_node)
+            msg = 'wave%s assignremote 1 %s %s %f\n' %(node_name,task_name,assigned_node,time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception:
         return "not ok"
@@ -252,7 +252,7 @@ def call_send_mapping(mapping, node):
         local_mapping[mapping] = True
         if BOKEH == 3: 
             topic = 'msgoverhead_%s'%(node_name)
-            msg = 'msgoverhead greedywave%s announcehome 1 %s %s \n' %(node_name,node,mapping)
+            msg = 'wave%s announcehome 1 %s %s \n' %(node_name,node,mapping,time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         return "Announce the mapping to the master host failed"
@@ -392,7 +392,7 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
 
     if BOKEH==3:
         topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead greedywave%s resourcedata %d \n' %(node_name,len(profiler_ips))
+        msg = 'wave%s resourcedata %d %f\n' %(node_name,len(profiler_ips),time.time())
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
@@ -427,7 +427,7 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
 
     if BOKEH==3:
         topic = 'msgoverhead_%s'%(node_name)
-        msg = 'msgoverhead greedywave%s networkdata %d \n' %(node_name,len(myneighbors))
+        msg = 'wave%s networkdata %d %f\n' %(node_name,len(myneighbors),time.time())
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     
 

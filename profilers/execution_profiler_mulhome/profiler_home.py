@@ -376,9 +376,9 @@ def main():
     if BOKEH==3:
         fsize = os.stat(ptFile).st_size
         topic = 'msgoverhead_exechome'
-        msg = 'msgoverhead execprofiler home files_%d %d \n'%(fsize,len(profilers_ips))
+        msg = 'EP home files_%d %d %f\n'%(fsize,len(profilers_ips),time.time())
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
-        msg = 'msgoverhead execprofiler home requests_startprofiler %d \n'%(len(profilers_ips))
+        msg = 'EP home requests_startprofiler %d %f\n'%(len(profilers_ips),time.time())
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 

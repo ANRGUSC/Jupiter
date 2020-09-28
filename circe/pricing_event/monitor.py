@@ -165,7 +165,7 @@ def default_best_node(source_node):
         mappinglatency = time.time() - starttime   
         if BOKEH==3:    
             topic = 'mappinglatency_%s'%(app_option)
-            msg = 'mappinglatency priceevent %s controller%s %f\n'%(app_name, self_task,mappinglatency)
+            msg = 'mappinglatency event %s controller%s %f\n'%(app_name, self_task,mappinglatency)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     else:
         logging.debug('Task price summary is not ready yet.....') 
@@ -215,12 +215,12 @@ def announce_best_assignment(home_id,best_node, source_node, file_name,source_ke
 
         if BOKEH==3:    
             topic = 'msgoverhead_controller%s'%(self_task)
-            msg = 'msgoverhead priceevent controller%s requests_announcebest 1\n'%(self_task)
+            msg = 'event controller%s requests_announcebest 1 %f\n'%(self_task,time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
             assigned_time = time.time()
             topic = 'mappinginfo_%s'%(app_option)
-            msg = 'mappinginfo priceevent controller%s %s %s\n' %(self_task,best_node,str(assigned_time))
+            msg = 'mappinginfo event controller%s %s %s\n' %(self_task,best_node,str(assigned_time))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
     except Exception as e:
@@ -249,7 +249,7 @@ def push_controller_map():
         send_controller_info(computing_ip)
     if BOKEH==3:    
         topic = 'msgoverhead_controller%s'%(self_task)
-        msg = 'msgoverhead priceevent controller%s requests_pushcontroller %d \n'%(self_task,len(all_computing_ips))
+        msg = 'event controller%s requests_pushcontroller %d %f\n'%(self_task,len(all_computing_ips),time.time())
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 class TimedValue:

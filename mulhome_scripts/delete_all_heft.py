@@ -43,7 +43,7 @@ def delete_all_heft(app_name):
     if jupiter_config.BOKEH == 3:
         latency_file = utilities.prepare_stat_path(nodes,[],dag)
         start_time = time.time()
-        msg = 'HEFT teardownstart %f \n'%(start_time)
+        msg = 'heft teardownstart %f \n'%(start_time)
         write_file(latency_file,msg)
 
 
@@ -133,7 +133,7 @@ def delete_all_heft(app_name):
     logging.debug('Successfully teardown HEFT ')
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
-        msg = 'HEFT teardownend %f \n'%(end_time)
+        msg = 'heft teardownend %f \n'%(end_time)
         write_file(latency_file,msg)
         teardown_time = end_time - start_time
         logging.debug('Time to teardown HEFT'+ str(teardown_time))

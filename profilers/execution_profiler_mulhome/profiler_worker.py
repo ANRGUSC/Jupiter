@@ -227,7 +227,7 @@ def main():
         if BOKEH==3:
             fsize = os.stat(local_profiler_path).st_size
             topic = "msgoverhead_%s"%(nodename)
-            msg = 'msgoverhead execprofiler %s files_%d 1\n'%(nodename,fsize)
+            msg = 'EP %s files_%d 1 %f\n'%(nodename,fsize,time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
             
     else:

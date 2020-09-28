@@ -246,7 +246,7 @@ def assign_task_to_remote(assigned_node, task_name):
         res = res.decode('utf-8')
         if BOKEH == 3:
             topic = 'msgoverhead_%s' % (node_name)
-            msg = 'msgoverhead pricedecoupled controller%s requests_assign_%s 1 \n' % (node_name,task_name)
+            msg = 'decoupled controller%s requests_assign_%s 1 %f\n' % (node_name,task_name,time.time())
             demo_help(BOKEH_SERVER, BOKEH_PORT, topic, msg)
     except Exception:
         return "not ok"
@@ -289,7 +289,7 @@ def call_send_mapping(mapping, node):
         local_mapping[mapping] = True
         if BOKEH == 3:
             topic = 'msgoverhead_%s' % (node_name)
-            msg = 'msgoverhead pricedecoupled controller%s requests_announcehome 1 \n' % (node_name)
+            msg = 'decoupled controller%s requests_announcehome 1 %f\n' % (node_name,time.time())
             demo_help(BOKEH_SERVER, BOKEH_PORT, topic, msg)
     except Exception as e:
         logging.debug(e)
@@ -323,6 +323,7 @@ def assign_children_task(children_task):
         if status == "ok":
             local_children[children_task] = assign_to_node
     return
+
 
 
 def get_most_suitable_node(file_size):

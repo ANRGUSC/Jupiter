@@ -45,6 +45,7 @@ app = Flask(__name__)
 def demo_help(server,port,topic,msg):
     username = 'anrgusc'
     password = 'anrgusc'
+    print(msg)
     client = mqtt.Client()
     client.username_pw_set(username,password)
     client.connect(server, port,300)
@@ -328,7 +329,7 @@ def send_assignment_info(node_ip,task_name,best_node):
         res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_%s'%(self_name)
-            msg = 'msgoverhead priceintegrated compute%s requests_updatebest 1\n'%(self_name)
+            msg = 'integrated compute%s requests_updatebest 1 %f\n'%(self_name,time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
@@ -356,13 +357,15 @@ def push_assignment_map():
         t0 = t0+1
     task_list = task_list[1:]
     best_list = best_list[1:]
-    
+
+
     if t0 == len(tasks):
         localmappingtime = time.time()-starttime
         if BOKEH==3:    
             topic = 'mappinglatency_%s'%(appoption)
-            msg = 'mappinglatency priceintegrated %s localcompute%s %f\n'%(appname,self_name,localmappingtime)
+            msg = 'mappinglatency integrated %s localcompute%s %f\n'%(appname,self_name,localmappingtime)
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
             starttime = time.time()
 
         for computing_ip in combined_ips:
@@ -424,17 +427,30 @@ def update_global_assignment():
                         chosen_prev = global_task_node_map[len(mapping_times)-1,home,chosen_task]
                         global_task_node_map[len(mapping_times)-1,home,task] = local_task_node_map[chosen_prev,task]
 
-    globalmappingtime = time.time()-starttime
 
-    global_assignment_str = ','.join("{!s}={!r}".format(k,v) for (k,v) in global_task_node_map.items())
-    assigned_time = time.time()
+    globalmappingtime = time.time()-starttime
+    
+
     if BOKEH==3:    
         topic = 'mappinglatency_%s'%(appoption)
-        msg = 'mappinglatency priceintegrated %s globalcompute%s %f\n'%(appname, self_name,globalmappingtime)
+        msg = 'mappinglatency integrated %s globalcompute%s %f\n'%(appname, self_name,globalmappingtime)
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
-        topic = 'mappinginfo_%s'%(appoption)
-        msg = 'mappinginfo priceintegrated globalcompute%s %s %s\n' %(self_name,global_assignment_str,str(assigned_time))
+        try:
+            global_task = dict()
+            for k in global_task_node_map.keys():
+                if k[1]=='home' and k[0]==len(mapping_times)-1:
+                    global_task[k[2]] = global_task_node_map[k]
+            if len(global_task)>0:
+                global_assignment_str = ','.join("{!s}={!r}".format(k,v) for (k,v) in global_task.items())
+                print(global_assignment_str)
+                assigned_time = time.time()
+                topic = 'mappinginfo_%s'%(appoption)
+                msg = 'mappinginfo integrated globalcompute%s %s %s\n' %(self_name,global_assignment_str,str(assigned_time))
+        except Exception as e:
+            print('Not enough mapping info')
+
+
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def receive_assignment_info():
@@ -772,7 +788,7 @@ def announce_price(price):
 
             if BOKEH==3:    
                 topic = 'msgoverhead_%s'%(self_name)
-                msg = 'msgoverhead priceintegrated compute%s requests_updateprice 1\n'%(self_name)
+                msg = 'integrated compute%s requests_updateprice 1 %f\n'%(self_name,time.time())
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         except Exception as e:
             logging.debug("Sending price message to flask server on other compute nodes FAILED!!!")

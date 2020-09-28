@@ -186,7 +186,7 @@ class droplet_measurement():
             bash_script = bash_script + " " + str(random_size)
 
             topic = 'msgoverhead_%s'%(SELF_NAME)
-            msg = 'msgoverhead drupe node%s files_%d 1 \n'%(SELF_NAME, random_size)
+            msg = 'drupe %s files_%d 1 %f\n'%(SELF_NAME, random_size,time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
             proc = subprocess.Popen(bash_script, shell = True, stdout = subprocess.PIPE)

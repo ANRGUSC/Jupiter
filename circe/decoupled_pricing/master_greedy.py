@@ -244,7 +244,7 @@ def announce_mapping_to_homecompute():
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:
-            msg = 'msgoverhead pricedecoupled controllerhome requests_announcecompute 1 \n'
+            msg = 'decoupled controllerhome requests_announcecompute 1 %f\n'%(time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         logging.debug('Announce full mapping to compute home node failed')
@@ -274,7 +274,7 @@ def restart_mapping_process():
     for node in nodes:
         trigger_restart(nodes[node])
     if BOKEH==3:
-        msg = 'msgoverhead pricedecoupled controllerhome requests_restart %d \n'%(len(nodes))
+        msg = 'decoupled controllerhome requests_restart %d %f\n'%(len(nodes),time.time())
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     _thread.start_new_thread(init_thread, ())
 
@@ -300,7 +300,7 @@ def assign_task_to_remote(assigned_node, task_name):
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:
-            msg = 'msgoverhead pricedecoupled controllerhome requests_assignfirst 1 \n'
+            msg = 'decoupled controllerhome requests_assignfirst 1 %f\n'%(time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         logging.debug(e)
@@ -345,11 +345,11 @@ def monitor_task_status(starting_time):
             assignments_str = ','.join("{!s}={!r}".format(k,v) for (k,v) in assignments.items()) 
             if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)
-                msg = 'mappinglatency pricedecoupled %s controllerhome %f \n' %(app_name,deploy_time)
+                msg = 'mappinglatency decoupled %s controllerhome %f \n' %(app_name,deploy_time)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
                 topic = 'mappinginfo_%s'%(app_option)
-                msg = 'mappinginfo %s %s greedywave %s \n' %(app_name,assignments_str,str(end_time))
+                msg = 'mappinginfo wave home %s %s \n' %(assignments_str,str(end_time))
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 

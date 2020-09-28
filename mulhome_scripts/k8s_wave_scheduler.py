@@ -103,7 +103,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     if jupiter_config.BOKEH == 3:
         latency_file = utilities.prepare_stat_path(nodes,homes,dag)
         start_time = time.time()
-        msg = 'WAVE deploystart %f \n'%(start_time)
+        msg = 'wave deploystart %f \n'%(start_time)
         write_file(latency_file,msg)
 
     """
@@ -245,7 +245,7 @@ def k8s_wave_scheduler(profiler_ips,app_name):
     logging.debug('Successfully deploy WAVE')
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
-        msg = 'WAVE deployend %f \n'%(end_time)
+        msg = 'wave deployend %f \n'%(end_time)
         write_file(latency_file,msg)
         deploy_time = end_time - start_time
         logging.debug('Time to deploy WAVE '+ str(deploy_time))

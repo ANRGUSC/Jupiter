@@ -105,7 +105,7 @@ def announce_mapping_to_workers():
             res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_home'
-            msg = 'msgoverhead pricedecoupled computehome requests_announcemapping %d \n'%(len(all_compute_host))
+            msg = 'decoupled computehome requests_announcemapping %d %f\n'%(len(all_compute_host),time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug('Announce full mapping to compute home node failed')
@@ -287,7 +287,7 @@ class Handler1(pyinotify.ProcessEvent):
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
             topic = 'outputinfo_%s'%(appoption)
-            msg = 'outputinfo pricedecoupled %s %s %s \n' %(appname,outputfile,str(end_times[outputfile]))
+            msg = 'outputinfo decoupled %s %s %s \n' %(appname,outputfile,str(end_times[outputfile]))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
            
 
@@ -308,7 +308,7 @@ def announce_input(input_file, input_time):
             res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_home'
-            msg = 'msgoverhead pricedecoupled computehome requests_announceinput %d \n'%(len(all_compute_host))
+            msg = 'decoupled computehome requests_announceinput %d %f\n'%(len(all_compute_host),time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug('Announce input files to compute nodes failed')

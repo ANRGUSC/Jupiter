@@ -167,13 +167,13 @@ def k8s_pricing_circe_scheduler(dag_info, temp_info, profiler_ips, execution_ips
         latency_file = utilities.prepare_stat_path(nodes, homes, dag)
         start_time = time.time()
         if jupiter_config.PRICING == 1:
-            msg = 'PRICEpush deploystart %f \n'%(start_time)
+            msg = 'push deploystart %f \n'%(start_time)
         elif jupiter_config.PRICING == 2:
-            msg = 'PRICEevent deploystart %f \n'%(start_time)
+            msg = 'event deploystart %f \n'%(start_time)
         elif jupiter_config.PRICING == 3:
-            msg = 'PRICEintegrated deploystart %f \n'%(start_time)
+            msg = 'integrated deploystart %f \n'%(start_time)
         elif jupiter_config.PRICING == 4:
-            msg = 'PRICEdecoupled deploystart %f \n'%(start_time)
+            msg = 'decoupled deploystart %f \n'%(start_time)
         write_file(latency_file, msg)
 
     configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
@@ -463,13 +463,13 @@ def k8s_pricing_circe_scheduler(dag_info, temp_info, profiler_ips, execution_ips
         latency_file = utilities.prepare_stat_path(nodes, homes, dag)
         end_time = time.time()
         if jupiter_config.PRICING == 1:
-            msg = 'PRICEpush deployend %f \n'%(end_time)
+            msg = 'push deployend %f \n'%(end_time)
         elif jupiter_config.PRICING == 2:
-            msg = 'PRICEevent deployend %f \n'%(end_time)
+            msg = 'event deployend %f \n'%(end_time)
         elif jupiter_config.PRICING == 3:
-            msg = 'PRICEintegrated deployend %f \n'%(end_time)
+            msg = 'integrated deployend %f \n'%(end_time)
         elif jupiter_config.PRICING == 4:
-            msg = 'PRICEdecoupled deployend %f \n'%(end_time)
+            msg = 'decoupled deployend %f \n'%(end_time)
         write_file(latency_file, msg)
         deploy_time = end_time - start_time
         logging.debug('Time to deploy CIRCE '+ str(deploy_time))
@@ -502,13 +502,13 @@ def k8s_integrated_pricing_circe_scheduler(dag_info ,profiler_ips, execution_ips
         latency_file = utilities.prepare_stat_path(nodes, homes, dag)
         start_time = time.time()
         if jupiter_config.PRICING == 1:
-            msg = 'PRICEpush deploystart %f \n'%(start_time)
+            msg = 'push deploystart %f \n'%(start_time)
         elif jupiter_config.PRICING == 2:
-            msg = 'PRICEevent deploystart %f \n'%(start_time)
+            msg = 'event deploystart %f \n'%(start_time)
         elif jupiter_config.PRICING == 3:
-            msg = 'PRICEintegrated deploystart %f \n'%(start_time)
+            msg = 'integrated deploystart %f \n'%(start_time)
         elif jupiter_config.PRICING == 4:
-            msg = 'PRICEdecoupled deploystart %f \n'%(start_time)
+            msg = 'decoupled deploystart %f \n'%(start_time)
         write_file(latency_file, msg)
 
     configs = json.load(open(jupiter_config.APP_PATH+ 'scripts/config.json'))
@@ -677,13 +677,13 @@ def k8s_integrated_pricing_circe_scheduler(dag_info ,profiler_ips, execution_ips
         latency_file = utilities.prepare_stat_path(nodes, homes, dag)
         end_time = time.time()
         if jupiter_config.PRICING == 1:
-            msg = 'PRICEpush deployend %f \n'%(end_time)
+            msg = 'push deployend %f \n'%(end_time)
         elif jupiter_config.PRICING == 2:
-            msg = 'PRICEevent deployend %f \n'%(end_time)
+            msg = 'event deployend %f \n'%(end_time)
         elif jupiter_config.PRICING == 3:
-            msg = 'PRICEintegrated deployend %f \n'%(end_time)
+            msg = 'integrated deployend %f \n'%(end_time)
         elif jupiter_config.PRICING == 4:
-            msg = 'PRICEdecoupled deployend %f \n'%(end_time)
+            msg = 'decoupled deployend %f \n'%(end_time)
         write_file(latency_file, msg)
         deploy_time = end_time - start_time
         logging.debug('Time to deploy CIRCE '+ str(deploy_time))
@@ -960,13 +960,13 @@ def k8s_decoupled_pricing_controller_scheduler(dag_info, profiler_ips, app_name,
         latency_file = utilities.prepare_stat_path(nodes, homes, dag)
         end_time = time.time()
         if jupiter_config.PRICING == 1:
-            msg = 'PRICEpush deployend %f \n'%(end_time)
+            msg = 'push deployend %f \n'%(end_time)
         elif jupiter_config.PRICING == 2:
-            msg = 'PRICEevent deployend %f \n'%(end_time)
+            msg = 'event deployend %f \n'%(end_time)
         elif jupiter_config.PRICING == 3:
-            msg = 'PRICEintegrated deployend %f \n'%(end_time)
+            msg = 'integrated deployend %f \n'%(end_time)
         elif jupiter_config.PRICING == 4:
-            msg = 'PRICEdecoupled deployend %f \n'%(end_time)
+            msg = 'decoupled deployend %f \n'%(end_time)
         write_file(latency_file, msg)
         deploy_time = end_time - start_time
         logging.debug('Time to deploy CIRCE '+ str(deploy_time))
@@ -1000,13 +1000,13 @@ def k8s_decoupled_pricing_compute_scheduler(dag_info, profiler_ips, execution_ip
         latency_file = utilities.prepare_stat_path(nodes, homes, dag)
         start_time = time.time()
         if jupiter_config.PRICING == 1:
-            msg = 'PRICEpush deploystart %f \n'%(start_time)
+            msg = 'push deploystart %f \n'%(start_time)
         elif jupiter_config.PRICING == 2:
-            msg = 'PRICEevent deploystart %f \n'%(start_time)
+            msg = 'event deploystart %f \n'%(start_time)
         elif jupiter_config.PRICING == 3:
-            msg = 'PRICEintegrated deploystart %f \n'%(start_time)
+            msg = 'integrated deploystart %f \n'%(start_time)
         elif jupiter_config.PRICING == 4:
-            msg = 'PRICEdecoupled deploystart %f \n'%(start_time)
+            msg = 'decoupled deploystart %f \n'%(start_time)
         write_file(latency_file, msg)
 
 

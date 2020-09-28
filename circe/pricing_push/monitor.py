@@ -168,7 +168,7 @@ def default_best_node():
                 mappinglatency = time.time() - starttime   
                 if BOKEH==3:    
                     topic = 'mappinglatency_%s'%(app_option)
-                    msg = 'mappinglatency pricepush %s controller%s %f\n'%(app_name, self_task,mappinglatency)
+                    msg = 'mappinglatency push %s controller%s %f\n'%(app_name, self_task,mappinglatency)
                     demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
         else:
             logging.debug('Task price summary is not ready yet.....') 
@@ -221,7 +221,7 @@ def push_controller_map():
         send_controller_info(computing_ip)
     if BOKEH==3:    
         topic = 'msgoverhead_controller%s'%(self_task)
-        msg = 'msgoverhead pricepush controller%s requests_pushcontroller %d \n'%(self_task,len(all_computing_ips))
+        msg = 'push controller%s requests_pushcontroller %d %f\n'%(self_task,len(all_computing_ips),time.time())
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 
@@ -261,7 +261,7 @@ def send_assignment_info(node_ip):
         res = res.decode('utf-8')
         if BOKEH==3:    
             topic = 'msgoverhead_controller%s'%(self_task)
-            msg = 'msgoverhead pricepush controller%s requests_updatebest 1\n'%(self_task)
+            msg = 'push controller%s requests_updatebest 1 %f\n'%(self_task,time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     except Exception as e:
         logging.debug("The computing node is not yet available. Sending assignment message to flask server on computing node FAILED!!!")
@@ -297,7 +297,12 @@ def announce_best_assignment_to_child():
         update_assignment_info_to_child(child_ip)   
     if BOKEH==3:    
         topic = 'msgoverhead_controller%s'%(self_task)
-        msg = 'msgoverhead pricepush controller%s requests_sendassignmentchild %d\n'%(self_task,len(child_nodes_ip_dag))
+        msg = 'push controller%s requests_sendassignmentchild %d %f\n'%(self_task,len(child_nodes_ip_dag),time.time())
+        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+
+        assigned_time = time.time() 
+        topic = 'mappinginfo_%s'%(app_option)
+        msg = 'mappinginfo push controller%s %s %s\n' %(self_task,task_node_map[self_task],str(assigned_time))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def push_first_assignment_map():
@@ -312,7 +317,7 @@ def push_first_assignment_map():
     assigned_time = time.time()
     if BOKEH==3:  
         topic = 'mappinginfo_%s'%(app_option)
-        msg = 'mappinginfo pricepush controller%s %s %s\n' %(self_task,task_node_map[self_task],str(assigned_time))
+        msg = 'mappinginfo push controller%s %s %s\n' %(self_task,task_node_map[self_task],str(assigned_time))
         demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
     update_best_node()
     if 'home' not in child_nodes:
@@ -325,11 +330,7 @@ def push_assignment_map():
     default_best_node()
 
     #push case: periodically update my mapping info
-    assigned_time = time.time()
-    if BOKEH==3:  
-        topic = 'mappinginfo_%s'%(app_option)
-        msg = 'mappinginfo pricepush controller%s %s %s\n' %(self_task,task_node_map[self_task],str(assigned_time))
-        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+           
     update_best_node()
     if 'home' not in child_nodes:
         announce_best_assignment_to_child()

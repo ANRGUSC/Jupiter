@@ -263,8 +263,8 @@ def assign_task_to_remote(assigned_node, task_name):
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:
-            msg = 'msgoverhead greedywave home requests_assignfirst 1 \n'
-            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_greedywavehome",msg)
+            msg = 'wave home requests_assignfirst 1 %f\n'%(time.time())
+            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_wavehome",msg)
     except Exception as e:
         logging.debug(e)
         return "not ok"
@@ -308,11 +308,11 @@ def monitor_task_status():
             logging.debug(assignments_str)
             if BOKEH==3:
                 topic = 'mappinglatency_%s'%(app_option)
-                msg = 'mappinglatency %s %s greedywave %f \n' %(app_option,app_name,deploy_time)
+                msg = 'mappinglatency %s %s wave %f \n' %(app_option,app_name,deploy_time)
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
                 topic = 'mappinginfo_%s'%(app_option)
-                msg = 'mappinginfo %s %s greedywave %s \n' %(app_name,assignments_str,str(end_time))
+                msg = 'mappinginfo wave home %s %s \n' %(assignments_str,str(end_time))
                 demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
             break
         time.sleep(5)

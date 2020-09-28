@@ -96,7 +96,7 @@ def request_best_assignment(home_id,task_name,file_name):
         res = res.read()
         res = res.decode('utf-8')
         if BOKEH==3:    
-            msg = 'msgoverhead priceevent home requests_best 1 \n'
+            msg = 'event home requests_best 1 %f\n'%(time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         logging.debug("Sending assignment request to flask server on controller node FAILED!!!")
@@ -396,7 +396,7 @@ def announce_price(task_controller_ip, price):
         res = res.decode('utf-8')
 
         if BOKEH==3:
-            msg = 'msgoverhead priceevent home requests_pushprice %d\n'%(len(price['network']))
+            msg = 'event home requests_pushprice %d %f\n'%(len(price['network']),time.time())
             demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         logging.debug("Sending price message to flask server on controller node FAILED!!!")
@@ -468,7 +468,7 @@ class MyHandler(pyinotify.ProcessEvent):
             msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
             demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
             topic = 'outputinfo_%s'%(appoption)
-            msg = 'outputinfo priceevent %s %s %s \n' %(appname,outputfile,str(end_times[outputfile]))
+            msg = 'outputinfo event %s %s %s \n' %(appname,outputfile,str(end_times[outputfile]))
             demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 class Handler(pyinotify.ProcessEvent):
