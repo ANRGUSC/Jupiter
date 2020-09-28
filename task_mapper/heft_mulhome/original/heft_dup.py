@@ -239,7 +239,7 @@ class HEFT:
     
     def run_dup_split(self):
         
-        #st = set()
+        st = set()
         for i in range(1):
         #while True:
             btnk_id = "28_8"
