@@ -62,7 +62,7 @@ def task_mapping_decorator(f):
         print('WAVE mapper')
         return f(args[0],args[3])
     return task_mapping
-        
+
 def setup_port(port):
     """Automatically set up the proxy port
     
@@ -105,7 +105,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
 
     # This loads the task graph and node list
     if not static_mapping:
-        path1 = 'new_dag.txt'
+        path1 = jupiter_config.APP_PATH + 'configuration.txt'
         path2 = jupiter_config.HERE + 'nodes.txt'
 
         # start the profilers
@@ -157,30 +157,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
                 print("Will retry to get the mapping for app "+ app_name)
                 time.sleep(30)
 
-        """
-        for duplication: example mapping sent from scheduler
-        {'task0': 'node3', 'task1': 'node4', 'task2': 'node15', 'task3': 'node6', 
-         'UPDATED_DAG_FILE_WITH_DUPICATION': 
-         '15\ntask0 1 true task1 task2 task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup\ntask1 1 true task3\ntask2 1 true\ntask3 2 true home\ntask2-dup 1 true task3\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask0-dup 1 true task2-dup\n', 
-         'task2-dup': 'node14', 
-         'task0-dup': 'node13'}
 
-        """
-        dag_str = mapping['UPDATED_DAG_FILE_WITH_DUPICATION']
-        del mapping['UPDATED_DAG_FILE_WITH_DUPICATION']
-        print(dag_str)
-        f = open(path1, "w")
-        f.write(dag_str)
-        f.close()
-        schedule = utilities.k8s_get_hosts(path1, path2, mapping)
-        dag = utilities.k8s_read_dag(path1)
-        dag.append(mapping)
-        print("Printing DAG:")
-        pprint(dag)
-        print("Printing schedule")
-        pprint(schedule)
-        print("End print")
-        
         pprint(mapping)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
@@ -354,18 +331,6 @@ def redeploy_system(app_id,app_name,port):
                 time.sleep(30)
         pprint(mapping)
 
-        """
-        for duplication: example mapping sent from scheduler
-        {'task0': 'node3', 'task1': 'node4', 'task2': 'node15', 'task3': 'node6', 
-         'UPDATED_DAG_FILE_WITH_DUPICATION': 
-         '15\ntask0 1 true task1 task2 task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup task2-dup\ntask1 1 true task3\ntask2 1 true\ntask3 2 true home\ntask2-dup 1 true task3\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask2-dup 1 true\ntask0-dup 1 true task2-dup\n', 
-         'task2-dup': 'node14', 
-         'task0-dup': 'node13'}
-
-        """
-        dag_str = mapping['UPDATED_DAG_FILE_WITH_DUPICATION']
-        del mapping['UPDATED_DAG_FILE_WITH_DUPICATION']
-        #rewrite_graph_file(path1, dag_str)
         schedule = utilities.k8s_get_hosts(path1, path2, mapping)
         dag = utilities.k8s_read_dag(path1)
         dag.append(mapping)
@@ -388,6 +353,7 @@ def redeploy_system(app_id,app_name,port):
         k8s_circe_scheduler(dag,schedule,app_name)
     else:
         k8s_pricing_circe_scheduler(dag,schedule,profiler_ips,execution_ips,app_name)
+
 
 
 def check_finish_evaluation(app_name,port,num_samples):
