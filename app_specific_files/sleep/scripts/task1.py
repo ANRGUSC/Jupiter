@@ -4,7 +4,7 @@ import sys
 
 EXEC_TIME = 0.5
 TASK_NAME = "task1"
-NUM_BLOCK = 8192
+NUM_BLOCK = 3500
 
 def task(input_files, pathin, pathout):
 

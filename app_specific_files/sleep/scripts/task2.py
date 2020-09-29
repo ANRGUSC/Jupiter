@@ -2,9 +2,9 @@ import os
 import time
 import sys
 
-EXEC_TIME = 0.5
+EXEC_TIME = 0.27
 TASK_NAME = "task2"
-NUM_BLOCK = 8192
+NUM_BLOCK = 4500
 
 def task(input_files, pathin, pathout):
 
