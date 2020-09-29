@@ -4,6 +4,7 @@ import sys
 import queue
 import threading
 import logging
+import glob
 
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
@@ -24,14 +25,12 @@ except ModuleNotFoundError:
 # location.
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
+# Parse app_config.yaml. Keep as a global to use in your app code.
+app_config = app_config_parser.AppConfig(APP_DIR, "example-incomplete")
 
 # Run by dispatcher (e.g. CIRCE). Use task_name to differentiate the tasks by
 # name to reuse one base task file.
 def task(q, pathin, pathout, task_name):
-    # Parse app_config.yaml which should be in the same directory. Abs path
-    # necessary for container deployment.
-
-    app_config = app_config_parser.AppConfig(APP_DIR, "example-incomplete")
     children = app_config.child_tasks(task_name)
 
     cnt = 0
@@ -71,8 +70,10 @@ def profile_execution(task_name):
         if file.startswith("EXECPROFILER_") is True:
             continue
 
-        new = f"{input_dir}/EXECPROFILER_{task_name}_{file}"
-        shutil.copyfile(os.path.join(input_dir, file), new)
+        # create an input for each child of this task
+        for cnt in range(len(app_config.child_tasks(task_name))):
+            new = f"{input_dir}/EXECPROFILER{cnt}_{task_name}_{file}"
+            shutil.copyfile(os.path.join(input_dir, file), new)
 
     os.makedirs(output_dir, exist_ok=True)
     t = threading.Thread(target=task, args=(q, input_dir, output_dir, task_name))
@@ -89,8 +90,8 @@ def profile_execution(task_name):
             q.put(file)
     q.join()
 
-    # clean up files
-    files = glob.glob(f"{input_dir}/EXECPROFILER_{dst_task}*")
+    # clean up input files
+    files = glob.glob(f"{input_dir}/EXECPROFILER*_{dst_task}*")
     for f in files:
         os.remove(f)
 
@@ -105,8 +106,6 @@ def profile_execution(task_name):
 
 if __name__ == '__main__':
     # Testing Only
-    import glob
-    app_config = app_config_parser.AppConfig("./", "example-incomplete")
     log.info("Threads will run indefintely. Hit Ctrl+c to stop.")
     for dag_task in app_config.get_dag_tasks():
         log.debug(profile_execution(dag_task['name']))
