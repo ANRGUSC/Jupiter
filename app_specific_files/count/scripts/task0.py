@@ -8,9 +8,6 @@ NUM_BLOCK = 4000
 
 def task(input_files, pathin, pathout):
 
-    print(input_files)
-    print(pathin)
-    print(pathout)
     filelist=[]
     filelist.append(input_files)
     
