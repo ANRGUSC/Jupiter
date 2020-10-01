@@ -36,8 +36,9 @@ def task(filelist, pathin, pathout):
 
 def main():
     filelist= ['camera1_20190222.jpeg', 'camera2_20190222.jpeg']
+    inpath = os.path.join(os.path.dirname(__file__), "sample_input/")
     outpath = os.path.join(os.path.dirname(__file__), "generated_files/")
-    outfile = task(filelist, outpath, outpath)
+    outfile = task(filelist, inpath, outpath)
     return outfile
 
 if __name__ == '__main__':
