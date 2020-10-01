@@ -13,15 +13,20 @@ import cv2 as cv
 
 def task(filelist, pathin, pathout):
 
-    
+    print("filelist,  pathin,  pathout")
+    print(filelist)
+    print(pathin)
+    print(pathout)
     #store the data&time info
     snapshot_time = filelist[0].partition('_')[2]
     time.sleep(10)
-
+    print("spt")
+    print(snapshot_time)
     src = cv.imread(os.path.join(pathin, filelist[0]))
     cv.imwrite(os.path.join(pathout,'input1_'+snapshot_time), src)
-
+    print(src)
     src = cv.imread(os.path.join(pathin, filelist[1]))
+    print(src)
     cv.imwrite(os.path.join(pathout,'input2_'+snapshot_time), src)
     
 
