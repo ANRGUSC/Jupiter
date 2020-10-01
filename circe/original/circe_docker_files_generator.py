@@ -26,6 +26,11 @@ RUN apt-get install -y sshpass nano
 # Taken from quynh's network profiler
 RUN pip install cryptography
 
+# for opencv
+RUN apt-get install 'ffmpeg'\
+                    'libsm6'\ 
+                    'libxext6'  -y
+
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
@@ -45,11 +50,6 @@ RUN mkdir -p /mongodb/log
 RUN mkdir -p /input
 RUN mkdir -p /output
 #RUN mkdir -p /runtime
-
-# for opencv
-RUN apt-get install 'ffmpeg'\
-                    'libsm6'\ 
-                    'libxext6'  -y
 
 RUN apt-get install stress
 
@@ -111,6 +111,11 @@ RUN apt-get install -y mosquitto-clients
 
 ADD circe/original/requirements.txt /requirements.txt
 
+# for opencv
+RUN apt-get install 'ffmpeg'\
+                    'libsm6'\ 
+                    'libxext6'  -y
+
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
@@ -129,10 +134,6 @@ RUN mkdir -p /centralized_scheduler/output
 #RUN mkdir -p /centralized_scheduler/runtime
 ADD circe/original/monitor.py /centralized_scheduler/monitor.py
 RUN mkdir -p /home/darpa/apps/data
-# for opencv
-RUN apt-get install 'ffmpeg'\
-                    'libsm6'\ 
-                    'libxext6'  -y
 
 #ADD circe/original/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
