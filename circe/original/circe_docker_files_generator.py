@@ -27,9 +27,10 @@ RUN apt-get install -y sshpass nano
 RUN pip install cryptography
 
 # for opencv
-RUN apt-get install 'ffmpeg'\
-                    'libsm6'\ 
-                    'libxext6'  -y
+RUN apt-get update
+RUN apt-get -y install build-essential
+RUN apt-get -y install libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+RUN apt-get -y install python3-dev python-dev python-pip python3-pip
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
@@ -112,9 +113,10 @@ RUN apt-get install -y mosquitto-clients
 ADD circe/original/requirements.txt /requirements.txt
 
 # for opencv
-RUN apt-get install 'ffmpeg'\
-                    'libsm6'\ 
-                    'libxext6'  -y
+RUN apt-get update
+RUN apt-get -y install build-essential
+RUN apt-get -y install libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+RUN apt-get -y install python3-dev python-dev python-pip python3-pip
 
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
