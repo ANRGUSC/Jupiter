@@ -33,13 +33,6 @@ RUN mkdir -p /jupiter
 ADD mongod /jupiter/droplet_mongod
 RUN chmod +x /jupiter/droplet_mongod
 
-# Add all files in the ./build/ folder. This folder is created by
-# build_push_exec.py and contains copies of all files from Jupiter and the
-# application. If you need to add more files, make the script copy files into
-# ./build/ instead of adding it manually in this Dockerfile.
-COPY build/ /jupiter/build/
-RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
-
 
 # Prepare network profiling code
 ADD droplet_generate_random_files /jupiter/droplet_generate_random_files
@@ -55,6 +48,13 @@ ADD keep_alive.py /jupiter/keep_alive.py
 RUN mkdir -p /jupiter/generated_test
 RUN mkdir -p /jupiter/received_test
 RUN mkdir -p /jupiter/scheduling
+
+# Add all files in the ./build/ folder. This folder is created by
+# build_push_exec.py and contains copies of all files from Jupiter and the
+# application. If you need to add more files, make the script copy files into
+# ./build/ instead of adding it manually in this Dockerfile.
+COPY build/ /jupiter/build/
+# RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
 
 
 #Running docker

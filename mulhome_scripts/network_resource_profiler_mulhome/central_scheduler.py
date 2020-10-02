@@ -440,17 +440,17 @@ def main():
     homes_list = dict()
     node_list = dict()
     with open(nodes_file, 'r') as f:
-        first_line = f.readline()
+        # first_line = f.readline()
         lines = f.readlines()
         for line in lines:
             info = line.rstrip().split(',')
             node_list[info[0]] = [info[1],info[2]]
             if info[0].startswith('home'):
                 homes_list[info[0]] = [info[1],info[2]]
-                
-    
+
     df_homes = pd.DataFrame.from_dict(homes_list, orient='index')  
     df_nodes = pd.DataFrame.from_dict(node_list, orient='index')
+
     df_homes.index.name = 'Tag'  
     df_nodes.index.name = 'Tag'
     df_homes.columns = ['Node', 'Region']
