@@ -159,7 +159,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
     mpt = ""
     for task in multi_parent_tasks:
         mpt += task + ":"
-    mpt.rstrip(':')    
+    mpt = mpt.rstrip(':')    
     print("tasks with multiple parents")
     print(mpt)
     
