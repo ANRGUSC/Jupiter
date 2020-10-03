@@ -363,6 +363,7 @@ class Handler1(pyinotify.ProcessEvent):
             info = mapp[taskname]
             print(hash(temp_name) % (len(info) / 4) * 4)
             print(info)
+            print(int((len(info) / 4) * 4))
             chosen_task = ""
             usr = ""
             pwd = ""            
