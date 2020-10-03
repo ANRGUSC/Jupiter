@@ -291,9 +291,6 @@ class HEFT:
     
     
     def run_dup_split(self):
-        for task in self.tasks:
-            if len(task.parents_numbers) > 1:
-                skip.add(task.number) 
         while True:
             btnk_id = self.get_btnk_id()
             spt = split.Split()
