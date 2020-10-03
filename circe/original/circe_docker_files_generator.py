@@ -26,16 +26,6 @@ RUN apt-get install -y sshpass nano
 # Taken from quynh's network profiler
 RUN pip install cryptography
 
-# for opencv
-RUN apt-get update
-RUN apt-get -y install build-essential
-RUN apt-get -y install libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-RUN apt-get -y install python3-dev python-dev python-pip python3-pip
-RUN apt-get update ##[edited]
-RUN apt-get install 'ffmpeg'\
-    'libsm6'\ 
-    'libxext6'  -y
-
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
@@ -55,6 +45,7 @@ RUN mkdir -p /mongodb/log
 RUN mkdir -p /input
 RUN mkdir -p /output
 #RUN mkdir -p /runtime
+
 
 RUN apt-get install stress
 
@@ -116,16 +107,6 @@ RUN apt-get install -y mosquitto-clients
 
 ADD circe/original/requirements.txt /requirements.txt
 
-# for opencv
-RUN apt-get update
-RUN apt-get -y install build-essential
-RUN apt-get -y install libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-RUN apt-get -y install python3-dev python-dev python-pip python3-pip
-RUN apt-get update ##[edited]
-RUN apt-get install 'ffmpeg'\
-    'libsm6'\ 
-    'libxext6'  -y
-
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
@@ -181,6 +162,7 @@ def write_circe_worker_docker(app_option=None,**kwargs):
     dfp = DockerfileParser(path=file_name)
     dfp.content =template_worker.format(**kwargs)
     return file_name
+    # print(dfp.content)
 
 
 def write_circe_home_docker(app_option=None,**kwargs):

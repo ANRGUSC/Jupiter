@@ -308,6 +308,7 @@ class Handler1(pyinotify.ProcessEvent):
             #    passwords.append(sys.argv[i+3])
                 
             # example mapp: {task0 : [task0-1, 0.3, username, password, task0-2, 0.7, username, password], task1 : [task1, 1.0, U, P]}
+            # random or (hashing + round-robin based on input file) in case the child has multiple parents
             self.random_select(cur_tasks, users, passwords, mapp)          
             destinations = [destination] *len(cur_tasks)
             sources = [source]*len(cur_tasks)
@@ -532,8 +533,7 @@ def main():
         user = sys.argv[i+2]
         password = sys.argv[i+3]
         combined_ip_map[node] = IPaddr
-    print("############################# DEBUG ###################################")
-    print(combined_ip_map)
+
     new_combined_ip_map = {}
     for key, val in combined_ip_map.items():
         parsed_key = key.split('/')[0]
