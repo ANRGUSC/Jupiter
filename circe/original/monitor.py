@@ -371,7 +371,7 @@ class Handler1(pyinotify.ProcessEvent):
                 usr = info[2]
                 pwd = info[3]
             elif taskname in multi_parent_tasks:
-                chosen_task = info[hash(temp_name) % (len(info) / 4) * 4]
+                chosen_task = info[hash(temp_name) % int(len(info) / 4) * 4]
             else:
                 rand = random.randint(1, 1000)
                 probs = []
