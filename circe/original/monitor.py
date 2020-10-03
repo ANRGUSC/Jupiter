@@ -357,13 +357,16 @@ class Handler1(pyinotify.ProcessEvent):
                 
     # example mapp: {task0 : [task0-1, 0.3, username, password, task0-2, 0.7, username, password], task1 : [task1, 1.0, U, P]}
     def random_select(self, cur_tasks, users, passwords, mapp, multi_parent_tasks, temp_name):
-        print("temp_name")
-        print(temp_name)
+
         for taskname in mapp:
             info = mapp[taskname]
-            print(hash(temp_name) % (len(info) / 4) * 4)
-            print(info)
-            print(int((len(info) / 4) * 4))
+            """
+            To make sure tasks with multiple parents receive all files from all parents associated with a particular input instance,
+            we choose hash based file distribution, instead of probability.
+            NOTE: it looks like hash(string) only returns the same value for the same object within one process
+            in another process it returns a different value. To avoid confusion, we use a self defined hash function
+            add the ASCII values of each char in a string as the hash value. In our case, collision is not important
+            """
             chosen_task = ""
             usr = ""
             pwd = ""            
@@ -372,7 +375,10 @@ class Handler1(pyinotify.ProcessEvent):
                 usr = info[2]
                 pwd = info[3]
             elif taskname in multi_parent_tasks:
-                chosen_task = info[hash(temp_name) % int(len(info) / 4) * 4]
+                hashcode = 0
+                for c in temp_name:
+                    hashcode += ord(c)
+                chosen_task = info[(hashcode % int(len(info) / 4)) * 4]
             else:
                 rand = random.randint(1, 1000)
                 probs = []
