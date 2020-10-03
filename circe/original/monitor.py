@@ -361,6 +361,8 @@ class Handler1(pyinotify.ProcessEvent):
         print(temp_name)
         for taskname in mapp:
             info = mapp[taskname]
+            print(hash(temp_name) % (len(info) / 4) * 4)
+            print(info)
             chosen_task = ""
             usr = ""
             pwd = ""            
@@ -369,7 +371,7 @@ class Handler1(pyinotify.ProcessEvent):
                 usr = info[2]
                 pwd = info[3]
             elif taskname in multi_parent_tasks:
-                chosen_task = info[int(hash(temp_name) % (len(info) / 4)) * 4]
+                chosen_task = info[hash(temp_name) % (len(info) / 4) * 4]
             else:
                 rand = random.randint(1, 1000)
                 probs = []
