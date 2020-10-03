@@ -356,19 +356,18 @@ class Handler1(pyinotify.ProcessEvent):
                 files_out=[]
                 
     # example mapp: {task0 : [task0-1, 0.3, username, password, task0-2, 0.7, username, password], task1 : [task1, 1.0, U, P]}
-    def random_select(self, cur_tasks, users, passwords, mapp):
-        print("multi_parent_tasks, temp_name #################################################")
-        print(multi_parent_tasks)
-        print(temp_name)
+    def random_select(self, cur_tasks, users, passwords, mapp, multi_parent_tasks, temp_name):
         for taskname in mapp:
             info = mapp[taskname]
             chosen_task = ""
             usr = ""
-            pwd = ""
+            pwd = ""            
             if len(info) == 4:
                 chosen_task = info[0]
                 usr = info[2]
                 pwd = info[3]
+            elif taskname in multi_parent_tasks:
+                chosen_task = hash(temp_name) % (len(info) / 4)
             else:
                 rand = random.randint(1, 1000)
                 probs = []
@@ -384,9 +383,9 @@ class Handler1(pyinotify.ProcessEvent):
                     for k in range(len(probs)-1):
                         if rand > probs[k] and rand <= probs[k+1]:
                             chosen_task = info[4*(k+1)]
-                idx = info.index(chosen_task)
-                usr = info[idx+2]
-                pwd = info[idx+3]
+            idx = info.index(chosen_task)
+            usr = info[idx+2]
+            pwd = info[idx+3]
             print("chosen task instance")
             print(chosen_task)
             cur_tasks.append(chosen_task)
