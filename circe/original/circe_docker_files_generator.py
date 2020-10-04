@@ -61,6 +61,7 @@ ADD circe/original/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
 ADD circe/original/evaluate.py /evaluate.py
 
+ADD circe/original/filegen.py /filegen.py
 
 # Add the task speficific configuration files
 ADD {app_file}/configuration.txt /configuration.txt
