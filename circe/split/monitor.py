@@ -309,7 +309,8 @@ class Handler1(pyinotify.ProcessEvent):
                 
             # example mapp: {task0 : [task0-1, 0.3, username, password, task0-2, 0.7, username, password], task1 : [task1, 1.0, U, P]}
             # random or (hashing + round-robin based on input file) in case the child has multiple parents
-            self.random_select(cur_tasks, users, passwords, mapp)          
+            multi_parent_tasks = set(os.environ['MULTI_PARENT_TASKS'].split(":"))
+            self.random_select(cur_tasks, users, passwords, mapp, multi_parent_tasks, temp_name)          
             destinations = [destination] *len(cur_tasks)
             sources = [source]*len(cur_tasks)
             transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
@@ -355,17 +356,29 @@ class Handler1(pyinotify.ProcessEvent):
                 files_out=[]
                 
     # example mapp: {task0 : [task0-1, 0.3, username, password, task0-2, 0.7, username, password], task1 : [task1, 1.0, U, P]}
-    def random_select(self, cur_tasks, users, passwords, mapp):
-        
+    def random_select(self, cur_tasks, users, passwords, mapp, multi_parent_tasks, temp_name):
+
         for taskname in mapp:
             info = mapp[taskname]
+            """
+            To make sure tasks with multiple parents receive all files from all parents associated with a particular input instance,
+            we choose hash based file distribution, instead of probability.
+            NOTE: it looks like hash(string) only returns the same value for the same object within one process
+            in another process it returns a different value. To avoid confusion, we use a self defined hash function
+            add the ASCII values of each char in a string as the hash value. In our case, collision is not important
+            """
             chosen_task = ""
             usr = ""
-            pwd = ""
+            pwd = ""            
             if len(info) == 4:
                 chosen_task = info[0]
                 usr = info[2]
                 pwd = info[3]
+            elif taskname in multi_parent_tasks:
+                hashcode = 0
+                for c in temp_name:
+                    hashcode += ord(c)
+                chosen_task = info[(hashcode % int(len(info) / 4)) * 4]
             else:
                 rand = random.randint(1, 1000)
                 probs = []
@@ -381,9 +394,9 @@ class Handler1(pyinotify.ProcessEvent):
                     for k in range(len(probs)-1):
                         if rand > probs[k] and rand <= probs[k+1]:
                             chosen_task = info[4*(k+1)]
-                idx = info.index(chosen_task)
-                usr = info[idx+2]
-                pwd = info[idx+3]
+            idx = info.index(chosen_task)
+            usr = info[idx+2]
+            pwd = info[idx+3]
             print("chosen task instance")
             print(chosen_task)
             cur_tasks.append(chosen_task)

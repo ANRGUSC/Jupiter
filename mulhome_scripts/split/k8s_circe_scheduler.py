@@ -126,10 +126,43 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                     hosts[key][i] = hosts[key][i] + "-" + str(int(i/2 + 1))
                     
     print("hosts:")
+    """
+    example hosts:
+    {'home': ['home', 'master'],
+     'task0': ['task0-1', 'n2'],
+     'task1': ['task1-1', 'n6', 'task1-2', 'n7'],
+     'task2': ['task2-1', 'n3', 'task2-2', 'n4'],
+     'task3': ['task3-1', 'n0'],
+     'task4': ['task4-1', 'n1', 'task4-2', 'n5']}
+     
+    example DAG info:
+    {'task0': ['1', 'true', 'task1', 'task2', 'task3'], 
+     'task1': ['1', 'true', 'task4'], 
+     'task2': ['1', 'true', 'task4'], 
+     'task3': ['1', 'true', 'task4'], 
+     'task4': ['3', 'true', 'home']} 
+    """
     pprint(hosts)
     print('DAG info:')
     print(dag)
-
+    task_number_of_parents = {}
+    for key, val in dag.items():
+        for i in range(2, len(val)):
+            if val[i] not in task_number_of_parents:
+                task_number_of_parents[val[i]] = 1
+            else:
+                task_number_of_parents[val[i]] += 1
+    multi_parent_tasks = set()
+    for task, num_parent in task_number_of_parents.items():
+        if num_parent > 1:
+            multi_parent_tasks.add(task)
+    mpt = ""
+    for task in multi_parent_tasks:
+        mpt += task + ":"
+    mpt = mpt.rstrip(':')    
+    print("tasks with multiple parents")
+    print(mpt)
+    
     path2 = jupiter_config.HERE + 'nodes.txt'
     nodes, homes = utilities.k8s_get_nodes_worker(path2)
 
@@ -297,7 +330,7 @@ def k8s_circe_scheduler(dag_info, temp_info, app_name):
                 own_ip = service_ips[task],
                 all_node = all_node,
                 all_node_ips = all_node_ips,
-                flag = str(flag), inputnum = str(inputnum))
+                flag = str(flag), inputnum = str(inputnum), multi_parent_tasks=mpt)
 
             # # Call the Kubernetes API to create the deployment
             try:
