@@ -13,16 +13,11 @@ import os
 import cv2
 import csv
 
- 
-
-
 # decide whether rectangle r is inside q
 def inside(r, q):
     rx, ry, rw, rh = r
     qx, qy, qw, qh = q
     return rx > qx and ry > qy and rx + rw < qx + qw and ry + rh < qy + qh
-
-
 
 
 # draw rectangles
@@ -34,16 +29,9 @@ def draw_detections(img, rects, thickness = 1):
         cv2.rectangle(img, (x+pad_w, y+pad_h), (x+w-pad_w, y+h-pad_h), (0, 255, 0), thickness)
 
 
+def task(input_files, pathin, pathout):
 
-
-def task(onefile, pathin, pathout):
-
-
-    #store the data&time info
-    snapshot_time = onefile.partition('_')[2]
-    time.sleep(10)
-
-
+    onefile = input_files[0]
     # read image
     image_path = os.path.join(pathin, onefile)
     img = cv2.imread(image_path)  
@@ -64,20 +52,19 @@ def task(onefile, pathin, pathout):
         else:
             found_filtered.append(r)
 
-
-    with open(os.path.join(pathout,"human_"+snapshot_time.split(".")[0]+".csv"),"wt") as f:
+    output_files = image_path.split('/')[-1].split(".")[0].split('_')[0] + "_human.csv"
+    
+    with open(os.path.join(pathout, output_files),"wt") as f:
         cw = csv.writer(f)
         for x, y, w, h in found_filtered:
             cw.writerow([x,y,w,h])
-
-
-    return [os.path.join(pathout,"human_"+snapshot_time.split(".")[0]+".csv")]
-
+            
+    return [os.path.join(pathout, output_files)]
 
 
 
 def main():
-    filelist= 'merged_20190222.jpeg'
+    filelist= 'test_merged.jpeg'
     outpath = os.path.join(os.path.dirname(__file__), "generated_files/")
     outfile = task(filelist, outpath, outpath)
     return outfile
@@ -85,7 +72,7 @@ def main():
 
 if __name__ == '__main__':
 
-    filelist= 'merged_20190222.jpeg'
-    task(filelist, '/home/erick/detection_app', '/home/erick/detection_app')
+    filelist= ['test_merged.jpeg']
+    task(filelist, '/home/zxc/Desktop/imgptest/generated_files', '/home/zxc/Desktop/imgptest/generated_files')
 
 

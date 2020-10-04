@@ -120,29 +120,31 @@ def task(filelist, pathin, pathout):
 
 """
 
-def task(filelist, pathin, pathout):
-
-    snapshot_time = filelist[0].partition('_')[2]
-    time.sleep(5)	
+def task(filelist, pathin, pathout):	
 
     image1_path = os.path.join(pathin, filelist[0])
     image2_path = os.path.join(pathin, filelist[1])
-
+    print(image1_path)
     image1 = cv2.imread(image1_path)
     image2 = cv2.imread(image2_path)
 
     s = cv2.Stitcher.create()
 
     retval, pano = s.stitch([image1, image2])
+    
+    tmp = image1_path.split('/')[-1].split('.')[0].split('_')[0]
+    extension = image1_path.split('/')[-1].split('.')[-1]
+    print(tmp)
+    output_files = tmp + "_merged" + '.' + extension
+    print(output_files)
+    cv2.imwrite(os.path.join(pathout, output_files), pano)
 
-    cv2.imwrite(os.path.join(pathout,'merged_'+snapshot_time), pano)
-
-    return [os.path.join(pathout,'merged_'+snapshot_time)]
+    return [os.path.join(pathout, output_files)]
 
 
 
 def main():
-    filelist= ['processed1_20190222.jpeg', 'processed2_20190222.jpeg']
+    filelist= ['test_left_preprocess1.jpeg', 'test_left_preprocess2.jpeg']
     outpath = os.path.join(os.path.dirname(__file__), "generated_files/")
     outfile = task(filelist, outpath, outpath)
     return outfile
@@ -150,8 +152,9 @@ def main():
 
 if __name__ == '__main__':
 
-    filelist= ['processed1_20190222.jpeg', 'processed2_20190222.jpeg']
-    task(filelist, '/home/erick/detection_app', '/home/erick/detection_app')
+    filelist= ['test_left_preprocess1.jpeg', 'test_right_preprocess2.jpeg']
+    task(filelist, '/home/zxc/Desktop/imgptest/generated_files', '/home/zxc/Desktop/imgptest/generated_files')
+
 
 
 

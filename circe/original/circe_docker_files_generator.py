@@ -61,7 +61,6 @@ ADD circe/original/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
 ADD circe/original/evaluate.py /evaluate.py
 
-ADD circe/original/filegen.py /filegen.py
 
 # Add the task speficific configuration files
 ADD {app_file}/configuration.txt /configuration.txt
@@ -163,7 +162,6 @@ def write_circe_worker_docker(app_option=None,**kwargs):
     dfp = DockerfileParser(path=file_name)
     dfp.content =template_worker.format(**kwargs)
     return file_name
-    # print(dfp.content)
 
 
 def write_circe_home_docker(app_option=None,**kwargs):

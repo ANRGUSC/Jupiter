@@ -14,14 +14,9 @@ import os
 import csv
 from os import listdir
 
-def task(onefile, pathin, pathout):
+def task(input_files, pathin, pathout):
 
-
-    #store the data&time info
-    snapshot_time = onefile.partition('_')[2]
-    time.sleep(10)
-
-
+    onefile = input_files[0]
     #use trained cars XML classifiers
     xml_file = os.path.join(os.path.dirname(__file__),'cars.xml')
     car_cascade = cv2.CascadeClassifier(xml_file)
@@ -38,21 +33,19 @@ def task(onefile, pathin, pathout):
     #detect cars in the video
     cars = car_cascade.detectMultiScale(src, 1.1, 3)
 
-  
-
-    with open(os.path.join(pathout,"car_"+snapshot_time.split(".")[0]+".csv"),"wt") as f:
+    output_files = image_path.split('/')[-1].split(".")[0].split('_')[0] + "_car.csv"
+    with open(os.path.join(pathout, output_files), "wt") as f:
         cw = csv.writer(f)
         for x, y, w, h in cars:
             cw.writerow([x,y,w,h])
 
-
-    return [os.path.join(pathout,"car_"+snapshot_time.split(".")[0]+".csv")]
+    return [os.path.join(pathout, output_files)]
 
 
 
 
 def main():
-    filelist= 'merged_20190222.jpeg'
+    filelist= 'test_merged.jpeg'
     outpath = os.path.join(os.path.dirname(__file__), "generated_files/")
     outfile = task(filelist, outpath, outpath)
     return outfile
@@ -60,8 +53,9 @@ def main():
 
 if __name__ == '__main__':
 
-    filelist= 'merged_20190222.jpeg'
-    task(filelist, '/home/erick/detection_app', '/home/erick/detection_app')
+    filelist= ['test_merged.jpeg']
+    task(filelist, '/home/zxc/Desktop/imgptest/generated_files', '/home/zxc/Desktop/imgptest/generated_files')
+
 
 
 

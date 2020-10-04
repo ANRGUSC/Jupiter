@@ -14,9 +14,9 @@ import csv
 
 def task(filelist, pathin, pathout):
 
-    snapshot_time = filelist[0].partition('_')[2]
-
-    with open(os.path.join(pathout,"fusion_"+snapshot_time.split(".")[0]+".csv"),"wt") as res:
+    output_files = filelist[0].split('/')[-1].split(".")[0].split('_')[0] + "_fusion.csv"
+    
+    with open(os.path.join(pathout, output_files),"wt") as res:
         cw = csv.writer(res);
         cw.writerow(["Type","X","Y","Xlength","Ylength"])
         with open(os.path.join(pathin,filelist[0]),"rt") as f:
@@ -32,21 +32,18 @@ def task(filelist, pathin, pathout):
                 line.insert(0,"1")
                 cw.writerow(line)    
     
-
-    return [os.path.join(pathout,"fusion_"+snapshot_time.split(".")[0]+".csv")]
+    return [os.path.join(pathout, output_files)]
 
 
 
 def main():
-    filelist= ['human_20190222.csv', 'car_20190222.csv']
+    filelist= ['test_human.csv', 'test_car.csv']
     outpath = os.path.join(os.path.dirname(__file__), "generated_files/")
     outfile = task(filelist, outpath, outpath)
     return outfile
 
 if __name__ == '__main__':
 
-
-    filelist= ['human_20190222.csv', 'car_20190222.csv']
-    task(filelist, '/home/erick/detection_app', '/home/erick/detection_app')
-
+    filelist= ['test_human.csv', 'test_car.csv']
+    task(filelist, '/home/zxc/Desktop/imgptest/generated_files', '/home/zxc/Desktop/imgptest/generated_files')
 

@@ -11,44 +11,42 @@ import os
 import time
 import cv2 as cv
 
-def task(onefile, pathin, pathout):
+def task(input_files, pathin, pathout):
 
 
     filelist=[]
-    filelist.append(onefile)
-
-    #store the data&time info
-    snapshot_time = filelist[0].partition('_')[2]
-    time.sleep(10)
-
+    for onefile in input_files:
+        if(onefile.split('.')[0].split('_')[1] == "right"):
+            filelist.append(onefile)
 
     for filename in filelist:
-        # open the target jpeg 
+        print(filename)
+        # open the target jpeg and convert to gray scale        
         src = cv.imread(os.path.join(pathin, filename))
-        #src = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
+        # src = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
         src = cv.resize(src, (480, 320))
 
         # Histogram Equalization to improve the contrast of image
         #dst = cv.equalizeHist(src)
-
-        # store the processed image
-        cv.imwrite(os.path.join(pathout,'processed2_'+snapshot_time), src)
-
-
-    return [os.path.join(pathout,'processed2_'+snapshot_time)]
+        
+        output_files = filename.split('.')[0] + '_preprocess2.' + filename.split('.')[-1]
+        print(output_files)
+        cv.imwrite(os.path.join(pathout, output_files), src)
+        
+        
+    return [os.path.join(pathout, output_files)]
 
 
 
 def main():
-    filelist= 'input2_20190222.jpeg'
+    filelist= ['test_left.jpeg', 'test_right.jpeg']
     outpath = os.path.join(os.path.dirname(__file__), "generated_files/")
     outfile = task(filelist, outpath, outpath)
     return outfile
 
 if __name__ == '__main__':
 
-    #Suppose the file structure is apac/detection_app/camera1_input/camera1_20190222.jpeg
-    filelist= 'input2_20190222.jpeg'
-    task(filelist, '/home/erick/detection_app', '/home/erick/detection_app')
+    filelist= ['test_left.jpeg', 'test_right.jpeg']
+    task(filelist, '/home/zxc/Desktop/imgptest/sample_input', '/home/zxc/Desktop/imgptest/generated_files')
 
 
