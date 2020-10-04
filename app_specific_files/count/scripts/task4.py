@@ -3,7 +3,7 @@ import time
 import sys
 
 #LOOP_RANGE = 1000000
-LOOP_RANGE = 10000000
+LOOP_RANGE = 100000000
 TASK_NAME = "task4"
 NUM_BLOCK = 3000
 
