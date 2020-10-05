@@ -208,10 +208,10 @@ class HEFT:
         
         print("Running Schedule")
         for task in self.tasks:
-            if task.number != 6:
+            if task.number != 2:
                 candidate = task.number + 1
             else:
-                candidate = 28
+                candidate = 13
                           
             # assign task to candidate (candidate is a processor number)
             node = self.processors[candidate]
@@ -242,6 +242,7 @@ class HEFT:
         st = set()
         for i in range(1):
         #while True:
+            get_task_by_number
             btnk_id = self.get_btnk_id(st)
             print("\n-------------------------------")
             print("current system bottleneck: %s" % str(btnk_id))
@@ -264,6 +265,8 @@ class HEFT:
                 #if flag == False:
                 #    break
             
+
+
     def get_link_by_id(self, link_id):
         for l in self.links:
             if l.id == link_id:
