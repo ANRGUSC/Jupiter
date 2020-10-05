@@ -56,10 +56,11 @@ RESNETS_THRESHOLD = int(config['OTHER']['RESNETS_THRESHOLD'])
 
 
 global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
-all_nodes = os.environ["ALL_NODES"].split(":")
-all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":") 
-logging.debug(all_nodes)
-map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
+
+# all_nodes = os.environ["ALL_NODES"].split(":")
+# all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":") 
+# logging.debug(all_nodes)
+# map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
 
 store_class_tasks_dict = {}
 store_class_tasks_dict[555] = "storeclass1"
@@ -237,6 +238,7 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
     top_crop = (single_spatial_full - single_spatial)/2
     right_crop = (single_spatial_full + single_spatial)/2
     bottom_crop = (single_spatial_full + single_spatial)/2
+
     for j in range(w):
         for i in range(w):
             ### NOTE: Logic for creation of collage can be modified depending on latency requirements.
@@ -264,98 +266,100 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
 def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
 
-    input_list = []
-    for i in range(0:8): #number of inputs is 9
-        input_file = q.get()
-        input_list.append(input_file)
+    while True:
+        input_list = []
+        src_list = []
+        base_list = []
+        id_list = []
+        for i in range(0,9): #number of inputs is 9
+            input_file = q.get()
+            input_list.append(input_file)
+            src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+            log.info(f"{task_name}: file rcvd from {src_task}")
+            src = os.path.join(pathin, input_file)
+            src_list.append(src)
+            base_list.append(base_fname.split('.')[0])
+            id_list.append(base_fname.split('img')[0])
 
-    start = time.time()
-    src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-    log.info(f"{task_name}: file rcvd from {src_task}")
+        start = time.time()
+        
 
-    # Process the file (this example just passes along the file as-is)
-    # Once a file is copied to the `pathout` folder, CIRCE will inspect the
-    # filename and pass the file to the next task.
-    src = os.path.join(pathin, input_file)
-    # dst_task = children[cnt % len(children)]  # round robin selection
-    # dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-    # shutil.copyfile(src, dst)
+        # Process the file (this example just passes along the file as-is)
+        # Once a file is copied to the `pathout` folder, CIRCE will inspect the
+        # filename and pass the file to the next task.
+        
+        # dst_task = children[cnt % len(children)]  # round robin selection
+        # dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+        # shutil.copyfile(src, dst)
 
-    # MASTER CODE
-    w = 3 
-    num_images = w * w
-    collage_spatial = 416
-    single_spatial = 224
-    single_spatial_full = 256
-    
-    print('Input list')
-    print(input_list)
-    # get job id for this requests
-    job_id = get_job_id()
-    logging.debug("got job id") 
-    logging.debug(job_id) 
-    print('got job id: ', job_id)
-    collage_file = create_collage(input_list, collage_spatial, single_spatial, single_spatial_full, w)
-    collage_file_split = collage_file.split(".JPEG")[0] 
-
-
-    fileid = [x.split('/')[-1].split('img')[0] for x in input_list]
-    classname = [x.split('/')[-1].split('.')[0].split('img')[1] for x in input_list]
-    classid = [classmap[x] for x in classname]
-    filesuffixlist = []
-    for x,y in zip(classid, fileid):
-        tmp = str(x)+'#'+y
-        filesuffixlist.append(tmp)
-    filesuffix = '-'.join(filesuffixlist)
-    logging.debug(filesuffix)
-
-
-    shutil.copyfile(collage_file, os.path.join(pathout,"master_"+  collage_file_split + "_jobid" + str(job_id) +'_'+filesuffix+ ".JPEG"))
-    print('Receive collage file:')
-    ### send to collage task
-    outlist = [os.path.join(pathout,"master_"+  collage_file_split+ "_jobid" + str(job_id) +'_'+filesuffix+ ".JPEG")]
-    print(outlist)
-    ### send to resnet tasks
-    print('Receive resnet files: ')
-    filelist_flask = []
-    for i, f in enumerate(input_list):
-        idx  = i%num_images
-        f_split = f.split(".JPEG")[0]
+        # MASTER CODE
+        w = 3 
+        num_images = w * w
+        collage_spatial = 416
+        single_spatial = 224
+        single_spatial_full = 256
+        
+        logging.debug('Input list')
+        logging.debug(src_list)
+        # get job id for this requests
+        job_id = get_job_id()
+        logging.debug("got job id") 
+        logging.debug(job_id) 
+        collage_file = create_collage(src_list, collage_spatial, single_spatial, single_spatial_full, w)
+        collage_file_split = collage_file.split(".JPEG")[0] 
+        classname = [x.split('.')[0].split('img')[1] for x in base_list]
+        classid = [classmap[x] for x in classname]
+        filesuffixlist = []
+        for x,y in zip(classid, id_list):
+            tmp = str(x)+'#'+y
+            filesuffixlist.append(tmp)
+        filesuffix = '-'.join(filesuffixlist)
         print('got job id 2: ', job_id)
-        dst_task = children # only 1 children
-        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}_{base_fname}")
-        shutil.copyfile(f, dst)
-        filelist_flask.append(dst)
-    next_job_id = put_filenames(job_id, filelist_flask)
-    if CODING_PART1:
-        slept = 0
-        try:
-            global_info_ip = os.environ['GLOBAL_IP']
-            global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-            print("global info ip port: ", global_info_ip_port)
-            if RESNETS_THRESHOLD > 1: # Coding configuration
-                while slept < MASTER_TO_RESNET_TIME:
-                    ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
-                    print("get_enough_resnet_preds fn. return value is: ", ret_val)
-                    if ret_val:
-                        break
-                    time.sleep(MASTER_POLL_INTERVAL)
-                    slept += MASTER_POLL_INTERVAL
-            get_and_send_missing_images(pathin) 
-        except Exception as e:
-            print('Possibly running on execution profiler!!!') 
+        job = "jobid"+ str(job_id)
+        dst = os.path.join(pathout, f"{task_name}_{collage_file_split}_{filesuffix}{job}")
+        shutil.copyfile(collage_file, dst)
+        print('Receive collage file:')
+        print(dst)
+        ### send to resnet tasks
+        print('Receive resnet files: ')
+        filelist_flask = []
+        for i, f in enumerate(input_list):
+            idx  = i%num_images
+            # job = "jobid"+ str(job_id)
+            dst_task = "resnet"+str(idx) # only 1 children
+            dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_list[i]}{job}")
+            print(dst)
+            shutil.copyfile(os.path.join(pathin,f), dst)
+            filelist_flask.append(dst)
+        next_job_id = put_filenames(job_id, filelist_flask)
+        if CODING_PART1:
+            slept = 0
+            try:
+                global_info_ip = os.environ['GLOBAL_IP']
+                global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+                print("global info ip port: ", global_info_ip_port)
+                if RESNETS_THRESHOLD > 1: # Coding configuration
+                    while slept < MASTER_TO_RESNET_TIME:
+                        ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
+                        print("get_enough_resnet_preds fn. return value is: ", ret_val)
+                        if ret_val:
+                            break
+                        time.sleep(MASTER_POLL_INTERVAL)
+                        slept += MASTER_POLL_INTERVAL
+                get_and_send_missing_images(pathin) 
+            except Exception as e:
+                print('Possibly running on execution profiler!!!') 
 
-    # read the generate output
-    # based on that determine sleep and number of bytes in output file
-    end = time.time()
-    runtime_stat = {
-        "task_name" : task_name,
-        "start" : start,
-        "end" : end
-    }
-    log.warning(json.dumps(runtime_stat))
-    q.task_done()
-
+        # read the generate output
+        # based on that determine sleep and number of bytes in output file
+        end = time.time()
+        runtime_stat = {
+            "task_name" : task_name,
+            "start" : start,
+            "end" : end
+        }
+        log.warning(json.dumps(runtime_stat))
+        q.task_done()
     log.error("ERROR: should never reach this")
 
 
@@ -373,10 +377,12 @@ def profile_execution(task_name):
         if file.startswith("EXECPROFILER_") is True:
             continue
 
+        new = f"{input_dir}/EXECPROFILER_{task_name}_{file}"
+        shutil.copyfile(os.path.join(input_dir, file), new)
         # create an input for each child of this task
-        for cnt in range(len(app_config.child_tasks(task_name))):
-            new = f"{input_dir}/EXECPROFILER{cnt}_{task_name}_{file}"
-            shutil.copyfile(os.path.join(input_dir, file), new)
+        # for cnt in range(len(app_config.child_tasks(task_name))):
+        #     new = f"{input_dir}/EXECPROFILER{cnt}_{task_name}_{file}"
+        #     shutil.copyfile(os.path.join(input_dir, file), new)
 
     os.makedirs(output_dir, exist_ok=True)
     t = threading.Thread(target=task, args=(q, input_dir, output_dir, task_name))

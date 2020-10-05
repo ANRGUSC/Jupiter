@@ -84,7 +84,6 @@ def send_prediction_to_decoder_task(resnet_task_num,job_id, prediction, global_i
     Raises:
         Exception: if sending message to flask server on decoder is failed
     """
-    global resnet_task_num
     hdr = {
             'Content-Type': 'application/json',
             'Authorization': None #not using HTTP secure
@@ -105,13 +104,19 @@ def send_prediction_to_decoder_task(resnet_task_num,job_id, prediction, global_i
 # Run by dispatcher (e.g. CIRCE). Use task_name to differentiate the tasks by
 # name to reuse one base task file.
 def task(q, pathin, pathout, task_name):
+    print(task_name)
     resnet_task_num = int(task_name.split('resnet')[1])
 
     children = app_config.child_tasks(task_name)
+    print(children)
 
 
     input_file = q.get()
+    print(input_file)
     src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+    print(src_task)
+    print(this_task)
+    print(base_fname)
     log.info(f"{task_name}: file rcvd from {src_task}")
 
     # Process the file (this example just passes along the file as-is)

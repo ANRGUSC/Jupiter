@@ -21,14 +21,18 @@ RUN pip3 install --upgrade pip
 ADD requirements.txt /jupiter/requirements.txt
 RUN pip3 install -r /jupiter/requirements.txt
 
+ADD profiler_worker.py /jupiter/profiler_worker.py
+
 # Add all files in the ./build/ folder. This folder is created by
 # build_push_exec.py and contains copies of all files from Jupiter and the
 # application. If you need to add more files, make the script copy files into
 # ./build/ instead of adding it manually in this Dockerfile.
-COPY build/ /jupiter/build/
+# COPY build/ /jupiter/build/
+# RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
+COPY build/app_specific_files/requirements.txt /jupiter/build/app_specific_files/requirements.txt
 RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
+COPY build/ /jupiter/build/
 
-ADD profiler_worker.py /jupiter/profiler_worker.py
 
 ADD start_worker.sh /jupiter/start_worker.sh
 ADD remote_start.py /jupiter/remote_start.py
