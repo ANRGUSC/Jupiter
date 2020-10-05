@@ -46,7 +46,7 @@ def task(input_files, pathin, pathout):
 
 def main():
     filelist= 'test_merged.jpeg'
-    outpath = os.path.join(os.path.dirname(__file__), "generated_files/")
+    outpath = os.path.join(os.path.dirname(__file__), "sample_input/")
     outfile = task(filelist, outpath, outpath)
     return outfile
 

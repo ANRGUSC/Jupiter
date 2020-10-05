@@ -145,7 +145,7 @@ def task(filelist, pathin, pathout):
 
 def main():
     filelist= ['test_left_preprocess1.jpeg', 'test_left_preprocess2.jpeg']
-    outpath = os.path.join(os.path.dirname(__file__), "generated_files/")
+    outpath = os.path.join(os.path.dirname(__file__), "sample_input/")
     outfile = task(filelist, outpath, outpath)
     return outfile
 

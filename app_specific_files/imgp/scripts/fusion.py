@@ -38,7 +38,7 @@ def task(filelist, pathin, pathout):
 
 def main():
     filelist= ['test_human.csv', 'test_car.csv']
-    outpath = os.path.join(os.path.dirname(__file__), "generated_files/")
+    outpath = os.path.join(os.path.dirname(__file__), "sample_input/")
     outfile = task(filelist, outpath, outpath)
     return outfile
 
