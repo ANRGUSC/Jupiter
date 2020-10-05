@@ -25,7 +25,10 @@ RUN apt-get install -y sshpass nano
 
 # Taken from quynh's network profiler
 RUN pip install cryptography
-
+# for opencv
+RUN apt-get install 'ffmpeg'\
+                    'libsm6'\ 
+                    'libxext6'  -y
 RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo '{username}:{password}' | chpasswd
@@ -104,7 +107,10 @@ RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
 RUN sudo apt update
 RUN apt-get install -y mosquitto-clients
-
+# for opencv
+RUN apt-get install 'ffmpeg'\
+                    'libsm6'\ 
+                    'libxext6'  -y
 ADD circe/original/requirements.txt /requirements.txt
 
 RUN pip3 install --upgrade pip
