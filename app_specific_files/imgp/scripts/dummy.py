@@ -12,7 +12,7 @@ import time
 
 def task(input_files, pathin, pathout):
 
-    return [os.path.join(pathout, output_files[0])]
+    return [os.path.join(pathout, input_files[0])]
 
 
 
