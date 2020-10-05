@@ -53,6 +53,7 @@ RUN apt-get install stress
 
 # Add input files
 COPY  {app_file}/sample_input /sample_input
+ADD {app_file}/filegen.py /filegen.py
 
 # Add the mongodb scripts
 ADD circe/original/runtime_profiler_mongodb /central_mongod
