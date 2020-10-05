@@ -354,16 +354,14 @@ class HEFT:
     
     
     def run_dup_split(self):
-        i = 0
-        while True and i <= 6:
-            i += 1
+        while True:
             btnk_id = self.get_btnk_id()
             spt = split.Split()
             if self.is_link(btnk_id):
                 src_node = btnk_id.split('_')[0]
                 dst_node = btnk_id.split('_')[1]
                 flag = True
-                if src_node.time_line[-1].end > dst_node.time_line[-1].end:
+                if self.get_node_by_id(src_node).time_line[-1].end > self.get_node_by_id(dst_node).time_line[-1].end:
                     flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, src_node)
                 else:
                     flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, dst_node)
@@ -373,6 +371,11 @@ class HEFT:
                 flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, btnk_id)
                 if flag == False:
                     break
+            
+    def get_node_by_id(self, num):
+        for proc in self.processors:
+            if proc.number == num:
+                return proc
             
     def get_link_by_id(self, link_id):
         for l in self.links:
