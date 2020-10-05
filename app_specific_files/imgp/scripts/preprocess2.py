@@ -18,6 +18,7 @@ def task(input_files, pathin, pathout):
     for onefile in input_files:
         if(onefile.split('.')[0].split('_')[1] == "right"):
             filelist.append(onefile)
+    output_files = ""
 
     for filename in filelist:
         print(filename)
