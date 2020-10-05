@@ -361,7 +361,7 @@ class HEFT:
                 src_node = btnk_id.split('_')[0]
                 dst_node = btnk_id.split('_')[1]
                 flag = True
-                if self.get_node_by_id(src_node).time_line[-1].end > self.get_node_by_id(dst_node).time_line[-1].end:
+                if self.get_node_by_id(int(src_node)).time_line[-1].end > self.get_node_by_id(int(dst_node)).time_line[-1].end:
                     flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, src_node)
                 else:
                     flag = spt.do_split(self.links, self.processors, self.tasks, self.comp_cost, self.data, self.quaratic_profile, dst_node)
