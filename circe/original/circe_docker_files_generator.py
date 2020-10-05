@@ -63,6 +63,7 @@ ADD circe/original/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
 ADD circe/original/evaluate.py /evaluate.py
 
+
 # Add the task speficific configuration files
 ADD {app_file}/configuration.txt /configuration.txt
 ADD {app_file}/filegen.py /filegen.py
@@ -106,7 +107,6 @@ RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
 RUN sudo apt update
 RUN apt-get install -y mosquitto-clients
-
 RUN apt-get update
 # for opencv
 RUN apt-get install -y ffmpeg libsm6 libxext6
@@ -167,6 +167,7 @@ def write_circe_worker_docker(app_option=None,**kwargs):
     dfp = DockerfileParser(path=file_name)
     dfp.content =template_worker.format(**kwargs)
     return file_name
+    # print(dfp.content)
 
 
 def write_circe_home_docker(app_option=None,**kwargs):
