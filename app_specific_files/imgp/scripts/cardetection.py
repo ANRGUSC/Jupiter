@@ -16,7 +16,7 @@ from os import listdir
 
 def task(input_files, pathin, pathout):
 
-    onefile = input_files[0]
+    onefile = input_files
     #use trained cars XML classifiers
     xml_file = os.path.join(os.path.dirname(__file__),'cars.xml')
     car_cascade = cv2.CascadeClassifier(xml_file)
@@ -45,7 +45,7 @@ def task(input_files, pathin, pathout):
 
 
 def main():
-    filelist= ['test_merged.jpeg']
+    filelist= 'test_merged.jpeg'
     outpath = os.path.join(os.path.dirname(__file__), "sample_input/")
     outfile = task(filelist, outpath, outpath)
     return outfile
@@ -53,7 +53,7 @@ def main():
 
 if __name__ == '__main__':
 
-    filelist= ['test_merged.jpeg']
+    filelist= 'test_merged.jpeg'
     task(filelist, '/home/zxc/Desktop/imgptest/generated_files', '/home/zxc/Desktop/imgptest/generated_files')
 
 

@@ -22,10 +22,9 @@ ADD circe/original/requirements.txt /requirements.txt
 RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
+RUN apt-get update
 # for opencv
-RUN apt-get install 'ffmpeg'\
-                    'libsm6'\ 
-                    'libxext6'  -y
+RUN apt-get install -y ffmpeg libsm6 libxext6
 # Taken from quynh's network profiler
 RUN pip install cryptography
 
@@ -107,10 +106,9 @@ RUN tar -zxvf ~/hadoop-2.8.1.tar.gz -C ~/
 RUN rm ~/hadoop-2.8.1.tar.gz
 RUN sudo apt update
 RUN apt-get install -y mosquitto-clients
+RUN apt-get update
 # for opencv
-RUN apt-get install 'ffmpeg'\
-                    'libsm6'\ 
-                    'libxext6'  -y
+RUN apt-get install -y ffmpeg libsm6 libxext6
 ADD circe/original/requirements.txt /requirements.txt
 
 RUN pip3 install --upgrade pip

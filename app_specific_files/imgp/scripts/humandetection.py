@@ -31,7 +31,7 @@ def draw_detections(img, rects, thickness = 1):
 
 def task(input_files, pathin, pathout):
 
-    onefile = input_files[0]
+    onefile = input_files
     # read image
     image_path = os.path.join(pathin, onefile)
     img = cv2.imread(image_path)  
@@ -64,7 +64,7 @@ def task(input_files, pathin, pathout):
 
 
 def main():
-    filelist= ['test_merged.jpeg']
+    filelist= 'test_merged.jpeg'
     outpath = os.path.join(os.path.dirname(__file__), "sample_input/")
     outfile = task(filelist, outpath, outpath)
     return outfile
@@ -72,7 +72,7 @@ def main():
 
 if __name__ == '__main__':
 
-    filelist= ['test_merged.jpeg']
+    filelist= 'test_merged.jpeg'
     task(filelist, '/home/zxc/Desktop/imgptest/generated_files', '/home/zxc/Desktop/imgptest/generated_files')
 
 
