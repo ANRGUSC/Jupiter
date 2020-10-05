@@ -242,7 +242,7 @@ class HEFT:
         st = set()
         for i in range(1):
         #while True:
-            btnk_id = self.get_btnk_id(self.get_task_by_number(2).processor_num + "_" + self.get_task_by_number(3).processor_num)
+            btnk_id = self.get_btnk_id(str(self.get_task_by_number(2).processor_num) + "_" + str(self.get_task_by_number(3).processor_num))
             print("\n-------------------------------")
             print("current system bottleneck: %s" % str(btnk_id))
             st.add(str(btnk_id))
