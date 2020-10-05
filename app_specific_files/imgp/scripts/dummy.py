@@ -7,11 +7,15 @@
  *     Read license file in main directory for more details
 """
 
+
 import os
 import time
+import cv2 as cv
 
 def task(input_files, pathin, pathout):
 
+    src = cv.imread(os.path.join(pathin, input_files[0]))
+    cv.imwrite(os.path.join(pathout, input_files[0]), src)
     return [os.path.join(pathout, input_files[0])]
 
 
