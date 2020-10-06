@@ -19,6 +19,8 @@ import importlib
 # This exists in a build/ folder created by build_push_exec.py
 from build.jupiter_utils import app_config_parser
 import utils
+import sys
+
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -30,6 +32,7 @@ APP_CONFIG_PATH = "/jupiter/build/app_specific_files/app_config.yaml"
 PROFILER_FILES_DIR = '/jupiter/exec_profiler/profiler_files/'
 PROFILER_FILES_PROCESSED_DIR = '/jupiter/exec_profiler/profiler_files_processed/'
 JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
+sys.path.append(APP_DIR)
 # un/pw for all execution profiler containers
 USERNAME = "root"
 PASSWORD = "PASSWORD"

@@ -36,7 +36,7 @@ config = configparser.ConfigParser()
 config.read(JUPITER_CONFIG_INI_PATH)
 
 
-FLAG_PART2 = int(config['OTHER']['FLAG_PART2'])
+CODING_PART2 = int(config['OTHER']['CODING_PART2'])
 
 classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
 classids = np.arange(0,len(classlist),1)
@@ -95,7 +95,7 @@ def task(q, pathin, pathout, task_name):
     M = 2 # Number of data-batches
     K = 10 # Number of referenced Images
     
-    if FLAG_PART2:
+    if CODING_PART2:
         # Results recieved from M workers
         worker_idx = [ord((filelist[i].partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(M)]
         worker_eval = [np.loadtxt(os.path.join(pathin, filelist[i]), delimiter=',') for i in range(M)]

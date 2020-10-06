@@ -253,7 +253,7 @@ application:
         outfile_prefix: storeclass5
         dag_task: True
       - name: lccenc1
-        base_script: lccenc.py
+        base_script: lccenc1.py
         inputs_to_wait_for: 4
         output_policy: BATCHED_CUSTOM_ORDER
         children:
@@ -264,7 +264,7 @@ application:
         outfile_prefix: lccenc1
         dag_task: True
       - name: lccenc2
-        base_script: lccenc.py
+        base_script: lccenc1.py
         inputs_to_wait_for: 4
         output_policy: BATCHED_CUSTOM_ORDER
         children:
@@ -275,7 +275,7 @@ application:
         outfile_prefix: lccenc2
         dag_task: True
       - name: lccenc3
-        base_script: lccenc.py
+        base_script: lccenc1.py
         inputs_to_wait_for: 4
         output_policy: BATCHED_CUSTOM_ORDER
         children:
@@ -286,7 +286,7 @@ application:
         outfile_prefix: lccenc3
         dag_task: True
       - name: lccenc4
-        base_script: lccenc.py
+        base_script: lccenc1.py
         inputs_to_wait_for: 4
         output_policy: BATCHED_CUSTOM_ORDER
         children:
@@ -297,7 +297,7 @@ application:
         outfile_prefix: lccenc4
         dag_task: True
       - name: lccenc5
-        base_script: lccenc.py
+        base_script: lccenc1.py
         inputs_to_wait_for: 4
         output_policy: BATCHED_CUSTOM_ORDER
         children:

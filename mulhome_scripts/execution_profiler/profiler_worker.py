@@ -13,6 +13,7 @@ import utils
 from build.jupiter_utils import app_config_parser
 from build.jupiter_utils import transfer
 import importlib
+import sys
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -24,6 +25,7 @@ APP_CONFIG_PATH = '/jupiter/build/app_specific_files/app_config.yaml'
 JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
 PROFILER_FILES_DIR = "/jupiter/exec_profiler/profiler_files/"
 HOME_PROFILER_FILES_DIR = PROFILER_FILES_DIR
+sys.path.append(APP_DIR)
 
 # un/pw for all execution profiler containers
 USERNAME = "root"

@@ -7,6 +7,7 @@ import logging
 import glob
 import time
 import json
+from ccdag import *
 
 from PIL import Image
 from multiprocessing import Process, Manager
@@ -39,20 +40,10 @@ except ModuleNotFoundError:
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "refactor_demo5")
-
-#task config information
-JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
-config = configparser.ConfigParser()
-config.read(JUPITER_CONFIG_INI_PATH)
+app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
 
 app = Flask(__name__)
 store_class_tasks_paths_dict = {}
-CODING_PART1 = int(config['OTHER']['CODING_PART1'])
-SLEEP_TIME = int(config['OTHER']['SLEEP_TIME'])
-MASTER_TO_RESNET_TIME = int(config['OTHER']['MASTER_TO_RESNET_TIME'])
-MASTER_POLL_INTERVAL = int(config['OTHER']['MASTER_POLL_INTERVAL'])
-RESNETS_THRESHOLD = int(config['OTHER']['RESNETS_THRESHOLD'])
 
 
 global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
@@ -84,9 +75,8 @@ store_class_tasks_dict[352] = "storeclass18"
 store_class_tasks_dict[354] = "storeclass19"
 store_class_tasks_dict[360] = "storeclass20"
 
-classlists = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard',  'lion', 'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
-classids = np.arange(0,len(classlists),1)
-classmap = dict(zip(classlists, classids))
+classids = np.arange(0,len(ccdag.classlist),1)
+classmap = dict(zip(ccdag.classlist, classids))
 
 
 def transfer_data_scp(ID,user,pword,source, destination):
@@ -325,9 +315,8 @@ def task(q, pathin, pathout, task_name):
         filelist_flask = []
         for i, f in enumerate(input_list):
             idx  = i%num_images
-            # job = "jobid"+ str(job_id)
             dst_task = "resnet"+str(idx) # only 1 children
-            dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_list[i]}{job}")
+            dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_list[i]}{job}.JPEG")
             print(dst)
             shutil.copyfile(os.path.join(pathin,f), dst)
             filelist_flask.append(dst)
@@ -339,13 +328,13 @@ def task(q, pathin, pathout, task_name):
                 global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
                 print("global info ip port: ", global_info_ip_port)
                 if RESNETS_THRESHOLD > 1: # Coding configuration
-                    while slept < MASTER_TO_RESNET_TIME:
+                    while slept < ccdag.MASTER_TO_RESNET_TIME:
                         ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
                         print("get_enough_resnet_preds fn. return value is: ", ret_val)
                         if ret_val:
                             break
-                        time.sleep(MASTER_POLL_INTERVAL)
-                        slept += MASTER_POLL_INTERVAL
+                        time.sleep(ccdag.MASTER_POLL_INTERVAL)
+                        slept += ccdag.MASTER_POLL_INTERVAL
                 get_and_send_missing_images(pathin) 
             except Exception as e:
                 print('Possibly running on execution profiler!!!') 
@@ -359,7 +348,9 @@ def task(q, pathin, pathout, task_name):
             "end" : end
         }
         log.warning(json.dumps(runtime_stat))
-        q.task_done()
+        for i in range(0,9):
+            q.task_done()
+
     log.error("ERROR: should never reach this")
 
 
@@ -368,21 +359,6 @@ def profile_execution(task_name):
     q = queue.Queue()
     input_dir = f"{APP_DIR}/sample_inputs/"
     output_dir = f"{APP_DIR}/sample_outputs/"
-
-    # manually add the src (parent) and dst (this task) prefix to the filename
-    # here to illustrate how Jupiter will enact this under the hood. the actual
-    # src (or parent) is not needed for profiling execution so we fake it here.
-    for file in os.listdir(input_dir):
-        # skip filse made by other threads when testing locally
-        if file.startswith("EXECPROFILER_") is True:
-            continue
-
-        new = f"{input_dir}/EXECPROFILER_{task_name}_{file}"
-        shutil.copyfile(os.path.join(input_dir, file), new)
-        # create an input for each child of this task
-        # for cnt in range(len(app_config.child_tasks(task_name))):
-        #     new = f"{input_dir}/EXECPROFILER{cnt}_{task_name}_{file}"
-        #     shutil.copyfile(os.path.join(input_dir, file), new)
 
     os.makedirs(output_dir, exist_ok=True)
     t = threading.Thread(target=task, args=(q, input_dir, output_dir, task_name))
@@ -399,11 +375,6 @@ def profile_execution(task_name):
             q.put(file)
     q.join()
 
-    # clean up input files
-    files = glob.glob(f"{input_dir}/EXECPROFILER*_{dst_task}*")
-    for f in files:
-        os.remove(f)
-
     # execution profiler needs the name of ouput files to analyze sizes
     output_files = []
     for file in os.listdir(output_dir):
@@ -417,4 +388,5 @@ if __name__ == '__main__':
     # Testing Only
     log.info("Threads will run indefintely. Hit Ctrl+c to stop.")
     for dag_task in app_config.get_dag_tasks():
-        log.debug(profile_execution(dag_task['name']))
+        if dag_task['base_script'] == __file__:
+            log.debug(profile_execution(dag_task['name']))

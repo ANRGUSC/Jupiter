@@ -7,11 +7,17 @@ import logging
 import glob
 import time
 import json
+import ccdag
+
+import numpy as np
+import requests
+import urllib
+import configparser
+import cv2
 
 
-classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
-classids = np.arange(0,len(classlist),1)
-classmap = dict(zip(classlist, classids))
+classids = np.arange(0,len(ccdag.classlist),1)
+classmap = dict(zip(ccdag.classlist, classids))
 
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
@@ -33,12 +39,15 @@ except ModuleNotFoundError:
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "refactor_demo5")
+app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
 
 #task config information
-JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
+
 config = configparser.ConfigParser()
-config.read(JUPITER_CONFIG_INI_PATH)
+config.read(ccdag.JUPITER_CONFIG_INI_PATH)
+
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
 def gen_Lagrange_coeffs(alpha_s,beta_s):
     U = np.zeros((len(alpha_s), len(beta_s)))
@@ -71,157 +80,158 @@ def LCC_encoding(X,N,M):
 def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
     classnum = task_name.split('lccenc')[1]
-    classname = classlist[int(classnum)-1]
+    classname = ccdag.classlist[int(classnum)-1]
 
-    input_file = q.get()
-    start = time.time()
-    src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-    log.info(f"{task_name}: file rcvd from {src_task}")
+    num_inputs = 4
+    while True:
 
-    # Process the file (this example just passes along the file as-is)
-    # Once a file is copied to the `pathout` folder, CIRCE will inspect the
-    # filename and pass the file to the next task.
+        input_list = []
+        src_list = []
+        base_list = []
+        id_list = []
+        for i in range(0,num_inputs): #number of inputs is 9
+            input_file = q.get()
+            input_list.append(input_file)
+            src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+            log.info(f"{task_name}: file rcvd from {src_task} : {input_file}")
+            src = os.path.join(pathin, input_file)
+            src_list.append(src)
+            base_list.append(base_fname.split('jobid')[0])
+            id_list.append(base_fname.split('img')[0])
 
-    src = os.path.join(pathin, input_file)
-    # dst_task = children[cnt % len(children)]  # round robin selection
-    # dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-    # shutil.copyfile(src, dst)
+        start = time.time()
 
 
-
-    #LCCENC CODE
-    fileid = [x.split('.')[0].split('_')[-1].split('img')[0] for x in filelist]
-    logging.debug(fileid)
-    classname = [x.split('.')[0].split('img')[1] for x in filelist]
-    classid = [classmap[x] for x in classname]
-    filesuffixlist = []
-    for x,y in zip(classid, fileid):
-        tmp = str(x)+'#'+y
-        filesuffixlist.append(tmp)
-    filesuffix = '-'.join(filesuffixlist)
-    logging.debug(filesuffix)
-
-    hdr = {
-            'Content-Type': 'application/json',
-            'Authorization': None #not using HTTP secure
-                                }
-    # message for requesting job_id
-    # payload = {'event': 'request id'}
-    payload = {'class_image': int(classnum)}
-    # address of flask server for class1 is 0.0.0.0:5000 and "post-id" is for requesting id
-    try:
-        # url = "http://0.0.0.0:5000/post-id"
-        global_info_ip = os.environ['GLOBAL_IP']
-        url = "http://%s:%s/post-id"%(global_info_ip,str(FLASK_SVC))
-        print(url)
-        # request job_id
-
-        response = requests.post(url, headers = hdr, data = json.dumps(payload))
-        job_id = response.json()
-        print(job_id)
-    except Exception as e:
-        print('Possibly running on the execution profiler')
-        print(e)
-        job_id = 2
-
-    # Parameters
-    # L = 10 # Number of images in a data-batch
-    L = 2 # Number of images in a data-batch
-    M = 2 # Number of data-batches
-    N = 3 # Number of workers (encoded data-batches)
-    
-    # Dimension of resized image
-    width = 400
-    height = 400
-    dim = (width, height)
-    
-    if FLAG_PART2: #Coding Version
-        #Read M batches
-        Image_Batch = []
-        count_file = 0
-        for j in range(M):
-            count = 0
-            while count < L:
-                logging.debug(count_file)
-                logging.debug(os.path.join(pathin, filelist[count_file]))
-                img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
-                if img is not None:
-                # resize image
-                    img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-                    img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
-                    img -= img.mean()
-                    img /= img.std()
-                    img_w ,img_l = img.shape
-                    img = img.reshape(1,img_w*img_l)
-                    if count == 0:
-                       Images = img
-                    else:
-                       Images = np.concatenate((Images,img), axis=0)  
-                    count+=1
-                count_file+=1
-            Image_Batch.append(Images)
-
-        # Encode M data batches to N encoded data
-        En_Image_Batch = LCC_encoding(Image_Batch,N,M)
-
-        out_list = []
-
-        # Save each encoded data-batch i to a csv 
-        for i in range(N):
-            #destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'.csv')
-            destination = os.path.join(pathout,'lccenc'+classnum+'_score'+classnum+chr(i+97)+'_'+'job'+str(job_id)+'_'+filesuffix+'.csv')
-            np.savetxt(destination, En_Image_Batch[i], delimiter=',')
-            out_list.append(destination)
+        #LCCENC CODE
         
-        from_task = '_storeclass'+classnum
-        send_runtime_stats('rt_finish_task', destination,from_task)
+        logging.debug(id_list)
+        print(id_list)
+        print(base_list)
+        classname = [x.split('.')[0].split('img')[1] for x in base_list]
+        classid = [classmap[x] for x in classname]
+        filesuffixlist = []
+        for x,y in zip(classid, id_list):
+            tmp = str(x)+'#'+y
+            filesuffixlist.append(tmp)
+        filesuffix = '-'.join(filesuffixlist)
+        logging.debug(filesuffix)
 
+        hdr = {
+                'Content-Type': 'application/json',
+                'Authorization': None #not using HTTP secure
+                                    }
+        # message for requesting job_id
+        # payload = {'event': 'request id'}
+        payload = {'class_image': int(classnum)}
+        # address of flask server for class1 is 0.0.0.0:5000 and "post-id" is for requesting id
+        try:
+            # url = "http://0.0.0.0:5000/post-id"
+            global_info_ip = os.environ['GLOBAL_IP']
+            url = "http://%s:%s/post-id"%(global_info_ip,str(FLASK_SVC))
+            print(url)
+            # request job_id
+
+            response = requests.post(url, headers = hdr, data = json.dumps(payload))
+            job_id = response.json()
+            print(job_id)
+        except Exception as e:
+            print('Possibly running on the execution profiler')
+            print(e)
+            job_id = 2
+
+        # Parameters
+        # L = 10 # Number of images in a data-batch
+        L = 2 # Number of images in a data-batch
+        M = 2 # Number of data-batches
+        N = 3 # Number of workers (encoded data-batches)
         
-        return out_list
-    
-    else: # Uncoding version
-        #Read M batches
-        Image_Batch = []
-        count_file = 0
-        for j in range(N):
-            count = 0
-            while count < L:
-                logging.debug(count_file)
-                img = cv2.imread(os.path.join(pathin, filelist[count_file])) 
-                if img is not None:
-                # resize image
-                    img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-                    img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
-                    img -= img.mean()
-                    img /= img.std()
-                    img_w ,img_l = img.shape
-                    img = img.reshape(1,img_w*img_l)
-                    if count == 0:
-                       Images = img
-                    else:
-                       Images = np.concatenate((Images,img), axis=0)  
-                    count+=1
-                count_file+=1
-            Image_Batch.append(Images)
+        # Dimension of resized image
+        width = 400
+        height = 400
+        dim = (width, height)
+        
+        if ccdag.CODING_PART2: #Coding Version
+            #Read M batches
+            Image_Batch = []
+            count_file = 0
+            for j in range(M):
+                count = 0
+                while count < L:
+                    logging.debug(count_file)
+                    logging.debug(os.path.join(pathin, input_list[count_file]))
+                    img = cv2.imread(os.path.join(pathin, input_list[count_file])) 
+                    if img is not None:
+                    # resize image
+                        img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+                        img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
+                        img -= img.mean()
+                        img /= img.std()
+                        img_w ,img_l = img.shape
+                        img = img.reshape(1,img_w*img_l)
+                        if count == 0:
+                           Images = img
+                        else:
+                           Images = np.concatenate((Images,img), axis=0)  
+                        count+=1
+                    count_file+=1
+                Image_Batch.append(Images)
 
-        En_Image_Batch = LCC_encoding(Image_Batch,N,N)
+            # Encode M data batches to N encoded data
+            En_Image_Batch = LCC_encoding(Image_Batch,N,M)
 
-    dst_task = children # only 1 child
-    for i in range(N):
-        job = 'job'+str(job_id)
-        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}_{base_fname}")
-        np.savetxt(dst, En_Image_Batch[i], delimiter=',')
+            # Save each encoded data-batch i to a csv
+            for idx,child in enumerate(children):
+                job = "jobid"+ str(job_id)
+                destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
+                np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
+            
+            from_task = '_storeclass'+classnum
 
-    # read the generate output
-    # based on that determine sleep and number of bytes in output file
-    end = time.time()
-    runtime_stat = {
-        "task_name" : task_name,
-        "start" : start,
-        "end" : end
-    }
-    log.warning(json.dumps(runtime_stat))
-    q.task_done()
+                    
+        else: # Uncoding version
+            #Read M batches
+            Image_Batch = []
+            count_file = 0
+            for j in range(N):
+                count = 0
+                while count < L:
+                    logging.debug(count_file)
+                    img = cv2.imread(os.path.join(pathin, input_list[count_file])) 
+                    if img is not None:
+                    # resize image
+                        img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+                        img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
+                        img -= img.mean()
+                        img /= img.std()
+                        img_w ,img_l = img.shape
+                        img = img.reshape(1,img_w*img_l)
+                        if count == 0:
+                           Images = img
+                        else:
+                           Images = np.concatenate((Images,img), axis=0)  
+                        count+=1
+                    count_file+=1
+                Image_Batch.append(Images)
+
+            En_Image_Batch = LCC_encoding(Image_Batch,N,N)
+
+            # dst_task = children # only 1 child
+
+            for idx,child in enumerate(children):
+                job = "jobid"+ str(job_id)
+                destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
+                np.savetxt(destination, En_Image_Batch[i], delimiter=',')
+
+        # read the generate output
+        # based on that determine sleep and number of bytes in output file
+        end = time.time()
+        runtime_stat = {
+            "task_name" : task_name,
+            "start" : start,
+            "end" : end
+        }
+        log.warning(json.dumps(runtime_stat))
+        q.task_done()
 
     log.error("ERROR: should never reach this")
 
@@ -232,18 +242,16 @@ def profile_execution(task_name):
     input_dir = f"{APP_DIR}/sample_inputs/"
     output_dir = f"{APP_DIR}/sample_outputs/"
 
-    # manually add the src (parent) and dst (this task) prefix to the filename
-    # here to illustrate how Jupiter will enact this under the hood. the actual
-    # src (or parent) is not needed for profiling execution so we fake it here.
-    for file in os.listdir(input_dir):
-        # skip filse made by other threads when testing locally
-        if file.startswith("EXECPROFILER_") is True:
+    for file in os.listdir(output_dir):
+        try:
+            src_task, dst_task, base_fname = file.split("_", maxsplit=3)
+        except ValueError:
+            # file is not in the correct format
             continue
 
-        # create an input for each child of this task
-        for cnt in range(len(app_config.child_tasks(task_name))):
-            new = f"{input_dir}/EXECPROFILER{cnt}_{task_name}_{file}"
-            shutil.copyfile(os.path.join(input_dir, file), new)
+        if dst_task.startswith(task_name):
+            shutil.copyfile(os.path.join(output_dir, file),os.path.join(input_dir, file))
+
 
     os.makedirs(output_dir, exist_ok=True)
     t = threading.Thread(target=task, args=(q, input_dir, output_dir, task_name))
@@ -260,10 +268,6 @@ def profile_execution(task_name):
             q.put(file)
     q.join()
 
-    # clean up input files
-    files = glob.glob(f"{input_dir}/EXECPROFILER*_{dst_task}*")
-    for f in files:
-        os.remove(f)
 
     # execution profiler needs the name of ouput files to analyze sizes
     output_files = []
@@ -278,4 +282,5 @@ if __name__ == '__main__':
     # Testing Only
     log.info("Threads will run indefintely. Hit Ctrl+c to stop.")
     for dag_task in app_config.get_dag_tasks():
-        log.debug(profile_execution(dag_task['name']))
+        if dag_task['base_script'] == __file__:
+            log.debug(profile_execution(dag_task['name']))
