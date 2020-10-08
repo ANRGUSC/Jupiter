@@ -23,6 +23,7 @@ APP_DIR = "/jupiter/build/app_specific_files/"
 JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
 PROFILER_FILES_DIR = "/jupiter/exec_profiler/profiler_files/"
 HOME_PROFILER_FILES_DIR = PROFILER_FILES_DIR
+sys.path.append(APP_DIR)  # allow imports for app code
 
 # un/pw for all execution profiler containers
 USERNAME = "root"
