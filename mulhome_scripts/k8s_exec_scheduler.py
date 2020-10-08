@@ -3,16 +3,12 @@ __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rig
 __license__ = "GPL"
 __version__ = "2.1"
 import time
-from kubernetes import client, config
-from pprint import *
-import json
 import os
-
+from kubernetes import client, config
 from kubernetes.client.rest import ApiException
 import k8s_spec.service
 import k8s_spec.deployment
 from jupiter_utils import app_config_parser
-import utilities
 import logging
 
 import sys
@@ -22,6 +18,7 @@ import jupiter_config
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
+
 
 def check_workers_running(app_config, namespace):
     """Checks if all worker tasks are up and running.
@@ -35,7 +32,6 @@ def check_workers_running(app_config, namespace):
     """
     # Load kube config before executing k8s client API calls.
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
-    k8s_apps_v1 = client.AppsV1Api()
     core_v1_api = client.CoreV1Api()
 
     result = True
@@ -51,7 +47,7 @@ def check_workers_running(app_config, namespace):
         if resp.items:
             a = resp.items[0]
             if a.status.phase != "Running":
-                log.debug("Execution Profiler pod not yet running on {}".format(node))
+                log.debug(f"Execution Profiler pod not yet running on {node}")
                 result = False
 
     if result is True:
@@ -59,9 +55,11 @@ def check_workers_running(app_config, namespace):
 
     return result
 
+
 def write_file(filename, message):
     with open(filename, 'a') as f:
         f.write(message)
+
 
 def main():
     # Parse app's app_config.yaml
@@ -75,18 +73,10 @@ def main():
     api = client.CoreV1Api()
     k8s_apps_v1 = client.AppsV1Api()
 
-    if jupiter_config.BOKEH == 3:
-        log.critical("config processing changed, bokeh use needs fixing!")
-        sys.exit(1)
-        latency_file = utilities.prepare_stat_path(nodes, homes, dag)
-        start_time = time.time()
-        msg = 'Execution profiler deploystart %f \n'%(start_time)
-        write_file(latency_file,msg)
-
     """
     Create k8s service for the home task. This task will signal profiling for
-    all the execution profiler workers and collect results. K8s services exposes
-    ports of pods to the entire k8s cluster. This does not launch pods.
+    all the execution profiler workers and collect results. K8s services
+    exposes ports of pods to the entire k8s cluster. This does not launch pods.
     """
     home_svc_name = app_config.app_name + "-home"
     home_svc_spec = k8s_spec.service.generate(
@@ -155,7 +145,7 @@ def main():
             host=host,
             port_mappings=jupiter_config.k8s_deployment_port_mappings(),
             # inject any arbitrary environment variables here
-            env_vars= {
+            env_vars={
                 "NODE_NAME": node,
                 "HOME_NODE_IP": home_node_ip,
                 "ALL_PROFILER_IPS": all_profiler_ips,
@@ -163,7 +153,8 @@ def main():
             }
         )
         # # Call the Kubernetes API to create the deployment
-        resp = k8s_apps_v1.create_namespaced_deployment(body=spec, namespace=namespace)
+        resp = k8s_apps_v1.create_namespaced_deployment(body=spec,
+                                                        namespace=namespace)
         log.debug("Deployment created. status ='%s'" % str(resp.status))
 
     # check if worker deployment pods are running
@@ -188,20 +179,12 @@ def main():
         }
     )
 
-    resp = k8s_apps_v1.create_namespaced_deployment(body=home_depl_spec, namespace=namespace)
+    resp = k8s_apps_v1.create_namespaced_deployment(body=home_depl_spec,
+                                                    namespace=namespace)
     log.debug("Home deployment created. status = '%s'" % str(resp.status))
-
-    if jupiter_config.BOKEH == 3:
-        log.critical("config processing changed, bokeh use needs fixing!")
-        sys.exit(1)
-        end_time = time.time()
-        msg = 'Executionprofiler deployed %f \n'%(end_time)
-        write_file(latency_file,msg)
-        deploy_time = end_time - start_time
-        log.debug('Time to deploy execution profiler '+ str(deploy_time))
 
     log.info('Successfully deployed execution profiler.')
 
-if __name__ == '__main__':
 
+if __name__ == '__main__':
     main()
