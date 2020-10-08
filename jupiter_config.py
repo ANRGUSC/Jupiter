@@ -19,14 +19,14 @@ INI_PATH   = HERE + 'jupiter_config.ini'
 
 # this should be the same name as the app folder
 # APP_NAME must only contain alphanumerics or hyphens! Prefer only alphanumerics.
-APP_NAME = "example-incomplete"    
+APP_NAME = "example-incomplete"
 APP_DIR = path.join("app_specific_files", APP_NAME)
 
 # TODO: deprecated, use jupiter_utils.app_config_parser to grab the docker
 # registry. Remove this after set_globals() is removed.
 DOCKER_REGISTRY = "anrg"
 
-# TODO: quynh - should use a getter function instead of a 
+# TODO: quynh - should use a getter function instead of a
 BOKEH = -1
 
 def get_kubeconfig():
@@ -43,7 +43,7 @@ def parse_config_ini():
 
     # jupiter_config.ini should always be in the same dir as this file
     config.read(path.join(
-        path.abspath(path.dirname(__file__)), 
+        path.abspath(path.dirname(__file__)),
         "jupiter_config.ini")
     )
     return config
@@ -100,7 +100,7 @@ def set_globals():
 
     """Port and target port in containers for services to be used: Mongo, SSH and Flask"""
     global MONGO_SVC, MONGO_DOCKER, SSH_SVC, SSH_DOCKER, FLASK_SVC, FLASK_DOCKER, FLASK_CIRCE, FLASK_DEPLOY
-    
+
     MONGO_SVC               = config['PORT']['MONGO_SVC']
     MONGO_DOCKER            = config['PORT']['MONGO_DOCKER']
     SSH_SVC                 = config['PORT']['SSH_SVC']
@@ -115,7 +115,7 @@ def set_globals():
     BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
     BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
     BOKEH = int(config['BOKEH_LIST']['BOKEH'])
-    
+
 
     """Modules path of Jupiter"""
     global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH
@@ -131,8 +131,8 @@ def set_globals():
     STREAM_PATH             = HERE + 'simulation/data_sources/'
 
     global heft_option, wave_option
-    heft_option             = 'original'    
-    wave_option             = 'random' 
+    heft_option             = 'original'
+    wave_option             = 'random'
 
 
     if SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_RANDOM']):
@@ -145,9 +145,9 @@ def set_globals():
         wave_option         = 'greedy'
     elif SCHEDULER == int(config['SCHEDULER_LIST']['HEFT_BALANCE']):
         print('Task mapper: Heft load balanced selected')
-        HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/heft_balance/'   
+        HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/heft_balance/'
         heft_option         = 'heftbalance'
-    else: 
+    else:
         print('Task mapper: Heft original selected')
 
     global pricing_option, profiler_option
@@ -201,11 +201,11 @@ def set_globals():
 
     HOME_NODE               = get_home_node(HERE + 'nodes.txt')
     STREAM_NODE             = get_datasources(HERE + 'nodes.txt')
-    
+
 
     """Application Information"""
     global APP_PATH, APP_NAME, APP_OPTION
-    
+
 
     HOME_CHILD                = 'task0'
     APP_PATH                  = HERE  + 'app_specific_files/example/'
@@ -228,7 +228,7 @@ def set_globals():
     global NONDAG_CONTROLLER_IMAGE,NONDAG_WORKER_IMAGE # only required for non-DAG tasks (teradetectors and dft)
     NONDAG_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_nondag:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
     NONDAG_WORKER_IMAGE     = 'docker.io/anrg/%s_circe_nondag_worker:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
-    
+
     """CIRCE home and worker images for execution profiler"""
     global HOME_IMAGE, WORKER_IMAGE, STREAM_IMAGE
 
@@ -238,7 +238,7 @@ def set_globals():
 
     """DRUPE home and worker images"""
     global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
-    
+
     # PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded_%s'%(profiler_option,cluster_option)
     # PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded_%s'%(profiler_option,cluster_option)
 
@@ -263,7 +263,7 @@ def set_globals():
     global HEFT_IMAGE
 
     HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s_%s'%(heft_option,APP_OPTION,cluster_option)
-       
+
 
     global NUM_STRESS, STRESS_IMAGE
     NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
@@ -297,4 +297,15 @@ def get_abs_app_dir():
     abs_path = path.abspath(path.join(path.dirname(__file__), APP_DIR))
     return abs_path
 
-print(path.dirname(__file__))
+def task_mapper():
+    config = parse_config_ini()
+    return config["CONFIG"]["TASK_MAPPER"]
+
+def flask_port_mapping():
+    config = parse_config_ini()
+    svc, docker = config["PORT_MAPPINGS"]["FLASK"].split(":")
+    return svc, docker
+
+def kubectl_proxy_heft():
+    config = parse_config_ini()
+    return config["CONFIG"]["KUBECTL_PROXY_HEFT"]

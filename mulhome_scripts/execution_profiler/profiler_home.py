@@ -19,6 +19,7 @@ import importlib
 # This exists in a build/ folder created by build_push_exec.py
 from build.jupiter_utils import app_config_parser
 import utils
+import sys
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -26,10 +27,11 @@ log.setLevel(logging.DEBUG)
 
 """Paths specific to container (see home.Dockerfile)"""
 APP_DIR = "/jupiter/build/app_specific_files/"
-APP_CONFIG_PATH = "/jupiter/build/app_specific_files/app_config.yaml"
 PROFILER_FILES_DIR = '/jupiter/exec_profiler/profiler_files/'
 PROFILER_FILES_PROCESSED_DIR = '/jupiter/exec_profiler/profiler_files_processed/'
 JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
+sys.path.append(APP_DIR) # allow imports for app code
+
 # un/pw for all execution profiler containers
 USERNAME = "root"
 PASSWORD = "PASSWORD"
@@ -47,7 +49,7 @@ class MyEventHandler(pyinotify.ProcessEvent):
             event (str): New execution profiler files created
         """
         log.debug("New execution profiler files created: {}"
-                      .format(event.pathname))
+                  .format(event.pathname))
         file_name = os.path.basename(event.pathname)
         node_info = file_name.split('_')[1]
         node_info = node_info.split('.')[0]
@@ -89,8 +91,11 @@ def update_mongo(file_path):
     db.create_collection(node_info)
     logdb = db[node_info]
     try:
-        df = pd.read_csv(file_path, delimiter=',', header=0,
-                         names=["Task","Duration [sec]", "Output File [Kbit]"])
+        df = pd.read_csv(
+            file_path, delimiter=',',
+            header=0,
+            names=["Task", "Duration [sec]", "Output File [Kbit]"]
+        )
         data_json = json.loads(df.to_json(orient='records'))
         logdb.insert(data_json)
         log.debug('MongodB Update Successful')
@@ -119,10 +124,13 @@ def main():
     config = configparser.ConfigParser()
     config.read(JUPITER_CONFIG_INI_PATH)
 
-    global EXC_FPORT, MONGO_PORT
+    global MONGO_PORT
 
-    EXC_FPORT = int(config['PORT']['FLASK_SVC'])
-    MONGO_PORT = int(config['PORT']['MONGO_DOCKER'])
+    # for contacting other exec prof pods
+    flask_svc, _ = config['PORT_MAPPINGS']['FLASK'].split(':')
+
+    # for mongoDB in this pod
+    _, MONGO_PORT = config['PORT_MAPPINGS']['MONGO'].split(':')
 
     log.info("nodename: {}".format(nodename))
 
@@ -132,7 +140,7 @@ def main():
     app_config = app_config_parser.AppConfig(APP_DIR, "don't care")
     task_list = app_config.get_dag_tasks()
 
-    #execute each task and get the timing and data size
+    # execute each task and get the timing and data size
     for task in task_list:
         module_name = task['base_script'].replace(".py", "")
         # import task base script from the app_specific_files dir
@@ -156,8 +164,7 @@ def main():
         log.debug(output_sizes)
         log.debug('------------------------------------------------')
         sum_output_data = sum(output_sizes)  # current: sum of all output files
-        line = task['name'] + ',' + str(mytime) + ',' + str(sum_output_data) \
-               + '\n'
+        line = task['name'] + ',' + str(mytime) + ',' + str(sum_output_data) + '\n'
         myfile.write(line)
         myfile.flush()
 
@@ -212,7 +219,7 @@ def main():
             log.debug(profilers_ip_map[node])
             # this get request executes profiler_worker.py remotely
             requests.get("http://" + profilers_ip_map[node] + ":"
-                         + str(EXC_FPORT))
+                         + str(flask_svc))
         except Exception as e:
             log.debug("Exception in sending data")
             log.debug(e)
@@ -244,14 +251,12 @@ def main():
             log.debug('Successfully finish execution profiler!')
             end_time = time.time()
             total_time = end_time - starting_time
-            log.debug('Time to finish execution profiler: %s',
-                          str(total_time))
+            log.debug('Time to finish execution profiler: %s', str(total_time))
             break
         time.sleep(60)
 
     while 1:
-        log.debug("Execution profiler finished. %s files received.",
-                      str(received))
+        log.debug("Exec. prof. finished. %s files received.", str(received))
         time.sleep(60)
 
 

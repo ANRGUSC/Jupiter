@@ -1,33 +1,32 @@
 jupiter_config:
   # Jupiter subsystems will be deployed in separate k8s namespaces. Using
-  # different prefixes allows multiple users to use the same k8s cluster. 
-  # e.g. prefix "jason" results in namespaces: 
-  # jason-exec 
-  # jason-circe 
+  # different prefixes allows multiple users to use the same k8s cluster.
+  # e.g. prefix "jason" results in namespaces:
+  # jason-exec
+  # jason-circe
   # jason-profiler
   # jason-mapper
-  namespace_prefix: quynh
+  namespace_prefix: jason
   # Docker registry prefix for pulling and pushing images. Set to empty string for
   # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
   docker_registry: anrg
-node_list:
-  # "home" is required. All other names should be "node*" where * is some
-  # integer.
-  home: workers-s-1vcpu-3gb-0-nyc1
-  node1: workers-s-1vcpu-3gb-1-sgp1
-  node2: workers-s-1vcpu-3gb-2-fra1
-  node3: workers-s-1vcpu-3gb-3-tor1
-  node4: workers-s-1vcpu-3gb-4-lon1
-  node5: workers-s-1vcpu-3gb-5-fra1
-  node6: workers-s-1vcpu-3gb-6-fra1
-  node7: workers-s-1vcpu-3gb-7-ams3
-  node8: workers-s-1vcpu-3gb-8-nyc3
-  node9: workers-s-1vcpu-3gb-9-lon1
+  # Choose mapper: "heft", "heft_balance", or "wave" (not yet supported)
+  task_mapper: heft
+node_map:
+  # Mapping of Jupiter node name to k8s host. "home" is required. All node names
+  # should be in format node* where * is an integer. Non-"home" nodes are called
+  # "worker" nodes. Worker nodes are where Jupiter can schedule tasks on.
+  home: k8sworkersb-ubuntu-s-4vcpu-8gb-0-blr1
+  node1: k8sworkersb-ubuntu-s-4vcpu-8gb-1-sgp1
+  node2: k8sworkersb-ubuntu-s-4vcpu-8gb-2-blr1
+  node3: k8sworkersb-ubuntu-s-4vcpu-8gb-3-lon1
+  node4: k8sworkersb-ubuntu-s-4vcpu-8gb-4-nyc3
 application:
   ports:
     # these ports are to be exposed by app docker containers and also exposed via k8s service
     # available range: 50000-60000
     - 57021
+  # Note: please do not use this and instead count the number of tasks under worker_tasks
   num_tasks: 7
   sources:
     - name: datasource0
@@ -40,7 +39,7 @@ application:
       - name: nondagtask1
     worker_tasks:
       - name: task0
-        base_script: task.py 
+        base_script: task.py
         node_placement: n2
         inputs_to_wait_for: 1
         output_policy: BATCHED_ROUND_ROBIN
@@ -48,25 +47,25 @@ application:
           - task1
           - task2
       - name: task1
-        base_script: task.py 
+        base_script: task.py
         inputs_to_wait_for: 1
         output_policy: BATCHED_ROUND_ROBIN
         children:
           - task3
       - name: task2
-        base_script: task.py 
+        base_script: task.py
         inputs_to_wait_for: 1
         output_policy: BATCHED_ROUND_ROBIN
         children:
           - task3
       - name: task3
-        base_script: task.py 
+        base_script: task.py
         inputs_to_wait_for: 3
         output_policy: BATCHED_ROUND_ROBIN
         children:
           - task4
       - name: task4
-        base_script: task.py 
+        base_script: task.py
         inputs_to_wait_for: 3
         output_policy: BATCHED_ROUND_ROBIN
         children:

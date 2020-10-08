@@ -49,7 +49,6 @@ def main(app_dir):
     shutil.copytree("{}".format(app_dir),
                     "execution_profiler/build/app_specific_files/")
     shutil.copy("../jupiter_config.ini", "execution_profiler/build/")
-    shutil.copy("../nodes.txt", "execution_profiler/build/")
     shutil.copytree("./jupiter_utils/",
                     "execution_profiler/build/jupiter_utils/")
 
@@ -64,19 +63,20 @@ def main(app_dir):
     t1.join()
     t2.join()
 
+
 if __name__ == '__main__':
 
     if len(sys.argv) == 2:
         app_dir = "../app_specific_files/{}".format(sys.argv[1])
         log.info("Setting app directory to: {}"
-                     .format(app_dir))
+                 .format(app_dir))
     if len(sys.argv) == 1:
         log.info("Defaulting to jupiter_config.py to set app directory.")
         app_dir = jupiter_config.get_abs_app_dir()
         log.info("Setting app directory to: {}".format(app_dir))
     else:
         log.error("Please insert application name (same name as the app " +
-                      "directory under ${JUPITER_ROOT}/app_specific_files/")
+                  "directory under ${JUPITER_ROOT}/app_specific_files/")
         log.error("usage: python build_push_exec.py {APP_NAME}")
         exit()
 

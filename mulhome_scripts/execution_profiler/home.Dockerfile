@@ -47,6 +47,6 @@ RUN chmod +x /jupiter/start_home.sh
 WORKDIR /jupiter/
 
 # Kubernetes handles exposing ports for us
-EXPOSE 6100 6200 5000
+# EXPOSE
 
 CMD ["./start_home.sh"]

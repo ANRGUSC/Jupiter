@@ -5,6 +5,8 @@ import queue
 import threading
 import logging
 import glob
+import json
+import time
 
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
@@ -36,6 +38,7 @@ def task(q, pathin, pathout, task_name):
     cnt = 0
     while True:
         input_file = q.get()
+        start = time.time()
         src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
         log.info(f"{task_name}: file rcvd from {src_task}")
 
@@ -46,6 +49,15 @@ def task(q, pathin, pathout, task_name):
         dst_task = children[cnt % len(children)]  # round robin selection
         dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
         shutil.copyfile(src, dst)
+        end = time.time()
+
+        runtime_stat = {
+            "task_name": task_name,
+            "start": start,
+            "end": end,
+        }
+
+        log.info(json.dumps(runtime_stat, indent=4))
 
         # read the generate output
         # based on that determine sleep and number of bytes in output file
@@ -108,4 +120,5 @@ if __name__ == '__main__':
     # Testing Only
     log.info("Threads will run indefintely. Hit Ctrl+c to stop.")
     for dag_task in app_config.get_dag_tasks():
-        log.debug(profile_execution(dag_task['name']))
+        if dag_task['base_script'] == __file__:
+            log.debug(profile_execution(dag_task['name']))

@@ -6,6 +6,7 @@ import time
 from kubernetes import client, config
 from pprint import *
 import json
+import os
 
 from kubernetes.client.rest import ApiException
 import k8s_spec.service
@@ -28,7 +29,7 @@ def check_workers_running(app_config, namespace):
     Arguments:
         app_config {app_config_parser.AppConfig} -- app config objectj
         namespace {string} -- k8s namespace of execution profiler
-    
+
     Returns:
         bool -- True if all workers are running, False if not.
     """
@@ -38,7 +39,7 @@ def check_workers_running(app_config, namespace):
     core_v1_api = client.CoreV1Api()
 
     result = True
-    for node in app_config.node_list():
+    for node in app_config.node_map():
         if node.startswith('home'):
             # ignore checking on home status
             continue
@@ -67,6 +68,7 @@ def main():
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir(),
                                              jupiter_config.APP_NAME)
     namespace = app_config.namespace_prefix() + "-exec"
+    os.system(f"kubectl create namespace {namespace}")
 
     # Load kube config before executing k8s client API calls.
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
@@ -96,7 +98,7 @@ def main():
 
     try:
         resp = api.read_namespaced_service(home_svc_name, namespace)
-    except ApiException as e:
+    except ApiException:
         log.error("Unable to read namespaced service")
         sys.exit(1)
 
@@ -111,14 +113,14 @@ def main():
     all_profiler_ips = []
     all_profiler_names = []
 
-    for node in app_config.node_list():
+    for node in app_config.node_map():
         if node.startswith('home'):
             # skip scheduling tasks on the home node
             continue
 
         pod_name = app_config.app_name + '-' + node
         spec = k8s_spec.service.generate(
-            name=pod_name, 
+            name=pod_name,
             port_mappings=jupiter_config.k8s_service_port_mappings()
         )
 
@@ -126,7 +128,7 @@ def main():
             resp = api.create_namespaced_service(namespace, spec)
             log.debug("Service created. status = '%s'" % str(resp.status))
             resp = api.read_namespaced_service(pod_name, namespace)
-        except ApiException as e:
+        except ApiException:
             log.error("Unable to create service for {}".format(pod_name))
             sys.exit(1)
 
@@ -140,14 +142,14 @@ def main():
     Create k8s deployments for each worker task. Then, deploy it on the k8s
     cluster.
     """
-    for node, host in app_config.node_list().items():
+    for node, host in app_config.node_map().items():
         if node.startswith('home'):
-            # do not deploy pods on home yet. will be done afterwards. 
+            # do not deploy pods on home yet. will be done afterwards.
             continue
 
         pod_name = app_config.app_name + '-' + node
         spec = k8s_spec.deployment.generate(
-            name=pod_name, 
+            name=pod_name,
             label=pod_name,
             image=app_config.get_exec_worker_tag(),
             host=host,
@@ -168,15 +170,15 @@ def main():
     while check_workers_running(app_config, namespace) is False:
         log.debug("Execution profiler worker pods still deploying, waiting...")
         time.sleep(30)
-    
+
     """
     Create k8s deployment for home task and deploy it.
     """
     home_depl_spec = k8s_spec.deployment.generate(
-        name=app_config.app_name + "-home", 
+        name=app_config.app_name + "-home",
         label=app_config.app_name + "-home",
-        image=app_config.get_exec_home_tag(), 
-        host=app_config.home_host(), 
+        image=app_config.get_exec_home_tag(),
+        host=app_config.home_host(),
         port_mappings=jupiter_config.k8s_deployment_port_mappings(),
         env_vars={
             "NODE_NAME": "home",
@@ -201,4 +203,5 @@ def main():
     log.info('Successfully deployed execution profiler.')
 
 if __name__ == '__main__':
+
     main()
