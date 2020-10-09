@@ -18,6 +18,9 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
 def build_push_home(tag):
+    # speed up build using existing image
+    os.system("docker pull {}".format(tag))
+
     # build and push in execution_profiler/ directory
     os.system(
         "docker build -t {} -f network_resource_profiler_mulhome/profiler_home.Dockerfile "
@@ -27,6 +30,9 @@ def build_push_home(tag):
 
 
 def build_push_worker(tag):
+    # speed up build using existing image
+    os.system("docker pull {}".format(tag))
+
     # build and push in execution_profiler/ directory
     os.system(
         "docker build -t {} -f network_resource_profiler_mulhome/profiler_worker.Dockerfile "
