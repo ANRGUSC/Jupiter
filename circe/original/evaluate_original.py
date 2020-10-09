@@ -22,8 +22,6 @@ import math
 import configparser
 import urllib
 import urllib.request
-import logging
-
 
 def evaluate_random():
     """
@@ -243,27 +241,21 @@ class MyHandler(PatternMatchingEventHandler):
         
 
 if __name__ == '__main__':
-
-    global logging
-    logging.basicConfig(level = logging.DEBUG)
-
-
     time.sleep(60)
     print('Start copying sample files for evaluation')
 
-    evaluate_interval(10)
-    # evaluate_sequential()
+    evaluate_sequential()
     
     # global num_apps, num_samples
     # num_apps = 100
     # num_samples = 10
-    # logging.debug('---- Generate random input files')
+    # print('---- Generate random input files')
     # for i in range(1,num_apps+1):
     #     filein = 'sample_input/dummyapp%d-1botnet.ipsum'%(i)
     #     fileout ='input/dummyapp%d-1botnet.ipsum'%(i)
     #     shutil.copyfile(filein,fileout) 
     
-    # logging.debug("Starting the output monitoring system:")
+    # print("Starting the output monitoring system:")
     # observer = Observer()
     # observer.schedule(MyHandler(), path=os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/'))
     # observer.start()
