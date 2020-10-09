@@ -128,6 +128,8 @@ spec:
           value: {child_ips}
         - name: TASK
           value: {task_name}
+        - name: MULTI_PARENT_TASKS
+          value: {multi_parent_tasks}
         - name: NODE_NAME
           value: {node_name}
         - name: HOME_NODE
@@ -167,6 +169,7 @@ def write_circe_deployment_specs(**kwargs):
       -   ALL_NODES: {all_node}
       -   ALL_NODES_IPS: {all_node_ips}
       -   kubernetes.io/hostname: {host}
+      -   MULTI_PARENT_TASKS: {multi_parent_tasks}
     
     Args:
         ``**kwargs``: list of key value pair
