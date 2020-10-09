@@ -4,7 +4,7 @@ import sys
 
 LOOP_RANGE = 30000
 TASK_NAME = "task2"
-NUM_BLOCK = 2250
+NUM_BLOCK = 9000
 
 def task(input_files, pathin, pathout):
 
