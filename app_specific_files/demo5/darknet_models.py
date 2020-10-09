@@ -2,8 +2,9 @@ from collections import defaultdict
 
 import torch.nn as nn
 
-from utils.parse_config import *
-from utils.utils import *
+from parse_config import *
+from ccdag_utils import *
+import torch
 
 ONNX_EXPORT = False
 

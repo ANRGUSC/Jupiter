@@ -16,7 +16,7 @@ import numpy as np
 import math
 from PIL import Image
 from darknet_models import Darknet
-from utils.utils import *
+from ccdag_utils import *
 import configparser
 global circe_home_ip, circe_home_ip_port
 
@@ -176,8 +176,7 @@ def task(q, pathin, pathout, task_name):
         ### Process predictions to get a list of final predictions
         final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
     ### Write predictions to a file and send it to decoder task's folder
-        f_stripped = f.split(".JPEG")[0]
-        job_id = int(f_stripped.split('_')[-2].split("jobid")[1])
+        job_id = int(input_file.split("jobid")[1])
         try:
             global_info_ip = os.environ['GLOBAL_IP']
             global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)

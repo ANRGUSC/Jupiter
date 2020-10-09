@@ -21,6 +21,7 @@ log.setLevel(logging.DEBUG)
 
 # paths specific to container (see worker.Dockerfile)
 APP_DIR = "/jupiter/build/app_specific_files/"
+sys.path.append(APP_DIR)
 APP_CONFIG_PATH = '/jupiter/build/app_specific_files/app_config.yaml'
 JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
 PROFILER_FILES_DIR = "/jupiter/exec_profiler/profiler_files/"

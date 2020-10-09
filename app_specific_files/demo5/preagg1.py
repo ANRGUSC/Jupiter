@@ -8,6 +8,10 @@ import glob
 import time
 import json
 import ccdag
+import configparser
+import numpy as np
+from os import listdir
+
 
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
@@ -34,7 +38,7 @@ app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
 #task config information
 JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
 config = configparser.ConfigParser()
-config.read(JUPITER_CONFIG_INI_PATH)
+config.read(ccdag.JUPITER_CONFIG_INI_PATH)
 
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
@@ -53,7 +57,7 @@ def task(q, pathin, pathout, task_name):
         input_file = q.get()
         start = time.time()
         src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-        log.info(f"{task_name}: file rcvd from {src_task}")
+        log.info(f"{task_name}: file rcvd from {src_task} : {base_fname}")
 
         # Process the file (this example just passes along the file as-is)
         # Once a file is copied to the `pathout` folder, CIRCE will inspect the
@@ -65,9 +69,8 @@ def task(q, pathin, pathout, task_name):
 
         # PREAGG code
 
-
-        job_id = src.split('jobid')[1]
-        print(job_id)
+        job_id = base_fname.split('jobth')[0]
+        file_id = base_fname.split('jobth')[1]
         
         # job_id = int(job_id)
         
@@ -84,7 +87,7 @@ def task(q, pathin, pathout, task_name):
         payload = {
             'class_image': int(classnum),
             'job_id': job_id,
-            'filename': filelist[0]
+            'filename': input_file[0]
         }
         
         # address of flask server for class1 is 0.0.0.0:5000 and "post-dict" is for requesting dictionary 
@@ -100,13 +103,23 @@ def task(q, pathin, pathout, task_name):
         except Exception as e:
             print('Possibly running on the execution profiler')
             if ccdag.CODING_PART2 == 1:
-                sample1 = [f for f in listdir(pathout) if f.startswith('score2a_preagg2_job2')]
-                sample2 = [f for f in listdir(pathout) if f.startswith('score2b_preagg2_job2')]
+                fname1 = 'score1a_preagg1_'+str(job_id)+'jobth'
+                fname2 = 'score1b_preagg1_'+str(job_id)+'jobth'
+                sample1 = [f for f in listdir(pathout) if f.startswith(fname1)]
+                sample2 = [f for f in listdir(pathout) if f.startswith(fname2)]
+                print(sample1)
+                print(sample2)
                 job_dict = {'2':[sample1[0],sample2[0]]}
             else:
-                sample1 = [f for f in listdir(pathout) if f.startswith('score2a_preagg2_job2')]
-                sample2 = [f for f in listdir(pathout) if f.startswith('score2b_preagg2_job2')]
-                sample3 = [f for f in listdir(pathout) if f.startswith('score2c_preagg2_job2')]
+                fname1 = 'score1a_preagg1_'+str(job_id)+'jobth'
+                fname2 = 'score1b_preagg1_'+str(job_id)+'jobth'
+                fname2 = 'score1c_preagg1_'+str(job_id)+'jobth'
+                sample1 = [f for f in listdir(pathout) if f.startswith(fname1)]
+                sample2 = [f for f in listdir(pathout) if f.startswith(fname2)]
+                sample3 = [f for f in listdir(pathout) if f.startswith(fname3)]
+                print(sample1)
+                print(sample2)
+                print(sample3)
                 job_dict = {'2':[sample1[0],sample2[0],sample3[0]]}
             
         #Parameters
@@ -120,9 +133,9 @@ def task(q, pathin, pathout, task_name):
                 for i in range(M):
                     
                     En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
-                    job = 'job'+str(job_id)
-                    dst_task = children # only 1 children
-                    dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}_{base_fname}")
+                    job = str(job_id)+'jobth'
+                    dst_task = children[0] # only 1 children
+                    dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
                     print(dst)
                     # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
                     #destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
@@ -130,9 +143,6 @@ def task(q, pathin, pathout, task_name):
                 
             else:
                 print('Not receive enough results for job '+job_id)
-
-            
-            return outlist
         
         else:
             #Check if number of received results for the same job is equal to N
@@ -140,9 +150,9 @@ def task(q, pathin, pathout, task_name):
                 print('Receive enough results for job '+job_id)
                 for i in range(N):
                     En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
-                    job = 'job'+str(job_id)
-                    dst_task = children # only 1 children
-                    dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}_{base_fname}")
+                    job = str(job_id)+'jobth'
+                    dst_task = children[0] # only 1 children
+                    dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
                     print(dst)
                     # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                     np.savetxt(dst, En_Image_Batch, delimiter=',')
@@ -173,15 +183,17 @@ def profile_execution(task_name):
     # manually add the src (parent) and dst (this task) prefix to the filename
     # here to illustrate how Jupiter will enact this under the hood. the actual
     # src (or parent) is not needed for profiling execution so we fake it here.
-    for file in os.listdir(input_dir):
-        # skip filse made by other threads when testing locally
-        if file.startswith("EXECPROFILER_") is True:
+    for file in os.listdir(output_dir):
+        try:
+            src_task, dst_task, base_fname = file.split("_", maxsplit=3)
+        except ValueError:
+            # file is not in the correct format
             continue
 
-        # create an input for each child of this task
-        for cnt in range(len(app_config.child_tasks(task_name))):
-            new = f"{input_dir}/EXECPROFILER{cnt}_{task_name}_{file}"
-            shutil.copyfile(os.path.join(input_dir, file), new)
+        if dst_task.startswith(task_name):
+            print(dst_task)
+            shutil.copyfile(os.path.join(output_dir, file),os.path.join(input_dir, file))        
+
 
     os.makedirs(output_dir, exist_ok=True)
     t = threading.Thread(target=task, args=(q, input_dir, output_dir, task_name))
@@ -198,11 +210,6 @@ def profile_execution(task_name):
             q.put(file)
     q.join()
 
-    # clean up input files
-    files = glob.glob(f"{input_dir}/EXECPROFILER*_{dst_task}*")
-    for f in files:
-        os.remove(f)
-
     # execution profiler needs the name of ouput files to analyze sizes
     output_files = []
     for file in os.listdir(output_dir):
@@ -216,4 +223,5 @@ if __name__ == '__main__':
     # Testing Only
     log.info("Threads will run indefintely. Hit Ctrl+c to stop.")
     for dag_task in app_config.get_dag_tasks():
-        log.debug(profile_execution(dag_task['name']))
+        if dag_task['base_script'] == __file__:
+            log.debug(profile_execution(dag_task['name']))

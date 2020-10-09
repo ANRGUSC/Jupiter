@@ -81,6 +81,11 @@ def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
     classnum = task_name.split('lccenc')[1]
     classname = ccdag.classlist[int(classnum)-1]
+    # Parameters
+    # L = 10 # Number of images in a data-batch
+    L = 2 # Number of images in a data-batch
+    M = 2 # Number of data-batches
+    N = 3 # Number of workers (encoded data-batches)
 
     num_inputs = 4
     while True:
@@ -139,11 +144,7 @@ def task(q, pathin, pathout, task_name):
             print(e)
             job_id = 2
 
-        # Parameters
-        # L = 10 # Number of images in a data-batch
-        L = 2 # Number of images in a data-batch
-        M = 2 # Number of data-batches
-        N = 3 # Number of workers (encoded data-batches)
+        
         
         # Dimension of resized image
         width = 400
@@ -231,7 +232,8 @@ def task(q, pathin, pathout, task_name):
             "end" : end
         }
         log.warning(json.dumps(runtime_stat))
-        q.task_done()
+        for i in range(num_inputs):
+            q.task_done()
 
     log.error("ERROR: should never reach this")
 

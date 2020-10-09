@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 # Install required libraries
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
-RUN apt-get -yqq update && apt-get install -yqq openssh-client openssh-server wget net-tools sshpass
+RUN apt-get -yqq update && apt-get install -yqq openssh-client openssh-server wget net-tools sshpass libgl1-mesa-glx
 RUN apt-get install -y vim stress
 
 # Authentication

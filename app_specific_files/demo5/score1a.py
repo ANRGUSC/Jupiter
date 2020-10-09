@@ -65,6 +65,8 @@ def task(q, pathin, pathout, task_name):
         # Once a file is copied to the `pathout` folder, CIRCE will inspect the
         # filename and pass the file to the next task.
         src = os.path.join(pathin, input_file)
+        job_id = base_fname.split('.')[0].split('jobid')[1]
+        file_id = base_fname.split('jobid')[0]
         # dst_task = children[cnt % len(children)]  # round robin selection
         # dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
         # shutil.copyfile(src, dst)
@@ -119,9 +121,9 @@ def task(q, pathin, pathout, task_name):
         
         # Compute Scores of ref images and En_Images
         sc = score(En_Image_Batch, Ref_Images)
-        # job = 'job'+str(job_id)
+        job = str(job_id)+'jobth'
         dst_task = children[0] # only 1 children
-        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
         np.savetxt(dst, sc, delimiter=',')
         # read the generate output
         # based on that determine sleep and number of bytes in output file

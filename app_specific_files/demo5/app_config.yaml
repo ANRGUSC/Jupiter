@@ -443,7 +443,7 @@ application:
         outfile_prefix: score5c
         dag_task: True
       - name: preagg1
-        base_script: preagg.py
+        base_script: preagg1.py
         inputs_to_wait_for: 1
         output_policy: POINT_TO_POINT_BROADCAST
         children: 
@@ -452,7 +452,7 @@ application:
         outfile_prefix: preagg1
         dag_task: True
       - name: preagg2
-        base_script: preagg.py
+        base_script: preagg1.py
         inputs_to_wait_for: 1
         output_policy: POINT_TO_POINT_BROADCAST
         children: 
@@ -461,7 +461,7 @@ application:
         outfile_prefix: preagg2
         dag_task: True
       - name: preagg3
-        base_script: preagg.py
+        base_script: preagg1.py
         inputs_to_wait_for: 1
         output_policy: POINT_TO_POINT_BROADCAST
         children: 
@@ -470,7 +470,7 @@ application:
         outfile_prefix: preagg3
         dag_task: True
       - name: preagg4
-        base_script: preagg.py
+        base_script: preagg1.py
         inputs_to_wait_for: 1
         output_policy: POINT_TO_POINT_BROADCAST
         children: 
@@ -479,7 +479,7 @@ application:
         outfile_prefix: preagg4
         dag_task: True
       - name: preagg5
-        base_script: preagg.py
+        base_script: preagg1.py
         inputs_to_wait_for: 1
         output_policy: POINT_TO_POINT_BROADCAST
         children: 
@@ -488,7 +488,7 @@ application:
         outfile_prefix: preagg5
         dag_task: True
       - name: lccdec1
-        base_script: lccdec.py
+        base_script: lccdec1.py
         inputs_to_wait_for: 2
         output_policy: POINT_TO_POINT_BROADCAST
         children: 
@@ -497,7 +497,7 @@ application:
         outfile_prefix: lccdec1
         dag_task: True
       - name: lccdec2
-        base_script: lccdec.py
+        base_script: lccdec1.py
         inputs_to_wait_for: 2
         output_policy: POINT_TO_POINT_BROADCAST
         children: 
@@ -506,7 +506,7 @@ application:
         outfile_prefix: lccdec2
         dag_task: True
       - name: lccdec3
-        base_script: lccdec.py
+        base_script: lccdec1.py
         inputs_to_wait_for: 2
         output_policy: POINT_TO_POINT_BROADCAST
         children: 
@@ -515,7 +515,7 @@ application:
         outfile_prefix: lccdec3
         dag_task: True
       - name: lccdec4
-        base_script: lccdec.py
+        base_script: lccdec1.py
         inputs_to_wait_for: 2
         output_policy: POINT_TO_POINT_BROADCAST
         children: 
@@ -524,7 +524,7 @@ application:
         outfile_prefix: lccdec4
         dag_task: True
       - name: lccdec5
-        base_script: lccdec.py
+        base_script: lccdec1.py
         inputs_to_wait_for: 2
         output_policy: POINT_TO_POINT_BROADCAST
         children: 

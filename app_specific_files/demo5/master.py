@@ -7,7 +7,7 @@ import logging
 import glob
 import time
 import json
-from ccdag import *
+import ccdag
 
 from PIL import Image
 from multiprocessing import Process, Manager
@@ -321,13 +321,13 @@ def task(q, pathin, pathout, task_name):
             shutil.copyfile(os.path.join(pathin,f), dst)
             filelist_flask.append(dst)
         next_job_id = put_filenames(job_id, filelist_flask)
-        if CODING_PART1:
+        if ccdag.CODING_PART1:
             slept = 0
             try:
                 global_info_ip = os.environ['GLOBAL_IP']
                 global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
                 print("global info ip port: ", global_info_ip_port)
-                if RESNETS_THRESHOLD > 1: # Coding configuration
+                if ccdag.RESNETS_THRESHOLD > 1: # Coding configuration
                     while slept < ccdag.MASTER_TO_RESNET_TIME:
                         ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
                         print("get_enough_resnet_preds fn. return value is: ", ret_val)
@@ -361,6 +361,7 @@ def profile_execution(task_name):
     output_dir = f"{APP_DIR}/sample_outputs/"
 
     os.makedirs(output_dir, exist_ok=True)
+
     t = threading.Thread(target=task, args=(q, input_dir, output_dir, task_name))
     t.start()
 
