@@ -210,28 +210,28 @@ class HEFT:
         for task in self.tasks:
             candidate = task.number + 1
 
-                # assign task to candidate (candidate is a processor number)
-                node = self.processors[candidate]
-                task.processor_num = candidate
-                start_time = 0 if len(node.time_line) == 0 else node.time_line[-1].end
-                end_time = task.comp_cost[candidate] + start_time
-                node.time_line.append(Duration(task.number, start_time, end_time))
-                
-                # update ALL links takeup time from all parents
-                parent_tasks = [self.get_task_by_number(n) for n in task.parents_numbers]
-                for parent in parent_tasks:
-                    parent_processor_number = parent.processor_num
-                    link_takeup_time = self.cal_comm_quadratic(self.data[parent.number][task.number], 
-                      self.quaratic_profile[parent_processor_number][candidate])
-                    # parent assigned to the same node as child, no comm cost
-                    if parent_processor_number == candidate:
-                        continue
-                    else:
-                        l = self.get_link_by_id(str(parent_processor_number) + '_' + str(candidate))
-                        cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
-                        ld = LinkDuration(parent.number, task.number, cur_end_time_for_l, 
-                          cur_end_time_for_l + link_takeup_time) 
-                        l.time_line.append(ld)
+            # assign task to candidate (candidate is a processor number)
+            node = self.processors[candidate]
+            task.processor_num = candidate
+            start_time = 0 if len(node.time_line) == 0 else node.time_line[-1].end
+            end_time = task.comp_cost[candidate] + start_time
+            node.time_line.append(Duration(task.number, start_time, end_time))
+            
+            # update ALL links takeup time from all parents
+            parent_tasks = [self.get_task_by_number(n) for n in task.parents_numbers]
+            for parent in parent_tasks:
+                parent_processor_number = parent.processor_num
+                link_takeup_time = self.cal_comm_quadratic(self.data[parent.number][task.number], 
+                  self.quaratic_profile[parent_processor_number][candidate])
+                # parent assigned to the same node as child, no comm cost
+                if parent_processor_number == candidate:
+                    continue
+                else:
+                    l = self.get_link_by_id(str(parent_processor_number) + '_' + str(candidate))
+                    cur_end_time_for_l = 0 if len(l.time_line) == 0 else l.time_line[-1].end
+                    ld = LinkDuration(parent.number, task.number, cur_end_time_for_l, 
+                      cur_end_time_for_l + link_takeup_time) 
+                    l.time_line.append(ld)
     
     
     def run_dup_split(self):
