@@ -19,7 +19,6 @@ RUN apt-get install -y mosquitto-clients
 
 ADD circe/original/requirements.txt /requirements.txt
 
-RUN pip3 --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -41,7 +40,7 @@ RUN mkdir -p /home/darpa/apps/data
 #ADD circe/original/rt_profiler_data_update.py  /centralized_scheduler/rt_profiler_data_update.py
 
 # IF YOU WANNA DEPLOY A DIFFERENT APPLICATION JUST CHANGE THIS LINE
-ADD app_specific_files/sleep/scripts/ /centralized_scheduler/
+ADD app_specific_files/dummy_app_multicast/scripts/ /centralized_scheduler/
 
 ADD jupiter_config.ini /jupiter_config.ini
 

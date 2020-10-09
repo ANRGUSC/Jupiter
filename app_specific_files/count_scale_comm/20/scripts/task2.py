@@ -2,9 +2,9 @@ import os
 import time
 import sys
 
-LOOP_RANGE = 200
-TASK_NAME = "task3"
-NUM_BLOCK = 300
+LOOP_RANGE = 300
+TASK_NAME = "task2"
+NUM_BLOCK = 9000
 
 def task(input_files, pathin, pathout):
 
@@ -17,8 +17,7 @@ def task(input_files, pathin, pathout):
         count = count + 1
         count = count - 1
 
-    output_files = input_files[0].split('_')[0] + "_" + TASK_NAME
-    # output_files = input_files.split('_')[0] + "_" + TASK_NAME
+    output_files = input_files.split('_')[0] + "_" + TASK_NAME
     cmd = "dd bs=1024 count=%d </dev/urandom >%s/%s" % (NUM_BLOCK, pathout, output_files)
     os.system(cmd)
     return [os.path.join(pathout, output_files)]
