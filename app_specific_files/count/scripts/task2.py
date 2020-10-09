@@ -2,7 +2,7 @@ import os
 import time
 import sys
 
-LOOP_RANGE = 300
+LOOP_RANGE = 30000
 TASK_NAME = "task2"
 NUM_BLOCK = 450
 
