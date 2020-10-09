@@ -4,8 +4,6 @@ FROM ubuntu:16.04
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
 RUN apt-get install -y openssh-server mongodb
-ADD circe/original/requirements.txt /requirements.txt
-RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
 
@@ -34,6 +32,8 @@ RUN mkdir -p /output
 
 
 RUN apt-get install stress
+
+ADD circe/original/requirements.txt /requirements.txt
 
 # Add input files
 COPY  app_specific_files/dummy_app_multicast/sample_input /sample_input

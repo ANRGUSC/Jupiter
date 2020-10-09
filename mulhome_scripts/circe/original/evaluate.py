@@ -24,13 +24,16 @@ import urllib
 import urllib.request
 import logging
 
+logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
 
 def evaluate_random():
     """
-    Copy files from folder ``sample_input`` to folder ``input`` at random intervals for evaluation 
-    
+    Copy files from folder ``sample_input`` to folder ``input`` at random intervals for evaluation
+
     """
-    file_count = len(os.listdir("sample_input/")) 
+    file_count = len(os.listdir("sample_input/"))
     interval = 120
     for i in range(1,file_count+1):
         n = random.randint(1,interval)
@@ -45,13 +48,13 @@ def evaluate_random():
 
 def evaluate_interval(interval):
     """
-    Copy files from folder ``sample_input`` to folder ``input`` at regular intervals for evaluation 
+    Copy files from folder ``sample_input`` to folder ``input`` at regular intervals for evaluation
 
     Args:
         interval (int): interval time to inject the sample input file
-    
+
     """
-    file_count = len(os.listdir("sample_input/")) 
+    file_count = len(os.listdir("sample_input/"))
     for i in range(1,file_count+1):
         count = 0
         while count<interval:
@@ -64,8 +67,8 @@ def evaluate_interval(interval):
 
 def evaluate_sequential():
     """
-    Copy files from folder ``sample_input`` to folder ``input`` one after another for evaluation 
-    
+    Copy files from folder ``sample_input`` to folder ``input`` one after another for evaluation
+
     """
     file_count = len(os.listdir("sample_input/"))
     file_count_out = len(os.listdir("output/"))
@@ -104,7 +107,7 @@ def evaluate_test():
 
 def evaluate_combine(num_apps,num_samples):
     file_count = len(os.listdir("sample_input/"))
-    file_count_out = len(os.listdir("output/")) 
+    file_count_out = len(os.listdir("output/"))
     count = 0
     for i in range(1,num_samples+1):
         logging.debug('---- Generate random input files')
@@ -113,7 +116,7 @@ def evaluate_combine(num_apps,num_samples):
             fileout ='input/dummyapp%d-%dbotnet.ipsum'%(j,i)
             shutil.copyfile(filein,fileout)
         count = count+num_apps
-        
+
         while 1:
             time.sleep(5)
             file_count_out = len(os.listdir("output/"))
@@ -127,20 +130,20 @@ def evaluate_combine_app(num_apps,num_samples):
     for i in range(1,num_apps+1):
         filein = 'sample_input/dummyapp%d-1botnet.ipsum'%(i)
         fileout ='input/dummyapp%d-1botnet.ipsum'%(i)
-        shutil.copyfile(filein,fileout)   
+        shutil.copyfile(filein,fileout)
     output_folder = 'output/'
     outfile = set()
     while 1:
         time.sleep(10)
         for (dirpath, dirnames, filenames) in os.walk(output_folder):
             for filename in filenames:
-                input_file = filename.split('_')[0] 
+                input_file = filename.split('_')[0]
                 if input_file not in outfile:
                     appname = input_file.split('-')[0]
                     curfile = input_file.split('-')[1].split('botnet')[0]
                     curnum = int(curfile)+1
                     if curnum >num_samples: continue
-                    
+
                     newfile = 'sample_input/'+appname+'-'+str(curnum)+'botnet.ipsum'
                     fileout ='input/'+appname+'-'+str(curnum)+'botnet.ipsum'
                     shutil.copyfile(newfile,fileout)
@@ -194,7 +197,7 @@ def request_stress_test(num_nodes):
         except Exception as e:
             logging.debug("Sending message to flask server on workers FAILED!!!")
             logging.debug(e)
-            
+
 class MyHandler(PatternMatchingEventHandler):
     """
     Handling the event when there is a new file generated in ``OUTPUT`` folder
@@ -203,7 +206,7 @@ class MyHandler(PatternMatchingEventHandler):
     def process(self, event):
         """
         Log the time the file is created and calculate the execution time whenever there is an event.
-        
+
         Args:
             event: event to be watched for the ``OUTPUT`` folder
         """
@@ -223,12 +226,12 @@ class MyHandler(PatternMatchingEventHandler):
         """
         # the file will be processed there
         if event.event_type == 'created':
-            logging.debug("Received file as output in evaluation - %s." % event.src_path)  
+            logging.debug("Received file as output in evaluation - %s." % event.src_path)
             filename = os.path.split(event.src_path)[-1]
             appname = filename.split('-')[0]
             curfile = filename.split('-')[1].split('botnet')[0]
             curnum = int(curfile)+1
-            if curnum < num_samples: 
+            if curnum < num_samples:
                 newfile = 'sample_input/'+appname+'-'+str(curnum)+'botnet.ipsum'
                 fileout ='input/'+appname+'-'+str(curnum)+'botnet.ipsum'
                 shutil.copyfile(newfile,fileout)
@@ -239,8 +242,8 @@ class MyHandler(PatternMatchingEventHandler):
     def on_created(self, event):
         self.process(event)
 
-        
-        
+
+
 
 if __name__ == '__main__':
 
@@ -252,7 +255,7 @@ if __name__ == '__main__':
     logging.debug('Start copying sample files for evaluation')
 
     evaluate_sequential()
-    
+
     # global num_apps, num_samples
     # num_apps = 100
     # num_samples = 10
@@ -260,8 +263,8 @@ if __name__ == '__main__':
     # for i in range(1,num_apps+1):
     #     filein = 'sample_input/dummyapp%d-1botnet.ipsum'%(i)
     #     fileout ='input/dummyapp%d-1botnet.ipsum'%(i)
-    #     shutil.copyfile(filein,fileout) 
-    
+    #     shutil.copyfile(filein,fileout)
+
     # logging.debug("Starting the output monitoring system:")
     # observer = Observer()
     # observer.schedule(MyHandler(), path=os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/'))

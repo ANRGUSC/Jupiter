@@ -12,14 +12,31 @@ import logging
 
 logging.basicConfig(level = logging.DEBUG)
 
+def build_push_home(tag):
+    # build and push in circe/original/ directory
+    os.system(
+        "docker build -t {} -f circe/original/home.Dockerfile "
+        .format(tag) + "./circe/original"
+    )
+    os.system("docker push {}".format(tag))
+
+
+def build_push_worker(tag):
+    # build and push in circe/original/ directory
+    os.system(
+        "docker build -t {} -f circe/original/worker.Dockerfile "
+        .format(tag) + "./circe/original"
+    )
+    os.system("docker push {}".format(tag))
+
 def prepare_global_info():
     """Read configuration information from ``app_config.ini``
-    
+
     Returns:
         - list: port_list_home - The list of ports to be exposed in the exec home dockers
         - list: port_list_worker - The list of ports to be exposed in the exec worker dockers
     """
-    
+
     jupiter_config.set_globals()
     INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
     config = configparser.ConfigParser()
@@ -39,13 +56,13 @@ def prepare_global_info():
     logging.debug('The list of ports to be exposed in the circe workers are %s', " ".join(port_list_worker))
 
     return port_list_home, port_list_worker
-    
+
 def build_push_circe():
     """Build CIRCE home and worker image from Docker files and push them to the Dockerhub.
     """
 
     port_list_home, port_list_worker = prepare_global_info()
-    import circe_docker_files_generator as dc 
+    import circe_docker_files_generator as dc
 
     os.chdir(jupiter_config.CIRCE_PATH)
 
