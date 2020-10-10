@@ -63,9 +63,10 @@ def task(q, pathin, pathout, task_name):
         # Once a file is copied to the `pathout` folder, CIRCE will inspect the
         # filename and pass the file to the next task.
         src = os.path.join(pathin, input_file)
-        # dst_task = children[cnt % len(children)]  # round robin selection
-        # dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-        # shutil.copyfile(src, dst)
+        
+        print(src_task)
+        print(this_task)
+        print(base_fname)
 
         # PREAGG code
 
@@ -135,7 +136,8 @@ def task(q, pathin, pathout, task_name):
                     En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                     job = str(job_id)+'jobth'
                     dst_task = children[0] # only 1 children
-                    dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
+
+                    dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
                     print(dst)
                     # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
                     #destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
@@ -152,7 +154,7 @@ def task(q, pathin, pathout, task_name):
                     En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                     job = str(job_id)+'jobth'
                     dst_task = children[0] # only 1 children
-                    dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
+                    dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
                     print(dst)
                     # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                     np.savetxt(dst, En_Image_Batch, delimiter=',')
@@ -182,17 +184,7 @@ def profile_execution(task_name):
 
     # manually add the src (parent) and dst (this task) prefix to the filename
     # here to illustrate how Jupiter will enact this under the hood. the actual
-    # src (or parent) is not needed for profiling execution so we fake it here.
-    for file in os.listdir(output_dir):
-        try:
-            src_task, dst_task, base_fname = file.split("_", maxsplit=3)
-        except ValueError:
-            # file is not in the correct format
-            continue
-
-        if dst_task.startswith(task_name):
-            print(dst_task)
-            shutil.copyfile(os.path.join(output_dir, file),os.path.join(input_dir, file))        
+    # src (or parent) is not needed for profiling execution so we fake it here.  
 
 
     os.makedirs(output_dir, exist_ok=True)

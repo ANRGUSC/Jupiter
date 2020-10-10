@@ -148,15 +148,6 @@ def profile_execution(task_name):
     # manually add the src (parent) and dst (this task) prefix to the filename
     # here to illustrate how Jupiter will enact this under the hood. the actual
     # src (or parent) is not needed for profiling execution so we fake it here.
-    for file in os.listdir(output_dir):
-        try:
-            src_task, dst_task, base_fname = file.split("_", maxsplit=3)
-        except ValueError:
-            # file is not in the correct format
-            continue
-
-        if dst_task.startswith(task_name):
-            shutil.copyfile(os.path.join(output_dir, file),os.path.join(input_dir, file))        
 
     os.makedirs(output_dir, exist_ok=True)
     t = threading.Thread(target=task, args=(q, input_dir, output_dir, task_name))

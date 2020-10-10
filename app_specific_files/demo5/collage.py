@@ -208,16 +208,6 @@ def profile_execution(task_name):
     input_dir = f"{APP_DIR}/sample_inputs/"
     output_dir = f"{APP_DIR}/sample_outputs/"
 
-    for file in os.listdir(output_dir):
-        try:
-            src_task, dst_task, base_fname = file.split("_", maxsplit=3)
-        except ValueError:
-            # file is not in the correct format
-            continue
-
-        if dst_task.startswith(task_name):
-            shutil.copyfile(os.path.join(output_dir, file),os.path.join(input_dir, file))
-
     os.makedirs(output_dir, exist_ok=True)
     t = threading.Thread(target=task, args=(q, input_dir, output_dir, task_name))
     t.start()

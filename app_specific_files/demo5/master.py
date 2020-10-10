@@ -372,9 +372,11 @@ def profile_execution(task_name):
             # file is not in the correct format
             continue
 
+        print(dst_task)
         if dst_task.startswith(task_name):
             q.put(file)
     q.join()
+
 
     # execution profiler needs the name of ouput files to analyze sizes
     output_files = []

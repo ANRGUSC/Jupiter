@@ -75,40 +75,36 @@ def task(q, pathin, pathout, task_name):
     N = 3 # Number of workers (encoded data-batches)
     M = 2 # Number of data-batches
     K = 10 # Number of referenced Images
-    num_inputs = 2
 
     while True:
-        input_list = []
-        src_list = []
-        base_list = []
-        id_list = []
-        for i in range(0,num_inputs): #number of inputs is 9
-            input_file = q.get()
-            input_list.append(input_file)
-            src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-            log.info(f"{task_name}: file rcvd from {src_task} : {input_file}")
-            src = os.path.join(pathin, input_file)
-            src_list.append(src)
-            base_list.append(base_fname)
-            id_list.append(base_fname.split('jobth')[1])
-
-        start = time.time()
-
-        #LCCDEC CODE
-        job_id = base_fname.split('jobth')[0]        
-        
         if ccdag.CODING_PART2:
-            # Results recieved from M workers
-            # worker_idx = [ord((input_list[i].partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(M)]
-            worker_idx = [ord((input_list[i].partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(M)]
+            num_inputs = 2
+            input_list = []
+            src_list = []
+            base_list = []
+            id_list = []
+            worker_list =[]
+            for i in range(0,num_inputs): #number of inputs is 9
+                input_file = q.get()
+                input_list.append(input_file)
+                src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+                log.info(f"{task_name}: file rcvd from {src_task} : {input_file}")
+                src = os.path.join(pathin, input_file)
+                src_list.append(src)
+                base_list.append(base_fname)
+                id_list.append(base_fname.split('jobth')[1])
+                worker = base_fname.split('score')[1]
+                worker_list.append(ord(worker[1])-97)
             
-            print('====')
-            print(input_list)
-            print(worker_idx)
-            worker_eval = [np.loadtxt(src_list[i], delimiter=',') for i in range(M)]
-            print('====2')
-            print(worker_eval)
 
+            start = time.time()
+
+            #LCCDEC CODE
+            job_id = base_fname.split('jobth')[0]  
+            file_id = worker[2:]
+
+            # Results recieved from M workers
+            worker_eval = [np.loadtxt(src_list[i], delimiter=',') for i in range(M)]
             # Decoding Process 
             results = [] 
             for i in range(K):
@@ -116,15 +112,13 @@ def task(q, pathin, pathout, task_name):
                 for j in range(M):
                     a = worker_eval[j]
                     f_eval.append(a[i,:])  
-                f_dec = LCC_decoding(f_eval,N,M,worker_idx) 
+                f_dec = LCC_decoding(f_eval,N,M,worker_list) 
                 if i ==0:
                     for j in range(M):
                         results.append(f_dec[j])
                 else:
                     for j in range(M):
                         results[j] = np.concatenate((results[j],f_dec[j]), axis = 0)
-
-            print(results)
 
 
             #Save desired scores of M data-batches
@@ -140,9 +134,46 @@ def task(q, pathin, pathout, task_name):
             dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
             np.savetxt(dst, result, delimiter=',')
 
+            # read the generate output
+            # based on that determine sleep and number of bytes in output file
+            end = time.time()
+            runtime_stat = {
+                "task_name" : task_name,
+                "start" : start,
+                "end" : end
+            }
+            log.warning(json.dumps(runtime_stat))
+            for i in range(num_inputs):
+                q.task_done()
+
         else:
+            num_inputs = 3
+            input_list = []
+            src_list = []
+            base_list = []
+            id_list = []
+            worker_list =[]
+            for i in range(0,num_inputs): #number of inputs is 9
+                input_file = q.get()
+                input_list.append(input_file)
+                src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+                log.info(f"{task_name}: file rcvd from {src_task} : {input_file}")
+                src = os.path.join(pathin, input_file)
+                src_list.append(src)
+                base_list.append(base_fname)
+                id_list.append(base_fname.split('jobth')[1])
+                worker = base_fname.split('score')[1]
+                worker_list.append(ord(worker[1])-97)
+            
+
+            start = time.time()
+
+            #LCCDEC CODE
+            job_id = base_fname.split('jobth')[0]  
+            file_id = worker[2:]
+
             # Results recieved from N workers
-            worker_idx = [ord((input_list[i].partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(N)]
+            #worker_idx = [ord((input_list[i].partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(N)]
             worker_eval = [np.loadtxt(os.path.join(pathin, input_list[i]), delimiter=',') for i in range(N)]
 
             # Decoding Process 
@@ -152,7 +183,7 @@ def task(q, pathin, pathout, task_name):
                 for j in range(N):
                     a = worker_eval[j]
                     f_eval.append(a[i,:])  
-                f_dec = LCC_decoding(f_eval,N,N,worker_idx) 
+                f_dec = LCC_decoding(f_eval,N,N,worker_list) 
                 if i ==0:
                     for j in range(N):
                         results.append(f_dec[j])
@@ -167,21 +198,25 @@ def task(q, pathin, pathout, task_name):
                     result = results[j]
                 else:
                     result = np.concatenate((result, results[j]), axis = 0)
-            dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}_{base_fname}")
+            job = str(job_id)+'jobth'
+            dst_task = children[0] # only 1 children
+            dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
             # destination = os.path.join(pathout,taskname+'_job'+job_id+'_'+filesuffixs)
             np.savetxt(dst, result, delimiter=',')
 
-        # read the generate output
-        # based on that determine sleep and number of bytes in output file
-        end = time.time()
-        runtime_stat = {
-            "task_name" : task_name,
-            "start" : start,
-            "end" : end
-        }
-        log.warning(json.dumps(runtime_stat))
-        for i in range(num_inputs):
-            q.task_done()
+            # read the generate output
+            # based on that determine sleep and number of bytes in output file
+            end = time.time()
+            runtime_stat = {
+                "task_name" : task_name,
+                "start" : start,
+                "end" : end
+            }
+            log.warning(json.dumps(runtime_stat))
+            for i in range(num_inputs):
+                q.task_done()
+
+       
 
     log.error("ERROR: should never reach this")
 
@@ -195,16 +230,7 @@ def profile_execution(task_name):
     # manually add the src (parent) and dst (this task) prefix to the filename
     # here to illustrate how Jupiter will enact this under the hood. the actual
     # src (or parent) is not needed for profiling execution so we fake it here.
-    for file in os.listdir(output_dir):
-        try:
-            src_task, dst_task, base_fname = file.split("_", maxsplit=3)
-        except ValueError:
-            # file is not in the correct format
-            continue
 
-        if dst_task.startswith(task_name):
-            print(dst_task)
-            shutil.copyfile(os.path.join(output_dir, file),os.path.join(input_dir, file))     
 
     os.makedirs(output_dir, exist_ok=True)
     t = threading.Thread(target=task, args=(q, input_dir, output_dir, task_name))
