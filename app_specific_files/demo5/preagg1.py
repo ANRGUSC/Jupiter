@@ -64,9 +64,6 @@ def task(q, pathin, pathout, task_name):
         # filename and pass the file to the next task.
         src = os.path.join(pathin, input_file)
         
-        print(src_task)
-        print(this_task)
-        print(base_fname)
 
         # PREAGG code
 

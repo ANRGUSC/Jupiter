@@ -127,7 +127,6 @@ def task(q, pathin, pathout, task_name):
                     result = results[j]
                 else:
                     result = np.concatenate((result, results[j]), axis = 0)
-            print(result)
 
             job = str(job_id)+'jobth'
             dst_task = children[0] # only 1 children
