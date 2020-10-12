@@ -18,11 +18,6 @@ node_list:
   node2: workers-s-1vcpu-3gb-2-fra1
   node3: workers-s-1vcpu-3gb-3-tor1
   node4: workers-s-1vcpu-3gb-4-lon1
-  node5: workers-s-1vcpu-3gb-5-fra1
-  node6: workers-s-1vcpu-3gb-6-fra1
-  node7: workers-s-1vcpu-3gb-7-ams3
-  node8: workers-s-1vcpu-3gb-8-nyc3
-  node9: workers-s-1vcpu-3gb-9-lon1
 application:
   ports:
     # these ports are to be exposed by app docker containers and also exposed via k8s service
@@ -35,31 +30,31 @@ application:
     datapath: data/fireengine
     stream_image: docker.io/anrg/streams_home:fireengine
     #this should be a node that jupiter wont schedule nodes on   
-    node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-13-ams3 
+    node_placement: workers-s-1vcpu-3gb-5-fra1 
   - name: datasource2
     dataset: schoolbus
     datapath: data/schoolbus
     stream_image: docker.io/anrg/streams_home:schoolbus
     #this should be a node that jupiter wont schedule nodes on   
-    node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-14-nyc1 
+    node_placement: workers-s-1vcpu-3gb-6-fra1
   - name: datasource3
     dataset: whitewolf
     datapath: data/whitewolf
     stream_image: docker.io/anrg/streams_home:whitewolf
     #this should be a node that jupiter wont schedule nodes on   
-    node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-10-fra1 
+    node_placement: workers-s-1vcpu-3gb-7-ams3 
   - name: datasource4
     dataset: hyena
     datapath: data/hyena
     stream_image: docker.io/anrg/streams_home:hyena
     #this should be a node that jupiter wont schedule nodes on   
-    node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-11-ams3 
+    node_placement: workers-s-1vcpu-3gb-8-nyc3
   - name: datasource5
     dataset: tiger
     datapath: data/tiger
     stream_image: docker.io/anrg/streams_home:tiger
     #this should be a node that jupiter wont schedule nodes on   
-    node_placement: k8sworkersb-ubuntu-s-4vcpu-8gb-12-ams3
+    node_placement: workers-s-1vcpu-3gb-9-lon1
   task_list:
     home: home  #TODO
     sinks:

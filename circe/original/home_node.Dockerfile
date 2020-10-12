@@ -12,7 +12,7 @@ RUN apt-get install -y sshpass nano
 # Taken from quynh's network profiler
 RUN pip install cryptography
 
-
+RUN pip3 install --upgrade pip
 RUN pip3 install -r requirements.txt
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -36,7 +36,7 @@ RUN mkdir -p /output
 RUN apt-get install stress
 
 # Add input files
-COPY  app_specific_files/dummy_app_multicast/sample_input /sample_input
+COPY  app_specific_files/demo5/sample_input /sample_input
 
 # Add the mongodb scripts
 ADD circe/original/runtime_profiler_mongodb /central_mongod
@@ -49,7 +49,7 @@ ADD circe/original/evaluate.py /evaluate.py
 
 
 # Add the task speficific configuration files
-ADD app_specific_files/dummy_app_multicast/configuration.txt /configuration.txt
+ADD app_specific_files/demo5/configuration.txt /configuration.txt
 
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini

@@ -104,6 +104,17 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
 
     profiler_ips_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(node_profiler_ips.items()))
     home_profiler_str = ' '.join('{0}:{1}'.format(key, val) for key, val in sorted(home_profiler_ips.items()))
+
+    print('==================')
+    print(profiler_ips_str)
+    print(home_profiler_str)
+    print(home_name)
+    print(jupiter_config.HEFT_IMAGE)
+    print(node_names)
+    print(home_ip)
+    print(ex_profiler_ips['home'])
+    print(app_name)
+    print(jupiter_config.APP_OPTION)
     
     home_dep = write_heft_specs(name = home_name, label = home_name,
                                 image = jupiter_config.HEFT_IMAGE,
@@ -115,6 +126,7 @@ def k8s_heft_scheduler(profiler_ips, ex_profiler_ips, node_names,app_name):
                                 home_profiler_ip = home_profiler_str,
                                 app_name = app_name,
                                 app_option = jupiter_config.APP_OPTION)
+    print(home_dep)
     resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
     logging.debug("Home deployment created. status = '%s'" % str(resp.status))
 

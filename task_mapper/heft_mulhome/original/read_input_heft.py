@@ -151,6 +151,7 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
     """
     for ip in profiler_ip:
         logging.debug('Check Network Profiler IP: %s - %s',ip[0],ip[1])
+        
         client_mongo = MongoClient('mongodb://'+ip[1]+':'+MONGO_SVC_PORT+'/')
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
@@ -168,15 +169,15 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
             num_rows = db[ip[1]].count()
 
         logdb = db[ip[1]].find().skip(db[ip[1]].count() - num_nb)
-
-    
         for record in logdb:
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
+            print(record)
             if record['Destination[IP]'] in home_profiler_ip: 
                 continue
             info_to_csv=[network_map[record['Source[IP]']],record['Source[IP]'],network_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info.append(info_to_csv)
     logging.debug('Network information has already been provided')
+    print(network_info)
     with open('/heft/network_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(network_info)

@@ -29,6 +29,7 @@ def get_all_profilers():
     mapping = {}
     path1 = jupiter_config.HERE + 'nodes.txt'
     nodes = utilities.k8s_get_nodes(path1)
+    print(nodes)
 
     """
         This loads the kubernetes instance configuration.
@@ -58,18 +59,23 @@ def get_all_profilers():
         
         # First check if there is a exisitng profiler deployment with
         # the name = key in the respective namespace
-        label = "app=" + key + "profiler"
+        # label = "app=" + key + "profiler"
+        name = 'demo5-'+key
+        print(name)
         
         resp = None
         api_2 = client.CoreV1Api()
         try:
-            resp = api_2.read_namespaced_service(key, namespace)
+            resp = api_2.read_namespaced_service(name, namespace)
         except ApiException as e:
             logging.debug("Exception Occurred")
         # if a service is running, kill it
         if resp:
             # logging.debug(resp.spec.cluster_ip)
             mapping[key] = resp.spec.cluster_ip
+
+    print('List of profiler nodes')
+    print(mapping)
 
     return mapping
 

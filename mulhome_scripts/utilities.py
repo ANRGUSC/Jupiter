@@ -98,9 +98,11 @@ def k8s_get_nodes(node_info_file):
   """
   nodes = {}
   node_file = open(node_info_file, "r")
+  print('*******************')
   for line in node_file:
       node_line = line.strip().split(" ")
       nodes.setdefault(node_line[0], [])
+      print(line)
       for i in range(1, len(node_line)):
           nodes[node_line[0]].append(node_line[i])
   return nodes

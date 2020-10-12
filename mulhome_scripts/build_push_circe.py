@@ -22,6 +22,7 @@ def prepare_global_info():
     
     jupiter_config.set_globals()
     INI_PATH  = jupiter_config.APP_PATH + 'app_config.ini'
+    print(INI_PATH)
     config = configparser.ConfigParser()
     config.read(INI_PATH)
     sys.path.append(jupiter_config.CIRCE_PATH)

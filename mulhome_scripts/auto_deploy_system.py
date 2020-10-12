@@ -14,7 +14,7 @@ from k8s_profiler_scheduler import *
 from k8s_wave_scheduler import *
 from k8s_circe_scheduler import *
 from k8s_pricing_circe_scheduler import *
-from k8s_exec_scheduler import *
+import k8s_exec_scheduler
 from k8s_heft_scheduler import *
 from pprint import *
 import jupiter_config
@@ -99,7 +99,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         exec_profiler_function = k8s_exec_scheduler
     elif jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # Nonpricing, HEFT
         logging.debug('De[loy Execution Profiler')
-        exec_profiler_function = k8s_exec_scheduler
+        exec_profiler_function = k8s_exec_scheduler.main
     else: # Nonpricing, WAVE
         exec_profiler_function = empty_function
 
@@ -112,10 +112,12 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         # start the profilers
         profiler_ips = get_all_profilers()
         #profiler_ips = k8s_profiler_scheduler()
+        print(profiler_ips)
 
 
         # start the execution profilers
-        execution_ips = get_all_execs(app_id)
+        execution_ips = get_all_execs('demo5')
+        print(execution_ips)
         #execution_ips = exec_profiler_function(app_id)
 
         logging.debug('*************************')
@@ -127,6 +129,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
 
 
         node_names = utilities.k8s_get_nodes_string(path2)
+        print(node_names)
         logging.debug('*************************')
 
         #Start the task to node mapper
@@ -243,7 +246,7 @@ def redeploy_system(app_id,app_name,port):
     if jupiter_config.PRICING == 1 or jupiter_config.PRICING == 2:
         exec_profiler_function = k8s_exec_scheduler
     elif jupiter_config.SCHEDULER == 0 or jupiter_config.SCHEDULER == 3: # Nonpricing, HEFT
-        exec_profiler_function = k8s_exec_scheduler
+        exec_profiler_function = k8s_exec_scheduler.main
     else: # Nonpricing, WAVE
         exec_profiler_function = empty_function
         
@@ -255,11 +258,13 @@ def redeploy_system(app_id,app_name,port):
 
         # start the profilers
         profiler_ips = get_all_profilers()
+        print(profiler_ips)
         #profiler_ips = k8s_profiler_scheduler()
 
 
         # start the execution profilers
         execution_ips = get_all_execs(app_id)
+        print(execution_ips)
         #execution_ips = exec_profiler_function(app_id)
 
         logging.debug('*************************')
@@ -401,14 +406,16 @@ def main():
     jupiter_config.set_globals()
     app_name = jupiter_config.APP_OPTION
     circe_port = int(jupiter_config.FLASK_CIRCE)
-    flask_deploy = int(jupiter_config.FLASK_DEPLOY )
+    # flask_deploy = int(jupiter_config.FLASK_DEPLOY )
+    flask_deploy = '90002'
     
     
     num_samples_files = 2
     num_runs = 1
-    num_dags_list = [5]
+    num_dags_list = [1]
     #num_dags_list = [1,2,4,6,8,10]
     for num_dags in num_dags_list:
+
         temp = app_name
         logging.debug(num_dags)
         jupiter_config.set_globals()
@@ -423,9 +430,10 @@ def main():
         logging.debug(app_list)
        
         for idx,appname in enumerate(app_list):
+            print(port_list[idx])
             logging.debug(appname)
             _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],num_runs,num_samples_files))
 
-    app.run(host='0.0.0.0', port = flask_deploy)
+    app.run(host='127.0.0.1', port = flask_deploy)
 if __name__ == '__main__':
     main()

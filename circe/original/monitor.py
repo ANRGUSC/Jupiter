@@ -385,9 +385,10 @@ class Handler(pyinotify.ProcessEvent):
             inputfile=queue_mul.get()
             input_path = os.path.split(event.pathname)[0]
             output_path = os.path.join(os.path.split(input_path)[0],'output')
-            dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
-            dag_task.start()
-            dag_task.join()
+            #dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
+
+            #dag_task.start()
+            #dag_task.join()
            
         else:
             filenames.append(queue_mul.get())
@@ -403,10 +404,12 @@ class Handler(pyinotify.ProcessEvent):
                     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                 input_path = os.path.split(event.pathname)[0]
                 output_path = os.path.join(os.path.split(input_path)[0],'output')
-                dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
-                dag_task.start()
-                dag_task.join()
+                # dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
+                # dag_task.start()
+                # dag_task.join()
                 filenames = []
+
+        queue_mul.join()
 
 
 
@@ -496,18 +499,20 @@ def main():
         combined_ip_map[node] = IPaddr
 
     if taskmap[1] == True:
-        queue_mul=multiprocessing.Queue()
-
-
-        wm = pyinotify.WatchManager()
+        #queue_mul=multiprocessing.Queue()
+        queue_mul = queue.Queue()
         input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
+        output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+        t = threading.Thread(target=task, args=(q, input_folder, output_folder, task_name))
+        t.start()
+        wm = pyinotify.WatchManager()
         wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
         logging.debug('starting the input monitoring process\n')
         eh = Handler()
         notifier = pyinotify.ThreadedNotifier(wm, eh)
         notifier.start()
 
-        output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+        
         wm1 = pyinotify.WatchManager()
         wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
         logging.debug('starting the output monitoring process\n')

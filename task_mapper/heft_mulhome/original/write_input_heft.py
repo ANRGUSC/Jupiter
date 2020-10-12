@@ -110,8 +110,16 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
     target.write('\tAPERIODIC')
     target.write("\n\n")
 
+    print(num_nodes)
+    print(node_list)
+    print(task_list)
+    print(tasks)
+
+
     task_map = ['t0_%d'%(i) for i in range(0,len(task_list))]
+    print(task_map)
     task_ID_dict = dict(zip(task_list,range(0,len(task_list))))
+    print(task_ID_dict)
     task_dict = dict(zip(task_list, task_map))
 
     computation_matrix =[]
@@ -122,6 +130,10 @@ def create_input_heft(tgff_file,num_nodes,network_info,execution_info,node_list,
     task_size = {}
 
     # Read format: Node ID, Task, Execution Time, Output size
+    print('********************************************CHECK***********************')
+    print(task_ID_dict)
+    print(node_ids)
+    print(execution_info)
     for row in execution_info:
         computation_matrix[task_ID_dict[row[1]]][node_ids[row[0]] - 1] = int(float(row[2])*10) 
         #100000
@@ -183,6 +195,8 @@ if __name__ == '__main__':
 
     NODE_NAMES = os.environ["NODE_NAMES"]
     node_info = NODE_NAMES.split(":")
+    print('------------------- List of input nodes --------------------')
+    print(node_info)
     node_ids = {v:k for k,v in enumerate(node_info)}
 
     logging.debug('---------------------------------------------')
