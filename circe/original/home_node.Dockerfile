@@ -1,11 +1,13 @@
 # Instructions copied from - https://hub.docker.com/_/python/
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
+# Install required libraries
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
+
 RUN apt-get install -y openssh-server mongodb
 ADD circe/original/requirements.txt /requirements.txt
-RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
+#RUN apt-get -y install build-essential libssl-dev libffi-dev python3-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y sshpass nano
 
@@ -36,7 +38,7 @@ RUN mkdir -p /output
 RUN apt-get install stress
 
 # Add input files
-COPY  app_specific_files/demo5/sample_input /sample_input
+COPY  app_specific_files/demo5/sample_inputs /sample_input
 
 # Add the mongodb scripts
 ADD circe/original/runtime_profiler_mongodb /central_mongod
@@ -47,12 +49,14 @@ ADD circe/original/scheduler.py /scheduler.py
 ADD jupiter_config.py /jupiter_config.py
 ADD circe/original/evaluate.py /evaluate.py
 
-
 # Add the task speficific configuration files
 ADD app_specific_files/demo5/configuration.txt /configuration.txt
 
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
+
+RUN mkdir -p /jupiter
+COPY app_specific_files/demo5/ /jupiter/build/app_specific_files
 
 ADD circe/original/start_home.sh /start.sh
 RUN chmod +x /start.sh

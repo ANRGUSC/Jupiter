@@ -37,6 +37,22 @@ from collections import Counter
 import _thread
 import threading
 import logging
+import importlib
+import queue
+
+logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+
+try:
+    # successful if running in container
+    sys.path.append("/jupiter/build")
+    from jupiter_utils import app_config_parser
+except ModuleNotFoundError:
+    # Python file must be running locally for testing
+    sys.path.append("../../mulhome_scripts/")
+    from jupiter_utils import app_config_parser
+
 
 
 
@@ -224,7 +240,7 @@ class Handler1(pyinotify.ProcessEvent):
             next_task = sys.argv[idx]
             user = sys.argv[idx+2]
             password=sys.argv[idx+3]
-            destination = os.path.join('/centralized_scheduler', 'input', new_file)
+            destination = os.path.join('/jupiter', 'input', new_file)
             transfer_data(next_task,user,password,source, destination)
         elif sys.argv[3] == 'home':
             logging.debug('Next node is home')
@@ -266,7 +282,7 @@ class Handler1(pyinotify.ProcessEvent):
             #     user = sys.argv[i+2]
             #     password = sys.argv[i+3]
             #     source = event.pathname
-            #     destination = os.path.join('/centralized_scheduler', 'input', new_file)
+            #     destination = os.path.join('/jupiter', 'input', new_file)
             #     transfer_data(cur_task,user,password,source, destination)
             
             # Using multicast
@@ -275,7 +291,7 @@ class Handler1(pyinotify.ProcessEvent):
             users = []
             passwords = []
             source = event.pathname
-            destination = os.path.join('/centralized_scheduler', 'input', new_file)
+            destination = os.path.join('/jupiter', 'input', new_file)
 
 
             for i in range(3, len(sys.argv)-1,4):
@@ -310,7 +326,7 @@ class Handler1(pyinotify.ProcessEvent):
                 #     user = sys.argv[i+2]
                 #     password = sys.argv[i+3]
                 #     source = event_path
-                #     destination = os.path.join('/centralized_scheduler','input', myfile)
+                #     destination = os.path.join('/jupiter','input', myfile)
                 #     transfer_data(cur_task,user,password,source, destination)
                 
                 logging.debug('Using multicast instead')
@@ -321,7 +337,7 @@ class Handler1(pyinotify.ProcessEvent):
                     cur_tasks.append(sys.argv[i])
                     users.append(sys.argv[i+2])
                     passwords.append(sys.argv[i+3])
-                destinations = [os.path.join('/centralized_scheduler','input', myfile) for myfile in files_out]
+                destinations = [os.path.join('/jupiter','input', myfile) for myfile in files_out]
                 sources = [os.path.join(''.join(os.path.split(event.pathname)[:-1]), myfile) for myfile in files_out]
 
                 transfer_multicast_data(cur_tasks,users,passwords,sources, destinations)
@@ -425,37 +441,40 @@ def main():
 
     """
 
+    APP_DIR = "/jupiter/build/app_specific_files/"
+    app_config = app_config_parser.AppConfig(APP_DIR, "don't care")
+
     global logging
     logging.basicConfig(level = logging.DEBUG)
 
 
-    INI_PATH = '/jupiter_config.ini'
+    INI_PATH = '/jupiter/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
     # Prepare transfer-runtime file:
     global runtime_sender_log, RUNTIME, TRANSFER, transfer_type
-    RUNTIME = int(config['CONFIG']['RUNTIME'])
-    TRANSFER = int(config['CONFIG']['TRANSFER'])
+    #RUNTIME = int(config['CONFIG']['RUNTIME'])
+    #TRANSFER = int(config['CONFIG']['TRANSFER'])
 
-    if TRANSFER == 0:
-        transfer_type = 'scp'
+    # if TRANSFER == 0:
+    #     transfer_type = 'scp'
 
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
-    s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
-    runtime_sender_log.write(s)
-    runtime_sender_log.close()
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
-    #Node_name, Transfer_Type, Source_path , Time_stamp
+    # runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
+    # s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
+    # runtime_sender_log.write(s)
+    # runtime_sender_log.close()
+    # runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
+    # #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    if RUNTIME == 1:
-        global runtime_receiver_log
-        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
-        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
-        runtime_receiver_log.write(s)
-        runtime_receiver_log.close()
-        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
-        #Node_name, Transfer_Type, Source_path , Time_stamp
+    # if RUNTIME == 1:
+    #     global runtime_receiver_log
+    #     runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
+    #     s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
+    #     runtime_receiver_log.write(s)
+    #     runtime_receiver_log.close()
+    #     runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
+    #     #Node_name, Transfer_Type, Source_path , Time_stamp
 
     global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, queue_mul
 
@@ -468,11 +487,15 @@ def main():
 
     global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
 
-    configs = json.load(open('/centralized_scheduler/config.json'))
+    configs = json.load(open('/jupiter/build/app_specific_files/scripts/config.json'))
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
     taskname = taskmap[0]
     if taskmap[1] == True:
-        taskmodule = __import__(taskname)
+        module_name = app_config.base_script(taskname).replace(".py", "")
+        # taskmodule = __import__(taskname)
+        task_module = importlib.import_module(
+            "build.app_specific_files.{}".format(module_name)
+        )
 
     #target port for SSHing into a container
     filenames=[]
@@ -521,7 +544,7 @@ def main():
         notifier1.loop()
     else:
         logging.debug('Task Mapping information')
-        path_src = "/centralized_scheduler/" + taskname
+        path_src = "/jupiter/" + taskname
         args = ' '.join(str(x) for x in taskmap[2:])
 
         if os.path.isfile(path_src + ".py"):

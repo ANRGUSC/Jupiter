@@ -7,7 +7,6 @@ import logging
 import glob
 import time
 import json
-import ccdag
 
 from PIL import Image
 from multiprocessing import Process, Manager
@@ -28,11 +27,15 @@ log.setLevel(logging.DEBUG)
 try:
     # successful if running in container
     sys.path.append("/jupiter/build")
+    sys.path.append("/jupiter/build/app_specific_files/")
     from jupiter_utils import app_config_parser
+
 except ModuleNotFoundError:
     # Python file must be running locally for testing
     sys.path.append("../../mulhome_scripts/")
     from jupiter_utils import app_config_parser
+
+import ccdag
 
 # Jupiter executes task scripts from many contexts. Instead of relative paths
 # in your code, reference your entire app directory using your base script's
@@ -206,7 +209,7 @@ def get_and_send_missing_images(pathin):
         source_path = os.path.join(pathin, file_name_wo_jobid)
         file_name = 'master_master_master_master_' + image_file
         logging.debug('Transfer the file')
-        destination_path = os.path.join('/centralized_scheduler/input',file_name)
+        destination_path = os.path.join('/jupiter/input',file_name)
         logging.debug(destination_path)
         try:
             next_store_class = store_class_tasks_dict[int(_class)]

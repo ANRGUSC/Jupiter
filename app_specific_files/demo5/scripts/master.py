@@ -206,7 +206,7 @@ def get_and_send_missing_images(pathin):
         source_path = os.path.join(pathin, file_name_wo_jobid)
         file_name = 'master_master_master_master_' + image_file
         logging.debug('Transfer the file')
-        destination_path = os.path.join('/centralized_scheduler/input',file_name)
+        destination_path = os.path.join('/jupiter/input',file_name)
         logging.debug(destination_path)
         try:
             next_store_class = store_class_tasks_dict[int(_class)]

@@ -7,7 +7,6 @@ import logging
 import glob
 import time
 import json
-import ccdag
 import configparser
 import numpy as np
 from os import listdir
@@ -21,11 +20,14 @@ log.setLevel(logging.DEBUG)
 try:
     # successful if running in container
     sys.path.append("/jupiter/build")
+    sys.path.append("/jupiter/build/app_specific_files/")
     from jupiter_utils import app_config_parser
 except ModuleNotFoundError:
     # Python file must be running locally for testing
     sys.path.append("../../mulhome_scripts/")
     from jupiter_utils import app_config_parser
+
+import ccdag
 
 # Jupiter executes task scripts from many contexts. Instead of relative paths
 # in your code, reference your entire app directory using your base script's

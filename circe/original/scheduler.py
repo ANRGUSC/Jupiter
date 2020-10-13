@@ -36,6 +36,11 @@ import logging
 import pyinotify
 
 
+logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+
+
 
 app = Flask(__name__)
 
