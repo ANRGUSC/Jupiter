@@ -132,22 +132,52 @@ def k8s_get_nodes_worker(node_info_file):
   #log.debug(nodes)
   return nodes, homes
 
+# def k8s_get_all_elements(node_info_file):
+#   """read the node info from the file input
+
+#   Args:
+#       node_info_file (str): path of ``node.txt``
+
+#   Returns:
+#       dict: node information
+#   """
+#   nodes = {}
+#   homes = {}
+#   datasources = {}
+#   node_file = open(node_info_file, "r")
+#   for line in node_file:
+#       node_line = line.strip().split(" ")
+#       if node_line[0].startswith('home'):
+#         homes.setdefault(node_line[0], [])
+#         for i in range(1, len(node_line)):
+#           homes[node_line[0]].append(node_line[i])
+#       elif node_line[0].startswith('datasource'):
+#         datasources.setdefault(node_line[0], [])
+#         for i in range(1, len(node_line)):
+#           datasources[node_line[0]].append(node_line[i])
+#       else:
+#         nodes.setdefault(node_line[0], [])
+#         for i in range(1, len(node_line)):
+#             nodes[node_line[0]].append(node_line[i])
+#   return nodes, homes,datasources
+
 def k8s_get_all_elements(node_info_file):
   """read the node info from the file input
-
+  
   Args:
       node_info_file (str): path of ``node.txt``
-
+  
   Returns:
-      dict: node information
+      dict: node information 
   """
   nodes = {}
   homes = {}
   datasources = {}
+  datasinks ={}
   node_file = open(node_info_file, "r")
   for line in node_file:
       node_line = line.strip().split(" ")
-      if node_line[0].startswith('home'):
+      if node_line[0].startswith('home'): 
         homes.setdefault(node_line[0], [])
         for i in range(1, len(node_line)):
           homes[node_line[0]].append(node_line[i])
@@ -155,11 +185,15 @@ def k8s_get_all_elements(node_info_file):
         datasources.setdefault(node_line[0], [])
         for i in range(1, len(node_line)):
           datasources[node_line[0]].append(node_line[i])
+      elif node_line[0].startswith('datasink'):
+        datasinks.setdefault(node_line[0], [])
+        for i in range(1, len(node_line)):
+          datasinks[node_line[0]].append(node_line[i])
       else:
         nodes.setdefault(node_line[0], [])
         for i in range(1, len(node_line)):
             nodes[node_line[0]].append(node_line[i])
-  return nodes, homes,datasources
+  return nodes, homes,datasources,datasinks
 
 def k8s_get_hosts(dag_info_file, node_info_file, mapping):
   """read the hosts info from the input files

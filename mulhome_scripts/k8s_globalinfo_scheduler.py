@@ -1,4 +1,4 @@
-__author__ = "Quynh Nguyen, Pradipta Ghosh and  Bhaskar Krishnamachari"
+__author__ = "Quynh Nguyen and  Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2020, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "4.0"
@@ -10,8 +10,8 @@ import time
 import os
 from os import path
 from multiprocessing import Process
-from write_stream_service_specs import *
-from write_stream_specs import *
+from write_globalinfo_service_specs import *
+from write_globalinfo_specs import *
 import yaml
 from kubernetes import client, config
 from pprint import *
@@ -53,18 +53,15 @@ def get_service_circe(dag,app_name):
             logging.debug("Exception Occurred")
     return service_ips
 
-
-
-
-def k8s_stream_scheduler(app_name):
+def k8s_globalinfo_scheduler(app_name):
     """
-        This script deploys CIRCE in the system. 
+        This script deploys data sources for demo in the system. 
     """
     
-
+    logging.debug('Deploys data sources for demo in the system!')
     jupiter_config.set_globals()
     
-    sys.path.append(jupiter_config.STREAM_PATH)
+    sys.path.append(jupiter_config.GLOBALINFO_PATH)
 
     """
         This loads the kubernetes instance configuration.
@@ -94,7 +91,6 @@ def k8s_stream_scheduler(app_name):
     logging.debug(dag)
 
     path2 = jupiter_config.HERE + 'nodes.txt'
-    # nodes, homes,datasources = utilities.k8s_get_all_elements(path2)
     nodes, homes,datasources,datasinks = utilities.k8s_get_all_elements(path2)
 
     print(nodes)
@@ -102,52 +98,56 @@ def k8s_stream_scheduler(app_name):
     print(datasources)
     print(datasinks)
 
+    logging.debug('Datasources :')
+    logging.debug(datasources)
     service_ips = {}; #list of all service IPs
     
-    for i in datasources:
-        logging.debug('Data source information')
-        logging.debug('First create the home node service')
-        home_name =app_name+"-stream"+i
-        home_body = write_stream_service_specs(name = home_name)
-        
-        try:
-            ser_resp = api.create_namespaced_service(namespace, home_body)
-            logging.debug("Home service created. status = '%s'" % str(ser_resp.status))
-            resp = api.read_namespaced_service(home_name, namespace)
-            service_ips['home'] = resp.spec.cluster_ip
-        except ApiException as e:
-            logging.debug(e)
-            logging.debug("Exception Occurred")
+    logging.debug('Data source information')
+    logging.debug('First create the home node service')
+    home_name =app_name+"-globalinfohome"
+    home_body = write_globalinfo_service_specs(name = home_name)
+    print(home_body)
+    print(namespace)
 
-    circe_services = get_service_circe(dag,app_name)
-    circe_nodes = ' '.join(circe_services.keys())
-    circe_nodes_ips = ' '.join(circe_services.values())
     
-    for i in datasources:
+    try:
+        ser_resp = api.create_namespaced_service(namespace, home_body)
+        logging.debug("Home service created. status = '%s'" % str(ser_resp.status))
+        resp = api.read_namespaced_service(home_name, namespace)
+        service_ips['home'] = resp.spec.cluster_ip
+    except ApiException as e:
+        logging.debug(e)
+        print(e)
+        logging.debug("Exception Occurred")
+
+    print(service_ips)
+
+    # circe_services = get_service_circe(dag,app_name)
+    # circe_nodes = ' '.join(circe_services.keys())
+    # circe_nodes_ips = ' '.join(circe_services.values())
+    
         
-        home_name =app_name+"-stream"+i
+    logging.debug(service_ips)
+    home_name =app_name+"-globalinfohome"
 
-        home_dep = write_stream_home_specs(name=home_name,image = jupiter_config.STREAM_IMAGE, 
-                                    host = jupiter_config.STREAM_NODE[i][0], 
-                                    child = jupiter_config.HOME_CHILD,
-                                    child_ips = circe_services.get(jupiter_config.HOME_CHILD), 
-                                    appname = app_name,
-                                    appoption = jupiter_config.APP_OPTION,
-                                    dir = '{}',
-                                    self_name=i,
-                                    home_node_ip = circe_services.get('home'),
-                                    all_nodes = circe_nodes,
-                                    all_nodes_ips = circe_nodes_ips)
+    home_dep = write_globalinfo_home_specs(name=home_name,image = jupiter_config.GLOBALINFO_IMAGE, host = jupiter_config.HOME_NODE, 
+                                appname = app_name,
+                                appoption = jupiter_config.APP_OPTION,
+                                self_name='globalinfohome',
+                                self_ip = service_ips['home'])
+    print(home_dep)
 
-        try:
-            resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
-            logging.debug("Home deployment created")
-            logging.debug("Home deployment created. status = '%s'" % str(resp.status))
-        except ApiException as e:
-            logging.debug(e)
+    try:
+        resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
+        logging.debug("Home deployment created")
+        logging.debug("Home deployment created. status = '%s'" % str(resp.status))
+    except ApiException as e:
+        logging.debug(e)
+
 
    
 if __name__ == '__main__':
     jupiter_config.set_globals() 
     app_name = jupiter_config.APP_OPTION
-    k8s_stream_scheduler(app_name)
+    app_name = app_name+'1'
+    k8s_globalinfo_scheduler(app_name)

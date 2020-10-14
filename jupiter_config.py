@@ -131,6 +131,8 @@ def set_globals():
     SCRIPT_PATH             = HERE + 'scripts/'
     STREAM_PATH             = HERE + 'simulation/data_sources/'
 
+
+
     global heft_option, wave_option
     heft_option             = 'original'    
     wave_option             = 'random' 
@@ -180,6 +182,8 @@ def set_globals():
     if DCOMP == 1:
         cluster_option      = 'dcomp'
 
+
+
     """Kubernetes required information"""
     global KUBECONFIG_PATH, DEPLOYMENT_NAMESPACE, PROFILER_NAMESPACE, \
         MAPPER_NAMESPACE, EXEC_NAMESPACE
@@ -212,6 +216,12 @@ def set_globals():
     APP_PATH                  = HERE  + 'app_specific_files/demo5/'
     APP_NAME                  = 'app_specific_files/demo5'
     APP_OPTION                = 'demo5'
+
+
+    # Temporary for CCDAG, need refactoring
+    global GLOBALINFO_PATH, GLOBALINFO_IMAGE
+    GLOBALINFO_PATH               = HERE + 'simulation/global_info_center/'
+    GLOBALINFO_IMAGE = 'docker.io/anrg/globalinfo_home:%s_%s'%(APP_OPTION,cluster_option)
 
 
     """pricing CIRCE home and worker images"""
