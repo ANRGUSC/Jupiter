@@ -20,6 +20,7 @@ from pathlib import Path
 global circe_home_ip, circe_home_ip_port, taskname
 taskname = Path(__file__).stem
 
+
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -48,6 +49,13 @@ app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
 
 config = configparser.ConfigParser()
 config.read(ccdag.JUPITER_CONFIG_INI_PATH)
+
+print(config.sections())
+import os.path
+if os.path.isfile(ccdag.JUPITER_CONFIG_INI_PATH):
+    print('File found')
+else:
+    print('File not found')
 global FLASK_DOCKER, FLASK_SVC
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])

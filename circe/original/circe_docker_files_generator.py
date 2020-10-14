@@ -60,7 +60,7 @@ ADD circe/original/runtime_profiler_mongodb /central_mongod
 
 ADD circe/original/readconfig.py /readconfig.py
 ADD circe/original/scheduler.py /scheduler.py
-ADD jupiter_config.py /jupiter_config.py
+#ADD jupiter_config.py /jupiter_config.py
 ADD circe/original/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
@@ -138,7 +138,7 @@ RUN mkdir -p /home/darpa/apps/data
 # ADD {app_file}/scripts/ /centralized_scheduler/
 
 RUN mkdir -p /jupiter
-ADD jupiter_config.ini /jupiter/jupiter_config.ini
+ADD jupiter_config.ini /jupiter/build/jupiter_config.ini
 COPY {app_file}/ /jupiter/build/app_specific_files
 COPY {app_file}/jupiter_utils /jupiter/build/jupiter_utils
 ADD circe/original/monitor.py /jupiter/

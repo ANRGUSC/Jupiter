@@ -1,0 +1,702 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+my child nodes are:
+preagg3
+their IPs are:
+10.100.115.1
+my task is:
+score3b
+flag is:
+true
+number of inputs for my task:
+1
+home node is:
+10.111.82.234
+monitor.py input args are:
+1 true preagg3 10.100.115.1 root PASSWORD
+python3 centralized_scheduler/monitor.py 1 true  preagg3 10.100.115.1 root PASSWORD score3b
+DEBUG:root:Last task map
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5']}
+DEBUG:root:Combined IP Map
+DEBUG:root:{'preagg3': '10.100.115.1', '': ''}
+DEBUG:root:starting the input monitoring process
+
+DEBUG:root:starting the output monitoring process
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job1_2#640-2#353-2#338-2#574-2#821-2#698.csv.
+DEBUG:root:lccenc3_score3b_job1_2#640-2#353-2#338-2#574-2#821-2#698.csv
+DEBUG:root:lccenc3_score3b_job1_2#640-2#353-2#338-2#574-2#821-2#698
+DEBUG:root:2#640-2#353-2#338-2#574-2#821-2#698.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102165.481437
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#640-2#353-2#338-2#574-2#821-2#698.JPEG 1593102165.4814367
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#640-2#353-2#338-2#574-2#821-2#698.JPEG 1593102165.894815
+DEBUG:root:lccenc3_score3b_job1_2#640-2#353-2#338-2#574-2#821-2#698
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#640-2#353-2#338-2#574-2#821-2#698.JPEG 1593102166.328199
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job1_2#640-2#353-2#338-2#574-2#821-2#698.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job1_2#640-2#353-2#338-2#574-2#821-2#698.csv
+DEBUG:root:score3b_preagg3_job1_2#640-2#353-2#338-2#574-2#821-2#698
+DEBUG:root:2#640-2#353-2#338-2#574-2#821-2#698.JPEG
+DEBUG:root:Received time 1593102167.215104
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#640-2#353-2#338-2#574-2#821-2#698.JPEG 1593102167.215104
+DEBUG:root:score3b_preagg3_job1_2#640-2#353-2#338-2#574-2#821-2#698
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish_task lccenc3 2#640-2#353-2#338-2#574-2#821-2#698.JPEG 1593102167.2165213
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job1_2#640-2#353-2#338-2#574-2#821-2#698.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job1_2#640-2#353-2#338-2#574-2#821-2#698.csv
+DEBUG:root:score3b_preagg3_job1_2#640-2#353-2#338-2#574-2#821-2#698
+DEBUG:root:2#640-2#353-2#338-2#574-2#821-2#698.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job1_2#640-2#353-2#338-2#574-2#821-2#698.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job1_2#640-2#353-2#338-2#574-2#821-2#698.csv
+Warning: Permanently added '[10.100.115.1]:5000' (ECDSA) to the list of known hosts.
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job2_2#629-2#1083-2#998-2#224-2#687-2#532.csv.
+DEBUG:root:lccenc3_score3b_job2_2#629-2#1083-2#998-2#224-2#687-2#532.csv
+DEBUG:root:lccenc3_score3b_job2_2#629-2#1083-2#998-2#224-2#687-2#532
+DEBUG:root:2#629-2#1083-2#998-2#224-2#687-2#532.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102242.235656
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#629-2#1083-2#998-2#224-2#687-2#532.JPEG 1593102242.2356565
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#629-2#1083-2#998-2#224-2#687-2#532.JPEG 1593102242.6371596
+DEBUG:root:lccenc3_score3b_job2_2#629-2#1083-2#998-2#224-2#687-2#532
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#629-2#1083-2#998-2#224-2#687-2#532.JPEG 1593102243.067603
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job2_2#629-2#1083-2#998-2#224-2#687-2#532.csv.
+DEBUG:root:score3b_preagg3_job2_2#629-2#1083-2#998-2#224-2#687-2#532
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish_task lccenc3 2#629-2#1083-2#998-2#224-2#687-2#532.JPEG 1593102243.9718463
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job2_2#629-2#1083-2#998-2#224-2#687-2#532.csv
+DEBUG:root:score3b_preagg3_job2_2#629-2#1083-2#998-2#224-2#687-2#532
+DEBUG:root:2#629-2#1083-2#998-2#224-2#687-2#532.JPEG
+DEBUG:root:Received time 1593102243.972752
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#629-2#1083-2#998-2#224-2#687-2#532.JPEG 1593102243.972752
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job2_2#629-2#1083-2#998-2#224-2#687-2#532.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job2_2#629-2#1083-2#998-2#224-2#687-2#532.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job2_2#629-2#1083-2#998-2#224-2#687-2#532.csv
+DEBUG:root:score3b_preagg3_job2_2#629-2#1083-2#998-2#224-2#687-2#532.csv
+DEBUG:root:score3b_preagg3_job2_2#629-2#1083-2#998-2#224-2#687-2#532
+DEBUG:root:2#629-2#1083-2#998-2#224-2#687-2#532.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job3_2#1032-2#973-2#268-2#300-2#717-2#65.csv.
+DEBUG:root:lccenc3_score3b_job3_2#1032-2#973-2#268-2#300-2#717-2#65.csv
+DEBUG:root:lccenc3_score3b_job3_2#1032-2#973-2#268-2#300-2#717-2#65
+DEBUG:root:2#1032-2#973-2#268-2#300-2#717-2#65.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102313.231569
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#1032-2#973-2#268-2#300-2#717-2#65.JPEG 1593102313.2315686
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#1032-2#973-2#268-2#300-2#717-2#65.JPEG 1593102313.6413035
+DEBUG:root:lccenc3_score3b_job3_2#1032-2#973-2#268-2#300-2#717-2#65
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#1032-2#973-2#268-2#300-2#717-2#65.JPEG 1593102314.0822477
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job3_2#1032-2#973-2#268-2#300-2#717-2#65.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job3_2#1032-2#973-2#268-2#300-2#717-2#65.csv
+DEBUG:root:score3b_preagg3_job3_2#1032-2#973-2#268-2#300-2#717-2#65
+DEBUG:root:2#1032-2#973-2#268-2#300-2#717-2#65.JPEG
+DEBUG:root:Received time 1593102314.993540
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#1032-2#973-2#268-2#300-2#717-2#65.JPEG 1593102314.9935398
+DEBUG:root:score3b_preagg3_job3_2#1032-2#973-2#268-2#300-2#717-2#65
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish_task lccenc3 2#1032-2#973-2#268-2#300-2#717-2#65.JPEG 1593102314.9948032
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job3_2#1032-2#973-2#268-2#300-2#717-2#65.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job3_2#1032-2#973-2#268-2#300-2#717-2#65.csv
+DEBUG:root:score3b_preagg3_job3_2#1032-2#973-2#268-2#300-2#717-2#65
+DEBUG:root:2#1032-2#973-2#268-2#300-2#717-2#65.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job3_2#1032-2#973-2#268-2#300-2#717-2#65.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job3_2#1032-2#973-2#268-2#300-2#717-2#65.csv
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job4_2#579-2#803-2#188-2#1264-2#1028-2#322.csv.
+DEBUG:root:lccenc3_score3b_job4_2#579-2#803-2#188-2#1264-2#1028-2#322.csv
+DEBUG:root:lccenc3_score3b_job4_2#579-2#803-2#188-2#1264-2#1028-2#322
+DEBUG:root:2#579-2#803-2#188-2#1264-2#1028-2#322.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102385.191143
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#579-2#803-2#188-2#1264-2#1028-2#322.JPEG 1593102385.1911428
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#579-2#803-2#188-2#1264-2#1028-2#322.JPEG 1593102385.6203287
+DEBUG:root:lccenc3_score3b_job4_2#579-2#803-2#188-2#1264-2#1028-2#322
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#579-2#803-2#188-2#1264-2#1028-2#322.JPEG 1593102386.0513544
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:score3b_preagg3_job4_2#579-2#803-2#188-2#1264-2#1028-2#322
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job4_2#579-2#803-2#188-2#1264-2#1028-2#322.csv.
+DEBUG:root:rt_finish_task lccenc3 2#579-2#803-2#188-2#1264-2#1028-2#322.JPEG 1593102386.942027
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job4_2#579-2#803-2#188-2#1264-2#1028-2#322.csv
+DEBUG:root:score3b_preagg3_job4_2#579-2#803-2#188-2#1264-2#1028-2#322
+DEBUG:root:2#579-2#803-2#188-2#1264-2#1028-2#322.JPEG
+DEBUG:root:Received time 1593102386.942748
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#579-2#803-2#188-2#1264-2#1028-2#322.JPEG 1593102386.942748
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job4_2#579-2#803-2#188-2#1264-2#1028-2#322.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job4_2#579-2#803-2#188-2#1264-2#1028-2#322.csv
+DEBUG:root:score3b_preagg3_job4_2#579-2#803-2#188-2#1264-2#1028-2#322
+DEBUG:root:2#579-2#803-2#188-2#1264-2#1028-2#322.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job4_2#579-2#803-2#188-2#1264-2#1028-2#322.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job4_2#579-2#803-2#188-2#1264-2#1028-2#322.csv
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job5_2#450-2#876-2#383-2#624-2#135-2#617.csv.
+DEBUG:root:lccenc3_score3b_job5_2#450-2#876-2#383-2#624-2#135-2#617.csv
+DEBUG:root:lccenc3_score3b_job5_2#450-2#876-2#383-2#624-2#135-2#617
+DEBUG:root:2#450-2#876-2#383-2#624-2#135-2#617.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102453.306949
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#450-2#876-2#383-2#624-2#135-2#617.JPEG 1593102453.3069494
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#450-2#876-2#383-2#624-2#135-2#617.JPEG 1593102453.7423103
+DEBUG:root:lccenc3_score3b_job5_2#450-2#876-2#383-2#624-2#135-2#617
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#450-2#876-2#383-2#624-2#135-2#617.JPEG 1593102454.16522
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:score3b_preagg3_job5_2#450-2#876-2#383-2#624-2#135-2#617
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish_task lccenc3 2#450-2#876-2#383-2#624-2#135-2#617.JPEG 1593102455.0312655
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job5_2#450-2#876-2#383-2#624-2#135-2#617.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job5_2#450-2#876-2#383-2#624-2#135-2#617.csv
+DEBUG:root:score3b_preagg3_job5_2#450-2#876-2#383-2#624-2#135-2#617
+DEBUG:root:2#450-2#876-2#383-2#624-2#135-2#617.JPEG
+DEBUG:root:Received time 1593102455.032721
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#450-2#876-2#383-2#624-2#135-2#617.JPEG 1593102455.0327206
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job5_2#450-2#876-2#383-2#624-2#135-2#617.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job5_2#450-2#876-2#383-2#624-2#135-2#617.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job5_2#450-2#876-2#383-2#624-2#135-2#617.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job5_2#450-2#876-2#383-2#624-2#135-2#617.csv
+DEBUG:root:score3b_preagg3_job5_2#450-2#876-2#383-2#624-2#135-2#617
+DEBUG:root:2#450-2#876-2#383-2#624-2#135-2#617.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job6_2#1138-2#94-2#354-2#1267-2#838-2#231.csv.
+DEBUG:root:lccenc3_score3b_job6_2#1138-2#94-2#354-2#1267-2#838-2#231.csv
+DEBUG:root:lccenc3_score3b_job6_2#1138-2#94-2#354-2#1267-2#838-2#231
+DEBUG:root:2#1138-2#94-2#354-2#1267-2#838-2#231.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102514.158378
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#1138-2#94-2#354-2#1267-2#838-2#231.JPEG 1593102514.158378
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#1138-2#94-2#354-2#1267-2#838-2#231.JPEG 1593102514.5666163
+DEBUG:root:lccenc3_score3b_job6_2#1138-2#94-2#354-2#1267-2#838-2#231
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#1138-2#94-2#354-2#1267-2#838-2#231.JPEG 1593102514.9945066
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job6_2#1138-2#94-2#354-2#1267-2#838-2#231.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job6_2#1138-2#94-2#354-2#1267-2#838-2#231.csv
+DEBUG:root:score3b_preagg3_job6_2#1138-2#94-2#354-2#1267-2#838-2#231
+DEBUG:root:2#1138-2#94-2#354-2#1267-2#838-2#231.JPEG
+DEBUG:root:Received time 1593102515.879520
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#1138-2#94-2#354-2#1267-2#838-2#231.JPEG 1593102515.8795204
+DEBUG:root:score3b_preagg3_job6_2#1138-2#94-2#354-2#1267-2#838-2#231
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish_task lccenc3 2#1138-2#94-2#354-2#1267-2#838-2#231.JPEG 1593102515.8812788
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job6_2#1138-2#94-2#354-2#1267-2#838-2#231.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job6_2#1138-2#94-2#354-2#1267-2#838-2#231.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job6_2#1138-2#94-2#354-2#1267-2#838-2#231.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job6_2#1138-2#94-2#354-2#1267-2#838-2#231.csv
+DEBUG:root:score3b_preagg3_job6_2#1138-2#94-2#354-2#1267-2#838-2#231
+DEBUG:root:2#1138-2#94-2#354-2#1267-2#838-2#231.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job7_2#23-2#352-2#1000-2#219-2#1008-2#32.csv.
+DEBUG:root:lccenc3_score3b_job7_2#23-2#352-2#1000-2#219-2#1008-2#32.csv
+DEBUG:root:lccenc3_score3b_job7_2#23-2#352-2#1000-2#219-2#1008-2#32
+DEBUG:root:2#23-2#352-2#1000-2#219-2#1008-2#32.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102584.387621
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#23-2#352-2#1000-2#219-2#1008-2#32.JPEG 1593102584.3876207
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#23-2#352-2#1000-2#219-2#1008-2#32.JPEG 1593102584.8292065
+DEBUG:root:lccenc3_score3b_job7_2#23-2#352-2#1000-2#219-2#1008-2#32
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#23-2#352-2#1000-2#219-2#1008-2#32.JPEG 1593102585.265716
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:score3b_preagg3_job7_2#23-2#352-2#1000-2#219-2#1008-2#32
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job7_2#23-2#352-2#1000-2#219-2#1008-2#32.csv.
+DEBUG:root:rt_finish_task lccenc3 2#23-2#352-2#1000-2#219-2#1008-2#32.JPEG 1593102586.1475878
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job7_2#23-2#352-2#1000-2#219-2#1008-2#32.csv
+DEBUG:root:score3b_preagg3_job7_2#23-2#352-2#1000-2#219-2#1008-2#32
+DEBUG:root:2#23-2#352-2#1000-2#219-2#1008-2#32.JPEG
+DEBUG:root:Received time 1593102586.148251
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#23-2#352-2#1000-2#219-2#1008-2#32.JPEG 1593102586.1482506
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job7_2#23-2#352-2#1000-2#219-2#1008-2#32.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job7_2#23-2#352-2#1000-2#219-2#1008-2#32.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job7_2#23-2#352-2#1000-2#219-2#1008-2#32.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job7_2#23-2#352-2#1000-2#219-2#1008-2#32.csv
+DEBUG:root:score3b_preagg3_job7_2#23-2#352-2#1000-2#219-2#1008-2#32
+DEBUG:root:2#23-2#352-2#1000-2#219-2#1008-2#32.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job8_2#92-2#476-2#492-2#869-2#775-2#381.csv.
+DEBUG:root:lccenc3_score3b_job8_2#92-2#476-2#492-2#869-2#775-2#381.csv
+DEBUG:root:lccenc3_score3b_job8_2#92-2#476-2#492-2#869-2#775-2#381
+DEBUG:root:2#92-2#476-2#492-2#869-2#775-2#381.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102655.008676
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#92-2#476-2#492-2#869-2#775-2#381.JPEG 1593102655.0086756
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#92-2#476-2#492-2#869-2#775-2#381.JPEG 1593102655.4448252
+DEBUG:root:lccenc3_score3b_job8_2#92-2#476-2#492-2#869-2#775-2#381
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#92-2#476-2#492-2#869-2#775-2#381.JPEG 1593102655.8870935
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:score3b_preagg3_job8_2#92-2#476-2#492-2#869-2#775-2#381
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish_task lccenc3 2#92-2#476-2#492-2#869-2#775-2#381.JPEG 1593102656.7370985
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job8_2#92-2#476-2#492-2#869-2#775-2#381.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job8_2#92-2#476-2#492-2#869-2#775-2#381.csv
+DEBUG:root:score3b_preagg3_job8_2#92-2#476-2#492-2#869-2#775-2#381
+DEBUG:root:2#92-2#476-2#492-2#869-2#775-2#381.JPEG
+DEBUG:root:Received time 1593102656.738439
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#92-2#476-2#492-2#869-2#775-2#381.JPEG 1593102656.7384386
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job8_2#92-2#476-2#492-2#869-2#775-2#381.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job8_2#92-2#476-2#492-2#869-2#775-2#381.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job8_2#92-2#476-2#492-2#869-2#775-2#381.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job8_2#92-2#476-2#492-2#869-2#775-2#381.csv
+DEBUG:root:score3b_preagg3_job8_2#92-2#476-2#492-2#869-2#775-2#381
+DEBUG:root:2#92-2#476-2#492-2#869-2#775-2#381.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job9_2#71-2#697-2#347-4#179-2#1205-2#172.csv.
+DEBUG:root:lccenc3_score3b_job9_2#71-2#697-2#347-4#179-2#1205-2#172.csv
+DEBUG:root:lccenc3_score3b_job9_2#71-2#697-2#347-4#179-2#1205-2#172
+DEBUG:root:2#71-2#697-2#347-4#179-2#1205-2#172.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102718.808223
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#71-2#697-2#347-4#179-2#1205-2#172.JPEG 1593102718.8082232
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#71-2#697-2#347-4#179-2#1205-2#172.JPEG 1593102719.2417152
+DEBUG:root:lccenc3_score3b_job9_2#71-2#697-2#347-4#179-2#1205-2#172
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#71-2#697-2#347-4#179-2#1205-2#172.JPEG 1593102719.6649282
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:score3b_preagg3_job9_2#71-2#697-2#347-4#179-2#1205-2#172
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish_task lccenc3 2#71-2#697-2#347-4#179-2#1205-2#172.JPEG 1593102720.5519762
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job9_2#71-2#697-2#347-4#179-2#1205-2#172.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job9_2#71-2#697-2#347-4#179-2#1205-2#172.csv
+DEBUG:root:score3b_preagg3_job9_2#71-2#697-2#347-4#179-2#1205-2#172
+DEBUG:root:2#71-2#697-2#347-4#179-2#1205-2#172.JPEG
+DEBUG:root:Received time 1593102720.552810
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#71-2#697-2#347-4#179-2#1205-2#172.JPEG 1593102720.5528097
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job9_2#71-2#697-2#347-4#179-2#1205-2#172.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job9_2#71-2#697-2#347-4#179-2#1205-2#172.csv
+DEBUG:root:score3b_preagg3_job9_2#71-2#697-2#347-4#179-2#1205-2#172
+DEBUG:root:2#71-2#697-2#347-4#179-2#1205-2#172.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job9_2#71-2#697-2#347-4#179-2#1205-2#172.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job9_2#71-2#697-2#347-4#179-2#1205-2#172.csv
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job10_2#1224-2#416-2#491-2#318-2#433-2#889.csv.
+DEBUG:root:lccenc3_score3b_job10_2#1224-2#416-2#491-2#318-2#433-2#889.csv
+DEBUG:root:lccenc3_score3b_job10_2#1224-2#416-2#491-2#318-2#433-2#889
+DEBUG:root:2#1224-2#416-2#491-2#318-2#433-2#889.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102808.366110
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#1224-2#416-2#491-2#318-2#433-2#889.JPEG 1593102808.3661098
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#1224-2#416-2#491-2#318-2#433-2#889.JPEG 1593102808.7756248
+DEBUG:root:lccenc3_score3b_job10_2#1224-2#416-2#491-2#318-2#433-2#889
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#1224-2#416-2#491-2#318-2#433-2#889.JPEG 1593102809.198239
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:score3b_preagg3_job10_2#1224-2#416-2#491-2#318-2#433-2#889
+DEBUG:root:Sending runtime stats
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job10_2#1224-2#416-2#491-2#318-2#433-2#889.csv.
+DEBUG:root:rt_finish_task lccenc3 2#1224-2#416-2#491-2#318-2#433-2#889.JPEG 1593102810.0685604
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job10_2#1224-2#416-2#491-2#318-2#433-2#889.csv
+DEBUG:root:score3b_preagg3_job10_2#1224-2#416-2#491-2#318-2#433-2#889
+DEBUG:root:2#1224-2#416-2#491-2#318-2#433-2#889.JPEG
+DEBUG:root:Received time 1593102810.069477
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#1224-2#416-2#491-2#318-2#433-2#889.JPEG 1593102810.0694768
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job10_2#1224-2#416-2#491-2#318-2#433-2#889.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job10_2#1224-2#416-2#491-2#318-2#433-2#889.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job10_2#1224-2#416-2#491-2#318-2#433-2#889.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job10_2#1224-2#416-2#491-2#318-2#433-2#889.csv
+DEBUG:root:score3b_preagg3_job10_2#1224-2#416-2#491-2#318-2#433-2#889
+DEBUG:root:2#1224-2#416-2#491-2#318-2#433-2#889.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job11_2#1185-2#14-2#774-2#960-2#786-2#792.csv.
+DEBUG:root:lccenc3_score3b_job11_2#1185-2#14-2#774-2#960-2#786-2#792.csv
+DEBUG:root:lccenc3_score3b_job11_2#1185-2#14-2#774-2#960-2#786-2#792
+DEBUG:root:2#1185-2#14-2#774-2#960-2#786-2#792.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102874.455200
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#1185-2#14-2#774-2#960-2#786-2#792.JPEG 1593102874.4552
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#1185-2#14-2#774-2#960-2#786-2#792.JPEG 1593102874.877154
+DEBUG:root:lccenc3_score3b_job11_2#1185-2#14-2#774-2#960-2#786-2#792
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#1185-2#14-2#774-2#960-2#786-2#792.JPEG 1593102875.3085556
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:score3b_preagg3_job11_2#1185-2#14-2#774-2#960-2#786-2#792
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish_task lccenc3 2#1185-2#14-2#774-2#960-2#786-2#792.JPEG 1593102876.1996958
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job11_2#1185-2#14-2#774-2#960-2#786-2#792.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job11_2#1185-2#14-2#774-2#960-2#786-2#792.csv
+DEBUG:root:score3b_preagg3_job11_2#1185-2#14-2#774-2#960-2#786-2#792
+DEBUG:root:2#1185-2#14-2#774-2#960-2#786-2#792.JPEG
+DEBUG:root:Received time 1593102876.200861
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#1185-2#14-2#774-2#960-2#786-2#792.JPEG 1593102876.2008605
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job11_2#1185-2#14-2#774-2#960-2#786-2#792.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job11_2#1185-2#14-2#774-2#960-2#786-2#792.csv
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job11_2#1185-2#14-2#774-2#960-2#786-2#792.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job11_2#1185-2#14-2#774-2#960-2#786-2#792.csv
+DEBUG:root:score3b_preagg3_job11_2#1185-2#14-2#774-2#960-2#786-2#792
+DEBUG:root:2#1185-2#14-2#774-2#960-2#786-2#792.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job12_2#294-2#136-2#337-2#1108-2#83-2#372.csv.
+DEBUG:root:lccenc3_score3b_job12_2#294-2#136-2#337-2#1108-2#83-2#372.csv
+DEBUG:root:lccenc3_score3b_job12_2#294-2#136-2#337-2#1108-2#83-2#372
+DEBUG:root:2#294-2#136-2#337-2#1108-2#83-2#372.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593102981.779595
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#294-2#136-2#337-2#1108-2#83-2#372.JPEG 1593102981.7795947
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#294-2#136-2#337-2#1108-2#83-2#372.JPEG 1593102982.220727
+DEBUG:root:lccenc3_score3b_job12_2#294-2#136-2#337-2#1108-2#83-2#372
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#294-2#136-2#337-2#1108-2#83-2#372.JPEG 1593102982.6326282
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:score3b_preagg3_job12_2#294-2#136-2#337-2#1108-2#83-2#372
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish_task lccenc3 2#294-2#136-2#337-2#1108-2#83-2#372.JPEG 1593102983.4944916
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job12_2#294-2#136-2#337-2#1108-2#83-2#372.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job12_2#294-2#136-2#337-2#1108-2#83-2#372.csv
+DEBUG:root:score3b_preagg3_job12_2#294-2#136-2#337-2#1108-2#83-2#372
+DEBUG:root:2#294-2#136-2#337-2#1108-2#83-2#372.JPEG
+DEBUG:root:Received time 1593102983.495795
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#294-2#136-2#337-2#1108-2#83-2#372.JPEG 1593102983.4957948
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job12_2#294-2#136-2#337-2#1108-2#83-2#372.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job12_2#294-2#136-2#337-2#1108-2#83-2#372.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job12_2#294-2#136-2#337-2#1108-2#83-2#372.csv
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job12_2#294-2#136-2#337-2#1108-2#83-2#372.csv
+DEBUG:root:score3b_preagg3_job12_2#294-2#136-2#337-2#1108-2#83-2#372
+DEBUG:root:2#294-2#136-2#337-2#1108-2#83-2#372.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:data transfer complete
+
+DEBUG:root:Received file as input - /centralized_scheduler/input/lccenc3_score3b_job13_2#1009-2#1051-3#189-2#711-2#928-2#859.csv.
+DEBUG:root:lccenc3_score3b_job13_2#1009-2#1051-3#189-2#711-2#928-2#859.csv
+DEBUG:root:lccenc3_score3b_job13_2#1009-2#1051-3#189-2#711-2#928-2#859
+DEBUG:root:2#1009-2#1051-3#189-2#711-2#928-2#859.JPEG
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:lccenc3
+DEBUG:root:<multiprocessing.queues.Queue object at 0x7f1e579c4860>
+DEBUG:root:Received time 1593103054.381305
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter lccenc3 2#1009-2#1051-3#189-2#711-2#928-2#859.JPEG 1593103054.3813055
+DEBUG:root:1
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_exec lccenc3 2#1009-2#1051-3#189-2#711-2#928-2#859.JPEG 1593103054.8168826
+DEBUG:root:lccenc3_score3b_job13_2#1009-2#1051-3#189-2#711-2#928-2#859
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_enter_task lccenc3 2#1009-2#1051-3#189-2#711-2#928-2#859.JPEG 1593103055.315466
+/centralized_scheduler/reference/whitewolf/whitewolf21.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf22.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf23.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf24.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf25.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf26.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf27.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf28.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf29.JPEG
+/centralized_scheduler/reference/whitewolf/whitewolf30.JPEG
+DEBUG:root:score3b_preagg3_job13_2#1009-2#1051-3#189-2#711-2#928-2#859
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish_task lccenc3 2#1009-2#1051-3#189-2#711-2#928-2#859.JPEG 1593103056.1777298
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job13_2#1009-2#1051-3#189-2#711-2#928-2#859.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job13_2#1009-2#1051-3#189-2#711-2#928-2#859.csv
+DEBUG:root:score3b_preagg3_job13_2#1009-2#1051-3#189-2#711-2#928-2#859
+DEBUG:root:2#1009-2#1051-3#189-2#711-2#928-2#859.JPEG
+DEBUG:root:Received time 1593103056.179157
+DEBUG:root:Flag is true
+DEBUG:root:Sending runtime stats
+DEBUG:root:rt_finish lccenc3 2#1009-2#1051-3#189-2#711-2#928-2#859.JPEG 1593103056.1791575
+DEBUG:root:Using multicast instead
+DEBUG:root:Multicast all the files
+DEBUG:root:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no -r /centralized_scheduler/output/score3b_preagg3_job13_2#1009-2#1051-3#189-2#711-2#928-2#859.csv root@10.100.115.1:/centralized_scheduler/input/score3b_preagg3_job13_2#1009-2#1051-3#189-2#711-2#928-2#859.csv
+DEBUG:root:Received file as output - /centralized_scheduler/output/score3b_preagg3_job13_2#1009-2#1051-3#189-2#711-2#928-2#859.csv.
+DEBUG:root:{'collage': ['master'], 'resnet0': ['master'], 'resnet1': ['master'], 'resnet2': ['master'], 'resnet3': ['master'], 'resnet4': ['master'], 'resnet5': ['master'], 'resnet6': ['master'], 'resnet7': ['master'], 'resnet8': ['master'], 'storeclass1': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass2': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass3': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass4': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'storeclass5': ['resnet0', 'resnet1', 'resnet2', 'resnet3', 'resnet4', 'resnet5', 'resnet6', 'resnet7', 'resnet8'], 'lccenc1': ['storeclass1'], 'lccenc2': ['storeclass2'], 'lccenc3': ['storeclass3'], 'lccenc4': ['storeclass4'], 'lccenc5': ['storeclass5'], 'score1a': ['lccenc1'], 'score1b': ['lccenc1'], 'score1c': ['lccenc1'], 'score2a': ['lccenc2'], 'score2b': ['lccenc2'], 'score2c': ['lccenc2'], 'score3a': ['lccenc3'], 'score3b': ['lccenc3'], 'score3c': ['lccenc3'], 'score4a': ['lccenc4'], 'score4b': ['lccenc4'], 'score4c': ['lccenc4'], 'score5a': ['lccenc5'], 'score5b': ['lccenc5'], 'score5c': ['lccenc5'], 'preagg1': ['score1a', 'score1b', 'score1c'], 'preagg2': ['score2a', 'score2b', 'score2c'], 'preagg3': ['score3a', 'score3b', 'score3c'], 'preagg4': ['score4a', 'score4b', 'score4c'], 'preagg5': ['score5a', 'score5b', 'score5c'], 'lccdec1': ['preagg1'], 'lccdec2': ['preagg2'], 'lccdec3': ['preagg3'], 'lccdec4': ['preagg4'], 'lccdec5': ['preagg5'], 'home': ['lccdec1', 'lccdec2', 'lccdec3', 'lccdec4', 'lccdec5'], 'master': ['datasource']}
+DEBUG:root:lccenc3
+DEBUG:root:score3b_preagg3_job13_2#1009-2#1051-3#189-2#711-2#928-2#859.csv
+DEBUG:root:score3b_preagg3_job13_2#1009-2#1051-3#189-2#711-2#928-2#859
+DEBUG:root:2#1009-2#1051-3#189-2#711-2#928-2#859.JPEG
+DEBUG:root:Already received the file
+DEBUG:root:data transfer complete
+

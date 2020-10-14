@@ -11,7 +11,6 @@ import json
 from os import listdir
 import numpy as np
 import configparser
-import ccdag
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)

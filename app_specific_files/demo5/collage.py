@@ -9,17 +9,6 @@ import time
 import json
 
 
-#task library import
-import torch
-from torchvision import transforms
-import numpy as np
-import math
-from PIL import Image
-from darknet_models import Darknet
-from ccdag_utils import *
-import configparser
-global circe_home_ip, circe_home_ip_port
-
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -36,6 +25,16 @@ except ModuleNotFoundError:
     from jupiter_utils import app_config_parser
 
 import ccdag
+#task library import
+import torch
+from torchvision import transforms
+import numpy as np
+import math
+from PIL import Image
+from darknet_models import Darknet
+from ccdag_utils import *
+import configparser
+global circe_home_ip, circe_home_ip_port
 
 # Jupiter executes task scripts from many contexts. Instead of relative paths
 # in your code, reference your entire app directory using your base script's

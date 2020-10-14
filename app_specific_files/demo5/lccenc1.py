@@ -14,8 +14,7 @@ import configparser
 import cv2
 
 
-classids = np.arange(0,len(ccdag.classlist),1)
-classmap = dict(zip(ccdag.classlist, classids))
+
 
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
@@ -33,6 +32,9 @@ except ModuleNotFoundError:
     from jupiter_utils import app_config_parser
 
 import ccdag
+
+classids = np.arange(0,len(ccdag.classlist),1)
+classmap = dict(zip(ccdag.classlist, classids))
 
 # Jupiter executes task scripts from many contexts. Instead of relative paths
 # in your code, reference your entire app directory using your base script's

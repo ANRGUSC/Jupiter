@@ -31,7 +31,6 @@ import configparser
 import numpy as np
 from collections import defaultdict
 import paho.mqtt.client as mqtt
-import jupiter_config
 import logging
 import pyinotify
 
@@ -338,7 +337,7 @@ class Handler(pyinotify.ProcessEvent):
         # IP = os.environ['CHILD_NODES_IPS']
         ID = os.environ['CHILD_NODES']
         source = event.pathname
-        destination = os.path.join('/centralized_scheduler', 'input', new_file_name)
+        destination = os.path.join('/jupiter', 'input', new_file_name)
         transfer_data(ID,username, password,source, destination)
 
 def main():

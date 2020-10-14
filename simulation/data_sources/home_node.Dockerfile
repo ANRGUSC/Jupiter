@@ -22,7 +22,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 RUN mkdir generated_stream 
 # Add the task speficific configuration files
-ADD app_specific_files/dummy_app/configuration.txt /configuration.txt
+ADD app_specific_files/demo5/configuration.txt /configuration.txt
 ADD simulation/data_sources/ds_test.py /ds_test.py
 ADD simulation/data_sources/generate_random_files /generate_random_files
 RUN chmod +x /generate_random_files

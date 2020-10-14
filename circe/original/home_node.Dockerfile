@@ -46,7 +46,7 @@ ADD circe/original/runtime_profiler_mongodb /central_mongod
 
 ADD circe/original/readconfig.py /readconfig.py
 ADD circe/original/scheduler.py /scheduler.py
-ADD jupiter_config.py /jupiter_config.py
+#ADD jupiter_config.py /jupiter_config.py
 ADD circe/original/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files

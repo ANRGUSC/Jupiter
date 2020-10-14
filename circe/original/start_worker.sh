@@ -58,7 +58,7 @@ echo $INPUTNUM $FLAG $INPUT_ARGS
 
 # monitor.py input structure:
 #   child1_task_num child1_ip child1_user child1_pw child2_task_num child2_ip child2_user child2_pw my_task
-echo "python3 centralized_scheduler/monitor.py $INPUTNUM $FLAG $INPUT_ARGS $TASK"
+echo "python3 monitor.py $INPUTNUM $FLAG $INPUT_ARGS $TASK"
 
 #python3 -u centralized_scheduler/rt_profiler_data_update.py &
 

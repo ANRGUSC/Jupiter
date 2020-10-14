@@ -448,7 +448,7 @@ def main():
     logging.basicConfig(level = logging.DEBUG)
 
 
-    INI_PATH = '/jupiter/jupiter_config.ini'
+    INI_PATH = '/jupiter/build/jupiter_config.ini'
     config = configparser.ConfigParser()
     config.read(INI_PATH)
 
@@ -485,9 +485,10 @@ def main():
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
 
 
-    global taskmap, taskname, taskmodule, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
+    global taskmap, taskname, task_module, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
 
     configs = json.load(open('/jupiter/build/app_specific_files/scripts/config.json'))
+    print(configs)
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
     taskname = taskmap[0]
     if taskmap[1] == True:
@@ -521,12 +522,15 @@ def main():
         password = sys.argv[i+3]
         combined_ip_map[node] = IPaddr
 
+
+
     if taskmap[1] == True:
         #queue_mul=multiprocessing.Queue()
         queue_mul = queue.Queue()
         input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
         output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
-        t = threading.Thread(target=task, args=(q, input_folder, output_folder, task_name))
+        print(task_module)
+        t = threading.Thread(target=task_module.task, args=(queue_mul, input_folder, output_folder, taskname))
         t.start()
         wm = pyinotify.WatchManager()
         wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
