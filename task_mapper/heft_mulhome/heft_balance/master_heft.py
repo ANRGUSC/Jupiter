@@ -6,7 +6,7 @@
 __author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.0"
+__version__ = "2.1"
 
 import heft_dup
 import os
@@ -16,8 +16,8 @@ import json
 from random import randint
 import configparser
 from os import path
+import paho.mqtt.client as mqtt
 import logging
-
 
 
 app = Flask(__name__)
@@ -44,7 +44,6 @@ def read_file(file_name):
 
 assignments = {}
 
-#@app.route('/')
 def return_assignment():
     """Return the current assignments have been done until the request time
     
@@ -52,7 +51,6 @@ def return_assignment():
         json: assignments of tasks and corresponding nodes
     """
     logging.debug("Recieved request for current mapping. Current mappings done: %d", len(assignments))
-    logging.debug("Current mappings are:")
     logging.debug(assignments)
     if len(assignments) == MAX_TASK_NUMBER:
         return json.dumps(assignments)
@@ -127,13 +125,29 @@ def get_taskmap():
     logging.debug("non tasks %s", non_tasks)
     return tasks, task_order, super_tasks, non_tasks
 
+def old_demo_help(server,port,topic,msg):
+    client = mqtt.Client()
+    client.connect(server, port,60)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
+def demo_help(server,port,topic,msg):
+    logging.debug('Sending demo')
+    logging.debug(topic)
+    logging.debug(msg)
+    username = 'anrgusc'
+    password = 'anrgusc'
+    client = mqtt.Client()
+    client.username_pw_set(username,password)
+    client.connect(server, port,300)
+    client.publish(topic, msg,qos=1)
+    client.disconnect()
+
 def main():
     """
         - Load all the confuguration
         - Check whether the input TGFF file has been generated
         - Assign random master and slaves for now
     """
-
     global logging
     logging.basicConfig(level = logging.DEBUG)
 
@@ -166,27 +180,49 @@ def main():
     tasks, task_order, super_tasks, non_tasks = get_taskmap()
     configuration_path='/heft/dag.txt'
     profiler_ip,exec_home_ip,num_nodes,network_map,node_list = get_global_info()
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH, app_name,app_option
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
+    app_name = os.environ['APP_NAME']
+    app_option = os.environ['APP_OPTION']
+
     
     while True:
         if os.path.isfile(tgff_file):
+            logging.debug(' File TGFF was generated!!!')
             heft_scheduler = heft_dup.HEFT(tgff_file)
+            logging.debug('Start the HEFT scheduler')
             heft_scheduler.run()
+            logging.debug('Output of HEFT scheduler')
             heft_scheduler.output_file(output_file)
             assignments = heft_scheduler.output_assignments()
             logging.debug('Assign random master and slaves')
             for i in range(0,len(non_tasks)):
                 assignments[non_tasks[i]] = node_info[randint(1,num_nodes)] 
             heft_scheduler.display_result()
-            logging.debug(assignments)
+            t = time.time()
             if len(assignments) == MAX_TASK_NUMBER:
                 logging.debug('Successfully finish HEFT mapping ')
                 end_time = time.time()
                 deploy_time = end_time - starting_time
-                logging.debug('Time to finish HEFT modified mapping %s', str(deploy_time))
+                logging.debug('Time to finish HEFT mapping %s',str(deploy_time))
+
+            if BOKEH==3:
+                topic = 'mappinglatency_%s'%(app_option)
+                msg = 'mappinglatency originalheft %s %f \n' %(app_name,deploy_time)
+                demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
+        
+            if BOKEH == 1:
+                assgn = ' '.join('{}:{}:{}'.format(key, val,t) for key, val in assignments.items())
+                msg = "mappings "+ assgn
+                old_demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+
             break;
         else:
             logging.debug('No input TGFF file found!')
-            time.sleep(15)
+            time.sleep(5)
 
     app.run(host='0.0.0.0', port = int(FLASK_PORT)) # TODO?
 

@@ -19,7 +19,7 @@ INI_PATH   = HERE + 'jupiter_config.ini'
 
 # this should be the same name as the app folder
 # APP_NAME must only contain alphanumerics or hyphens! Prefer only alphanumerics.
-APP_NAME = "demo5"    
+APP_NAME = "demo2"    
 #APP_NAME = "example-incomplete"
 APP_DIR = path.join("app_specific_files", APP_NAME)
 
@@ -129,7 +129,7 @@ def set_globals():
     HEFT_PATH               = HERE + 'task_mapper/heft_mulhome/original/'
     WAVE_PATH               = HERE + 'task_mapper/wave_mulhome/random_wave/'
     SCRIPT_PATH             = HERE + 'scripts/'
-    STREAM_PATH             = HERE + 'simulation/data_sources/'
+    STREAM_PATH             = HERE + 'simulation/demo_multiple_sources/'
 
 
 
@@ -213,9 +213,9 @@ def set_globals():
     
 
     HOME_CHILD                = 'master'
-    APP_PATH                  = HERE  + 'app_specific_files/demo5/'
-    APP_NAME                  = 'app_specific_files/demo5'
-    APP_OPTION                = 'demo5'
+    APP_PATH                  = HERE  + 'app_specific_files/demo2/'
+    APP_NAME                  = 'app_specific_files/demo2'
+    APP_OPTION                = 'demo2'
 
 
     # Temporary for CCDAG, need refactoring

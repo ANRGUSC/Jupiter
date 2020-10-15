@@ -40,11 +40,16 @@ def add_ports(dep, app_specific_flag, *args):
 
 
 template_home = """
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {name}
+  labels:
+    app: {label}
 spec:
+  selector:
+    matchLabels:
+      app: {label}
   template:
     metadata:
       labels:

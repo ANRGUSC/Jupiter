@@ -57,6 +57,7 @@ class Processor:
     def __init__(self, num):
         self.number = num
         self.time_line = []
+        self.assigned_task = 0
 
  
 class HEFT:

@@ -38,7 +38,7 @@ RUN mkdir -p /output
 RUN apt-get install stress
 
 # Add input files
-COPY  app_specific_files/demo5/sample_inputs /sample_input
+COPY  app_specific_files/demo2/sample_inputs /sample_input
 
 # Add the mongodb scripts
 ADD circe/original/runtime_profiler_mongodb /central_mongod
@@ -50,13 +50,13 @@ ADD circe/original/scheduler.py /scheduler.py
 ADD circe/original/evaluate.py /evaluate.py
 
 # Add the task speficific configuration files
-ADD app_specific_files/demo5/configuration.txt /configuration.txt
+ADD app_specific_files/demo2/configuration.txt /configuration.txt
 
 ADD nodes.txt /nodes.txt
 ADD jupiter_config.ini /jupiter_config.ini
 
 RUN mkdir -p /jupiter
-COPY app_specific_files/demo5/ /jupiter/build/app_specific_files
+COPY app_specific_files/demo2/ /jupiter/build/app_specific_files
 
 ADD circe/original/start_home.sh /start.sh
 RUN chmod +x /start.sh

@@ -10,7 +10,7 @@ from dockerfile_parse import DockerfileParser
 
 template_heft ="""\
 # Instructions copied from - https://hub.docker.com/_/python/
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 # Install required libraries
 RUN apt-get update
@@ -19,14 +19,17 @@ RUN apt-get -yqq install python python-pip python-dev python3-pip python3-dev
 RUN pip3 install --upgrade pip
 RUN apt-get install -y openssh-server sshpass nano virtualenv supervisor
 RUN apt-get install -y vim
+RUN apt-get update
 RUN apt-get install -y mosquitto-clients
 
 # Install required python libraries
-ADD task_mapper/heft_mulhome/original/requirements.txt /requirements.txt
+ADD task_mapper/heft_mulhome/heft_balance/requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
 RUN pip2 install --upgrade pip
 RUN pip2 install -r requirements.txt
+
+
 
 
 # Authentication
@@ -50,6 +53,7 @@ ADD mulhome_scripts/keep_alive.py /heft/keep_alive.py
 
 RUN mkdir -p /heft/output
 RUN chmod +x /heft/start.sh
+RUN echo {app_file}
 ADD {app_file}/configuration.txt  /heft/dag.txt
 ADD {app_file}/scripts/config.json /heft/config.json
 

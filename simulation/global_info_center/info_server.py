@@ -4,6 +4,7 @@ from flask import request
 from datetime import datetime
 import json
 import configparser
+import ccdag
 
 import collections
 
@@ -206,7 +207,10 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read(INI_PATH)
     FLASK_DOCKER  = int(config['PORT']['FLASK_DOCKER'])
-    RESNETS_THRESHOLD = int(config['OTHER']['RESNETS_THRESHOLD'])
+    RESNETS_THRESHOLD = int(ccdag.RESNETS_THRESHOLD)
+
+    print(FLASK_DOCKER)
+    print(RESNETS_THRESHOLD)
 
     num_class = 5
     log = []

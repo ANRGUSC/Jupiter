@@ -27,6 +27,7 @@ import paho.mqtt.client as mqtt
 import logging
 
 
+
 app = Flask(__name__)
 
 '''
@@ -34,7 +35,6 @@ app = Flask(__name__)
 
 network_info = []
 execution_info = []
-
 
 def demo_help(server,port,topic,msg):
     username = 'anrgusc'
@@ -69,11 +69,6 @@ def get_global_info():
     home_profiler_ip = [x.split(':')[1] for x in home_profiler]
 
 
-    global BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH_SERVER = config['OTHER']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['OTHER']['BOKEH_PORT'])
-    BOKEH = int(config['OTHER']['BOKEH'])
-
 def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
     """Collect the execution profile from the home execution profiler's MongoDB
     
@@ -98,27 +93,29 @@ def get_exec_profile_data(exec_home_ip, MONGO_SVC_PORT, num_nodes):
         try:
             collection = db.collection_names(include_system_collections=False)
             num_profilers = len(collection)
+            logging.debug('Current number of updated execution profilers:')
+            logging.debug(num_profilers)
+            time.sleep(3)
         except Exception as e:
             logging.debug('--- Execution profiler info not yet loaded into MongoDB!')
             time.sleep(60)
 
+    c = 0
     for col in collection:
-        if col in home_profiler_nodes:
-            continue
+        logging.debug('--- Check execution profiler ID : '+ col)
         logdb =db[col].find()
         for record in logdb:
             # Node ID, Task, Execution Time, Output size
             info_to_csv=[col,record['Task'],record['Duration [sec]'],str(record['Output File [Kbit]'])]
             execution_info.append(info_to_csv)
-    logging.debug('--------------------------------------------')
+            c+=1
     logging.debug('Execution information has already been provided')
     with open('/heft/execution_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(execution_info)
 
     if BOKEH==3:
-        n = num_profilers*len(logging)
-        msg = 'msgoverhead balancehefthome resourcedata %d\n'%(n)
+        msg = 'msgoverhead originalhefthome executiondata %d\n'%(c)
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     return
 
@@ -154,6 +151,7 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
     """
     for ip in profiler_ip:
         logging.debug('Check Network Profiler IP: %s - %s',ip[0],ip[1])
+        
         client_mongo = MongoClient('mongodb://'+ip[1]+':'+MONGO_SVC_PORT+'/')
         db = client_mongo.droplet_network_profiler
         collection = db.collection_names(include_system_collections=False)
@@ -163,15 +161,14 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
             time.sleep(60)
             collection = db.collection_names(include_system_collections=False)
             num_nb = len(collection)-1
+        logging.debug('--- Number of neighbors: '+str(num_nb))
         num_rows = db[ip[1]].count()
-
         while num_rows < num_nb:
             logging.debug('--- Network profiler regression info not yet loaded into MongoDB!')
             time.sleep(60)
             num_rows = db[ip[1]].count()
 
         logdb = db[ip[1]].find().skip(db[ip[1]].count() - num_nb)
-    
         for record in logdb:
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
             if record['Destination[IP]'] in home_profiler_ip: 
@@ -179,14 +176,16 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
             info_to_csv=[network_map[record['Source[IP]']],record['Source[IP]'],network_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]
             network_info.append(info_to_csv)
     logging.debug('Network information has already been provided')
+    print(network_info)
     with open('/heft/network_log.txt','w') as f:
         writer = csv.writer(f, quoting=csv.QUOTE_ALL)
         writer.writerows(network_info)
 
     if BOKEH==3:
         n = len(profiler_ip)*num_nb
-        msg = 'msgoverhead balancehefthome networkdata %d\n'%(n)
+        msg = 'msgoverhead originalhefthome networkdata %d\n'%(n)
         demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
+
     return
 
 if __name__ == '__main__':
@@ -196,6 +195,7 @@ if __name__ == '__main__':
         - Read network profiler information
         - Read execution Profiler Information
     """
+
     global logging
     logging.basicConfig(level = logging.DEBUG)
 
@@ -214,6 +214,11 @@ if __name__ == '__main__':
 
     global PROFILER
     PROFILER = int(config['CONFIG']['PROFILER'])
+
+    global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
 
     logging.debug('---------------------------------------------')
     logging.debug('\n Step 1: Read task list from DAG file and global information \n')

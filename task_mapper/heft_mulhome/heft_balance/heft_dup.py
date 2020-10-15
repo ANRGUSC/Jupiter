@@ -8,7 +8,7 @@ This module is the HEFT algorithm modifed based on the `source`_ by Ouyang Liduo
 __author__ = "Ouyang Liduo, Quynh Nguyen, Aleksandra Knezevic, Pradipta Ghosh and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
-__version__ = "2.0"
+__version__ = "2.1"
 
 import create_input
 from create_input import init
@@ -19,7 +19,7 @@ import logging
 
 logging.basicConfig(level = logging.DEBUG)
 
-MAX_TASK_ALLOWED = 2
+MAX_TASK_ALLOWED = 5
 
 class Duration:
     """Time duration about a task
@@ -34,6 +34,7 @@ class Duration:
         self.task_num = task
         self.start = start
         self.end = end
+        
 
 
 class Task:
@@ -121,7 +122,9 @@ class HEFT:
             for j in range(self.num_processor):
                 if i==j: continue
                 res += self.cal_comm_quadratic(self.data[task1.number][task2.number],self.quaratic_profile[i][j])
-
+        # if(res <= 0):
+        #     print("Aquired negative communication cost, please redeploy DRUPE, HEFT will terminate !!!")
+        #     exit()
         return res / (self.num_processor ** 2 - self.num_processor)
 
     def cal_up_rank(self, task):
@@ -188,7 +191,7 @@ class HEFT:
                     self.critical_pre_task_num = pre.number
 
                 #est = max(est, pre.aft + c)
-        #prepare the timeline of the tasks on the name exec node
+
         time_slots = []
         if len(processor.time_line) == 0:
             time_slots.append([0, 9999])
@@ -203,7 +206,7 @@ class HEFT:
                     time_slots.append([processor.time_line[i - 1].end, processor.time_line[i].start])
             time_slots.append([processor.time_line[len(processor.time_line) - 1].end, 9999])
 
-        # Find the first free time slot that fulfills the requirements of the task. 
+
         for slot in time_slots:
             if est < slot[0] and slot[0] + task.comp_cost[processor.number] <= slot[1]:
                 return slot[0]
@@ -310,9 +313,11 @@ class HEFT:
                 self.processors[p].time_line.append(Duration(task.number, 0, w))
             else:
                 aft = 9999
-                # Find the task that gives you the earliest finish time
                 for processor in self.processors:
                     est = self.cal_est(task, processor)
+                    # logging.debug("est:", est)
+                    # logging.debug("task:",task.comp_cost[processor.number])
+                    logging.debug('Processor number and task number: %d - %d', processor.number, task.number)
                     if est + task.comp_cost[processor.number] < aft and processor.assigned_task < MAX_TASK_ALLOWED:
                         aft = est + task.comp_cost[processor.number]
                         p = processor.number

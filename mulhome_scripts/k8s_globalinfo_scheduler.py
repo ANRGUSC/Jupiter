@@ -19,6 +19,7 @@ import jupiter_config
 import utilities
 from kubernetes.client.rest import ApiException
 import logging
+from kubernetes.client.apis import core_v1_api
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -79,7 +80,7 @@ def k8s_globalinfo_scheduler(app_name):
         Get proper handles or pointers to the k8-python tool to call different functions.
     """
     api = client.CoreV1Api()
-    k8s_beta = client.ExtensionsV1beta1Api()
+    k8s_apps_v1 = client.AppsV1Api()
 
     path1 = jupiter_config.APP_PATH + 'configuration.txt'
     dag_info = utilities.k8s_read_dag(path1)
@@ -130,7 +131,14 @@ def k8s_globalinfo_scheduler(app_name):
     logging.debug(service_ips)
     home_name =app_name+"-globalinfohome"
 
-    home_dep = write_globalinfo_home_specs(name=home_name,image = jupiter_config.GLOBALINFO_IMAGE, host = jupiter_config.HOME_NODE, 
+    print(home_name)
+    print(jupiter_config.GLOBALINFO_IMAGE)
+    print(jupiter_config.HOME_NODE)
+    print(app_name)
+    print(jupiter_config.APP_OPTION)
+    print(service_ips['home'])
+
+    home_dep = write_globalinfo_home_specs(name=home_name,label=home_name,image = jupiter_config.GLOBALINFO_IMAGE, host = jupiter_config.HOME_NODE, 
                                 appname = app_name,
                                 appoption = jupiter_config.APP_OPTION,
                                 self_name='globalinfohome',
@@ -138,11 +146,12 @@ def k8s_globalinfo_scheduler(app_name):
     print(home_dep)
 
     try:
-        resp = k8s_beta.create_namespaced_deployment(body = home_dep, namespace = namespace)
+        resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
         logging.debug("Home deployment created")
         logging.debug("Home deployment created. status = '%s'" % str(resp.status))
     except ApiException as e:
         logging.debug(e)
+        print(e)
 
 
    

@@ -171,7 +171,6 @@ def get_network_data_drupe(profiler_ip, MONGO_SVC_PORT, network_map):
         logdb = db[ip[1]].find().skip(db[ip[1]].count() - num_nb)
         for record in logdb:
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
-            print(record)
             if record['Destination[IP]'] in home_profiler_ip: 
                 continue
             info_to_csv=[network_map[record['Source[IP]']],record['Source[IP]'],network_map[record['Destination[IP]']], record['Destination[IP]'],str(record['Parameters'])]

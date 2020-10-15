@@ -110,13 +110,13 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         path2 = jupiter_config.HERE + 'nodes.txt'
 
         # start the profilers
-        profiler_ips = get_all_profilers()
+        profiler_ips = get_all_profilers(app_id)
         #profiler_ips = k8s_profiler_scheduler()
         print(profiler_ips)
 
 
         # start the execution profilers
-        execution_ips = get_all_execs('demo5')
+        execution_ips = get_all_execs(app_id)
         print(execution_ips)
         #execution_ips = exec_profiler_function(app_id)
 
@@ -167,11 +167,13 @@ def k8s_jupiter_deploy(app_id,app_name,port):
             pprint(mapping)
             schedule = utilities.k8s_get_hosts(path1, path2, mapping)
             logging.debug("logging.debuging schedule")
+            print('logging.debuging schedule')
             pprint(schedule)
             logging.debug("End logging.debug")
             dag = utilities.k8s_read_dag(path1)
             dag.append(mapping)
             logging.debug("logging.debuging DAG:")
+            print('logging.debuging DAG')
             pprint(dag)
         else: #integrated_pricing 
             dag = utilities.k8s_read_dag(path1)
@@ -179,7 +181,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
             pprint(dag)
     
     else:
-        import static_assignment1 as st
+        import static_assignment as st
         dag = st.dag
         schedule = st.schedule
 

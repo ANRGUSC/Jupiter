@@ -292,14 +292,14 @@ class MyHandler(pyinotify.ProcessEvent):
         exec_times[outputfile] = end_times[outputfile] - start_times[outputfile]
         logging.debug("execution time is: %s", exec_times)
 
-        if BOKEH == 2: #used for combined_app with distribute script
-            app_name = outputfile.split('-')[0]
-            msg = 'makespan '+ app_name + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) 
-            demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
+        # if BOKEH == 2: #used for combined_app with distribute script
+        #     app_name = outputfile.split('-')[0]
+        #     msg = 'makespan '+ app_name + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) 
+        #     demo_help(BOKEH_SERVER,BOKEH_PORT,app_name,msg)
 
-        if BOKEH == 3:
-            msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
-            demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
+        # if BOKEH == 3:
+        #     msg = 'makespan '+ appoption + ' '+ appname + ' '+ outputfile+ ' '+ str(exec_times[outputfile]) + '\n'
+        #     demo_help(BOKEH_SERVER,BOKEH_PORT,appoption,msg)
 
 class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
@@ -358,7 +358,7 @@ def main():
     # Prepare transfer-runtime file:
     global runtime_sender_log, RUNTIME,TRANSFER, transfer_type, appname,appoption
 
-    RUNTIME = int(config['CONFIG']['RUNTIME'])
+    #RUNTIME = int(config['CONFIG']['RUNTIME'])
     TRANSFER = int(config['CONFIG']['TRANSFER'])
     appname = os.environ['APPNAME']
     appoption = os.environ['APPOPTION']
@@ -366,20 +366,20 @@ def main():
     if TRANSFER == 0:
         transfer_type = 'scp'
 
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
-    s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
-    runtime_sender_log.write(s)
-    runtime_sender_log.close()
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
+    # runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
+    # s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
+    # runtime_sender_log.write(s)
+    # runtime_sender_log.close()
+    # runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
     #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    if RUNTIME == 1:
-        global runtime_receiver_log
-        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
-        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
-        runtime_receiver_log.write(s)
-        runtime_receiver_log.close()
-        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
+    # if RUNTIME == 1:
+    #     global runtime_receiver_log
+    #     runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
+    #     s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
+    #     runtime_receiver_log.write(s)
+    #     runtime_receiver_log.close()
+    #     runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
 
     global FLASK_DOCKER, username, password, ssh_port, num_retries
@@ -428,10 +428,10 @@ def main():
             last_tasks.add(task)
 
 
-    global BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
-    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
+    # global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    # BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    # BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    # BOKEH = int(config['BOKEH_LIST']['BOKEH'])
 
     web_server = MonitorRecv()
     web_server.start()

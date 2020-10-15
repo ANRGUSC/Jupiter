@@ -39,6 +39,9 @@ import threading
 import logging
 import importlib
 import queue
+import _thread
+import multiprocessing
+from multiprocessing import Process, Manager
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -208,6 +211,7 @@ class Handler1(pyinotify.ProcessEvent):
 
     def process_IN_CLOSE_WRITE(self, event):
         logging.debug("Received file as output - %s." % event.pathname)
+        print(event.pathname)
         
         """
             Save the time when a output file is available. This is taken as the end time of the task.
@@ -230,9 +234,9 @@ class Handler1(pyinotify.ProcessEvent):
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
-            if BOKEH == 1:
-                runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+            # if BOKEH == 1:
+            #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+            #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
             appname = temp_name.split('-')[0]
             source = event.pathname
             next_node = appname+'-task0'
@@ -247,13 +251,13 @@ class Handler1(pyinotify.ProcessEvent):
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
-            if BOKEH == 1:
-                runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+            # if BOKEH == 1:
+            #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+            #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
 
-            if BOKEH == 0:
-                msg = taskname + " ends"
-                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+            # if BOKEH == 0:
+            #     msg = taskname + " ends"
+            #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
             
             user = sys.argv[5]
             password=sys.argv[6]
@@ -267,13 +271,13 @@ class Handler1(pyinotify.ProcessEvent):
             ts = time.time()
             runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
             send_runtime_profile(runtime_info)
-            if BOKEH == 1:
-                runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+            # if BOKEH == 1:
+            #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+            #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
 
-            if BOKEH == 0:
-                msg = taskname + " ends"
-                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+            # if BOKEH == 0:
+            #     msg = taskname + " ends"
+            #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
             
             # Using unicast 
             # for i in range(3, len(sys.argv)-1,4):
@@ -311,12 +315,12 @@ class Handler1(pyinotify.ProcessEvent):
                 ts = time.time()
                 runtime_info = 'rt_finish '+ temp_name+ ' '+str(ts)
                 send_runtime_profile(runtime_info)
-                if BOKEH == 1:
-                    runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-                if BOKEH == 0:
-                    msg = taskname + " ends"
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+                # if BOKEH == 1:
+                #     runtimebk = 'rt_finish '+ taskname+' '+temp_name+ ' '+str(ts)
+                #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+                # if BOKEH == 0:
+                #     msg = taskname + " ends"
+                #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
                     
                 # Using unicast
                 # for i in range(3, len(sys.argv)-1,4):
@@ -351,6 +355,7 @@ class Handler(pyinotify.ProcessEvent):
 
     def process_IN_CLOSE_WRITE(self, event):
         logging.debug("Received file as input - %s." % event.pathname)
+        print(event.pathname)
 
         new_file = os.path.split(event.pathname)[-1]
 
@@ -365,68 +370,70 @@ class Handler(pyinotify.ProcessEvent):
             temp_name = new_file.split('_')[0]
         else:
             temp_name = new_file.split('.')[0]
+        print(new_file)
+        print(temp_name)
 
-
+        global queue_mul
         queue_mul.put(new_file)
         
-        ts = time.time()
-        if RUNTIME == 1:
-            s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,event.pathname,ts)
-            runtime_receiver_log.write(s)
-            runtime_receiver_log.flush()
+        
+        # ts = time.time()
+        # # if RUNTIME == 1:
+        # #     s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,event.pathname,ts)
+        # #     runtime_receiver_log.write(s)
+        # #     runtime_receiver_log.flush()
 
-        """
-            Save the time the input file enters the queue
-        """
-        filename = new_file
-        global filenames
+        # """
+        #     Save the time the input file enters the queue
+        # """
+        # filename = new_file
+        # global filenames
 
-        if len(filenames) == 0:
-            runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
-            send_runtime_profile(runtime_info)
-            if BOKEH == 1:
-                runtimebk = 'rt_enter '+ taskname+' '+ temp_name+ ' '+str(ts)
-                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-        flag1 = sys.argv[1]
-        if flag1 == "1":
-            ts = time.time()
-            runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-            send_runtime_profile(runtime_info)  
-            if BOKEH == 1:
-                runtimebk = 'rt_exec '+ taskname + ' '+temp_name+ ' '+str(ts)
-                demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-            if BOKEH == 0:
-                msg = taskname + " starts"
-                demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)                
-            inputfile=queue_mul.get()
-            input_path = os.path.split(event.pathname)[0]
-            output_path = os.path.join(os.path.split(input_path)[0],'output')
-            #dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
+        # if len(filenames) == 0:
+        #     runtime_info = 'rt_enter '+ temp_name+ ' '+str(ts)
+        #     send_runtime_profile(runtime_info)
+        #     # if BOKEH == 1:
+        #     #     runtimebk = 'rt_enter '+ taskname+' '+ temp_name+ ' '+str(ts)
+        #     #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+        # flag1 = sys.argv[1]
+        # if flag1 == "1":
+        #     ts = time.time()
+        #     runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+        #     send_runtime_profile(runtime_info)  
+        #     # if BOKEH == 1:
+        #     #     runtimebk = 'rt_exec '+ taskname + ' '+temp_name+ ' '+str(ts)
+        #     #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+        #     # if BOKEH == 0:
+        #     #     msg = taskname + " starts"
+        #     #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)                
+        #     inputfile=queue_mul.get()
+        #     input_path = os.path.split(event.pathname)[0]
+        #     output_path = os.path.join(os.path.split(input_path)[0],'output')
+        #     #dag_task = multiprocessing.Process(target=taskmodule.task, args=(inputfile, input_path, output_path))
 
-            #dag_task.start()
-            #dag_task.join()
+        #     #dag_task.start()
+        #     #dag_task.join()
            
-        else:
-            filenames.append(queue_mul.get())
-            if (len(filenames) == int(flag1)):
-                ts = time.time()
-                runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
-                send_runtime_profile(runtime_info)           
-                if BOKEH == 1:
-                    runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
-                if BOKEH == 0:
-                    msg = taskname + " starts"
-                    demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
-                input_path = os.path.split(event.pathname)[0]
-                output_path = os.path.join(os.path.split(input_path)[0],'output')
-                # dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
-                # dag_task.start()
-                # dag_task.join()
-                filenames = []
+        # else:
+        #     filenames.append(queue_mul.get())
+        #     if (len(filenames) == int(flag1)):
+        #         ts = time.time()
+        #         runtime_info = 'rt_exec '+ temp_name+ ' '+str(ts)
+        #         send_runtime_profile(runtime_info)           
+        #         # if BOKEH == 1:
+        #         #     runtimebk = 'rt_exec '+ taskname+' '+temp_name+ ' '+str(ts)
+        #         #     demo_help(BOKEH_SERVER,BOKEH_PORT,taskname,runtimebk)
+        #         # if BOKEH == 0:
+        #         #     msg = taskname + " starts"
+        #         #     demo_help(BOKEH_SERVER,BOKEH_PORT,"JUPITER",msg)
+        #         input_path = os.path.split(event.pathname)[0]
+        #         output_path = os.path.join(os.path.split(input_path)[0],'output')
+        #         # dag_task = multiprocessing.Process(target=taskmodule.task, args=(filenames, input_path, output_path))
+        #         # dag_task.start()
+        #         # dag_task.join()
+        #         filenames = []
 
         queue_mul.join()
-
 
 
 def main():
@@ -476,7 +483,7 @@ def main():
     #     runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
     #     #Node_name, Transfer_Type, Source_path , Time_stamp
 
-    global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries, queue_mul
+    global FLASK_SVC, FLASK_DOCKER, MONGO_PORT, username,password,ssh_port, num_retries
 
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     MONGO_PORT  = int(config['PORT']['MONGO_DOCKER'])
@@ -484,8 +491,15 @@ def main():
     num_retries = int(config['OTHER']['SSH_RETRY_NUM'])
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
 
+    global manager, queue_mul, input_folder,output_folder,taskname
+    manager = Manager()
+    queue_mul = manager.Queue()
 
-    global taskmap, taskname, task_module, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips
+    input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
+    output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+
+
+    global taskmap, taskname, task_module, filenames,files_out, node_name, home_node_host_port, all_nodes, all_nodes_ips, task_process
 
     configs = json.load(open('/jupiter/build/app_specific_files/scripts/config.json'))
     print(configs)
@@ -508,10 +522,10 @@ def main():
     all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
 
     
-    global BOKEH_SERVER, BOKEH_PORT, BOKEH
-    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
-    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
+    # global BOKEH_SERVER, BOKEH_PORT, BOKEH
+    # BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
+    # BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
+    # BOKEH = int(config['BOKEH_LIST']['BOKEH'])
 
     global combined_ip_map 
     combined_ip_map = dict()
@@ -526,26 +540,47 @@ def main():
 
     if taskmap[1] == True:
         #queue_mul=multiprocessing.Queue()
-        queue_mul = queue.Queue()
-        input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
-        output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
+        #queue_mul = queue.Queue()
+        
+        #print(task_module)
+        # t = threading.Thread(target=task_module.task, args=(queue_mul, input_folder, output_folder, taskname))
+        # t.start()
+        
+
+        logging.debug("Queue monitoring started")
+        print('queue monitoring')
+        mpl = multiprocessing.log_to_stderr()
+        mpl.setLevel(logging.INFO)
+        # global queue_mul,input_folder,output_folder,taskname
         print(task_module)
-        t = threading.Thread(target=task_module.task, args=(queue_mul, input_folder, output_folder, taskname))
-        t.start()
+        print(task_module.task)
+        task_process = Process(target=task_module.task, args=(queue_mul, input_folder, output_folder, taskname))
+        task_process.daemon = True
+        task_process.start()  
+
+
         wm = pyinotify.WatchManager()
         wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
         logging.debug('starting the input monitoring process\n')
+        print('input mornitoring')
         eh = Handler()
         notifier = pyinotify.ThreadedNotifier(wm, eh)
         notifier.start()
+
+        task_process.join()
 
         
         wm1 = pyinotify.WatchManager()
         wm1.add_watch(output_folder, pyinotify.ALL_EVENTS, rec=True)
         logging.debug('starting the output monitoring process\n')
+        print('output monitoring')
         eh1 = Handler1()
         notifier1= pyinotify.Notifier(wm1, eh1)
         notifier1.loop()
+
+        
+
+
     else:
         logging.debug('Task Mapping information')
         path_src = "/jupiter/" + taskname

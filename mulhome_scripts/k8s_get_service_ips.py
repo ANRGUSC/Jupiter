@@ -16,7 +16,7 @@ import logging
 
 logging.basicConfig(level = logging.DEBUG)
 
-def get_all_profilers():
+def get_all_profilers(app_name):
     """
         This function loads all of the service ips of network profilers deployments.
     """
@@ -60,7 +60,7 @@ def get_all_profilers():
         # First check if there is a exisitng profiler deployment with
         # the name = key in the respective namespace
         # label = "app=" + key + "profiler"
-        name = 'demo5-'+key
+        name = app_name+'-'+key
         print(name)
         
         resp = None

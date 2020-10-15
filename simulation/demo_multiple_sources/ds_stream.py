@@ -141,7 +141,7 @@ class Handler(pyinotify.ProcessEvent):
 
         ID = os.environ['CHILD_NODES']
         source = event.pathname
-        destination = os.path.join('/centralized_scheduler/input', new_file_name)
+        destination = os.path.join('/jupiter/input', new_file_name)
 
         send_monitor_data(inputfile,'input',t)
 
@@ -173,6 +173,10 @@ def send_monitor_data(filename,filetype,ts):
         Exception: if sending message to flask server on home is failed
     """
     try:
+        print(filename)
+        print(filetype)
+        print(ts)
+        print(home_node_host_port)
         url = "http://" + home_node_host_port + "/recv_monitor_datasource"
         params = {'filename': filename, "filetype": filetype,"time":ts}
         params = urllib.parse.urlencode(params)
@@ -200,7 +204,7 @@ def main():
     ssh_port    = int(config['PORT']['SSH_SVC'])
     FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
     PRICING  = int(config['CONFIG']['PRICING'])
-    STREAM_INTERVAL = int(config['OTHER']['STREAM_INTERVAL'])
+    STREAM_INTERVAL = 60
 
 
     global current_idx

@@ -43,7 +43,7 @@ ADD jupiter_config.ini /jupiter_config.ini
 
 ADD simulation/global_info_center/start_home.sh /start.sh
 ADD simulation/global_info_center/info_server.py /info_server.py
-
+ADD simulation/global_info_center/ccdag.py /ccdag.py
 RUN chmod +x /start.sh
 
 WORKDIR /

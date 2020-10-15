@@ -155,10 +155,10 @@ def main():
         all_profiler_names.append(node)
         all_profiler_map[node] = resp.spec.cluster_ip
 
-    
+    datasources = app_config.get_sources()
 
-    for datasource in app_config.get_source_names():
-        pod_name = app_config.app_name + '-' + datasource
+    for idx, ds in enumerate(datasources):
+        pod_name = app_config.app_name + '-' + ds['name']
         spec = k8s_spec.service.generate(
             name=pod_name, 
             port_mappings=jupiter_config.k8s_service_port_mappings()
@@ -173,8 +173,8 @@ def main():
             sys.exit(1)
 
         all_profiler_ips.append(resp.spec.cluster_ip)
-        all_profiler_names.append(datasource)
-        all_profiler_map[datasource] = resp.spec.cluster_ip
+        all_profiler_names.append(ds['name'])
+        all_profiler_map[ds['name']] = resp.spec.cluster_ip
 
 
     all_profiler_ips = ':'.join(all_profiler_ips)
@@ -209,21 +209,22 @@ def main():
         resp = k8s_apps_v1.create_namespaced_deployment(body=spec, namespace=namespace)
         log.debug("Deployment created. status ='%s'" % str(resp.status))
 
-    for datasource in app_config.get_source_names():
-        pod_name = app_config.app_name + '-' + datasource
+    
+    for idx, ds in enumerate(datasources):
+        pod_name = app_config.app_name + '-' + ds['name']
         spec = k8s_spec.deployment.generate(
             name=pod_name, 
             label=pod_name,
             image=app_config.get_drupe_worker_tag(),
-            host=host,
+            host=ds['node_placement'],
             port_mappings=jupiter_config.k8s_deployment_port_mappings(),
             # inject any arbitrary environment variables here
             env_vars= {
-                "NODE_NAME": datasource,
+                "NODE_NAME": ds['name'],
                 "HOME_NODE_IP": home_node_ip,
                 "ALL_NODE_IPS": all_profiler_ips,
                 "ALL_NODE_NAMES": all_profiler_names,
-                "NODE_IP":all_profiler_map[datasource]
+                "NODE_IP":all_profiler_map[ds['name']]
             }
         )
         # # Call the Kubernetes API to create the deployment
