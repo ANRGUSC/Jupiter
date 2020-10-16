@@ -30,6 +30,7 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 # Parse app_config.yaml. Keep as a global to use in your app code.
 app_config = app_config_parser.AppConfig(APP_DIR, "example-incomplete")
 
+
 # Run by dispatcher (e.g. CIRCE). Use task_name to differentiate the tasks by
 # name to reuse one base task file.
 def task(q, pathin, pathout, task_name):
@@ -48,7 +49,7 @@ def task(q, pathin, pathout, task_name):
         src = os.path.join(pathin, input_file)
         dst_task = children[cnt % len(children)]  # round robin selection
         dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-        shutil.copyfile(src, dst)
+        shutil.move(src, dst)
         end = time.time()
 
         runtime_stat = {
@@ -57,7 +58,7 @@ def task(q, pathin, pathout, task_name):
             "end": end,
         }
 
-        log.info(json.dumps(runtime_stat, indent=4))
+        log.info(json.dumps(runtime_stat))
 
         # read the generate output
         # based on that determine sleep and number of bytes in output file
