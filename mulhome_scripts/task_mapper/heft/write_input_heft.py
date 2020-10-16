@@ -88,7 +88,7 @@ def create_input_heft(
     # OK
     target.write('\n@computation_cost 0 {\n')
 
-    line = '# type version %s\n' % (' '.join(worker_node_names[1:]))
+    line = '# type version %s\n' % (' '.join(worker_node_names[:]))
     target.write(line)
 
     for i in range(0, len(task_names)):
@@ -114,7 +114,7 @@ def create_input_heft(
 if __name__ == '__main__':
     app_config = app_config_parser.AppConfig(APP_DIR, "don't care")
     task_names = app_config.get_task_names()
-    num_tasks = len(task_names)
+    num_nodes = app_config.get_num_worker_nodes()
 
     # HEFT should only schedule tasks on worker nodes (not the home node)?
     worker_node_names = os.environ["WORKER_NODE_NAMES"].split(":")
@@ -146,7 +146,7 @@ if __name__ == '__main__':
 
             create_input_heft(
                 TGFF_FILE,
-                num_tasks,
+                num_nodes,
                 network_info,
                 new_execution,
                 task_names,

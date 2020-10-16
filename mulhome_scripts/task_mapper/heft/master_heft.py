@@ -71,7 +71,7 @@ if __name__ == '__main__':
         if os.path.isfile(TGFF_FILE):
             log.info('File TGFF was generated!!!')
             heft_scheduler = heft_dup.HEFT(TGFF_FILE, worker_names)
-            heft_scheduler.run()
+            heft_scheduler.run(task_mapper="heft")
             heft_scheduler.output_file(output)
             log.info(f'HEFT output file: {output}')
             task_mapping = heft_scheduler.output_assignments()

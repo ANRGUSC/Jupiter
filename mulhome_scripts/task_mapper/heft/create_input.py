@@ -50,9 +50,9 @@ def init(filename, worker_node_names):
         log.debug(myline)
         name = myline.strip().split()[1]
         task_names.append(name)
-        log.debug("task names: " + task_names)
+        log.debug(f"task names: {task_names}")
         myline = f.readline()
-    log.debug("task_names: %s", task_names)
+    log.debug(f"task_names: {task_names}")
     log.debug(f"Number of tasks = {num_of_tasks}")
 
     # Build a communication matrix
@@ -75,8 +75,10 @@ def init(filename, worker_node_names):
     comp_cost = []
     line = f.readline()
     while line.startswith('  '):
-        comp_cost.append(map(int, line.split()[-num_of_processors:]))
+        comp_cost.append([int(i) for i in line.split()[-num_of_processors:]])
         line = f.readline()
+        print("comp_cost:")
+        print(comp_cost)
 
     # Build a rate matrix
     rate = [[1 for i in range(num_of_processors)] for i in range(num_of_processors)]

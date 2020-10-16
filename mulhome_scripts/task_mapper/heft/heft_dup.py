@@ -10,6 +10,7 @@ __version__ = "2.1"
 import create_input
 import numpy as np
 import logging
+import functools
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -17,6 +18,14 @@ log.setLevel(logging.INFO)
 
 MAX_TASK_ALLOWED = 2
 
+# python3 port: redefine cmp()
+def cmp(x, y):
+    if x < y:
+        return -1
+    elif x > y:
+        return 1
+    else:
+        return 0
 
 class Duration:
     """Time duration about a task
@@ -84,7 +93,7 @@ class HEFT:
 
         self.cal_up_rank(self.tasks[self.start_task_num])
         self.cal_down_rank(self.tasks[self.end_task_num])
-        self.tasks.sort(cmp=lambda x, y: cmp(x.up_rank, y.up_rank),
+        self.tasks.sort(key=functools.cmp_to_key(lambda x, y: cmp(x.up_rank, y.up_rank)),
                         reverse=True)
 
     def cal_comm_quadratic(self, file_size, quaratic_profile):
@@ -279,7 +288,7 @@ class HEFT:
                 self.processors[dup_task.processor_num].time_line.append(
                     Duration(-1, dup_task.ast, dup_task.aft)
                 )
-                self.processors[processor_num].time_line.sort(cmp=lambda x, y: cmp(x.start, y.start))
+                self.processors[processor_num].time_line.sort(key=functools.cmp_to_key(lambda x, y: cmp(x.start, y.start)))
                 log.info('task %d dup on %s' % (pre_task.number, self.node_info[processor_num]))
 
     def reschedule(self):
@@ -288,7 +297,7 @@ class HEFT:
         """
         # clear the time line list
         for p in self.processors:
-            p.time_line = filter(lambda duration: duration.task_num == -1, p.time_line)
+            p.time_line = list(filter(lambda duration: duration.task_num == -1, p.time_line))
 
         for task in self.tasks:
             processor_num = task.processor_num
@@ -296,7 +305,7 @@ class HEFT:
             task.ast = est
             task.aft = est + task.comp_cost[processor_num]
             self.processors[task.processor_num].time_line.append(Duration(task.number, task.ast, task.aft))
-            self.processors[processor_num].time_line.sort(cmp=lambda x, y: cmp(x.start, y.start))
+            self.processors[processor_num].time_line.sort(key=functools.cmp_to_key(lambda x, y: cmp(x.start, y.start)))
 
     def run(self, task_mapper):
         for task in self.tasks:
@@ -334,7 +343,7 @@ class HEFT:
                 task.ast = aft - task.comp_cost[p]
                 task.aft = aft
                 self.processors[p].time_line.append(Duration(task.number, task.ast, task.aft))
-                self.processors[p].time_line.sort(cmp=lambda x, y: cmp(x.start, y.start))
+                self.processors[p].time_line.sort(key=functools.cmp_to_key(lambda x, y: cmp(x.start, y.start)))
 
         self.duplicate()
         self.reschedule()
@@ -350,7 +359,7 @@ class HEFT:
                 makespan = t.aft
 
         for p in self.processors:
-            log.info('%s:' % (self.node_info[p.number + 1]))
+            log.info(f'{self.node_info[p.number]}:')
             for duration in p.time_line:
                 if duration.task_num != -1:
                     log.info('task %d : ast = %d, aft = %d' % (duration.task_num + 1,
