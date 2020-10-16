@@ -20,11 +20,8 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 ADD requirements.txt /jupiter/requirements.txt
 RUN pip3 install -r /jupiter/requirements.txt
 
-# Add all files in the ./build/ folder. This folder is created by
-# build_push_exec.py and contains copies of all files from Jupiter and the
-# application. If you need to add more files, make the script copy files into
-# ./build/ instead of adding it manually in this Dockerfile.
-COPY build/ /jupiter/build/
+# install app specific requirements
+COPY build_requirements/requirements.txt /jupiter/build/app_specific_files/
 RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
 
 # Prepare MongoDB
@@ -45,6 +42,12 @@ ADD utils.py /jupiter/utils.py
 RUN chmod +x /jupiter/start_home.sh
 
 WORKDIR /jupiter/
+
+# Add all files in the ./build/ folder. This folder is created by
+# build_push_exec.py and contains copies of all files from Jupiter and the
+# application. If you need to add more files, make the script copy files into
+# ./build/ instead of adding it manually in this Dockerfile.
+COPY build/ /jupiter/build/
 
 # Kubernetes handles exposing ports for us
 # EXPOSE
