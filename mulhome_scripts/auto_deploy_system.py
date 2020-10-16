@@ -39,18 +39,14 @@ import cProfile
 import configparser
 import logging
 
-
-
-
-
 app = Flask(__name__)
 
 def task_mapping_decorator(f):
     """Mapping the chosen scheduling modules based on ``jupiter_config.SCHEDULER`` in ``jupiter_config.ini``
-    
+
     Args:
         f (function): either HEFT or WAVE scheduling modules specified from ``jupiter_config.ini``
-    
+
     Returns:
         function: chosen scheduling modules
     """
@@ -66,7 +62,7 @@ def task_mapping_decorator(f):
 
 def setup_port(port):
     """Automatically set up the proxy port
-    
+
     Args:
         port (int): port number
     """
@@ -82,7 +78,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
         Deploy all Jupiter components (WAVE, CIRCE, DRUPE) in the system.
     """
     jupiter_config.set_globals()
-    
+
     static_mapping = jupiter_config.STATIC_MAPPING
     pricing = jupiter_config.PRICING
 
@@ -92,7 +88,7 @@ def k8s_jupiter_deploy(app_id,app_name,port):
     else:# WAVE
         logging.debug('Deploy WAVE greedy mapper')
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
-        
+
 
     if jupiter_config.PRICING == 1 or jupiter_config.PRICING == 2:
         logging.debug('Deploy Execution Profiler')
@@ -170,11 +166,11 @@ def k8s_jupiter_deploy(app_id,app_name,port):
             dag.append(mapping)
             logging.debug("logging.debuging DAG:")
             pprint(dag)
-        else: #integrated_pricing 
+        else: #integrated_pricing
             dag = utilities.k8s_read_dag(path1)
             logging.debug("logging.debuging DAG:")
             pprint(dag)
-    
+
     else:
         import static_assignment1 as st
         dag = st.dag
@@ -204,10 +200,10 @@ def k8s_jupiter_deploy(app_id,app_name,port):
 
 def empty_function(app_id):
     """Empty function
-    
+
     Args:
         app_id (str): application id
-    
+
     """
     return []
 
@@ -218,10 +214,10 @@ def redeploy_system(app_id,app_name,port):
         Redeploy the whole system
     """
     jupiter_config.set_globals()
-    
+
     static_mapping = jupiter_config.STATIC_MAPPING
     pricing = jupiter_config.PRICING
-    
+
     """
         Tear down all current deployments
     """
@@ -238,7 +234,7 @@ def redeploy_system(app_id,app_name,port):
         logging.debug('Tear down all current WAVE deployments')
         delete_all_waves(app_name)
         task_mapping_function = task_mapping_decorator(k8s_wave_scheduler)
-        
+
 
     if jupiter_config.PRICING == 1 or jupiter_config.PRICING == 2:
         exec_profiler_function = k8s_exec_scheduler
@@ -246,8 +242,8 @@ def redeploy_system(app_id,app_name,port):
         exec_profiler_function = k8s_exec_scheduler
     else: # Nonpricing, WAVE
         exec_profiler_function = empty_function
-        
-        
+
+
     # This loads the task graph and node list
     if not static_mapping:
         path1 = jupiter_config.APP_PATH + 'configuration.txt'
@@ -322,7 +318,7 @@ def redeploy_system(app_id,app_name,port):
         pprint(schedule)
         logging.debug("End logging.debug")
 
-    
+
     else:
         import static_assignment
         # dag = static_assignment.dag
@@ -340,10 +336,10 @@ def redeploy_system(app_id,app_name,port):
 
 def check_finish_evaluation(app_name,port,num_samples):
     """Check if the evaluation script is finished
-    
+
     Args:
         app_name (str): application name
-        port (int): port number 
+        port (int): port number
         num_samples (int): number of sample files
     """
     jupiter_config.set_globals()
@@ -363,15 +359,15 @@ def check_finish_evaluation(app_name,port,num_samples):
                 logging.debug('Finish running all sample files!!!!!!!!')
                 break
             time.sleep(60)
-        except Exception as e: 
+        except Exception as e:
             logging.debug(e)
             logging.debug("Will check back later if finishing all the samples for app " + app_name)
             time.sleep(60)
 
-   
+
 def deploy_app_jupiter(app_id,app_name,port,num_runs,num_samples):
     """Deploy JUPITER given all the input parameters
-    
+
     Args:
         app_id (str): Application ID
         app_name (str): Application name
@@ -385,25 +381,25 @@ def deploy_app_jupiter(app_id,app_name,port,num_runs,num_samples):
         check_finish_evaluation(app_name,port,num_samples)
         logging.debug('Finish one run !!!!!!!!!!!!!!!!!!!!!!')
         t = str(datetime.datetime.now())
-        logging.debug(t)            
+        logging.debug(t)
         time.sleep(30)
         # redeploy_system(app_id,app_name,port)
     #teardown_system(app_name)
-    
-def main():
-    """ 
+
+if __name__ == '__main__':
+    """
         Deploy num_dags of the application specified by app_name
     """
 
     global logging
     logging.basicConfig(level = logging.DEBUG)
-    
+
     jupiter_config.set_globals()
     app_name = jupiter_config.APP_OPTION
     circe_port = int(jupiter_config.FLASK_CIRCE)
     flask_deploy = int(jupiter_config.FLASK_DEPLOY )
-    
-    
+
+
     num_samples_files = 2
     num_runs = 1
     num_dags_list = [5]
@@ -418,14 +414,12 @@ def main():
             port =  circe_port + num - 1
             cur_app = temp + str(num)
             port_list.append(port)
-            app_list.append(cur_app)     
+            app_list.append(cur_app)
         logging.debug(port_list)
         logging.debug(app_list)
-       
+
         for idx,appname in enumerate(app_list):
             logging.debug(appname)
             _thread.start_new_thread(deploy_app_jupiter, (app_name,appname,port_list[idx],num_runs,num_samples_files))
 
     app.run(host='0.0.0.0', port = flask_deploy)
-if __name__ == '__main__':
-    main()

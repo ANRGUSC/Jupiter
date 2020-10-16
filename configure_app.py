@@ -48,7 +48,7 @@ def load_yaml(filename):
     :rtype:     dict
     """
     with open(filename) as f:
-        app_config = yaml.load(f, Loader=yaml.FullLoader)
+        app_config = yaml.load(f)
         logging.debug(app_config)
     return app_config
 
@@ -110,8 +110,8 @@ def parse_node_list(app_config, app_path):
     :type       app_path:    string
     """
     with open('nodes.txt', "w") as f:
-        for node in app_config['node_list']:
-            f.write(node + ' ' + app_config['node_list'][node])
+        for node in app_config['node_mapping']:
+            f.write(node + ' ' + app_config['node_mapping'][node])
             f.write('\n')
 
     logging.info("created " + 'nodes.txt')

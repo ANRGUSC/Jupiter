@@ -5,20 +5,56 @@ __author__ = "Pradipta Ghosh, Quynh Nguyen, Pranav Sakulkar,  Jason A Tran, Bhas
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
-
-
 from os import path
 import os
 import configparser
+import logging
+from mulhome_scripts.jupiter_utils import app_config_parser
 
+logging.basicConfig(level=logging.INFO)
+
+# TODO: remove these globals
 HERE       = path.abspath(path.dirname(__file__)) + "/"
 INI_PATH   = HERE + 'jupiter_config.ini'
 
+# this should be the same name as the app folder
+# APP_NAME must only contain alphanumerics or hyphens! Prefer only alphanumerics.
+APP_NAME = "example"
+APP_DIR = path.join("app_specific_files", APP_NAME)
+
+# TODO: deprecated, use jupiter_utils.app_config_parser to grab the docker
+# registry. Remove this after set_globals() is removed.
+DOCKER_REGISTRY = "anrg"
+
+# TODO: quynh - should use a getter function instead of a
+BOKEH = -1
+
+def get_kubeconfig():
+    try:
+        kubeconfig_path = os.environ['KUBECONFIG']
+    except KeyError:
+        logging.info('$KUBECONFIG does not exist. Using default path ~/.kube/config.')
+        kubeconfig_path = "~/.kube/config"
+
+    return kubeconfig_path
+
+def parse_config_ini():
+    config = configparser.ConfigParser()
+
+    # jupiter_config.ini should always be in the same dir as this file
+    config.read(path.join(
+        path.abspath(path.dirname(__file__)),
+        "jupiter_config.ini")
+    )
+    return config
+
+# used for nodes.txt only
 def get_home_node(file_name):
     with open(file_name) as file:
         line = file.readline().split()
     return line[1]
 
+# used for nodes.txt only
 def get_datasources(file_name):
     datasources = {}
     node_file = open(file_name, "r")
@@ -29,6 +65,7 @@ def get_datasources(file_name):
           datasources[node_line[0]].append(node_line[i])
     return datasources
 
+# TODO: remove all usage of this function
 def set_globals():
     """Set global configuration information
     """
@@ -63,7 +100,7 @@ def set_globals():
 
     """Port and target port in containers for services to be used: Mongo, SSH and Flask"""
     global MONGO_SVC, MONGO_DOCKER, SSH_SVC, SSH_DOCKER, FLASK_SVC, FLASK_DOCKER, FLASK_CIRCE, FLASK_DEPLOY
-    
+
     MONGO_SVC               = config['PORT']['MONGO_SVC']
     MONGO_DOCKER            = config['PORT']['MONGO_DOCKER']
     SSH_SVC                 = config['PORT']['SSH_SVC']
@@ -78,7 +115,7 @@ def set_globals():
     BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
     BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
     BOKEH = int(config['BOKEH_LIST']['BOKEH'])
-    
+
 
     """Modules path of Jupiter"""
     global NETR_PROFILER_PATH, EXEC_PROFILER_PATH, CIRCE_PATH, HEFT_PATH, WAVE_PATH, SCRIPT_PATH, STREAM_PATH
@@ -94,8 +131,8 @@ def set_globals():
     STREAM_PATH             = HERE + 'simulation/data_sources/'
 
     global heft_option, wave_option
-    heft_option             = 'original'    
-    wave_option             = 'random' 
+    heft_option             = 'original'
+    wave_option             = 'random'
 
 
     if SCHEDULER == int(config['SCHEDULER_LIST']['WAVE_RANDOM']):
@@ -108,9 +145,9 @@ def set_globals():
         wave_option         = 'greedy'
     elif SCHEDULER == int(config['SCHEDULER_LIST']['HEFT_BALANCE']):
         print('Task mapper: Heft load balanced selected')
-        HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/heft_balance/'   
+        HEFT_PATH           = HERE + 'task_mapper/heft_mulhome/heft_balance/'
         heft_option         = 'heftbalance'
-    else: 
+    else:
         print('Task mapper: Heft original selected')
 
     global pricing_option, profiler_option
@@ -164,16 +201,16 @@ def set_globals():
 
     HOME_NODE               = get_home_node(HERE + 'nodes.txt')
     STREAM_NODE             = get_datasources(HERE + 'nodes.txt')
-    
+
 
     """Application Information"""
     global APP_PATH, APP_NAME, APP_OPTION
-    
+
 
     HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/apacdemo/'
-    APP_NAME                  = 'app_specific_files/apacdemo'
-    APP_OPTION                = 'demo'
+    APP_PATH                  = HERE  + 'app_specific_files/example/'
+    APP_NAME                  = 'app_specific_files/example'
+    APP_OPTION                = 'example'
 
 
     """pricing CIRCE home and worker images"""
@@ -191,7 +228,7 @@ def set_globals():
     global NONDAG_CONTROLLER_IMAGE,NONDAG_WORKER_IMAGE # only required for non-DAG tasks (teradetectors and dft)
     NONDAG_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_nondag:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
     NONDAG_WORKER_IMAGE     = 'docker.io/anrg/%s_circe_nondag_worker:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
-    
+
     """CIRCE home and worker images for execution profiler"""
     global HOME_IMAGE, WORKER_IMAGE, STREAM_IMAGE
 
@@ -201,9 +238,12 @@ def set_globals():
 
     """DRUPE home and worker images"""
     global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
-    
-    PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded_%s'%(profiler_option,cluster_option)
-    PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded_%s'%(profiler_option,cluster_option)
+
+    # PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded_%s'%(profiler_option,cluster_option)
+    # PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded_%s'%(profiler_option,cluster_option)
+
+    PROFILER_HOME_IMAGE         = '{}/drupe_profiler_home:{}'.format(DOCKER_REGISTRY, APP_OPTION)
+    PROFILER_WORKER_IMAGE       = '{}/drupe_profiler_worker:{}'.format(DOCKER_REGISTRY, APP_OPTION)
 
     """WAVE home and worker images"""
     global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
@@ -216,19 +256,56 @@ def set_globals():
     """Execution profiler home and worker images"""
     global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
-
-    EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s_%s'%(profiler_option,APP_OPTION,cluster_option)
-    EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s_%s'%(profiler_option,APP_OPTION,cluster_option)
+    EXEC_HOME_IMAGE         = '{}/exec_profiler_home:{}'.format(DOCKER_REGISTRY, APP_OPTION)
+    EXEC_WORKER_IMAGE       = '{}/exec_profiler_worker:{}'.format(DOCKER_REGISTRY, APP_OPTION)
 
     """HEFT docker image"""
     global HEFT_IMAGE
 
     HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s_%s'%(heft_option,APP_OPTION,cluster_option)
-       
+
 
     global NUM_STRESS, STRESS_IMAGE
     NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
     STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
 
-if __name__ == '__main__':
-    set_globals()
+def k8s_service_port_mappings():
+    config = parse_config_ini()
+    ports = []
+    for name, portmap in config.items("PORT_MAPPINGS"):
+        svc, docker = portmap.split(":")
+        ports.append({
+            "name": name,
+            "port": int(svc),
+            "targetPort": int(docker)
+        })
+    return ports
+
+def k8s_deployment_port_mappings():
+    config = parse_config_ini()
+    ports = []
+    for name, portmap in config.items("PORT_MAPPINGS"):
+        # k8s service port not needed here
+        svc, docker = portmap.split(":")
+        ports.append({
+            "name": name,
+            "containerPort": int(docker)
+        })
+    return ports
+
+def get_abs_app_dir():
+    abs_path = path.abspath(path.join(path.dirname(__file__), APP_DIR))
+    return abs_path
+
+def task_mapper():
+    config = parse_config_ini()
+    return config["CONFIG"]["TASK_MAPPER"]
+
+def flask_port_mapping():
+    config = parse_config_ini()
+    svc, docker = config["PORT_MAPPINGS"]["FLASK"].split(":")
+    return svc, docker
+
+def kubectl_proxy_heft():
+    config = parse_config_ini()
+    return config["CONFIG"]["KUBECTL_PROXY_HEFT"]

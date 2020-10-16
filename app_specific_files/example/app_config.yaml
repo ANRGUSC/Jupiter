@@ -1,0 +1,72 @@
+jupiter_config:
+  # Jupiter subsystems will be deployed in separate k8s namespaces. Using
+  # different prefixes allows multiple users to use the same k8s cluster.
+  # e.g. prefix "jason" results in namespaces:
+  # jason-exec
+  # jason-circe
+  # jason-profiler
+  # jason-mapper
+  namespace_prefix: jason
+  # Docker registry prefix for pulling and pushing images. Set to empty string for
+  # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
+  docker_registry: anrg
+  # Choose mapper: "heft", "heft_balance", or "wave" (not yet supported)
+  task_mapper: heft
+  # Choose CIRCE dispatcher type: "original" (currently the only supported)
+  circe: original
+node_map:
+  # Mapping of Jupiter node name to k8s host. Nodes named here will be
+  # specifically in the scheduling algorithm. "home" is required. All node names
+  # should be in format node* where * is an integer. Non-"home" nodes are called
+  # "worker" nodes. Worker nodes are where Jupiter can schedule tasks on.
+  home: k8sworkersb-ubuntu-s-4vcpu-8gb-0-blr1
+  node1: k8sworkersb-ubuntu-s-4vcpu-8gb-1-sgp1
+  node2: k8sworkersb-ubuntu-s-4vcpu-8gb-2-blr1
+  node3: k8sworkersb-ubuntu-s-4vcpu-8gb-3-lon1
+  node4: k8sworkersb-ubuntu-s-4vcpu-8gb-4-nyc3
+application:
+  # List of port mappings in format. Used for creating additional k8s services
+  # for your application. i.e., "9000:8000" will create a service with port 9000
+  # which targets port 8000 in all application containers.
+  # Note: [PORT_MAPPINGS] section in jupiter_config.ini cannot be used.
+  port_mappings:
+    - 9000:8000
+  tasks:
+    # Custom tasks not part of the DAG and are pinned to a specific node. These
+    # tasks are not actored into scheduling algorithms but have access to
+    # CIRCE output file functions to *ONLY* DAG tasks. They cannot receive
+    # files from other tasks through CIRCE.
+    nondag_tasks:
+      - name: custom
+        base_script: custom.py
+        # Can be hosts listed under node_map or not
+        k8s_host: k8sworkersb-ubuntu-s-4vcpu-8gb-4-nyc3
+    home:
+      base_script: home.py
+      children:
+        - task0
+    # Tasks that comprise the application DAG
+    dag_tasks:
+      - name: task0
+        # Base scripts will use the task's name to differentiate behaviors
+        base_script: task.py
+        # Your app code will look here to determine where to send outputs
+        children:
+          - task1
+          - task2
+      - name: task1
+        base_script: task.py
+        children:
+          - task3
+      - name: task2
+        base_script: task.py
+        children:
+          - task3
+      - name: task3
+        base_script: task.py
+        children:
+          - task4
+      - name: task4
+        base_script: task.py
+        children:
+          - home

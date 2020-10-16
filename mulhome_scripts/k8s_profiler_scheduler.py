@@ -2,102 +2,86 @@ __author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhas
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
-
+from kubernetes import client, config
+import os
+from pprint import *
+from kubernetes.client.rest import ApiException
+from kubernetes.client.apis import core_v1_api
 import sys
 sys.path.append("../")
-import time
-import os
-from os import path
-from multiprocessing import Process
-from write_profiler_service_specs import *
-from write_profiler_specs import *
-from kubernetes import client, config
-from pprint import *
-import os
 import jupiter_config
-from kubernetes.client.rest import ApiException
-import utilities 
+import k8s_spec.service
+import k8s_spec.deployment
+from jupiter_utils import app_config_parser
+import utilities
 import logging
-from pathlib import Path
 
-logging.basicConfig(level = logging.DEBUG)
+logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
 
 
-def check_status_profilers():
-    """Verify if all the network profilers have been deployed and UP in the system.
+def check_workers_running(app_config, namespace):
+    """Checks if all worker tasks are up and running.
+
+    Arguments:
+        app_config {app_config_parser.AppConfig} -- app config objectj
+        namespace {string} -- k8s namespace of execution profiler
+
+    Returns:
+        bool -- True if all workers are running, False if not.
     """
-    jupiter_config.set_globals()
-    
-    path1 = jupiter_config.HERE + 'nodes.txt'
-    nodes = utilities.k8s_get_nodes(path1)
-
-    """
-        This loads the kubernetes instance configuration.
-        In our case this is stored in admin.conf.
-        You should set the config file path in the jupiter_config.py file.
-    """
-    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
-    namespace = jupiter_config.PROFILER_NAMESPACE
-
-
-    # We have defined the namespace for deployments in jupiter_config
-
-    # Get proper handles or pointers to the k8-python tool to call different functions.
-    extensions_v1_beta1_api = client.ExtensionsV1beta1Api()
-    v1_delete_options = client.V1DeleteOptions()
+    # Load kube config before executing k8s client API calls.
+    config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
+    k8s_apps_v1 = client.AppsV1Api()
     core_v1_api = client.CoreV1Api()
 
     result = True
-    for key in nodes:
+    for node in app_config.node_map():
+        if node.startswith('home'):
+            # ignore checking on home status
+            continue
 
-        # First check if there is a deployment existing with
-        # the name = key in the respective namespac    # Check if there is a replicaset running by using the label app={key}
-        # The label of kubernets are used to identify replicaset associate to each task
-        label = "app=" + key + "profiler"
+        label = app_config.app_name + '-' + node + "drupe_profiler"
 
-        resp = None
-
-        resp = core_v1_api.list_namespaced_pod(namespace, label_selector = label)
+        resp = core_v1_api.list_namespaced_pod(namespace, label_selector=label)
         # if a pod is running just delete it
         if resp.items:
-            a=resp.items[0]
+            a = resp.items[0]
             if a.status.phase != "Running":
-                logging.debug("Pod Not Running %s", key)
+                log.debug("Execution Profiler pod not yet running on {}".format(node))
                 result = False
 
-    if result:
-        logging.debug("All systems GOOOOO!!")
-    else:
-        logging.debug("Wait before trying again!!!!")
+    if result is True:
+        log.info("All drupe profiler workers successfully running.")
 
     return result
 
 def write_file(filename,message,mode):
     with open(filename,mode) as f:
         f.write(message)
-def k8s_profiler_scheduler(): 
+
+def main():
     """
-        Deploy DRUPE in the system. 
+        Deploy DRUPE in the system.
     """
-    
 
 
-    jupiter_config.set_globals()
+
+    # Parse app's app_config.yaml
+    app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
+    namespace = app_config.namespace_prefix() + "-profiler"
+    os.system(f"kubectl create namespace {namespace}")
+
+    # Load kube config before executing k8s client API calls.
+    config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
+    api = client.CoreV1Api()
+    k8s_apps_v1 = client.AppsV1Api()
 
 
     """
         This loads the task graph and node list
     """
-    home_ips = ''
-    home_ids = ''
-    nexthost_ips = ''
-    nexthost_names = ''
-    path1 = jupiter_config.APP_PATH + 'configuration.txt'
-    path2 = jupiter_config.HERE + 'nodes.txt'
-    dag_info = utilities.k8s_read_dag(path1)
-    node_list, homes = utilities.k8s_get_nodes_worker(path2)
-    
-    dag = dag_info[1]
 
     logging.debug('Starting to deploy DRUPE')
     if jupiter_config.BOKEH == 3:
@@ -107,125 +91,117 @@ def k8s_profiler_scheduler():
         write_file(latency_file,msg,'w')
 
 
-    """
-        This loads the kubernetes instance configuration.
-        In our case this is stored in admin.conf.
-        You should set the config file path in the jupiter_config.py file.
-    """    
-    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
-    
-    """
-        We have defined the namespace for deployments in jupiter_config
-    """
-    namespace = jupiter_config.PROFILER_NAMESPACE
-    
-    """
-        Get proper handles or pointers to the k8-python tool to call different functions.
-    """
-    api = client.CoreV1Api()
-    k8s_apps_v1 = client.AppsV1Api()
-    nodes = utilities.k8s_get_nodes(path2)
-    service_ips = {}; 
+    all_profiler_map = dict()
 
-    """
-        Loop through the list of nodes and run all profiler related k8 deployment, replicaset, pods, and service.
-        You can always check if a service/pod/deployment is running after running this script via kubectl command.
-        E.g., 
-            kubectl get svc -n "namespace name"
-            kubectl get deployement -n "namespace name"
-            kubectl get replicaset -n "namespace name"
-            kubectl get pod -n "namespace name"
-    """   
-    for i in nodes:
-        if i.startswith('home'):
-            home_body = write_profiler_service_specs(name = i, label = i + "profiler")
-            ser_resp = api.create_namespaced_service(namespace, home_body)
-            logging.debug("Home service created. status = '%s'" % str(ser_resp.status))
-            try:
-                resp = api.read_namespaced_service(i, namespace)
-                service_ips[i] = resp.spec.cluster_ip
-                home_ids = home_ids + ':' + i
-                home_ips = home_ips + ':' + service_ips[i]
-            except ApiException as e:
-                logging.debug(e)
-                logging.debug("Exception Occurred")
-    
-        
+    home_svc_name = app_config.app_name + "-home"
+    home_svc_spec = k8s_spec.service.generate(
+        name=home_svc_name,
+        port_mappings=jupiter_config.k8s_service_port_mappings()
+    )
+    resp = api.create_namespaced_service(namespace, home_svc_spec)
+    log.debug("Home service created. status = '%s'" % str(resp.status))
+
+
+    try:
+        resp = api.read_namespaced_service(home_svc_name, namespace)
+    except ApiException as e:
+        log.error("Unable to read namespaced service")
+        sys.exit(1)
+
+    home_node_ip = resp.spec.cluster_ip
+    all_profiler_map['home'] = resp.spec.cluster_ip
+
     logging.debug('Home Profilers were created successfully!')
 
-    for i in nodes:
+    all_profiler_ips = []
+    all_profiler_names = []
 
+    for node in app_config.node_map():
         """
             Generate the yaml description of the required service for each task
         """
-        if i.startswith('home'):
+        if node.startswith('home'):
             continue
-        body = write_profiler_service_specs(name = i, label = i + "profiler")
 
-        # Call the Kubernetes API to create the service
+        pod_name = app_config.app_name + '-' + node
+        spec = k8s_spec.service.generate(
+            name=pod_name,
+            port_mappings=jupiter_config.k8s_service_port_mappings()
+        )
 
         try:
-            ser_resp = api.create_namespaced_service(namespace, body)
-            logging.debug("Service created. status = '%s'" % str(ser_resp.status))
-            logging.debug(i)
-            resp = api.read_namespaced_service(i, namespace)
+            resp = api.create_namespaced_service(namespace, spec)
+            log.debug("Service created. status = '%s'" % str(resp.status))
+            resp = api.read_namespaced_service(pod_name, namespace)
         except ApiException as e:
-            logging.debug(e)
-            logging.debug("Exception Occurred")
+            log.error("Unable to create service for {}".format(pod_name))
+            sys.exit(1)
 
-        service_ips[i] = resp.spec.cluster_ip
-        nexthost_ips = nexthost_ips + ':' + service_ips[i]
-        nexthost_names = nexthost_names + ':' + i
+        all_profiler_ips.append(resp.spec.cluster_ip)
+        all_profiler_names.append(node)
+        all_profiler_map[node] = resp.spec.cluster_ip
+
+    all_profiler_ips = ':'.join(all_profiler_ips)
+    all_profiler_names = ':'.join(all_profiler_names)
 
     logging.debug('Worker Profilers were created successfully!')
-    logging.debug(service_ips)
-    logging.debug(nexthost_ips)
-    logging.debug(nexthost_names)
 
-    for i in nodes:
-        
-        """
-            We check whether the node is a scheduler.
-            Since we do not run any task on the scheduler, we donot run any profiler on it as well.
-        """
-        if i.startswith('home'):
+
+    for node, host in app_config.node_map().items():
+        if node.startswith('home'):
+            # do not deploy pods on home yet. will be done afterwards.
             continue
-        """
-            Generate the yaml description of the required deployment for the profiles
-        """
-        dep = write_profiler_specs(name = i, label = i + "profiler", image = jupiter_config.PROFILER_WORKER_IMAGE,
-                                         host = nodes[i][0], dir = '{}', all_node = nexthost_names,
-                                         all_node_ips = nexthost_ips,
-                                         serv_ip = service_ips[i],
-                                         home_ips = home_ips,
-                                         home_ids = home_ids)
+
+        pod_name = app_config.app_name + '-' + node
+        spec = k8s_spec.deployment.generate(
+            name=pod_name,
+            label=pod_name,
+            image=app_config.get_drupe_worker_tag(),
+            host=host,
+            port_mappings=jupiter_config.k8s_deployment_port_mappings(),
+            # inject any arbitrary environment variables here
+            env_vars= {
+                "NODE_NAME": node,
+                "HOME_NODE_IP": home_node_ip,
+                "ALL_NODE_IPS": all_profiler_ips,
+                "ALL_NODE_NAMES": all_profiler_names,
+                "NODE_IP":all_profiler_map[node]
+            }
+        )
         # # Call the Kubernetes API to create the deployment
-        resp = k8s_apps_v1.create_namespaced_deployment(body = dep, namespace = namespace)
-        logging.debug("Deployment created. status ='%s'" % str(resp.status))
-            
-    while 1:
-        if check_status_profilers():
-            break
+        resp = k8s_apps_v1.create_namespaced_deployment(body=spec, namespace=namespace)
+        log.debug("Deployment created. status ='%s'" % str(resp.status))
+
+
+    # check if worker deployment pods are running
+    while check_workers_running(app_config, namespace) is False:
+        log.debug("DRUPE profiler worker pods still deploying, waiting...")
         time.sleep(30)
 
-    for i in nodes:
-        if i.startswith('home'):
-            home_dep = write_profiler_specs(name = i, label = i+"profiler",
-                                        image = jupiter_config.PROFILER_HOME_IMAGE, 
-                                        host = jupiter_config.HOME_NODE, 
-                                        dir = '{}', all_node = nexthost_names,
-                                                     all_node_ips = nexthost_ips,
-                                                     serv_ip = service_ips[i],
-                                                     home_ips = home_ips,
-                                                     home_ids = home_ids)
-            resp = k8s_apps_v1.create_namespaced_deployment(body = home_dep, namespace = namespace)
-            logging.debug("Home deployment created. status = '%s'" % str(resp.status))
+    """
+    Create k8s deployment for home task and deploy it.
+    """
+    home_depl_spec = k8s_spec.deployment.generate(
+        name=app_config.app_name + "-home",
+        label=app_config.app_name + "-home",
+        image=app_config.get_drupe_home_tag(),
+        host=app_config.home_host(),
+        port_mappings=jupiter_config.k8s_deployment_port_mappings(),
+        env_vars={
+            "NODE_NAME": "home",
+            "HOME_NODE_IP": home_node_ip,
+            "ALL_NODE_IPS": all_profiler_ips,
+            "ALL_NODE_NAMES": all_profiler_names,
+            "NODE_IP":all_profiler_map["home"]
+        }
+    )
 
-            pprint(service_ips)
-    
-    
+    resp = k8s_apps_v1.create_namespaced_deployment(body=home_depl_spec, namespace=namespace)
+    log.debug("Home deployment created. status = '%s'" % str(resp.status))
 
-    pprint(service_ips)
+
+
+    pprint(all_profiler_map)
     logging.debug('Successfully deploy DRUPE ')
     if jupiter_config.BOKEH == 3:
         end_time = time.time()
@@ -233,7 +209,7 @@ def k8s_profiler_scheduler():
         write_file(latency_file,msg,'a')
         deploy_time = end_time - start_time
         logging.debug('Time to deploy DRUPE '+ str(deploy_time))
-    return(service_ips)
+    return(all_profiler_map)
 
 if __name__ == '__main__':
-    k8s_profiler_scheduler()
+    main()

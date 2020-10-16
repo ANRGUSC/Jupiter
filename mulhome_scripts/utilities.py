@@ -5,7 +5,6 @@ __author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhas
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
-
 import sys
 import time
 import os
@@ -13,17 +12,20 @@ from os import path
 from pprint import *
 import logging
 from pathlib import Path
+import json
 
-logging.basicConfig(level = logging.DEBUG)
+logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
 
 def k8s_read_config(configuration_file):
     """read the configuration  from ``configuration.txt`` file
-    
+
     Args:
         configuration_file (str): path of ``configuration.txt``
-    
+
     Returns:
-        dict: DAG information 
+        dict: DAG information
     """
     dag_info=[]
     config_file = open(configuration_file,'r')
@@ -59,12 +61,12 @@ def k8s_read_config(configuration_file):
 # Old k8s_read_dag - No home and datasources support
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
-  
+
   Args:
       dag_info_file (str): path of DAG file
-  
+
   Returns:
-      dict: DAG information 
+      dict: DAG information
   """
   dag_info=[]
   config_file = open(dag_info_file,'r')
@@ -87,12 +89,12 @@ def k8s_read_dag(dag_info_file):
 
 def k8s_get_nodes(node_info_file):
   """read the node info from the file input
-  
+
   Args:
       node_info_file (str): path of ``node.txt``
-  
+
   Returns:
-      dict: node information 
+      dict: node information
   """
   nodes = {}
   node_file = open(node_info_file, "r")
@@ -105,19 +107,19 @@ def k8s_get_nodes(node_info_file):
 
 def k8s_get_nodes_worker(node_info_file):
   """read the node info (only workers) and home workers from the file input
-  
+
   Args:
       node_info_file (str): path of ``node.txt``
-  
+
   Returns:
-      dict: node information 
+      dict: node information
   """
   nodes = {}
   homes = {}
   node_file = open(node_info_file, "r")
   for line in node_file:
       node_line = line.strip().split(" ")
-      if node_line[0].startswith('home'): 
+      if node_line[0].startswith('home'):
         homes.setdefault(node_line[0], [])
         for i in range(1, len(node_line)):
           homes[node_line[0]].append(node_line[i])
@@ -125,17 +127,17 @@ def k8s_get_nodes_worker(node_info_file):
       nodes.setdefault(node_line[0], [])
       for i in range(1, len(node_line)):
           nodes[node_line[0]].append(node_line[i])
-  #logging.debug(nodes)
+  #log.debug(nodes)
   return nodes, homes
 
 def k8s_get_all_elements(node_info_file):
   """read the node info from the file input
-  
+
   Args:
       node_info_file (str): path of ``node.txt``
-  
+
   Returns:
-      dict: node information 
+      dict: node information
   """
   nodes = {}
   homes = {}
@@ -143,7 +145,7 @@ def k8s_get_all_elements(node_info_file):
   node_file = open(node_info_file, "r")
   for line in node_file:
       node_line = line.strip().split(" ")
-      if node_line[0].startswith('home'): 
+      if node_line[0].startswith('home'):
         homes.setdefault(node_line[0], [])
         for i in range(1, len(node_line)):
           homes[node_line[0]].append(node_line[i])
@@ -157,35 +159,32 @@ def k8s_get_all_elements(node_info_file):
             nodes[node_line[0]].append(node_line[i])
   return nodes, homes,datasources
 
-    
-  
-
 def k8s_get_hosts(dag_info_file, node_info_file, mapping):
   """read the hosts info from the input files
-  
+
   Args:
       - dag_info_file (str): path of ``configuration.txt``
-      - node_info_file (str): path of ``node.txt``  
-      - mapping (dict): mapping between task and assigned node 
-  
+      - node_info_file (str): path of ``node.txt``
+      - mapping (dict): mapping between task and assigned node
+
   Returns:
       dict: DAG information and its corresponding mapping
   """
 
   dag_info = k8s_read_dag(dag_info_file)
   nodes = k8s_get_nodes(node_info_file)
-  logging.debug(nodes)
+  log.debug(nodes)
   hosts={}
 
-  logging.debug('Receive mapping')
-  logging.debug(mapping)
-  
+  log.debug('Receive mapping')
+  log.debug(mapping)
+
   for i in mapping:
       #get task, node IP, username and password
       hosts.setdefault(i,[])
       hosts[i].append(i)                          # task
       hosts[i].extend(nodes[mapping[i]])      # assigned node id
-      
+
   hosts.setdefault('home',[])
   hosts['home'].append('home')
   hosts['home'].extend(nodes.get('home'))
@@ -195,10 +194,10 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
 
 def k8s_get_nodes_string(node_info_file):
   """read the node info from the file input
-  
+
   Args:
       node_info_file (str): path of ``node.txt``
-  
+
   Returns:
       str: node information in string format
   """
@@ -213,10 +212,10 @@ def k8s_get_nodes_string(node_info_file):
 
 def k8s_get_nodes_homes_string(node_info_file):
   """read the node info and the home info from the file input
-  
+
   Args:
       node_info_file (str): path of ``node.txt``
-  
+
   Returns:
       str: node information/ home information in string format
   """
@@ -238,7 +237,8 @@ def prepare_stat_path(node_list,homes,dag):
     latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(node_list)+len(homes),len(dag))
     return latency_file
 
+# For testing only
 if __name__ == '__main__':
-  dag_info_file = '../app_specific_files/dummy_datasources/configuration.txt'
+  dag_info_file = '../app_specific_files/example_incomplete/configuration.txt'
   dag_info = k8s_read_dag(dag_info_file)
-  
+  print(json.dumps(dag_info[1], indent=4))
