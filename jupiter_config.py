@@ -19,7 +19,7 @@ INI_PATH   = HERE + 'jupiter_config.ini'
 
 # this should be the same name as the app folder
 # APP_NAME must only contain alphanumerics or hyphens! Prefer only alphanumerics.
-APP_NAME = "example-incomplete"
+APP_NAME = "example"
 APP_DIR = path.join("app_specific_files", APP_NAME)
 
 # TODO: deprecated, use jupiter_utils.app_config_parser to grab the docker

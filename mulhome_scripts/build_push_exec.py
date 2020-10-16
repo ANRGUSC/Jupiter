@@ -6,6 +6,7 @@ import os
 import logging
 import shutil
 import threading
+import signal
 
 import sys
 sys.path.append("../")
@@ -42,7 +43,7 @@ def build_push_worker(tag):
         .format(tag) + "./execution_profiler"
     )
     if err != 0:
-        log.fatal("home container build failed!")
+        log.fatal("worker container build failed!")
         os.kill(os.getpid(), signal.SIGKILL)
     os.system("docker push {}".format(tag))
 

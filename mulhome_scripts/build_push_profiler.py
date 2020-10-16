@@ -7,6 +7,7 @@ import os
 import logging
 import shutil
 import threading
+import signal
 
 import sys
 sys.path.append("../")
@@ -22,10 +23,13 @@ def build_push_home(tag):
     os.system("docker pull {}".format(tag))
 
     # build and push in execution_profiler/ directory
-    os.system(
+    err = os.system(
         "docker build -t {} -f network_resource_profiler_mulhome/profiler_home.Dockerfile "
         .format(tag) + "./network_resource_profiler_mulhome"
     )
+    if err != 0:
+        log.fatal("home container build failed!")
+        os.kill(os.getpid(), signal.SIGKILL)
     os.system("docker push {}".format(tag))
 
 
@@ -34,10 +38,13 @@ def build_push_worker(tag):
     os.system("docker pull {}".format(tag))
 
     # build and push in execution_profiler/ directory
-    os.system(
+    err = os.system(
         "docker build -t {} -f network_resource_profiler_mulhome/profiler_worker.Dockerfile "
         .format(tag) + "./network_resource_profiler_mulhome"
     )
+    if err != 0:
+        log.fatal("worker container build failed!")
+        os.kill(os.getpid(), signal.SIGKILL)
     os.system("docker push {}".format(tag))
 
 def main(app_dir):
@@ -45,7 +52,7 @@ def main(app_dir):
     Build execution profiler home and worker image from Docker files and push
     them to Dockerhub.
     """
-    app_config = app_config_parser.AppConfig(app_dir, jupiter_config.APP_NAME)
+    app_config = app_config_parser.AppConfig(app_dir)
 
     # copy all files needed from Jupiter and from the application into a build
     # folder which will be shipped in the Docker container
