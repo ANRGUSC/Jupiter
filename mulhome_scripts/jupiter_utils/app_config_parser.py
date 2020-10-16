@@ -1,7 +1,7 @@
 import yaml
 import logging
 import json
-from os import path
+import os
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -22,9 +22,10 @@ class AppConfig:
         :param      app_name:  The application name (optional)
         :type       app_name:  str
         """
-        config_path = path.join(app_dir, "app_config.yaml")
+        config_path = os.path.join(app_dir, "app_config.yaml")
         self.app_name = app_name  # used for k8s service/deployment specs
-        self.abs_app_dir = path.abspath(app_dir)
+        self.app_name = os.path.basename(os.path.dirname(config_path))
+        self.abs_app_dir = os.path.abspath(app_dir)
         with open(config_path) as f:
             self.cfg = yaml.load(f, Loader=yaml.FullLoader)
             log.debug(json.dumps(self.cfg, indent=4))
@@ -38,28 +39,30 @@ class AppConfig:
         """
         Returns entire list of task information
         """
-        return self.cfg['application']['task_list']['worker_tasks']
+        return self.cfg['application']['tasks']['dag_tasks']
 
     def get_task_names(self):
         task_names = []
-        for item in self.cfg['application']['task_list']['worker_tasks']:
+        for item in self.cfg['application']['tasks']['dag_tasks']:
             task_names.append(item['name'])
         return task_names
 
-    def get_sources(self):
-        sources = []
-        for ds in self.cfg['application']['sources']:
-            sources.append(ds)
-        return sources
+    def get_nondag_tasks(self):
+        tasks = []
+        try:
+            tasks = self.cfg['application']['tasks']['nondag_tasks']
+        except TypeError:
+            log.info("no non-DAG tasks found")
 
-    def get_source_names(self):
-        names = []
-        for ds in self.cfg['application']['sources']:
-            names.append(ds['name'])
-        return names
+        return tasks
 
     def get_num_nodes(self):
         return len(self.cfg['node_map'])
+
+    def get_num_worker_nodes(self):
+        worker_nodes = self.cfg['node_map']
+        del worker_nodes['home']
+        return len(worker_nodes)
 
     def get_exec_home_tag(self):
         docker_registry = self.cfg['jupiter_config']['docker_registry']
@@ -97,6 +100,15 @@ class AppConfig:
         )
         return tag
 
+    def get_circe_tag(self):
+        docker_registry = self.cfg['jupiter_config']['docker_registry']
+        tag = "{}/circe:{}{}".format(
+            docker_registry,
+            self.app_name,
+            self.tag_extension
+        )
+        return tag
+
     def get_mapper_tag(self):
         docker_registry = self.cfg['jupiter_config']['docker_registry']
         tag = "{}/mapper_home:{}{}".format(
@@ -116,7 +128,10 @@ class AppConfig:
         return self.cfg['node_map']['home']
 
     def child_tasks(self, task_name):
-        for task in self.cfg['application']['task_list']['worker_tasks']:
+        if task_name == "home":
+            return self.cfg['application']['tasks']['home']['children']
+
+        for task in self.cfg['application']['tasks']['dag_tasks']:
             if task['name'] == task_name:
                 return task['children']
         raise ChildTasksNotFoundError("No child tasks found")
@@ -125,7 +140,7 @@ class AppConfig:
         return self.cfg['jupiter_config']['task_mapper']
 
     def dag_task_map(self):
-        """ Creates a task map of the entire DAG. Retursn a dictionary of task
+        """ Creates a task map of the entire DAG. Returns a dictionary of task
         names to children excluding the "home" task/node (task and node is used
         interchangeably only for home)
         """
@@ -138,6 +153,23 @@ class AppConfig:
             except ValueError:
                 pass  # do nothing
         return task_map
+
+    def base_script(self, task_name):
+        if task_name == "home":
+            return self.cfg['application']['tasks']['home']['base_script']
+
+        for task in self.cfg['application']['tasks']['dag_tasks']:
+            if task['name'] == task_name:
+                return task['base_script']
+
+        for task in self.cfg['application']['tasks']['nondag_tasks']:
+            if task['name'] == task_name:
+                return task['base_script']
+
+        raise BaseScriptNotFoundError("No base_script for task")
+
+    def port_mappings(self):
+        return self.cfg['application']['port_mappings']
 
 
 if __name__ == '__main__':

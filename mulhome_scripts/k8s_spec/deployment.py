@@ -24,7 +24,8 @@ spec:
         imagePullPolicy: Always
         image: {image}
         ports:
-        # ports to be filled in using jupiter_config.ini info. example:
+        # ports to be filled in using jupiter_config.ini and app_config.yaml
+        # information. example:
         #  - name: ssh
         #   port: 5000
         #   targetPort: 22

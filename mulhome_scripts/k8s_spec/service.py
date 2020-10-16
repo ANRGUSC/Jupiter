@@ -9,7 +9,7 @@ metadata:
     purpose: jupiter
 spec:
   ports:
-  # to be filled using jupiter_config.ini info
+  # to be filled using jupiter_config.ini and app_config.yaml info
   selector:
     app: {name}
 """
