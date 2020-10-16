@@ -4,7 +4,7 @@ __license__ = "GPL"
 __version__ = "2.1"
 
 import os
-from os import path
+import sys
 import datetime
 import configparser
 import logging
@@ -87,11 +87,11 @@ def main():
     # send output file back to the "home" node
     home_ip = os.environ['HOME_NODE_IP']
     service, docker = config['PORT_MAPPINGS']['SSH'].split(':')
-    ssh_port = int(service)
+    ssh_port = service
 
     local_profiler_path = '/jupiter/profiler_' + nodename + '.txt'
 
-    if path.isfile(local_profiler_path):
+    if os.path.isfile(local_profiler_path):
         transfer.transfer_data_scp(home_ip, ssh_port, USERNAME, PASSWORD,
                                         local_profiler_path,
                                         HOME_PROFILER_FILES_DIR)
