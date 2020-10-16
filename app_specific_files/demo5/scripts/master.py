@@ -40,7 +40,7 @@ except ModuleNotFoundError:
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
+app_config = app_config_parser.AppConfig(APP_DIR)
 
 app = Flask(__name__)
 store_class_tasks_paths_dict = {}
@@ -49,7 +49,7 @@ store_class_tasks_paths_dict = {}
 global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
 
 # all_nodes = os.environ["ALL_NODES"].split(":")
-# all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":") 
+# all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
 # logging.debug(all_nodes)
 # map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
 
@@ -81,7 +81,7 @@ classmap = dict(zip(ccdag.classlist, classids))
 
 def transfer_data_scp(ID,user,pword,source, destination):
     """Transfer data using SCP
-    
+
     Args:
         ID (str): destination ID
         user (str): username
@@ -113,7 +113,7 @@ def transfer_data_scp(ID,user,pword,source, destination):
         runtime_sender_log.write(s)
         runtime_sender_log.flush()
 
-def get_job_id(): 
+def get_job_id():
     hdr = {
             'Content-Type': 'application/json',
             'Authorization': None #not using HTTP secure
@@ -196,11 +196,11 @@ def get_and_send_missing_images(pathin):
         logging.debug('Exception during post-get-images-master')
         logging.debug(e)
         missing_images_dict = collections.defaultdict(list)
-    # Process and send requests out     
+    # Process and send requests out
     ### Reusing the input files to the master node. NOT creating a local copy of input files.
     logging.debug('Receive missing from decoder task:')
     logging.debug(missing_images_dict)
-    for image_file, _class in missing_images_dict.items(): 
+    for image_file, _class in missing_images_dict.items():
         logging.debug(image_file)
         file_name_wo_jobid = image_file.split("_")[1]
         source_path = os.path.join(pathin, file_name_wo_jobid)
@@ -233,14 +233,14 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
         for i in range(w):
             ### NOTE: Logic for creation of collage can be modified depending on latency requirements.
             ### open -> resize -> crop
-            idx = j * w + i 
+            idx = j * w + i
             im = Image.open(input_list[idx]).resize((single_spatial_full,single_spatial_full), Image.ANTIALIAS).crop((left_crop, top_crop, right_crop, bottom_crop))
             ### insert into collage. append label.
             collage.paste(im, (int(i*single_spatial), int(j*single_spatial)))
     #collage = np.asarray(collage)
     #collage = np.transpose(collage,(2,0,1))
     #collage /= 255.0
-    ### write to file 
+    ### write to file
     collage_name = "collage.JPEG"
     collage_resized = collage.resize((collage_spatial, collage_spatial), Image.ANTIALIAS)
     collage_resized.save(collage_name)
@@ -272,31 +272,31 @@ def task(q, pathin, pathout, task_name):
             id_list.append(base_fname.split('img')[0])
 
         start = time.time()
-        
+
 
         # Process the file (this example just passes along the file as-is)
         # Once a file is copied to the `pathout` folder, CIRCE will inspect the
         # filename and pass the file to the next task.
-        
+
         # dst_task = children[cnt % len(children)]  # round robin selection
         # dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
         # shutil.copyfile(src, dst)
 
         # MASTER CODE
-        w = 3 
+        w = 3
         num_images = w * w
         collage_spatial = 416
         single_spatial = 224
         single_spatial_full = 256
-        
+
         logging.debug('Input list')
         logging.debug(src_list)
         # get job id for this requests
         job_id = get_job_id()
-        logging.debug("got job id") 
-        logging.debug(job_id) 
+        logging.debug("got job id")
+        logging.debug(job_id)
         collage_file = create_collage(src_list, collage_spatial, single_spatial, single_spatial_full, w)
-        collage_file_split = collage_file.split(".JPEG")[0] 
+        collage_file_split = collage_file.split(".JPEG")[0]
         classname = [x.split('.')[0].split('img')[1] for x in base_list]
         classid = [classmap[x] for x in classname]
         filesuffixlist = []
@@ -335,9 +335,9 @@ def task(q, pathin, pathout, task_name):
                             break
                         time.sleep(ccdag.MASTER_POLL_INTERVAL)
                         slept += ccdag.MASTER_POLL_INTERVAL
-                get_and_send_missing_images(pathin) 
+                get_and_send_missing_images(pathin)
             except Exception as e:
-                print('Possibly running on execution profiler!!!') 
+                print('Possibly running on execution profiler!!!')
 
         # read the generate output
         # based on that determine sleep and number of bytes in output file

@@ -54,7 +54,7 @@ if __name__ == '__main__':
         log.error("usage: python build_push_heft.py {APP_NAME}")
         exit()
 
-    app_config = app_config_parser.AppConfig(app_dir, jupiter_config.APP_NAME)
+    app_config = app_config_parser.AppConfig(app_dir)
 
     if app_config.task_mapper() == "heft" or "heft_balanced":
         build_push_heft(app_config, app_dir)

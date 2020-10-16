@@ -48,7 +48,7 @@ def main():
     myfile = open('/jupiter/profiler_' + nodename + '.txt', "w")
     myfile.write('task,time(sec),output_data (Kbit)\n')
 
-    app_config = app_config_parser.AppConfig(APP_DIR, "don't care")
+    app_config = app_config_parser.AppConfig(APP_DIR)
     tasks = app_config.get_dag_tasks()
 
     #execute each task and get the timing and data size

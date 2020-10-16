@@ -112,7 +112,7 @@ def create_input_heft(
     return
 
 if __name__ == '__main__':
-    app_config = app_config_parser.AppConfig(APP_DIR, "don't care")
+    app_config = app_config_parser.AppConfig(APP_DIR)
     task_names = app_config.get_task_names()
     num_nodes = app_config.get_num_worker_nodes()
 

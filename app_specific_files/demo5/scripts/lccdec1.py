@@ -32,7 +32,7 @@ except ModuleNotFoundError:
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
+app_config = app_config_parser.AppConfig(APP_DIR)
 
 #task config information
 config = configparser.ConfigParser()
@@ -49,7 +49,7 @@ def gen_Lagrange_coeffs(alpha_s,beta_s):
             cur_beta = beta_s[j];
             den = np.prod([cur_beta - o   for o in beta_s if cur_beta != o])
             num = np.prod([alpha_s[i] - o for o in beta_s if cur_beta != o])
-            U[i][j] = num/den 
+            U[i][j] = num/den
     return U
 
 def LCC_decoding(f_eval,N,M,worker_idx):
@@ -58,7 +58,7 @@ def LCC_decoding(f_eval,N,M,worker_idx):
     alpha_s_eval = [alpha_s[i] for i in worker_idx]
     U_dec = gen_Lagrange_coeffs(beta_s,alpha_s_eval)
     f_recon = []
-    for i in range(M):        
+    for i in range(M):
         for j in range(M):
             if j ==0:
                 x_zero = U_dec[i][j]*np.asarray([f_eval[j]])
@@ -71,7 +71,7 @@ def LCC_decoding(f_eval,N,M,worker_idx):
 def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
     class_num = task_name.split('lccdec')[1]
-    #Parameters 
+    #Parameters
     N = 3 # Number of workers (encoded data-batches)
     M = 2 # Number of data-batches
     K = 10 # Number of referenced Images
@@ -95,24 +95,24 @@ def task(q, pathin, pathout, task_name):
                 id_list.append(base_fname.split('jobth')[1])
                 worker = base_fname.split('score')[1]
                 worker_list.append(ord(worker[1])-97)
-            
+
 
             start = time.time()
 
             #LCCDEC CODE
-            job_id = base_fname.split('jobth')[0]  
+            job_id = base_fname.split('jobth')[0]
             file_id = worker[2:]
 
             # Results recieved from M workers
             worker_eval = [np.loadtxt(src_list[i], delimiter=',') for i in range(M)]
-            # Decoding Process 
-            results = [] 
+            # Decoding Process
+            results = []
             for i in range(K):
                 f_eval = []
                 for j in range(M):
                     a = worker_eval[j]
-                    f_eval.append(a[i,:])  
-                f_dec = LCC_decoding(f_eval,N,M,worker_list) 
+                    f_eval.append(a[i,:])
+                f_dec = LCC_decoding(f_eval,N,M,worker_list)
                 if i ==0:
                     for j in range(M):
                         results.append(f_dec[j])
@@ -163,26 +163,26 @@ def task(q, pathin, pathout, task_name):
                 id_list.append(base_fname.split('jobth')[1])
                 worker = base_fname.split('score')[1]
                 worker_list.append(ord(worker[1])-97)
-            
+
 
             start = time.time()
 
             #LCCDEC CODE
-            job_id = base_fname.split('jobth')[0]  
+            job_id = base_fname.split('jobth')[0]
             file_id = worker[2:]
 
             # Results recieved from N workers
             #worker_idx = [ord((input_list[i].partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(N)]
             worker_eval = [np.loadtxt(os.path.join(pathin, input_list[i]), delimiter=',') for i in range(N)]
 
-            # Decoding Process 
-            results = [] 
+            # Decoding Process
+            results = []
             for i in range(K):
                 f_eval = []
                 for j in range(N):
                     a = worker_eval[j]
-                    f_eval.append(a[i,:])  
-                f_dec = LCC_decoding(f_eval,N,N,worker_list) 
+                    f_eval.append(a[i,:])
+                f_dec = LCC_decoding(f_eval,N,N,worker_list)
                 if i ==0:
                     for j in range(N):
                         results.append(f_dec[j])
@@ -215,7 +215,7 @@ def task(q, pathin, pathout, task_name):
             for i in range(num_inputs):
                 q.task_done()
 
-       
+
 
     log.error("ERROR: should never reach this")
 

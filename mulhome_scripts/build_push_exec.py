@@ -52,7 +52,7 @@ def main(app_dir):
     Build execution profiler home and worker image from Docker files and push
     them to Dockerhub.
     """
-    app_config = app_config_parser.AppConfig(app_dir, jupiter_config.APP_NAME)
+    app_config = app_config_parser.AppConfig(app_dir)
 
     # copy all files needed from Jupiter and from the application into a build
     # folder which will be shipped in the Docker container

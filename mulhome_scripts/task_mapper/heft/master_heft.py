@@ -53,7 +53,7 @@ app.add_url_rule('/', 'return_task_mapping', return_task_mapping)
 
 
 if __name__ == '__main__':
-    app_config = app_config_parser.AppConfig(APP_DIR, "don't care")
+    app_config = app_config_parser.AppConfig(APP_DIR)
     task_names = app_config.get_task_names()
     num_tasks = len(task_names)
 

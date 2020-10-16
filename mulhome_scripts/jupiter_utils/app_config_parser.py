@@ -13,7 +13,7 @@ class AppConfig:
     This class is for parsing a Jupiter application's app_config.yaml file.
     """
 
-    def __init__(self, app_dir, app_name):
+    def __init__(self, app_dir):
         """
         AppConfig constructor.
 
@@ -23,8 +23,10 @@ class AppConfig:
         :type       app_name:  str
         """
         config_path = os.path.join(app_dir, "app_config.yaml")
-        self.app_name = app_name  # used for k8s service/deployment specs
+
+        # app name is the same as the folder name
         self.app_name = os.path.basename(os.path.dirname(config_path))
+
         self.abs_app_dir = os.path.abspath(app_dir)
         with open(config_path) as f:
             self.cfg = yaml.load(f, Loader=yaml.FullLoader)
@@ -33,7 +35,7 @@ class AppConfig:
         # developers: manually set a non-empty string to override docker tags.
         # this is useful for creating unique docker tags when multiple people
         # are coding.
-        self.tag_extension = "a6e"
+        self.tag_extension = ""
 
     def get_dag_tasks(self):
         """
@@ -174,7 +176,7 @@ class AppConfig:
 
 if __name__ == '__main__':
     # Test
-    app_config = AppConfig("../../app_specific_files/example-incomplete/", "don't care")
+    app_config = AppConfig("../../app_specific_files/example/")
     for node in app_config.node_map():
         print(node)
 

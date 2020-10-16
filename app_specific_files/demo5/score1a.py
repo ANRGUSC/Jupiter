@@ -32,7 +32,7 @@ import ccdag
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
+app_config = app_config_parser.AppConfig(APP_DIR)
 
 
 
@@ -70,34 +70,34 @@ def task(q, pathin, pathout, task_name):
         # dst_task = children[cnt % len(children)]  # round robin selection
         # dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
         # shutil.copyfile(src, dst)
-# 
+#
         #job_id = base_fname.split('.csv')[0].split('jobid')[1]
         filesuffixs = base_fname.split('.csv')[0].split('job')[0]
-        
+
 
         #Worker ID: a,b,c...
         worker_id = task_name[-1]
-        
+
         #Parameters
         K = 10 # Number of referenced Images
         # Dimension of resized image
         width = 400
         height = 400
-        dim = (width, height)   
-        
+        dim = (width, height)
+
         # # Read Reference Images
         # input_file_ref = ['fireengine'+str(i+1)+'_20200424.jpg' for i in range(20,30)]  # to be defined in advance
         # path_ref = os.path.join(os.path.dirname(__file__),'fireengine') # folder of referenced images
          # Read Reference Images
         input_file_ref = [class_name+str(i+1)+'.JPEG' for i in range(20,30)]  # to be defined in advance
         path_ref = os.path.join(os.path.dirname(__file__),'reference',class_name) # folder of referenced images
-        
-        
+
+
         for i in range(K):
             print(os.path.join(path_ref, input_file_ref[i]))
             img = cv2.imread(os.path.join(path_ref, input_file_ref[i]))
             img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-            img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
+            img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
             img -= img.mean()
             img /= img.std()
             img_w ,img_l = img.shape
@@ -105,20 +105,20 @@ def task(q, pathin, pathout, task_name):
             if i == 0:
                 Ref_Images = img
             else:
-                Ref_Images = np.concatenate((Ref_Images,img), axis=0)    
+                Ref_Images = np.concatenate((Ref_Images,img), axis=0)
 
         ### To simulate slow downs
         # purposely add delay time to slow down the sending
         if (random.random() > ccdag.STRAGGLER_THRESHOLD) and (worker_id=='a'):
             print(class_num)
             print("Sleeping")
-            time.sleep(ccdag.SLEEP_TIME) #>=2 
-        
-        
-        # Read Encoded data-batch   
+            time.sleep(ccdag.SLEEP_TIME) #>=2
+
+
+        # Read Encoded data-batch
         En_Image_Batch = np.loadtxt(os.path.join(pathin, input_file), delimiter=',')
-        
-        
+
+
         # Compute Scores of ref images and En_Images
         sc = score(En_Image_Batch, Ref_Images)
         job = str(job_id)+'jobth'

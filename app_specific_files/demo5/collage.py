@@ -42,7 +42,7 @@ global circe_home_ip, circe_home_ip_port
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
+app_config = app_config_parser.AppConfig(APP_DIR)
 
 # Run by dispatcher (e.g. CIRCE). Use task_name to differentiate the tasks by
 # name to reuse one base task file.
@@ -60,15 +60,15 @@ global global_info_ip, global_info_ip_port
 
 def calculate_iou(L1, R1, T1, B1, L2, R2, T2, B2):
     L = max(L1, L2)
-    R = min(R1, R2)    
+    R = min(R1, R2)
     T = max(T1, T2)
     B = min(B1, B2)
     i = max(0, R-L+1) * max(0, B-T+1) #max(0,) covers the case where no intersection exists. Why +1 I am not sure
     A1 = (R1-L1+1) * (B1-T1+1)
     A2 = (R2-L2+1) * (B2-T2+1)
-    iou = i*1.0/(A1 + A2 - i) 
+    iou = i*1.0/(A1 + A2 - i)
     return iou
-    
+
 def calculate_pos(left, right, top, bottom, w, spatial):
     # return box in pos with maximum iou.
     pos_dict = {}
@@ -83,14 +83,14 @@ def calculate_pos(left, right, top, bottom, w, spatial):
         for j in range(w):
              l = j*spatial
              r = ((j+1)*spatial) - 1
-             temp = calculate_iou(left, right, top, bottom, l, r, t, b)   
+             temp = calculate_iou(left, right, top, bottom, l, r, t, b)
              if max_iou < temp:
                  max_iou = temp
                  x = j
-                 y = i 
+                 y = i
     #print(left, right, top, bottom, x, y)
     return (pos_dict[x])[y]
-    
+
 def process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial):
     #print("pred1: ", pred.shape)
     pred = pred[pred[:, :, 4] > conf_thres]
@@ -98,8 +98,8 @@ def process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial
     if len(pred) > 0:
         detections_list = non_max_suppression(pred.unsqueeze(0), conf_thres, nms_thres)
         detections = detections_list[0]
-        #print(len(detections_list)) 
-        #print(detections.shape) 
+        #print(len(detections_list))
+        #print(detections.shape)
     # Draw bounding boxes and labels of detections
     if detections is not None:
         # write results to .txt file
@@ -128,7 +128,7 @@ def process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial
     #predictions_arr = np.array(predictions_list)
     predictions_list = classes_list[predictions_list].tolist()
     return predictions_list
-    
+
 
 
 def task(q, pathin, pathout, task_name):
@@ -172,7 +172,7 @@ def task(q, pathin, pathout, task_name):
         ### Transform to tensor format.
         collage_tensor = composed(collage_img)
         ### 3D -> 4D (batch dimension = 1)
-        collage_tensor.unsqueeze_(0) 
+        collage_tensor.unsqueeze_(0)
         ### Classify the image
         pred = model(collage_tensor)
         ### Process predictions to get a list of final predictions

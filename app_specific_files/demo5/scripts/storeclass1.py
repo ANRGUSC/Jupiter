@@ -27,7 +27,7 @@ except ModuleNotFoundError:
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
+app_config = app_config_parser.AppConfig(APP_DIR)
 
 # Run by dispatcher (e.g. CIRCE). Use task_name to differentiate the tasks by
 # name to reuse one base task file.

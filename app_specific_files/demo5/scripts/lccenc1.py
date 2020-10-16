@@ -39,7 +39,7 @@ except ModuleNotFoundError:
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
+app_config = app_config_parser.AppConfig(APP_DIR)
 
 #task config information
 
@@ -56,7 +56,7 @@ def gen_Lagrange_coeffs(alpha_s,beta_s):
             cur_beta = beta_s[j];
             den = np.prod([cur_beta - o   for o in beta_s if cur_beta != o])
             num = np.prod([alpha_s[i] - o for o in beta_s if cur_beta != o])
-            U[i][j] = num/den 
+            U[i][j] = num/den
     return U
 
 
@@ -108,7 +108,7 @@ def task(q, pathin, pathout, task_name):
 
 
         #LCCENC CODE
-        
+
         logging.debug(id_list)
         print(id_list)
         print(base_list)
@@ -144,13 +144,13 @@ def task(q, pathin, pathout, task_name):
             print(e)
             job_id = 2
 
-        
-        
+
+
         # Dimension of resized image
         width = 400
         height = 400
         dim = (width, height)
-        
+
         if ccdag.CODING_PART2: #Coding Version
             #Read M batches
             Image_Batch = []
@@ -160,11 +160,11 @@ def task(q, pathin, pathout, task_name):
                 while count < L:
                     logging.debug(count_file)
                     logging.debug(os.path.join(pathin, input_list[count_file]))
-                    img = cv2.imread(os.path.join(pathin, input_list[count_file])) 
+                    img = cv2.imread(os.path.join(pathin, input_list[count_file]))
                     if img is not None:
                     # resize image
                         img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-                        img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
+                        img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
                         img -= img.mean()
                         img /= img.std()
                         img_w ,img_l = img.shape
@@ -172,7 +172,7 @@ def task(q, pathin, pathout, task_name):
                         if count == 0:
                            Images = img
                         else:
-                           Images = np.concatenate((Images,img), axis=0)  
+                           Images = np.concatenate((Images,img), axis=0)
                         count+=1
                     count_file+=1
                 Image_Batch.append(Images)
@@ -185,10 +185,10 @@ def task(q, pathin, pathout, task_name):
                 job = "jobid"+ str(job_id)
                 destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
                 np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
-            
+
             from_task = '_storeclass'+classnum
 
-                    
+
         else: # Uncoding version
             #Read M batches
             Image_Batch = []
@@ -197,11 +197,11 @@ def task(q, pathin, pathout, task_name):
                 count = 0
                 while count < L:
                     logging.debug(count_file)
-                    img = cv2.imread(os.path.join(pathin, input_list[count_file])) 
+                    img = cv2.imread(os.path.join(pathin, input_list[count_file]))
                     if img is not None:
                     # resize image
                         img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-                        img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)) 
+                        img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
                         img -= img.mean()
                         img /= img.std()
                         img_w ,img_l = img.shape
@@ -209,7 +209,7 @@ def task(q, pathin, pathout, task_name):
                         if count == 0:
                            Images = img
                         else:
-                           Images = np.concatenate((Images,img), axis=0)  
+                           Images = np.concatenate((Images,img), axis=0)
                         count+=1
                     count_file+=1
                 Image_Batch.append(Images)

@@ -24,7 +24,7 @@ except ModuleNotFoundError:
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "example-incomplete")
+app_config = app_config_parser.AppConfig(APP_DIR)
 
 
 # Run by dispatcher (e.g. CIRCE). Custom tasks are unable to receive files

@@ -28,7 +28,7 @@ except ModuleNotFoundError:
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "refactor_demo5")
+app_config = app_config_parser.AppConfig(APP_DIR)
 
 #task config information
 JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'

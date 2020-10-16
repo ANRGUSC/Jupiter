@@ -40,7 +40,7 @@ except ModuleNotFoundError:
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
+app_config = app_config_parser.AppConfig(APP_DIR)
 
 #task config information
 
@@ -114,7 +114,7 @@ def task(q, pathin, pathout, task_name):
         # filename and pass the file to the next task.
         src = os.path.join(pathin, input_file)
         start = time.time()
-        
+
 
         # RESNET CODE
         ### set device to CPU
@@ -135,18 +135,18 @@ def task(q, pathin, pathout, task_name):
         ### Apply transforms.
         img_tensor = composed(img)
         ### 3D -> 4D (batch dimension = 1)
-        img_tensor.unsqueeze_(0) 
+        img_tensor.unsqueeze_(0)
         ### call the ResNet model
         try:
             print('Calling the resnet model')
-            output = model(img_tensor) 
+            output = model(img_tensor)
             pred = torch.argmax(output, dim=1).detach().numpy().tolist()
             ### To simulate slow downs
             # purposely add delay time to slow down the sending
             if (random.random() > ccdag.STRAGGLER_THRESHOLD) and (taskname=='resnet8') :
                 print(taskname)
                 print("Sleeping")
-                time.sleep(ccdag.SLEEP_TIME) #>=2 
+                time.sleep(ccdag.SLEEP_TIME) #>=2
             ### Contact flask server
             f_stripped = input_file.split(".JPEG")[0]
             job_id = int(f_stripped.split('jobid')[1])
@@ -175,7 +175,7 @@ def task(q, pathin, pathout, task_name):
                         slept += ccdag.RESNET_POLL_INTERVAL
             except Exception as e:
                 print('Possibly running on the execution profiler, get_enough_resnet_preds')
-            
+
             if ret_job_id >= 0: # This job_id has not been processed by the global flask server
                 ### Copy to appropriate destination paths
                 if pred[0] == 555: ### fire engine. class 1
@@ -282,7 +282,7 @@ def task(q, pathin, pathout, task_name):
                 else: ### not either of the classes # do nothing
                     print('This does not belong to any classes!!!')
                     print(pred[0])
-                
+
             else: # ret_job_id < 0
                 print("The jobid %s has already been processed by the flask server" % (job_id))
         except Exception as e:

@@ -69,8 +69,7 @@ def main():
 
 
     # Parse app's app_config.yaml
-    app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir(),
-                                             jupiter_config.APP_NAME)
+    app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     namespace = app_config.namespace_prefix() + "-profiler"
     os.system(f"kubectl create namespace {namespace}")
 

@@ -33,7 +33,7 @@ except ModuleNotFoundError:
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
-app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
+app_config = app_config_parser.AppConfig(APP_DIR)
 
 #task config information
 JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
@@ -63,19 +63,19 @@ def task(q, pathin, pathout, task_name):
         # Once a file is copied to the `pathout` folder, CIRCE will inspect the
         # filename and pass the file to the next task.
         src = os.path.join(pathin, input_file)
-        
+
 
         # PREAGG code
 
         job_id = base_fname.split('jobth')[0]
         file_id = base_fname.split('jobth')[1]
-        
+
         # job_id = int(job_id)
-        
-        
+
+
         hdr = {
                 'Content-Type': 'application/json',
-                'Authorization': None 
+                'Authorization': None
                                     }
         # the message of requesting dictionary
         # payload = {
@@ -87,8 +87,8 @@ def task(q, pathin, pathout, task_name):
             'job_id': job_id,
             'filename': input_file[0]
         }
-        
-        # address of flask server for class1 is 0.0.0.0:5000 and "post-dict" is for requesting dictionary 
+
+        # address of flask server for class1 is 0.0.0.0:5000 and "post-dict" is for requesting dictionary
         try:
             # url = "http://0.0.0.0:5000/post-dict"
             global_info_ip = os.environ['GLOBAL_IP']
@@ -119,17 +119,17 @@ def task(q, pathin, pathout, task_name):
                 print(sample2)
                 print(sample3)
                 job_dict = {'2':[sample1[0],sample2[0],sample3[0]]}
-            
+
         #Parameters
         M = 2 # Number of data-batches
         N = 3 # Number of workers
-        
+
         if ccdag.CODING_PART2: #Coding Version
             #Check if number of received results for the same job is equal to M
             if len(job_dict[job_id]) == M:
                 print('Receive enough results for job '+job_id)
                 for i in range(M):
-                    
+
                     En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                     job = str(job_id)+'jobth'
                     dst_task = children[0] # only 1 children
@@ -139,10 +139,10 @@ def task(q, pathin, pathout, task_name):
                     # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
                     #destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                     np.savetxt(dst, En_Image_Batch, delimiter=',')
-                
+
             else:
                 print('Not receive enough results for job '+job_id)
-        
+
         else:
             #Check if number of received results for the same job is equal to N
             if len(job_dict[job_id]) == N:
@@ -155,7 +155,7 @@ def task(q, pathin, pathout, task_name):
                     print(dst)
                     # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                     np.savetxt(dst, En_Image_Batch, delimiter=',')
-                    
+
             else:
                 print('Not receive enough results for job '+job_id)
 
@@ -181,7 +181,7 @@ def profile_execution(task_name):
 
     # manually add the src (parent) and dst (this task) prefix to the filename
     # here to illustrate how Jupiter will enact this under the hood. the actual
-    # src (or parent) is not needed for profiling execution so we fake it here.  
+    # src (or parent) is not needed for profiling execution so we fake it here.
 
 
     os.makedirs(output_dir, exist_ok=True)

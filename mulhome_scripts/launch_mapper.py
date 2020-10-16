@@ -89,8 +89,7 @@ def lookup_home_ip(namespace_postfix, app_config, core_v1_api):
 
 if __name__ == '__main__':
     # Parse app's app_config.yaml
-    app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir(),
-                                             jupiter_config.APP_NAME)
+    app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     namespace = app_config.namespace_prefix() + "-mapper"
     app_name = app_config.app_name
     os.system(f"kubectl create namespace {namespace}")
