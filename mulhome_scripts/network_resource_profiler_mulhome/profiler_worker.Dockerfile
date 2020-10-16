@@ -17,7 +17,6 @@ RUN apt-get install -y openssh-server mongodb net-tools sshpass nano virtualenv 
 ADD requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
-
 # Authentication
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -38,8 +37,6 @@ RUN chmod +x /jupiter/droplet_mongod
 # application. If you need to add more files, make the script copy files into
 # ./build/ instead of adding it manually in this Dockerfile.
 COPY build/ /jupiter/build/
-RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
-
 
 # Prepare network profiling code
 ADD droplet_generate_random_files /jupiter/droplet_generate_random_files
@@ -56,7 +53,6 @@ RUN mkdir -p /jupiter/generated_test
 RUN mkdir -p /jupiter/received_test
 RUN mkdir -p /jupiter/scheduling
 
-
 #Running docker
 ADD start_worker.sh /jupiter/start.sh
 RUN chmod +x /jupiter/start.sh
@@ -64,7 +60,7 @@ RUN chmod +x /jupiter/start.sh
 
 WORKDIR /jupiter
 
-# tell the port number the container should expose
-EXPOSE 22 27017 8888
+# k8s exposes ports for us
+# EXPOSE
 
 CMD ["./start.sh"]

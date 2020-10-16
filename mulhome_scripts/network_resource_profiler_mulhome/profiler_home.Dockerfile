@@ -37,16 +37,12 @@ RUN chmod +x /jupiter/central_mongod
 # application. If you need to add more files, make the script copy files into
 # ./build/ instead of adding it manually in this Dockerfile.
 COPY build/ /jupiter/build/
-RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
-
-
 
 # Prepare network profiling code
 ADD central_input /jupiter/central_input
 ADD central_scheduler.py /jupiter/central_scheduler.py
 ADD generate_link_list.py /jupiter/generate_link_list.py
 ADD keep_alive.py /jupiter/keep_alive.py
-
 
 RUN mkdir -p /jupiter/scheduling
 RUN mkdir -p /jupiter/parameters
@@ -64,12 +60,9 @@ RUN chmod +x /jupiter/droplet_generate_random_files
 ADD start_home.sh /jupiter/start.sh
 RUN chmod +x /jupiter/start.sh
 
-
 WORKDIR /jupiter
 
-
-# tell the port number the container should expose
-
-EXPOSE 22 27017 8888
+# k8s exposes ports for us
+# EXPOSE 22 27017 8888
 
 CMD ["./start.sh"]

@@ -166,7 +166,7 @@ app.add_url_rule('/schedule/<ip>', 'send_schedule', send_schedule)
 
 def do_update_quadratic():
     """
-    This function updates the estimated quadratic parameters in the mongodb server, database ``central_network_profiler``, collection ``quadratic_parameters``. It checks for any received files 
+    This function updates the estimated quadratic parameters in the mongodb server, database ``central_network_profiler``, collection ``quadratic_parameters``. It checks for any received files
     from each of the worker droplets in the ``parameters/`` folder. If any a file exists, it updates the mongodb.
     """
     logging.debug('Update quadratic parameters from other nodes')
@@ -176,7 +176,7 @@ def do_update_quadratic():
     try:
         for subdir, dirs, files in os.walk(parameters_folder):
             for file in files:
-                if file.startswith("."): 
+                if file.startswith("."):
                     continue
                 measurement_file = os.path.join(subdir, file)
                 df = pd.read_csv(measurement_file, delimiter = ',', header = 0)
@@ -205,8 +205,8 @@ class droplet_measurement():
         self.logging = logging
 
     def do_add_host(self, file_hosts):
-        """This function reads the ``scheduler.txt`` file to add other droplets info 
-        
+        """This function reads the ``scheduler.txt`` file to add other droplets info
+
         Args:
             file_hosts (str): the path of ``scheduler.txt``
         """
@@ -229,8 +229,8 @@ class droplet_measurement():
             self.logging.debug('Probing random messages')
             random_size = random.choice(self.file_size)
             local_path  = '%s/%s_test_%dK'%(self.dir_local,self.my_host,random_size)
-            remote_path = '%s'%(self.dir_remote)  
-            # Run the measurement bash script     
+            remote_path = '%s'%(self.dir_remote)
+            # Run the measurement bash script
             bash_script = self.measurement_script + " " +self.username + "@" + self.hosts[idx]
             bash_script = bash_script + " " + str(random_size)
 
@@ -271,10 +271,10 @@ class droplet_regression():
         self.password = password
         self.central_IP = HOME_NODE_IP
         self.logging = logging
-       
+
     def do_add_host(self, file_hosts):
-        """This function reads the ``scheduler.txt`` file to add other droplets info 
-        
+        """This function reads the ``scheduler.txt`` file to add other droplets info
+
         Args:
             file_hosts (str): the path of ``scheduler.txt``
         """
@@ -317,7 +317,7 @@ class droplet_regression():
             quadratic  = np.polyfit(df['X'],df['Y'],2)
             parameters = " ".join(str(x) for x in quadratic)
             cur_time   = datetime.datetime.utcnow()
-            
+
             new_reg = { "Source[IP]"       : self.my_host,
                         "Source[Reg]"      : self.my_region,
                         "Destination[IP]"  : self.hosts[idx],
@@ -362,7 +362,7 @@ def regression_job():
     d = droplet_regression()
     d.do_add_host(d.scheduling_file)
     d.do_regression()
-    
+
 
 def measurement_job():
     """Scheduling logging measurement process every minute
@@ -374,7 +374,7 @@ def measurement_job():
 
 def prepare_database(filename):
     """Connect to MongoDB server, prepare the database ``droplet_network_profiler`` at every node
-    
+
     Args:
         filename (str): info file having the node's name/IP address
     """
@@ -433,29 +433,28 @@ def main():
     dir_local          = "generated_test"
     dir_remote_central = "/jupiter/parameters"
     dir_scheduler      = "scheduling/%s/scheduling.txt"%(self_ip)
-    
-    
-    
+
+
+
     nodes_file = 'central_input/nodes.txt'
     homes_list = dict()
     node_list = dict()
     with open(nodes_file, 'r') as f:
-        first_line = f.readline()
         lines = f.readlines()
         for line in lines:
             info = line.rstrip().split(',')
             node_list[info[0]] = [info[1],info[2]]
             if info[0].startswith('home'):
                 homes_list[info[0]] = [info[1],info[2]]
-                
-    
-    df_homes = pd.DataFrame.from_dict(homes_list, orient='index')  
+
+
+    df_homes = pd.DataFrame.from_dict(homes_list, orient='index')
     df_nodes = pd.DataFrame.from_dict(node_list, orient='index')
-    df_homes.index.name = 'Tag'  
+    df_homes.index.name = 'Tag'
     df_nodes.index.name = 'Tag'
     df_homes.columns = ['Node', 'Region']
     df_nodes.columns = ['Node', 'Region']
-    
+
     # logging.debug(df_homes)
     # logging.debug(df_nodes)
 
@@ -479,7 +478,7 @@ def main():
     db = client_mongo['central_network_profiler']
     buffer_size = len(df_links.index) * 100
     db.create_collection('quadratic_parameters', capped = True, size = 100000, max = buffer_size)
-    
+
 
     logging.debug('Step 2: Preparing the scheduling text files')
     for cur_node, row in df_nodes.iterrows():
@@ -510,7 +509,7 @@ def main():
     filename = "scheduling/%s/scheduling.txt"%(self_ip)
     logging.debug(filename)
     prepare_database(filename)
-        
+
     logging.debug('Step 3: Scheduling updating the central database')
     # create the folder for each droplet/node to report the local data to
     parameters_folder = 'parameters'
@@ -521,7 +520,7 @@ def main():
     sched = BackgroundScheduler()
     sched.add_job(do_update_quadratic,'interval', id = 'update',
                                minutes = 10,replace_existing = True)
-    
+
 
     logging.debug('Step 4: Scheduling measurement job')
     sched.add_job(measurement_job,'interval',id='measurement', minutes=1, replace_existing=True)
@@ -570,12 +569,12 @@ def main():
     _thread.start_new_thread(schedule_monitor_resource,(interval,))
 
 
-    
+
 
 
     app.run(host='0.0.0.0', port=FLASK_DOCKER) #run this web application on 0.0.0.0 and default port is 5000
 
 if __name__ == '__main__':
     main()
-    
+
 
