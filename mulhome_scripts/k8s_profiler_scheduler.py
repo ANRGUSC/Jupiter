@@ -189,11 +189,11 @@ def main():
         host=app_config.home_host(),
         port_mappings=jupiter_config.k8s_deployment_port_mappings(),
         env_vars={
-            "NODE_NAME": node,
+            "NODE_NAME": "home",
             "HOME_NODE_IP": home_node_ip,
             "ALL_NODE_IPS": all_profiler_ips,
             "ALL_NODE_NAMES": all_profiler_names,
-            "NODE_IP":all_profiler_map[node]
+            "NODE_IP":all_profiler_map["home"]
         }
     )
 
