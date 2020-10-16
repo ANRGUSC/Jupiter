@@ -22,10 +22,13 @@ def build_push_home(tag):
     os.system("docker pull {}".format(tag))
 
     # build and push in execution_profiler/ directory
-    os.system(
+    err = os.system(
         "docker build -t {} -f execution_profiler/home.Dockerfile "
         .format(tag) + "./execution_profiler"
     )
+    if err != 0:
+        log.fatal("home container build failed!")
+        os.kill(os.getpid(), signal.SIGKILL)
     os.system("docker push {}".format(tag))
 
 
@@ -34,10 +37,13 @@ def build_push_worker(tag):
     os.system("docker pull {}".format(tag))
 
     # build and push in execution_profiler/ directory
-    os.system(
+    err = os.system(
         "docker build -t {} -f execution_profiler/worker.Dockerfile "
         .format(tag) + "./execution_profiler"
     )
+    if err != 0:
+        log.fatal("home container build failed!")
+        os.kill(os.getpid(), signal.SIGKILL)
     os.system("docker push {}".format(tag))
 
 
@@ -57,6 +63,18 @@ def main(app_dir):
     shutil.copy("../jupiter_config.ini", "execution_profiler/build/")
     shutil.copytree("./jupiter_utils/",
                     "execution_profiler/build/jupiter_utils/")
+
+    # Copy app's requirements.txt only if modified to prevent unnecessary pip
+    # reinstalls
+    os.makedirs("./execution_profiler/build_requirements", exist_ok=True)
+    src = "{}/requirements.txt".format(app_dir)
+    dst = "./execution_profiler/build_requirements/requirements.txt"
+    try:
+        mtime = os.stat(dst).st_mtime
+    except FileNotFoundError:
+        mtime = 0
+    if os.stat(src).st_mtime - mtime > 1:  # modified more than 1s ago
+        shutil.copy(src, dst)
 
     # build in parallel
     t1 = threading.Thread(target=build_push_home,
