@@ -44,6 +44,10 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
 app_config = app_config_parser.AppConfig(APP_DIR, "demo5")
+config = configparser.ConfigParser()
+config.read(ccdag.JUPITER_CONFIG_INI_PATH)
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+global global_info_ip, global_info_ip_port
 
 app = Flask(__name__)
 store_class_tasks_paths_dict = {}
@@ -128,6 +132,7 @@ def get_job_id():
         # url = "http://0.0.0.0:5000/post-id"
         global_info_ip = os.environ['GLOBAL_IP']
         print(global_info_ip)
+        print(FLASK_SVC)
         url = "http://%s:%s/post-id-master"%(global_info_ip,str(FLASK_SVC))
         print(url)
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
@@ -135,6 +140,7 @@ def get_job_id():
         #print(job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
+        print(e)
         job_id = 0
     return job_id
 
@@ -270,116 +276,120 @@ def task(q, pathin, pathout, task_name):
         base_list = []
         id_list = []
         print(q.qsize())
-        for i in range(0,9): #number of inputs is 9
-            try:
-                input_file = q.get()
-                input_list.append(input_file)
-                src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-                log.info(f"{task_name}: file rcvd from {src_task}: {base_fname}")    
-                src = os.path.join(pathin, input_file)
-                src_list.append(src)
-                base_list.append(base_fname.split('.')[0])
-                id_list.append(base_fname.split('img')[0])
-            except e as Exception:
-                print(e)
-        
-        print(src_list)
-        print(base_list)
-        print(id_list)
+        if q.qsize()>=9:
+            for i in range(0,9): #number of inputs is 9
+                try:
+                    input_file = q.get()
+                    input_list.append(input_file)
+                    src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+                    log.info(f"{task_name}: file rcvd from {src_task}: {base_fname}")    
+                    src = os.path.join(pathin, input_file)
+                    src_list.append(src)
+                    base_list.append(base_fname.split('.')[0])
+                    id_list.append(base_fname.split('img')[0])
+                except Exception as e:
+                    print(e)
+            
+            print(src_list)
+            print(base_list)
+            print(id_list)
 
-        
+            
 
-        start = time.time()
-        print(start)
-        
+            start = time.time()
+            print(start)
+            
 
-        # Process the file (this example just passes along the file as-is)
-        # Once a file is copied to the `pathout` folder, CIRCE will inspect the
-        # filename and pass the file to the next task.
-        
-        # dst_task = children[cnt % len(children)]  # round robin selection
-        # dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-        # shutil.copyfile(src, dst)
+            # Process the file (this example just passes along the file as-is)
+            # Once a file is copied to the `pathout` folder, CIRCE will inspect the
+            # filename and pass the file to the next task.
+            
+            # dst_task = children[cnt % len(children)]  # round robin selection
+            # dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+            # shutil.copyfile(src, dst)
 
-        # MASTER CODE
-        w = 3 
-        num_images = w * w
-        collage_spatial = 416
-        single_spatial = 224
-        single_spatial_full = 256
-        
-        logging.debug('Input list')
-        logging.debug(src_list)
-        print(src_list)
-        # get job id for this requests
-        job_id = get_job_id()
-        logging.debug("got job id") 
-        logging.debug(job_id) 
-        print(job_id)
-        collage_file = create_collage(src_list, collage_spatial, single_spatial, single_spatial_full, w)
-        collage_file_split = collage_file.split(".JPEG")[0] 
-        classname = [x.split('.')[0].split('img')[1] for x in base_list]
-        classid = [classmap[x] for x in classname]
-        filesuffixlist = []
-        for x,y in zip(classid, id_list):
-            tmp = str(x)+'#'+y
-            filesuffixlist.append(tmp)
-        filesuffix = '-'.join(filesuffixlist)
-        print('got job id 2: ', job_id)
-        job = "jobid"+ str(job_id)
-        dst = os.path.join(pathout, f"{task_name}_{collage_file_split}_{filesuffix}{job}")
-        shutil.copyfile(collage_file, dst)
-        print('Receive collage file:')
-        print(dst)
-        ### send to resnet tasks
-        print('Receive resnet files: ')
-        filelist_flask = []
-        for i, f in enumerate(input_list):
-            idx  = i%num_images
-            dst_task = "resnet"+str(idx) # only 1 children
-            dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_list[i]}{job}.JPEG")
+            # MASTER CODE
+            w = 3 
+            num_images = w * w
+            collage_spatial = 416
+            single_spatial = 224
+            single_spatial_full = 256
+            
+            logging.debug('Input list')
+            logging.debug(src_list)
+            print(src_list)
+            # get job id for this requests
+            job_id = get_job_id()
+            logging.debug("got job id") 
+            logging.debug(job_id) 
+            print(job_id)
+            collage_file = create_collage(src_list, collage_spatial, single_spatial, single_spatial_full, w)
+            collage_file_split = collage_file.split(".JPEG")[0] 
+            classname = [x.split('.')[0].split('img')[1] for x in base_list]
+            classid = [classmap[x] for x in classname]
+            filesuffixlist = []
+            for x,y in zip(classid, id_list):
+                tmp = str(x)+'#'+y
+                filesuffixlist.append(tmp)
+            filesuffix = '-'.join(filesuffixlist)
+            print('got job id 2: ', job_id)
+            job = "jobid"+ str(job_id)
+            dst = os.path.join(pathout, f"{task_name}_{collage_file_split}_{filesuffix}{job}")
+            shutil.copyfile(collage_file, dst)
+            print('Receive collage file:')
             print(dst)
-            shutil.copyfile(os.path.join(pathin,f), dst)
-            filelist_flask.append(dst)
-        next_job_id = put_filenames(job_id, filelist_flask)
-        if ccdag.CODING_PART1:
-            slept = 0
-            try:
-                global_info_ip = os.environ['GLOBAL_IP']
-                global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-                print("global info ip port: ", global_info_ip_port)
-                if ccdag.RESNETS_THRESHOLD > 1: # Coding configuration
-                    while slept < ccdag.MASTER_TO_RESNET_TIME:
-                        ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
-                        print("get_enough_resnet_preds fn. return value is: ", ret_val)
-                        if ret_val:
-                            break
-                        time.sleep(ccdag.MASTER_POLL_INTERVAL)
-                        slept += ccdag.MASTER_POLL_INTERVAL
-                get_and_send_missing_images(pathin) 
-            except Exception as e:
-                print('Possibly running on execution profiler!!!') 
+            ### send to resnet tasks
+            print('Receive resnet files: ')
+            filelist_flask = []
+            for i, f in enumerate(input_list):
+                idx  = i%num_images
+                dst_task = "resnet"+str(idx) # only 1 children
+                dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_list[i]}{job}.JPEG")
+                print(dst)
+                shutil.copyfile(os.path.join(pathin,f), dst)
+                filelist_flask.append(dst)
+            next_job_id = put_filenames(job_id, filelist_flask)
+            if ccdag.CODING_PART1:
+                slept = 0
+                try:
+                    global_info_ip = os.environ['GLOBAL_IP']
+                    global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+                    print("global info ip port: ", global_info_ip_port)
+                    if ccdag.RESNETS_THRESHOLD > 1: # Coding configuration
+                        while slept < ccdag.MASTER_TO_RESNET_TIME:
+                            ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
+                            print("get_enough_resnet_preds fn. return value is: ", ret_val)
+                            if ret_val:
+                                break
+                            time.sleep(ccdag.MASTER_POLL_INTERVAL)
+                            slept += ccdag.MASTER_POLL_INTERVAL
+                    get_and_send_missing_images(pathin) 
+                except Exception as e:
+                    print('Possibly running on execution profiler!!!') 
 
-        # read the generate output
-        # based on that determine sleep and number of bytes in output file
-        end = time.time()
-        runtime_stat = {
-            "task_name" : task_name,
-            "start" : start,
-            "end" : end
-        }
-        log.warning(json.dumps(runtime_stat))
-        for i in range(0,9):
-            q.task_done()
+            # read the generate output
+            # based on that determine sleep and number of bytes in output file
+            end = time.time()
+            runtime_stat = {
+                "task_name" : task_name,
+                "start" : start,
+                "end" : end
+            }
+            log.warning(json.dumps(runtime_stat))
+            # for i in range(0,9):
+            #     q.task_done()
+            print('************************')
+            print(q.qsize())
+        else:
+            print('Not enough files')
+            time.sleep(1)
 
     log.error("ERROR: should never reach this")
 
 
 # Run by execution profiler
 def profile_execution(task_name):
-    #q = queue.Queue()
-    manager = Manager()
-    q = manager.Queue()
+    q = queue.Queue()
     input_dir = f"{APP_DIR}/sample_inputs/"
     output_dir = f"{APP_DIR}/sample_outputs/"
 

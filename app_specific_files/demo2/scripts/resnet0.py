@@ -129,18 +129,23 @@ def task(q, pathin, pathout, task_name):
         # RESNET CODE
         ### set device to CPU
         device = torch.device("cpu")
+        print(device)
         ### Load model
         model = models.resnet34(pretrained=True)
         model.eval()
         model.to(device)
+        print(model)
         ### Transforms to be applied on input images
         composed = transforms.Compose([
                    transforms.Resize(256, Image.ANTIALIAS),
                    transforms.CenterCrop(224),
                    transforms.ToTensor()])
 
+        print(composed)
+
         ### Read input files.
         img = Image.open(src)
+        print(img)
 
         ### Apply transforms.
         img_tensor = composed(img)
@@ -309,7 +314,7 @@ def task(q, pathin, pathout, task_name):
             "end" : end
         }
         log.warning(json.dumps(runtime_stat))
-        q.task_done()
+        # q.task_done()
 
     log.error("ERROR: should never reach this")
 

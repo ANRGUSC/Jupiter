@@ -152,6 +152,8 @@ spec:
           value: "{flag}"
         - name: INPUTNUM
           value: "{inputnum}"
+        - name: GLOBAL_IP
+          value: {global_ip}
       nodeSelector:
         kubernetes.io/hostname: {host}
       restartPolicy: Always

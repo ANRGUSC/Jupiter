@@ -200,7 +200,22 @@ def get_all_execs(app_name):
     # At this point you should not have any of the profiler related service, pod, or deployment running
     return mapping
 
+def get_service_global(app_name):
+    jupiter_config.set_globals()
+    config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
+    namespace = jupiter_config.DEPLOYMENT_NAMESPACE
+    api = client.CoreV1Api()
 
+    service_ip_global = None
+    home_name =app_name+"-globalinfohome"
+    try:
+        resp = api.read_namespaced_service(home_name, namespace)
+        service_ip_global = resp.spec.cluster_ip
+    except ApiException as e:
+        logging.debug(e)
+        logging.debug("Exception Occurred")
+
+    return service_ip_global
 
 
 if __name__ == '__main__':

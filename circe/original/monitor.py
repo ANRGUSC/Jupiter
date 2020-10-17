@@ -41,7 +41,8 @@ import importlib
 import queue
 import _thread
 import multiprocessing
-from multiprocessing import Process, Manager
+from multiprocessing import Process, Manager, Queue
+
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -190,9 +191,9 @@ def transfer_multicast_data(ID_list,user_list,pword_list,source_list, destinatio
     """
     for idx in range(len(ID_list)):
         msg = 'Transfer to IP: %s , username: %s , password: %s, source path: %s , destination path: %s'%(ID_list[idx],user_list[idx],pword_list[idx],source_list[idx], destination_list[idx])
-    if TRANSFER==0:
-        logging.debug('Multicast all the files')
-        transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destination_list)
+    # if TRANSFER==0:
+    logging.debug('Multicast all the files')
+    transfer_multicast_data_scp(ID_list,user_list,pword_list,source_list, destination_list)
     
 
 def demo_help(server,port,topic,msg):
@@ -211,6 +212,7 @@ class Handler1(pyinotify.ProcessEvent):
 
     def process_IN_CLOSE_WRITE(self, event):
         logging.debug("Received file as output - %s." % event.pathname)
+        print('Received file as output')
         print(event.pathname)
         
         """
@@ -353,6 +355,9 @@ class Handler(pyinotify.ProcessEvent):
     """Setup the event handler for all the events
     """
 
+    def __init__(self,queue_mul):
+        self.queue = queue_mul
+
     def process_IN_CLOSE_WRITE(self, event):
         logging.debug("Received file as input - %s." % event.pathname)
         print(event.pathname)
@@ -373,8 +378,7 @@ class Handler(pyinotify.ProcessEvent):
         print(new_file)
         print(temp_name)
 
-        global queue_mul
-        queue_mul.put(new_file)
+        self.queue.put(new_file)
         
         
         # ts = time.time()
@@ -433,7 +437,7 @@ class Handler(pyinotify.ProcessEvent):
         #         # dag_task.join()
         #         filenames = []
 
-        queue_mul.join()
+        #queue_mul.join()
 
 
 def main():
@@ -492,8 +496,7 @@ def main():
     FLASK_DOCKER   = int(config['PORT']['FLASK_DOCKER'])
 
     global manager, queue_mul, input_folder,output_folder,taskname
-    manager = Manager()
-    queue_mul = manager.Queue()
+    queue_mul = multiprocessing.Queue()
 
     input_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'input/')
     output_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)),'output/')
@@ -547,11 +550,7 @@ def main():
         # t.start()
         
 
-        logging.debug("Queue monitoring started")
         print('queue monitoring')
-        mpl = multiprocessing.log_to_stderr()
-        mpl.setLevel(logging.INFO)
-        # global queue_mul,input_folder,output_folder,taskname
         print(task_module)
         print(task_module.task)
         task_process = Process(target=task_module.task, args=(queue_mul, input_folder, output_folder, taskname))
@@ -563,11 +562,9 @@ def main():
         wm.add_watch(input_folder, pyinotify.ALL_EVENTS, rec=True)
         logging.debug('starting the input monitoring process\n')
         print('input mornitoring')
-        eh = Handler()
+        eh = Handler(queue_mul)
         notifier = pyinotify.ThreadedNotifier(wm, eh)
         notifier.start()
-
-        task_process.join()
 
         
         wm1 = pyinotify.WatchManager()
@@ -578,7 +575,9 @@ def main():
         notifier1= pyinotify.Notifier(wm1, eh1)
         notifier1.loop()
 
-        
+        task_process.join()
+
+
 
 
     else:

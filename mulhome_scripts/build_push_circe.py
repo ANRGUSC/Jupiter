@@ -9,6 +9,7 @@ import os
 import configparser
 import jupiter_config
 import logging
+import threading
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -40,6 +41,19 @@ def prepare_global_info():
     logging.debug('The list of ports to be exposed in the circe workers are %s', " ".join(port_list_worker))
 
     return port_list_home, port_list_worker
+
+def build_push_home(home_file,jupiter_config):
+    # build and push in execution_profiler/ directory
+    cmd = "sudo docker build -f %s ../.. -t %s"%(home_file,jupiter_config.HOME_IMAGE)
+    os.system(cmd)
+    os.system("sudo docker push " + jupiter_config.HOME_IMAGE)
+
+
+def build_push_worker(worker_file,jupiter_config):
+    # build and push in execution_profiler/ directory
+    cmd = "sudo docker build -f %s ../.. -t %s"%(worker_file,jupiter_config.WORKER_IMAGE)
+    os.system(cmd)
+    os.system("sudo docker push " + jupiter_config.WORKER_IMAGE)
     
 def build_push_circe():
     """Build CIRCE home and worker image from Docker files and push them to the Dockerhub.
@@ -61,12 +75,22 @@ def build_push_circe():
                       ports = " ".join(port_list_worker))
 
     #--no-cache
-    cmd = "sudo docker build -f %s ../.. -t %s"%(home_file,jupiter_config.HOME_IMAGE)
-    os.system(cmd)
-    os.system("sudo docker push " + jupiter_config.HOME_IMAGE)
-    cmd = "sudo docker build -f %s ../.. -t %s"%(worker_file,jupiter_config.WORKER_IMAGE)
-    os.system(cmd)
-    os.system("sudo docker push " + jupiter_config.WORKER_IMAGE)
+    # cmd = "sudo docker build -f %s ../.. -t %s"%(home_file,jupiter_config.HOME_IMAGE)
+    # os.system(cmd)
+    # os.system("sudo docker push " + jupiter_config.HOME_IMAGE)
+    # cmd = "sudo docker build -f %s ../.. -t %s"%(worker_file,jupiter_config.WORKER_IMAGE)
+    # os.system(cmd)
+    # os.system("sudo docker push " + jupiter_config.WORKER_IMAGE)
+    # build in parallel
+    t1 = threading.Thread(target=build_push_home,
+                          args=(home_file,jupiter_config))
+    t2 = threading.Thread(target=build_push_worker,
+                          args=(worker_file,jupiter_config))
+
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()
 
     # os.system("rm *.Dockerfile")
 if __name__ == '__main__':

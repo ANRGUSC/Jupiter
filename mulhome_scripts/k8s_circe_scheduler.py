@@ -19,6 +19,7 @@ import utilities
 from kubernetes.client.rest import ApiException
 import logging
 from pathlib import Path
+import k8s_get_service_ips 
 
 logging.basicConfig(level = logging.DEBUG)
 
@@ -192,6 +193,7 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
     
     all_node_ips = ':'.join(service_ips.values())
     all_node = ':'.join(service_ips.keys())
+    service_ip_global = k8s_get_service_ips.get_service_global(app_name)
     
     """
     All services have started for CIRCE and deployment is yet to begin
@@ -237,7 +239,8 @@ def k8s_circe_scheduler(dag_info , temp_info,app_name):
             own_ip = service_ips[task],
             all_node = all_node,
             all_node_ips = all_node_ips,
-            flag = str(flag), inputnum = str(inputnum))
+            flag = str(flag), inputnum = str(inputnum),
+            global_ip = service_ip_global)
         # pprint(dep)
         
 
