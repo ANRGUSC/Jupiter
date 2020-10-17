@@ -32,7 +32,7 @@ try:
 
 except ModuleNotFoundError:
     # Python file must be running locally for testing
-    sys.path.append("../../mulhome_scripts/")
+    sys.path.append("../../core/")
     from jupiter_utils import app_config_parser
 
 import ccdag

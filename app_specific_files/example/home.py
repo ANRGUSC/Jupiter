@@ -18,7 +18,7 @@ try:
     from jupiter_utils import app_config_parser
 except ModuleNotFoundError:
     # Python file must be running locally for testing
-    sys.path.append("../../mulhome_scripts/")
+    sys.path.append("../../core/")
     from jupiter_utils import app_config_parser
 
 # Jupiter executes task scripts from many contexts. Instead of relative paths
@@ -54,7 +54,8 @@ def fake_input_generator(task_name, pathout):
 # Run by dispatcher (e.g. CIRCE)
 def task(q, pathin, pathout, task_name):
     # task_name will be "home"
-    # children = app_config.child_tasks(task_name)
+    children = app_config.child_tasks(task_name)
+    log.info(f"My children are {children}")
 
     """
     You can generate files here to be sent to any of the child tasks. Simply

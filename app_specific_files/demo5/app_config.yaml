@@ -1,15 +1,19 @@
 jupiter_config:
   # Jupiter subsystems will be deployed in separate k8s namespaces. Using
-  # different prefixes allows multiple users to use the same k8s cluster. 
-  # e.g. prefix "jason" results in namespaces: 
-  # jason-exec 
-  # jason-circe 
+  # different prefixes allows multiple users to use the same k8s cluster.
+  # e.g. prefix "jason" results in namespaces:
+  # jason-exec
+  # jason-circe
   # jason-profiler
   # jason-mapper
   namespace_prefix: quynh
   # Docker registry prefix for pulling and pushing images. Set to empty string for
   # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
   docker_registry: anrg
+  # Choose mapper: "heft", "heft_balance", or "wave" (not yet supported)
+  task_mapper: heft
+  # Choose CIRCE dispatcher type: "original" (currently the only supported)
+  circe: original
 node_list:
   # "home" is required. All other names should be "node*" where * is some
   # integer.
@@ -19,51 +23,55 @@ node_list:
   node3: workers-s-1vcpu-3gb-3-tor1
   node4: workers-s-1vcpu-3gb-4-lon1
 application:
-  ports:
-    # these ports are to be exposed by app docker containers and also exposed via k8s service
-    # available range: 50000-60000
-    - 57021
-  num_tasks: 46 #base is 18, add 7 everytime adding a new set
-  sources:
-  - name: datasource1
-    dataset: fireengine
-    datapath: data/fireengine
-    stream_image: docker.io/anrg/streams_home:fireengine
-    #this should be a node that jupiter wont schedule nodes on   
-    node_placement: workers-s-1vcpu-3gb-5-fra1 
-  - name: datasource2
-    dataset: schoolbus
-    datapath: data/schoolbus
-    stream_image: docker.io/anrg/streams_home:schoolbus
-    #this should be a node that jupiter wont schedule nodes on   
-    node_placement: workers-s-1vcpu-3gb-6-fra1
-  - name: datasource3
-    dataset: whitewolf
-    datapath: data/whitewolf
-    stream_image: docker.io/anrg/streams_home:whitewolf
-    #this should be a node that jupiter wont schedule nodes on   
-    node_placement: workers-s-1vcpu-3gb-7-ams3 
-  - name: datasource4
-    dataset: hyena
-    datapath: data/hyena
-    stream_image: docker.io/anrg/streams_home:hyena
-    #this should be a node that jupiter wont schedule nodes on   
-    node_placement: workers-s-1vcpu-3gb-8-nyc3
-  - name: datasource5
-    dataset: tiger
-    datapath: data/tiger
-    stream_image: docker.io/anrg/streams_home:tiger
-    #this should be a node that jupiter wont schedule nodes on   
-    node_placement: workers-s-1vcpu-3gb-9-lon1
+  # List of port mappings in format. Used for creating additional k8s services
+  # for your application. i.e., "9000:8000" will create a service with port 9000
+  # which targets port 8000 in all application containers.
+  # Note: [PORT_MAPPINGS] section in jupiter_config.ini cannot be used.
+  port_mappings:
   task_list:
-    home: home  #TODO
-    sinks:
-    worker_tasks:
+    home:
+      base_script: home.py
+      children:
+    nondag_tasks:
+    - name: datasource1 # TODO: suggest using dataset name as the name instaed
+      dataset: fireengine # TODO: remove dataset/datapath and use name to differentiate in code
+      datapath: data/fireengine
+      base_script: datasource.py #TODO: create a datasource script
+      #this should be a node that jupiter wont schedule nodes on
+      k8s_host: workers-s-1vcpu-3gb-5-fra1
+    - name: datasource2
+      # dataset: schoolbus
+      # datapath: data/schoolbus
+      # stream_image: docker.io/anrg/streams_home:schoolbus
+      base_script: datasource.py
+      #this should be a node that jupiter wont schedule nodes on
+      k8s_host: workers-s-1vcpu-3gb-6-fra1
+    - name: datasource3
+      # dataset: whitewolf
+      # datapath: data/whitewolf
+      # stream_image: docker.io/anrg/streams_home:whitewolf
+      base_script: datasource.py
+      #this should be a node that jupiter wont schedule nodes on
+      k8s_host: workers-s-1vcpu-3gb-7-ams3
+    - name: datasource4
+      # dataset: hyena
+      # datapath: data/hyena
+      # stream_image: docker.io/anrg/streams_home:hyena
+      base_script: datasource.py
+      #this should be a node that jupiter wont schedule nodes on
+      k8s_host: workers-s-1vcpu-3gb-8-nyc3
+    - name: datasource5
+      # dataset: tiger
+      # datapath: data/tiger
+      # stream_image: docker.io/anrg/streams_home:tiger
+      base_script: datasource.py
+      #this should be a node that jupiter wont schedule nodes on
+      k8s_host: workers-s-1vcpu-3gb-9-lon1
+    # Tasks that comprise the application DAG
+    dag_tasks:
       - name: master
         # node_placement: n2
-        base_script: master.py 
-        inputs_to_wait_for: 9
-        output_policy: BATCHED_CUSTOM_ORDER
+        base_script: master.py
         children:  # child order determines round robin sequence
           - resnet0
           - resnet1
@@ -75,488 +83,227 @@ application:
           - resnet7
           - resnet8
           - collage
-        infile_prefix: n0
-        outfile_prefix: master
-        dag_task: True
       - name: resnet0
-        base_script: resnet0.py 
-        inputs_to_wait_for: 1
-        # output_policy: UNICAST
+        base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
           - storeclass3
           - storeclass4
           - storeclass5
-        infile_prefix: master
-        outfile_prefix: resnet0
-        dag_task: True
       - name: resnet1
-        base_script: resnet0.py
-        inputs_to_wait_for: 1
-        # output_policy: UNICAST
+        base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
           - storeclass3
           - storeclass4
           - storeclass5
-        infile_prefix: master
-        outfile_prefix: resnet1
-        dag_task: True
       - name: resnet2
-        base_script: resnet0.py
-        inputs_to_wait_for: 1
-        # output_policy: UNICAST
+        base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
           - storeclass3
           - storeclass4
           - storeclass5
-        infile_prefix: master
-        outfile_prefix: resnet2
-        dag_task: True
       - name: resnet3
-        base_script: resnet0.py
-        inputs_to_wait_for: 1
-        # output_policy: UNICAST
+        base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
           - storeclass3
           - storeclass4
           - storeclass5
-        infile_prefix: master
-        outfile_prefix: resnet3
-        dag_task: True
       - name: resnet4
-        base_script: resnet0.py
-        inputs_to_wait_for: 1
-        # output_policy: UNICAST
+        base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
           - storeclass3
           - storeclass4
           - storeclass5
-        infile_prefix: master
-        outfile_prefix: resnet4
-        dag_task: True
       - name: resnet5
-        base_script: resnet0.py
-        inputs_to_wait_for: 1
-        # output_policy: UNICAST
+        base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
           - storeclass3
           - storeclass4
           - storeclass5
-        infile_prefix: master
-        outfile_prefix: resnet5
-        dag_task: True
       - name: resnet6
-        base_script: resnet0.py
-        inputs_to_wait_for: 1
-        # output_policy: UNICAST
+        base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
           - storeclass3
           - storeclass4
           - storeclass5
-        infile_prefix: master
-        outfile_prefix: resnet6
-        dag_task: True
       - name: resnet7
-        base_script: resnet0.py
-        inputs_to_wait_for: 1
-        # output_policy: UNICAST
+        base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
           - storeclass3
           - storeclass4
           - storeclass5
-        infile_prefix: master
-        outfile_prefix: resnet7
-        dag_task: True
       - name: resnet8
-        base_script: resnet0.py
-        inputs_to_wait_for: 1
-        # output_policy: UNICAST
+        base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
           - storeclass3
           - storeclass4
           - storeclass5
-        infile_prefix: master
-        outfile_prefix: resnet8
-        dag_task: True
       - name: collage
         base_script: collage.py
-        inputs_to_wait_for: 1
-        # output_policy: POINT_TO_POINT_BROADCAST
-        infile_prefix: master
-        outfile_prefix: collage
-        dag_task: True
       - name: storeclass1
-        base_script: storeclass1.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
+        base_script: storeclass.py
         children:
           - lccenc1
-        infile_prefix: resnet
-        outfile_prefix: storeclass1
-        dag_task: True
       - name: storeclass2
-        base_script: storeclass1.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
+        base_script: storeclass.py
         children:
           - lccenc2
-        infile_prefix: resnet
-        outfile_prefix: storeclass2
-        dag_task: True
       - name: storeclass3
-        base_script: storeclass1.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
+        base_script: storeclass.py
         children:
           - lccenc3
-        infile_prefix: resnet
-        outfile_prefix: storeclass3
-        dag_task: True
       - name: storeclass4
-        base_script: storeclass1.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
+        base_script: storeclass.py
         children:
           - lccenc4
-        infile_prefix: resnet
-        outfile_prefix: storeclass4
-        dag_task: True
       - name: storeclass5
-        base_script: storeclass1.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
+        base_script: storeclass.py
         children:
           - lccenc5
-        infile_prefix: resnet
-        outfile_prefix: storeclass5
-        dag_task: True
       - name: lccenc1
-        base_script: lccenc1.py
-        inputs_to_wait_for: 4
-        output_policy: BATCHED_CUSTOM_ORDER
+        base_script: lccenc.py
         children:
           - score1a
           - score1b
           - score1c
-        infile_prefix: storeclass1
-        outfile_prefix: lccenc1
-        dag_task: True
       - name: lccenc2
-        base_script: lccenc1.py
-        inputs_to_wait_for: 4
-        output_policy: BATCHED_CUSTOM_ORDER
+        base_script: lccenc.py
         children:
           - score2a
           - score2b
           - score2c
-        infile_prefix: storeclass2
-        outfile_prefix: lccenc2
-        dag_task: True
       - name: lccenc3
-        base_script: lccenc1.py
-        inputs_to_wait_for: 4
-        output_policy: BATCHED_CUSTOM_ORDER
+        base_script: lccenc.py
         children:
           - score3a
           - score3b
           - score3c
-        infile_prefix: storeclass3
-        outfile_prefix: lccenc3
-        dag_task: True
       - name: lccenc4
-        base_script: lccenc1.py
-        inputs_to_wait_for: 4
-        output_policy: BATCHED_CUSTOM_ORDER
+        base_script: lccenc.py
         children:
           - score4a
           - score4b
           - score4c
-        infile_prefix: storeclass4
-        outfile_prefix: lccenc4
-        dag_task: True
       - name: lccenc5
-        base_script: lccenc1.py
-        inputs_to_wait_for: 4
-        output_policy: BATCHED_CUSTOM_ORDER
+        base_script: lccenc.py
         children:
           - score5a
           - score5b
           - score5c
-        infile_prefix: storeclass5
-        outfile_prefix: lccenc5
-        dag_task: True
       - name: score1a
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg1
-        infile_prefix: lccenc1
-        outfile_prefix: score1a
-        dag_task: True
       - name: score1b
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg1
-        infile_prefix: lccenc1
-        outfile_prefix: score1b
-        dag_task: True
       - name: score1c
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg1
-        infile_prefix: lccenc1
-        outfile_prefix: score1c
-        dag_task: True
       - name: score2a
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg2
-        infile_prefix: lccenc2
-        outfile_prefix: score2a
-        dag_task: True
       - name: score2b
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg2
-        infile_prefix: lccenc2
-        outfile_prefix: score2b
-        dag_task: True
       - name: score2c
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg2
-        infile_prefix: lccenc2
-        outfile_prefix: score2c
-        dag_task: True
       - name: score3a
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg3
-        infile_prefix: lccenc3
-        outfile_prefix: score3a
-        dag_task: True
       - name: score3b
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg3
-        infile_prefix: lccenc3
-        outfile_prefix: score3b
-        dag_task: True
       - name: score3c
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg3
-        infile_prefix: lccenc3
-        outfile_prefix: score3c
-        dag_task: True
       - name: score4a
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg4
-        infile_prefix: lccenc4
-        outfile_prefix: score4a
-        dag_task: True
       - name: score4b
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg4
-        infile_prefix: lccenc4
-        outfile_prefix: score4b
-        dag_task: True
       - name: score4c
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg4
-        infile_prefix: lccenc4
-        outfile_prefix: score4c
-        dag_task: True
       - name: score5a
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg5
-        infile_prefix: lccenc5
-        outfile_prefix: score5a
-        dag_task: True
       - name: score5b
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg5
-        infile_prefix: lccenc5
-        outfile_prefix: score5b
-        dag_task: True
       - name: score5c
-        base_script: score1a.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: score.py
+        children:
           - preagg5
-        infile_prefix: lccenc5
-        outfile_prefix: score5c
-        dag_task: True
       - name: preagg1
-        base_script: preagg1.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: preagg.py
+        children:
           - lccdec1
-        infile_prefix: score1
-        outfile_prefix: preagg1
-        dag_task: True
       - name: preagg2
-        base_script: preagg1.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: preagg.py
+        children:
           - lccdec2
-        infile_prefix: score2
-        outfile_prefix: preagg2
-        dag_task: True
       - name: preagg3
-        base_script: preagg1.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: preagg.py
+        children:
           - lccdec3
-        infile_prefix: score3
-        outfile_prefix: preagg3
-        dag_task: True
       - name: preagg4
-        base_script: preagg1.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: preagg.py
+        children:
           - lccdec4
-        infile_prefix: score4
-        outfile_prefix: preagg4
-        dag_task: True
       - name: preagg5
-        base_script: preagg1.py
-        inputs_to_wait_for: 1
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: preagg.py
+        children:
           - lccdec5
-        infile_prefix: score5
-        outfile_prefix: preagg5
-        dag_task: True
       - name: lccdec1
-        base_script: lccdec1.py
-        inputs_to_wait_for: 2
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: lccdec.py
+        children:
           - home
-        infile_prefix: preagg1
-        outfile_prefix: lccdec1
-        dag_task: True
       - name: lccdec2
-        base_script: lccdec1.py
-        inputs_to_wait_for: 2
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: lccdec.py
+        children:
           - home
-        infile_prefix: preagg2
-        outfile_prefix: lccdec2
-        dag_task: True
       - name: lccdec3
-        base_script: lccdec1.py
-        inputs_to_wait_for: 2
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: lccdec.py
+        children:
           - home
-        infile_prefix: preagg3
-        outfile_prefix: lccdec3
-        dag_task: True
       - name: lccdec4
-        base_script: lccdec1.py
-        inputs_to_wait_for: 2
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: lccdec.py
+        children:
           - home
-        infile_prefix: preagg4
-        outfile_prefix: lccdec4
-        dag_task: True
       - name: lccdec5
-        base_script: lccdec1.py
-        inputs_to_wait_for: 2
-        output_policy: POINT_TO_POINT_BROADCAST
-        children: 
+        base_script: lccdec.py
+        children:
           - home
-        infile_prefix: preagg5
-        outfile_prefix: lccdec5
-        dag_task: True
-    # worker_tasks:
-    #   - name: task0
-    #     base_script: task.py 
-    #     node_placement: n2
-    #     inputs_to_wait_for: 1
-    #     output_policy: BATCHED_ROUND_ROBIN
-    #     children:  # child order determines round robin sequence
-    #       - task1
-    #       - task2
-    #   - name: task1
-    #     base_script: task.py 
-    #     inputs_to_wait_for: 1
-    #     output_policy: BATCHED_ROUND_ROBIN
-    #     children:
-    #       - task3
-    #   - name: task2
-    #     base_script: task.py 
-    #     inputs_to_wait_for: 1
-    #     output_policy: BATCHED_ROUND_ROBIN
-    #     children:
-    #       - task3
-    #   - name: task3
-    #     base_script: task.py 
-    #     inputs_to_wait_for: 3
-    #     output_policy: BATCHED_ROUND_ROBIN
-    #     children:
-    #       - task4
-    #   - name: task4
-    #     base_script: task.py 
-    #     inputs_to_wait_for: 3
-    #     output_policy: BATCHED_ROUND_ROBIN
-    #     children:
-    #       - home

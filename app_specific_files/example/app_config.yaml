@@ -10,7 +10,7 @@ jupiter_config:
   # Docker registry prefix for pulling and pushing images. Set to empty string for
   # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
   docker_registry: anrg
-  # Choose mapper: "heft", "heft_balance", or "wave" (not yet supported)
+  # Choose mapper: "heft", "heft_balance", or "wave" (wave not yet supported)
   task_mapper: heft
   # Choose CIRCE dispatcher type: "original" (currently the only supported)
   circe: original
@@ -30,7 +30,7 @@ application:
   # which targets port 8000 in all application containers.
   # Note: [PORT_MAPPINGS] section in jupiter_config.ini cannot be used.
   port_mappings:
-    - 9000:8000
+    - 9000:8000 # these example ports actually not used
   tasks:
     # Custom tasks not part of the DAG and are pinned to a specific node. These
     # tasks are not actored into scheduling algorithms but have access to
@@ -41,6 +41,9 @@ application:
         base_script: custom.py
         # Can be hosts listed under node_map or not
         k8s_host: k8sworkersb-ubuntu-s-4vcpu-8gb-4-nyc3
+        # Only home or dag_tasks allowed as children for any task
+        children:
+          - task0
     home:
       base_script: home.py
       children:

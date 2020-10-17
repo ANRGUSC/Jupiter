@@ -7,7 +7,6 @@ import logging
 import glob
 import time
 import json
-import ccdag
 
 #task library import
 import torch
@@ -21,6 +20,7 @@ from pathlib import Path
 global circe_home_ip, circe_home_ip_port, taskname
 taskname = Path(__file__).stem
 
+
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.DEBUG)
@@ -28,11 +28,14 @@ log.setLevel(logging.DEBUG)
 try:
     # successful if running in container
     sys.path.append("/jupiter/build")
+    sys.path.append("/jupiter/build/app_specific_files/")
     from jupiter_utils import app_config_parser
 except ModuleNotFoundError:
     # Python file must be running locally for testing
     sys.path.append("../../core/")
     from jupiter_utils import app_config_parser
+
+import ccdag
 
 # Jupiter executes task scripts from many contexts. Instead of relative paths
 # in your code, reference your entire app directory using your base script's
@@ -46,6 +49,13 @@ app_config = app_config_parser.AppConfig(APP_DIR)
 
 config = configparser.ConfigParser()
 config.read(ccdag.JUPITER_CONFIG_INI_PATH)
+
+print(config.sections())
+import os.path
+if os.path.isfile(ccdag.JUPITER_CONFIG_INI_PATH):
+    print('File found')
+else:
+    print('File not found')
 global FLASK_DOCKER, FLASK_SVC
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])

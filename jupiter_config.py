@@ -9,7 +9,7 @@ from os import path
 import os
 import configparser
 import logging
-from mulhome_scripts.jupiter_utils import app_config_parser
+from core.jupiter_utils import app_config_parser
 
 logging.basicConfig(level=logging.INFO)
 
