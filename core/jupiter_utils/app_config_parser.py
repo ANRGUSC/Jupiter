@@ -35,7 +35,7 @@ class AppConfig:
         # developers: manually set a non-empty string to override docker tags.
         # this is useful for creating unique docker tags when multiple people
         # are coding.
-        self.tag_extension = "a6e"
+        self.tag_extension = ""
 
     def get_dag_tasks(self):
         """
