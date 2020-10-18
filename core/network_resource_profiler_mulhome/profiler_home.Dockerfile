@@ -32,17 +32,12 @@ RUN mkdir -p /jupiter
 ADD mongod /jupiter/central_mongod
 RUN chmod +x /jupiter/central_mongod
 
-# Add all files in the ./build/ folder. This folder is created by
-# build_push_exec.py and contains copies of all files from Jupiter and the
-# application. If you need to add more files, make the script copy files into
-# ./build/ instead of adding it manually in this Dockerfile.
-COPY build/ /jupiter/build/
-
 # Prepare network profiling code
 ADD central_input /jupiter/central_input
 ADD central_scheduler.py /jupiter/central_scheduler.py
 ADD generate_link_list.py /jupiter/generate_link_list.py
 ADD keep_alive.py /jupiter/keep_alive.py
+
 
 RUN mkdir -p /jupiter/scheduling
 RUN mkdir -p /jupiter/parameters
@@ -56,13 +51,23 @@ ADD droplet_scp_time_transfer /jupiter/droplet_scp_time_transfer
 RUN chmod +x /jupiter/droplet_scp_time_transfer
 RUN chmod +x /jupiter/droplet_generate_random_files
 
+# Add all files in the ./build/ folder. This folder is created by
+# build_push_exec.py and contains copies of all files from Jupiter and the
+# application. If you need to add more files, make the script copy files into
+# ./build/ instead of adding it manually in this Dockerfile.
+COPY build/ /jupiter/build/
+# RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
+
 # Running docker
 ADD start_home.sh /jupiter/start.sh
 RUN chmod +x /jupiter/start.sh
 
+
 WORKDIR /jupiter
 
-# k8s exposes ports for us
-# EXPOSE 22 27017 8888
+
+# tell the port number the container should expose
+
+EXPOSE 22 27017 8888
 
 CMD ["./start.sh"]

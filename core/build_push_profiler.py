@@ -7,7 +7,6 @@ import os
 import logging
 import shutil
 import threading
-import signal
 
 import sys
 sys.path.append("../")
@@ -19,9 +18,6 @@ log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
 def build_push_home(tag):
-    # speed up build using existing image
-    os.system("docker pull {}".format(tag))
-
     # build and push in execution_profiler/ directory
     err = os.system(
         "docker build -t {} -f network_resource_profiler_mulhome/profiler_home.Dockerfile "
@@ -31,12 +27,10 @@ def build_push_home(tag):
         log.fatal("home container build failed!")
         os.kill(os.getpid(), signal.SIGKILL)
     os.system("docker push {}".format(tag))
+    
 
 
 def build_push_worker(tag):
-    # speed up build using existing image
-    os.system("docker pull {}".format(tag))
-
     # build and push in execution_profiler/ directory
     err = os.system(
         "docker build -t {} -f network_resource_profiler_mulhome/profiler_worker.Dockerfile "
@@ -61,7 +55,6 @@ def main(app_dir):
     shutil.copytree("{}".format(app_dir),
                     "network_resource_profiler_mulhome/build/app_specific_files/")
     shutil.copy("../jupiter_config.ini", "network_resource_profiler_mulhome/build/")
-    shutil.copy("../nodes.txt", "network_resource_profiler_mulhome/build/")
     shutil.copytree("./jupiter_utils/",
                     "network_resource_profiler_mulhome/build/jupiter_utils/")
 

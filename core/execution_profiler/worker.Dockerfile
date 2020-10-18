@@ -3,7 +3,7 @@ FROM ubuntu:18.04
 # Install required libraries
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
-RUN apt-get install -yqq openssh-client openssh-server wget net-tools sshpass
+RUN apt-get -yqq update && apt-get install -yqq openssh-client openssh-server wget net-tools sshpass libgl1-mesa-glx
 RUN apt-get install -y vim stress
 
 # Authentication
@@ -17,12 +17,16 @@ ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
 # install execution profiler requirements
+RUN pip3 install --upgrade pip
 ADD requirements.txt /jupiter/requirements.txt
 RUN pip3 install -r /jupiter/requirements.txt
+
+ADD profiler_worker.py /jupiter/profiler_worker.py
 
 # install app specific requirements
 COPY build_requirements/requirements.txt /jupiter/build/app_specific_files/
 RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
+
 
 ADD profiler_worker.py /jupiter/profiler_worker.py
 

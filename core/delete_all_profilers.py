@@ -23,4 +23,4 @@ if __name__ == '__main__':
     os.system("kubectl delete --all services --namespace={}".format(namespace))
     os.system("kubectl delete --all deployments --namespace={}".format(namespace))
     log.info("Deleting namespace (will complete when all pods terminate)...")
-    os.system(f"kubectl delete namespace {namespace}")
+    #os.system(f"kubectl delete namespace {namespace}")

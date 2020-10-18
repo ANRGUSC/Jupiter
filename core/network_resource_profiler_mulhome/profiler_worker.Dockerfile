@@ -17,6 +17,7 @@ RUN apt-get install -y openssh-server mongodb net-tools sshpass nano virtualenv 
 ADD requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
+
 # Authentication
 RUN echo 'root:PASSWORD' | chpasswd
 RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
@@ -32,11 +33,6 @@ RUN mkdir -p /jupiter
 ADD mongod /jupiter/droplet_mongod
 RUN chmod +x /jupiter/droplet_mongod
 
-# Add all files in the ./build/ folder. This folder is created by
-# build_push_exec.py and contains copies of all files from Jupiter and the
-# application. If you need to add more files, make the script copy files into
-# ./build/ instead of adding it manually in this Dockerfile.
-COPY build/ /jupiter/build/
 
 # Prepare network profiling code
 ADD droplet_generate_random_files /jupiter/droplet_generate_random_files
@@ -53,6 +49,14 @@ RUN mkdir -p /jupiter/generated_test
 RUN mkdir -p /jupiter/received_test
 RUN mkdir -p /jupiter/scheduling
 
+# Add all files in the ./build/ folder. This folder is created by
+# build_push_exec.py and contains copies of all files from Jupiter and the
+# application. If you need to add more files, make the script copy files into
+# ./build/ instead of adding it manually in this Dockerfile.
+COPY build/ /jupiter/build/
+# RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
+
+
 #Running docker
 ADD start_worker.sh /jupiter/start.sh
 RUN chmod +x /jupiter/start.sh
@@ -60,7 +64,7 @@ RUN chmod +x /jupiter/start.sh
 
 WORKDIR /jupiter
 
-# k8s exposes ports for us
-# EXPOSE
+# tell the port number the container should expose
+EXPOSE 22 27017 8888
 
 CMD ["./start.sh"]

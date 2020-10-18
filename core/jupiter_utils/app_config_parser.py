@@ -58,6 +58,18 @@ class AppConfig:
 
         return tasks
 
+    def get_datasources(self):
+        datasources = []
+        try:
+            tasks = self.cfg['application']['task_list']['nondag_tasks']
+            for task in tasks:
+                if task['name'].startswith('datasource'):
+                    datasources.append(task)
+        except TypeError:
+            log.info("no non-DAG tasks found")
+
+        return datasources
+
     def get_num_nodes(self):
         return len(self.cfg['node_map'])
 

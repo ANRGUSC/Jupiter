@@ -20,14 +20,13 @@ logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
-
 def check_workers_running(app_config, namespace):
     """Checks if all worker tasks are up and running.
 
     Arguments:
         app_config {app_config_parser.AppConfig} -- app config objectj
         namespace {string} -- k8s namespace of execution profiler
-
+    
     Returns:
         bool -- True if all workers are running, False if not.
     """
@@ -37,29 +36,36 @@ def check_workers_running(app_config, namespace):
     core_v1_api = client.CoreV1Api()
 
     result = True
-    for node in app_config.node_map():
+    for node in app_config.node_list():
         if node.startswith('home'):
             # ignore checking on home status
             continue
 
-        label = app_config.app_name + '-' + node + "drupe_profiler"
+        label = app_config.app_name + '-' + node
 
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector=label)
         # if a pod is running just delete it
         if resp.items:
             a = resp.items[0]
             if a.status.phase != "Running":
-                log.debug("Execution Profiler pod not yet running on {}".format(node))
+                log.debug("DRUPE pod not yet running on {}".format(node))
+                result = False
+
+    for datasource in app_config.get_source_names():
+        label = app_config.app_name + '-' + datasource
+
+        resp = core_v1_api.list_namespaced_pod(namespace, label_selector=label)
+        # if a pod is running just delete it
+        if resp.items:
+            a = resp.items[0]
+            if a.status.phase != "Running":
+                log.debug("DRUPE pod not yet running on {}".format(node))
                 result = False
 
     if result is True:
         log.info("All drupe profiler workers successfully running.")
 
     return result
-
-def write_file(filename,message,mode):
-    with open(filename,mode) as f:
-        f.write(message)
 
 def main():
     """
@@ -84,11 +90,6 @@ def main():
     """
 
     logging.debug('Starting to deploy DRUPE')
-    if jupiter_config.BOKEH == 3:
-        latency_file = utilities.prepare_stat_path(node_list,homes,dag)
-        start_time = time.time()
-        msg = 'DRUPE deploystart %f \n'%(start_time)
-        write_file(latency_file,msg,'w')
 
 
     all_profiler_map = dict()
@@ -203,12 +204,6 @@ def main():
 
     pprint(all_profiler_map)
     logging.debug('Successfully deploy DRUPE ')
-    if jupiter_config.BOKEH == 3:
-        end_time = time.time()
-        msg = 'DRUPE deployend %f \n'%(end_time)
-        write_file(latency_file,msg,'a')
-        deploy_time = end_time - start_time
-        logging.debug('Time to deploy DRUPE '+ str(deploy_time))
     return(all_profiler_map)
 
 if __name__ == '__main__':
