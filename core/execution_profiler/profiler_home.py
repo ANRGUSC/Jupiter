@@ -170,25 +170,25 @@ def main():
 
     # hack: set nodes that sources are to be scheduled on as having high
     # execution times so HEFT does not schedule anything on them
-    # sources = app_config.get_source_names() # TODO: fix this function!
-    # log.info(f"forcing high execution times for datasources: {sources})
-    # for src in sources:
-    #     src_path = "/jupiter/profiler_" + src + ".txt"
-    #     myfile = open(src_path, "w")
-    #     myfile.write('task,time(sec),output_data (Kbit)\n')
+    data_sources = app_config.get_datasources() # TODO: fix this function!
+    log.info(f"forcing high execution times for datasources")
+    for src in data_sources:
+        src_path = "/jupiter/profiler_" + src['name'] + ".txt"
+        myfile = open(src_path, "w")
+        myfile.write('task,time(sec),output_data (Kbit)\n')
 
-    #     big_number = '100000000000000'
-    #     for task in task_list:
-    #         mytime = int(big_number)
-    #         sum_output_data = int(big_number)
-    #         line = task['name'] + ',' + str(mytime) + ',' + str(sum_output_data) + '\n'
-    #         myfile.write(line)
-    #         myfile.flush()
-    #     myfile.close()
+        big_number = '100000000000000'
+        for task in task_list:
+            mytime = int(big_number)
+            sum_output_data = int(big_number)
+            line = task['name'] + ',' + str(mytime) + ',' + str(sum_output_data) + '\n'
+            myfile.write(line)
+            myfile.flush()
+        myfile.close()
 
-    #     update_mongo(src_path)
-    #     processed_file = PROFILER_FILES_PROCESSED_DIR + "profiler_" + src + '.txt'
-    #     shutil.move(src_path, processed_file)
+        update_mongo(src_path)
+        processed_file = PROFILER_FILES_PROCESSED_DIR + "profiler_" + src['name'] + '.txt'
+        shutil.move(src_path, processed_file)
 
     log.debug('profiler_home: Sending output files back to the master node...')
 

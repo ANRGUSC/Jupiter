@@ -144,6 +144,7 @@ if __name__ == '__main__':
     drupe_worker_ips = [info.split(":") for info in drupe_worker_ips]
     drupe_worker_names = [info[0] for info in drupe_worker_ips]
     drupe_pod_ips = [info[1] for info in drupe_worker_ips]
+
     worker_map = dict(zip(drupe_pod_ips, drupe_worker_names))
     num_workers = len(drupe_worker_ips)
     drupe_home_ip = os.environ['DRUPE_HOME_IP']

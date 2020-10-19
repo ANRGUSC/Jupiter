@@ -61,7 +61,7 @@ class AppConfig:
     def get_datasources(self):
         datasources = []
         try:
-            tasks = self.cfg['application']['task_list']['nondag_tasks']
+            tasks = self.cfg['application']['tasks']['nondag_tasks']
             for task in tasks:
                 if task['name'].startswith('datasource'):
                     datasources.append(task)
@@ -172,6 +172,14 @@ class AppConfig:
             except ValueError:
                 pass  # do nothing
         return task_map
+
+    def all_drupe_tasks(self):
+        drupe_tasks = []
+        for task in self.get_dag_tasks():
+            drupe_tasks.append(task['name'])
+        for ds in self.get_datasources():
+            drupe_tasks.append(ds['name'])
+        return drupe_tasks
 
     def base_script(self, task_name):
         if task_name == "home":

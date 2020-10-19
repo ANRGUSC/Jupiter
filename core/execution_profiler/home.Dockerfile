@@ -18,10 +18,12 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 # install execution profiler requirements
 ADD requirements.txt /jupiter/requirements.txt
+RUN pip3 install --upgrade pip
 RUN pip3 install -r /jupiter/requirements.txt
 
 # install app specific requirements
 COPY build_requirements/requirements.txt /jupiter/build/app_specific_files/
+RUN pip3 install --upgrade pip
 RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
 
 # Prepare MongoDB

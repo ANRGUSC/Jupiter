@@ -2,8 +2,9 @@
 FROM ubuntu:18.04
 
 RUN apt-get -yqq update
-RUN apt-get -yqq install python3.6-dev python3-pip libssl-dev libffi-dev
-RUN apt-get install -y openssh-server sshpass nano vim
+#RUN apt-get -yqq install python3.6-dev python3-pip libssl-dev libffi-dev
+RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
+RUN apt-get install -y openssh-server sshpass nano
 
 # Authentication
 RUN echo 'root:PASSWORD' | chpasswd
@@ -17,6 +18,7 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 # install CIRCE requirements
 ADD requirements.txt /jupiter/requirements.txt
+RUN pip3 install --upgrade pip
 RUN pip3 install -r /jupiter/requirements.txt
 
 # Create the input and output directories
@@ -28,6 +30,7 @@ RUN chmod +x /jupiter/start.sh
 
 # install app specific requirements
 COPY build_requirements/requirements.txt /jupiter/build/app_specific_files/
+RUN pip3 install --upgrade pip
 RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
 
 # Add all files in the ./build/ folder. This folder is created by

@@ -50,7 +50,6 @@ app_config = app_config_parser.AppConfig(APP_DIR)
 config = configparser.ConfigParser()
 config.read(ccdag.JUPITER_CONFIG_INI_PATH)
 
-print(config.sections())
 import os.path
 if os.path.isfile(ccdag.JUPITER_CONFIG_INI_PATH):
     print('File found')

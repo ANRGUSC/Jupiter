@@ -44,9 +44,9 @@ def concat_worker_names(app_config):
     """
     node_names = ""
     for name, k8s_host in app_config.node_map().items():
-        if name == "home":
-            continue
         node_names = f"{node_names}:{name}"
+    for ds in app_config.get_datasources():
+        node_names = f"{node_names}:{ds['name']}"
     return node_names.lstrip(':')
 
 
@@ -63,9 +63,15 @@ def drupe_worker_names_to_ips(app_config, core_v1_api):
     namespace = app_config.namespace_prefix() + "-profiler"
 
     for name, host in app_config.node_map().items():
-        if name == "home":
-            continue
         svc_name = app_config.app_name + '-' + name
+        try:
+            resp = core_v1_api.read_namespaced_service(svc_name, namespace)
+            name_to_ip = f"{name_to_ip} {name}:{resp.spec.cluster_ip}"
+        except ApiException:
+            log.error("Could not find drupe service IP")
+
+    for ds in app_config.get_datasources():
+        svc_name = app_config.app_name + '-' + ds['name']
         try:
             resp = core_v1_api.read_namespaced_service(svc_name, namespace)
             name_to_ip = f"{name_to_ip} {name}:{resp.spec.cluster_ip}"

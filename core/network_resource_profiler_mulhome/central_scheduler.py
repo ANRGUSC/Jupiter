@@ -437,31 +437,16 @@ def main():
     
     
     nodes_file = 'central_input/nodes.txt'
-    homes_list = dict()
     node_list = dict()
     with open(nodes_file, 'r') as f:
-        # first_line = f.readline()
         lines = f.readlines()
         for line in lines:
-            print(line)
             info = line.rstrip().split(',')
             node_list[info[0]] = [info[1],info[2]]
-            if info[0].startswith('home'):
-                homes_list[info[0]] = [info[1],info[2]]
 
-    df_homes = pd.DataFrame.from_dict(homes_list, orient='index')  
     df_nodes = pd.DataFrame.from_dict(node_list, orient='index')
-
-    print(df_nodes)
-    print(df_homes)
-
-    df_homes.index.name = 'Tag'  
     df_nodes.index.name = 'Tag'
-    df_homes.columns = ['Node', 'Region']
     df_nodes.columns = ['Node', 'Region']
-
-
-    
 
     # load the list of links from the csv file
     links_info = 'central_input/link_list.txt'
@@ -489,6 +474,7 @@ def main():
     for cur_node, row in df_nodes.iterrows():
         # create separate scheduling folders for separate nodes
         cur_schedule = os.path.join(scheduling_folder, node_list.get(cur_node)[0])
+        logging.debug(cur_node)
         if not os.path.exists(cur_schedule):
             os.makedirs(cur_schedule)
 
@@ -508,6 +494,7 @@ def main():
         scheduler_file = os.path.join(cur_schedule, output_file)
 
         schedule_info.to_csv(scheduler_file, header = False, index = False)
+        del schedule_info
 
 
 

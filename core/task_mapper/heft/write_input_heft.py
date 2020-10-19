@@ -125,7 +125,7 @@ if __name__ == '__main__':
         if name != "home":
             worker_names.append(name)
 
-    dag_task_map = app_config.dag_task_map()
+    drupe_tasks =app_config.all_drupe_tasks()
 
     log.info('Creating input HEFT file...')
     while True:
@@ -150,7 +150,7 @@ if __name__ == '__main__':
                 network_info,
                 new_execution,
                 task_names,
-                dag_task_map,
+                drupe_tasks,
                 name_to_id,
                 worker_node_names
             )

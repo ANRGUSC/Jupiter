@@ -2,8 +2,9 @@ __author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhas
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
+
+
 from kubernetes import client, config
-import os
 from pprint import *
 from kubernetes.client.rest import ApiException
 from kubernetes.client.apis import core_v1_api
@@ -19,6 +20,7 @@ import logging
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
+
 
 def check_workers_running(app_config, namespace):
     """Checks if all worker tasks are up and running.
@@ -36,7 +38,7 @@ def check_workers_running(app_config, namespace):
     core_v1_api = client.CoreV1Api()
 
     result = True
-    for node in app_config.node_list():
+    for node in app_config.node_map():
         if node.startswith('home'):
             # ignore checking on home status
             continue
@@ -51,8 +53,8 @@ def check_workers_running(app_config, namespace):
                 log.debug("DRUPE pod not yet running on {}".format(node))
                 result = False
 
-    for datasource in app_config.get_source_names():
-        label = app_config.app_name + '-' + datasource
+    for datasource in app_config.get_datasources():
+        label = app_config.app_name + '-' + datasource['name']
 
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector=label)
         # if a pod is running just delete it
@@ -67,17 +69,21 @@ def check_workers_running(app_config, namespace):
 
     return result
 
-def main():
-    """
-        Deploy DRUPE in the system.
-    """
+def write_file(filename,message,mode):
+    with open(filename,mode) as f:
+        f.write(message)
 
+def main(): 
+    """
+        Deploy DRUPE in the system. 
+    """
+    
 
 
     # Parse app's app_config.yaml
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     namespace = app_config.namespace_prefix() + "-profiler"
-    os.system(f"kubectl create namespace {namespace}")
+
 
     # Load kube config before executing k8s client API calls.
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
@@ -90,6 +96,11 @@ def main():
     """
 
     logging.debug('Starting to deploy DRUPE')
+    if jupiter_config.BOKEH == 3:
+        latency_file = utilities.prepare_stat_path(node_list,homes,dag)
+        start_time = time.time()
+        msg = 'DRUPE deploystart %f \n'%(start_time)
+        write_file(latency_file,msg,'w')
 
 
     all_profiler_map = dict()
@@ -101,8 +112,8 @@ def main():
     )
     resp = api.create_namespaced_service(namespace, home_svc_spec)
     log.debug("Home service created. status = '%s'" % str(resp.status))
-
-
+    
+        
     try:
         resp = api.read_namespaced_service(home_svc_name, namespace)
     except ApiException as e:
@@ -118,6 +129,7 @@ def main():
     all_profiler_names = []
 
     for node in app_config.node_map():
+
         """
             Generate the yaml description of the required service for each task
         """
@@ -126,7 +138,7 @@ def main():
 
         pod_name = app_config.app_name + '-' + node
         spec = k8s_spec.service.generate(
-            name=pod_name,
+            name=pod_name, 
             port_mappings=jupiter_config.k8s_service_port_mappings()
         )
 
@@ -142,20 +154,43 @@ def main():
         all_profiler_names.append(node)
         all_profiler_map[node] = resp.spec.cluster_ip
 
+    datasources = app_config.get_datasources()
+
+    for idx, ds in enumerate(datasources):
+        pod_name = app_config.app_name + '-' + ds['name']
+        spec = k8s_spec.service.generate(
+            name=pod_name, 
+            port_mappings=jupiter_config.k8s_service_port_mappings()
+        )
+
+        try:
+            resp = api.create_namespaced_service(namespace, spec)
+            log.debug("Service created. status = '%s'" % str(resp.status))
+            resp = api.read_namespaced_service(pod_name, namespace)
+        except ApiException as e:
+            log.error("Unable to create service for {}".format(pod_name))
+            sys.exit(1)
+
+        all_profiler_ips.append(resp.spec.cluster_ip)
+        all_profiler_names.append(ds['name'])
+        all_profiler_map[ds['name']] = resp.spec.cluster_ip
+
+
     all_profiler_ips = ':'.join(all_profiler_ips)
     all_profiler_names = ':'.join(all_profiler_names)
 
-    logging.debug('Worker Profilers were created successfully!')
+    logging.debug('Worker Profilers and Profilers on Datasources were created successfully!')
 
+   
 
     for node, host in app_config.node_map().items():
         if node.startswith('home'):
-            # do not deploy pods on home yet. will be done afterwards.
+            # do not deploy pods on home yet. will be done afterwards. 
             continue
-
+        
         pod_name = app_config.app_name + '-' + node
         spec = k8s_spec.deployment.generate(
-            name=pod_name,
+            name=pod_name, 
             label=pod_name,
             image=app_config.get_drupe_worker_tag(),
             host=host,
@@ -173,6 +208,28 @@ def main():
         resp = k8s_apps_v1.create_namespaced_deployment(body=spec, namespace=namespace)
         log.debug("Deployment created. status ='%s'" % str(resp.status))
 
+    
+    for idx, ds in enumerate(datasources):
+        pod_name = app_config.app_name + '-' + ds['name']
+        spec = k8s_spec.deployment.generate(
+            name=pod_name, 
+            label=pod_name,
+            image=app_config.get_drupe_worker_tag(),
+            host=ds['k8s_host'],
+            port_mappings=jupiter_config.k8s_deployment_port_mappings(),
+            # inject any arbitrary environment variables here
+            env_vars= {
+                "NODE_NAME": ds['name'],
+                "HOME_NODE_IP": home_node_ip,
+                "ALL_NODE_IPS": all_profiler_ips,
+                "ALL_NODE_NAMES": all_profiler_names,
+                "NODE_IP":all_profiler_map[ds['name']]
+            }
+        )
+        # # Call the Kubernetes API to create the deployment
+        resp = k8s_apps_v1.create_namespaced_deployment(body=spec, namespace=namespace)
+        log.debug("Deployment created. status ='%s'" % str(resp.status))
+            
 
     # check if worker deployment pods are running
     while check_workers_running(app_config, namespace) is False:
@@ -183,28 +240,27 @@ def main():
     Create k8s deployment for home task and deploy it.
     """
     home_depl_spec = k8s_spec.deployment.generate(
-        name=app_config.app_name + "-home",
+        name=app_config.app_name + "-home", 
         label=app_config.app_name + "-home",
-        image=app_config.get_drupe_home_tag(),
-        host=app_config.home_host(),
+        image=app_config.get_drupe_home_tag(), 
+        host=app_config.home_host(), 
         port_mappings=jupiter_config.k8s_deployment_port_mappings(),
         env_vars={
-            "NODE_NAME": "home",
+            "NODE_NAME": 'home',
             "HOME_NODE_IP": home_node_ip,
             "ALL_NODE_IPS": all_profiler_ips,
             "ALL_NODE_NAMES": all_profiler_names,
-            "NODE_IP":all_profiler_map["home"]
+            "NODE_IP":all_profiler_map[node]
         }
     )
 
     resp = k8s_apps_v1.create_namespaced_deployment(body=home_depl_spec, namespace=namespace)
     log.debug("Home deployment created. status = '%s'" % str(resp.status))
-
-
+    
+    
 
     pprint(all_profiler_map)
     logging.debug('Successfully deploy DRUPE ')
-    return(all_profiler_map)
 
 if __name__ == '__main__':
     main()
