@@ -78,6 +78,12 @@ class AppConfig:
         del worker_nodes['home']
         return len(worker_nodes)
 
+    def get_total_nodes(self):
+        worker_nodes = self.cfg['node_map']
+        del worker_nodes['home']
+        datasources = self.get_datasources()
+        return len(worker_nodes)+len(datasources)
+
     def get_exec_home_tag(self):
         docker_registry = self.cfg['jupiter_config']['docker_registry']
         tag = "{}/exec_profiler_home:{}{}".format(
@@ -168,18 +174,11 @@ class AppConfig:
             task_name = task['name']
             task_map[task_name] = self.child_tasks(task_name)
             try:
-                task_map[task_name].remove("home")
+                if task_map[task_name] is not None:
+                    task_map[task_name].remove("home")
             except ValueError:
                 pass  # do nothing
         return task_map
-
-    def all_drupe_tasks(self):
-        drupe_tasks = []
-        for task in self.get_dag_tasks():
-            drupe_tasks.append(task['name'])
-        for ds in self.get_datasources():
-            drupe_tasks.append(ds['name'])
-        return drupe_tasks
 
     def base_script(self, task_name):
         if task_name == "home":

@@ -45,7 +45,7 @@ def get_exec_profile_data(exec_home_ip, mongo_svc_port, num_workers):
             log.debug('Cannot connect to exec prof home pod, retrying in 60s...')
             time.sleep(60)
 
-    while num_profilers < (num_workers + 1):
+    while num_profilers < num_workers:
         try:
             collection = db.collection_names(include_system_collections=False)
             num_profilers = len(collection)
@@ -57,9 +57,12 @@ def get_exec_profile_data(exec_home_ip, mongo_svc_port, num_workers):
                       'MongoDB! retrying in 60s.')
             time.sleep(60)
 
+    
     c = 0
     for col in collection:
         log.debug(f'--- Check execution profiler ID : {col}')
+        if col == 'home':
+            continue
         logdb = db[col].find()
         for record in logdb:
             # Node ID, Task, Execution Time, Output size

@@ -24,24 +24,24 @@ APP_DIR = "/jupiter/build/app_specific_files/"
 
 def create_input_heft(
     tgff_file,
-    num_nodes,
+    total_nodes,
     network_info,
     execution_info,
     task_names,
     dag_task_map,
-    name_to_id,
-    worker_node_names
+    all_name_to_id,
+    all_node_names
 ):
     """Generate the TGFF file
 
     Args:
         - tgff_file (str): file of output TGFF file
-        - num_nodes (int): number of nodes
+        - total_nodes (int): number of all nodes
         - network_info (list): network profling information
         - execution_info (list): execution profiler information
         - task_names (list): names of tasks ordered as per app_config.yaml
         - dag_task_map (dict): mapping of tasks to list of children without "home"
-        - name_to_id (dict): mapping of Jupiter node name to enumerated ID
+        - all_name_to_id (dict): mapping of Jupiter node name to enumerated ID
     """
     target = open(tgff_file, 'w')
     target.write('@TASK_GRAPH 0 {')
@@ -55,14 +55,14 @@ def create_input_heft(
 
     computation_matrix = []
     for i in range(0, len(task_names)):
-        task_times = [0 for i in range(num_nodes)]
+        task_times = [0 for i in range(total_nodes)]
         computation_matrix.append(task_times)
 
     task_size = {}
 
     # Read format: Node ID, Task, Execution Time, Output size
     for row in execution_info:
-        computation_matrix[task_ID_dict[row[1]]][name_to_id[row[0]] - 1] = int(float(row[2]) * 10)
+        computation_matrix[task_ID_dict[row[1]]][all_name_to_id[row[0]] - 1] = int(float(row[2]) * 10)
         # 100000
         task_size[row[1]] = row[3]
 
@@ -74,8 +74,11 @@ def create_input_heft(
     # Need check
     v = 0
     keys = dag_task_map.keys()
+    print(dag_task_map)
     for key in keys:
+        print(key)
         for j in range(0, len(dag_task_map[key])):
+
             # file size in Kbit is communication const
             comm_cost = int(float(task_size[key]))
             line = "\tARC a0_%d \tFROM %s TO %s \tTYPE %d" % (v, task_dict[key], task_dict.get(dag_task_map[key][j]), comm_cost)
@@ -88,7 +91,7 @@ def create_input_heft(
     # OK
     target.write('\n@computation_cost 0 {\n')
 
-    line = '# type version %s\n' % (' '.join(worker_node_names[:]))
+    line = '# type version %s\n' % (' '.join(all_node_names[:]))
     target.write(line)
 
     for i in range(0, len(task_names)):
@@ -108,24 +111,24 @@ def create_input_heft(
     target.close()
 
     # do not care about outputs
-    _, _, _, _, _, _, _ = init(tgff_file, worker_node_names)
+    _, _, _, _, _, _, _ = init(tgff_file, all_node_names)
     return
 
 if __name__ == '__main__':
     app_config = app_config_parser.AppConfig(APP_DIR)
     task_names = app_config.get_dag_task_names()
-    num_nodes = app_config.get_num_worker_nodes()
+    total_nodes = app_config.get_total_nodes()
 
     # HEFT should only schedule tasks on worker nodes (not the home node)?
-    worker_node_names = os.environ["WORKER_NODE_NAMES"].split(":")
-    name_to_id = {v: k for k, v in enumerate(worker_node_names)}
+    all_node_names = os.environ["WORKER_NODE_NAMES"].split(":")
+    all_name_to_id = {v: k for k, v in enumerate(all_node_names)}
 
     worker_names = []
     for name, k8s_host in app_config.node_map().items():
         if name != "home":
             worker_names.append(name)
 
-    drupe_tasks =app_config.all_drupe_tasks()
+    dag_task_map = app_config.dag_task_map()
 
     log.info('Creating input HEFT file...')
     while True:
@@ -146,13 +149,13 @@ if __name__ == '__main__':
 
             create_input_heft(
                 TGFF_FILE,
-                num_nodes,
+                total_nodes,
                 network_info,
                 new_execution,
                 task_names,
-                drupe_tasks,
-                name_to_id,
-                worker_node_names
+                dag_task_map,
+                all_name_to_id,
+                all_node_names
             )
             break
         else:
