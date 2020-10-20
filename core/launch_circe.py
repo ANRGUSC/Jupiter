@@ -58,23 +58,32 @@ def launch_circe(task_mapping):
 
     # Compile port mappings for k8s services for Jupiter and the application
     svc_port_mappings = jupiter_config.k8s_service_port_mappings()
-    for idx, mapping in enumerate(app_config.port_mappings()):
-        svc, docker = mapping.split(':')
-        svc_port_mappings.append({
-            "name": f"custom{idx}",
-            "port": int(svc),
-            "targetPort": int(docker)
-        })
 
+    try:
+        for idx, mapping in enumerate(app_config.port_mappings()):
+            svc, docker = mapping.split(':')
+            svc_port_mappings.append({
+                "name": f"custom{idx}",
+                "port": int(svc),
+                "targetPort": int(docker)
+            })
+    except Exception as e:
+        print(e)
+        logging.debug('No application port mappings')
     # Compile port mappings for k8s deployments for Jupiter and the application
     depl_port_mappings = jupiter_config.k8s_deployment_port_mappings()
-    for idx, mapping in enumerate(app_config.port_mappings()):
-        svc, docker = mapping.split(':')
-        depl_port_mappings.append({
-            "name": f"custom{idx}",
-            "containerPort": int(docker)
-        })
 
+    try:
+        for idx, mapping in enumerate(app_config.port_mappings()):
+            svc, docker = mapping.split(':')
+            depl_port_mappings.append({
+                "name": f"custom{idx}",
+                "containerPort": int(docker)
+            })
+    except Exception as e:
+        print(e)
+        logging.debug('No application port mappings')
+        
     # *** Create Home Task Service ***
     home_svc_name = app_config.app_name + "-home"
     home_svc_spec = k8s_spec.service.generate(

@@ -443,16 +443,13 @@ def main():
         lines = f.readlines()
         for line in lines:
             info = line.rstrip().split(',')
-            node_list[info[0]] = [info[1],info[2]]
             if info[0].startswith('home'):
                 homes_list[info[0]] = [info[1],info[2]]
+            else:
+                node_list[info[0]] = [info[1],info[2]]
 
-
-    df_homes = pd.DataFrame.from_dict(homes_list, orient='index')
     df_nodes = pd.DataFrame.from_dict(node_list, orient='index')
-    df_homes.index.name = 'Tag'
     df_nodes.index.name = 'Tag'
-    df_homes.columns = ['Node', 'Region']
     df_nodes.columns = ['Node', 'Region']
 
     # logging.debug(df_homes)
@@ -506,9 +503,7 @@ def main():
 
 
 
-    filename = "scheduling/%s/scheduling.txt"%(self_ip)
-    logging.debug(filename)
-    prepare_database(filename)
+    
 
     logging.debug('Step 3: Scheduling updating the central database')
     # create the folder for each droplet/node to report the local data to
@@ -522,11 +517,15 @@ def main():
                                minutes = 10,replace_existing = True)
 
 
-    logging.debug('Step 4: Scheduling measurement job')
-    sched.add_job(measurement_job,'interval',id='measurement', minutes=1, replace_existing=True)
+    # no profiling info for home
+    # filename = "scheduling/%s/scheduling.txt"%(self_ip)
+    # logging.debug(filename)
+    # prepare_database(filename)
+    # logging.debug('Step 4: Scheduling measurement job')
+    # sched.add_job(measurement_job,'interval',id='measurement', minutes=1, replace_existing=True)
 
-    logging.debug('Step 5: Scheduling regression job')
-    sched.add_job(regression_job,'interval', id='regression', minutes=10, replace_existing=True)
+    # logging.debug('Step 5: Scheduling regression job')
+    # sched.add_job(regression_job,'interval', id='regression', minutes=10, replace_existing=True)
 
     logging.debug('Step 6: Start the schedulers')
     sched.start()

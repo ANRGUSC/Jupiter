@@ -28,7 +28,7 @@ def main():
     """
         read the input csv fine to get the list of nodes
     """
-    input_node_info = pd.read_csv(input_node_info_file, header = 0, delimiter = ',', index_col = 0)
+    input_node_info = pd.read_csv(input_node_info_file, header = None, delimiter = ',', index_col = 0)
     input_node_list = input_node_info.T.to_dict('list')
 
     with open(output_link_list, 'w') as f:

@@ -149,14 +149,17 @@ class AppConfig:
     def dag_task_map(self):
         """ Creates a task map of the entire DAG. Returns a dictionary of task
         names to children excluding the "home" task/node (task and node is used
-        interchangeably only for home)
+        interchangeably only for home) 
         """
         task_map = {}
         for task in self.get_dag_tasks():
             task_name = task['name']
             task_map[task_name] = self.child_tasks(task_name)
+            if self.child_tasks(task_name) == None:
+                task_map[task_name] = []
             try:
-                task_map[task_name].remove("home")
+                if len(task_map[task_name]) > 0:
+                    task_map[task_name].remove("home")
             except ValueError:
                 pass  # do nothing
         return task_map
@@ -181,7 +184,8 @@ class AppConfig:
 
 if __name__ == '__main__':
     # Test
-    app_config = AppConfig("../../app_specific_files/example/")
+    # app_config = AppConfig("../../app_specific_files/example/")
+    app_config = AppConfig("../../app_specific_files/demo/")
     for node in app_config.node_map():
         print(node)
 

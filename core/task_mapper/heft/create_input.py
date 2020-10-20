@@ -77,9 +77,7 @@ def init(filename, worker_node_names):
     while line.startswith('  '):
         comp_cost.append([int(i) for i in line.split()[-num_of_processors:]])
         line = f.readline()
-        print("comp_cost:")
-        print(comp_cost)
-
+    
     # Build a rate matrix
     rate = [[1 for i in range(num_of_processors)] for i in range(num_of_processors)]
     for i in range(num_of_processors):

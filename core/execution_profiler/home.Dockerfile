@@ -3,8 +3,7 @@ FROM ubuntu:18.04
 # Install required libraries
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
-RUN apt-get install -yqq openssh-client openssh-server wget net-tools sshpass mongodb
-RUN apt-get install -y vim
+RUN apt-get install -yqq openssh-client openssh-server wget net-tools sshpass mongodb libgl1-mesa-glx
 
 # Authentication
 RUN echo 'root:PASSWORD' | chpasswd
@@ -18,10 +17,12 @@ RUN echo "export VISIBLE=now" >> /etc/profile
 
 # install execution profiler requirements
 ADD requirements.txt /jupiter/requirements.txt
+RUN pip3 install --upgrade pip
 RUN pip3 install -r /jupiter/requirements.txt
 
 # install app specific requirements
 COPY build_requirements/requirements.txt /jupiter/build/app_specific_files/
+RUN pip3 install --upgrade pip
 RUN pip3 install -r /jupiter/build/app_specific_files/requirements.txt
 
 # Prepare MongoDB

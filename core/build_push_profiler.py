@@ -61,7 +61,6 @@ def main(app_dir):
     shutil.copytree("{}".format(app_dir),
                     "network_resource_profiler_mulhome/build/app_specific_files/")
     shutil.copy("../jupiter_config.ini", "network_resource_profiler_mulhome/build/")
-    shutil.copy("../nodes.txt", "network_resource_profiler_mulhome/build/")
     shutil.copytree("./jupiter_utils/",
                     "network_resource_profiler_mulhome/build/jupiter_utils/")
 
