@@ -366,7 +366,7 @@ class HEFT:
                                                             duration.start, duration.end))
 
         for dup in self.dup_tasks:
-            log.info('redundant task %s on %s' % (dup.number + 1, self.node_info[dup.processor_num + 1]))
+            log.info('redundant task %s on %s' % (dup.number + 1, self.node_info[dup.processor_num]))
 
         log.info('makespan = %d' % makespan)
 
@@ -381,7 +381,7 @@ class HEFT:
         for p in self.processors:
             for duration in p.time_line:
                 if duration.task_num != -1:
-                    output.write(self.task_names[duration.task_num] + " " + self.node_info[p.number + 1])
+                    output.write(self.task_names[duration.task_num] + " " + self.node_info[p.number])
                     output.write('\n')
 
         output.close()
@@ -397,5 +397,5 @@ class HEFT:
         for p in self.processors:
             for duration in p.time_line:
                 if duration.task_num != -1:
-                    assignments[self.task_names[duration.task_num]] = self.node_info[p.number + 1]
+                    assignments[self.task_names[duration.task_num]] = self.node_info[p.number]
         return assignments
