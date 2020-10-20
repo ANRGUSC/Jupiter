@@ -68,7 +68,6 @@ def launch_circe(task_mapping):
                 "targetPort": int(docker)
             })
     except Exception as e:
-        print(e)
         logging.debug('No application port mappings')
     # Compile port mappings for k8s deployments for Jupiter and the application
     depl_port_mappings = jupiter_config.k8s_deployment_port_mappings()
@@ -81,9 +80,8 @@ def launch_circe(task_mapping):
                 "containerPort": int(docker)
             })
     except Exception as e:
-        print(e)
         logging.debug('No application port mappings')
-        
+
     # *** Create Home Task Service ***
     home_svc_name = app_config.app_name + "-home"
     home_svc_spec = k8s_spec.service.generate(

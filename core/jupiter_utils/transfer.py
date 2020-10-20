@@ -14,10 +14,9 @@ def circe_lookup_ip(task_name):
     if task_name == "home":
         return os.environ['CIRCE_HOME_IP']
     worker_ips = os.environ['CIRCE_TASK_TO_IP'].split(' ')
-
     for item in worker_ips:
         task, ip = item.split(':')
-        if task_name == task:
+        if task == task_name:
             return ip
 
     raise CIRCEIpNotFoundError("Unable to find IP of DAG task")
@@ -28,7 +27,7 @@ def circe_lookup_nondag_ip(task_name):
 
     for item in worker_ips:
         task, ip = item.split(':')
-        if task_name == task:
+        if task == task_name:
             return ip
 
     raise CIRCEIpNotFoundError("Unable to find IP of non-DAG task")

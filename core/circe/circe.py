@@ -52,6 +52,9 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
         }
         log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
         this_task, dst_task, base_fname = event.name.split("_", maxsplit=3)
+        print(this_task)
+        print(dst_task)
+        print(base_fname)
 
         ip = transfer.circe_lookup_ip(dst_task)
 

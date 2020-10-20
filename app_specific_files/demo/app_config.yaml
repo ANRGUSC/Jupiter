@@ -6,7 +6,7 @@ jupiter_config:
   # jason-circe
   # jason-profiler
   # jason-mapper
-  namespace_prefix: cc
+  namespace_prefix: quynh
   # Docker registry prefix for pulling and pushing images. Set to empty string for
   # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
   docker_registry: anrg
@@ -39,12 +39,12 @@ application:
     - name: datasource1
       base_script: datasource.py
       k8s_host: workers-s-1vcpu-3gb-5-fra1
-      children:
+      children: master
         # Only home or dag_tasks allowed under children
     - name: datasource2
       base_script: datasource.py
       k8s_host: workers-s-1vcpu-3gb-6-fra1
-      children:
+      children: master
     dag_tasks:
       - name: master
         base_script: master.py
