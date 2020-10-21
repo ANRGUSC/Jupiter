@@ -6,7 +6,7 @@ jupiter_config:
   # jason-circe
   # jason-profiler
   # jason-mapper
-  namespace_prefix: quynh
+  namespace_prefix: cc
   # Docker registry prefix for pulling and pushing images. Set to empty string for
   # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
   docker_registry: anrg
@@ -17,12 +17,14 @@ jupiter_config:
 node_map:
   # "home" is required. All other names should be "node*" where * is some
   # integer.
-  home: n0
-  node1: n1
-  node2: n2
-  node3: n3
-  node4: n4
-  node5: n5
+  home: workers-s-1vcpu-3gb-0-nyc1
+  node1: workers-s-1vcpu-3gb-1-sgp1
+  node2: workers-s-1vcpu-3gb-2-fra1
+  node3: workers-s-1vcpu-3gb-3-tor1
+  node4: workers-s-1vcpu-3gb-4-lon1
+  node5: workers-s-1vcpu-3gb-7-ams3
+  node6: workers-s-1vcpu-3gb-8-nyc3
+  node7: workers-s-1vcpu-3gb-9-lon1
 application:
   # List of port mappings in format. Used for creating additional k8s services
   # for your application. i.e., "9000:8000" will create a service with port 9000
@@ -36,13 +38,17 @@ application:
     nondag_tasks:
     - name: datasource1
       base_script: datasource.py
-      k8s_host: n6
+      k8s_host: workers-s-1vcpu-3gb-5-fra1
       children: master
         # Only home or dag_tasks allowed under children
     - name: datasource2
       base_script: datasource.py
-      k8s_host: n7
+      k8s_host: workers-s-1vcpu-3gb-6-fra1
       children: master
+    - name: globalinfo
+      base_script: globalinfo.py
+      k8s_host: workers-s-1vcpu-3gb-0-nyc1
+      children:
     dag_tasks:
       - name: master
         base_script: master.py
