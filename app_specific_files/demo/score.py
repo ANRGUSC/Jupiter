@@ -56,85 +56,89 @@ def task(q, pathin, pathout, task_name):
     class_name = ccdag.classlist[int(class_num)-1]
 
     while True:
-        input_file = q.get()
-        start = time.time()
-        src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-        log.info(f"{task_name}: file rcvd from {src_task} : {input_file}")
+        if q.qsize()>0:
+            input_file = q.get()
+            start = time.time()
+            src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+            log.info(f"{task_name}: file rcvd from {src_task} : {input_file}")
 
-        # Process the file (this example just passes along the file as-is)
-        # Once a file is copied to the `pathout` folder, CIRCE will inspect the
-        # filename and pass the file to the next task.
-        src = os.path.join(pathin, input_file)
-        job_id = base_fname.split('.')[0].split('jobid')[1]
-        file_id = base_fname.split('jobid')[0]
-        # dst_task = children[cnt % len(children)]  # round robin selection
-        # dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-        # shutil.copyfile(src, dst)
-#
-        #job_id = base_fname.split('.csv')[0].split('jobid')[1]
-        filesuffixs = base_fname.split('.csv')[0].split('job')[0]
-
-
-        #Worker ID: a,b,c...
-        worker_id = task_name[-1]
-
-        #Parameters
-        K = 10 # Number of referenced Images
-        # Dimension of resized image
-        width = 400
-        height = 400
-        dim = (width, height)
-
-        # # Read Reference Images
-        # input_file_ref = ['fireengine'+str(i+1)+'_20200424.jpg' for i in range(20,30)]  # to be defined in advance
-        # path_ref = os.path.join(os.path.dirname(__file__),'fireengine') # folder of referenced images
-         # Read Reference Images
-        input_file_ref = [class_name+str(i+1)+'.JPEG' for i in range(20,30)]  # to be defined in advance
-        path_ref = os.path.join(os.path.dirname(__file__),'reference',class_name) # folder of referenced images
+            # Process the file (this example just passes along the file as-is)
+            # Once a file is copied to the `pathout` folder, CIRCE will inspect the
+            # filename and pass the file to the next task.
+            src = os.path.join(pathin, input_file)
+            job_id = base_fname.split('.')[0].split('jobid')[1]
+            file_id = base_fname.split('jobid')[0]
+            # dst_task = children[cnt % len(children)]  # round robin selection
+            # dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+            # shutil.copyfile(src, dst)
+    #
+            #job_id = base_fname.split('.csv')[0].split('jobid')[1]
+            filesuffixs = base_fname.split('.csv')[0].split('job')[0]
 
 
-        for i in range(K):
-            print(os.path.join(path_ref, input_file_ref[i]))
-            img = cv2.imread(os.path.join(path_ref, input_file_ref[i]))
-            img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-            img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
-            img -= img.mean()
-            img /= img.std()
-            img_w ,img_l = img.shape
-            img = img.reshape(1,img_w*img_l)
-            if i == 0:
-                Ref_Images = img
-            else:
-                Ref_Images = np.concatenate((Ref_Images,img), axis=0)
+            #Worker ID: a,b,c...
+            worker_id = task_name[-1]
 
-        ### To simulate slow downs
-        # purposely add delay time to slow down the sending
-        if (random.random() > ccdag.STRAGGLER_THRESHOLD) and (worker_id=='a'):
-            print(class_num)
-            print("Sleeping")
-            time.sleep(ccdag.SLEEP_TIME) #>=2
+            #Parameters
+            K = 10 # Number of referenced Images
+            # Dimension of resized image
+            width = 400
+            height = 400
+            dim = (width, height)
+
+            # # Read Reference Images
+            # input_file_ref = ['fireengine'+str(i+1)+'_20200424.jpg' for i in range(20,30)]  # to be defined in advance
+            # path_ref = os.path.join(os.path.dirname(__file__),'fireengine') # folder of referenced images
+             # Read Reference Images
+            input_file_ref = [class_name+str(i+1)+'.JPEG' for i in range(20,30)]  # to be defined in advance
+            path_ref = os.path.join(os.path.dirname(__file__),'reference',class_name) # folder of referenced images
 
 
-        # Read Encoded data-batch
-        En_Image_Batch = np.loadtxt(os.path.join(pathin, input_file), delimiter=',')
+            for i in range(K):
+                print(os.path.join(path_ref, input_file_ref[i]))
+                img = cv2.imread(os.path.join(path_ref, input_file_ref[i]))
+                img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+                img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
+                img -= img.mean()
+                img /= img.std()
+                img_w ,img_l = img.shape
+                img = img.reshape(1,img_w*img_l)
+                if i == 0:
+                    Ref_Images = img
+                else:
+                    Ref_Images = np.concatenate((Ref_Images,img), axis=0)
+
+            ### To simulate slow downs
+            # purposely add delay time to slow down the sending
+            if (random.random() > ccdag.STRAGGLER_THRESHOLD) and (worker_id=='a'):
+                print(class_num)
+                print("Sleeping")
+                time.sleep(ccdag.SLEEP_TIME) #>=2
 
 
-        # Compute Scores of ref images and En_Images
-        sc = score(En_Image_Batch, Ref_Images)
-        job = str(job_id)+'jobth'
-        dst_task = children[0] # only 1 children
-        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
-        np.savetxt(dst, sc, delimiter=',')
-        # read the generate output
-        # based on that determine sleep and number of bytes in output file
-        end = time.time()
-        runtime_stat = {
-            "task_name" : task_name,
-            "start" : start,
-            "end" : end
-        }
-        log.warning(json.dumps(runtime_stat))
-        q.task_done()
+            # Read Encoded data-batch
+            En_Image_Batch = np.loadtxt(os.path.join(pathin, input_file), delimiter=',')
+
+
+            # Compute Scores of ref images and En_Images
+            sc = score(En_Image_Batch, Ref_Images)
+            job = str(job_id)+'jobth'
+            dst_task = children[0] # only 1 children
+            dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
+            np.savetxt(dst, sc, delimiter=',')
+            # read the generate output
+            # based on that determine sleep and number of bytes in output file
+            end = time.time()
+            runtime_stat = {
+                "task_name" : task_name,
+                "start" : start,
+                "end" : end
+            }
+            log.warning(json.dumps(runtime_stat))
+            q.task_done()
+        else:
+            print('Not enough files')
+            time.sleep(1)
 
     log.error("ERROR: should never reach this")
 

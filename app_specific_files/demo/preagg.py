@@ -10,6 +10,7 @@ import json
 import configparser
 import numpy as np
 from os import listdir
+from ccdag_utils import *
 
 
 
@@ -58,121 +59,125 @@ def task(q, pathin, pathout, task_name):
     classnum = task_name.split('preagg')[1]
 
     while True:
-        input_file = q.get()
-        start = time.time()
-        src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-        log.info(f"{task_name}: file rcvd from {src_task} : {base_fname}")
+        if q.qsize()>0:
+            input_file = q.get()
+            start = time.time()
+            src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+            log.info(f"{task_name}: file rcvd from {src_task} : {base_fname}")
 
-        # Process the file (this example just passes along the file as-is)
-        # Once a file is copied to the `pathout` folder, CIRCE will inspect the
-        # filename and pass the file to the next task.
-        src = os.path.join(pathin, input_file)
-
-
-        # PREAGG code
-
-        job_id = base_fname.split('jobth')[0]
-        file_id = base_fname.split('jobth')[1]
-
-        # job_id = int(job_id)
+            # Process the file (this example just passes along the file as-is)
+            # Once a file is copied to the `pathout` folder, CIRCE will inspect the
+            # filename and pass the file to the next task.
+            src = os.path.join(pathin, input_file)
 
 
-        hdr = {
-                'Content-Type': 'application/json',
-                'Authorization': None
-                                    }
-        # the message of requesting dictionary
-        # payload = {
-        #     'job_id': job_id,
-        #     'filename': filelist[0]
-        # }
-        payload = {
-            'class_image': int(classnum),
-            'job_id': job_id,
-            'filename': input_file[0]
-        }
+            # PREAGG code
 
-        # address of flask server for class1 is 0.0.0.0:5000 and "post-dict" is for requesting dictionary
-        try:
-            # url = "http://0.0.0.0:5000/post-dict"
-            global_info_ip = os.environ['GLOBAL_IP']
-            url = "http://%s:%s/post-dict"%(global_info_ip,str(FLASK_SVC))
-            print(url)
-            # request of dictionary of received results
-            response =  requests.post(url, headers = hdr,data = json.dumps(payload))
-            job_dict = response.json()
-            print(job_dict)
-        except Exception as e:
-            print('Possibly running on the execution profiler')
-            if ccdag.CODING_PART2 == 1:
-                fname1 = 'score1a_preagg1_'+str(job_id)+'jobth'
-                fname2 = 'score1b_preagg1_'+str(job_id)+'jobth'
-                sample1 = [f for f in listdir(pathout) if f.startswith(fname1)]
-                sample2 = [f for f in listdir(pathout) if f.startswith(fname2)]
-                print(sample1)
-                print(sample2)
-                job_dict = {'2':[sample1[0],sample2[0]]}
+            job_id = base_fname.split('jobth')[0]
+            file_id = base_fname.split('jobth')[1]
+
+            # job_id = int(job_id)
+
+
+            hdr = {
+                    'Content-Type': 'application/json',
+                    'Authorization': None
+                                        }
+            # the message of requesting dictionary
+            # payload = {
+            #     'job_id': job_id,
+            #     'filename': filelist[0]
+            # }
+            payload = {
+                'class_image': int(classnum),
+                'job_id': job_id,
+                'filename': input_file[0]
+            }
+
+            # address of flask server for class1 is 0.0.0.0:5000 and "post-dict" is for requesting dictionary
+            try:
+                # url = "http://0.0.0.0:5000/post-dict"
+                global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
+                url = "http://%s:%s/post-dict"%(global_info_ip,str(FLASK_SVC))
+                print(url)
+                # request of dictionary of received results
+                response =  requests.post(url, headers = hdr,data = json.dumps(payload))
+                job_dict = response.json()
+                print(job_dict)
+            except Exception as e:
+                print('Possibly running on the execution profiler')
+                if ccdag.CODING_PART2 == 1:
+                    fname1 = 'score1a_preagg1_'+str(job_id)+'jobth'
+                    fname2 = 'score1b_preagg1_'+str(job_id)+'jobth'
+                    sample1 = [f for f in listdir(pathout) if f.startswith(fname1)]
+                    sample2 = [f for f in listdir(pathout) if f.startswith(fname2)]
+                    print(sample1)
+                    print(sample2)
+                    job_dict = {'2':[sample1[0],sample2[0]]}
+                else:
+                    fname1 = 'score1a_preagg1_'+str(job_id)+'jobth'
+                    fname2 = 'score1b_preagg1_'+str(job_id)+'jobth'
+                    fname2 = 'score1c_preagg1_'+str(job_id)+'jobth'
+                    sample1 = [f for f in listdir(pathout) if f.startswith(fname1)]
+                    sample2 = [f for f in listdir(pathout) if f.startswith(fname2)]
+                    sample3 = [f for f in listdir(pathout) if f.startswith(fname3)]
+                    print(sample1)
+                    print(sample2)
+                    print(sample3)
+                    job_dict = {'2':[sample1[0],sample2[0],sample3[0]]}
+
+            #Parameters
+            M = 2 # Number of data-batches
+            N = 3 # Number of workers
+
+            if ccdag.CODING_PART2: #Coding Version
+                #Check if number of received results for the same job is equal to M
+                if len(job_dict[job_id]) == M:
+                    print('Receive enough results for job '+job_id)
+                    for i in range(M):
+
+                        En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
+                        job = str(job_id)+'jobth'
+                        dst_task = children[0] # only 1 children
+
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
+                        print(dst)
+                        # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
+                        #destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
+                        np.savetxt(dst, En_Image_Batch, delimiter=',')
+
+                else:
+                    print('Not receive enough results for job '+job_id)
+
             else:
-                fname1 = 'score1a_preagg1_'+str(job_id)+'jobth'
-                fname2 = 'score1b_preagg1_'+str(job_id)+'jobth'
-                fname2 = 'score1c_preagg1_'+str(job_id)+'jobth'
-                sample1 = [f for f in listdir(pathout) if f.startswith(fname1)]
-                sample2 = [f for f in listdir(pathout) if f.startswith(fname2)]
-                sample3 = [f for f in listdir(pathout) if f.startswith(fname3)]
-                print(sample1)
-                print(sample2)
-                print(sample3)
-                job_dict = {'2':[sample1[0],sample2[0],sample3[0]]}
+                #Check if number of received results for the same job is equal to N
+                if len(job_dict[job_id]) == N:
+                    print('Receive enough results for job '+job_id)
+                    for i in range(N):
+                        En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
+                        job = str(job_id)+'jobth'
+                        dst_task = children[0] # only 1 children
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
+                        print(dst)
+                        # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
+                        np.savetxt(dst, En_Image_Batch, delimiter=',')
 
-        #Parameters
-        M = 2 # Number of data-batches
-        N = 3 # Number of workers
+                else:
+                    print('Not receive enough results for job '+job_id)
 
-        if ccdag.CODING_PART2: #Coding Version
-            #Check if number of received results for the same job is equal to M
-            if len(job_dict[job_id]) == M:
-                print('Receive enough results for job '+job_id)
-                for i in range(M):
-
-                    En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
-                    job = str(job_id)+'jobth'
-                    dst_task = children[0] # only 1 children
-
-                    dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
-                    print(dst)
-                    # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'.csv')
-                    #destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
-                    np.savetxt(dst, En_Image_Batch, delimiter=',')
-
-            else:
-                print('Not receive enough results for job '+job_id)
-
+            # read the generate output
+            # based on that determine sleep and number of bytes in output file
+            end = time.time()
+            runtime_stat = {
+                "task_name" : task_name,
+                "start" : start,
+                "end" : end
+            }
+            log.warning(json.dumps(runtime_stat))
+            q.task_done()
         else:
-            #Check if number of received results for the same job is equal to N
-            if len(job_dict[job_id]) == N:
-                print('Receive enough results for job '+job_id)
-                for i in range(N):
-                    En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
-                    job = str(job_id)+'jobth'
-                    dst_task = children[0] # only 1 children
-                    dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
-                    print(dst)
-                    # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
-                    np.savetxt(dst, En_Image_Batch, delimiter=',')
-
-            else:
-                print('Not receive enough results for job '+job_id)
-
-        # read the generate output
-        # based on that determine sleep and number of bytes in output file
-        end = time.time()
-        runtime_stat = {
-            "task_name" : task_name,
-            "start" : start,
-            "end" : end
-        }
-        log.warning(json.dumps(runtime_stat))
-        q.task_done()
+            print('Not enough files')
+            time.sleep(1)
 
     log.error("ERROR: should never reach this")
 

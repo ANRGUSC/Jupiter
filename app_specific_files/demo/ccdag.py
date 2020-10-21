@@ -12,4 +12,5 @@ STRAGGLER_THRESHOLD = 0
 RESNETS_THRESHOLD = 1
 STREAM_INTERVAL = 10
 NUM_IMAGES = 100
+NUM_CLASS = 2
 classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']

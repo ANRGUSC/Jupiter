@@ -58,6 +58,8 @@ FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 global global_info_ip, global_info_ip_port
 
 
+
+
 def calculate_iou(L1, R1, T1, B1, L2, R2, T2, B2):
     L = max(L1, L2)
     R = min(R1, R2)
@@ -129,77 +131,99 @@ def process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial
     predictions_list = classes_list[predictions_list].tolist()
     return predictions_list
 
-
+def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
+    try:
+        hdr = {
+                'Content-Type': 'application/json',
+                'Authorization': None #not using HTTP secure
+                                        }
+        logging.debug('Send prediction to the decoder')
+        url = "http://" + global_info_ip_port + "/post-predictions-collage"
+        logging.debug(url)
+        params = {"job_id": job_id, 'msg': final_preds}
+        response = requests.post(url, headers = hdr, data = json.dumps(params))
+        logging.debug(response)
+        ret_job_id = response.json()
+        logging.debug(ret_job_id)
+    except Exception as e:
+        logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
+        logging.debug(e)
+        return "not ok"
+    return "ok"
 
 def task(q, pathin, pathout, task_name):
 
     while True:
-        input_file = q.get()
-        start = time.time()
+        if q.qsize()>0:
+            input_file = q.get()
+            start = time.time()
 
-        src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-        log.info(f"{task_name}: file rcvd from {src_task} : {base_fname}")
+            src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+            log.info(f"{task_name}: file rcvd from {src_task} : {base_fname}")
 
-        # Process the file (this example just passes along the file as-is)
-        # Once a file is copied to the `pathout` folder, CIRCE will inspect the
-        # filename and pass the file to the next task.
-        src = os.path.join(pathin, input_file)
-        print(src)
+            # Process the file (this example just passes along the file as-is)
+            # Once a file is copied to the `pathout` folder, CIRCE will inspect the
+            # filename and pass the file to the next task.
+            src = os.path.join(pathin, input_file)
+            print(src)
 
 
-        # COLLAGE CODE
-        img_size=416
-        w = 3
-        single_spatial = math.ceil(img_size*1.0/w)
-        nms_thres = 0.45
-        conf_thres = 0.3
-        # Load collage model
-        device = torch.device("cpu")
-        net_config_path = os.path.join(os.path.dirname(__file__),"yolov3-tiny.cfg")
-        model = Darknet(net_config_path, img_size)
-        weights_file_path = os.path.join(os.path.dirname(__file__),"best.pt")
-        checkpoint = torch.load(weights_file_path, map_location="cpu")
-        model.load_state_dict(checkpoint['model'])
-        del checkpoint
-        model.to(device).eval()
-        classes_list = np.load(os.path.join(os.path.dirname(__file__),"classes_list_103_classes.npy"))
-        classes_list = np.sort(classes_list)
-        ### Load collage image
-        composed = transforms.Compose([
-                   transforms.ToTensor()])
-        ### Read input files.
-        collage_img = Image.open(src)
-        ### Transform to tensor format.
-        collage_tensor = composed(collage_img)
-        ### 3D -> 4D (batch dimension = 1)
-        collage_tensor.unsqueeze_(0)
-        ### Classify the image
-        pred = model(collage_tensor)
-        ### Process predictions to get a list of final predictions
-        final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
-    ### Write predictions to a file and send it to decoder task's folder
-        job_id = int(input_file.split("jobid")[1])
-        try:
-            global_info_ip = os.environ['GLOBAL_IP']
-            global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-            print("global info ip port: ", global_info_ip_port)
-            if ccdag.CODING_PART1:
-                send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
-        except Exception as e:
-            print('Possibly running on the execution profiler: ', e)
+            # COLLAGE CODE
+            img_size=416
+            w = 3
+            single_spatial = math.ceil(img_size*1.0/w)
+            nms_thres = 0.45
+            conf_thres = 0.3
+            # Load collage model
+            device = torch.device("cpu")
+            net_config_path = os.path.join(os.path.dirname(__file__),"yolov3-tiny.cfg")
+            model = Darknet(net_config_path, img_size)
+            weights_file_path = os.path.join(os.path.dirname(__file__),"best.pt")
+            checkpoint = torch.load(weights_file_path, map_location="cpu")
+            model.load_state_dict(checkpoint['model'])
+            del checkpoint
+            model.to(device).eval()
+            classes_list = np.load(os.path.join(os.path.dirname(__file__),"classes_list_103_classes.npy"))
+            classes_list = np.sort(classes_list)
+            ### Load collage image
+            composed = transforms.Compose([
+                       transforms.ToTensor()])
+            ### Read input files.
+            collage_img = Image.open(src)
+            ### Transform to tensor format.
+            collage_tensor = composed(collage_img)
+            ### 3D -> 4D (batch dimension = 1)
+            collage_tensor.unsqueeze_(0)
+            ### Classify the image
+            pred = model(collage_tensor)
+            ### Process predictions to get a list of final predictions
+            final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
+        ### Write predictions to a file and send it to decoder task's folder
+            job_id = int(input_file.split("jobid")[1])
+            try:
+                global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
+                global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+                print("global info ip port: ", global_info_ip_port)
+                if ccdag.CODING_PART1:
+                    send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
+            except Exception as e:
+                print('Possibly running on the execution profiler: ', e)
 
-        # read the generate output
-        # based on that determine sleep and number of bytes in output file
+            # read the generate output
+            # based on that determine sleep and number of bytes in output file
 
-        end = time.time()
-        runtime_stat = {
-            "task_name" : task_name,
-            "start" : start,
-            "end" : end
-        }
-        log.warning(json.dumps(runtime_stat))
+            end = time.time()
+            runtime_stat = {
+                "task_name" : task_name,
+                "start" : start,
+                "end" : end
+            }
+            log.warning(json.dumps(runtime_stat))
 
-        q.task_done()
+            q.task_done()
+        else:
+            print('Not enough files')
+            time.sleep(1)
 
     log.error("ERROR: should never reach this")
 

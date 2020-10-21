@@ -38,29 +38,33 @@ def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
 
     while True:
-        input_file = q.get()
-        start = time.time()
-        src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-        log.info(f"{task_name}: file rcvd from {src_task} : {base_fname}")
+        if q.qsize()>0:
+            input_file = q.get()
+            start = time.time()
+            src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+            log.info(f"{task_name}: file rcvd from {src_task} : {base_fname}")
 
-        # Process the file (this example just passes along the file as-is)
-        # Once a file is copied to the `pathout` folder, CIRCE will inspect the
-        # filename and pass the file to the next task.
-        src = os.path.join(pathin, input_file)
-        dst_task = children[0] # only 1 child
-        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-        shutil.copyfile(src, dst)
+            # Process the file (this example just passes along the file as-is)
+            # Once a file is copied to the `pathout` folder, CIRCE will inspect the
+            # filename and pass the file to the next task.
+            src = os.path.join(pathin, input_file)
+            dst_task = children[0] # only 1 child
+            dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+            shutil.copyfile(src, dst)
 
-        # read the generate output
-        # based on that determine sleep and number of bytes in output file
-        end = time.time()
-        runtime_stat = {
-            "task_name" : task_name,
-            "start" : start,
-            "end" : end
-        }
-        log.warning(json.dumps(runtime_stat))
-        q.task_done()
+            # read the generate output
+            # based on that determine sleep and number of bytes in output file
+            end = time.time()
+            runtime_stat = {
+                "task_name" : task_name,
+                "start" : start,
+                "end" : end
+            }
+            log.warning(json.dumps(runtime_stat))
+            q.task_done()
+        else:
+            print('Not enough files')
+            time.sleep(1)
 
     log.error("ERROR: should never reach this")
 

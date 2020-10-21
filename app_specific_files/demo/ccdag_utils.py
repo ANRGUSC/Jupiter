@@ -11,7 +11,17 @@ import torch_utils
 torch.set_printoptions(linewidth=1320, precision=5, profile='long')
 np.set_printoptions(linewidth=320, formatter={'float_kind': '{:11.5g}'.format})  # format short g, %precision=5
 
-
+def retrieve_globalinfo(circe_nondag_task_to_ip):
+    try:
+        items = circe_nondag_task_to_ip.split(' ')
+        for item in items:
+            name, ip = item.split(':')
+            if name == 'globalinfo':
+                return ip
+    except Exception as e:
+        log.info('Can not retrieve global information. Possibly running on EP!')
+        return -1
+        
 def init_seeds(seed=0):
     random.seed(seed)
     np.random.seed(seed)

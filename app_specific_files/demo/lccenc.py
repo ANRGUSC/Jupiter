@@ -12,7 +12,7 @@ import requests
 import urllib
 import configparser
 import cv2
-
+from ccdag_utils import *
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -89,151 +89,154 @@ def task(q, pathin, pathout, task_name):
 
     num_inputs = 4
     while True:
+        if q.qsize()>=num_inputs:
+            input_list = []
+            src_list = []
+            base_list = []
+            id_list = []
+            for i in range(0,num_inputs): #number of inputs is 9
+                input_file = q.get()
+                input_list.append(input_file)
+                src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+                log.info(f"{task_name}: file rcvd from {src_task} : {input_file}")
+                src = os.path.join(pathin, input_file)
+                src_list.append(src)
+                base_list.append(base_fname.split('jobid')[0])
+                id_list.append(base_fname.split('img')[0])
 
-        input_list = []
-        src_list = []
-        base_list = []
-        id_list = []
-        for i in range(0,num_inputs): #number of inputs is 9
-            input_file = q.get()
-            input_list.append(input_file)
-            src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-            log.info(f"{task_name}: file rcvd from {src_task} : {input_file}")
-            src = os.path.join(pathin, input_file)
-            src_list.append(src)
-            base_list.append(base_fname.split('jobid')[0])
-            id_list.append(base_fname.split('img')[0])
-
-        start = time.time()
-
-
-        #LCCENC CODE
-
-        logging.debug(id_list)
-        print(id_list)
-        print(base_list)
-        classname = [x.split('.')[0].split('img')[1] for x in base_list]
-        classid = [classmap[x] for x in classname]
-        filesuffixlist = []
-        for x,y in zip(classid, id_list):
-            tmp = str(x)+'#'+y
-            filesuffixlist.append(tmp)
-        filesuffix = '-'.join(filesuffixlist)
-        logging.debug(filesuffix)
-
-        hdr = {
-                'Content-Type': 'application/json',
-                'Authorization': None #not using HTTP secure
-                                    }
-        # message for requesting job_id
-        # payload = {'event': 'request id'}
-        payload = {'class_image': int(classnum)}
-        # address of flask server for class1 is 0.0.0.0:5000 and "post-id" is for requesting id
-        try:
-            # url = "http://0.0.0.0:5000/post-id"
-            global_info_ip = os.environ['GLOBAL_IP']
-            url = "http://%s:%s/post-id"%(global_info_ip,str(FLASK_SVC))
-            print(url)
-            # request job_id
-
-            response = requests.post(url, headers = hdr, data = json.dumps(payload))
-            job_id = response.json()
-            print(job_id)
-        except Exception as e:
-            print('Possibly running on the execution profiler')
-            print(e)
-            job_id = 2
+            start = time.time()
 
 
+            #LCCENC CODE
 
-        # Dimension of resized image
-        width = 400
-        height = 400
-        dim = (width, height)
+            logging.debug(id_list)
+            print(id_list)
+            print(base_list)
+            classname = [x.split('.')[0].split('img')[1] for x in base_list]
+            classid = [classmap[x] for x in classname]
+            filesuffixlist = []
+            for x,y in zip(classid, id_list):
+                tmp = str(x)+'#'+y
+                filesuffixlist.append(tmp)
+            filesuffix = '-'.join(filesuffixlist)
+            logging.debug(filesuffix)
 
-        if ccdag.CODING_PART2: #Coding Version
-            #Read M batches
-            Image_Batch = []
-            count_file = 0
-            for j in range(M):
-                count = 0
-                while count < L:
-                    logging.debug(count_file)
-                    logging.debug(os.path.join(pathin, input_list[count_file]))
-                    img = cv2.imread(os.path.join(pathin, input_list[count_file]))
-                    if img is not None:
-                    # resize image
-                        img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-                        img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
-                        img -= img.mean()
-                        img /= img.std()
-                        img_w ,img_l = img.shape
-                        img = img.reshape(1,img_w*img_l)
-                        if count == 0:
-                           Images = img
-                        else:
-                           Images = np.concatenate((Images,img), axis=0)
-                        count+=1
-                    count_file+=1
-                Image_Batch.append(Images)
+            hdr = {
+                    'Content-Type': 'application/json',
+                    'Authorization': None #not using HTTP secure
+                                        }
+            # message for requesting job_id
+            # payload = {'event': 'request id'}
+            payload = {'class_image': int(classnum)}
+            # address of flask server for class1 is 0.0.0.0:5000 and "post-id" is for requesting id
+            try:
+                # url = "http://0.0.0.0:5000/post-id"
+                global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
+                url = "http://%s:%s/post-id"%(global_info_ip,str(FLASK_SVC))
+                print(url)
+                # request job_id
 
-            # Encode M data batches to N encoded data
-            En_Image_Batch = LCC_encoding(Image_Batch,N,M)
-
-            # Save each encoded data-batch i to a csv
-            for idx,child in enumerate(children):
-                job = "jobid"+ str(job_id)
-                destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
-                np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
-
-            from_task = '_storeclass'+classnum
+                response = requests.post(url, headers = hdr, data = json.dumps(payload))
+                job_id = response.json()
+                print(job_id)
+            except Exception as e:
+                print('Possibly running on the execution profiler')
+                print(e)
+                job_id = 2
 
 
-        else: # Uncoding version
-            #Read M batches
-            Image_Batch = []
-            count_file = 0
-            for j in range(N):
-                count = 0
-                while count < L:
-                    logging.debug(count_file)
-                    img = cv2.imread(os.path.join(pathin, input_list[count_file]))
-                    if img is not None:
-                    # resize image
-                        img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
-                        img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
-                        img -= img.mean()
-                        img /= img.std()
-                        img_w ,img_l = img.shape
-                        img = img.reshape(1,img_w*img_l)
-                        if count == 0:
-                           Images = img
-                        else:
-                           Images = np.concatenate((Images,img), axis=0)
-                        count+=1
-                    count_file+=1
-                Image_Batch.append(Images)
 
-            En_Image_Batch = LCC_encoding(Image_Batch,N,N)
+            # Dimension of resized image
+            width = 400
+            height = 400
+            dim = (width, height)
 
-            # dst_task = children # only 1 child
+            if ccdag.CODING_PART2: #Coding Version
+                #Read M batches
+                Image_Batch = []
+                count_file = 0
+                for j in range(M):
+                    count = 0
+                    while count < L:
+                        logging.debug(count_file)
+                        logging.debug(os.path.join(pathin, input_list[count_file]))
+                        img = cv2.imread(os.path.join(pathin, input_list[count_file]))
+                        if img is not None:
+                        # resize image
+                            img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+                            img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
+                            img -= img.mean()
+                            img /= img.std()
+                            img_w ,img_l = img.shape
+                            img = img.reshape(1,img_w*img_l)
+                            if count == 0:
+                               Images = img
+                            else:
+                               Images = np.concatenate((Images,img), axis=0)
+                            count+=1
+                        count_file+=1
+                    Image_Batch.append(Images)
 
-            for idx,child in enumerate(children):
-                job = "jobid"+ str(job_id)
-                destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
-                np.savetxt(destination, En_Image_Batch[i], delimiter=',')
+                # Encode M data batches to N encoded data
+                En_Image_Batch = LCC_encoding(Image_Batch,N,M)
 
-        # read the generate output
-        # based on that determine sleep and number of bytes in output file
-        end = time.time()
-        runtime_stat = {
-            "task_name" : task_name,
-            "start" : start,
-            "end" : end
-        }
-        log.warning(json.dumps(runtime_stat))
-        for i in range(num_inputs):
-            q.task_done()
+                # Save each encoded data-batch i to a csv
+                for idx,child in enumerate(children):
+                    job = "jobid"+ str(job_id)
+                    destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
+                    np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
+
+                from_task = '_storeclass'+classnum
+
+
+            else: # Uncoding version
+                #Read M batches
+                Image_Batch = []
+                count_file = 0
+                for j in range(N):
+                    count = 0
+                    while count < L:
+                        logging.debug(count_file)
+                        img = cv2.imread(os.path.join(pathin, input_list[count_file]))
+                        if img is not None:
+                        # resize image
+                            img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
+                            img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
+                            img -= img.mean()
+                            img /= img.std()
+                            img_w ,img_l = img.shape
+                            img = img.reshape(1,img_w*img_l)
+                            if count == 0:
+                               Images = img
+                            else:
+                               Images = np.concatenate((Images,img), axis=0)
+                            count+=1
+                        count_file+=1
+                    Image_Batch.append(Images)
+
+                En_Image_Batch = LCC_encoding(Image_Batch,N,N)
+
+                # dst_task = children # only 1 child
+
+                for idx,child in enumerate(children):
+                    job = "jobid"+ str(job_id)
+                    destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
+                    np.savetxt(destination, En_Image_Batch[i], delimiter=',')
+
+            # read the generate output
+            # based on that determine sleep and number of bytes in output file
+            end = time.time()
+            runtime_stat = {
+                "task_name" : task_name,
+                "start" : start,
+                "end" : end
+            }
+            log.warning(json.dumps(runtime_stat))
+            for i in range(num_inputs):
+                q.task_done()
+        else:
+            print('Not enough files')
+            time.sleep(1)
 
     log.error("ERROR: should never reach this")
 

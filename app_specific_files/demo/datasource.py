@@ -8,6 +8,7 @@ import string
 import random
 import _thread
 import shutil
+from ccdag_utils import *
 
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
