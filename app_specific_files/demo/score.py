@@ -86,9 +86,7 @@ def task(q, pathin, pathout, task_name):
             height = 400
             dim = (width, height)
 
-            # # Read Reference Images
-            # input_file_ref = ['fireengine'+str(i+1)+'_20200424.jpg' for i in range(20,30)]  # to be defined in advance
-            # path_ref = os.path.join(os.path.dirname(__file__),'fireengine') # folder of referenced images
+            
              # Read Reference Images
             input_file_ref = [class_name+str(i+1)+'.JPEG' for i in range(20,30)]  # to be defined in advance
             path_ref = os.path.join(os.path.dirname(__file__),'reference',class_name) # folder of referenced images
@@ -117,6 +115,7 @@ def task(q, pathin, pathout, task_name):
 
 
             # Read Encoded data-batch
+            print(os.path.join(pathin, input_file))
             En_Image_Batch = np.loadtxt(os.path.join(pathin, input_file), delimiter=',')
 
 

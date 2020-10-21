@@ -39,9 +39,11 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
         super().__init__()
 
     def process_IN_CLOSE_WRITE(self, event):
+        print('Receive IN CLOSE WRITE')
         self.handle_output(event)
 
     def process_IN_MOVED_TO(self, event):
+        print('Receive IN MOVED TO')
         self.handle_output(event)
 
     def handle_output(self, event):

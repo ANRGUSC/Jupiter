@@ -311,6 +311,7 @@ def task(q, pathin, pathout, task_name):
             shutil.copyfile(collage_file, dst)
             print('Receive collage file:')
             print(dst)
+            print('Receive resnet file:')
             ### send to resnet tasks
             filelist_flask = []
             for i, f in enumerate(input_list):
@@ -325,8 +326,6 @@ def task(q, pathin, pathout, task_name):
                 slept = 0
                 try:
                     global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
-                    print(global_info_ip)
-                    print(FLASK_SVC)
                     global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
                     print("global info ip port: ", global_info_ip_port)
                     if ccdag.RESNETS_THRESHOLD > 1: # Coding configuration
