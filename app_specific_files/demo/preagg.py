@@ -11,6 +11,7 @@ import configparser
 import numpy as np
 from os import listdir
 from ccdag_utils import *
+import requests
 
 
 
@@ -39,12 +40,8 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 app_config = app_config_parser.AppConfig(APP_DIR)
 
 #task config information
-#JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
 config = configparser.ConfigParser()
 config.read(ccdag.JUPITER_CONFIG_INI_PATH)
-
-print(config)
-
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
