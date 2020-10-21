@@ -47,6 +47,7 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
         self.handle_output(event)
 
     def handle_output(self, event):
+        print('Receive output file')
         runtime_stat = {
             "event": "new_output_file",
             "filename": event.name,
@@ -63,7 +64,6 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
         # send output to destination task
         transfer.transfer_data_scp(ip, self.ssh_port, USERNAME, PASSWORD,
                                    event.pathname, CIRCE_INPUT_DIR)
-        os.remove(event.pathname)
 
 
 class InputFolderHandler(pyinotify.ProcessEvent):
