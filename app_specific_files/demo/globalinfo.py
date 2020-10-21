@@ -44,6 +44,7 @@ FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
 global collagejobs, log
+log = []
 
 app = Flask('Global_Server')
 
@@ -249,19 +250,16 @@ def request_dict():
     print(response)
     return json.dumps(response)
 
-
+print('Creating collage jobs!!!!!!')
+collagejobs = collageJobs()
+for i in range(ccdag.NUM_CLASS):
+    event = EventLog()
+    log.append(event)
 
 def task(q, pathin, pathout, task_name):
     logg.info(f"Starting non-DAG task {task_name}")
     children = app_config.child_tasks(task_name)
-
-    print('Creating collage jobs!!!!!!')
-    collagejobs = collageJobs()
     app.run(threaded = True, host = '0.0.0.0',port = FLASK_DOCKER) #address
-    log = []
-    for i in range(ccdag.NUM_CLASS):
-        event = EventLog()
-        log.append(event)
 
 
    
