@@ -42,21 +42,15 @@ import ccdag
 # in your code, reference your entire app directory using your base script's
 # location.
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
-
 # Parse app_config.yaml. Keep as a global to use in your app code.
 app_config = app_config_parser.AppConfig(APP_DIR)
-
 app = Flask(__name__)
-store_class_tasks_paths_dict = {}
-
+config = configparser.ConfigParser()
+config.read(ccdag.JUPITER_CONFIG_INI_PATH)
+FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
+FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
 global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
-
-# all_nodes = os.environ["ALL_NODES"].split(":")
-# all_nodes_ips = os.environ["ALL_NODES_IPS"].split(":")
-# logging.debug(all_nodes)
-# map_nodes_ip = dict(zip(all_nodes, all_nodes_ips))
-
 store_class_tasks_dict = {}
 store_class_tasks_dict[555] = "storeclass1"
 store_class_tasks_dict[779] = "storeclass2"
@@ -133,8 +127,9 @@ def get_job_id():
         url = "http://%s:%s/post-id-master"%(global_info_ip,str(FLASK_SVC))
         print(url)
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
+        print(response)
         job_id = response.json()
-        #print(job_id)
+        print(job_id)
     except Exception as e:
         print('Possibly running on the execution profiler')
         job_id = 0
@@ -311,14 +306,12 @@ def task(q, pathin, pathout, task_name):
                 tmp = str(x)+'#'+y
                 filesuffixlist.append(tmp)
             filesuffix = '-'.join(filesuffixlist)
-            print('got job id 2: ', job_id)
             job = "jobid"+ str(job_id)
             dst = os.path.join(pathout, f"{task_name}_{collage_file_split}_{filesuffix}{job}")
             shutil.copyfile(collage_file, dst)
             print('Receive collage file:')
             print(dst)
             ### send to resnet tasks
-            print('Receive resnet files: ')
             filelist_flask = []
             for i, f in enumerate(input_list):
                 idx  = i%num_images
@@ -332,6 +325,8 @@ def task(q, pathin, pathout, task_name):
                 slept = 0
                 try:
                     global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
+                    print(global_info_ip)
+                    print(FLASK_SVC)
                     global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
                     print("global info ip port: ", global_info_ip_port)
                     if ccdag.RESNETS_THRESHOLD > 1: # Coding configuration

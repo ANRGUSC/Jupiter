@@ -13,13 +13,14 @@ np.set_printoptions(linewidth=320, formatter={'float_kind': '{:11.5g}'.format}) 
 
 def retrieve_globalinfo(circe_nondag_task_to_ip):
     try:
-        print('debuggggggggggg')
-        print(circe_nondag_task_to_ip)
         items = circe_nondag_task_to_ip.split(' ')
-        print(items)
         for item in items:
+            print(item)
             name, ip = item.split(':')
-            if name == 'globalinfo':
+            print(name)
+            print(ip)
+            if name == 'globalinfo':  
+                print(ip)  
                 return ip
     except Exception as e:
         log.info('Can not retrieve global information. Possibly running on EP!')

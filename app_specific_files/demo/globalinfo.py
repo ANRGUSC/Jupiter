@@ -43,6 +43,8 @@ config.read(ccdag.JUPITER_CONFIG_INI_PATH)
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
+global collagejobs, log
+
 app = Flask('Global_Server')
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
@@ -94,8 +96,8 @@ class collageJobs(object):
     #        del self.job_collage_preds_dict[job_id]
     #    return True
     def enough_resnet_preds(self, job_id):
-        if self.job_resnet_preds_dict[job_id].count(-1) >= RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
-            print("current count {}, resnets_threshold {}".format(self.job_resnet_preds_dict[job_id].count(-1), RESNETS_THRESHOLD))
+        if self.job_resnet_preds_dict[job_id].count(-1) >= ccdag.RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
+            print("current count {}, resnets_threshold {}".format(self.job_resnet_preds_dict[job_id].count(-1), ccdag.RESNETS_THRESHOLD))
             return False
         else:
             return True
@@ -112,7 +114,7 @@ class collageJobs(object):
             if job_id in self.processed_jobids: # already processed
                 continue
             missing = []
-            if self.job_resnet_preds_dict[job_id].count(-1) >= RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
+            if self.job_resnet_preds_dict[job_id].count(-1) >= ccdag.RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
                 continue
                 #for i in range(self.num_tasks):
                 #    missing.append(i)
@@ -149,12 +151,7 @@ class EventLog(object):
         def dict_update(self,job_id,filename):
             self.job_dict[job_id].append(filename) # update the received result to dictionary
 
-collagejobs = collageJobs()
-app.run(threaded = True, host = '0.0.0.0',port = FLASK_DOCKER) #address
-log = []
-for i in range(ccdag.NUM_CLASS):
-    event = EventLog()
-    log.append(event)
+
 
 ### Krishna
 @app.route('/post-prediction-resnet', methods=['POST'])
@@ -257,8 +254,16 @@ def request_dict():
 def task(q, pathin, pathout, task_name):
     logg.info(f"Starting non-DAG task {task_name}")
     children = app_config.child_tasks(task_name)
-    while True:
-        sleep(1)
+
+    print('Creating collage jobs!!!!!!')
+    collagejobs = collageJobs()
+    app.run(threaded = True, host = '0.0.0.0',port = FLASK_DOCKER) #address
+    log = []
+    for i in range(ccdag.NUM_CLASS):
+        event = EventLog()
+        log.append(event)
+
+
    
 
     
