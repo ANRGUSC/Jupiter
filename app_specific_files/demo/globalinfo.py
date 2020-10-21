@@ -255,11 +255,14 @@ collagejobs = collageJobs()
 for i in range(ccdag.NUM_CLASS):
     event = EventLog()
     log.append(event)
+app.run(threaded = True, host = '0.0.0.0',port = FLASK_DOCKER) #address
 
 def task(q, pathin, pathout, task_name):
     logg.info(f"Starting non-DAG task {task_name}")
     children = app_config.child_tasks(task_name)
-    app.run(threaded = True, host = '0.0.0.0',port = FLASK_DOCKER) #address
+    while True:
+        time.sleep(1)
+    
 
 
    
