@@ -127,6 +127,12 @@ def task(q, pathin, pathout, task_name):
             M = 2 # Number of data-batches
             N = 3 # Number of workers
 
+            print('------------')
+            print(job_dict)
+            print(job_id)
+            print(pathin)
+            print(input_file)
+
             if ccdag.CODING_PART2: #Coding Version
                 #Check if number of received results for the same job is equal to M
                 if len(job_dict[job_id]) == M:
