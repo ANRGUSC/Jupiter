@@ -128,6 +128,8 @@ def get_job_id():
     try:
         # url = "http://0.0.0.0:5000/post-id"
         global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
+        print('Find job iDDDDDDDDDDDDDDDD')
+        print(global_info_ip)
         url = "http://%s:%s/post-id-master"%(global_info_ip,str(FLASK_SVC))
         print(url)
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
