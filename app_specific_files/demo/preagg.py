@@ -73,6 +73,9 @@ def task(q, pathin, pathout, task_name):
             job_id = base_fname.split('jobth')[0]
             file_id = base_fname.split('jobth')[1]
 
+            print(job_id)
+            print(file_id)
+
             # job_id = int(job_id)
 
 
@@ -88,7 +91,7 @@ def task(q, pathin, pathout, task_name):
             payload = {
                 'class_image': int(classnum),
                 'job_id': job_id,
-                'filename': input_file[0]
+                'filename': input_file
             }
 
             # address of flask server for class1 is 0.0.0.0:5000 and "post-dict" is for requesting dictionary
@@ -114,7 +117,7 @@ def task(q, pathin, pathout, task_name):
                 else:
                     fname1 = 'score1a_preagg1_'+str(job_id)+'jobth'
                     fname2 = 'score1b_preagg1_'+str(job_id)+'jobth'
-                    fname2 = 'score1c_preagg1_'+str(job_id)+'jobth'
+                    fname3 = 'score1c_preagg1_'+str(job_id)+'jobth'
                     sample1 = [f for f in listdir(pathout) if f.startswith(fname1)]
                     sample2 = [f for f in listdir(pathout) if f.startswith(fname2)]
                     sample3 = [f for f in listdir(pathout) if f.startswith(fname3)]
