@@ -23,6 +23,25 @@ node_map:
   node3: n3
   node4: n4
   node5: n5
+  node6: n6
+  node7: n7
+  node8: n8
+  node9: n9
+  node10: n10
+  node11: n11
+  node12: n12
+  node13: n13
+  node14: n14
+  node15: n15
+  node16: n16
+  node17: n17
+  node18: n18
+  node19: n19
+  node20: n20
+  node21: n21
+  node22: n22
+  node23: n23
+  node24: n24
 application:
   # List of port mappings in format. Used for creating additional k8s services
   # for your application. i.e., "9000:8000" will create a service with port 9000
@@ -36,24 +55,24 @@ application:
     nondag_tasks:
     - name: datasource1
       base_script: datasource.py
-      k8s_host: n6
+      k8s_host: n25
       children: master
         # Only home or dag_tasks allowed under children
     - name: datasource2
       base_script: datasource.py
-      k8s_host: n7
+      k8s_host: n26
       children: master
     - name: datasource3
       base_script: datasource.py
-      k8s_host: n7
+      k8s_host: n27
       children: master
     - name: datasource4
       base_script: datasource.py
-      k8s_host: n7
+      k8s_host: n28
       children: master
     - name: datasource5
       base_script: datasource.py
-      k8s_host: n7
+      k8s_host: n29
       children: master
     - name: globalinfo
       base_script: globalinfo.py

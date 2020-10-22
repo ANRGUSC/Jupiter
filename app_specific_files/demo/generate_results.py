@@ -46,20 +46,12 @@ def export_log(results_path,namespace):
         for item in resp.items:
             name = item.metadata.name
             file_name = '%s/%s.log'%(results_path,name)
-            cmd = 'kubectl logs -n%s %s > %s'%(circe_namespace,name,file_name)
+            cmd = 'kubectl logs -n%s %s > %s'%(namespace,name,file_name)
             os.system(cmd)
 
 def retrieve_circe_logs(TEST_INDICATORS):
     circe_namespace = app_config.namespace_prefix() + "-circe"
-    # for task in app_config.get_dag_tasks():
-    #     pod_name = "app="+app_config.app_name + '-' + task['name']
-    #     export_log(results_path,circe_namespace,pod_name)
-    # for task in app_config.get_non_dag_tasks():
-    #     pod_name = "app="+app_config.app_name + '-' + task['name']
-    #     export_log(results_path,circe_namespace,pod_name)
-    # pod_name = "app="+app_config.app_name + '-home'
-    # export_log(results_path,circe_namespace,pod_name)
-    export_log(results_path,namespace)
+    export_log(results_path,circe_namespace)
 
 
 
