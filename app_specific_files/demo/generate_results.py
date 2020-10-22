@@ -5,6 +5,8 @@ from statistics import mean
 import signal
 from kubernetes.client.apis import core_v1_api
 from kubernetes import client, config
+sys.path.append("../../")
+import jupiter_config
 
 try:
     # successful if running in container
@@ -35,11 +37,13 @@ app_config = app_config_parser.AppConfig(APP_DIR)
 
 
 def retrieve_circe_logs(TEST_INDICATORS):
+    config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
     core_v1_api = client.CoreV1Api()
     circe_namespace = app_config.namespace_prefix() + "-circe"
     for task in app_config.get_dag_tasks():
-        pod_name = app_config.app_name + '-' + task['name']
+        pod_name = "app="+app_config.app_name + '-' + task['name']
         resp = core_v1_api.list_namespaced_pod(circe_namespace, label_selector=pod_name)
+        print(resp)
         if resp.items:
             a = resp.items[0]
             print(a)

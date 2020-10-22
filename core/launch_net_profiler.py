@@ -42,7 +42,7 @@ def check_workers_running(app_config, namespace):
             # ignore checking on home status
             continue
 
-        label = app_config.app_name + '-' + node 
+        label = "app="+app_config.app_name + '-' + node 
 
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector=label)
         # if a pod is running just delete it

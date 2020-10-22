@@ -27,7 +27,6 @@ def create_services(app_name, namespace, tasks, api, port_mappings):
         pod_name = app_name + '-' + task['name']
         spec = k8s_spec.service.generate(
             name=pod_name,
-            label=pod_name,
             port_mappings=port_mappings
         )
 
