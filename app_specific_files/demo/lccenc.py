@@ -185,8 +185,8 @@ def task(q, pathin, pathout, task_name):
                     print(idx)
                     print(child)
                     print(filesuffix)
-                    print(job)
                     job = "jobid"+ str(job_id)
+                    print(job)
                     destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
                     np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
 
@@ -226,8 +226,8 @@ def task(q, pathin, pathout, task_name):
                     print(idx)
                     print(child)
                     print(filesuffix)
-                    print(job)
                     job = "jobid"+ str(job_id)
+                    print(job)
                     destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
                     np.savetxt(destination, En_Image_Batch[i], delimiter=',')
 
