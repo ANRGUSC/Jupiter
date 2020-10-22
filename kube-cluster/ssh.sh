@@ -4,7 +4,7 @@ usr="ubuntu"
 
 if [ $1 = "master" ] 
 then
-        ssh -i id_rsa $usr@165.232.63.47
+        ssh -i id_rsa $usr@159.89.153.146
 elif [ $1 = "n0" ] 
 then
         ssh -i id_rsa $usr@64.225.35.82
