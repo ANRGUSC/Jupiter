@@ -4,6 +4,18 @@ import matplotlib.pyplot as plt
 from statistics import mean
 import signal
 
+try:
+    # successful if running in container
+    sys.path.append("/jupiter/build")
+    sys.path.append("/jupiter/build/app_specific_files/")
+    from jupiter_utils import app_config_parser
+except ModuleNotFoundError:
+    # Python file must be running locally for testing
+    sys.path.append("../../core/")
+    from jupiter_utils import app_config_parser
+
+import ccdag
+
 # SEE README.md for more information on naming conventions!
 
 # these are the filenames to process, all dictated by TEST_INDICATORS
@@ -11,8 +23,24 @@ import signal
 # Letters indicate test number (to differentiate from the flags)
 # postfix "sleep" indicates if artificial sleeps are injected in the test
 # examples: "11a", "01a", "01b" "01a-sleep"
-TEST_INDICATORS = "00z-sleep"
+TEST_INDICATORS = "%d%d%s-%s"%(ccdag.CODING_PART1,ccdag.CODING_PART2,ccdag.EXP_ID,ccdag.EXP_NAME)
 # see how file names are structured in main
+
+APP_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Parse app_config.yaml. Keep as a global to use in your app code.
+app_config = app_config_parser.AppConfig(APP_DIR)
+
+
+def retrieve_circe_logs(TEST_INDICATORS):
+    circe_namespace = app_config.namespace_prefix() + "-circe"
+    for task in app_config.get_dag_tasks():
+        pod_name = app_config.app_name + '-' + task['name']
+        resp = core_v1_api.list_namespaced_pod(namespace, label_selector=pod_name)
+        if resp.items:
+            a = resp.items[0]
+            print(a)
+
 
 def signal_handler(sig, frame):
     print("Ctrl+c detected, exiting and closing all plots...")
