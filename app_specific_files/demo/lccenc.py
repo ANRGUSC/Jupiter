@@ -179,14 +179,9 @@ def task(q, pathin, pathout, task_name):
                 # Encode M data batches to N encoded data
                 En_Image_Batch = LCC_encoding(Image_Batch,N,M)
 
-                print(children)
                 # Save each encoded data-batch i to a csv
                 for idx,child in enumerate(children):
-                    print(idx)
-                    print(child)
-                    print(filesuffix)
                     job = "jobid"+ str(job_id)
-                    print(job)
                     destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
                     np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
 
@@ -220,14 +215,9 @@ def task(q, pathin, pathout, task_name):
 
                 En_Image_Batch = LCC_encoding(Image_Batch,N,N)
 
-                print(children)
 
                 for idx,child in enumerate(children):
-                    print(idx)
-                    print(child)
-                    print(filesuffix)
                     job = "jobid"+ str(job_id)
-                    print(job)
                     destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
                     np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
 
@@ -239,7 +229,7 @@ def task(q, pathin, pathout, task_name):
                 "start" : start,
                 "end" : end
             }
-            log.info(json.dumps(runtime_stat))
+            log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
             for i in range(num_inputs):
                 q.task_done()
         else:

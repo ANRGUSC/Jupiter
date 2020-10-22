@@ -143,7 +143,7 @@ def task(q, pathin, pathout, task_name):
                 "start" : start,
                 "end" : end
             }
-            log.info(json.dumps(runtime_stat))
+            log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
             for i in range(num_inputs):
                 q.task_done()
 
@@ -213,7 +213,7 @@ def task(q, pathin, pathout, task_name):
                 "start" : start,
                 "end" : end
             }
-            log.info(json.dumps(runtime_stat))
+            log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
             for i in range(num_inputs):
                 q.task_done()
 

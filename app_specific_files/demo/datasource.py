@@ -48,10 +48,12 @@ def gen_stream_fixed_set_data(task_name,interval,num_images,data_path,original_d
         shutil.copyfile(source, destination)
         ts = time.time()
         runtime_stat = {
-            "task_name" : task_name,
-            "generatedata" : ts
-        }
-        log.info(json.dumps(runtime_stat))
+                "event": "new_datasource_file",
+                "task_name" : task_name,
+                "unix_time" : ts,
+            }
+        log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
+
 
 
 # Run by dispatcher (e.g. CIRCE). Custom tasks are unable to receive files

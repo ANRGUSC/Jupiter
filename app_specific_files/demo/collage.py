@@ -209,12 +209,13 @@ def task(q, pathin, pathout, task_name):
             # based on that determine sleep and number of bytes in output file
 
             end = time.time()
+
             runtime_stat = {
                 "task_name" : task_name,
                 "start" : start,
                 "end" : end
             }
-            log.info(json.dumps(runtime_stat))
+            log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
 
             q.task_done()
         else:
