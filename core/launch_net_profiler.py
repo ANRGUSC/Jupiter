@@ -96,7 +96,6 @@ def main():
     home_svc_name = app_config.app_name + "-home"
     home_svc_spec = k8s_spec.service.generate(
         name=home_svc_name,
-        label=ome_svc_name,
         port_mappings=jupiter_config.k8s_service_port_mappings()
     )
     resp = api.create_namespaced_service(namespace, home_svc_spec)
@@ -127,7 +126,6 @@ def main():
         pod_name = app_config.app_name + '-' + node
         spec = k8s_spec.service.generate(
             name=pod_name,
-            label=pod_name,
             port_mappings=jupiter_config.k8s_service_port_mappings()
         )
 

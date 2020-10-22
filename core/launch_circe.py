@@ -87,7 +87,6 @@ def launch_circe(task_mapping):
     home_svc_name = app_config.app_name + "-home"
     home_svc_spec = k8s_spec.service.generate(
         name=home_svc_name,
-        label=home_svc_name,
         port_mappings=svc_port_mappings
     )
     resp = api.create_namespaced_service(namespace, home_svc_spec)
