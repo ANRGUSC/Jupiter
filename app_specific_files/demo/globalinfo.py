@@ -50,7 +50,7 @@ app = Flask('Global_Server')
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 logg = logging.getLogger(__name__)
-logg.setLevel(logging.DEBUG)
+logg.setLevel(logging.INFO)
 
 
 

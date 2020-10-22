@@ -13,7 +13,7 @@ from ccdag_utils import *
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 try:
     # successful if running in container
@@ -35,11 +35,6 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 # Parse app_config.yaml. Keep as a global to use in your app code.
 app_config = app_config_parser.AppConfig(APP_DIR)
 
-
-def random_string():
-    letters = string.ascii_letters + string.digits
-    s = [random.choice(letters) for i in range(6)]
-    return ''.join(s)
 
 def gen_stream_fixed_set_data(interval,num_images,data_path,original_data_path):
     list_files = os.listdir(original_data_path)

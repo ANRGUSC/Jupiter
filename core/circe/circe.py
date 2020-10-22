@@ -39,11 +39,9 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
         super().__init__()
 
     def process_IN_CLOSE_WRITE(self, event):
-        print('Receive IN CLOSE WRITE')
         self.handle_output(event)
 
     def process_IN_MOVED_TO(self, event):
-        print('Receive IN MOVED TO')
         self.handle_output(event)
 
     def handle_output(self, event):
@@ -55,10 +53,6 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
         }
         log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
         this_task, dst_task, base_fname = event.name.split("_", maxsplit=3)
-        print(this_task)
-        print(dst_task)
-        print(base_fname)
-
         ip = transfer.circe_lookup_ip(dst_task)
 
         # send output to destination task

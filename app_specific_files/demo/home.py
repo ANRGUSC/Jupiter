@@ -40,7 +40,7 @@ def task(q, pathin, pathout, task_name):
 
     while True:
         time.sleep(1)
-        log.info("Staying idle...")
+        log.debug("Staying idle...")
 
     log.error("ERROR: should never reach this")
 
