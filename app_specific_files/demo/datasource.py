@@ -9,6 +9,7 @@ import random
 import _thread
 import shutil
 from ccdag_utils import *
+import json
 
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
