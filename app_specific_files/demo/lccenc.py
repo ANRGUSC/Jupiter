@@ -229,7 +229,7 @@ def task(q, pathin, pathout, task_name):
                     job = "jobid"+ str(job_id)
                     print(job)
                     destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
-                    np.savetxt(destination, En_Image_Batch[i], delimiter=',')
+                    np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
 
             # read the generate output
             # based on that determine sleep and number of bytes in output file
