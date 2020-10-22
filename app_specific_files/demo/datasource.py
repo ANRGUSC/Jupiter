@@ -36,7 +36,7 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 app_config = app_config_parser.AppConfig(APP_DIR)
 
 
-def gen_stream_fixed_set_data(interval,num_images,data_path,original_data_path):
+def gen_stream_fixed_set_data(task_name,interval,num_images,data_path,original_data_path):
     list_files = os.listdir(original_data_path)
     for i in range(0,num_images):
         time.sleep(interval)
@@ -45,6 +45,12 @@ def gen_stream_fixed_set_data(interval,num_images,data_path,original_data_path):
         source = os.path.join(original_data_path,filename)
         destination = os.path.join(data_path,filename)
         shutil.copyfile(source, destination)
+        ts = time.time()
+        runtime_stat = {
+            "task_name" : task_name,
+            "generatedata" : ts
+        }
+        log.info(json.dumps(runtime_stat))
 
 
 # Run by dispatcher (e.g. CIRCE). Custom tasks are unable to receive files
@@ -60,7 +66,7 @@ def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
     log.info(f"My children are {children}")
 
-    gen_stream_fixed_set_data(ccdag.STREAM_INTERVAL,ccdag.NUM_IMAGES,data_path,original_data_path)
+    gen_stream_fixed_set_data(task_name,ccdag.STREAM_INTERVAL,ccdag.NUM_IMAGES,data_path,original_data_path)
 
     while True:
         time.sleep(999)

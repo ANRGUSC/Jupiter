@@ -256,7 +256,7 @@ def task(q, pathin, pathout, task_name):
                 input_file = q.get()
                 input_list.append(input_file)
                 src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-                log.info(f"{task_name}: file rcvd from {src_task}")
+                log.info(f"{task_name}: file rcvd from {src_task} {base_fname}")
                 src = os.path.join(pathin, input_file)
                 src_list.append(src)
                 base_list.append(base_fname.split('.')[0])
@@ -336,7 +336,7 @@ def task(q, pathin, pathout, task_name):
                 "start" : start,
                 "end" : end
             }
-            log.warning(json.dumps(runtime_stat))
+            log.info(json.dumps(runtime_stat))
             for i in range(0,9):
                 q.task_done()
         else:

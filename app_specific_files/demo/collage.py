@@ -203,7 +203,7 @@ def task(q, pathin, pathout, task_name):
                 if ccdag.CODING_PART1:
                     send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
             except Exception as e:
-                print('Possibly running on the execution profiler: ', e)
+                log.warning('Possibly running on the execution profiler: ', e)
 
             # read the generate output
             # based on that determine sleep and number of bytes in output file
@@ -214,7 +214,7 @@ def task(q, pathin, pathout, task_name):
                 "start" : start,
                 "end" : end
             }
-            log.warning(json.dumps(runtime_stat))
+            log.info(json.dumps(runtime_stat))
 
             q.task_done()
         else:

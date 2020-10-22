@@ -45,7 +45,6 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
         self.handle_output(event)
 
     def handle_output(self, event):
-        print('Receive output file')
         runtime_stat = {
             "event": "new_output_file",
             "filename": event.name,

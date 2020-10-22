@@ -60,7 +60,7 @@ def task(q, pathin, pathout, task_name):
                 "start" : start,
                 "end" : end
             }
-            log.warning(json.dumps(runtime_stat))
+            log.info(json.dumps(runtime_stat))
             q.task_done()
         else:
             log.debug('Not enough files')
