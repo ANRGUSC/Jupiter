@@ -82,20 +82,6 @@ class collageJobs(object):
             return job_id
     def put_collage_preds(self, job_id, preds):
         self.job_collage_preds_dict[job_id] = preds
-    #def get_collage_preds(self, job_id):
-    #    return self.job_collage_preds_dict[job_id]
-    #def get_resnet_preds(self, job_id):
-    #    return self.job_resnet_preds_dict[job_id]
-    #def get_files(self, job_id): 
-    #    return self.job_files_dict[job_id]
-    #def delete_jobs(self, job_id):
-    #    if job_id in self.job_files_dict:
-    #        del self.job_files_dict[job_id]
-    #    if job_id in self.job_resnet_preds_dict:
-    #        del self.job_resnet_preds_dict[job_id]
-    #    if job_id in self.job_collage_preds_dict:
-    #        del self.job_collage_preds_dict[job_id]
-    #    return True
     def enough_resnet_preds(self, job_id):
         if self.job_resnet_preds_dict[job_id].count(-1) >= ccdag.RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
             print("current count {}, resnets_threshold {}".format(self.job_resnet_preds_dict[job_id].count(-1), ccdag.RESNETS_THRESHOLD))
@@ -230,10 +216,8 @@ def request_id():
     recv = request.get_json()
     class_image = recv['class_image']
     response = str(log[class_image-1].get_id())
-    print(response)
     log[class_image-1].id_update()
-    print(log[class_image-1].id)
-    print(log[class_image-1].job_dict)
+    print(response)
     return json.dumps(response)
     
 # function of dictionary response
@@ -241,16 +225,12 @@ def request_id():
 def request_dict():
     print('Receive LCC job dictionary request')
     recv = request.get_json()
-    print(recv['job_id'])
-    print(recv['filename'])
     class_image = recv['class_image']
     log[class_image-1].dict_update(recv['job_id'],recv['filename'])
-    print(log[class_image-1])
     response = log[class_image-1].get_dict()
     print(response)
     return json.dumps(response)
 
-print('Creating collage jobs!!!!!!')
 collagejobs = collageJobs()
 for i in range(ccdag.NUM_CLASS):
     event = EventLog()

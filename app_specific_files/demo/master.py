@@ -122,16 +122,11 @@ def get_job_id():
     try:
         # url = "http://0.0.0.0:5000/post-id"
         global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
-        print('Find job iDDDDDDDDDDDDDDDD')
-        print(global_info_ip)
         url = "http://%s:%s/post-id-master"%(global_info_ip,str(FLASK_SVC))
-        print(url)
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
-        print(response)
         job_id = response.json()
-        print(job_id)
     except Exception as e:
-        print('Possibly running on the execution profiler')
+        log.debug('Possibly running on the execution profiler')
         job_id = 0
     return job_id
 
@@ -147,12 +142,11 @@ def put_filenames(job_id, filelist):
         # url = "http://0.0.0.0:5000/post-id"
         global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
         url = "http://%s:%s/post-files-master"%(global_info_ip,str(FLASK_SVC))
-        print(url)
         # request job_id
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
         next_job_id = response.json()
     except Exception as e:
-        print('Possibly running on the execution profiler')
+        log.debug('Possibly running on the execution profiler')
         next_job_id = 1
     return next_job_id
 
@@ -187,13 +181,10 @@ def get_and_send_missing_images(pathin):
         # url = "http://0.0.0.0:5000/post-id"
         global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
         url = "http://%s:%s/post-get-images-master"%(global_info_ip,str(FLASK_SVC))
-        print(url)
         # request job_id
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
         missing_images_dict = response.json()
-        print(missing_images_dict)
     except Exception as e:
-        print('Possibly running on the execution profiler')
         logging.debug('Exception during post-get-images-master')
         logging.debug(e)
         missing_images_dict = collections.defaultdict(list)
@@ -245,8 +236,6 @@ def create_collage(input_list, collage_spatial, single_spatial, single_spatial_f
     collage_name = "collage.JPEG"
     collage_resized = collage.resize((collage_spatial, collage_spatial), Image.ANTIALIAS)
     collage_resized.save(collage_name)
-    print('New collage file is created!')
-    print(collage_name)
     return collage_name
 
 
@@ -309,16 +298,16 @@ def task(q, pathin, pathout, task_name):
             job = "jobid"+ str(job_id)
             dst = os.path.join(pathout, f"{task_name}_{collage_file_split}_{filesuffix}{job}")
             shutil.copyfile(collage_file, dst)
-            print('Receive collage file:')
-            print(dst)
-            print('Receive resnet file:')
+            log.debug('Receive collage file:')
+            log.debug(dst)
+            log.debug('Receive resnet file:')
             ### send to resnet tasks
             filelist_flask = []
             for i, f in enumerate(input_list):
                 idx  = i%num_images
                 dst_task = "resnet"+str(idx) # only 1 children
                 dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_list[i]}{job}.JPEG")
-                print(dst)
+                log.debug(dst)
                 shutil.copyfile(os.path.join(pathin,f), dst)
                 filelist_flask.append(dst)
             next_job_id = put_filenames(job_id, filelist_flask)
@@ -327,18 +316,17 @@ def task(q, pathin, pathout, task_name):
                 try:
                     global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
                     global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-                    print("global info ip port: ", global_info_ip_port)
                     if ccdag.RESNETS_THRESHOLD > 1: # Coding configuration
                         while slept < ccdag.MASTER_TO_RESNET_TIME:
                             ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
-                            print("get_enough_resnet_preds fn. return value is: ", ret_val)
+                            log.debug("get_enough_resnet_preds fn. return value is: ", ret_val)
                             if ret_val:
                                 break
                             time.sleep(ccdag.MASTER_POLL_INTERVAL)
                             slept += ccdag.MASTER_POLL_INTERVAL
                     get_and_send_missing_images(pathin)
                 except Exception as e:
-                    print('Possibly running on execution profiler!!!')
+                    log.debug('Possibly running on execution profiler!!!')
 
             # read the generate output
             # based on that determine sleep and number of bytes in output file
@@ -352,7 +340,7 @@ def task(q, pathin, pathout, task_name):
             for i in range(0,9):
                 q.task_done()
         else:
-            print('Not enough files')
+            log.debug('Not enough files')
             time.sleep(1)
 
     log.error("ERROR: should never reach this")
@@ -376,7 +364,6 @@ def profile_execution(task_name):
             # file is not in the correct format
             continue
 
-        print(dst_task)
         if dst_task.startswith(task_name):
             q.put(file)
     q.join()

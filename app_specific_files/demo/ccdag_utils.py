@@ -15,12 +15,8 @@ def retrieve_globalinfo(circe_nondag_task_to_ip):
     try:
         items = circe_nondag_task_to_ip.split(' ')
         for item in items:
-            print(item)
             name, ip = item.split(':')
-            print(name)
-            print(ip)
             if name == 'globalinfo':  
-                print(ip)  
                 return ip
     except Exception as e:
         log.info('Can not retrieve global information. Possibly running on EP!')

@@ -110,8 +110,6 @@ def task(q, pathin, pathout, task_name):
             #LCCENC CODE
 
             logging.debug(id_list)
-            print(id_list)
-            print(base_list)
             classname = [x.split('.')[0].split('img')[1] for x in base_list]
             classid = [classmap[x] for x in classname]
             filesuffixlist = []
@@ -133,15 +131,13 @@ def task(q, pathin, pathout, task_name):
                 # url = "http://0.0.0.0:5000/post-id"
                 global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
                 url = "http://%s:%s/post-id"%(global_info_ip,str(FLASK_SVC))
-                print(url)
                 # request job_id
 
                 response = requests.post(url, headers = hdr, data = json.dumps(payload))
                 job_id = response.json()
-                print(job_id)
             except Exception as e:
-                print('Possibly running on the execution profiler')
-                print(e)
+                log.debug('Possibly running on the execution profiler')
+                log.debug(e)
                 job_id = 2
 
 
@@ -235,7 +231,7 @@ def task(q, pathin, pathout, task_name):
             for i in range(num_inputs):
                 q.task_done()
         else:
-            print('Not enough files')
+            log.debug('Not enough files')
             time.sleep(1)
 
     log.error("ERROR: should never reach this")

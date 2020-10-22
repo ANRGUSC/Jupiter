@@ -165,9 +165,6 @@ def task(q, pathin, pathout, task_name):
             # Once a file is copied to the `pathout` folder, CIRCE will inspect the
             # filename and pass the file to the next task.
             src = os.path.join(pathin, input_file)
-            print(src)
-
-
             # COLLAGE CODE
             img_size=416
             w = 3
@@ -203,7 +200,6 @@ def task(q, pathin, pathout, task_name):
             try:
                 global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
                 global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-                print("global info ip port: ", global_info_ip_port)
                 if ccdag.CODING_PART1:
                     send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
             except Exception as e:
@@ -222,7 +218,7 @@ def task(q, pathin, pathout, task_name):
 
             q.task_done()
         else:
-            print('Not enough files')
+            log.debug('Not enough files')
             time.sleep(1)
 
     log.error("ERROR: should never reach this")

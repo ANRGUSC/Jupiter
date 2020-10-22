@@ -63,7 +63,7 @@ def task(q, pathin, pathout, task_name):
             log.warning(json.dumps(runtime_stat))
             q.task_done()
         else:
-            print('Not enough files')
+            log.debug('Not enough files')
             time.sleep(1)
 
     log.error("ERROR: should never reach this")

@@ -93,7 +93,7 @@ def task(q, pathin, pathout, task_name):
 
 
             for i in range(K):
-                print(os.path.join(path_ref, input_file_ref[i]))
+                log.debug(os.path.join(path_ref, input_file_ref[i]))
                 img = cv2.imread(os.path.join(path_ref, input_file_ref[i]))
                 img = cv2.resize(img, dim, interpolation = cv2.INTER_AREA)
                 img = np.float64(cv2.cvtColor(img, cv2.COLOR_BGR2GRAY))
@@ -109,13 +109,13 @@ def task(q, pathin, pathout, task_name):
             ### To simulate slow downs
             # purposely add delay time to slow down the sending
             if (random.random() > ccdag.STRAGGLER_THRESHOLD) and (worker_id=='a'):
-                print(class_num)
-                print("Sleeping")
+                log.debug(class_num)
+                log.debug("Sleeping")
                 time.sleep(ccdag.SLEEP_TIME) #>=2
 
 
             # Read Encoded data-batch
-            print(os.path.join(pathin, input_file))
+            log.debug(os.path.join(pathin, input_file))
             En_Image_Batch = np.loadtxt(os.path.join(pathin, input_file), delimiter=',')
 
 
@@ -136,7 +136,7 @@ def task(q, pathin, pathout, task_name):
             log.warning(json.dumps(runtime_stat))
             q.task_done()
         else:
-            print('Not enough files')
+            log.debug('Not enough files')
             time.sleep(1)
 
     log.error("ERROR: should never reach this")

@@ -49,8 +49,6 @@ def gen_stream_fixed_set_data(interval,num_images,data_path,original_data_path):
         filename = list_files[i]
         source = os.path.join(original_data_path,filename)
         destination = os.path.join(data_path,filename)
-        print(source)
-        print(destination)
         shutil.copyfile(source, destination)
 
 
@@ -62,7 +60,6 @@ def task(q, pathin, pathout, task_name):
     class_name = ccdag.classlist[int(class_num)-1]
     original_data_path = '/jupiter/build/app_specific_files/data/%s'%(class_name)
     data_path = pathout
-    print(data_path)
 
     log.info(f"Starting non-DAG task {task_name}")
     children = app_config.child_tasks(task_name)
