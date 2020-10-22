@@ -40,7 +40,7 @@ def task(q, pathin, pathout, task_name):
     while True:
         if q.qsize()>0:
             input_file = q.get()
-            start = time.time()
+            show_run_stats('queue_start_process',input_file)
             src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
             log.debug(f"{task_name}: file rcvd from {src_task} : {base_fname}")
 
@@ -54,13 +54,7 @@ def task(q, pathin, pathout, task_name):
 
             # read the generate output
             # based on that determine sleep and number of bytes in output file
-            end = time.time()
-            runtime_stat = {
-                "task_name" : task_name,
-                "start" : start,
-                "end" : end
-            }
-            log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
+            show_run_stats('queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
             q.task_done()
         else:
             log.debug('Not enough files')

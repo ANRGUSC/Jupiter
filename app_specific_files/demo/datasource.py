@@ -41,18 +41,12 @@ def gen_stream_fixed_set_data(task_name,interval,num_images,data_path,original_d
     list_files = os.listdir(original_data_path)
     for i in range(0,num_images):
         time.sleep(interval)
-        logging.debug('--- Copy new file')
         filename = list_files[i]
         source = os.path.join(original_data_path,filename)
         destination = os.path.join(data_path,filename)
         shutil.copyfile(source, destination)
         ts = time.time()
-        runtime_stat = {
-                "event": "new_datasource_file",
-                "task_name" : task_name,
-                "unix_time" : ts,
-            }
-        log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
+        show_run_stats(task_name,filename)
 
 
 

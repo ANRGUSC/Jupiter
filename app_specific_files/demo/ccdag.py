@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
-JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
-#JUPITER_CONFIG_INI_PATH = '../../jupiter_config.ini'
-CODING_PART1 = 0
-CODING_PART2 = 0
+#JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
+JUPITER_CONFIG_INI_PATH = '../../jupiter_config.ini'
+CODING_PART1 = 1
+CODING_PART2 = 1
 EXP_NAME = 'nosleep'
 EXP_ID = 'a'
 SLEEP_TIME = 0 #30

@@ -7,6 +7,7 @@ import logging
 import glob
 import time
 import json
+from ccdag_utils import *
 
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
@@ -156,10 +157,12 @@ def task(q, pathin, pathout, task_name):
     while True:
         if q.qsize()>0:
             input_file = q.get()
-            start = time.time()
+
+            show_run_stats('queue_start_process',input_file)
 
             src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
             log.debug(f"{task_name}: file rcvd from {src_task} : {base_fname}")
+            
 
             # Process the file (this example just passes along the file as-is)
             # Once a file is copied to the `pathout` folder, CIRCE will inspect the
@@ -210,12 +213,9 @@ def task(q, pathin, pathout, task_name):
 
             end = time.time()
 
-            runtime_stat = {
-                "task_name" : task_name,
-                "start" : start,
-                "end" : end
-            }
-            log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
+
+            show_run_stats('queue_end_process',input_file)
+
 
             q.task_done()
         else:

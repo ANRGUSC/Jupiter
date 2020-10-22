@@ -58,9 +58,10 @@ def task(q, pathin, pathout, task_name):
     while True:
         if q.qsize()>0:
             input_file = q.get()
-            start = time.time()
+            show_run_stats('queue_start_process',input_file)
             src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
             log.debug(f"{task_name}: file rcvd from {src_task} : {base_fname}")
+
 
             # Process the file (this example just passes along the file as-is)
             # Once a file is copied to the `pathout` folder, CIRCE will inspect the
@@ -126,6 +127,7 @@ def task(q, pathin, pathout, task_name):
                         dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
                         log.debug(dst)
                         np.savetxt(dst, En_Image_Batch, delimiter=',')
+                        show_run_stats('queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
 
                 else:
                     log.debug('Not receive enough results for job '+job_id)
@@ -142,19 +144,14 @@ def task(q, pathin, pathout, task_name):
                         log.debug(dst)
                         # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                         np.savetxt(dst, En_Image_Batch, delimiter=',')
+                        show_run_stats('queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
 
                 else:
                     log.debug('Not receive enough results for job '+job_id)
 
             # read the generate output
             # based on that determine sleep and number of bytes in output file
-            end = time.time()
-            runtime_stat = {
-                "task_name" : task_name,
-                "start" : start,
-                "end" : end
-            }
-            log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
+            
             q.task_done()
         else:
             log.debug('Not enough files')

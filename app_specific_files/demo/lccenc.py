@@ -99,6 +99,7 @@ def task(q, pathin, pathout, task_name):
             id_list = []
             for i in range(0,num_inputs): #number of inputs is 9
                 input_file = q.get()
+                show_run_stats('queue_start_process',input_file)
                 input_list.append(input_file)
                 src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
                 log.debug(f"{task_name}: file rcvd from {src_task} : {input_file}")
@@ -107,8 +108,10 @@ def task(q, pathin, pathout, task_name):
                 base_list.append(base_fname.split('jobid')[0])
                 id_list.append(base_fname.split('img')[0])
 
-            start = time.time()
+                
 
+
+            
 
             #LCCENC CODE
 
@@ -184,8 +187,7 @@ def task(q, pathin, pathout, task_name):
                     job = "jobid"+ str(job_id)
                     destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
                     np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
-
-                from_task = '_storeclass'+classnum
+                    show_run_stats('queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv")
 
 
             else: # Uncoding version
@@ -220,16 +222,11 @@ def task(q, pathin, pathout, task_name):
                     job = "jobid"+ str(job_id)
                     destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
                     np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
+                    show_run_stats('queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv")
 
             # read the generate output
             # based on that determine sleep and number of bytes in output file
-            end = time.time()
-            runtime_stat = {
-                "task_name" : task_name,
-                "start" : start,
-                "end" : end
-            }
-            log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
+            
             for i in range(num_inputs):
                 q.task_done()
         else:

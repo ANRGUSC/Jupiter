@@ -254,6 +254,7 @@ def task(q, pathin, pathout, task_name):
             id_list = []
             for i in range(0,9): #number of inputs is 9
                 input_file = q.get()
+                show_run_stats('queue_start_process',input_file)
                 input_list.append(input_file)
                 src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
                 log.debug(f"{task_name}: file rcvd from {src_task} {base_fname}")
@@ -261,8 +262,7 @@ def task(q, pathin, pathout, task_name):
                 src_list.append(src)
                 base_list.append(base_fname.split('.')[0])
                 id_list.append(base_fname.split('img')[0])
-
-            start = time.time()
+                
 
 
             # Process the file (this example just passes along the file as-is)
@@ -298,6 +298,7 @@ def task(q, pathin, pathout, task_name):
             job = "jobid"+ str(job_id)
             dst = os.path.join(pathout, f"{task_name}_{collage_file_split}_{filesuffix}{job}")
             shutil.copyfile(collage_file, dst)
+            show_run_stats('queue_end_process',dst)
             log.debug('Receive collage file:')
             log.debug(dst)
             log.debug('Receive resnet file:')
@@ -310,6 +311,8 @@ def task(q, pathin, pathout, task_name):
                 log.debug(dst)
                 shutil.copyfile(os.path.join(pathin,f), dst)
                 filelist_flask.append(dst)
+                show_run_stats('queue_end_process',f"{task_name}_{dst_task}_{base_list[i]}{job}.JPEG")
+
             next_job_id = put_filenames(job_id, filelist_flask)
             if ccdag.CODING_PART1:
                 slept = 0
@@ -330,13 +333,7 @@ def task(q, pathin, pathout, task_name):
 
             # read the generate output
             # based on that determine sleep and number of bytes in output file
-            end = time.time()
-            runtime_stat = {
-                "task_name" : task_name,
-                "start" : start,
-                "end" : end
-            }
-            log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
+            
             for i in range(0,9):
                 q.task_done()
         else:

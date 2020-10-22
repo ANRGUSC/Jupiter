@@ -4,8 +4,13 @@ import random
 import numpy as np
 import torch
 import torch.nn.functional as F
-
 import torch_utils
+import logging
+import time
+import json
+logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.INFO)
 
 # Set printoptions
 torch.set_printoptions(linewidth=1320, precision=5, profile='long')
@@ -463,3 +468,12 @@ def plot_results():
             plt.title(s[i])
             if i == 0:
                 plt.legend()
+
+
+def show_run_stats(event,filename):
+    runtime_stat = {
+                "event" : event,
+                "filename" : filename,
+                "timeunix" : time.time()
+    }
+    log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
