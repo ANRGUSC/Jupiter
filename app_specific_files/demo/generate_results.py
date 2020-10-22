@@ -34,23 +34,32 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Parse app_config.yaml. Keep as a global to use in your app code.
 app_config = app_config_parser.AppConfig(APP_DIR)
+config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
+core_v1_api = client.CoreV1Api()
+os.makedirs("results", exist_ok=True)
+results_path="results/%s"%(TEST_INDICATORS)
+os.makedirs(results_path, exist_ok=True)
 
+def export_log(results_path,namespace):
+    resp = core_v1_api.list_namespaced_pod(namespace)
+    if resp.items:
+        for item in resp.items:
+            name = item.metadata.name
+            file_name = '%s/%s.log'%(results_path,name)
+            cmd = 'kubectl logs -n%s %s > %s'%(circe_namespace,name,file_name)
+            os.system(cmd)
 
 def retrieve_circe_logs(TEST_INDICATORS):
-    config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
-    core_v1_api = client.CoreV1Api()
     circe_namespace = app_config.namespace_prefix() + "-circe"
-    os.makedirs("results", exist_ok=True)
-    results_path="results/%s"%(TEST_INDICATORS)
-    os.makedirs(results_path, exist_ok=True)
-    for task in app_config.get_dag_tasks():
-        pod_name = "app="+app_config.app_name + '-' + task['name']
-        resp = core_v1_api.list_namespaced_pod(circe_namespace, label_selector=pod_name)
-        if resp.items:
-            name = resp.items[0].metadata.name
-            filename = '%s/%s.log'%(results_path,name)
-            cmd = 'kubectl logs -n%s %s > %s'%(circe_namespace,name,filename)
-            os.system(cmd)
+    # for task in app_config.get_dag_tasks():
+    #     pod_name = "app="+app_config.app_name + '-' + task['name']
+    #     export_log(results_path,circe_namespace,pod_name)
+    # for task in app_config.get_non_dag_tasks():
+    #     pod_name = "app="+app_config.app_name + '-' + task['name']
+    #     export_log(results_path,circe_namespace,pod_name)
+    # pod_name = "app="+app_config.app_name + '-home'
+    # export_log(results_path,circe_namespace,pod_name)
+    export_log(results_path,namespace)
 
 
 
