@@ -40,13 +40,18 @@ def retrieve_circe_logs(TEST_INDICATORS):
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
     core_v1_api = client.CoreV1Api()
     circe_namespace = app_config.namespace_prefix() + "-circe"
+    os.makedirs("results", exist_ok=True)
+    results_path="results/%s"%(TEST_INDICATORS)
+    os.makedirs(results_path, exist_ok=True)
     for task in app_config.get_dag_tasks():
         pod_name = "app="+app_config.app_name + '-' + task['name']
         resp = core_v1_api.list_namespaced_pod(circe_namespace, label_selector=pod_name)
-        print(resp)
         if resp.items:
-            a = resp.items[0]
-            print(a)
+            name = resp.items[0].metadata.name
+            filename = '%s/%s.log'%(results_path,name)
+            cmd = 'kubectl logs -n%s %s > %s'%(circe_namespace,pod_name,filename)
+            os.system(cmd)
+
 
 
 def signal_handler(sig, frame):
