@@ -202,38 +202,39 @@ def plot_task_timings(task_log, file_prefix):
         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
 
 if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        TEST_INDICATORS = sys.argv[1]
+    retrieve_circe_logs(TEST_INDICATORS)
+    # if len(sys.argv) > 1:
+    #     TEST_INDICATORS = sys.argv[1]
 
-    COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
-    MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)
-    TASK_TIMES = "filtered_logs/{}task.log".format(TEST_INDICATORS)
-    STRAGGLING_RESNET = "filtered_logs/{}resnet8.log".format(TEST_INDICATORS)
-    MASTER_SERVICE = "filtered_logs/{}master.log".format(TEST_INDICATORS)
+    # COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
+    # MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)
+    # TASK_TIMES = "filtered_logs/{}task.log".format(TEST_INDICATORS)
+    # STRAGGLING_RESNET = "filtered_logs/{}resnet8.log".format(TEST_INDICATORS)
+    # MASTER_SERVICE = "filtered_logs/{}master.log".format(TEST_INDICATORS)
 
-    os.makedirs('figures', exist_ok=True)
+    # os.makedirs('figures', exist_ok=True)
 
-    print("Graphing and calculating averages for test {}".format(TEST_INDICATORS))
+    # print("Graphing and calculating averages for test {}".format(TEST_INDICATORS))
 
-    try:
-        with open(TASK_TIMES, 'r') as f:
-            task_log = eval(f.read())
-            plot_task_timings(task_log, TEST_INDICATORS)
-    except FileNotFoundError:
-        print("{} does not exist".format(TASK_TIMES))
+    # try:
+    #     with open(TASK_TIMES, 'r') as f:
+    #         task_log = eval(f.read())
+    #         plot_task_timings(task_log, TEST_INDICATORS)
+    # except FileNotFoundError:
+    #     print("{} does not exist".format(TASK_TIMES))
 
-    try:
-        with open(COMM_TIMES, 'r') as f:
-            comm_log = eval(f.read())
-            plot_comm_times(comm_log, TEST_INDICATORS)
-    except FileNotFoundError:
-        print("{} does not exist".format(COMM_TIMES))
+    # try:
+    #     with open(COMM_TIMES, 'r') as f:
+    #         comm_log = eval(f.read())
+    #         plot_comm_times(comm_log, TEST_INDICATORS)
+    # except FileNotFoundError:
+    #     print("{} does not exist".format(COMM_TIMES))
 
-    try:
-        with open(MAKESPAN, 'r') as f:
-            makespan_log = eval(f.read())
-            plot_makespan(makespan_log, TEST_INDICATORS)
-    except FileNotFoundError:
-        print("{} does not exist".format(MAKESPAN))
+    # try:
+    #     with open(MAKESPAN, 'r') as f:
+    #         makespan_log = eval(f.read())
+    #         plot_makespan(makespan_log, TEST_INDICATORS)
+    # except FileNotFoundError:
+    #     print("{} does not exist".format(MAKESPAN))
 
-    plt.show()
+    # plt.show()
