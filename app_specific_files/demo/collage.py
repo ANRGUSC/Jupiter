@@ -159,7 +159,7 @@ def task(q, pathin, pathout, task_name):
             start = time.time()
 
             src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-            log.info(f"{task_name}: file rcvd from {src_task} : {base_fname}")
+            log.debug(f"{task_name}: file rcvd from {src_task} : {base_fname}")
 
             # Process the file (this example just passes along the file as-is)
             # Once a file is copied to the `pathout` folder, CIRCE will inspect the

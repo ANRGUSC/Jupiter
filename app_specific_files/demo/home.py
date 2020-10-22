@@ -35,8 +35,7 @@ app_config = app_config_parser.AppConfig(APP_DIR)
 # Run by dispatcher (e.g. CIRCE)
 def task(q, pathin, pathout, task_name):
     # task_name will be "home"
-    children = app_config.child_tasks(task_name)
-    log.info(f"My children are {children}")
+    log.info(f"I am {task_name}")
 
     while True:
         time.sleep(1)

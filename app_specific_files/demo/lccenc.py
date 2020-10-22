@@ -87,7 +87,10 @@ def task(q, pathin, pathout, task_name):
     M = 2 # Number of data-batches
     N = 3 # Number of workers (encoded data-batches)
 
-    num_inputs = 4
+    if ccdag.CODING_PART2==1:
+        num_inputs = 4
+    else:
+        num_inputs = 6
     while True:
         if q.qsize()>=num_inputs:
             input_list = []
@@ -98,7 +101,7 @@ def task(q, pathin, pathout, task_name):
                 input_file = q.get()
                 input_list.append(input_file)
                 src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-                log.info(f"{task_name}: file rcvd from {src_task} : {input_file}")
+                log.debug(f"{task_name}: file rcvd from {src_task} : {input_file}")
                 src = os.path.join(pathin, input_file)
                 src_list.append(src)
                 base_list.append(base_fname.split('jobid')[0])
