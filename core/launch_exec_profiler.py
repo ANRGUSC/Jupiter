@@ -56,11 +56,6 @@ def check_workers_running(app_config, namespace):
     return result
 
 
-def write_file(filename, message):
-    with open(filename, 'a') as f:
-        f.write(message)
-
-
 def main():
     # Parse app's app_config.yaml
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
