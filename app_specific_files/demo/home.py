@@ -39,7 +39,7 @@ def task(q, pathin, pathout, task_name):
     log.info(f"My children are {children}")
 
     while True:
-        sleep(1)
+        time.sleep(1)
         log.info("Staying idle...")
 
     log.error("ERROR: should never reach this")
