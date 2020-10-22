@@ -49,7 +49,7 @@ def retrieve_circe_logs(TEST_INDICATORS):
         if resp.items:
             name = resp.items[0].metadata.name
             filename = '%s/%s.log'%(results_path,name)
-            cmd = 'kubectl logs -n%s %s > %s'%(circe_namespace,pod_name,filename)
+            cmd = 'kubectl logs -n%s %s > %s'%(circe_namespace,name,filename)
             os.system(cmd)
 
 

@@ -8,7 +8,7 @@ from mergexp.unit import gb
 NUM_MINNOWS = 0
 
 # set number of rohu worker nodes
-NUM_ROHUS = 8
+NUM_ROHUS = 30
 
 
 def ubuntu(name, version, min_memory=2):
@@ -18,7 +18,7 @@ def ubuntu(name, version, min_memory=2):
     return dev
 
 
-net = mx.Topology('jupiter-100nodes')
+net = mx.Topology('jupiter')
 
 # for generating ansible `hosts` file (see host_generator.py)
 total_worker_nodes = NUM_MINNOWS + NUM_ROHUS
