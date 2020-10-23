@@ -42,6 +42,14 @@ os.makedirs("results", exist_ok=True)
 results_path="results/%s"%(TEST_INDICATORS)
 os.makedirs(results_path, exist_ok=True)
 
+rt_enter_node = dict()
+rt_exit_node = dict()
+rt_enter_queue = dict()
+rt_exit_queue = dict()
+rt_datasource = dict()
+rt_home = dict()
+
+
 def export_log(namespace):
     resp = core_v1_api.list_namespaced_pod(namespace)
     if resp.items:
@@ -56,21 +64,40 @@ def retrieve_circe_logs():
     export_log(circe_namespace)
 
 def process_logs():
+
     for (dirpath, dirnames, filenames) in os.walk(results_path):
         for filename in filenames:
             task_name = filename.split('-')[1]
-            if task_name == 'lccdec1':
-                filepath=os.sep.join([dirpath, filename])
-                with open(filepath, "r") as f:
-                    for line in f:
-                        if re.search('runtime',line):
-                            json_expr = '{'+line.split('{')[1]
-                            runtime_dict =json.loads(json_expr)
-                            print(runtime_dict)
-                            print(runtime_dict.keys())
-                            print(runtime_dict.get('task_name'))
-                            # if runtime_dict['task_name']=='circe':
-                            #     print(json_expr)
+            filepath=os.sep.join([dirpath, filename])
+            with open(filepath, "r") as f:
+                for line in f:
+                    if re.search('runtime',line):
+                        json_expr = '{'+line.split('{')[1]
+                        runtime_dict =json.loads(json_expr)
+                        try:
+                            from_task,_,fname = runtime_dict['filename'].split("_", maxsplit=3)
+                        except Exception as e:
+                            print(e)
+                            print(runtime_dict) 
+                        # if task_name.startswith('datasource'):
+                        #     rt_datasource[(task_name,'NA',fname)] = runtime_dict['unix_time']
+                        # elif task_name=='home':
+                        #     rt_home[(task_name,from_task,fname)] = runtime_dict['unix_time']
+                        # else:
+                        #     if runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_input_file':                              
+                        #         rt_enter_node[(task_name,from_task,fname)] = runtime_dict['unix_time']
+                        #     elif runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_output_file':
+                        #         rt_exit_node[(task_name,from_task,fname)] = runtime_dict['unix_time']
+                        #     elif runtime_dict['task_name']==task_name and runtime_dict['event']=='queue_start_process':
+                        #         rt_enter_queue[(task_name,from_task,fname)] = runtime_dict['unix_time']
+                        #     elif runtime_dict['task_name']==task_name and runtime_dict['event']=='queue_end_process':
+                        #         rt_exit_queue[(task_name,from_task,fname)] = runtime_dict['unix_time']
+                        #     else:
+                        #         print('Something wrong')
+
+    print(rt_datasource)
+    print(rt_home)
+                            
 
 
 # def signal_handler(sig, frame):

@@ -298,7 +298,7 @@ def task(q, pathin, pathout, task_name):
             job = "jobid"+ str(job_id)
             dst = os.path.join(pathout, f"{task_name}_{collage_file_split}_{filesuffix}{job}")
             shutil.copyfile(collage_file, dst)
-            show_run_stats(task_name,'queue_end_process',dst)
+            show_run_stats(task_name,'queue_end_process',f"{task_name}_{collage_file_split}_{filesuffix}{job}")
             log.debug('Receive collage file:')
             log.debug(dst)
             log.debug('Receive resnet file:')
