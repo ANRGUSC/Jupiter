@@ -470,8 +470,9 @@ def plot_results():
                 plt.legend()
 
 
-def show_run_stats(event,filename):
+def show_run_stats(taskname,event,filename):
     runtime_stat = {
+                "taskname" : taskname,
                 "event" : event,
                 "filename" : filename,
                 "timeunix" : time.time()

@@ -90,7 +90,7 @@ def task(q, pathin, pathout, task_name):
             worker_list =[]
             for i in range(0,num_inputs): #number of inputs is 9
                 input_file = q.get()
-                show_run_stats('queue_start_process',input_file)
+                show_run_stats(task_name,'queue_start_process',input_file)
                 input_list.append(input_file)
                 src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
                 log.debug(f"{task_name}: file rcvd from {src_task} : {input_file}")
@@ -140,7 +140,7 @@ def task(q, pathin, pathout, task_name):
 
             # read the generate output
             # based on that determine sleep and number of bytes in output file
-            show_run_stats('queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
+            show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
 
             
             for i in range(num_inputs):
@@ -164,7 +164,7 @@ def task(q, pathin, pathout, task_name):
                 id_list.append(base_fname.split('jobth')[1])
                 worker = base_fname.split('score')[1]
                 worker_list.append(ord(worker[1])-97)
-                show_run_stats('queue_start_process',input_file)
+                show_run_stats(task_name,'queue_start_process',input_file)
 
 
             #LCCDEC CODE
@@ -202,7 +202,7 @@ def task(q, pathin, pathout, task_name):
             dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
             
             np.savetxt(dst, result, delimiter=',')
-            show_run_stats('queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
+            show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             
             for i in range(num_inputs):
                 q.task_done()
