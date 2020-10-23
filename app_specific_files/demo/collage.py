@@ -12,7 +12,7 @@ from ccdag_utils import *
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 
 
 try:
@@ -168,6 +168,7 @@ def task(q, pathin, pathout, task_name):
             # Once a file is copied to the `pathout` folder, CIRCE will inspect the
             # filename and pass the file to the next task.
             src = os.path.join(pathin, input_file)
+            print(src)
             # COLLAGE CODE
             img_size=416
             w = 3
@@ -201,10 +202,11 @@ def task(q, pathin, pathout, task_name):
         ### Write predictions to a file and send it to decoder task's folder
             job_id = int(input_file.split("jobid")[1])
             try:
-                global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
-                global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-                if ccdag.CODING_PART1:
-                    send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
+                if 'CIRCE_NONDAG_TASK_TO_IP' in os.environ:
+                    global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
+                    global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
+                    if ccdag.CODING_PART1:
+                        send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
             except Exception as e:
                 log.warning('Possibly running on the execution profiler: ', e)
 

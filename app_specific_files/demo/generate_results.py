@@ -7,6 +7,8 @@ from kubernetes.client.apis import core_v1_api
 from kubernetes import client, config
 sys.path.append("../../")
 import jupiter_config
+import json
+import re
 
 try:
     # successful if running in container
@@ -54,7 +56,17 @@ def retrieve_circe_logs():
     export_log(circe_namespace)
 
 def process_logs():
-
+    for (dirpath, dirnames, filenames) in os.walk(results_path):
+        for filename in filenames:
+            task_name = filename.split('-')[1]
+            if task_name == 'lccdec1':
+                filepath=os.sep.join([dirpath, filename])
+                with open(filepath, "r") as f:
+                    for line in f:
+                        if re.search('runtime',line):
+                            json_expr = '{'+line.split('{')[1]
+                            d =json.loads(json_expr)
+                            print(d.keys())
 
 
 # def signal_handler(sig, frame):

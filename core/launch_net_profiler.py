@@ -15,7 +15,7 @@ import k8s_spec.deployment
 from jupiter_utils import app_config_parser
 import utilities
 import logging
-
+import time
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -82,13 +82,6 @@ def main():
     """
         This loads the task graph and node list
     """
-
-    logging.debug('Starting to deploy DRUPE')
-    if jupiter_config.BOKEH == 3:
-        latency_file = utilities.prepare_stat_path(node_list,homes,dag)
-        start_time = time.time()
-        msg = 'DRUPE deploystart %f \n'%(start_time)
-        write_file(latency_file,msg,'w')
 
 
     all_profiler_map = dict()
@@ -203,12 +196,6 @@ def main():
 
     pprint(all_profiler_map)
     logging.debug('Successfully deploy DRUPE ')
-    if jupiter_config.BOKEH == 3:
-        end_time = time.time()
-        msg = 'DRUPE deployend %f \n'%(end_time)
-        write_file(latency_file,msg,'a')
-        deploy_time = end_time - start_time
-        logging.debug('Time to deploy DRUPE '+ str(deploy_time))
     return(all_profiler_map)
 
 if __name__ == '__main__':

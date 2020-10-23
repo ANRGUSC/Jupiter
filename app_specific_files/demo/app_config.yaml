@@ -23,6 +23,25 @@ node_map:
   node3: n3
   node4: n4
   node5: n5
+  node6: n6
+  node7: n7
+  node8: n8
+  node9: n9
+  node10: n10
+  node11: n11
+  node12: n12
+  node13: n13
+  node14: n14
+  node15: n15
+  node16: n16
+  node17: n17
+  node18: n18
+  node19: n19
+  node20: n20
+  node21: n21
+  node22: n22
+  node23: n23
+  node24: n24
 application:
   # List of port mappings in format. Used for creating additional k8s services
   # for your application. i.e., "9000:8000" will create a service with port 9000
@@ -36,12 +55,24 @@ application:
     nondag_tasks:
     - name: datasource1
       base_script: datasource.py
-      k8s_host: n6
+      k8s_host: n25
       children: master
         # Only home or dag_tasks allowed under children
     - name: datasource2
       base_script: datasource.py
-      k8s_host: n7
+      k8s_host: n26
+      children: master
+    - name: datasource3
+      base_script: datasource.py
+      k8s_host: n27
+      children: master
+    - name: datasource4
+      base_script: datasource.py
+      k8s_host: n28
+      children: master
+    - name: datasource5
+      base_script: datasource.py
+      k8s_host: n29
       children: master
     - name: globalinfo
       base_script: globalinfo.py
@@ -66,16 +97,25 @@ application:
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
       - name: resnet1
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
       - name: resnet2
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
       - name: resnet3
         base_script: resnet.py
         children:
@@ -86,26 +126,41 @@ application:
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
       - name: resnet5
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
       - name: resnet6
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
       - name: resnet7
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
       - name: resnet8
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
       - name: collage
         base_script: collage.py
         children: 
@@ -117,6 +172,18 @@ application:
         base_script: storeclass.py
         children:
           - lccenc2
+      - name: storeclass3
+        base_script: storeclass.py
+        children:
+          - lccenc3
+      - name: storeclass4
+        base_script: storeclass.py
+        children:
+          - lccenc4
+      - name: storeclass5
+        base_script: storeclass.py
+        children:
+          - lccenc5
       - name: lccenc1
         base_script: lccenc.py
         children:
@@ -129,6 +196,24 @@ application:
           - score2a
           - score2b
           - score2c
+      - name: lccenc3
+        base_script: lccenc.py
+        children:
+          - score3a
+          - score3b
+          - score3c
+      - name: lccenc4
+        base_script: lccenc.py
+        children:
+          - score4a
+          - score4b
+          - score4c
+      - name: lccenc5
+        base_script: lccenc.py
+        children:
+          - score5a
+          - score5b
+          - score5c
       - name: score1a
         base_script: score.py
         children:
@@ -153,6 +238,42 @@ application:
         base_script: score.py
         children:
           - preagg2
+      - name: score3a
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score3b
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score3c
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score4a
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score4b
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score4c
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score5a
+        base_script: score.py
+        children:
+          - preagg5
+      - name: score5b
+        base_script: score.py
+        children:
+          - preagg5
+      - name: score5c
+        base_script: score.py
+        children:
+          - preagg5
       - name: preagg1
         base_script: preagg.py
         children:
@@ -161,11 +282,35 @@ application:
         base_script: preagg.py
         children:
           - lccdec2
+      - name: preagg3
+        base_script: preagg.py
+        children:
+          - lccdec3
+      - name: preagg4
+        base_script: preagg.py
+        children:
+          - lccdec4
+      - name: preagg5
+        base_script: preagg.py
+        children:
+          - lccdec5
       - name: lccdec1
         base_script: lccdec.py
         children:
           - home
       - name: lccdec2
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec3
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec4
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec5
         base_script: lccdec.py
         children:
           - home

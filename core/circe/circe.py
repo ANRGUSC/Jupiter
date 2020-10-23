@@ -30,6 +30,8 @@ sys.path.append(APP_DIR)  # allow imports for app code
 # un/pw for all Jupiter subsystem containers
 USERNAME = "root"
 PASSWORD = "PASSWORD"
+input_set = set()
+output_set = set()
 
 
 class OutputFolderHandler(pyinotify.ProcessEvent):
@@ -39,25 +41,30 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
         super().__init__()
 
     def process_IN_CLOSE_WRITE(self, event):
+        log.info('IN CLOSE WRITE')
         self.handle_output(event)
 
     def process_IN_MOVED_TO(self, event):
+        log.info('IN MOVED TO')
         self.handle_output(event)
 
     def handle_output(self, event):
-        runtime_stat = {
-            "task_name" : "circe",
-            "event": "new_output_file",
-            "filename": event.name,
-            "unix_time": time.time(),
-        }
-        log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
-        this_task, dst_task, base_fname = event.name.split("_", maxsplit=3)
-        ip = transfer.circe_lookup_ip(dst_task)
+        if event.name not in output_set:
+            output_set.add(event.name)
+            runtime_stat = {
+                "task_name" : "circe",
+                "event": "new_output_file",
+                "filename": event.name,
+                "unix_time": time.time(),
+            }
+            log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
+            this_task, dst_task, base_fname = event.name.split("_", maxsplit=3)
+            ip = transfer.circe_lookup_ip(dst_task)
 
-        # send output to destination task
-        transfer.transfer_data_scp(ip, self.ssh_port, USERNAME, PASSWORD,
-                                   event.pathname, CIRCE_INPUT_DIR)
+            # send output to destination task
+            transfer.transfer_data_scp(ip, self.ssh_port, USERNAME, PASSWORD,
+                                       event.pathname, CIRCE_INPUT_DIR)
+
 
 
 class InputFolderHandler(pyinotify.ProcessEvent):
@@ -74,16 +81,18 @@ class InputFolderHandler(pyinotify.ProcessEvent):
 
     # Gets called when a new input file arrves via SCP from another node
     def handle_input(self, event):
-        runtime_stat = {
-            "task_name" : "circe",
-            "event": "new_input_file",
-            "filename": event.name,
-            "unix_time": time.time(),
-        }
-        log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
+        if event.name not in input_set:
+            input_set.add(event.name)
+            runtime_stat = {
+                "task_name" : "circe",
+                "event": "new_input_file",
+                "filename": event.name,
+                "unix_time": time.time(),
+            }
+            log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
 
-        # put() just the filename into the queue
-        self.input_q.put(event.name)
+            # put() just the filename into the queue
+            self.input_q.put(event.name)
 
 
 if __name__ == '__main__':
