@@ -75,6 +75,7 @@ class InputFolderHandler(pyinotify.ProcessEvent):
     # Gets called when a new input file arrves via SCP from another node
     def handle_input(self, event):
         runtime_stat = {
+            "task_name" : "circe",
             "event": "new_input_file",
             "filename": event.name,
             "unix_time": time.time(),
