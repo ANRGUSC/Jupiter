@@ -17,8 +17,7 @@ import configparser
 import requests
 import random
 from pathlib import Path
-global circe_home_ip, circe_home_ip_port, taskname
-taskname = Path(__file__).stem
+global circe_home_ip, circe_home_ip_port
 from ccdag_utils import *
 
 
@@ -149,8 +148,8 @@ def task(q, pathin, pathout, task_name):
                 pred = torch.argmax(output, dim=1).detach().numpy().tolist()
                 ### To simulate slow downs
                 # purposely add delay time to slow down the sending
-                if (random.random() > ccdag.STRAGGLER_THRESHOLD) and (taskname=='resnet8') :
-                    log.debug(taskname)
+                if (random.random() > ccdag.STRAGGLER_THRESHOLD) and (task_name=='resnet8') :
+                    log.debug(task_name)
                     log.debug("Sleeping")
                     time.sleep(ccdag.SLEEP_TIME) #>=2
                 ### Contact flask server
@@ -170,7 +169,7 @@ def task(q, pathin, pathout, task_name):
                 try:
                     global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
                     global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-                    if taskname != 'resnet8':
+                    if task_name != 'resnet8':
                         slept = 0
                         while slept < ccdag.SLEEP_TIME:
                             ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)

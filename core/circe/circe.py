@@ -46,6 +46,7 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
 
     def handle_output(self, event):
         runtime_stat = {
+            "task_name" : "circe",
             "event": "new_output_file",
             "filename": event.name,
             "unix_time": time.time(),
