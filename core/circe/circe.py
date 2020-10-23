@@ -49,6 +49,7 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
     def handle_output(self, event):
         if event.name not in output_set:
             output_set.add(event.name)
+            print(os.stat(event.pathname).st_size)
             runtime_stat = {
                 "task_name" : "circe",
                 "event": "new_output_file",
@@ -81,6 +82,7 @@ class InputFolderHandler(pyinotify.ProcessEvent):
     def handle_input(self, event):
         if event.name not in input_set:
             input_set.add(event.name)
+            print(os.stat(event.pathname).st_size)
             runtime_stat = {
                 "task_name" : "circe",
                 "event": "new_input_file",

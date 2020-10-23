@@ -186,7 +186,9 @@ def task(q, pathin, pathout, task_name):
                 for idx,child in enumerate(children):
                     job = "jobid"+ str(job_id)
                     destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
-                    np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
+                    f = open(destination, 'w')
+                    np.savetxt(f, En_Image_Batch[idx], delimiter=',')
+                    f.close()
                     show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv")
 
 
@@ -221,7 +223,9 @@ def task(q, pathin, pathout, task_name):
                 for idx,child in enumerate(children):
                     job = "jobid"+ str(job_id)
                     destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
-                    np.savetxt(destination, En_Image_Batch[idx], delimiter=',')
+                    f = open(destination, 'w')
+                    np.savetxt(f, En_Image_Batch[idx], delimiter=',')
+                    f.close()
                     show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv")
 
             # read the generate output

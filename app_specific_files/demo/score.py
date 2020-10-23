@@ -126,7 +126,9 @@ def task(q, pathin, pathout, task_name):
             job = str(job_id)+'jobth'
             dst_task = children[0] # only 1 children
             dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
+            f = open(dst, 'w')
             np.savetxt(dst, sc, delimiter=',')
+            f.close()
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             # read the generate output
             # based on that determine sleep and number of bytes in output file
