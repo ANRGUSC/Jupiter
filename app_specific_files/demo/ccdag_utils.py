@@ -472,9 +472,9 @@ def plot_results():
 
 def show_run_stats(taskname,event,filename):
     runtime_stat = {
-                "taskname" : taskname,
+                "task_name" : taskname,
                 "event" : event,
                 "filename" : filename,
-                "timeunix" : time.time()
+                "unix_time" : time.time()
     }
     log.info(f"runtime_stat:{json.dumps(runtime_stat)}")

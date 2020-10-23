@@ -65,8 +65,12 @@ def process_logs():
                     for line in f:
                         if re.search('runtime',line):
                             json_expr = '{'+line.split('{')[1]
-                            d =json.loads(json_expr)
-                            print(d.keys())
+                            runtime_dict =json.loads(json_expr)
+                            print(runtime_dict)
+                            print(runtime_dict.keys())
+                            print(runtime_dict.get('task_name'))
+                            # if runtime_dict['task_name']=='circe':
+                            #     print(json_expr)
 
 
 # def signal_handler(sig, frame):
