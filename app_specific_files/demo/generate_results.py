@@ -10,6 +10,7 @@ import jupiter_config
 import json
 import re
 import numpy as np
+import json
 
 try:
     # successful if running in container
@@ -108,86 +109,126 @@ def process_logs():
                         try:
                             from_task,cur_task,fname = runtime_dict['filename'].split("_", maxsplit=3)
                             if task_name.startswith('datasource'):
-                                rt_datasource[(task_name,'NA',fname)] = runtime_dict['unix_time']
+                                img_name = fname.split('.')[0]
+                                rt_datasource[(task_name,'NA',img_name)] = runtime_dict['unix_time']
                             elif task_name=='home':
-                                rt_home[(task_name,from_task,fname)] = runtime_dict['unix_time']
+                                list_of_imgs = part_list_files(fname,'jobth',1)
+                                for img in list_of_imgs:
+                                    rt_home[(task_name,from_task,img)] = runtime_dict['unix_time']
                             elif task_name=='collage':
                                 list_of_imgs = part_list_files(fname,'job',0)
                                 for img in list_of_imgs:
-                                    append_log(runtime_dict,task_name,from_task,img)
+                                    append_log(runtime_dict,cur_task,from_task,img)
                             elif task_name=='master':
                                 if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
-                                    append_log(runtime_dict,task_name,from_task,fname)
+                                    append_log(runtime_dict,cur_task,from_task,fname)
                                 else:
                                     if cur_task=='collage':
                                         list_of_imgs = part_list_files(fname,'job',0)
                                         for img in list_of_imgs:
-                                            append_log(runtime_dict,task_name,from_task,img)
+                                            append_log(runtime_dict,cur_task,from_task,img)
                                     else:
                                         img_name = fname.split('job')[0]
-                                        append_log(runtime_dict,task_name,from_task,img_name)
+                                        append_log(runtime_dict,cur_task,from_task,img_name)
                             elif task_name.startswith('resnet') or task_name.startswith('store'):
                                 img_name = fname.split('job')[0]
-                                append_log(runtime_dict,task_name,from_task,img_name)
+                                append_log(runtime_dict,cur_task,from_task,img_name)
                             elif task_name.startswith('lccenc'):
                                 if runtime_dict['event']=='queue_end_process':
                                     list_of_imgs = part_list_files(fname,'job',0)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,task_name,from_task,img)
+                                        append_log(runtime_dict,cur_task,from_task,img)
                                 else:
                                     img_name = fname.split('job')[0]
-                                    append_log(runtime_dict,task_name,from_task,img_name)
+                                    append_log(runtime_dict,cur_task,from_task,img_name)
                             elif task_name.startswith('score'):
                                 if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
                                     list_of_imgs = part_list_files(fname,'job',0)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,task_name,from_task,img)
+                                        append_log(runtime_dict,cur_task,from_task,img)
                                 else:
                                     list_of_imgs = part_list_files(fname,'jobth',1)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,task_name,from_task,img)
+                                        append_log(runtime_dict,cur_task,from_task,img)
                             elif task_name.startswith('preagg'):
                                 if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
                                     list_of_imgs = part_list_files(fname,'jobth',1)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,task_name,from_task,img)
+                                        append_log(runtime_dict,cur_task,from_task,img)
                                 else:
                                     list_of_imgs = part_list_files(fname,'score',1,2)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,task_name,from_task,img)
+                                        append_log(runtime_dict,cur_task,from_task,img)
                             elif task_name.startswith('lccdec'):
                                 if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
                                     list_of_imgs = part_list_files(fname,'score',1,2)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,task_name,from_task,img)
+                                        append_log(runtime_dict,cur_task,from_task,img)
                                 else:
                                     list_of_imgs = part_list_files(fname,'jobth',1)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,task_name,from_task,img)
-
-
+                                        append_log(runtime_dict,cur_task,from_task,img)
                         except Exception as e:
                             print(e)
                             print(runtime_dict) 
                         
-
-    # print(rt_datasource)
-    # print(rt_home)
-    # print(rt_enter_node)
-    # print(rt_exit_node)
-    # print(rt_enter_queue)
-    # print(rt_exit_queue)
     return rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node
 
 
+def find_runtime_by_img(rt_dict,img_name):
+    for task_name, from_task,img in rt_dict: 
+        if img == img_name:
+            return rt_dict[(task_name, from_task,img_name)]
+
+def get_makespan_info(rt_home,rt_datasource):
+    makespans_info = []
+    for task_name,from_task,img in rt_home:
+        tmp = rt_home[(task_name,from_task,img)]-find_runtime_by_img(rt_datasource,img)
+        makespans_info.append(tmp)
+    return makespans_info
+
+def get_communication_info(rt_datasource,rt_enter_node,rt_home):
+    communication_info = []
+    for task_name,from_task,img in rt_enter_node:
+        if task_name=='master':
+            tmp = rt_enter_node[(task_name,from_task,img)]-find_runtime_by_img(rt_datasource,img)
+            communication_info['master','datasource',img] = tmp
+        elif task_name.startswith('lccdec'):
+            tasknum = task_name.split('lccdec')[1]
+            tmp = rt_enter_home[('home',task_name,img)] - rt_enter_node[(task_name,'preagg'+tasknum,img)]
+            communication_info['home',task_name,img] = tmp
+        else:
+            tmp = rt_enter_node[task_name,from_task,img]
+            communication_info[(task_name,from_task,img)] = tmp
 
 def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node):
-    print(classmap)                            
+    # print(rt_home)
+    # print(rt_datasource)
+    print(rt_enter_node)
+    print(rt_exit_node)
+    print(rt_enter_queue)
+    print(rt_exit_queue)
+
+    makespans_info = get_makespan_info(rt_home,rt_datasource)
+    makespan = mean(makespans_info)
+
+    datasource_to_master = []
+    master_to_resnet = []
+    master_to_collage = []   
+    resnet_to_storeclass = []
+    storeclass_to_lccenc = []
+    lccenc_to_score = []
+    score_to_preagg = []
+    preagg_to_lccdec = []
+    lccdec_to_home = []
+
+    source_to_dest = ['datasource_to_master', 'master_to_resnet', 'master_to_collage',
+    'resnet_to_storeclass', 'storeclass_to_lccenc', 'lccenc_to_score', 
+    'score_to_preagg', 'preagg_to_lccdec','lccdec_to_home']
+
+    
 
 
-# def signal_handler(sig, frame):
-#     print("Ctrl+c detected, exiting and closing all plots...")
-#     sys.exit(0)
 
 # def plot_makespan(makespan_log, file_prefix):
 
@@ -348,7 +389,7 @@ if __name__ == '__main__':
     #retrieve_circe_logs()
     rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
     calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
-
+  
     # if len(sys.argv) > 1:
     #     TEST_INDICATORS = sys.argv[1]
 
