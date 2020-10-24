@@ -9,6 +9,7 @@ sys.path.append("../../")
 import jupiter_config
 import json
 import re
+import numpy as np
 
 try:
     # successful if running in container
@@ -42,6 +43,11 @@ os.makedirs("results", exist_ok=True)
 results_path="results/%s"%(TEST_INDICATORS)
 os.makedirs(results_path, exist_ok=True)
 
+
+classid = np.arange(0,len(ccdag.classlist),1)
+classid = [str(x) for x in classid]
+classmap = dict(zip(classid,ccdag.classlist))
+
 rt_enter_node = dict()
 rt_exit_node = dict()
 rt_enter_queue = dict()
@@ -63,8 +69,33 @@ def retrieve_circe_logs():
     circe_namespace = app_config.namespace_prefix() + "-circe"
     export_log(circe_namespace)
 
-def process_logs():
+def part_list_files(list_str,text,idx,shift=0):
+    if shift == 0:
+        list_files = list_str.split(text)[idx].split('-')   
+        list_of_files = []
+        for fi in list_files:
+            tmp = fi.split('#')[1]+'img'+ classmap[fi.split('#')[0]]
+            list_of_files.append(tmp)
+        return list_of_files
+    else:
+        list_files = list_str.split(text)[idx][shift:].split('-')   
+        list_of_files = []
+        for fi in list_files:
+            tmp = fi.split('#')[1]+'img'+ classmap[fi.split('#')[0]]
+            list_of_files.append(tmp)
+        return list_of_files
 
+
+def append_log(runtime_dict,task_name,from_task,fname):
+    if runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_input_file':                              
+        rt_enter_node[(task_name,from_task,fname)] = runtime_dict['unix_time']
+    elif runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_output_file':
+        rt_exit_node[(task_name,from_task,fname)] = runtime_dict['unix_time']
+    elif runtime_dict['task_name']==task_name and runtime_dict['event']=='queue_start_process':
+        rt_enter_queue[(task_name,from_task,fname)] = runtime_dict['unix_time']
+    elif runtime_dict['task_name']==task_name and runtime_dict['event']=='queue_end_process':
+        rt_exit_queue[(task_name,from_task,fname)] = runtime_dict['unix_time']
+def process_logs():
     for (dirpath, dirnames, filenames) in os.walk(results_path):
         for filename in filenames:
             task_name = filename.split('-')[1]
@@ -75,29 +106,83 @@ def process_logs():
                         json_expr = '{'+line.split('{')[1]
                         runtime_dict =json.loads(json_expr)
                         try:
-                            from_task,_,fname = runtime_dict['filename'].split("_", maxsplit=3)
+                            from_task,cur_task,fname = runtime_dict['filename'].split("_", maxsplit=3)
+                            if task_name.startswith('datasource'):
+                                rt_datasource[(task_name,'NA',fname)] = runtime_dict['unix_time']
+                            elif task_name=='home':
+                                rt_home[(task_name,from_task,fname)] = runtime_dict['unix_time']
+                            elif task_name=='collage':
+                                list_of_imgs = part_list_files(fname,'job',0)
+                                for img in list_of_imgs:
+                                    append_log(runtime_dict,task_name,from_task,img)
+                            elif task_name=='master':
+                                if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
+                                    append_log(runtime_dict,task_name,from_task,fname)
+                                else:
+                                    if cur_task=='collage':
+                                        list_of_imgs = part_list_files(fname,'job',0)
+                                        for img in list_of_imgs:
+                                            append_log(runtime_dict,task_name,from_task,img)
+                                    else:
+                                        img_name = fname.split('job')[0]
+                                        append_log(runtime_dict,task_name,from_task,img_name)
+                            elif task_name.startswith('resnet') or task_name.startswith('store'):
+                                img_name = fname.split('job')[0]
+                                append_log(runtime_dict,task_name,from_task,img_name)
+                            elif task_name.startswith('lccenc'):
+                                if runtime_dict['event']=='queue_end_process':
+                                    list_of_imgs = part_list_files(fname,'job',0)
+                                    for img in list_of_imgs:
+                                        append_log(runtime_dict,task_name,from_task,img)
+                                else:
+                                    img_name = fname.split('job')[0]
+                                    append_log(runtime_dict,task_name,from_task,img_name)
+                            elif task_name.startswith('score'):
+                                if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
+                                    list_of_imgs = part_list_files(fname,'job',0)
+                                    for img in list_of_imgs:
+                                        append_log(runtime_dict,task_name,from_task,img)
+                                else:
+                                    list_of_imgs = part_list_files(fname,'jobth',1)
+                                    for img in list_of_imgs:
+                                        append_log(runtime_dict,task_name,from_task,img)
+                            elif task_name.startswith('preagg'):
+                                if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
+                                    list_of_imgs = part_list_files(fname,'jobth',1)
+                                    for img in list_of_imgs:
+                                        append_log(runtime_dict,task_name,from_task,img)
+                                else:
+                                    list_of_imgs = part_list_files(fname,'score',1,2)
+                                    for img in list_of_imgs:
+                                        append_log(runtime_dict,task_name,from_task,img)
+                            elif task_name.startswith('lccdec'):
+                                if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
+                                    list_of_imgs = part_list_files(fname,'score',1,2)
+                                    for img in list_of_imgs:
+                                        append_log(runtime_dict,task_name,from_task,img)
+                                else:
+                                    list_of_imgs = part_list_files(fname,'jobth',1)
+                                    for img in list_of_imgs:
+                                        append_log(runtime_dict,task_name,from_task,img)
+
+
                         except Exception as e:
                             print(e)
                             print(runtime_dict) 
-                        # if task_name.startswith('datasource'):
-                        #     rt_datasource[(task_name,'NA',fname)] = runtime_dict['unix_time']
-                        # elif task_name=='home':
-                        #     rt_home[(task_name,from_task,fname)] = runtime_dict['unix_time']
-                        # else:
-                        #     if runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_input_file':                              
-                        #         rt_enter_node[(task_name,from_task,fname)] = runtime_dict['unix_time']
-                        #     elif runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_output_file':
-                        #         rt_exit_node[(task_name,from_task,fname)] = runtime_dict['unix_time']
-                        #     elif runtime_dict['task_name']==task_name and runtime_dict['event']=='queue_start_process':
-                        #         rt_enter_queue[(task_name,from_task,fname)] = runtime_dict['unix_time']
-                        #     elif runtime_dict['task_name']==task_name and runtime_dict['event']=='queue_end_process':
-                        #         rt_exit_queue[(task_name,from_task,fname)] = runtime_dict['unix_time']
-                        #     else:
-                        #         print('Something wrong')
+                        
 
-    print(rt_datasource)
-    print(rt_home)
-                            
+    # print(rt_datasource)
+    # print(rt_home)
+    # print(rt_enter_node)
+    # print(rt_exit_node)
+    # print(rt_enter_queue)
+    # print(rt_exit_queue)
+    return rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node
+
+
+
+def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node):
+    print(classmap)                            
 
 
 # def signal_handler(sig, frame):
@@ -261,8 +346,8 @@ def process_logs():
 
 if __name__ == '__main__':
     #retrieve_circe_logs()
-    process_logs()
-
+    rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
+    calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
 
     # if len(sys.argv) > 1:
     #     TEST_INDICATORS = sys.argv[1]
