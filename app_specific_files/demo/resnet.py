@@ -23,7 +23,7 @@ from ccdag_utils import *
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 
 try:
     # successful if running in container
@@ -154,9 +154,11 @@ def task(q, pathin, pathout, task_name):
                     log.debug("Sleeping")
                     time.sleep(ccdag.SLEEP_TIME) #>=2
                 ### Contact flask server
+                print(input_file)
                 f_stripped = input_file.split(".JPEG")[0]
+                print(f_stripped)
                 job_id = int(f_stripped.split('jobid')[1])
-                log.debug('job_id from the file is: ', job_id)
+                print(job_id)
 
                 ret_job_id = 0
                 try:
