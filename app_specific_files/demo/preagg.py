@@ -58,8 +58,9 @@ def task(q, pathin, pathout, task_name):
     while True:
         if q.qsize()>0:
             input_file = q.get()
-            show_run_stats(task_name,'queue_start_process',input_file)
+            #show_run_stats(task_name,'queue_start_process',input_file)
             src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+            show_run_stats(task_name,'queue_start_process',input_file,src_task)
             log.debug(f"{task_name}: file rcvd from {src_task} : {base_fname}")
 
 
@@ -129,8 +130,8 @@ def task(q, pathin, pathout, task_name):
                         f = open(dst, 'w')
                         np.savetxt(dst, En_Image_Batch, delimiter=',')
                         f.close()
-                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
-
+                        #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}",src_task)
                 else:
                     log.debug('Not receive enough results for job '+job_id)
 
@@ -148,8 +149,8 @@ def task(q, pathin, pathout, task_name):
                         f = open(dst, 'w')
                         np.savetxt(dst, En_Image_Batch, delimiter=',')
                         f.close()
-                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
-
+                        #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}",src_task)
                 else:
                     log.debug('Not receive enough results for job '+job_id)
 

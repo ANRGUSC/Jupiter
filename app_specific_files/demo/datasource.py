@@ -47,6 +47,7 @@ def gen_stream_fixed_set_data(task_name,interval,num_images,data_path,original_d
         shutil.copyfile(source, destination)
         ts = time.time()
         show_run_stats(task_name,'new_file_datasource',filename)
+        #show_run_stats(task_name,'new_file_datasource',filename,'NA')
 
 
 

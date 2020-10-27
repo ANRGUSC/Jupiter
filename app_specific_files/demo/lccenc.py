@@ -99,9 +99,10 @@ def task(q, pathin, pathout, task_name):
             id_list = []
             for i in range(0,num_inputs): #number of inputs is 9
                 input_file = q.get()
-                show_run_stats(task_name,'queue_start_process',input_file)
+                #show_run_stats(task_name,'queue_start_process',input_file)
                 input_list.append(input_file)
                 src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+                show_run_stats(task_name,'queue_start_process',input_file,src_task)
                 log.debug(f"{task_name}: file rcvd from {src_task} : {input_file}")
                 src = os.path.join(pathin, input_file)
                 src_list.append(src)
@@ -189,8 +190,8 @@ def task(q, pathin, pathout, task_name):
                     f = open(destination, 'w')
                     np.savetxt(f, En_Image_Batch[idx], delimiter=',')
                     f.close()
-                    show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv")
-
+                    #show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv")
+                    show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv",src_task)
 
             else: # Uncoding version
                 #Read M batches
@@ -226,8 +227,8 @@ def task(q, pathin, pathout, task_name):
                     f = open(destination, 'w')
                     np.savetxt(f, En_Image_Batch[idx], delimiter=',')
                     f.close()
-                    show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv")
-
+                    #show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv")
+                    show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv",src_task)
             # read the generate output
             # based on that determine sleep and number of bytes in output file
             

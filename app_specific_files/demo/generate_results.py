@@ -49,13 +49,14 @@ classid = np.arange(0,len(ccdag.classlist),1)
 classid = [str(x) for x in classid]
 classmap = dict(zip(classid,ccdag.classlist))
 
+
+
 rt_enter_node = dict()
 rt_exit_node = dict()
 rt_enter_queue = dict()
 rt_exit_queue = dict()
 rt_datasource = dict()
 rt_home = dict()
-
 
 def export_log(namespace):
     resp = core_v1_api.list_namespaced_pod(namespace)
@@ -87,15 +88,16 @@ def part_list_files(list_str,text,idx,shift=0):
         return list_of_files
 
 
-def append_log(runtime_dict,task_name,from_task,fname):
-    if runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_input_file':                              
-        rt_enter_node[(task_name,from_task,fname)] = runtime_dict['unix_time']
+def append_log(runtime_dict,task1,task2,fname):
+    if runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_input_file':   
+        rt_enter_node[(task1,task2,fname)] = runtime_dict['unix_time']
+    elif runtime_dict['task_name']==task1 and runtime_dict['event']=='queue_start_process':
+        rt_enter_queue[(task1,task2,fname)] = runtime_dict['unix_time']
     elif runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_output_file':
-        rt_exit_node[(task_name,from_task,fname)] = runtime_dict['unix_time']
-    elif runtime_dict['task_name']==task_name and runtime_dict['event']=='queue_start_process':
-        rt_enter_queue[(task_name,from_task,fname)] = runtime_dict['unix_time']
-    elif runtime_dict['task_name']==task_name and runtime_dict['event']=='queue_end_process':
-        rt_exit_queue[(task_name,from_task,fname)] = runtime_dict['unix_time']
+        rt_exit_node[(task1,task2,fname)] = runtime_dict['unix_time']
+    elif runtime_dict['task_name']==task1 and runtime_dict['event']=='queue_end_process':
+        rt_exit_queue[(task1,task2,fname)] = runtime_dict['unix_time']
+    
 def process_logs():
     for (dirpath, dirnames, filenames) in os.walk(results_path):
         for filename in filenames:
@@ -108,109 +110,197 @@ def process_logs():
                         runtime_dict =json.loads(json_expr)
                         try:
                             from_task,cur_task,fname = runtime_dict['filename'].split("_", maxsplit=3)
+                        except Exception as e:
+                            print('Something wrong in parsing')
+                            print(e)
+                        try:
                             if task_name.startswith('datasource'):
                                 img_name = fname.split('.')[0]
                                 rt_datasource[(task_name,'NA',img_name)] = runtime_dict['unix_time']
                             elif task_name=='home':
                                 list_of_imgs = part_list_files(fname,'jobth',1)
                                 for img in list_of_imgs:
-                                    rt_home[(task_name,from_task,img)] = runtime_dict['unix_time']
+                                    rt_home[(cur_task,from_task,img)] = runtime_dict['unix_time']
                             elif task_name=='collage':
                                 list_of_imgs = part_list_files(fname,'job',0)
                                 for img in list_of_imgs:
-                                    append_log(runtime_dict,cur_task,from_task,img)
+                                    append_log(runtime_dict,task_name,from_task,img)
                             elif task_name=='master':
                                 if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
-                                    append_log(runtime_dict,cur_task,from_task,fname)
+                                    img_name = fname.split('.')[0]
+                                    append_log(runtime_dict,task_name,from_task,img_name)
                                 else:
-                                    if cur_task=='collage':
+                                    task_name,dest_task,fname = runtime_dict['filename'].split("_", maxsplit=3)
+                                    if dest_task=='collage':
                                         list_of_imgs = part_list_files(fname,'job',0)
                                         for img in list_of_imgs:
-                                            append_log(runtime_dict,cur_task,from_task,img)
+                                            append_log(runtime_dict,task_name,dest_task,img)
                                     else:
                                         img_name = fname.split('job')[0]
-                                        append_log(runtime_dict,cur_task,from_task,img_name)
+                                        append_log(runtime_dict,task_name,dest_task,img_name)
                             elif task_name.startswith('resnet') or task_name.startswith('store'):
                                 img_name = fname.split('job')[0]
-                                append_log(runtime_dict,cur_task,from_task,img_name)
+                                if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
+                                    append_log(runtime_dict,task_name,from_task,img_name)
+                                else:
+                                    append_log(runtime_dict,task_name,cur_task,img_name)
                             elif task_name.startswith('lccenc'):
                                 if runtime_dict['event']=='queue_end_process':
                                     list_of_imgs = part_list_files(fname,'job',0)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,cur_task,from_task,img)
+                                        append_log(runtime_dict,task_name,cur_task,img)
                                 else:
-                                    img_name = fname.split('job')[0]
-                                    append_log(runtime_dict,cur_task,from_task,img_name)
+                                    if runtime_dict['event']=='new_output_file':
+                                        list_of_imgs = part_list_files(fname,'job',0)
+                                        for img in list_of_imgs:
+                                            append_log(runtime_dict,task_name,cur_task,img)
+                                    else:
+                                        img_name = fname.split('job')[0]
+                                        append_log(runtime_dict,task_name,from_task,img_name)
                             elif task_name.startswith('score'):
                                 if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
                                     list_of_imgs = part_list_files(fname,'job',0)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,cur_task,from_task,img)
+                                        append_log(runtime_dict,task_name,from_task,img)
                                 else:
                                     list_of_imgs = part_list_files(fname,'jobth',1)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,cur_task,from_task,img)
+                                        append_log(runtime_dict,task_name,cur_task,img)
                             elif task_name.startswith('preagg'):
                                 if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
                                     list_of_imgs = part_list_files(fname,'jobth',1)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,cur_task,from_task,img)
+                                        append_log(runtime_dict,task_name,from_task,img)
                                 else:
                                     list_of_imgs = part_list_files(fname,'score',1,2)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,cur_task,from_task,img)
+                                        append_log(runtime_dict,task_name,cur_task,img)
                             elif task_name.startswith('lccdec'):
                                 if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
                                     list_of_imgs = part_list_files(fname,'score',1,2)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,cur_task,from_task,img)
+                                        append_log(runtime_dict,task_name,from_task,img)
                                 else:
                                     list_of_imgs = part_list_files(fname,'jobth',1)
                                     for img in list_of_imgs:
-                                        append_log(runtime_dict,cur_task,from_task,img)
+                                        append_log(runtime_dict,task_name,cur_task,img)
                         except Exception as e:
                             print(e)
                             print(runtime_dict) 
-                        
+
+
     return rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node
 
 
-def find_runtime_by_img(rt_dict,img_name):
-    for task_name, from_task,img in rt_dict: 
-        if img == img_name:
-            return rt_dict[(task_name, from_task,img_name)]
+def find_runtime_task1(rt_dict,img_name, vtask1):
+    res = []
+    for task1, task2,img in rt_dict: 
+        if (task1 == vtask1) and (img == img_name) :
+            res.append(rt_dict[(task1, task2,img_name)])
+    return res
+def find_runtime_task2(rt_dict,img_name, vtask2):
+    res = []
+    for task1, task2,img in rt_dict: 
+        if task2 == vtask2 and img == img_name :
+            res.append(rt_dict[(task1, task2,img_name)])
+    return res
+def find_runtime_task1n2(rt_dict,img_name, vtask1,vtask2):
+    res = []
+    for task1, task2,img in rt_dict: 
+        if task1==vtask1 and task2 == vtask2 and img == img_name :
+            res.append(rt_dict[(task1, task2,img_name)])
+    return res
 
 def get_makespan_info(rt_home,rt_datasource):
     makespans_info = []
     for task_name,from_task,img in rt_home:
-        tmp = rt_home[(task_name,from_task,img)]-find_runtime_by_img(rt_datasource,img)
+        res= find_runtime_task2(rt_datasource,img,'NA')[0]
+        tmp = rt_home[(task_name,from_task,img)]-res
         makespans_info.append(tmp)
     return makespans_info
 
 def get_communication_info(rt_datasource,rt_enter_node,rt_home):
-    communication_info = []
+    communication_info = dict()
     for task_name,from_task,img in rt_enter_node:
         if task_name=='master':
-            tmp = rt_enter_node[(task_name,from_task,img)]-find_runtime_by_img(rt_datasource,img)
-            communication_info['master','datasource',img] = tmp
+            res= find_runtime_task2(rt_datasource,img,'NA')[0]
+            tmp = rt_enter_node[(task_name,from_task,img)]-res
+            communication_info[('datasource','master',img)] = tmp
         elif task_name.startswith('lccdec'):
             tasknum = task_name.split('lccdec')[1]
-            tmp = rt_enter_home[('home',task_name,img)] - rt_enter_node[(task_name,'preagg'+tasknum,img)]
-            communication_info['home',task_name,img] = tmp
+            tmp = rt_home[('home',task_name,img)] - rt_enter_node[(task_name,'preagg'+tasknum,img)]
+            communication_info[(task_name,'home',img)] = tmp
         else:
-            tmp = rt_enter_node[task_name,from_task,img]
-            communication_info[(task_name,from_task,img)] = tmp
+            child_tasks = app_config.child_tasks(task_name)
+            if child_tasks is None: continue
+            for c in child_tasks:
+                r = find_runtime_task1(rt_enter_node,img,c)
+                if len(r)==0: continue
+                elif len(r)==1 :
+                    communication_info[(task_name,c,img)] = -rt_enter_node[(task_name,from_task,img)] + r[0]
+                else: 
+                    r = find_runtime_task1n2(rt_enter_node,img, c,task_name)
+                    if len(r)==0: continue
+                    communication_info[(task_name,c,img)] = -rt_enter_node[(task_name,from_task,img)] + r[0]
+    #print(communication_info)
+    return communication_info
+
+
+def gen_task_info(rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node):
+    task_info = dict()
+    # elapse_time ; pre_waiting_time ; execution_time ; post_waiting_time
+    for task_name,from_task,img in rt_enter_node:
+        try:
+            exit_node = max(find_runtime_task1(rt_exit_node,img,task_name))
+            elapse = exit_node- rt_enter_node[(task_name,from_task,img)]
+            pre_waiting = rt_enter_queue[(task_name,from_task,img)]- rt_enter_node[(task_name,from_task,img)]
+            exit_queue = max(find_runtime_task1(rt_enter_queue,img, task_name))
+            execution = exit_queue - rt_enter_queue[(task_name,from_task,img)]
+            post_waiting = exit_node - exit_queue
+            task_info[(task_name,from_task,img)] = [elapse,pre_waiting,execution,post_waiting]
+        except Exception as e:
+            print('Something wrong!!!!')
+            print(e)
+            # print(task_name)
+            # print(from_task)
+            # print(img)
+
+    return task_info
 
 def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node):
     # print(rt_home)
     # print(rt_datasource)
-    print(rt_enter_node)
-    print(rt_exit_node)
-    print(rt_enter_queue)
-    print(rt_exit_queue)
+    # print(rt_enter_node)
+    # print(rt_exit_node)
+    # print(rt_enter_queue)
+    # print(rt_exit_queue)
+    makespans_info = get_makespan_info(rt_home,rt_datasource)    
+    communication_info = get_communication_info(rt_datasource,rt_enter_node,rt_home)
+    task_info = gen_task_info(rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
+    
+    return makespans_info, communication_info,task_info
 
-    makespans_info = get_makespan_info(rt_home,rt_datasource)
-    makespan = mean(makespans_info)
+def plot_info(makespans_info, communication_info,task_info):
+    os.makedirs('figures',exist_ok=True)
+    #plot_makespan(makespans_info, TEST_INDICATORS)
+    #plot_comm_times(communication_info, TEST_INDICATORS)
+    plot_task_timings(task_info, TEST_INDICATORS)
+
+
+def plot_makespan(makespan_info, file_prefix): 
+    fig = plt.figure()
+    plt.plot(makespan_info, '.')
+    avg_makespan = mean(makespan_info)
+    print("Average per-image makespan is: {}".format(avg_makespan))
+    plt.title("{} scatterplot of per-image makespan".format(file_prefix) +
+              "\n Average: {}".format(avg_makespan))
+    plt.ylabel("seconds")
+    plt.ylim(0, 300)
+    plt.tight_layout()
+    fig.savefig('figures/{}makespans.png'.format(file_prefix))
+
+
+def plot_comm_times(communication_info, file_prefix):
 
     datasource_to_master = []
     master_to_resnet = []
@@ -222,176 +312,169 @@ def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_n
     preagg_to_lccdec = []
     lccdec_to_home = []
 
+
+    for k, v in communication_info.items():
+        if k[1].startswith('master') and k[0].startswith('datasource'):
+            datasource_to_master.append(v)
+        if k[0].startswith('master') and k[1].startswith('resnet'):
+            master_to_resnet.append(v)
+        if k[0].startswith('master') and k[1].startswith('collage'):
+            master_to_collage.append(v)
+        if k[0].startswith('resnet') and k[1].startswith('storeclass'):
+            resnet_to_storeclass.append(v)
+        if k[0].startswith('store') and k[1].startswith('lccenc'):
+            storeclass_to_lccenc.append(v)
+        if k[0].startswith('lccenc') and k[1].startswith('score'):
+            lccenc_to_score.append(v)
+        if k[0].startswith('score') and k[1].startswith('preagg'):
+            score_to_preagg.append(v)
+        if k[0].startswith('preagg') and k[1].startswith('lccdec'):
+            print(communication_info[k])
+            preagg_to_lccdec.append(v)
+        if k[0].startswith('lccdec') and k[1].startswith('home'):
+            lccdec_to_home.append(v)
+
+
+
     source_to_dest = ['datasource_to_master', 'master_to_resnet', 'master_to_collage',
     'resnet_to_storeclass', 'storeclass_to_lccenc', 'lccenc_to_score', 
     'score_to_preagg', 'preagg_to_lccdec','lccdec_to_home']
 
+    for src_dst in source_to_dest:
+        if not eval(src_dst):
+            print("no logs found for {}!", src_dst)
+            continue
+        fig = plt.figure()
+        plt.plot(eval(src_dst), '.')
+        average = mean(eval(src_dst))
+        print("Comm: average of {} is {} seconds".format(src_dst, average))
+        plt.title("{} {} communication time vs job\naverage = {}s"
+                  .format(file_prefix, src_dst, average))
+        plt.ylabel("seconds")
+        plt.tight_layout()
+        fig.savefig('figures/{}_{}_comm_times.png'
+                    .format(file_prefix, src_dst))
+
+
+def plot_task_timings(task_info, file_prefix):
+
+    master_exec_times = []
+    master_wait_times = []
+    resnet_exec_times = []
+    resnet_wait_times = []
+    # collage_exec_times = []
+    # collage_wait_times = []
+    store_exec_times = []
+    store_wait_times = []
+
     
+    lccenc_exec_times = []
+    lccenc_wait_times = []
+    score_exec_times = []
+    score_wait_times = []
+    preagg_exec_times = []
+    preagg_wait_times = []
+    lccdec_exec_times = []
+    lccdec_wait_times = []
+    
+    task_and_statistic = [
+        ['master_exec_times', 'master_wait_times'], 
+        ['resnet_exec_times', 'resnet_wait_times'],
+        # ['collage_exec_times', 'collage_wait_times'],
+        ['store_exec_times', 'store_wait_times'],
+        ['lccenc_exec_times', 'lccenc_wait_times'],
+        ['score_exec_times', 'score_wait_times'],
+        ['preagg_exec_times', 'preagg_wait_times'],
+        ['lccdec_exec_times', 'lccdec_wait_times'],
+    ]  
 
+    # keys are tuples:
+    # ('task_name','local_input_file')
 
+    # NOTE: service_time = execution_time = processing time for a job minus wait times
+    # values are a list:
+    # ['enter_time','proc_create_time','proc_exit_time', 'elapse_time',
+    # 'duration_time','waiting_time','service_time', 'wait_time',
+    # 'proc_shutdown_interval']
 
-# def plot_makespan(makespan_log, file_prefix):
+    print(task_info)
 
-#     makespans = []
+    for k, v in task_info.items():
+        if k[0].startswith('master'):
+            master_exec_times.append(float(v[2]))
+            master_wait_times.append(float(v[1]))
+        if k[0].startswith('resnet'):
+            resnet_exec_times.append(float(v[2]))
+            resnet_wait_times.append(float(v[1]))
+        # if k[0].startswith('collage'):
+        #     collage_exec_times.append(float(v[2]))
+        #     collage_wait_times.append(float(v[1]))
+        if k[0].startswith('store'):
+            store_exec_times.append(float(v[2]))
+            store_wait_times.append(float(v[1]))
+        if k[0].startswith('lccenc'):
+            lccenc_exec_times.append(float(v[2]))
+            lccenc_wait_times.append(float(v[1]))
+        if k[0].startswith('score'):
+            score_exec_times.append(float(v[2]))
+            score_wait_times.append(float(v[1]))
+        if k[0].startswith('preagg'):
+            preagg_exec_times.append(float(v[2]))
+            preagg_wait_times.append(float(v[1]))
+        if k[0].startswith('lccdec'):
+            lccdec_exec_times.append(float(v[2]))
+            lccdec_wait_times.append(float(v[1]))
+        
+        
+        
+        
+        
 
-#     for k, v in makespan_log.items():
-#         makespans.append(v)
+    # straggling resnet logs don't hit home. manually insert them by parsing 
+    # the raw resnet8 log files
+    # try:
+    #     with open(STRAGGLING_RESNET, 'r') as f:
+    #         for line in f:
+    #             if line.startswith('DEBUG:root:rt_enter '):
+    #                 straggler_arriv_time = line.split()
+    #                 straggler_arriv_time = float(straggler_arriv_time[-1])
+    #             if line.startswith('DEBUG:root:rt_enter_task'):
+    #                 straggler_start_time = line.split()
+    #                 straggler_start_time = float(straggler_start_time[-1])
+    #                 straggler_wait_time = straggler_start_time - straggler_arriv_time
+    #                 resnet_wait_times.append(straggler_wait_time)
+    #             if line.startswith('resnet_finish '): 
+    #             # if line.startswith('DEBUG:root:rt_finish '): # use this if krishna's print statements aren't coming out
+    #                 straggler_finish_time = line.split()
+    #                 resnet_exec_time = float(straggler_finish_time[-1])  - straggler_start_time
+    #                 resnet_exec_times.append(float(resnet_exec_time))
+    # except FileNotFoundError:
+    #     print("{} does not exist".format(STRAGGLING_RESNET))
 
-#     fig = plt.figure()
-#     plt.plot(makespans, '.')
-#     avg_makespan = mean(makespans)
-#     print("Average per-image makespan is: {}".format(avg_makespan))
-#     plt.title("{} scatterplot of per-image makespan".format(file_prefix) +
-#               "\n Average: {}".format(avg_makespan))
-#     plt.ylabel("seconds")
-#     plt.ylim(0, 300)
-#     plt.tight_layout()
-#     fig.savefig('figures/{}makespans.png'.format(file_prefix))
-
-
-# def plot_comm_times(comm_log, file_prefix):
-#     datasource_to_master = []
-#     master_to_resnet = []   
-#     resnet_to_storeclass = []
-#     storeclass_to_lccenc = []
-#     lccenc_to_score = []
-#     score_to_preagg = []
-#     preagg_to_lccdec = []
-
-#     source_to_dest = ['datasource_to_master', 'master_to_resnet', 
-#     'resnet_to_storeclass', 'storeclass_to_lccenc', 'lccenc_to_score', 
-#     'score_to_preagg', 'preagg_to_lccdec']
-
-#     for k, v in comm_log.items():
-#         if k[2].startswith('master') and k[1].startswith('datasource'):
-#             datasource_to_master.append(v)
-#         if k[2].startswith('master') and k[1].startswith('resnet'):
-#             master_to_resnet.append(v)
-#         if k[2].startswith('resnet') and k[1].startswith('storeclass'):
-#             resnet_to_storeclass.append(v)
-#         if k[2].startswith('storeclass') and k[1].startswith('lccenc'):
-#             storeclass_to_lccenc.append(v)
-#         if k[2].startswith('lccenc') and k[1].startswith('score'):
-#             lccenc_to_score.append(v)
-#         if k[2].startswith('score') and k[1].startswith('preagg'):
-#             score_to_preagg.append(v)
-#         if k[2].startswith('preagg') and k[1].startswith('lccdec'):
-#             preagg_to_lccdec.append(v)
-
-#     for src_dst in source_to_dest:
-#         if not eval(src_dst):
-#             print("no logs found for {}!", src_dst)
-#             continue
-#         fig = plt.figure()
-#         plt.plot(eval(src_dst), '.')
-#         average = mean(eval(src_dst))
-#         print("Comm: average of {} is {} seconds".format(src_dst, average))
-#         plt.title("{} {} communication time vs job\naverage = {}s"
-#                   .format(file_prefix, src_dst, average))
-#         plt.ylabel("seconds")
-#         plt.tight_layout()
-#         fig.savefig('figures/{}_{}_comm_times.png'
-#                     .format(file_prefix, src_dst))
-
-
-# def plot_task_timings(task_log, file_prefix):
-
-#     lccdec_exec_times = []
-#     lccdec_wait_times = []
-#     lccenc_exec_times = []
-#     lccenc_wait_times = []
-#     master_exec_times = []
-#     master_wait_times = []
-#     preagg_exec_times = []
-#     preagg_wait_times = []
-#     resnet_exec_times = []
-#     resnet_wait_times = []
-#     score_exec_times = []
-#     score_wait_times = []
-
-#     task_and_statistic = [
-#         ['lccdec_exec_times', 'lccdec_wait_times'],
-#         ['lccenc_exec_times', 'lccenc_wait_times'],
-#         ['master_exec_times', 'master_wait_times'], 
-#         ['preagg_exec_times', 'preagg_wait_times'],
-#         ['resnet_exec_times', 'resnet_wait_times'],
-#         ['score_exec_times', 'score_wait_times']
-#     ]  
-
-#     # keys are tuples:
-#     # ('task_name','local_input_file')
-
-#     # NOTE: service_time = execution_time = processing time for a job minus wait times
-#     # values are a list:
-#     # ['enter_time','proc_create_time','proc_exit_time', 'elapse_time',
-#     # 'duration_time','waiting_time','service_time', 'wait_time',
-#     # 'proc_shutdown_interval']
-
-#     for k, v in task_log.items():
-#         if k[0].startswith('lccdec'):
-#             lccdec_exec_times.append(float(v[6]))
-#             lccdec_wait_times.append(float(v[7]))
-#         if k[0].startswith('lccenc'):
-#             lccenc_exec_times.append(float(v[6]))
-#             lccenc_wait_times.append(float(v[7]))
-#         if k[0].startswith('master'):
-#             master_exec_times.append(float(v[6]))
-#             master_wait_times.append(float(v[7]))
-#         if k[0].startswith('preagg'):
-#             preagg_exec_times.append(float(v[6]))
-#             preagg_wait_times.append(float(v[7]))
-#         if k[0].startswith('resnet'):
-#             resnet_exec_times.append(float(v[6]))
-#             resnet_wait_times.append(float(v[7]))
-#         if k[0].startswith('score'):
-#             score_exec_times.append(float(v[6]))
-#             score_wait_times.append(float(v[7]))
-
-#     # straggling resnet logs don't hit home. manually insert them by parsing 
-#     # the raw resnet8 log files
-#     try:
-#         with open(STRAGGLING_RESNET, 'r') as f:
-#             for line in f:
-#                 if line.startswith('DEBUG:root:rt_enter '):
-#                     straggler_arriv_time = line.split()
-#                     straggler_arriv_time = float(straggler_arriv_time[-1])
-#                 if line.startswith('DEBUG:root:rt_enter_task'):
-#                     straggler_start_time = line.split()
-#                     straggler_start_time = float(straggler_start_time[-1])
-#                     straggler_wait_time = straggler_start_time - straggler_arriv_time
-#                     resnet_wait_times.append(straggler_wait_time)
-#                 if line.startswith('resnet_finish '): 
-#                 # if line.startswith('DEBUG:root:rt_finish '): # use this if krishna's print statements aren't coming out
-#                     straggler_finish_time = line.split()
-#                     resnet_exec_time = float(straggler_finish_time[-1])  - straggler_start_time
-#                     resnet_exec_times.append(float(resnet_exec_time))
-#     except FileNotFoundError:
-#         print("{} does not exist".format(STRAGGLING_RESNET))
-
-#     for task in task_and_statistic:
-#         fig = plt.figure()
-#         plt.plot(eval(task[0]), '.')
-#         plt.plot(eval(task[1]), 'y+')
-#         exec_time_avg = mean(eval(task[0]))
-#         print("{} average is {}s".format(task[0], exec_time_avg))
-#         wait_time_avg = mean(eval(task[1]))
-#         print("{} average is {}s".format(task[1], wait_time_avg))
-#         plt.title(
-#             "{} {} execution times (.) and wait times (+) vs. job instance".format(file_prefix, task[0][0:6]) +
-#             "\nexecution time avg = {}".format(exec_time_avg) +
-#             "\nwait time avg = {}".format(wait_time_avg)
-#         )
-#         plt.ylabel("seconds")
-#         plt.tight_layout()
-#         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
+    for task in task_and_statistic:
+        fig = plt.figure()
+        print(task[0])
+        print(task[1])
+        plt.plot(eval(task[0]), '.')
+        plt.plot(eval(task[1]), 'y+')
+        exec_time_avg = mean(eval(task[0]))
+        print("{} average is {}s".format(task[0], exec_time_avg))
+        wait_time_avg = mean(eval(task[1]))
+        print("{} average is {}s".format(task[1], wait_time_avg))
+        plt.title(
+            "{} {} execution times (.) and wait times (+) vs. job instance".format(file_prefix, task[0][0:6]) +
+            "\nexecution time avg = {}".format(exec_time_avg) +
+            "\nwait time avg = {}".format(wait_time_avg)
+        )
+        plt.ylabel("seconds")
+        plt.tight_layout()
+        fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
 
 if __name__ == '__main__':
     #retrieve_circe_logs()
     rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
-    calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
-  
-    # if len(sys.argv) > 1:
-    #     TEST_INDICATORS = sys.argv[1]
+    makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
+    plot_info(makespans_info, communication_info,task_info)
 
     # COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
     # MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)
@@ -403,19 +486,19 @@ if __name__ == '__main__':
 
     # print("Graphing and calculating averages for test {}".format(TEST_INDICATORS))
 
-    # try:
-    #     with open(TASK_TIMES, 'r') as f:
-    #         task_log = eval(f.read())
-    #         plot_task_timings(task_log, TEST_INDICATORS)
-    # except FileNotFoundError:
-    #     print("{} does not exist".format(TASK_TIMES))
+    # # try:
+    # #     with open(TASK_TIMES, 'r') as f:
+    # #         task_info = eval(f.read())
+    # #         plot_task_timings(task_info, TEST_INDICATORS)
+    # # except FileNotFoundError:
+    # #     print("{} does not exist".format(TASK_TIMES))
 
-    # try:
-    #     with open(COMM_TIMES, 'r') as f:
-    #         comm_log = eval(f.read())
-    #         plot_comm_times(comm_log, TEST_INDICATORS)
-    # except FileNotFoundError:
-    #     print("{} does not exist".format(COMM_TIMES))
+    # # try:
+    # #     with open(COMM_TIMES, 'r') as f:
+    # #         comm_log = eval(f.read())
+    # #         plot_comm_times(comm_log, TEST_INDICATORS)
+    # # except FileNotFoundError:
+    # #     print("{} does not exist".format(COMM_TIMES))
 
     # try:
     #     with open(MAKESPAN, 'r') as f:
@@ -424,4 +507,4 @@ if __name__ == '__main__':
     # except FileNotFoundError:
     #     print("{} does not exist".format(MAKESPAN))
 
-    # plt.show()
+    #plt.show()

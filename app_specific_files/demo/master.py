@@ -254,9 +254,10 @@ def task(q, pathin, pathout, task_name):
             id_list = []
             for i in range(0,9): #number of inputs is 9
                 input_file = q.get()
-                show_run_stats(task_name,'queue_start_process',input_file)
+                #show_run_stats(task_name,'queue_start_process',input_file)
                 input_list.append(input_file)
                 src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
+                show_run_stats(task_name,'queue_start_process',input_file,src_task)
                 log.debug(f"{task_name}: file rcvd from {src_task} {base_fname}")
                 src = os.path.join(pathin, input_file)
                 src_list.append(src)
@@ -298,7 +299,8 @@ def task(q, pathin, pathout, task_name):
             job = "jobid"+ str(job_id)
             dst = os.path.join(pathout, f"{task_name}_{collage_file_split}_{filesuffix}{job}")
             shutil.copyfile(collage_file, dst)
-            show_run_stats(task_name,'queue_end_process',f"{task_name}_{collage_file_split}_{filesuffix}{job}")
+            #show_run_stats(task_name,'queue_end_process',f"{task_name}_{collage_file_split}_{filesuffix}{job}")
+            show_run_stats(task_name,'queue_end_process',f"{task_name}_{collage_file_split}_{filesuffix}{job}",src_task)
             log.debug('Receive collage file:')
             log.debug(dst)
             log.debug('Receive resnet file:')
@@ -311,8 +313,8 @@ def task(q, pathin, pathout, task_name):
                 log.debug(dst)
                 shutil.copyfile(os.path.join(pathin,f), dst)
                 filelist_flask.append(dst)
-                show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_list[i]}{job}.JPEG")
-
+                #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_list[i]}{job}.JPEG")
+                show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_list[i]}{job}.JPEG",src_task)
             next_job_id = put_filenames(job_id, filelist_flask)
             if ccdag.CODING_PART1:
                 slept = 0

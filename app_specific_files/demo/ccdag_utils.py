@@ -470,11 +470,12 @@ def plot_results():
                 plt.legend()
 
 
-def show_run_stats(taskname,event,filename):
+def show_run_stats(taskname,event,filename,from_task):
     runtime_stat = {
                 "task_name" : taskname,
                 "event" : event,
                 "filename" : filename,
+                "from_task" : from_task,
                 "unix_time" : time.time()
     }
     log.info(f"runtime_stat:{json.dumps(runtime_stat)}")

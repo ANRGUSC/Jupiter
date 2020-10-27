@@ -141,7 +141,8 @@ class AppConfig:
             if nondag_task['name'] == task_name:
                 return nondag_task['children']
 
-        raise ChildTasksNotFoundError("No child tasks found")
+        #raise ChildTasksNotFoundError("No child tasks found")
+
 
     def task_mapper(self):
         return self.cfg['jupiter_config']['task_mapper']
