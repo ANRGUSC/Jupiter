@@ -475,7 +475,6 @@ def show_run_stats(taskname,event,filename,from_task):
                 "task_name" : taskname,
                 "event" : event,
                 "filename" : filename,
-                "from_task" : from_task,
                 "unix_time" : time.time()
     }
     log.info(f"runtime_stat:{json.dumps(runtime_stat)}")

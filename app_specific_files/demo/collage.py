@@ -158,10 +158,10 @@ def task(q, pathin, pathout, task_name):
         if q.qsize()>0:
             input_file = q.get()
 
-            #show_run_stats(task_name,'queue_start_process',input_file)
+            show_run_stats(task_name,'queue_start_process',input_file)
 
             src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
-            show_run_stats(this_task,'queue_start_process',input_file,src_task)
+            #show_run_stats(this_task,'queue_start_process',input_file,src_task)
             log.debug(f"{task_name}: file rcvd from {src_task} : {base_fname}")
             
 
@@ -217,8 +217,8 @@ def task(q, pathin, pathout, task_name):
             end = time.time()
 
 
-            #show_run_stats(task_name,'queue_end_process',input_file)
-            show_run_stats(this_task,'queue_end_process',input_file,src_task)
+            show_run_stats(task_name,'queue_end_process',input_file)
+            #show_run_stats(this_task,'queue_end_process',input_file,src_task)
 
             q.task_done()
         else:
