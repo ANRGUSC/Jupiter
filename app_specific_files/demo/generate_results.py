@@ -277,8 +277,44 @@ def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_n
     makespans_info = get_makespan_info(rt_home,rt_datasource)    
     communication_info = get_communication_info(rt_datasource,rt_enter_node,rt_home)
     task_info = gen_task_info(rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
+    percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
+
+    print('Percentage information')
+    print(percentage)
+    print(percentage_part1)
+    print(percentage_part2)
     
     return makespans_info, communication_info,task_info
+
+def calculate_percentage(rt_datasource,rt_home,rt_exit_node):
+    all_inputs = dict()
+    all_outputs_stage1 = dict()
+    all_outputs_stage2 = dict()
+    for i in range(1,ccdag.NUM_CLASS+1):
+        all_inputs['datasource'+str(i)] = 0
+        all_outputs_stage1['datasource'+str(i)] = 0
+        all_outputs_stage2['datasource'+str(i)] = 0
+    for task_name,from_task,img_name in rt_datasource:
+        all_inputs[task_name] = all_inputs[task_name]+1
+    for task_name,from_task,img_name in rt_home:
+        num = from_task.split('lccdec')[1]
+        all_outputs_stage2['datasource'+str(num)] = all_outputs_stage2['datasource'+str(num)]+1
+    for task_name,dest_task,img_name in rt_exit_node:
+        if task_name.startswith('storeclass'):
+            num = task_name.split('storeclass')[1]
+            all_outputs_stage1['datasource'+str(num)] = all_outputs_stage1['datasource'+str(num)]+1 
+    percentage_part1 = dict()
+    percentage_part2 = dict()
+    percentage = dict()
+    for ds in all_outputs_stage1:
+        percentage_part1[ds] =  all_outputs_stage1[ds] /  all_inputs[ds]
+        percentage_part2[ds] =  all_outputs_stage2[ds] /  all_outputs_stage1[ds]
+        percentage[ds] = percentage_part2[ds]*percentage_part1[ds]
+
+    return percentage,percentage_part1,percentage_part2
+
+
+
 
 def plot_info(makespans_info, communication_info,task_info):
     os.makedirs('figures',exist_ok=True)

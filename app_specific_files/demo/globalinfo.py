@@ -215,6 +215,9 @@ def request_id():
     print('Receive LCC job id request')
     recv = request.get_json()
     class_image = recv['class_image']
+    print('********************')
+    print(class_image)
+    print(log[class_image-1])
     response = str(log[class_image-1].get_id())
     log[class_image-1].id_update()
     print(response)
@@ -226,6 +229,9 @@ def request_dict():
     print('Receive LCC job dictionary request')
     recv = request.get_json()
     class_image = recv['class_image']
+    print('********************')
+    print(class_image)
+    print(log[class_image-1])
     log[class_image-1].dict_update(recv['job_id'],recv['filename'])
     response = log[class_image-1].get_dict()
     print(response)

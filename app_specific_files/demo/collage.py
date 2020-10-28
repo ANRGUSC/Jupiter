@@ -220,7 +220,7 @@ def task(q, pathin, pathout, task_name):
             show_run_stats(task_name,'queue_end_process',input_file)
             #show_run_stats(this_task,'queue_end_process',input_file,src_task)
 
-            q.task_done()
+            #q.task_done()
         else:
             log.debug('Not enough files')
             time.sleep(1)

@@ -146,8 +146,8 @@ def task(q, pathin, pathout, task_name):
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}",src_task)
             
-            for i in range(num_inputs):
-                q.task_done()
+            # for i in range(num_inputs):
+            #     q.task_done()
 
         else:
             num_inputs = 3
@@ -211,8 +211,8 @@ def task(q, pathin, pathout, task_name):
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}",src_task)
             
-            for i in range(num_inputs):
-                q.task_done()
+            # for i in range(num_inputs):
+            #     q.task_done()
 
 
 
