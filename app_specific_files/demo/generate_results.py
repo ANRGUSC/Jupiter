@@ -318,9 +318,9 @@ def calculate_percentage(rt_datasource,rt_home,rt_exit_node):
 
 def plot_info(makespans_info, communication_info,task_info):
     os.makedirs('figures',exist_ok=True)
-    #plot_makespan(makespans_info, TEST_INDICATORS)
+    plot_makespan(makespans_info, TEST_INDICATORS)
     #plot_comm_times(communication_info, TEST_INDICATORS)
-    plot_task_timings(task_info, TEST_INDICATORS)
+    #plot_task_timings(task_info, TEST_INDICATORS)
 
 
 def plot_makespan(makespan_info, file_prefix): 
@@ -507,10 +507,10 @@ def plot_task_timings(task_info, file_prefix):
         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
 
 if __name__ == '__main__':
-    #retrieve_circe_logs()
-    rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
-    makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
-    plot_info(makespans_info, communication_info,task_info)
+    retrieve_circe_logs()
+    #rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
+    #makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
+    #plot_info(makespans_info, communication_info,task_info)
 
     # COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
     # MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)

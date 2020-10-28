@@ -64,6 +64,7 @@ def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
     log.info(f"My children are {children}")
 
+    time.sleep(300) #waiting for all the pods to be ready
     gen_stream_fixed_set_data(task_name,ccdag.STREAM_INTERVAL,ccdag.NUM_IMAGES,data_path,original_data_path)
 
     while True:

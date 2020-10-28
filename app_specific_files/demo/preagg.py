@@ -123,7 +123,7 @@ def task(q, pathin, pathout, task_name):
 
                         En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                         job = str(job_id)+'jobth'
-                        dst_task = children[0] # only 1 children
+                        dst_task = src_task # only 1 children
 
                         dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
                         log.debug(dst)
@@ -142,7 +142,7 @@ def task(q, pathin, pathout, task_name):
                     for i in range(N):
                         En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                         job = str(job_id)+'jobth'
-                        dst_task = children[0] # only 1 children
+                        dst_task = src_task # only 1 children
                         dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
                         log.debug(dst)
                         # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
