@@ -62,7 +62,7 @@ def task(q, pathin, pathout, task_name):
             show_run_stats(task_name,'queue_start_process',input_file)
             src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
             #show_run_stats(task_name,'queue_start_process',input_file,src_task)
-            log.debug(f"{task_name}: file rcvd from {src_task} : {input_file}")
+            log.debug(f"{task_name}: file rcvd from {src_task} : {base_fname}")
             
 
             # Process the file (this example just passes along the file as-is)

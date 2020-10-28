@@ -123,14 +123,14 @@ def task(q, pathin, pathout, task_name):
 
                         En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                         job = str(job_id)+'jobth'
-                        dst_task = src_task # only 1 children
-
-                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
+                        dst_task = child_tasks[0] # only 1 children
+                        src_t = 'score'+classnum+chr(i+96)
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_t}{file_id}")
                         log.debug(dst)
                         f = open(dst, 'w')
                         np.savetxt(dst, En_Image_Batch, delimiter=',')
                         f.close()
-                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_t}{file_id}")
                         #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}",src_task)
                 else:
                     log.debug('Not receive enough results for job '+job_id)
@@ -142,14 +142,15 @@ def task(q, pathin, pathout, task_name):
                     for i in range(N):
                         En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                         job = str(job_id)+'jobth'
-                        dst_task = src_task # only 1 children
-                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
+                        dst_task = children[0] # only 1 children
+                        src_t = 'score'+classnum+chr(i+96)
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{src_t}{file_id}")
                         log.debug(dst)
                         # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
                         f = open(dst, 'w')
                         np.savetxt(dst, En_Image_Batch, delimiter=',')
                         f.close()
-                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}")
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_t}{file_id}")
                         #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}",src_task)
                 else:
                     log.debug('Not receive enough results for job '+job_id)
