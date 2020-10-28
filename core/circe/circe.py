@@ -58,11 +58,16 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
             }
             log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
             this_task, dst_task, base_fname = event.name.split("_", maxsplit=3)
-            ip = transfer.circe_lookup_ip(dst_task)
 
-            # send output to destination task
-            transfer.transfer_data_scp(ip, self.ssh_port, USERNAME, PASSWORD,
-                                       event.pathname, CIRCE_INPUT_DIR)
+            try:
+                ip = transfer.circe_lookup_ip(dst_task)
+
+                # send output to destination task
+                transfer.transfer_data_scp(ip, self.ssh_port, USERNAME, PASSWORD,
+                                           event.pathname, CIRCE_INPUT_DIR)
+            except Exception as e:
+                logging.warning('No Destination IP is found!')
+                
 
 
 
