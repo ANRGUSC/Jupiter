@@ -124,7 +124,7 @@ def task(q, pathin, pathout, task_name):
                         En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                         job = str(job_id)+'jobth'
                         dst_task = child_tasks[0] # only 1 children
-                        src_t = 'score'+classnum+chr(i+96)
+                        src_t = 'score'+classnum+chr(i+97)
                         dst_name = f"{task_name}_{dst_task}_{job}{src_t}{file_id}"
                         print(dst_name)
                         dst = os.path.join(pathout,dst_name)
@@ -145,7 +145,7 @@ def task(q, pathin, pathout, task_name):
                         En_Image_Batch = np.loadtxt(os.path.join(pathin, (job_dict[job_id])[i]), delimiter=',')
                         job = str(job_id)+'jobth'
                         dst_task = children[0] # only 1 children
-                        src_t = 'score'+classnum+chr(i+96)
+                        src_t = 'score'+classnum+chr(i+97)
                         dst_name = f"{task_name}_{dst_task}_{job}{src_t}{file_id}"
                         print(dst_name)
                         dst = os.path.join(pathout, dst_name)
