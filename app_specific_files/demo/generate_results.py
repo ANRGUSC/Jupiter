@@ -32,6 +32,7 @@ import ccdag
 # postfix "sleep" indicates if artificial sleeps are injected in the test
 # examples: "11a", "01a", "01b" "01a-sleep"
 TEST_INDICATORS = "%d%d%s-%s"%(ccdag.CODING_PART1,ccdag.CODING_PART2,ccdag.EXP_ID,ccdag.EXP_NAME)
+print(TEST_INDICATORS)
 # see how file names are structured in main
 
 APP_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -111,8 +112,9 @@ def process_logs():
                         try:
                             from_task,cur_task,fname = runtime_dict['filename'].split("_", maxsplit=3)
                         except Exception as e:
-                            print('Something wrong in parsing')
-                            print(e)
+                            pass
+                            #print('Something wrong in parsing')
+                            #print(e)
                         try:
                             if task_name.startswith('datasource'):
                                 img_name = fname.split('.')[0]
@@ -186,7 +188,7 @@ def process_logs():
                                         append_log(runtime_dict,task_name,cur_task,img)
                         except Exception as e:
                             print(e)
-                            print(runtime_dict) 
+                            #print(runtime_dict) 
 
 
     return rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node
@@ -259,8 +261,9 @@ def gen_task_info(rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node):
             post_waiting = exit_node - exit_queue
             task_info[(task_name,from_task,img)] = [elapse,pre_waiting,execution,post_waiting]
         except Exception as e:
-            print('Something wrong!!!!')
-            print(e)
+            pass
+            # print('Something wrong!!!!')
+            #print(e)
             # print(task_name)
             # print(from_task)
             # print(img)
@@ -277,9 +280,16 @@ def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_n
     makespans_info = get_makespan_info(rt_home,rt_datasource)    
     communication_info = get_communication_info(rt_datasource,rt_enter_node,rt_home)
     task_info = gen_task_info(rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
+
+    print('******************** Makespan information *************************')
+    #print(makespans_info)
+    print('******************* Communication information *********************')
+    #print(communication_info)
+    print('******************* Task information ******************************')
+    #print(task_info)
     percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
 
-    print('Percentage information')
+    print('******************** Percentage information ************************')
     print(percentage)
     print(percentage_part1)
     print(percentage_part2)
@@ -290,10 +300,12 @@ def calculate_percentage(rt_datasource,rt_home,rt_exit_node):
     all_inputs = dict()
     all_outputs_stage1 = dict()
     all_outputs_stage2 = dict()
+    percentage,percentage_part1,percentage_part2 = 0,0,0
     for i in range(1,ccdag.NUM_CLASS+1):
         all_inputs['datasource'+str(i)] = 0
         all_outputs_stage1['datasource'+str(i)] = 0
         all_outputs_stage2['datasource'+str(i)] = 0
+
     for task_name,from_task,img_name in rt_datasource:
         all_inputs[task_name] = all_inputs[task_name]+1
     for task_name,from_task,img_name in rt_home:
@@ -307,9 +319,9 @@ def calculate_percentage(rt_datasource,rt_home,rt_exit_node):
     percentage_part2 = dict()
     percentage = dict()
     for ds in all_outputs_stage1:
-        percentage_part1[ds] =  all_outputs_stage1[ds] /  all_inputs[ds]
-        percentage_part2[ds] =  all_outputs_stage2[ds] /  all_outputs_stage1[ds]
-        percentage[ds] = percentage_part2[ds]*percentage_part1[ds]
+        percentage_part1[ds] =  100 * all_outputs_stage1[ds] /  all_inputs[ds]
+        percentage_part2[ds] =  100 * all_outputs_stage2[ds] /  all_outputs_stage1[ds]
+        percentage[ds] = 100 * all_outputs_stage2[ds] / all_inputs[ds]
 
     return percentage,percentage_part1,percentage_part2
 
@@ -319,11 +331,12 @@ def calculate_percentage(rt_datasource,rt_home,rt_exit_node):
 def plot_info(makespans_info, communication_info,task_info):
     os.makedirs('figures',exist_ok=True)
     plot_makespan(makespans_info, TEST_INDICATORS)
-    #plot_comm_times(communication_info, TEST_INDICATORS)
-    #plot_task_timings(task_info, TEST_INDICATORS)
+    plot_comm_times(communication_info, TEST_INDICATORS)
+    plot_task_timings(task_info, TEST_INDICATORS)
 
 
 def plot_makespan(makespan_info, file_prefix): 
+    print('Plotting makespan')
     fig = plt.figure()
     plt.plot(makespan_info, '.')
     avg_makespan = mean(makespan_info)
@@ -337,6 +350,7 @@ def plot_makespan(makespan_info, file_prefix):
 
 
 def plot_comm_times(communication_info, file_prefix):
+    print('Plotting Communication times')
 
     datasource_to_master = []
     master_to_resnet = []
@@ -365,7 +379,6 @@ def plot_comm_times(communication_info, file_prefix):
         if k[0].startswith('score') and k[1].startswith('preagg'):
             score_to_preagg.append(v)
         if k[0].startswith('preagg') and k[1].startswith('lccdec'):
-            print(communication_info[k])
             preagg_to_lccdec.append(v)
         if k[0].startswith('lccdec') and k[1].startswith('home'):
             lccdec_to_home.append(v)
@@ -394,6 +407,7 @@ def plot_comm_times(communication_info, file_prefix):
 
 def plot_task_timings(task_info, file_prefix):
 
+    print('Plot task timings')
     master_exec_times = []
     master_wait_times = []
     resnet_exec_times = []
@@ -416,7 +430,7 @@ def plot_task_timings(task_info, file_prefix):
     task_and_statistic = [
         ['master_exec_times', 'master_wait_times'], 
         ['resnet_exec_times', 'resnet_wait_times'],
-        # ['collage_exec_times', 'collage_wait_times'],
+        #['collage_exec_times', 'collage_wait_times'],
         ['store_exec_times', 'store_wait_times'],
         ['lccenc_exec_times', 'lccenc_wait_times'],
         ['score_exec_times', 'score_wait_times'],
@@ -432,8 +446,6 @@ def plot_task_timings(task_info, file_prefix):
     # ['enter_time','proc_create_time','proc_exit_time', 'elapse_time',
     # 'duration_time','waiting_time','service_time', 'wait_time',
     # 'proc_shutdown_interval']
-
-    print(task_info)
 
     for k, v in task_info.items():
         if k[0].startswith('master'):
@@ -489,8 +501,6 @@ def plot_task_timings(task_info, file_prefix):
 
     for task in task_and_statistic:
         fig = plt.figure()
-        print(task[0])
-        print(task[1])
         plt.plot(eval(task[0]), '.')
         plt.plot(eval(task[1]), 'y+')
         exec_time_avg = mean(eval(task[0]))
@@ -508,9 +518,22 @@ def plot_task_timings(task_info, file_prefix):
 
 if __name__ == '__main__':
     retrieve_circe_logs()
-    #rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
-    #makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
-    #plot_info(makespans_info, communication_info,task_info)
+    # rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
+
+    # print('----------- Datasource----------------')
+    # print(rt_datasource)
+    # print('----------- Home ----------------')
+    # print(rt_home)
+    # print('----------- Enter Queue ----------------')
+    # print(rt_enter_queue)
+    # print('----------- Exit Queue ----------------')
+    # print(rt_exit_queue)
+    # print('----------- Enter Node ----------------')
+    # print(rt_enter_node)
+    # print('----------- Exit Node ----------------')
+    # print(rt_exit_node)
+    # makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
+    # plot_info(makespans_info, communication_info,task_info)
 
     # COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
     # MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)
