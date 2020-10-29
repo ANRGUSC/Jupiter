@@ -176,7 +176,7 @@ def task(q, pathin, pathout, task_name):
                         slept = 0
                         while slept < ccdag.SLEEP_TIME:
                             ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
-                            log.debug("get_enough_resnet_preds fn. return value is: ", ret_val)
+                            log.debug(f"get_enough_resnet_preds fn. return value is: {ret_val}")
                             if ret_val:
                                 break
                             time.sleep(ccdag.RESNET_POLL_INTERVAL)

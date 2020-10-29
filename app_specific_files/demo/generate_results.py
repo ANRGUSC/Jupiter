@@ -116,7 +116,7 @@ def process_logs():
                             #print('Something wrong in parsing')
                             #print(e)
                         try:
-                            if task_name.startswith('datasource'):
+                            if task_name.startswith('datasource') and runtime_dict['event']=='new_output_file':
                                 img_name = fname.split('.')[0]
                                 rt_datasource[(task_name,'NA',img_name)] = runtime_dict['unix_time']
                             elif task_name=='home':
@@ -223,51 +223,53 @@ def get_makespan_info(rt_home,rt_datasource):
 
 def get_communication_info(rt_datasource,rt_enter_node,rt_home):
     communication_info = dict()
-    for task_name,from_task,img in rt_enter_node:
-        if task_name=='master':
-            res= find_runtime_task2(rt_datasource,img,'NA')[0]
-            tmp = rt_enter_node[(task_name,from_task,img)]-res
-            communication_info[('datasource','master',img)] = tmp
-        elif task_name.startswith('lccdec'):
-            tasknum = task_name.split('lccdec')[1]
-            tmp = rt_home[('home',task_name,img)] - rt_enter_node[(task_name,'preagg'+tasknum,img)]
-            communication_info[(task_name,'home',img)] = tmp
+    for task_name,from_task,img in rt_datasource:
+        res= find_runtime_task2(rt_enter_node,img,'home')[0]
+        tmp = res - rt_datasource[(task_name,from_task,img)]
+        communication_info[('datasource','master',img)] = tmp
+    for task_name,dest_task,img in rt_exit_node:
+        if task_name.startswith('lccdec'): 
+            try:
+                r = find_runtime_task1n2(rt_home,img, 'home',task_name)
+                if len(r) == 0:
+                    print('File did not enter the children node!!!')
+                elif len(r) == 1:
+                    communication_info[(task_name,'home',img)] = - rt_exit_node[(task_name,'home',img)] + r[0]
+            except Exception as e:
+                print('Something wrong !!!!')
         else:
-            child_tasks = app_config.child_tasks(task_name)
-            if child_tasks is None: continue
-            for c in child_tasks:
-                r = find_runtime_task1(rt_enter_node,img,c)
-                if len(r)==0: continue
-                elif len(r)==1 :
-                    communication_info[(task_name,c,img)] = -rt_enter_node[(task_name,from_task,img)] + r[0]
-                else: 
-                    r = find_runtime_task1n2(rt_enter_node,img, c,task_name)
-                    if len(r)==0: continue
-                    communication_info[(task_name,c,img)] = -rt_enter_node[(task_name,from_task,img)] + r[0]
-    #print(communication_info)
+            try:
+                r = find_runtime_task1n2(rt_enter_node,img, dest_task,task_name)
+                if len(r) == 0:
+                    print('File did not enter the children node!!!')
+                elif len(r) == 1:
+                    communication_info[(task_name,dest_task,img)] = - rt_exit_node[(task_name,dest_task,img)] + r[0]
+            except Exception as e:
+                print('Something wrong!!!')
     return communication_info
+
 
 
 def gen_task_info(rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node):
     task_info = dict()
     # elapse_time ; pre_waiting_time ; execution_time ; post_waiting_time
-    for task_name,from_task,img in rt_enter_node:
+    for task_name,dest_task,img in rt_exit_queue:
         try:
-            exit_node = max(find_runtime_task1(rt_exit_node,img,task_name))
-            elapse = exit_node- rt_enter_node[(task_name,from_task,img)]
-            pre_waiting = rt_enter_queue[(task_name,from_task,img)]- rt_enter_node[(task_name,from_task,img)]
-            exit_queue = max(find_runtime_task1(rt_enter_queue,img, task_name))
-            execution = exit_queue - rt_enter_queue[(task_name,from_task,img)]
-            post_waiting = exit_node - exit_queue
-            task_info[(task_name,from_task,img)] = [elapse,pre_waiting,execution,post_waiting]
+            if task_name == 'collage': #no output file
+                exit_node = rt_exit_queue[(task_name,dest_task,img)]
+            else:
+                exit_node = rt_exit_node[(task_name,dest_task,img)]
+            enter_node = min(find_runtime_task1(rt_enter_node,img,task_name))
+            enter_queue = min(find_runtime_task1(rt_enter_queue,img,task_name))
+            elapse = exit_node- enter_node
+            pre_waiting = enter_queue - enter_node
+            execution = rt_exit_queue[task_name,dest_task,img] - enter_queue
+            task_info[(task_name,dest_task,img)] = [elapse,pre_waiting,execution]
         except Exception as e:
-            pass
-            # print('Something wrong!!!!')
-            #print(e)
-            # print(task_name)
-            # print(from_task)
-            # print(img)
-
+            print('Something wrong!!!!')
+            print(e)
+            exit()
+    #print(task_info)
     return task_info
 
 def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node):
@@ -286,7 +288,7 @@ def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_n
     print('******************* Communication information *********************')
     #print(communication_info)
     print('******************* Task information ******************************')
-    #print(task_info)
+    # print(task_info)
     percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
 
     print('******************** Percentage information ************************')
@@ -412,8 +414,8 @@ def plot_task_timings(task_info, file_prefix):
     master_wait_times = []
     resnet_exec_times = []
     resnet_wait_times = []
-    # collage_exec_times = []
-    # collage_wait_times = []
+    collage_exec_times = []
+    collage_wait_times = []
     store_exec_times = []
     store_wait_times = []
 
@@ -430,7 +432,7 @@ def plot_task_timings(task_info, file_prefix):
     task_and_statistic = [
         ['master_exec_times', 'master_wait_times'], 
         ['resnet_exec_times', 'resnet_wait_times'],
-        #['collage_exec_times', 'collage_wait_times'],
+        ['collage_exec_times', 'collage_wait_times'],
         ['store_exec_times', 'store_wait_times'],
         ['lccenc_exec_times', 'lccenc_wait_times'],
         ['score_exec_times', 'score_wait_times'],
@@ -454,9 +456,9 @@ def plot_task_timings(task_info, file_prefix):
         if k[0].startswith('resnet'):
             resnet_exec_times.append(float(v[2]))
             resnet_wait_times.append(float(v[1]))
-        # if k[0].startswith('collage'):
-        #     collage_exec_times.append(float(v[2]))
-        #     collage_wait_times.append(float(v[1]))
+        if k[0].startswith('collage'):
+            collage_exec_times.append(float(v[2]))
+            collage_wait_times.append(float(v[1]))
         if k[0].startswith('store'):
             store_exec_times.append(float(v[2]))
             store_wait_times.append(float(v[1]))
@@ -517,8 +519,8 @@ def plot_task_timings(task_info, file_prefix):
         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
 
 if __name__ == '__main__':
-    retrieve_circe_logs()
-    # rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
+    #retrieve_circe_logs()
+    rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
 
     # print('----------- Datasource----------------')
     # print(rt_datasource)
@@ -532,8 +534,8 @@ if __name__ == '__main__':
     # print(rt_enter_node)
     # print('----------- Exit Node ----------------')
     # print(rt_exit_node)
-    # makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
-    # plot_info(makespans_info, communication_info,task_info)
+    makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
+    plot_info(makespans_info, communication_info,task_info)
 
     # COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
     # MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)
