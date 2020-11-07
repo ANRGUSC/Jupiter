@@ -5,10 +5,10 @@ from mergexp.machine import cores, memory
 from mergexp.unit import gb
 
 # set number of minnow worker nodes
-NUM_MINNOWS = 0
+NUM_MINNOWS = 50
 
 # set number of rohu worker nodes
-NUM_ROHUS = 30
+NUM_ROHUS = 100
 
 
 def ubuntu(name, version, min_memory=2):
@@ -31,12 +31,13 @@ master.props["color"] = "red"
 
 nodes = [master]
 nodecount = 0
-for minnow in range(NUM_MINNOWS):
-    nodes.append(ubuntu("n{}".format(nodecount), '1804', 1))
-    nodecount += 1
 
 for rohu in range(NUM_ROHUS):
     nodes.append(ubuntu("n{}".format(nodecount), '1804', 4))
+    nodecount += 1
+
+for minnow in range(NUM_MINNOWS):
+    nodes.append(ubuntu("n{}".format(nodecount), '1804', 1))
     nodecount += 1
 
 # connect all nodes to LAN
