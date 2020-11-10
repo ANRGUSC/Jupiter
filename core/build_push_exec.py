@@ -20,7 +20,7 @@ log.setLevel(logging.INFO)
 
 def build_push_home(tag):
     # speed up build using existing image
-    os.system("docker pull {}".format(tag))
+    #os.system("docker pull {}".format(tag))
 
     # build and push in execution_profiler/ directory
     err = os.system(
@@ -35,7 +35,7 @@ def build_push_home(tag):
 
 def build_push_worker(tag):
     # speed up build using existing image
-    os.system("docker pull {}".format(tag))
+    #os.system("docker pull {}".format(tag))
 
     # build and push in execution_profiler/ directory
     err = os.system(

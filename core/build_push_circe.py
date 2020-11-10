@@ -18,7 +18,7 @@ log.setLevel(logging.INFO)
 
 def build_push(tag):
     # speed up build using existing image
-    os.system("docker pull {}".format(tag))
+    # os.system("docker pull {}".format(tag))
 
     # build and push in circe/original/ directory
     err = os.system(

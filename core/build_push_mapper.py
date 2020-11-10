@@ -30,7 +30,7 @@ def build_push_heft(app_config, app_dir):
     tag = app_config.get_mapper_tag()
 
     # speed up build using existing image
-    os.system("docker pull {}".format(tag))
+    #os.system("docker pull {}".format(tag))
 
     os.system(
         "docker build -t {} -f task_mapper/heft/heft.Dockerfile "
