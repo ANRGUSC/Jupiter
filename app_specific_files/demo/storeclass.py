@@ -58,7 +58,7 @@ def task(q, pathin, pathout, task_name):
             # based on that determine sleep and number of bytes in output file
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
             #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
-            #q.task_done()
+            q.task_done()
         else:
             log.debug('Not enough files')
             time.sleep(1)

@@ -3,7 +3,7 @@
 #JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini' #docker
 JUPITER_CONFIG_INI_PATH = '../../jupiter_config.ini' # local
 CODING_PART1 = 1
-CODING_PART2 = 0
+CODING_PART2 = 1
 EXP_NAME = 'nosleep'
 EXP_ID = 'b'
 SLEEP_TIME = 5 #0 or 5

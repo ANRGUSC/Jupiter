@@ -135,7 +135,7 @@ def task(q, pathin, pathout, task_name):
             # read the generate output
             # based on that determine sleep and number of bytes in output file
             
-            #q.task_done()
+            q.task_done()
         else:
             log.debug('Not enough files')
             time.sleep(1)

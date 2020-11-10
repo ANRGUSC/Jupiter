@@ -100,7 +100,8 @@ def task(q, pathin, pathout, task_name):
                 base_list.append(base_fname)
                 id_list.append(base_fname.split('jobth')[1])
                 worker = base_fname.split('score')[1]
-                worker_list.append(ord(worker[1])-97)
+                idx = worker.find(next(filter(str.isalpha, worker)))
+                worker_list.append(ord(worker[idx])-97)
                 
 
             
@@ -146,8 +147,8 @@ def task(q, pathin, pathout, task_name):
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}",src_task)
             
-            # for i in range(num_inputs):
-            #     q.task_done()
+            for i in range(num_inputs):
+                q.task_done()
 
         else:
             num_inputs = 3
@@ -166,7 +167,8 @@ def task(q, pathin, pathout, task_name):
                 base_list.append(base_fname)
                 id_list.append(base_fname.split('jobth')[1])
                 worker = base_fname.split('score')[1]
-                worker_list.append(ord(worker[1])-97)
+                idx = worker.find(next(filter(str.isalpha, worker)))
+                worker_list.append(ord(worker[idx])-97)
                 show_run_stats(task_name,'queue_start_process',input_file)
                 #show_run_stats(task_name,'queue_start_process',input_file,src_task)
 
@@ -211,8 +213,8 @@ def task(q, pathin, pathout, task_name):
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}",src_task)
             
-            # for i in range(num_inputs):
-            #     q.task_done()
+            for i in range(num_inputs):
+                q.task_done()
 
 
 
