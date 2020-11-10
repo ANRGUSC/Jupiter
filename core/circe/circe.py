@@ -106,8 +106,8 @@ if __name__ == '__main__':
     ssh_svc_port, _ = config['PORT_MAPPINGS']['SSH'].split(':')
 
     task_name = os.environ['MY_TASK_NAME']
-    #input_q = queue.Queue()
-    input_q = multiprocessing.Queue()
+    input_q = queue.Queue()
+    #input_q = multiprocessing.Queue()
 
     app_config = app_config_parser.AppConfig(APP_DIR)
     log.info(f"Using base script {app_config.base_script(task_name)}")
