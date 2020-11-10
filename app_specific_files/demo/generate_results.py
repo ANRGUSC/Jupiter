@@ -100,6 +100,7 @@ def append_log(runtime_dict,task1,task2,fname):
         rt_exit_queue[(task1,task2,fname)] = runtime_dict['unix_time']
     
 def process_logs():
+    print('***************')
     for (dirpath, dirnames, filenames) in os.walk(results_path):
         for filename in filenames:
             task_name = filename.split('-')[1]
@@ -112,9 +113,10 @@ def process_logs():
                         try:
                             from_task,cur_task,fname = runtime_dict['filename'].split("_", maxsplit=3)
                         except Exception as e:
+                            
+                            print('Something wrong in parsing')
+                            print(e)
                             pass
-                            #print('Something wrong in parsing')
-                            #print(e)
                         try:
                             if task_name.startswith('datasource') and runtime_dict['event']=='new_output_file':
                                 img_name = fname.split('.')[0]
@@ -187,8 +189,10 @@ def process_logs():
                                     for img in list_of_imgs:
                                         append_log(runtime_dict,task_name,cur_task,img)
                         except Exception as e:
+                            print('Something wrong2')
                             print(e)
-                            #print(runtime_dict) 
+                            print(runtime_dict) 
+                            print(list_of_imgs)
 
 
     return rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node
@@ -233,6 +237,7 @@ def get_communication_info(rt_datasource,rt_enter_node,rt_home):
                 r = find_runtime_task1n2(rt_home,img, 'home',task_name)
                 if len(r) == 0:
                     print('File did not enter the children node!!!')
+                    print(img)
                 elif len(r) == 1:
                     communication_info[(task_name,'home',img)] = - rt_exit_node[(task_name,'home',img)] + r[0]
             except Exception as e:
@@ -242,6 +247,7 @@ def get_communication_info(rt_datasource,rt_enter_node,rt_home):
                 r = find_runtime_task1n2(rt_enter_node,img, dest_task,task_name)
                 if len(r) == 0:
                     print('File did not enter the children node!!!')
+                    print(img)
                 elif len(r) == 1:
                     communication_info[(task_name,dest_task,img)] = - rt_exit_node[(task_name,dest_task,img)] + r[0]
             except Exception as e:
@@ -519,8 +525,8 @@ def plot_task_timings(task_info, file_prefix):
         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
 
 if __name__ == '__main__':
-    #retrieve_circe_logs()
-    rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
+    retrieve_circe_logs()
+    #rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
 
     # print('----------- Datasource----------------')
     # print(rt_datasource)
@@ -534,8 +540,8 @@ if __name__ == '__main__':
     # print(rt_enter_node)
     # print('----------- Exit Node ----------------')
     # print(rt_exit_node)
-    makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
-    plot_info(makespans_info, communication_info,task_info)
+    #makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
+    #plot_info(makespans_info, communication_info,task_info)
 
     # COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
     # MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)

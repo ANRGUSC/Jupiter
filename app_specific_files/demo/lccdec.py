@@ -108,8 +108,7 @@ def task(q, pathin, pathout, task_name):
 
             #LCCDEC CODE
             job_id = base_fname.split('jobth')[0]
-            file_id = worker[2:]
-
+            file_id = worker[idx+1:]
             # Results recieved from M workers
             worker_eval = [np.loadtxt(src_list[i], delimiter=',') for i in range(M)]
             # Decoding Process
@@ -175,8 +174,7 @@ def task(q, pathin, pathout, task_name):
 
             #LCCDEC CODE
             job_id = base_fname.split('jobth')[0]
-            file_id = worker[2:]
-
+            file_id = worker[idx+1:]
             # Results recieved from N workers
             #worker_idx = [ord((input_list[i].partition('_')[2].partition('_')[2].partition('_')[0])[6])-97 for i in range(N)]
             worker_eval = [np.loadtxt(os.path.join(pathin, input_list[i]), delimiter=',') for i in range(N)]
