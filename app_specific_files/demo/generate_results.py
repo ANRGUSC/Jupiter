@@ -72,8 +72,8 @@ def retrieve_circe_logs():
     circe_namespace = app_config.namespace_prefix() + "-circe"
     export_log(circe_namespace)
 
-def part_list_files(list_str,text,idx,shift=0):
-    if shift == 0:
+def part_list_files(list_str,text,idx,check=0):
+    if check == 0:
         list_files = list_str.split(text)[idx].split('-')   
         list_of_files = []
         for fi in list_files:
@@ -81,13 +81,14 @@ def part_list_files(list_str,text,idx,shift=0):
             list_of_files.append(tmp)
         return list_of_files
     else:
-        list_files = list_str.split(text)[idx][shift:].split('-')   
+        a = list_str.split(text)[idx]
+        idx1 = a.find(next(filter(str.isalpha, a)))
+        list_files = a[idx1+1:].split('-')  
         list_of_files = []
         for fi in list_files:
             tmp = fi.split('#')[1]+'img'+ classmap[fi.split('#')[0]]
             list_of_files.append(tmp)
         return list_of_files
-
 
 def append_log(runtime_dict,task1,task2,fname):
     if runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_input_file':   
@@ -100,23 +101,17 @@ def append_log(runtime_dict,task1,task2,fname):
         rt_exit_queue[(task1,task2,fname)] = runtime_dict['unix_time']
     
 def process_logs():
-    print('***************')
     for (dirpath, dirnames, filenames) in os.walk(results_path):
         for filename in filenames:
             task_name = filename.split('-')[1]
             filepath=os.sep.join([dirpath, filename])
             with open(filepath, "r") as f:
                 for line in f:
+                    line = line.strip()
                     if re.search('runtime',line):
                         json_expr = '{'+line.split('{')[1]
                         runtime_dict =json.loads(json_expr)
-                        try:
-                            from_task,cur_task,fname = runtime_dict['filename'].split("_", maxsplit=3)
-                        except Exception as e:
-                            
-                            print('Something wrong in parsing')
-                            print(e)
-                            pass
+                        from_task,cur_task,fname = runtime_dict['filename'].split("_", maxsplit=3)
                         try:
                             if task_name.startswith('datasource') and runtime_dict['event']=='new_output_file':
                                 img_name = fname.split('.')[0]
@@ -176,23 +171,28 @@ def process_logs():
                                     for img in list_of_imgs:
                                         append_log(runtime_dict,task_name,from_task,img)
                                 else:
-                                    list_of_imgs = part_list_files(fname,'score',1,2)
+                                    list_of_imgs = part_list_files(fname,'score',1,1)
+                                    
                                     for img in list_of_imgs:
                                         append_log(runtime_dict,task_name,cur_task,img)
                             elif task_name.startswith('lccdec'):
                                 if runtime_dict['event']=='queue_start_process' or runtime_dict['event']=='new_input_file':
-                                    list_of_imgs = part_list_files(fname,'score',1,2)
+                                    list_of_imgs = part_list_files(fname,'score',1,1)
                                     for img in list_of_imgs:
                                         append_log(runtime_dict,task_name,from_task,img)
                                 else:
                                     list_of_imgs = part_list_files(fname,'jobth',1)
                                     for img in list_of_imgs:
                                         append_log(runtime_dict,task_name,cur_task,img)
-                        except Exception as e:
-                            print('Something wrong2')
-                            print(e)
-                            print(runtime_dict) 
-                            print(list_of_imgs)
+                            else:
+                                print('Task name not recognized or non-important log')
+                                #print(runtime_dict)
+        
+
+                        except Exception as exc:
+                            print('Something wrong in processing tasks')
+                            print(task_name)
+                            
 
 
     return rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node
@@ -200,16 +200,20 @@ def process_logs():
 
 def find_runtime_task1(rt_dict,img_name, vtask1):
     res = []
+    task2_list = []
     for task1, task2,img in rt_dict: 
         if (task1 == vtask1) and (img == img_name) :
             res.append(rt_dict[(task1, task2,img_name)])
-    return res
+            task2_list.append(task1)
+    return res,task2_list
 def find_runtime_task2(rt_dict,img_name, vtask2):
     res = []
+    task1_list = []
     for task1, task2,img in rt_dict: 
         if task2 == vtask2 and img == img_name :
             res.append(rt_dict[(task1, task2,img_name)])
-    return res
+            task1_list.append(task1)
+    return res,task1_list
 def find_runtime_task1n2(rt_dict,img_name, vtask1,vtask2):
     res = []
     for task1, task2,img in rt_dict: 
@@ -220,24 +224,29 @@ def find_runtime_task1n2(rt_dict,img_name, vtask1,vtask2):
 def get_makespan_info(rt_home,rt_datasource):
     makespans_info = []
     for task_name,from_task,img in rt_home:
-        res= find_runtime_task2(rt_datasource,img,'NA')[0]
-        tmp = rt_home[(task_name,from_task,img)]-res
+        res,_= find_runtime_task2(rt_datasource,img,'NA')
+        tmp = rt_home[(task_name,from_task,img)]-res[0]
         makespans_info.append(tmp)
     return makespans_info
 
 def get_communication_info(rt_datasource,rt_enter_node,rt_home):
     communication_info = dict()
-    for task_name,from_task,img in rt_datasource:
-        res= find_runtime_task2(rt_enter_node,img,'home')[0]
-        tmp = res - rt_datasource[(task_name,from_task,img)]
-        communication_info[('datasource','master',img)] = tmp
+    for task_name,from_task,img in rt_enter_node:
+        if task_name == 'master':
+            res,ds= find_runtime_task2(rt_datasource,img,'NA')
+            if len(res) == 0:
+                continue
+            tmp = rt_enter_node[(task_name,from_task,img)] - min(res)
+            communication_info[('datasource','master',img)] = tmp
     for task_name,dest_task,img in rt_exit_node:
         if task_name.startswith('lccdec'): 
             try:
                 r = find_runtime_task1n2(rt_home,img, 'home',task_name)
                 if len(r) == 0:
-                    print('File did not enter the children node!!!')
+                    print('File did not enter the home node!!!')
+                    print(task_name)
                     print(img)
+                    exit()
                 elif len(r) == 1:
                     communication_info[(task_name,'home',img)] = - rt_exit_node[(task_name,'home',img)] + r[0]
             except Exception as e:
@@ -247,7 +256,6 @@ def get_communication_info(rt_datasource,rt_enter_node,rt_home):
                 r = find_runtime_task1n2(rt_enter_node,img, dest_task,task_name)
                 if len(r) == 0:
                     print('File did not enter the children node!!!')
-                    print(img)
                 elif len(r) == 1:
                     communication_info[(task_name,dest_task,img)] = - rt_exit_node[(task_name,dest_task,img)] + r[0]
             except Exception as e:
@@ -265,72 +273,66 @@ def gen_task_info(rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node):
                 exit_node = rt_exit_queue[(task_name,dest_task,img)]
             else:
                 exit_node = rt_exit_node[(task_name,dest_task,img)]
-            enter_node = min(find_runtime_task1(rt_enter_node,img,task_name))
-            enter_queue = min(find_runtime_task1(rt_enter_queue,img,task_name))
+            res,_ = find_runtime_task1(rt_enter_node,img,task_name)
+            enter_node = min(res)
+            res,_ =find_runtime_task1(rt_enter_queue,img,task_name)
+            enter_queue = min(res)
             elapse = exit_node- enter_node
             pre_waiting = enter_queue - enter_node
             execution = rt_exit_queue[task_name,dest_task,img] - enter_queue
             task_info[(task_name,dest_task,img)] = [elapse,pre_waiting,execution]
         except Exception as e:
-            print('Something wrong!!!!')
-            print(e)
-            exit()
+            print('File does not enter the children node for task info!!!!')
+            pass
+            #exit()
     #print(task_info)
     return task_info
 
 def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node):
-    # print(rt_home)
-    # print(rt_datasource)
-    # print(rt_enter_node)
-    # print(rt_exit_node)
-    # print(rt_enter_queue)
-    # print(rt_exit_queue)
+    makespans_info = dict()
+    communication_info = dict()
+    task_info = dict()
+
     makespans_info = get_makespan_info(rt_home,rt_datasource)    
     communication_info = get_communication_info(rt_datasource,rt_enter_node,rt_home)
     task_info = gen_task_info(rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
 
-    print('******************** Makespan information *************************')
-    #print(makespans_info)
-    print('******************* Communication information *********************')
-    #print(communication_info)
-    print('******************* Task information ******************************')
+    # print('******************** Makespan information *************************')
+    # print(makespans_info)
+    # print('******************* Communication information *********************')
+    # print(communication_info)
+    # print('******************* Task information ******************************')
     # print(task_info)
-    percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
-
-    print('******************** Percentage information ************************')
-    print(percentage)
-    print(percentage_part1)
-    print(percentage_part2)
     
     return makespans_info, communication_info,task_info
 
 def calculate_percentage(rt_datasource,rt_home,rt_exit_node):
-    all_inputs = dict()
-    all_outputs_stage1 = dict()
-    all_outputs_stage2 = dict()
     percentage,percentage_part1,percentage_part2 = 0,0,0
-    for i in range(1,ccdag.NUM_CLASS+1):
-        all_inputs['datasource'+str(i)] = 0
-        all_outputs_stage1['datasource'+str(i)] = 0
-        all_outputs_stage2['datasource'+str(i)] = 0
-
+    sum_input,sum_stage1,sum_stage2 = 0,0,0
+    set_input = set()
+    set_stage1 = set()
+    set_stage2 = set()
     for task_name,from_task,img_name in rt_datasource:
-        all_inputs[task_name] = all_inputs[task_name]+1
+        if img_name not in set_input:
+            set_input.add(img_name)
+            sum_input = sum_input+1
     for task_name,from_task,img_name in rt_home:
-        num = from_task.split('lccdec')[1]
-        all_outputs_stage2['datasource'+str(num)] = all_outputs_stage2['datasource'+str(num)]+1
+        if img_name not in set_stage2:
+            set_stage2.add(img_name)
+            sum_stage2 = sum_stage2+1
     for task_name,dest_task,img_name in rt_exit_node:
         if task_name.startswith('storeclass'):
-            num = task_name.split('storeclass')[1]
-            all_outputs_stage1['datasource'+str(num)] = all_outputs_stage1['datasource'+str(num)]+1 
-    percentage_part1 = dict()
-    percentage_part2 = dict()
-    percentage = dict()
-    for ds in all_outputs_stage1:
-        percentage_part1[ds] =  100 * all_outputs_stage1[ds] /  all_inputs[ds]
-        percentage_part2[ds] =  100 * all_outputs_stage2[ds] /  all_outputs_stage1[ds]
-        percentage[ds] = 100 * all_outputs_stage2[ds] / all_inputs[ds]
+            if img_name not in set_stage1:
+                set_stage1.add(img_name)
+                sum_stage1 = sum_stage1+1
 
+    print('---- Number of processed images: ----')
+    print(sum_input)
+    print(sum_stage1)
+    print(sum_stage2)
+    percentage_part1 = 100 * sum_stage1/sum_input
+    percentage_part2 = 100 * sum_stage2/sum_stage1
+    percentage = 100 * sum_stage2/sum_input
     return percentage,percentage_part1,percentage_part2
 
 
@@ -481,32 +483,6 @@ def plot_task_timings(task_info, file_prefix):
             lccdec_exec_times.append(float(v[2]))
             lccdec_wait_times.append(float(v[1]))
         
-        
-        
-        
-        
-
-    # straggling resnet logs don't hit home. manually insert them by parsing 
-    # the raw resnet8 log files
-    # try:
-    #     with open(STRAGGLING_RESNET, 'r') as f:
-    #         for line in f:
-    #             if line.startswith('DEBUG:root:rt_enter '):
-    #                 straggler_arriv_time = line.split()
-    #                 straggler_arriv_time = float(straggler_arriv_time[-1])
-    #             if line.startswith('DEBUG:root:rt_enter_task'):
-    #                 straggler_start_time = line.split()
-    #                 straggler_start_time = float(straggler_start_time[-1])
-    #                 straggler_wait_time = straggler_start_time - straggler_arriv_time
-    #                 resnet_wait_times.append(straggler_wait_time)
-    #             if line.startswith('resnet_finish '): 
-    #             # if line.startswith('DEBUG:root:rt_finish '): # use this if krishna's print statements aren't coming out
-    #                 straggler_finish_time = line.split()
-    #                 resnet_exec_time = float(straggler_finish_time[-1])  - straggler_start_time
-    #                 resnet_exec_times.append(float(resnet_exec_time))
-    # except FileNotFoundError:
-    #     print("{} does not exist".format(STRAGGLING_RESNET))
-
     for task in task_and_statistic:
         fig = plt.figure()
         plt.plot(eval(task[0]), '.')
@@ -526,8 +502,7 @@ def plot_task_timings(task_info, file_prefix):
 
 if __name__ == '__main__':
     retrieve_circe_logs()
-    #rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
-
+    # rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
     # print('----------- Datasource----------------')
     # print(rt_datasource)
     # print('----------- Home ----------------')
@@ -540,8 +515,50 @@ if __name__ == '__main__':
     # print(rt_enter_node)
     # print('----------- Exit Node ----------------')
     # print(rt_exit_node)
-    #makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
-    #plot_info(makespans_info, communication_info,task_info)
+
+    # with open("datasource.txt","w") as f:
+    #     f.write(str(rt_datasource) )
+    # with open("home.txt","w") as f:
+    #     f.write(str(rt_home) )
+    # with open("enterqueue.txt","w") as f:
+    #     f.write(str(rt_enter_queue))
+    # with open("exitqueue.txt","w") as f:
+    #     f.write(str(rt_exit_queue))
+    # with open("enternode.txt","w") as f:
+    #     f.write(str(rt_enter_node))
+    # with open("exitnode.txt","w") as f:
+    #     f.write(str(rt_exit_node)) 
+
+
+    # rt_datasource = eval(open('datasource.txt', 'r').read())
+    # rt_home = eval(open('home.txt', 'r').read())
+    # rt_enter_queue = eval(open('enterqueue.txt', 'r').read())
+    # rt_exit_queue = eval(open('exitqueue.txt', 'r').read())
+    # rt_enter_node = eval(open('enternode.txt', 'r').read())
+    # rt_exit_node = eval(open('exitnode.txt', 'r').read())
+    # makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node) 
+    # with open("makespans.txt","w") as f:
+    #     f.write(str(makespans_info) )
+    # with open("communication.txt","w") as f:
+    #     f.write(str(communication_info) )
+    # with open("task.txt","w") as f:
+    #     f.write(str(task_info))
+
+    # makespans_info = eval(open('makespans.txt', 'r').read())
+    # communication_info = eval(open('communication.txt', 'r').read())
+    # task_info = eval(open('task.txt', 'r').read())
+
+    # percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
+
+    # print('******************** Percentage information ************************')
+    # print('Percentage part 1')
+    # print(percentage_part1)
+    # print('Percentage part 2')
+    # print(percentage_part2)
+    # print('Percentage')
+    # print(percentage)
+    
+    # plot_info(makespans_info, communication_info,task_info)
 
     # COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
     # MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)
@@ -574,4 +591,4 @@ if __name__ == '__main__':
     # except FileNotFoundError:
     #     print("{} does not exist".format(MAKESPAN))
 
-    #plt.show()
+    # plt.show()

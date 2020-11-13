@@ -11,6 +11,7 @@ import cv2
 import numpy as np
 import random
 from ccdag_utils import *
+import re
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -53,7 +54,7 @@ def score (En_Image_Batch, Ref_Images):
 def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
 
-    class_num = task_name.split('score')[1][0]
+    class_num = re.findall(r'\d+',task_name)[0]
     class_name = ccdag.classlist[int(class_num)-1]
 
     while True:
@@ -93,7 +94,7 @@ def task(q, pathin, pathout, task_name):
              # Read Reference Images
             input_file_ref = [class_name+str(i+1)+'.JPEG' for i in range(20,30)]  # to be defined in advance
             path_ref = os.path.join(os.path.dirname(__file__),'reference',class_name) # folder of referenced images
-
+            print(input_file_ref)
 
             for i in range(K):
                 log.debug(os.path.join(path_ref, input_file_ref[i]))

@@ -74,7 +74,7 @@ def LCC_decoding(f_eval,N,M,worker_idx):
 # name to reuse one base task file.
 def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
-    class_num = task_name.split('lccdec')[1]
+    #class_num = task_name.split('lccdec')[1:]
     #Parameters
     N = 3 # Number of workers (encoded data-batches)
     M = 2 # Number of data-batches

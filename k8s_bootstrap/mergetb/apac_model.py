@@ -5,10 +5,10 @@ from mergexp.machine import cores, memory
 from mergexp.unit import gb
 
 # set number of minnow worker nodes
-NUM_MINNOWS = 100
+NUM_MINNOWS = 373
 
 # set number of rohu worker nodes
-NUM_ROHUS = 50
+NUM_ROHUS = 157
 
 
 def ubuntu(name, version, min_memory=2):
