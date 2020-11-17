@@ -2,6 +2,7 @@
   order: sorted
   gather_facts: False
   become: yes
+  strategy: free # make each node finish the playbook asap
   vars:
     # DCOMP Ubuntu 18.04 containers do not have /usr/bin/python but have python3
     ansible_python_interpreter: python3

@@ -126,6 +126,7 @@ data:
   net-conf.json: |
     {
       "Network": "10.244.0.0/16",
+      "SubnetLen": 26,
       "Backend": {
         "Type": "vxlan"
       }
@@ -600,3 +601,4 @@ spec:
         - name: flannel-cfg
           configMap:
             name: kube-flannel-cfg
+
