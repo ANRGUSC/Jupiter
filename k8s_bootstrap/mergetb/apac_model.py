@@ -43,4 +43,6 @@ for minnow in range(NUM_MINNOWS):
 # connect all nodes to LAN
 net.connect(nodes)
 
+
 mx.experiment(net)
+print(JUPITER_WORKER_NODES)
