@@ -2,6 +2,7 @@
   order: sorted
   gather_facts: False
   become: yes
+  strategy: free # make each node finish the playbook asap
   check_mode: no
   vars:
     ansible_python_interpreter: python3
