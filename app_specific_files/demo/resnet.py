@@ -9,6 +9,8 @@ import time
 import json
 import multiprocessing
 from multiprocessing import Queue
+import shutil
+from os import path
 
 #task library import
 import torch
@@ -127,6 +129,8 @@ def task(q, pathin, pathout, task_name):
 
             # RESNET CODE
             ### set device to CPU
+            libpath = os.path.join(os.path.dirname(os.path.realpath(__file__)),'resnet34-333f7ec4.pth')
+            shutil.copy(libpath,'/root/.cache/torch/checkpoints/resnet34-333f7ec4.pth')
             device = torch.device("cpu")
             ### Load model
             model = models.resnet34(pretrained=True)
