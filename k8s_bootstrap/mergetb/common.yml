@@ -49,7 +49,7 @@
       register: iptables_version
 
     - name: Switch to iptables legacy if version >= 1.8 (legacy only available on newer versions), see https://github.com/kubernetes/kubernetes/issues/71305
-      when: iptables_version.stdout | version('1.8', '>=') 
+      when: iptables_version.stdout | version('1.8', '>=')
       shell: update-alternatives --set iptables /usr/sbin/iptables-legacy
 
     - name: Add Docker APT GPG key for Ubuntu
@@ -77,22 +77,22 @@
         state: present
 
     - name: Install docker and its dependecies
-      apt: 
+      apt:
         name: "{{ packages }}"
         state: present
         update_cache: yes
       vars:
         packages:
-        - docker-ce 
-        - docker-ce-cli 
+        - docker-ce
+        - docker-ce-cli
         - containerd.io
 
     - name: Add Kubernetes APT GPG key
       apt_key:
         url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
         state: present
-    
-    - name: Add APT repository for kubernetes 
+
+    - name: Add APT repository for kubernetes
       when: ansible_os_family == "Ubuntu"
       apt_repository:
         repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
@@ -116,7 +116,7 @@
       shell: swapoff -a
 
     - name: Install Kubernetes binaries
-      apt: 
+      apt:
         name: "{{ packages }}"
         state: present
         update_cache: yes
@@ -144,12 +144,12 @@
         enabled: yes
 
     - name: Create generic user "jupiter" all nodes (password is "controlallthings")
-      user: 
+      user:
         name: jupiter
         update_password: always
         password: 'rUASLsZJNjkL6'
         shell: /bin/bash
-        groups: 
+        groups:
           - docker
           - sudo
         state: present

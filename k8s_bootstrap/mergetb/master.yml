@@ -18,22 +18,25 @@
 
     - name: Init Kubernetes cluster with pregenerated token
       when: reset_cluster is succeeded and not kubeadm_ca.stat.exists
-      shell: | 
+      shell: |
         sudo kubeadm init --pod-network-cidr=10.244.0.0/16 \
                      --service-cidr=10.96.0.0/12 \
                      --ignore-preflight-errors=all \
                      --token 3bwyan.ixrild4p02vldwbc
       register: init_cluster
 
-    - name: Change node CIDR mask size to accomodate a cluster up to 1024 nodes
+    # CIDR mask of 26 allocates 64 IPs per node. /16 subnetlen has 65536 IPs.
+    # kube-flannel-jupiter.yml also has field "SubnetLen" set to 26 just in case
+    - name: Reduce CIDR range to accomodate a cluster up to 1024 nodes
       when: init_cluster is succeeded
       shell: |
         sudo kubeadm init phase control-plane controller-manager \
-                     --controller-manager-extra-args node-cidr-mask-size=26
+                     --controller-manager-extra-args node-cidr-mask-size=26 \
+                     --pod-network-cidr=10.244.0.0/16
 
     - name: "Copy config file to local machine's home folder"
       fetch:
-        src: /etc/kubernetes/admin.conf 
+        src: /etc/kubernetes/admin.conf
         dest: "{{ lookup('env', 'HOME') }}/.kube/config"
         flat: yes
       run_once: yes
