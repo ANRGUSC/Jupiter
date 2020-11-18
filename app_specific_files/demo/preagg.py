@@ -54,6 +54,7 @@ classmap = dict(zip(ccdag.classlist, classids))
 def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
     classnum = task_name.split('preagg')[1]
+    print(classnum)
 
     while True:
         if q.qsize()>0:

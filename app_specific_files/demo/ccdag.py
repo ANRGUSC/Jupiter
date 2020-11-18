@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # encoding: utf-8
-JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini' #docker
-#JUPITER_CONFIG_INI_PATH = '../../jupiter_config.ini' # local
+#JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini' #docker
+JUPITER_CONFIG_INI_PATH = '../../jupiter_config.ini' # local
 
-EXP_ID = 'd'
+EXP_ID = 'c'
 
-CODING_PART1 = 1
+CODING_PART1 = 0
 RESNETS_THRESHOLD = 3 #1 or 3
 
 CODING_PART2 = 1
@@ -22,5 +22,4 @@ STREAM_INTERVAL = 60
 NUM_IMAGES = 100
 NUM_CLASS =11
 NUM_DATASOURCES = 100
-# classlist = ['fireengine', 'schoolbus', 'whitewolf', 'hyena', 'tiger', 'kitfox', 'persiancat', 'leopard', 'lion',  'americanblackbear', 'mongoose', 'zebra', 'hog', 'hippopotamus', 'ox', 'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter']
-classlist = ['fireengine', 'schoolbus', 'whitewolf',  'tiger', 'kitfox', 'persiancat', 'leopard',   'americanblackbear', 'mongoose', 'zebra',  'hippopotamus',  'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter','hyena','ox','lion','hog']
+classlist = ['fireengine', 'schoolbus', 'whitewolf',  'tiger', 'kitfox', 'persiancat', 'leopard',   'americanblackbear', 'mongoose', 'zebra',  'hippopotamus',  'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter','ox','lion','hog','hyena']

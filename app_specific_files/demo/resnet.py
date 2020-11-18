@@ -108,6 +108,7 @@ def send_prediction_to_decoder_task(resnet_task_num,job_id, prediction, global_i
 # name to reuse one base task file.
 def task(q, pathin, pathout, task_name):
     resnet_task_num = int(task_name.split('resnet')[1])
+    print(resnet_task_num)
     children = app_config.child_tasks(task_name)
 
     while True:
@@ -266,41 +267,62 @@ def task(q, pathin, pathout, task_name):
                         shutil.copyfile(src, dst)
                         show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
                         #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
-                    #elif pred[0] == 346: ### buffallo. class 16
-                    #     log.debug('Buffallo')
-                    #     dst_task = 'storeclass12'
-                    #     dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-                    #     shutil.copyfile(src, dst)
-                    #     show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
-                    #     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
-                    # elif pred[0] == 348: ### ram. class 17
-                    #     log.debug('Ram')
-                    #     dst_task = 'storeclass13'
-                    #     dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-                    #     shutil.copyfile(src, dst)
-                    #     show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
-                    #     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
-                    # elif pred[0] == 352: ### impala . class 18
-                    #     log.debug('Impala')
-                    #     dst_task = 'storeclass14'
-                    #     dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-                    #     shutil.copyfile(src, dst)
-                    #     show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
-                    #     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
-                    # elif pred[0] == 354: ### camel. class 19
-                    #     log.debug('Camel')
-                    #     dst_task = 'storeclass15'
-                    #     dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-                    #     shutil.copyfile(src, dst)
-                    #     show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
-                    #     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
-                    # elif pred[0] == 360: ### otter. class 20
-                    #     log.debug('Otters')
-                    #     dst_task = 'storeclass16'
-                    #     dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-                    #     shutil.copyfile(src, dst)
-                    #     show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
-                    #     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
+                    elif pred[0] == 346: ### buffallo. class 16
+                        log.debug('Buffallo')
+                        dst_task = 'storeclass12'
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+                        shutil.copyfile(src, dst)
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
+                        #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
+                    elif pred[0] == 348: ### ram. class 17
+                        log.debug('Ram')
+                        dst_task = 'storeclass13'
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+                        shutil.copyfile(src, dst)
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
+                        #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
+                    elif pred[0] == 352: ### impala . class 18
+                        log.debug('Impala')
+                        dst_task = 'storeclass14'
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+                        shutil.copyfile(src, dst)
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
+                        #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
+                    elif pred[0] == 354: ### camel. class 19
+                        log.debug('Camel')
+                        dst_task = 'storeclass15'
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+                        shutil.copyfile(src, dst)
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
+                        #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
+                    elif pred[0] == 360: ### otter. class 20
+                        log.debug('Otters')
+                        dst_task = 'storeclass16'
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+                        shutil.copyfile(src, dst)
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
+                        #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
+                    elif pred[0] == 345: ### ox. class 15
+                        log.debug('Ox')
+                        dst_task = 'storeclass17'
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+                        shutil.copyfile(src, dst)
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
+                        #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
+                    elif pred[0] == 291: ### lion. class 8
+                        log.debug('Lion')
+                        dst_task = 'storeclass18'
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+                        shutil.copyfile(src, dst)
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
+                        #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
+                    elif pred[0] == 341: ### hog. class 13
+                        log.debug('Hog')
+                        dst_task = 'storeclass19'
+                        dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
+                        shutil.copyfile(src, dst)
+                        show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
+                        #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
                     # elif pred[0] == 276: ### hyena. class 4
                     #     log.debug('Hyena')
                     #     dst_task = 'storeclass17'
@@ -308,28 +330,6 @@ def task(q, pathin, pathout, task_name):
                     #     shutil.copyfile(src, dst)
                     #     show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
                     #     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
-                    # elif pred[0] == 345: ### ox. class 15
-                    #     log.debug('Ox')
-                    #     dst_task = 'storeclass18'
-                    #     dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-                    #     shutil.copyfile(src, dst)
-                    #     show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
-                    #     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
-                    # elif pred[0] == 291: ### lion. class 8
-                    #     log.debug('Lion')
-                    #     dst_task = 'storeclass19'
-                    #     dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-                    #     shutil.copyfile(src, dst)
-                    #     show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
-                    #     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
-                    # elif pred[0] == 341: ### hog. class 13
-                    #     log.debug('Hog')
-                    #     dst_task = 'storeclass20'
-                    #     dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
-                    #     shutil.copyfile(src, dst)
-                    #     show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")
-                    #     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
-                   
                     
                    
                    

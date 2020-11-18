@@ -246,7 +246,7 @@ def get_communication_info(rt_datasource,rt_enter_node,rt_home):
                     print('File did not enter the home node!!!')
                     print(task_name)
                     print(img)
-                    exit()
+                    # exit()
                 elif len(r) == 1:
                     communication_info[(task_name,'home',img)] = - rt_exit_node[(task_name,'home',img)] + r[0]
             except Exception as e:
@@ -501,64 +501,64 @@ def plot_task_timings(task_info, file_prefix):
         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
 
 if __name__ == '__main__':
-    retrieve_circe_logs()
-    # rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
-    # print('----------- Datasource----------------')
-    # print(rt_datasource)
-    # print('----------- Home ----------------')
-    # print(rt_home)
-    # print('----------- Enter Queue ----------------')
-    # print(rt_enter_queue)
-    # print('----------- Exit Queue ----------------')
-    # print(rt_exit_queue)
-    # print('----------- Enter Node ----------------')
-    # print(rt_enter_node)
-    # print('----------- Exit Node ----------------')
-    # print(rt_exit_node)
+    #retrieve_circe_logs()
+    rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
+    print('----------- Datasource----------------')
+    print(rt_datasource)
+    print('----------- Home ----------------')
+    print(rt_home)
+    print('----------- Enter Queue ----------------')
+    print(rt_enter_queue)
+    print('----------- Exit Queue ----------------')
+    print(rt_exit_queue)
+    print('----------- Enter Node ----------------')
+    print(rt_enter_node)
+    print('----------- Exit Node ----------------')
+    print(rt_exit_node)
 
-    # with open("datasource.txt","w") as f:
-    #     f.write(str(rt_datasource) )
-    # with open("home.txt","w") as f:
-    #     f.write(str(rt_home) )
-    # with open("enterqueue.txt","w") as f:
-    #     f.write(str(rt_enter_queue))
-    # with open("exitqueue.txt","w") as f:
-    #     f.write(str(rt_exit_queue))
-    # with open("enternode.txt","w") as f:
-    #     f.write(str(rt_enter_node))
-    # with open("exitnode.txt","w") as f:
-    #     f.write(str(rt_exit_node)) 
+    with open("datasource.txt","w") as f:
+        f.write(str(rt_datasource) )
+    with open("home.txt","w") as f:
+        f.write(str(rt_home) )
+    with open("enterqueue.txt","w") as f:
+        f.write(str(rt_enter_queue))
+    with open("exitqueue.txt","w") as f:
+        f.write(str(rt_exit_queue))
+    with open("enternode.txt","w") as f:
+        f.write(str(rt_enter_node))
+    with open("exitnode.txt","w") as f:
+        f.write(str(rt_exit_node)) 
 
 
-    # rt_datasource = eval(open('datasource.txt', 'r').read())
-    # rt_home = eval(open('home.txt', 'r').read())
-    # rt_enter_queue = eval(open('enterqueue.txt', 'r').read())
-    # rt_exit_queue = eval(open('exitqueue.txt', 'r').read())
-    # rt_enter_node = eval(open('enternode.txt', 'r').read())
-    # rt_exit_node = eval(open('exitnode.txt', 'r').read())
-    # makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node) 
-    # with open("makespans.txt","w") as f:
-    #     f.write(str(makespans_info) )
-    # with open("communication.txt","w") as f:
-    #     f.write(str(communication_info) )
-    # with open("task.txt","w") as f:
-    #     f.write(str(task_info))
+    rt_datasource = eval(open('datasource.txt', 'r').read())
+    rt_home = eval(open('home.txt', 'r').read())
+    rt_enter_queue = eval(open('enterqueue.txt', 'r').read())
+    rt_exit_queue = eval(open('exitqueue.txt', 'r').read())
+    rt_enter_node = eval(open('enternode.txt', 'r').read())
+    rt_exit_node = eval(open('exitnode.txt', 'r').read())
+    makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node) 
+    with open("makespans.txt","w") as f:
+        f.write(str(makespans_info) )
+    with open("communication.txt","w") as f:
+        f.write(str(communication_info) )
+    with open("task.txt","w") as f:
+        f.write(str(task_info))
 
-    # makespans_info = eval(open('makespans.txt', 'r').read())
-    # communication_info = eval(open('communication.txt', 'r').read())
-    # task_info = eval(open('task.txt', 'r').read())
+    makespans_info = eval(open('makespans.txt', 'r').read())
+    communication_info = eval(open('communication.txt', 'r').read())
+    task_info = eval(open('task.txt', 'r').read())
 
-    # percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
+    percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
 
-    # print('******************** Percentage information ************************')
-    # print('Percentage part 1')
-    # print(percentage_part1)
-    # print('Percentage part 2')
-    # print(percentage_part2)
-    # print('Percentage')
-    # print(percentage)
+    print('******************** Percentage information ************************')
+    print('Percentage part 1')
+    print(percentage_part1)
+    print('Percentage part 2')
+    print(percentage_part2)
+    print('Percentage')
+    print(percentage)
     
-    # plot_info(makespans_info, communication_info,task_info)
+    plot_info(makespans_info, communication_info,task_info)
 
     # COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
     # MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)

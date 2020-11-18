@@ -80,6 +80,7 @@ def LCC_encoding(X,N,M):
 def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
     classnum = task_name.split('lccenc')[1]
+    print(classnum)
     classname = ccdag.classlist[int(classnum)-1]
     # Parameters
     # L = 10 # Number of images in a data-batch
