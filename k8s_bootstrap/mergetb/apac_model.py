@@ -45,4 +45,3 @@ net.connect(nodes)
 
 
 mx.experiment(net)
-print(JUPITER_WORKER_NODES)
