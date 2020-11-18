@@ -25,6 +25,12 @@
                      --token 3bwyan.ixrild4p02vldwbc
       register: init_cluster
 
+    - name: Change node CIDR mask size to accomodate a cluster up to 1024 nodes
+      when: init_cluster is succeeded
+      shell: |
+        sudo kubeadm init phase control-plane controller-manager \
+                     --controller-manager-extra-args node-cidr-mask-size=26
+
     - name: "Copy config file to local machine's home folder"
       fetch:
         src: /etc/kubernetes/admin.conf 
