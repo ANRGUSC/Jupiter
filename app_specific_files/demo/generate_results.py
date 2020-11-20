@@ -68,9 +68,9 @@ def export_log(namespace):
             cmd = 'kubectl logs -n%s %s > %s'%(namespace,name,file_name)
             os.system(cmd)
 
-def retrieve_circe_logs():
-    circe_namespace = app_config.namespace_prefix() + "-circe"
-    export_log(circe_namespace)
+def retrieve_logs(module):
+    namespace = app_config.namespace_prefix() + "-"+module
+    export_log(namespace)
 
 def part_list_files(list_str,text,idx,check=0):
     if check == 0:
@@ -502,33 +502,36 @@ def plot_task_timings(task_info, file_prefix):
         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
 
 if __name__ == '__main__':
-    #retrieve_circe_logs()
-    rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
-    print('----------- Datasource----------------')
-    print(rt_datasource)
-    print('----------- Home ----------------')
-    print(rt_home)
-    print('----------- Enter Queue ----------------')
-    print(rt_enter_queue)
-    print('----------- Exit Queue ----------------')
-    print(rt_exit_queue)
-    print('----------- Enter Node ----------------')
-    print(rt_enter_node)
-    print('----------- Exit Node ----------------')
-    print(rt_exit_node)
+    retrieve_logs('circe')
+    retrieve_logs('profiler')
+    retrieve_logs('exec')
+    retrieve_logs('mapper')
+    # rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
+    # print('----------- Datasource----------------')
+    # print(rt_datasource)
+    # print('----------- Home ----------------')
+    # print(rt_home)
+    # print('----------- Enter Queue ----------------')
+    # print(rt_enter_queue)
+    # print('----------- Exit Queue ----------------')
+    # print(rt_exit_queue)
+    # print('----------- Enter Node ----------------')
+    # print(rt_enter_node)
+    # print('----------- Exit Node ----------------')
+    # print(rt_exit_node)
 
-    makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node) 
-    percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
+    # makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node) 
+    # percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
 
-    print('******************** Percentage information ************************')
-    print('Percentage part 1')
-    print(percentage_part1)
-    print('Percentage part 2')
-    print(percentage_part2)
-    print('Percentage')
-    print(percentage)
+    # print('******************** Percentage information ************************')
+    # print('Percentage part 1')
+    # print(percentage_part1)
+    # print('Percentage part 2')
+    # print(percentage_part2)
+    # print('Percentage')
+    # print(percentage)
     
-    plot_info(makespans_info, communication_info,task_info)
+    # plot_info(makespans_info, communication_info,task_info)
 
     # COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
     # MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)
