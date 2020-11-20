@@ -62,13 +62,13 @@ def check_workers_running(app_config, namespace):
     result = True
 
     for task in app_config.get_dag_task_names():
-        label = "app="+app_config.app_name + '-' + node 
+        label = "app="+app_config.app_name + '-' + task 
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector=label)
         # if a pod is running just delete it
         if resp.items:
             a = resp.items[0]
             if a.status.phase != "Running":
-                log.debug("Circe dag workers pod not yet running on {}".format(node))
+                log.debug("Circe dag workers pod not yet running on {}".format(task))
                 result = False
 
     if result is True:
