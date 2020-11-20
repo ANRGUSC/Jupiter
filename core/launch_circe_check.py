@@ -10,6 +10,7 @@ import k8s_spec.deployment
 from jupiter_utils import app_config_parser
 import logging
 import json
+import time
 
 import sys
 sys.path.append("../")
@@ -44,7 +45,7 @@ def create_services(app_name, namespace, tasks, api, port_mappings):
     # example: "task0:10.0.0.1 task1:10.0.0.2"
     return ' '.join(task_to_ip)
 
-def check_workers_running(app_config, namespace):
+def check_dag_workers_running(app_config, namespace):
     """Checks if all worker tasks are up and running.
 
     Arguments:
@@ -62,6 +63,38 @@ def check_workers_running(app_config, namespace):
     result = True
 
     for task in app_config.get_dag_task_names():
+        label = "app="+app_config.app_name + '-' + task 
+        resp = core_v1_api.list_namespaced_pod(namespace, label_selector=label)
+        # if a pod is running just delete it
+        if resp.items:
+            a = resp.items[0]
+            if a.status.phase != "Running":
+                log.debug("Circe dag workers pod not yet running on {}".format(task))
+                result = False
+
+    if result is True:
+        log.info("All drupe profiler workers successfully running.")
+
+    return result
+
+def check_nondag_workers_running(app_config, namespace):
+    """Checks if all worker tasks are up and running.
+
+    Arguments:
+        app_config {app_config_parser.AppConfig} -- app config objectj
+        namespace {string} -- k8s namespace of execution profiler
+
+    Returns:
+        bool -- True if all workers are running, False if not.
+    """
+    # Load kube config before executing k8s client API calls.
+    config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
+    k8s_apps_v1 = client.AppsV1Api()
+    core_v1_api = client.CoreV1Api()
+
+    result = True
+
+    for task in app_config.get_nondag_tasks():
         label = "app="+app_config.app_name + '-' + task 
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector=label)
         # if a pod is running just delete it
@@ -182,7 +215,7 @@ def launch_circe(task_mapping):
                                                         namespace=namespace)
         log.debug(f"DAG task deployment created. status={resp.status}")
 
-    while check_workers_running(app_config, namespace) is False:
+    while check_dag_workers_running(app_config, namespace) is False:
         log.debug("CIRCE dag worker pods still deploying, waiting...")
         time.sleep(30)
 
@@ -207,6 +240,10 @@ def launch_circe(task_mapping):
         resp = k8s_apps_v1.create_namespaced_deployment(body=spec,
                                                         namespace=namespace)
         log.debug(f"Non-DAG task depl. created. status={resp.status}")
+
+    while check_nondag_workers_running(app_config, namespace) is False:
+        log.debug("CIRCE nondag worker pods still deploying, waiting...")
+        time.sleep(30)
 
     # *** Create Home Task Deployment ***
     home_depl_spec = k8s_spec.deployment.generate(
