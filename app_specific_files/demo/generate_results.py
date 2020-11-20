@@ -354,7 +354,8 @@ def plot_makespan(makespan_info, file_prefix):
     plt.title("{} scatterplot of per-image makespan".format(file_prefix) +
               "\n Average: {}".format(avg_makespan))
     plt.ylabel("seconds")
-    plt.ylim(0, 300)
+    print('************************ Plot makespan')
+    plt.ylim(0, 1800)
     plt.tight_layout()
     fig.savefig('figures/{}makespans.png'.format(file_prefix))
 
@@ -516,38 +517,7 @@ if __name__ == '__main__':
     print('----------- Exit Node ----------------')
     print(rt_exit_node)
 
-    with open("datasource.txt","w") as f:
-        f.write(str(rt_datasource) )
-    with open("home.txt","w") as f:
-        f.write(str(rt_home) )
-    with open("enterqueue.txt","w") as f:
-        f.write(str(rt_enter_queue))
-    with open("exitqueue.txt","w") as f:
-        f.write(str(rt_exit_queue))
-    with open("enternode.txt","w") as f:
-        f.write(str(rt_enter_node))
-    with open("exitnode.txt","w") as f:
-        f.write(str(rt_exit_node)) 
-
-
-    rt_datasource = eval(open('datasource.txt', 'r').read())
-    rt_home = eval(open('home.txt', 'r').read())
-    rt_enter_queue = eval(open('enterqueue.txt', 'r').read())
-    rt_exit_queue = eval(open('exitqueue.txt', 'r').read())
-    rt_enter_node = eval(open('enternode.txt', 'r').read())
-    rt_exit_node = eval(open('exitnode.txt', 'r').read())
     makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node) 
-    with open("makespans.txt","w") as f:
-        f.write(str(makespans_info) )
-    with open("communication.txt","w") as f:
-        f.write(str(communication_info) )
-    with open("task.txt","w") as f:
-        f.write(str(task_info))
-
-    makespans_info = eval(open('makespans.txt', 'r').read())
-    communication_info = eval(open('communication.txt', 'r').read())
-    task_info = eval(open('task.txt', 'r').read())
-
     percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
 
     print('******************** Percentage information ************************')

@@ -329,7 +329,7 @@ def task(q, pathin, pathout, task_name):
                         #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}",src_task)
                     # elif pred[0] == 276: ### hyena. class 4
                     #     log.debug('Hyena')
-                    #     dst_task = 'storeclass17'
+                    #     dst_task = 'storeclass20'
                     #     dst = os.path.join(pathout, f"{task_name}_{dst_task}_{base_fname}")
                     #     shutil.copyfile(src, dst)
                     #     show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{base_fname}")

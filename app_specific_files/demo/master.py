@@ -55,26 +55,28 @@ store_class_tasks_dict = {}
 store_class_tasks_dict[555] = "storeclass1"
 store_class_tasks_dict[779] = "storeclass2"
 store_class_tasks_dict[270] = "storeclass3"
-store_class_tasks_dict[276] = "storeclass4"
-store_class_tasks_dict[292] = "storeclass5"
-store_class_tasks_dict[278] = "storeclass6"
-store_class_tasks_dict[283] = "storeclass7"
-store_class_tasks_dict[288] = "storeclass8"
-store_class_tasks_dict[291] = "storeclass9"
-store_class_tasks_dict[295] = "storeclass10"
-store_class_tasks_dict[298] = "storeclass11"
-store_class_tasks_dict[340] = "storeclass12"
-store_class_tasks_dict[341] = "storeclass13"
-store_class_tasks_dict[344] = "storeclass14"
-store_class_tasks_dict[345] = "storeclass15"
-store_class_tasks_dict[346] = "storeclass16"
-store_class_tasks_dict[348] = "storeclass17"
-store_class_tasks_dict[352] = "storeclass18"
-store_class_tasks_dict[354] = "storeclass19"
-store_class_tasks_dict[360] = "storeclass20"
+store_class_tasks_dict[292] = "storeclass4"
+store_class_tasks_dict[278] = "storeclass5"
+store_class_tasks_dict[283] = "storeclass6"
+store_class_tasks_dict[288] = "storeclass7"
+store_class_tasks_dict[298] = "storeclass8"
+store_class_tasks_dict[295] = "storeclass9"
+store_class_tasks_dict[340] = "storeclass10"
+store_class_tasks_dict[344] = "storeclass11"
+store_class_tasks_dict[346] = "storeclass12"
+store_class_tasks_dict[348] = "storeclass13"
+store_class_tasks_dict[352] = "storeclass14"
+store_class_tasks_dict[354] = "storeclass15"
+store_class_tasks_dict[360] = "storeclass16"
+store_class_tasks_dict[345] = "storeclass17"
+store_class_tasks_dict[291] = "storeclass18"
+store_class_tasks_dict[341] = "storeclass19"
+store_class_tasks_dict[276] = "storeclass20"
 
 classids = np.arange(0,len(ccdag.classlist),1)
 classmap = dict(zip(ccdag.classlist, classids))
+
+store_list = ["storeclass%d" for d in range(1,20)]
 
 
 def transfer_data_scp(ID,user,pword,source, destination):
@@ -190,23 +192,28 @@ def get_and_send_missing_images(pathin):
         missing_images_dict = collections.defaultdict(list)
     # Process and send requests out
     ### Reusing the input files to the master node. NOT creating a local copy of input files.
-    logging.debug('Receive missing from decoder task:')
+    print('Receive missing from decoder task:')
     logging.debug(missing_images_dict)
     for image_file, _class in missing_images_dict.items():
         logging.debug(image_file)
         file_name_wo_jobid = image_file.split("_")[1]
+        print(image_file)
+        print(file_name_wo_jobid)
         source_path = os.path.join(pathin, file_name_wo_jobid)
-        file_name = 'master_master_master_master_' + image_file
+        print(source_path)
+        file_name = 'home_master_' + image_file
+        print(file_name)
         logging.debug('Transfer the file')
         destination_path = os.path.join('/jupiter/input',file_name)
-        logging.debug(destination_path)
+        print(destination_path)
         try:
             next_store_class = store_class_tasks_dict[int(_class)]
             logging.debug(next_store_class)
-            if next_store_class in ["storeclass1", "storeclass2", "storeclass3", "storeclass4", "storeclass5"]:
+            if next_store_class in store_clist:
+                print('Transfer image directly from master node')
                 transfer_data_scp(next_store_class,username,password,source_path, destination_path)
             else:
-                logging.debug("Next store class is outside the list of current store classes")
+                print("Next store class is outside the list of current store classes")
         except Exception as e:
             logging.debug('The predicted item is not available in the stored class')
     return "ok"
