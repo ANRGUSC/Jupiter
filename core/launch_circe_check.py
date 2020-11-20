@@ -95,7 +95,7 @@ def check_nondag_workers_running(app_config, namespace):
     result = True
 
     for task in app_config.get_nondag_tasks():
-        label = "app="+app_config.app_name + '-' + task 
+        label = "app="+app_config.app_name + '-' + task['name']
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector=label)
         # if a pod is running just delete it
         if resp.items:
