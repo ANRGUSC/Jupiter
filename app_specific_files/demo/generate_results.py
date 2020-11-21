@@ -502,66 +502,33 @@ def plot_task_timings(task_info, file_prefix):
         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
 
 if __name__ == '__main__':
-    retrieve_logs('circe')
-    retrieve_logs('profiler')
-    retrieve_logs('exec')
-    retrieve_logs('mapper')
-    # rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
-    # print('----------- Datasource----------------')
-    # print(rt_datasource)
-    # print('----------- Home ----------------')
-    # print(rt_home)
-    # print('----------- Enter Queue ----------------')
-    # print(rt_enter_queue)
-    # print('----------- Exit Queue ----------------')
-    # print(rt_exit_queue)
-    # print('----------- Enter Node ----------------')
-    # print(rt_enter_node)
-    # print('----------- Exit Node ----------------')
-    # print(rt_exit_node)
+    # retrieve_logs('circe')
+    # retrieve_logs('profiler')
+    # retrieve_logs('exec')
+    # retrieve_logs('mapper')
+    rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
+    print('----------- Datasource----------------')
+    print(rt_datasource)
+    print('----------- Home ----------------')
+    print(rt_home)
+    print('----------- Enter Queue ----------------')
+    print(rt_enter_queue)
+    print('----------- Exit Queue ----------------')
+    print(rt_exit_queue)
+    print('----------- Enter Node ----------------')
+    print(rt_enter_node)
+    print('----------- Exit Node ----------------')
+    print(rt_exit_node)
 
-    # makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node) 
-    # percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
+    makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node) 
+    percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
 
-    # print('******************** Percentage information ************************')
-    # print('Percentage part 1')
-    # print(percentage_part1)
-    # print('Percentage part 2')
-    # print(percentage_part2)
-    # print('Percentage')
-    # print(percentage)
+    print('******************** Percentage information ************************')
+    print('Percentage part 1')
+    print(percentage_part1)
+    print('Percentage part 2')
+    print(percentage_part2)
+    print('Percentage')
+    print(percentage)
     
-    # plot_info(makespans_info, communication_info,task_info)
-
-    # COMM_TIMES = "filtered_logs/{}comm.log".format(TEST_INDICATORS)
-    # MAKESPAN = "filtered_logs/{}makespan.log".format(TEST_INDICATORS)
-    # TASK_TIMES = "filtered_logs/{}task.log".format(TEST_INDICATORS)
-    # STRAGGLING_RESNET = "filtered_logs/{}resnet8.log".format(TEST_INDICATORS)
-    # MASTER_SERVICE = "filtered_logs/{}master.log".format(TEST_INDICATORS)
-
-    # os.makedirs('figures', exist_ok=True)
-
-    # print("Graphing and calculating averages for test {}".format(TEST_INDICATORS))
-
-    # # try:
-    # #     with open(TASK_TIMES, 'r') as f:
-    # #         task_info = eval(f.read())
-    # #         plot_task_timings(task_info, TEST_INDICATORS)
-    # # except FileNotFoundError:
-    # #     print("{} does not exist".format(TASK_TIMES))
-
-    # # try:
-    # #     with open(COMM_TIMES, 'r') as f:
-    # #         comm_log = eval(f.read())
-    # #         plot_comm_times(comm_log, TEST_INDICATORS)
-    # # except FileNotFoundError:
-    # #     print("{} does not exist".format(COMM_TIMES))
-
-    # try:
-    #     with open(MAKESPAN, 'r') as f:
-    #         makespan_log = eval(f.read())
-    #         plot_makespan(makespan_log, TEST_INDICATORS)
-    # except FileNotFoundError:
-    #     print("{} does not exist".format(MAKESPAN))
-
-    # plt.show()
+    plot_info(makespans_info, communication_info,task_info)
