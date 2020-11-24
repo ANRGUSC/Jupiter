@@ -6,7 +6,7 @@ jupiter_config:
   # jason-circe
   # jason-profiler
   # jason-mapper
-  namespace_prefix: test
+  namespace_prefix: quynh
   # Docker registry prefix for pulling and pushing images. Set to empty string for
   # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
   docker_registry: quay.io/anrgusc
@@ -63,46 +63,127 @@ application:
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+          - storeclass9
+          - storeclass10
+          - storeclass11
       - name: resnet1
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+          - storeclass9
+          - storeclass10
+          - storeclass11
       - name: resnet2
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+          - storeclass9
+          - storeclass10
+          - storeclass11
       - name: resnet3
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+          - storeclass9
+          - storeclass10
+          - storeclass11
       - name: resnet4
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+          - storeclass9
+          - storeclass10
+          - storeclass11
       - name: resnet5
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+          - storeclass9
+          - storeclass10
+          - storeclass11
       - name: resnet6
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+          - storeclass9
+          - storeclass10
+          - storeclass11
       - name: resnet7
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+          - storeclass9
+          - storeclass10
+          - storeclass11
       - name: resnet8
         base_script: resnet.py
         children:
           - storeclass1
           - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+          - storeclass9
+          - storeclass10
+          - storeclass11
       - name: collage
         base_script: collage.py
         children: 
@@ -114,6 +195,42 @@ application:
         base_script: storeclass.py
         children:
           - lccenc2
+      - name: storeclass3
+        base_script: storeclass.py
+        children:
+          - lccenc3
+      - name: storeclass4
+        base_script: storeclass.py
+        children:
+          - lccenc4
+      - name: storeclass5
+        base_script: storeclass.py
+        children:
+          - lccenc5
+      - name: storeclass6
+        base_script: storeclass.py
+        children:
+          - lccenc6
+      - name: storeclass7
+        base_script: storeclass.py
+        children:
+          - lccenc7
+      - name: storeclass8
+        base_script: storeclass.py
+        children:
+          - lccenc8
+      - name: storeclass9
+        base_script: storeclass.py
+        children:
+          - lccenc9
+      - name: storeclass10
+        base_script: storeclass.py
+        children:
+          - lccenc10
+      - name: storeclass11
+        base_script: storeclass.py
+        children:
+          - lccenc11
       - name: lccenc1
         base_script: lccenc.py
         children:
@@ -126,6 +243,60 @@ application:
           - score2a
           - score2b
           - score2c
+      - name: lccenc3
+        base_script: lccenc.py
+        children:
+          - score3a
+          - score3b
+          - score3c
+      - name: lccenc4
+        base_script: lccenc.py
+        children:
+          - score4a
+          - score4b
+          - score4c
+      - name: lccenc5
+        base_script: lccenc.py
+        children:
+          - score5a
+          - score5b
+          - score5c
+      - name: lccenc6
+        base_script: lccenc.py
+        children:
+          - score6a
+          - score6b
+          - score6c
+      - name: lccenc7
+        base_script: lccenc.py
+        children:
+          - score7a
+          - score7b
+          - score7c
+      - name: lccenc8
+        base_script: lccenc.py
+        children:
+          - score8a
+          - score8b
+          - score8c
+      - name: lccenc9
+        base_script: lccenc.py
+        children:
+          - score9a
+          - score9b
+          - score9c
+      - name: lccenc10
+        base_script: lccenc.py
+        children:
+          - score10a
+          - score10b
+          - score10c
+      - name: lccenc11
+        base_script: lccenc.py
+        children:
+          - score11a
+          - score11b
+          - score11c
       - name: score1a
         base_script: score.py
         children:
@@ -150,6 +321,114 @@ application:
         base_script: score.py
         children:
           - preagg2
+      - name: score3a
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score3b
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score3c
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score4a
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score4b
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score4c
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score5a
+        base_script: score.py
+        children:
+          - preagg5
+      - name: score5b
+        base_script: score.py
+        children:
+          - preagg5
+      - name: score5c
+        base_script: score.py
+        children:
+          - preagg5
+      - name: score6a
+        base_script: score.py
+        children:
+          - preagg6
+      - name: score6b
+        base_script: score.py
+        children:
+          - preagg6
+      - name: score6c
+        base_script: score.py
+        children:
+          - preagg6
+      - name: score7a
+        base_script: score.py
+        children:
+          - preagg7
+      - name: score7b
+        base_script: score.py
+        children:
+          - preagg7
+      - name: score7c
+        base_script: score.py
+        children:
+          - preagg7
+      - name: score8a
+        base_script: score.py
+        children:
+          - preagg8
+      - name: score8b
+        base_script: score.py
+        children:
+          - preagg8
+      - name: score8c
+        base_script: score.py
+        children:
+          - preagg8
+      - name: score9a
+        base_script: score.py
+        children:
+          - preagg9
+      - name: score9b
+        base_script: score.py
+        children:
+          - preagg9
+      - name: score9c
+        base_script: score.py
+        children:
+          - preagg9
+      - name: score10a
+        base_script: score.py
+        children:
+          - preagg10
+      - name: score10b
+        base_script: score.py
+        children:
+          - preagg10
+      - name: score10c
+        base_script: score.py
+        children:
+          - preagg10
+      - name: score11a
+        base_script: score.py
+        children:
+          - preagg11
+      - name: score11b
+        base_script: score.py
+        children:
+          - preagg11
+      - name: score11c
+        base_script: score.py
+        children:
+          - preagg11
       - name: preagg1
         base_script: preagg.py
         children:
@@ -158,11 +437,83 @@ application:
         base_script: preagg.py
         children:
           - lccdec2
+      - name: preagg3
+        base_script: preagg.py
+        children:
+          - lccdec3
+      - name: preagg4
+        base_script: preagg.py
+        children:
+          - lccdec4
+      - name: preagg5
+        base_script: preagg.py
+        children:
+          - lccdec5
+      - name: preagg6
+        base_script: preagg.py
+        children:
+          - lccdec6
+      - name: preagg7
+        base_script: preagg.py
+        children:
+          - lccdec7
+      - name: preagg8
+        base_script: preagg.py
+        children:
+          - lccdec8
+      - name: preagg9
+        base_script: preagg.py
+        children:
+          - lccdec9
+      - name: preagg10
+        base_script: preagg.py
+        children:
+          - lccdec10
+      - name: preagg11
+        base_script: preagg.py
+        children:
+          - lccdec11
       - name: lccdec1
         base_script: lccdec.py
         children:
           - home
       - name: lccdec2
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec3
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec4
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec5
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec6
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec7
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec8
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec9
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec10
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec11
         base_script: lccdec.py
         children:
           - home

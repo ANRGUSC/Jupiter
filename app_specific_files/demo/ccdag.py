@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # encoding: utf-8
-JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini' #docker
-#JUPITER_CONFIG_INI_PATH = '../../jupiter_config.ini' # local
-CODING_PART1 = 0
-RESNETS_THRESHOLD = 1 #1 (non-coding) or 3 (coding)
+#JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini' #docker
+JUPITER_CONFIG_INI_PATH = '../../jupiter_config.ini' # local
+CODING_PART1 = 1
+RESNETS_THRESHOLD = 3 #1 (non-coding) or 3 (coding)
 
 CODING_PART2 = 1
 
