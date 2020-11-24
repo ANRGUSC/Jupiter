@@ -78,7 +78,7 @@ store_class_tasks_dict[276] = "storeclass20"
 classids = np.arange(0,len(ccdag.classlist),1)
 classmap = dict(zip(ccdag.classlist, classids))
 
-store_list = ["storeclass%d"%(d) for d in range(1,20)]
+store_list = ["storeclass%d"%(d) for d in range(1,ccdag.NUM_CLASS)]
 
 
 def transfer_data_scp(ID,user,pword,source, destination):
