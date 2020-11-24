@@ -3,7 +3,8 @@ FROM ubuntu:18.04
 
 RUN apt-get -yqq update
 RUN apt-get -yqq install python3-pip python3-dev libssl-dev libffi-dev
-RUN apt-get install -yqq openssh-client openssh-server wget net-tools sshpass mongodb libgl1-mesa-glx
+RUN apt-get -yqq update
+RUN apt-get install -yqq openssh-client openssh-server wget net-tools sshpass mongodb libgl1-mesa-glx rsyslog
 
 # Authentication
 RUN echo 'root:PASSWORD' | chpasswd

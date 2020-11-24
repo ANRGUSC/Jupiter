@@ -58,10 +58,13 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
                 "unix_time": time.time(),
             }
             log.info(f"runtime_stat:{json.dumps(runtime_stat)}")
-            this_task, dst_task, base_fname = event.name.split("_", maxsplit=3)
+            
 
             try:
+                this_task, dst_task, base_fname = event.name.split("_", maxsplit=3)
+                logging.debug(dst_task)
                 ip = transfer.circe_lookup_ip(dst_task)
+                logging.debug(ip)
 
                 # send output to destination task
                 transfer.transfer_data_scp(ip, self.ssh_port, USERNAME, PASSWORD,

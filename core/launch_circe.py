@@ -219,7 +219,6 @@ def launch_circe(task_mapping):
         log.debug("CIRCE dag worker pods still deploying, waiting...")
         time.sleep(30)
 
-
     # *** Create Non-DAG Task Deployments ***
     for nondag_task in app_config.get_nondag_tasks():
         pod_name = app_config.app_name + '-' + nondag_task['name']

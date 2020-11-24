@@ -10,7 +10,7 @@ import time
 import json
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 
 # Set printoptions
 torch.set_printoptions(linewidth=1320, precision=5, profile='long')
@@ -26,6 +26,17 @@ def retrieve_globalinfo(circe_nondag_task_to_ip):
     except Exception as e:
         log.info('Can not retrieve global information. Possibly running on EP!')
         return -1
+
+def retrieve_storeclass_info(circe_dag_task_to_ip, storeclass):
+    try:
+        items = circe_dag_task_to_ip.split(' ')
+        for item in items:
+            name, ip = item.split(':')
+            if name == storeclass:  
+                return ip
+    except Exception as e:
+        log.info('Can not retrieve storeclass information!')
+        return -1  
         
 def init_seeds(seed=0):
     random.seed(seed)

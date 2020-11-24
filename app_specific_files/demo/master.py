@@ -23,7 +23,7 @@ from ccdag_utils import *
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 
 try:
     # successful if running in container
@@ -47,8 +47,10 @@ app_config = app_config_parser.AppConfig(APP_DIR)
 app = Flask(__name__)
 config = configparser.ConfigParser()
 config.read(ccdag.JUPITER_CONFIG_INI_PATH)
+ssh_svc_port, _ = config['PORT_MAPPINGS']['SSH'].split(':')
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
+
 
 global all_nodes, all_nodes_ips, map_nodes_ip, master_node_port
 store_class_tasks_dict = {}
@@ -76,7 +78,7 @@ store_class_tasks_dict[276] = "storeclass20"
 classids = np.arange(0,len(ccdag.classlist),1)
 classmap = dict(zip(ccdag.classlist, classids))
 
-store_list = ["storeclass%d" for d in range(1,20)]
+store_list = ["storeclass%d"%(d) for d in range(1,20)]
 
 
 def transfer_data_scp(ID,user,pword,source, destination):
@@ -93,25 +95,23 @@ def transfer_data_scp(ID,user,pword,source, destination):
     #the child nodes.
     retry = 0
     ts = -1
+    num_retries = 30
+    print('Transfering the image to the storeclass')
+    nodeIP = retrieve_storeclass_info(os.environ['CIRCE_TASK_TO_IP'], ID)
     while retry < num_retries:
         try:
-            # logging.debug(map_nodes_ip)
-            nodeIP = map_nodes_ip[ID]
-            # logging.debug(nodeIP)
-            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
-            # logging.debug(cmd)
+            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_svc_port, source, user, nodeIP, destination)
+            print(cmd)
             os.system(cmd)
-            logging.debug('data transfer complete\n')
+            log.debug('data transfer complete\n')
             break
         except Exception as e:
-            logging.debug('SSH Connection refused or File transfer failed, will retry in 2 seconds')
-            logging.debug(e)
+            log.debug('SSH Connection refused or File transfer failed, will retry in 2 seconds')
+            log.debug(e)
             time.sleep(2)
             retry += 1
     if retry == num_retries:
-        s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name,transfer_type,source,ts)
-        runtime_sender_log.write(s)
-        runtime_sender_log.flush()
+        print('Can not send the file to the storeclass')
 
 def get_job_id():
     hdr = {
@@ -159,14 +159,14 @@ def get_enough_resnet_preds(job_id, global_info_ip_port):
             'Authorization': None #not using HTTP secure
                                     }
     try:
-        logging.debug('get enough resnet predictions from the decoder')
+        log.debug('get enough resnet predictions from the decoder')
         url = "http://" + global_info_ip_port + "/post-enough-resnet-preds"
         params = {"job_id": job_id}
         response = requests.post(url, headers = hdr, data = json.dumps(params))
         ret_val = response.json()
-        logging.debug(ret_val)
+        log.debug(ret_val)
     except Exception as e:
-        logging.debug("Get enough resnet predictions FAILED!!! - possibly running on the execution profiler")
+        log.debug("Get enough resnet predictions FAILED!!! - possibly running on the execution profiler")
         #logging.debug(e)
         ret_val = True
     return ret_val
@@ -186,36 +186,29 @@ def get_and_send_missing_images(pathin):
         # request job_id
         response = requests.post(url, headers = hdr, data = json.dumps(payload))
         missing_images_dict = response.json()
+        log.debug('Get and send missing images')
+        log.debug(missing_images_dict)
     except Exception as e:
-        logging.debug('Exception during post-get-images-master')
-        logging.debug(e)
+        log.debug('Exception during post-get-images-master')
+        log.debug(e)
         missing_images_dict = collections.defaultdict(list)
     # Process and send requests out
     ### Reusing the input files to the master node. NOT creating a local copy of input files.
     print('Receive missing from decoder task:')
-    logging.debug(missing_images_dict)
     for image_file, _class in missing_images_dict.items():
-        logging.debug(image_file)
-        file_name_wo_jobid = image_file.split("_")[1]
-        print(image_file)
-        print(file_name_wo_jobid)
-        source_path = os.path.join(pathin, file_name_wo_jobid)
-        print(source_path)
-        file_name = 'home_master_' + image_file
-        print(file_name)
-        logging.debug('Transfer the file')
-        destination_path = os.path.join('/jupiter/input',file_name)
-        print(destination_path)
+        file_name= image_file.split('/')[-1].split('_')[-1]
+        log.debug('Transfer the file')        
         try:
             next_store_class = store_class_tasks_dict[int(_class)]
-            logging.debug(next_store_class)
-            if next_store_class in store_clist:
+            new_file = 'home_' + next_store_class+'_'+file_name
+            destination_path = os.path.join('/jupiter/circe_input',new_file)
+            if next_store_class in store_list:
                 print('Transfer image directly from master node')
-                transfer_data_scp(next_store_class,username,password,source_path, destination_path)
+                transfer_data_scp(next_store_class,'root','PASSWORD',image_file, destination_path)
             else:
                 print("Next store class is outside the list of current store classes")
         except Exception as e:
-            logging.debug('The predicted item is not available in the stored class')
+            log.debug('The predicted item is not available in the stored class')
     return "ok"
 #KRishna
 
@@ -288,12 +281,10 @@ def task(q, pathin, pathout, task_name):
             single_spatial = 224
             single_spatial_full = 256
 
-            logging.debug('Input list')
-            logging.debug(src_list)
             # get job id for this requests
             job_id = get_job_id()
-            logging.debug("got job id")
-            logging.debug(job_id)
+            log.debug("got job id")
+            log.debug(job_id)
             collage_file = create_collage(src_list, collage_spatial, single_spatial, single_spatial_full, w)
             collage_file_split = collage_file.split(".JPEG")[0]
             classname = [x.split('.')[0].split('img')[1] for x in base_list]
@@ -331,7 +322,8 @@ def task(q, pathin, pathout, task_name):
                     if ccdag.RESNETS_THRESHOLD > 1: # Coding configuration
                         while slept < ccdag.MASTER_TO_RESNET_TIME:
                             ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
-                            log.debug("get_enough_resnet_preds fn. return value is: ", ret_val)
+                            log.debug("get_enough_resnet_preds fn. return value is: ")
+                            log.debug(ret_val)
                             if ret_val:
                                 break
                             time.sleep(ccdag.MASTER_POLL_INTERVAL)

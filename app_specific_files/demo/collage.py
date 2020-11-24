@@ -8,11 +8,12 @@ import glob
 import time
 import json
 from ccdag_utils import *
+import requests
 
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
-log.setLevel(logging.INFO)
+log.setLevel(logging.DEBUG)
 
 
 try:
@@ -138,17 +139,17 @@ def send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port):
                 'Content-Type': 'application/json',
                 'Authorization': None #not using HTTP secure
                                         }
-        logging.debug('Send prediction to the decoder')
+        log.debug('Send prediction to the decoder')
         url = "http://" + global_info_ip_port + "/post-predictions-collage"
-        logging.debug(url)
+        log.debug(url)
         params = {"job_id": job_id, 'msg': final_preds}
         response = requests.post(url, headers = hdr, data = json.dumps(params))
-        logging.debug(response)
+        log.debug(response)
         ret_job_id = response.json()
-        logging.debug(ret_job_id)
+        log.debug(ret_job_id)
     except Exception as e:
-        logging.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
-        logging.debug(e)
+        log.debug("Sending my prediction info to flask server on decoder FAILED!!! - possibly running on the execution profiler")
+        log.debug(e)
         return "not ok"
     return "ok"
 
@@ -169,7 +170,7 @@ def task(q, pathin, pathout, task_name):
             # Once a file is copied to the `pathout` folder, CIRCE will inspect the
             # filename and pass the file to the next task.
             src = os.path.join(pathin, input_file)
-            print(src)
+            log.debug(src)
             # COLLAGE CODE
             img_size=416
             w = 3
@@ -181,12 +182,14 @@ def task(q, pathin, pathout, task_name):
             net_config_path = os.path.join(os.path.dirname(__file__),"yolov3-tiny.cfg")
             model = Darknet(net_config_path, img_size)
             weights_file_path = os.path.join(os.path.dirname(__file__),"best.pt")
+            log.debug(weights_file_path)
             checkpoint = torch.load(weights_file_path, map_location="cpu")
             model.load_state_dict(checkpoint['model'])
             del checkpoint
             model.to(device).eval()
             classes_list = np.load(os.path.join(os.path.dirname(__file__),"classes_list_103_classes.npy"))
             classes_list = np.sort(classes_list)
+            log.debug(classes_list)
             ### Load collage image
             composed = transforms.Compose([
                        transforms.ToTensor()])
@@ -200,13 +203,17 @@ def task(q, pathin, pathout, task_name):
             pred = model(collage_tensor)
             ### Process predictions to get a list of final predictions
             final_preds = process_collage(pred, nms_thres, conf_thres, classes_list, w, single_spatial)
+            log.debug(final_preds)
         ### Write predictions to a file and send it to decoder task's folder
             job_id = int(input_file.split("jobid")[1])
+            log.debug(job_id)
             try:
                 if 'CIRCE_NONDAG_TASK_TO_IP' in os.environ:
                     global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
+                    log.debug(global_info_ip)
                     global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
                     if ccdag.CODING_PART1:
+                        log.debug('send prediction to global info server')
                         send_prediction_to_decoder_task(job_id, final_preds, global_info_ip_port)
             except Exception as e:
                 log.warning('Possibly running on the execution profiler: ', e)
@@ -214,10 +221,10 @@ def task(q, pathin, pathout, task_name):
             # read the generate output
             # based on that determine sleep and number of bytes in output file
 
-            end = time.time()
-
-
             show_run_stats(task_name,'queue_end_process',input_file)
+            out_name = pathout + "collage.txt"
+            with open(out_name, "w") as out_file:
+                out_file.write("dummy output file")
             #show_run_stats(this_task,'queue_end_process',input_file,src_task)
 
             q.task_done()

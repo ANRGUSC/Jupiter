@@ -50,7 +50,7 @@ app = Flask('Global_Server')
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 logg = logging.getLogger(__name__)
-logg.setLevel(logging.INFO)
+logg.setLevel(logging.DEBUG)
 
 
 
@@ -81,7 +81,9 @@ class collageJobs(object):
             self.job_resnet_preds_dict[job_id][task_num] = pred
             return job_id
     def put_collage_preds(self, job_id, preds):
+        print('Adding job collage prediction')
         self.job_collage_preds_dict[job_id] = preds
+        print(self.job_collage_preds_dict)
     def enough_resnet_preds(self, job_id):
         if self.job_resnet_preds_dict[job_id].count(-1) >= ccdag.RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
             print("current count {}, resnets_threshold {}".format(self.job_resnet_preds_dict[job_id].count(-1), ccdag.RESNETS_THRESHOLD))
@@ -111,6 +113,8 @@ class collageJobs(object):
                         missing.append(idx)
             print("missing tasks nums for jobid %s are %s" %(job_id, missing))
             if len(missing) > 0:
+                print("Job collage prediction")
+                print(self.job_collage_preds_dict)
                 if job_id in self.job_collage_preds_dict:# if collage predictions found
                     for idx in missing:
                         #logging.debug(task)
@@ -168,6 +172,7 @@ def request_collage_prediction():
     job_id = recv['job_id']
     print('Receive the prediction from collage for job id', job_id)
     final_preds = recv['msg']
+    print(final_preds)
     collagejobs.put_collage_preds(job_id, final_preds)
     response = job_id
     #print("posted predictions from collage: ", job_id, final_preds)
@@ -199,7 +204,8 @@ def request_post_get_images():
     #print(collagejobs.job_resnet_preds_dict)
     #print(collagejobs.job_collage_preds_dict)
     response = collagejobs.get_missing_dict()
-    print("missing files dict: ", response)
+    print("missing files dict: ")
+    print(response)
     #print("post-get-images: after processing")
     #print(collagejobs.job_files_dict)
     #print(collagejobs.job_resnet_preds_dict)

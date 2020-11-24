@@ -19,7 +19,7 @@ def circe_lookup_ip(task_name):
         if task == task_name:
             return ip
 
-    raise CIRCEIpNotFoundError("Unable to find IP of DAG task")
+    log.debug("Unable to find IP of DAG task")
 
 
 def circe_lookup_nondag_ip(task_name):
@@ -30,7 +30,7 @@ def circe_lookup_nondag_ip(task_name):
         if task == task_name:
             return ip
 
-    raise CIRCEIpNotFoundError("Unable to find IP of non-DAG task")
+    log.debug("Unable to find IP of non-DAG task")
 
 
 def transfer_data_scp(ip, port, user, pw, src, dst):
