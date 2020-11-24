@@ -22,6 +22,8 @@
 	+ '/jupiter/build/jupiter_config.ini' : docker option
 	+ '../../jupiter_config.ini' : local option
 
+* Manually modify resnet.py to change number of branches accordingly
+
 - CODING_PART1: 1 to set coding option for PART1, 0 otherwise
 - RESNETS_THRESHOLD: >=2 to set coding option for PART1 to 0, 1 otherwise (must combined with CODING_PART1). If RESNETS_THRESHOLD is 4, then at least (9 - 4) + 1 = 6 Resnets should respond to the flask server. Flask server will wait for at least 6 resnet responses. So, if RESNETS_THRESHOLD = 6, then at least 4 responses.
 
