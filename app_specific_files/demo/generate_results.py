@@ -327,6 +327,7 @@ def calculate_percentage(rt_datasource,rt_home,rt_exit_node):
                 sum_stage1 = sum_stage1+1
 
     print('---- Number of processed images: ----')
+    print(TEST_INDICATORS)
     print(sum_input)
     print(sum_stage1)
     print(sum_stage2)
