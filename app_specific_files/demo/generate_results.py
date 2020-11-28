@@ -110,9 +110,9 @@ def process_logs():
                     line = line.strip()
                     if re.search('runtime',line):
                         json_expr = '{'+line.split('{')[1]
-                        runtime_dict =json.loads(json_expr)
-                        from_task,cur_task,fname = runtime_dict['filename'].split("_", maxsplit=3)
+                        runtime_dict =json.loads(json_expr)  
                         try:
+                            from_task,cur_task,fname = runtime_dict['filename'].split("_", maxsplit=3)
                             if task_name.startswith('datasource') and runtime_dict['event']=='new_output_file':
                                 img_name = fname.split('.')[0]
                                 rt_datasource[(task_name,'NA',img_name)] = runtime_dict['unix_time']
