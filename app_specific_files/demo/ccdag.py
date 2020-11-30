@@ -18,5 +18,5 @@ STRAGGLER_THRESHOLD = 0
 STREAM_INTERVAL = 180
 
 NUM_IMAGES = 50
-NUM_CLASS =19
+NUM_CLASS =11
 classlist = ['fireengine', 'schoolbus', 'whitewolf',  'tiger', 'kitfox', 'persiancat', 'leopard',  'mongoose', 'americanblackbear','zebra',  'hippopotamus',  'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter','ox','lion','hog','hyena']
