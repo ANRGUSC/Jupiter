@@ -83,6 +83,7 @@ class HEFT:
         self.processors = [Processor(n) for n in range(self.num_processor)]
         self.start_task_num, self.end_task_num = 0, self.num_task - 1
         self.dup_tasks = []
+        self.task_mapper = ""
         self.critical_pre_task_num = -1
 
         for i in range(self.num_task):
@@ -130,7 +131,11 @@ class HEFT:
         if(res <= 0):
             log.error("Aquired negative communication cost, please redeploy DRUPE, HEFT will terminate !!!")
             # exit()
-        return res / (self.num_processor ** 2 - self.num_processor)
+
+        if self.task_mapper = "heft_dup_no_comm_cost":
+            return 0
+        else:
+            return res / (self.num_processor ** 2 - self.num_processor)
 
     def cal_up_rank(self, task):
         """
@@ -308,6 +313,8 @@ class HEFT:
             self.processors[processor_num].time_line.sort(key=functools.cmp_to_key(lambda x, y: cmp(x.start, y.start)))
 
     def run(self, task_mapper):
+        self.task_mapper = task_mapper
+
         for task in self.tasks:
             if task == self.tasks[0]:
                 w = min(task.comp_cost)
@@ -318,7 +325,8 @@ class HEFT:
                 self.processors[p].time_line.append(Duration(task.number, 0, w))
             else:
                 aft = 9999
-                if task_mapper == "heft":
+                if (task_mapper == "heft" or task_mapper == "heft_duplicate" or
+                    "heft_dup_no_comm_cost"):
                     for processor in self.processors:
                         est = self.cal_est(task, processor)
                         log.info('Processor number and task number: %d - %d', processor.number, task.number)
@@ -345,10 +353,9 @@ class HEFT:
                 self.processors[p].time_line.append(Duration(task.number, task.ast, task.aft))
                 self.processors[p].time_line.sort(key=functools.cmp_to_key(lambda x, y: cmp(x.start, y.start)))
 
-        self.duplicate()
-        self.reschedule()
-
-
+        if task_mapper == "heft_duplicate" or task_mapper == "heft_dup_no_comm_cost":
+            self.duplicate()
+            self.reschedule()
 
     def display_result(self):
         """Display scheduling result to console

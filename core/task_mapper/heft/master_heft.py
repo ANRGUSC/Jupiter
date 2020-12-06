@@ -5,7 +5,7 @@ __author__ = "Quynh Nguyen, Pradipta Ghosh and Bhaskar Krishnamachari"
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
-import heft_dup
+import heft
 import os
 import time
 from flask import Flask
@@ -70,8 +70,8 @@ if __name__ == '__main__':
     while True:
         if os.path.isfile(TGFF_FILE):
             log.info('File TGFF was generated!!!')
-            heft_scheduler = heft_dup.HEFT(TGFF_FILE, worker_names)
-            heft_scheduler.run(task_mapper="heft")
+            heft_scheduler = heft.HEFT(TGFF_FILE, worker_names)
+            heft_scheduler.run(task_mapper=os.environ["TASK_MAPPER"])
             heft_scheduler.output_file(output)
             log.info(f'HEFT output file: {output}')
             task_mapping = heft_scheduler.output_assignments()
