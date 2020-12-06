@@ -503,7 +503,7 @@ def plot_task_timings(task_info, file_prefix):
         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
 
 if __name__ == '__main__':
-    # retrieve_logs('circe')
+    #retrieve_logs('circe')
     # retrieve_logs('profiler')
     # retrieve_logs('exec')
     # retrieve_logs('mapper')

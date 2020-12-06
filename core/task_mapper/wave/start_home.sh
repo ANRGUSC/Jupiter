@@ -5,5 +5,5 @@
 # all the print statements.
 # 
 
-echo 'Starting worker node'
-python -u /child_appointment.py
+echo 'Starting home or master node'
+python -u /master_greedy.py

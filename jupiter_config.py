@@ -208,10 +208,10 @@ def set_globals():
     global APP_PATH, APP_NAME, APP_OPTION
 
 
-    HOME_CHILD                = 'task0'
-    APP_PATH                  = HERE  + 'app_specific_files/example/'
-    APP_NAME                  = 'app_specific_files/example'
-    APP_OPTION                = 'example'
+    HOME_CHILD                = 'master'
+    APP_PATH                  = HERE  + 'app_specific_files/demo/'
+    APP_NAME                  = 'app_specific_files/demo'
+    APP_OPTION                = 'demo'
 
 
     """pricing CIRCE home and worker images"""

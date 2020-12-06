@@ -26,20 +26,18 @@ from flask import Flask, request
 import requests
 import logging
 
+logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
+log = logging.getLogger(__name__)
+log.setLevel(logging.DEBUG)
+
+"""Paths specific to container (see Dockerfile)"""
+JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini'
+WAVE_FILES_DIR = '/jupiter/'
+
 
 
 
 app = Flask(__name__)
-
-def demo_help(server,port,topic,msg):
-    logging.debug('Sending demo')
-    username = 'anrgusc'
-    password = 'anrgusc'
-    client = mqtt.Client()
-    client.username_pw_set(username,password)
-    client.connect(server, port,300)
-    client.publish(topic, msg,qos=1)
-    client.disconnect()
 
 def read_file(file_name):
     """
@@ -66,10 +64,9 @@ def prepare_global():
     Prepare global information (Node info, relations between tasks, initial task)
     """
 
-    INI_PATH = '/jupiter_config.ini'
-
-    config = configparser.ConfigParser()
-    config.read(INI_PATH)
+    # logging.debug(JUPITER_CONFIG_INI_PATH)
+    # config = configparser.ConfigParser()
+    # config.read(JUPITER_CONFIG_INI_PATH)
 
     global FLASK_PORT, FLASK_SVC, MONGO_SVC, nodes, node_count, master_host
 
@@ -101,82 +98,75 @@ def prepare_global():
 
     debug = True
 
-    global control_relation, children, parents, init_tasks, local_children, local_mapping, local_responsibility
+    # global control_relation, children, parents, init_tasks, local_children, local_mapping, local_responsibility
 
-    # control relations between tasks
-    control_relation = {}
-    # task's children tasks
-    children = {}
-    # task's parent tasks
-    parents = {}
-    # running tasks in node in at the beginning
-    init_tasks = {}
+    # # control relations between tasks
+    # control_relation = {}
+    # # task's children tasks
+    # children = {}
+    # # task's parent tasks
+    # parents = {}
+    # # running tasks in node in at the beginning
+    # init_tasks = {}
 
-    local_children = "local/local_children.txt"
-    local_mapping = "local/local_mapping.txt"
-    local_responsibility = "local/task_responsibility"
+    # local_children = "local/local_children.txt"
+    # local_mapping = "local/local_mapping.txt"
+    # local_responsibility = "local/task_responsibility"
 
-    global lock, assigned_tasks, application, MAX_TASK_NUMBER,assignments, manager
-    manager = Manager()
-    assignments = manager.dict()
-    assigned_tasks = manager.dict()
+    # global lock, assigned_tasks, application, MAX_TASK_NUMBER,assignments, manager
+    # manager = Manager()
+    # assignments = manager.dict()
+    # assigned_tasks = manager.dict()
 
-    application = read_file("DAG/DAG_application.txt")
-    MAX_TASK_NUMBER = int(application[0])  # Total number of tasks in the DAG
-    del application[0]
+    # application = read_file("DAG/DAG_application.txt")
+    # MAX_TASK_NUMBER = int(application[0])  # Total number of tasks in the DAG
+    # del application[0]
 
-    assignments = {}
+    # assignments = {}
 
-    global BOKEH_SERVER, BOKEH_PORT, BOKEH, app_name,app_option
-    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
-    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
-    app_name = os.environ['APP_NAME']
-    app_option = os.environ['APP_OPTION']
+    # global my_profiler_ip, network_map, PROFILER
+    # PROFILER = int(config['CONFIG']['PROFILER'])
+    # my_profiler_ip = os.environ['PROFILER']
 
-    global my_profiler_ip, network_map, PROFILER
-    PROFILER = int(config['CONFIG']['PROFILER'])
-    my_profiler_ip = os.environ['PROFILER']
+    # tmp_nodes_for_convert={}
+    # network_map = {}
 
-    tmp_nodes_for_convert={}
-    network_map = {}
+    # #Get nodes to self_ip mapping
+    # for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
+    #     if name == "":
+    #         continue
+    #     nodes[name] = node_ip + ":" + str(FLASK_SVC)
+    #     node_count += 1
 
-    #Get nodes to self_ip mapping
-    for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_NODES_IPS'].split(":")):
-        if name == "":
-            continue
-        nodes[name] = node_ip + ":" + str(FLASK_SVC)
-        node_count += 1
+    # #Get nodes to profiler_ip mapping
+    # for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
+    #     if name == "":
+    #         continue
+    #     #First get mapping like {node: profiler_ip}, and later convert it to {profiler_ip: node}
+    #     tmp_nodes_for_convert[name] = node_ip
 
-    #Get nodes to profiler_ip mapping
-    for name, node_ip in zip(os.environ['ALL_NODES'].split(":"), os.environ['ALL_PROFILERS'].split(":")):
-        if name == "":
-            continue
-        #First get mapping like {node: profiler_ip}, and later convert it to {profiler_ip: node}
-        tmp_nodes_for_convert[name] = node_ip
+    # # network_map is a dict that contains node names and profiler ips mapping
+    # network_map = {v: k for k, v in tmp_nodes_for_convert.items()}
 
-    # network_map is a dict that contains node names and profiler ips mapping
-    network_map = {v: k for k, v in tmp_nodes_for_convert.items()}
-
-    global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
+    # global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
 
 
-    threshold = 15
-    resource_data = {}
-    is_resource_data_ready = False
-    network_profile_data = {}
-    is_network_profile_data_ready = False
+    # threshold = 15
+    # resource_data = {}
+    # is_resource_data_ready = False
+    # network_profile_data = {}
+    # is_network_profile_data_ready = False
 
-    global first_task
-    first_task = os.environ['CHILD_NODES']
+    # global first_task
+    # first_task = os.environ['CHILD_NODES']
 
-    global home_profiler_ip
-    home_profiler = os.environ['DRUPE_HOME_IP'].split(' ')
-    home_profiler_ip = [x.split(':')[1] for x in home_profiler]
+    # global home_profiler_ip
+    # home_profiler = os.environ['DRUPE_HOME_IP'].split(' ')
+    # home_profiler_ip = [x.split(':')[1] for x in home_profiler]
 
-    global profiler_ips
-    profiler_ips = os.environ['ALL_PROFILERS'].split(':')
-    profiler_ips = profiler_ips[1:]
+    # global profiler_ips
+    # profiler_ips = os.environ['ALL_PROFILERS'].split(':')
+    # profiler_ips = profiler_ips[1:]
 
 
 
@@ -264,7 +254,6 @@ def assign_task_to_remote(assigned_node, task_name):
         res = res.decode('utf-8')
         if BOKEH==3:
             msg = 'msgoverhead greedywavehome assignfirst 1 \n'
-            demo_help(BOKEH_SERVER,BOKEH_PORT,"msgoverhead_home",msg)
     except Exception as e:
         logging.debug(e)
         return "not ok"
@@ -303,10 +292,6 @@ def monitor_task_status():
             end_time = time.time()
             deploy_time = end_time - starting_time
             logging.debug('Time to finish WAVE mapping '+ str(deploy_time))
-            if BOKEH==3:
-                topic = 'mappinglatency_%s'%(app_option)
-                msg = 'mappinglatency greedywave %s %f \n' %(app_name,deploy_time)
-                demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
             break
         time.sleep(5)
 
@@ -357,18 +342,6 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     global is_network_profile_data_ready
     is_network_profile_data_ready = True
 
-    if BOKEH==3:
-        topic = 'msgoverhead_home'
-        msg = 'msgoverhead greedywave%s networkdata %d \n' %('home',len(myneighbors))
-        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
-
-def profilers_mapping_decorator(f):
-    """General Mapping decorator function
-    """
-    @wraps(f)
-    def profiler_mapping(*args, **kwargs):
-      return f(*args, **kwargs)
-    return profiler_mapping
 
 def get_resource_data_drupe(MONGO_SVC_PORT):
     """Collect the resource profile from local MongoDB peer
@@ -387,38 +360,6 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
     global is_resource_data_ready
     is_resource_data_ready = True
 
-    if BOKEH==3:
-        topic = 'msgoverhead_home'
-        msg = 'msgoverhead greedywave%s resourcedata %d \n' %('home',len(profiler_ips))
-        demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
-
-
-
-def get_network_data_mapping():
-    """Mapping the chosen TA2 module (network monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
-
-    Args:
-        PROFILER (str): specified from ``jupiter_config.ini``
-
-    Returns:
-        TYPE: corresponding network function
-    """
-    if PROFILER==0:
-        return profilers_mapping_decorator(get_network_data_drupe)
-    return profilers_mapping_decorator(get_network_data_drupe)
-
-def get_resource_data_mapping():
-    """Mapping the chosen TA2 module (resource monitor) based on ``jupiter_config.PROFILER`` in ``jupiter_config.ini``
-
-    Args:
-        PROFILER (str): specified from ``jupiter_config.ini``
-
-    Returns:
-        TYPE: corresponding resource function
-    """
-    if PROFILER==0:
-        return profilers_mapping_decorator(get_resource_data_drupe)
-    return profilers_mapping_decorator(get_resource_data_drupe)
 
 def get_most_suitable_node(file_size):
     """Calculate network delay + resource delay
@@ -562,38 +503,100 @@ def output(msg):
     if debug:
         logging.debug(msg)
 
-def main():
-    """
-        - Prepare global information
-        - Start the main thread: get inital task information for each node, get parent list of child tasks, Update control relations between tasks in the system
-        - Start thread to watch directory: ``local/task_responsibility``
-        - Start thread to monitor task mapping status
-    """
-    global logging
-    logging.basicConfig(level = logging.DEBUG)
+    
+if __name__ == '__main__':
+    logging.debug(JUPITER_CONFIG_INI_PATH)
+    config = configparser.ConfigParser()
+    config.read(JUPITER_CONFIG_INI_PATH)
 
-    global starting_time
-    logging.debug('Starting to run WAVE mapping')
-    starting_time = time.time()
+    global FLASK_SVC
+    FLASK_SVC    = int(config['PORT']['FLASK_SVC'])
 
-    prepare_global()
+    global control_relation, children, parents, init_tasks, local_children, local_mapping, local_responsibility
+    control_relation = {}# control relations between tasks
+    children = {}# task's children tasks
+    parents = {} # task's parent tasks
+    init_tasks = {}# running tasks in node in at the beginning
+    local_children = "local/local_children.txt"
+    local_mapping = "local/local_mapping.txt"
+    local_responsibility = "local/task_responsibility"
+
+    global lock, assigned_tasks, application, MAX_TASK_NUMBER,assignments, manager,network_map,nodes
+    manager = Manager()
+    assignments = manager.dict()
+    assigned_tasks = manager.dict()
+    assignments = {}
+    network_map = {}
+    tmp_nodes_for_convert={}
+    nodes = {}
+    MAX_TASK_NUMBER = get_num_dag_tasks()
+
+    print(os.environ['WORKER_NODE_NAMES'])
+    print(os.environ['WORKER_NODE_IPS'])
+    print(os.environ['DRUPE_WORKER_IPS'])
+    #Get nodes to self_ip mapping
+    for name, node_ip in zip(os.environ['WORKER_NODE_NAMES'].split(":"), os.environ['WORKER_NODE_IPS'].split(":")):
+        nodes[name] = node_ip + ":" + str(FLASK_SVC)
+    print(nodes)
+
+    #Get nodes to profiler_ip mapping
+    for name, node_ip in zip(os.environ['WORKER_NODE_NAMES'].split(":"), os.environ['DRUPE_WORKER_IPS'].split(":")):
+        tmp_nodes_for_convert[name] = node_ip
+    print(tmp_nodes_for_convert)
+
+    # network_map is a dict that contains node names and profiler ips mapping
+    network_map = {v: k for k, v in tmp_nodes_for_convert.items()}
+
+    
 
 
+
+
+    global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
+    threshold = 15
+    resource_data = {}
+    is_resource_data_ready = False
+    network_profile_data = {}
+    is_network_profile_data_ready = False
+    global first_task
+    first_task = os.environ['HOME_CHILD']
+
+    global home_profiler_ip,my_profiler_ip
+    my_profiler_ip =os.environ['DRUPE_HOME_IP']
+    home_profiler_ip =os.environ['DRUPE_HOME_IP']
+    print(home_profiler_ip)
+
+    global profiler_ips
+    profiler_ips = os.environ['WORKER_NODE_IPS'].split(':')
+    print(profiler_ips)
+
+    # to contact mongoDB on exec prof and drupe
+    mongo_svc_port, _ = config['PORT_MAPPINGS']['MONGO'].split(':')
+
+    # Get all information of profilers (drupe network prof, exec prof)
+    drupe_worker_ips = os.environ['DRUPE_WORKER_IPS'].split(' ')
+    drupe_worker_ips = [info.split(":") for info in drupe_worker_ips]
+    drupe_worker_names = [info[0] for info in drupe_worker_ips]
+    drupe_pod_ips = [info[1] for info in drupe_worker_ips]
+    worker_map = dict(zip(drupe_pod_ips, drupe_worker_names))
+    num_workers = len(drupe_worker_ips)
+    drupe_home_ip = os.environ['DRUPE_HOME_IP']
+    exec_home_ip = os.environ['EXEC_PROF_HOME_IP']
 
     logging.debug("starting the main thread on port %d", FLASK_PORT)
 
     get_network_data = get_network_data_mapping()
     get_resource_data = get_resource_data_mapping()
 
-    _thread.start_new_thread(get_resource_data, (MONGO_SVC,))
+    _thread.start_new_thread(get_resource_data, (mongo_svc_port,))
 
-    _thread.start_new_thread(get_network_data, (my_profiler_ip, MONGO_SVC,network_map))
+    _thread.start_new_thread(get_network_data, (drupe_home_ip, mongo_svc_port,network_map))
 
     init_task_topology()
     _thread.start_new_thread(init_thread, ())
     _thread.start_new_thread(monitor_task_status, ())
-    app.run(host='0.0.0.0', port=int(FLASK_PORT))
+    
+    while True:
+        time.sleep(120)
 
-if __name__ == '__main__':
-    main()
 

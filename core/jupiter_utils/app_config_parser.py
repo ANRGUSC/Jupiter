@@ -61,6 +61,12 @@ class AppConfig:
     def get_num_nodes(self):
         return len(self.cfg['node_map'])
 
+    def get_num_dag_tasks(self):
+        task_names = []
+        for item in self.cfg['application']['tasks']['dag_tasks']:
+            task_names.append(item['name'])
+        return len(task_names)
+
     def get_num_worker_nodes(self):
         worker_nodes = self.cfg['node_map']
         del worker_nodes['home']
@@ -114,6 +120,24 @@ class AppConfig:
     def get_mapper_tag(self):
         docker_registry = self.cfg['jupiter_config']['docker_registry']
         tag = "{}/mapper_home:{}{}".format(
+            docker_registry,
+            self.app_name,
+            self.tag_extension
+        )
+        return tag
+
+    def get_wave_home_tag(self):
+        docker_registry = self.cfg['jupiter_config']['docker_registry']
+        tag = "{}/mapper_wave_home:{}{}".format(
+            docker_registry,
+            self.app_name,
+            self.tag_extension
+        )
+        return tag
+
+    def get_wave_worker_tag(self):
+        docker_registry = self.cfg['jupiter_config']['docker_registry']
+        tag = "{}/mapper_wave_worker:{}{}".format(
             docker_registry,
             self.app_name,
             self.tag_extension

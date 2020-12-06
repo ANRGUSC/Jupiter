@@ -38,6 +38,28 @@ def build_push_heft(app_config, app_dir):
     )
     os.system("docker push {}".format(tag))
 
+def build_push_wave(app_config, app_dir):
+    # copy all files needed from Jupiter and from the application into a build
+    # folder which will be shipped in the Docker container
+    shutil.rmtree("./task_mapper/wave/build/", ignore_errors=True)  # rm existing build folder
+    os.makedirs("./task_mapper/wave/build", exist_ok=True)
+    shutil.copytree("{}".format(app_dir),
+                    "task_mapper/wave/build/app_specific_files/")
+    shutil.copy("../jupiter_config.ini", "task_mapper/wave/build/")
+    shutil.copytree("./jupiter_utils/",
+                    "task_mapper/wave/build/jupiter_utils/")
+
+    tag = app_config.get_mapper_tag()
+
+    # speed up build using existing image
+    #os.system("docker pull {}".format(tag))
+
+    os.system(
+        "docker build -t {} -f task_mapper/wave/wave.Dockerfile "
+        .format(tag) + "./task_mapper/wave"
+    )
+    os.system("docker push {}".format(tag))
+
 
 if __name__ == '__main__':
     if len(sys.argv) == 2:
@@ -59,6 +81,6 @@ if __name__ == '__main__':
     if app_config.task_mapper() == "heft" or "heft_balanced":
         build_push_heft(app_config, app_dir)
     elif app_config.task_mapper() == "wave":
-        log.error("wave not yet integrated!")
+        build_push_wave(app_config, app_dir)
     else:
         log.error("Unrecognized mapper in app_config.yaml")
