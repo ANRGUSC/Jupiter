@@ -132,7 +132,7 @@ class HEFT:
             log.error("Aquired negative communication cost, please redeploy DRUPE, HEFT will terminate !!!")
             # exit()
 
-        if self.task_mapper = "heft_dup_no_comm_cost":
+        if self.task_mapper == "heft_dup_no_comm_cost":
             return 0
         else:
             return res / (self.num_processor ** 2 - self.num_processor)
