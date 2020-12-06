@@ -118,7 +118,7 @@ def check_workers_running(app_config, namespace):
 
     return result
 
-def launch_heft()
+def launch_heft():
     # Parse app's app_config.yaml
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     namespace = app_config.namespace_prefix() + "-mapper"
@@ -349,6 +349,7 @@ def launch_wave():
     proxy_proc.kill()
 
 if __name__ == '__main__':
+    app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     if (app_config.task_mapper() == "heft" or "heft_duplicate" or
         "heft_balanced" or "heft_dup_no_comm_cost"):
         launch_heft()
