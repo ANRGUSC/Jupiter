@@ -311,7 +311,7 @@ def launch_wave():
             "WORKER_NODE_IPS": all_workers_ips,
             "DRUPE_WORKER_IPS": drupe_worker_names_to_ips(app_config, core_v1_api),
             "HOME_CHILD": jupiter_config.HOME_CHILD,
-            "DRUPE_HOME_IP": drupe_home_ip 
+            "DRUPE_HOME_IP": drupe_home_ip
         }
     )
     resp = k8s_apps_v1.create_namespaced_deployment(
@@ -349,7 +349,8 @@ def launch_wave():
     proxy_proc.kill()
 
 if __name__ == '__main__':
-    if app_config.task_mapper() == "heft" or "heft_balanced":
+    if (app_config.task_mapper() == "heft" or "heft_duplicate" or
+        "heft_balanced" or "heft_dup_no_comm_cost"):
         launch_heft()
     elif app_config.task_mapper() == "wave":
         launch_wave()

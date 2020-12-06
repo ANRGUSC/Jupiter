@@ -25,7 +25,7 @@ RUN pip3 install -r requirements.txt
 RUN mkdir -p /jupiter
 ADD start.sh /jupiter/
 ADD master_heft.py  /jupiter/
-ADD heft_dup.py /jupiter/
+ADD heft.py /jupiter/
 ADD create_input.py /jupiter/
 ADD read_input_heft.py /jupiter/
 ADD write_input_heft.py /jupiter/
