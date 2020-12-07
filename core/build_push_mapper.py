@@ -77,6 +77,7 @@ if __name__ == '__main__':
         exit()
 
     app_config = app_config_parser.AppConfig(app_dir)
+    log.debug(app_config)
 
     if app_config.task_mapper() == "heft" or "heft_balanced":
         log.debug('heft')

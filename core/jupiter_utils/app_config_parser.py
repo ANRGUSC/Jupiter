@@ -169,7 +169,6 @@ class AppConfig:
 
 
     def task_mapper(self):
-        log.debug(self.cfg['jupiter_config']['task_mapper'])
         return self.cfg['jupiter_config']['task_mapper']
 
     def dag_task_map(self):
