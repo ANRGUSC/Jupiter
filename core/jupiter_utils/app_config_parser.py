@@ -5,7 +5,7 @@ import os
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 
 class AppConfig:
@@ -169,7 +169,7 @@ class AppConfig:
 
 
     def task_mapper(self):
-        return self.cfg['jupiter_config']['task_mapper']
+        return self.cfg['jupiter_config']['task_mapper']['name']
 
     def dag_task_map(self):
         """ Creates a task map of the entire DAG. Returns a dictionary of task
