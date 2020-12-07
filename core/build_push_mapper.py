@@ -79,10 +79,10 @@ if __name__ == '__main__':
     app_config = app_config_parser.AppConfig(app_dir)
 
     if app_config.task_mapper() == "heft" or "heft_balanced":
-        logging.debug('heft')
+        log.debug('heft')
         build_push_heft(app_config, app_dir)
     elif app_config.task_mapper() == "wave":
-        logging.debug('wave')
+        log.debug('wave')
         build_push_wave(app_config, app_dir)
     else:
         log.error("Unrecognized mapper in app_config.yaml")
