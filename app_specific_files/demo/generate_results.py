@@ -486,6 +486,7 @@ def plot_task_timings(task_info, file_prefix):
             lccdec_wait_times.append(float(v[1]))
         
     for task in task_and_statistic:
+
         fig = plt.figure()
         plt.plot(eval(task[0]), '.')
         plt.plot(eval(task[1]), 'y+')
@@ -498,6 +499,10 @@ def plot_task_timings(task_info, file_prefix):
             "\nexecution time avg = {}".format(exec_time_avg) +
             "\nwait time avg = {}".format(wait_time_avg)
         )
+        if task[0].startswith('resnet'):
+            plt.ylim(0, 100)
+        elif task[0].startswith('preagg'):
+            plt.ylim(0, 10)
         plt.ylabel("seconds")
         plt.tight_layout()
         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
