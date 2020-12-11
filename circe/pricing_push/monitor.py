@@ -160,6 +160,12 @@ def default_best_node():
                 test = pass_time[item].__call__()
                 if test==True: 
                     task_price_network[item] = float('Inf')
+                print('---------------')
+                print(item)
+                print(task_price_cpu[item])
+                print(task_price_mem[item])
+                print(task_price_network[item])
+                print('===========')
                 task_price_summary[item] = task_price_cpu[item]*w_cpu +  task_price_mem[item]*w_mem + task_price_queue[item]*w_queue + task_price_network[item]*w_net
             
             if task_price_summary:

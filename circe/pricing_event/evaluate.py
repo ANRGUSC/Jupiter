@@ -74,7 +74,6 @@ def evaluate_sequential():
             time.sleep(5)
             file_count_out = len(os.listdir("output/"))
             if file_count_out ==  i:
-                time.sleep(30)
                 break
 
 

@@ -184,56 +184,56 @@ def set_globals():
     """pricing CIRCE home and worker images"""
     global PRICING_HOME_IMAGE, WORKER_CONTROLLER_IMAGE, WORKER_COMPUTE_IMAGE
 
-    PRICING_HOME_IMAGE      = 'docker.io/anrg/%s_circe_home:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
-    WORKER_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_controller:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
-    WORKER_COMPUTE_IMAGE  = 'docker.io/anrg/%s_circe_computing:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
+    PRICING_HOME_IMAGE      = 'quay.io/anrgusc/%s_circe_home:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
+    WORKER_CONTROLLER_IMAGE = 'quay.io/anrgusc/%s_circe_controller:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
+    WORKER_COMPUTE_IMAGE  = 'quay.io/anrgusc/%s_circe_computing:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
 
     global PRICING_HOME_CONTROLLER, PRICING_HOME_COMPUTE
-    PRICING_HOME_CONTROLLER = 'docker.io/anrg/%s_circe_home_controller:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
-    PRICING_HOME_COMPUTE    = 'docker.io/anrg/%s_circe_home_compute:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
+    PRICING_HOME_CONTROLLER = 'quay.io/anrgusc/%s_circe_home_controller:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
+    PRICING_HOME_COMPUTE    = 'quay.io/anrgusc/%s_circe_home_compute:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
 
 
     global NONDAG_CONTROLLER_IMAGE,NONDAG_WORKER_IMAGE # only required for non-DAG tasks (teradetectors and dft)
-    NONDAG_CONTROLLER_IMAGE = 'docker.io/anrg/%s_circe_nondag:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
-    NONDAG_WORKER_IMAGE     = 'docker.io/anrg/%s_circe_nondag_worker:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
+    NONDAG_CONTROLLER_IMAGE = 'quay.io/anrgusc/%s_circe_nondag:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
+    NONDAG_WORKER_IMAGE     = 'quay.io/anrgusc/%s_circe_nondag_worker:%s_%s' %(pricing_option,APP_OPTION,cluster_option)
     
     """CIRCE home and worker images for execution profiler"""
     global HOME_IMAGE, WORKER_IMAGE, STREAM_IMAGE
 
-    HOME_IMAGE              = 'docker.io/anrg/circe_home:%s_%s'%(APP_OPTION,cluster_option)
-    WORKER_IMAGE            = 'docker.io/anrg/circe_worker:%s_%s'%(APP_OPTION,cluster_option)
-    STREAM_IMAGE              = 'docker.io/anrg/stream_home:%s_%s'%(APP_OPTION,cluster_option)
+    HOME_IMAGE              = 'quay.io/anrgusc/circe_home:%s_%s'%(APP_OPTION,cluster_option)
+    WORKER_IMAGE            = 'quay.io/anrgusc/circe_worker:%s_%s'%(APP_OPTION,cluster_option)
+    STREAM_IMAGE              = 'quay.io/anrgusc/stream_home:%s_%s'%(APP_OPTION,cluster_option)
 
     """DRUPE home and worker images"""
     global PROFILER_HOME_IMAGE, PROFILER_WORKER_IMAGE
     
-    PROFILER_HOME_IMAGE     = 'docker.io/anrg/%s_profiler_home:coded_%s'%(profiler_option,cluster_option)
-    PROFILER_WORKER_IMAGE   = 'docker.io/anrg/%s_profiler_worker:coded_%s'%(profiler_option,cluster_option)
+    PROFILER_HOME_IMAGE     = 'quay.io/anrgusc/%s_profiler_home:coded_%s'%(profiler_option,cluster_option)
+    PROFILER_WORKER_IMAGE   = 'quay.io/anrgusc/%s_profiler_worker:coded_%s'%(profiler_option,cluster_option)
 
     """WAVE home and worker images"""
     global WAVE_HOME_IMAGE, WAVE_WORKER_IMAGE
 
     #%s: random, v1: greedy
 
-    WAVE_HOME_IMAGE         = 'docker.io/anrg/%s_%s_wave_home:%s_%s' %(wave_option,profiler_option,APP_OPTION,cluster_option)
-    WAVE_WORKER_IMAGE       = 'docker.io/anrg/%s_%s_wave_worker:%s_%s' %(wave_option,profiler_option,APP_OPTION,cluster_option)
+    WAVE_HOME_IMAGE         = 'quay.io/anrgusc/%s_%s_wave_home:%s_%s' %(wave_option,profiler_option,APP_OPTION,cluster_option)
+    WAVE_WORKER_IMAGE       = 'quay.io/anrgusc/%s_%s_wave_worker:%s_%s' %(wave_option,profiler_option,APP_OPTION,cluster_option)
 
     """Execution profiler home and worker images"""
     global EXEC_HOME_IMAGE, EXEC_WORKER_IMAGE
 
 
-    EXEC_HOME_IMAGE         = 'docker.io/anrg/%s_exec_home:%s_%s'%(profiler_option,APP_OPTION,cluster_option)
-    EXEC_WORKER_IMAGE       = 'docker.io/anrg/%s_exec_worker:%s_%s'%(profiler_option,APP_OPTION,cluster_option)
+    EXEC_HOME_IMAGE         = 'quay.io/anrgusc/%s_exec_home:%s_%s'%(profiler_option,APP_OPTION,cluster_option)
+    EXEC_WORKER_IMAGE       = 'quay.io/anrgusc/%s_exec_worker:%s_%s'%(profiler_option,APP_OPTION,cluster_option)
 
     """HEFT docker image"""
     global HEFT_IMAGE
 
-    HEFT_IMAGE              = 'docker.io/anrg/%s_heft:%s_%s'%(heft_option,APP_OPTION,cluster_option)
+    HEFT_IMAGE              = 'quay.io/anrgusc/%s_heft:%s_%s'%(heft_option,APP_OPTION,cluster_option)
        
 
     global NUM_STRESS, STRESS_IMAGE
     NUM_STRESS = int(config['OTHER']['NUM_STRESS'])
-    STRESS_IMAGE            = 'docker.io/anrg/stress:%s'%(cluster_option)
+    STRESS_IMAGE            = 'quay.io/anrgusc/stress:%s'%(cluster_option)
 
 if __name__ == '__main__':
     set_globals()

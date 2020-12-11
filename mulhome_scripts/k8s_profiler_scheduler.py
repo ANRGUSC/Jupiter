@@ -113,6 +113,7 @@ def k8s_profiler_scheduler():
         In our case this is stored in admin.conf.
         You should set the config file path in the jupiter_config.py file.
     """    
+    print(jupiter_config.KUBECONFIG_PATH)
     config.load_kube_config(config_file = jupiter_config.KUBECONFIG_PATH)
     
     """
