@@ -1,0 +1,957 @@
+jupiter_config:
+  # Jupiter subsystems will be deployed in separate k8s namespaces. Using
+  # different prefixes allows multiple users to use the same k8s cluster.
+  # e.g. prefix "jason" results in namespaces:
+  # jason-exec
+  # jason-circe
+  # jason-profiler
+  # jason-mapper
+  namespace_prefix: quynh
+  # Docker registry prefix for pulling and pushing images. Set to empty string for
+  # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
+  docker_registry: quay.io/anrgusc
+  # Choose mapper: "heft", "heft_balance", or "wave" (not yet supported)
+  task_mapper: wave
+  # Choose CIRCE dispatcher type: "original" (currently the only supported)
+  circe: original
+node_map:
+  # "home" is required. All other names should be "node*" where * is some
+  # integer.
+  home: node0-0-0
+  node1: node0-0-1
+  node2: node0-0-2
+  node3: node0-0-3
+  node4: node0-0-4
+  node5: node0-0-5
+  node6: node0-0-6
+  node7: node0-0-7
+  node8: node0-0-8
+  node9: node0-1-0
+  node10: node0-1-1
+  node11: node0-1-2
+  node12: node0-1-3
+  node13: node0-1-4
+  node14: node0-6-1
+  node15: node0-1-6
+  node16: node0-1-7
+  node17: node0-1-8
+  node18: node0-2-0
+  node19: node0-6-2
+  node20: node0-2-2
+  node21: node0-2-3
+  node22: node0-5-5
+  node23: node0-2-5
+  node24: node0-2-6
+  node25: node0-2-7
+  node26: node0-5-6
+  node27: node0-3-0
+  node28: node0-3-1
+  node29: node0-3-2
+  node30: node0-3-3
+  node31: node0-3-4
+  node32: node0-3-5
+  node33: node0-3-6
+  node34: node0-3-7
+  node35: node0-3-8
+  node36: node0-4-0
+  node37: node0-4-1
+  node38: node0-4-2
+  node39: node0-4-3
+  node40: node0-4-4
+  node41: node0-6-4
+  node42: node0-6-0
+  node43: node0-4-7
+  node44: node0-4-8
+  node45: node0-5-0
+  node46: node0-5-1
+  node47: node0-5-2
+  node48: node0-5-7
+  node49: node0-5-4
+application:
+  # List of port mappings in format. Used for creating additional k8s services
+  # for your application. i.e., "9000:8000" will create a service with port 9000
+  # which targets port 8000 in all application containers.
+  # Note: [PORT_MAPPINGS] section in jupiter_config.ini cannot be used.
+  port_mappings:
+  tasks:
+    home:
+      base_script: home.py
+      children:
+    nondag_tasks:
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-0-0
+      name: datasource1
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-0-1
+      name: datasource2
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-0-2
+      name: datasource3
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-0-3
+      name: datasource4
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-0-4
+      name: datasource5
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-0-5
+      name: datasource6
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-0-6
+      name: datasource7
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-0-7
+      name: datasource8
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-0-8
+      name: datasource9
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-1-0
+      name: datasource10
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-1-1
+      name: datasource11
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-1-2
+      name: datasource12
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-1-3
+      name: datasource13
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-1-4
+      name: datasource14
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-1-5
+      name: datasource15
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-1-6
+      name: datasource16
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-1-7
+      name: datasource17
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-1-8
+      name: datasource18
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-2-0
+      name: datasource19
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-2-1
+      name: datasource20
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-2-2
+      name: datasource21
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-2-3
+      name: datasource22
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-2-4
+      name: datasource23
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-2-5
+      name: datasource24
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-2-6
+      name: datasource25
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-2-7
+      name: datasource26
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-2-8
+      name: datasource27
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-3-0
+      name: datasource28
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-3-1
+      name: datasource29
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-3-2
+      name: datasource30
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-3-3
+      name: datasource31
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-3-4
+      name: datasource32
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-3-5
+      name: datasource33
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-3-6
+      name: datasource34
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-3-7
+      name: datasource35
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-3-8
+      name: datasource36
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-4-0
+      name: datasource37
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-4-1
+      name: datasource38
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-4-2
+      name: datasource39
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-4-3
+      name: datasource40
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-4-4
+      name: datasource41
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-4-5
+      name: datasource42
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-4-6
+      name: datasource43
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-4-7
+      name: datasource44
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-4-8
+      name: datasource45
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-5-0
+      name: datasource46
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-5-1
+      name: datasource47
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-5-2
+      name: datasource48
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-5-3
+      name: datasource49
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-5-4
+      name: datasource50
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-5-5
+      name: datasource51
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-5-6
+      name: datasource52
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-5-7
+      name: datasource53
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-5-8
+      name: datasource54
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-6-0
+      name: datasource55
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-6-1
+      name: datasource56
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-6-2
+      name: datasource57
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-6-3
+      name: datasource58
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-6-4
+      name: datasource59
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-6-5
+      name: datasource60
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-6-6
+      name: datasource61
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-6-7
+      name: datasource62
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-6-8
+      name: datasource63
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-7-0
+      name: datasource64
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-7-1
+      name: datasource65
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-7-2
+      name: datasource66
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-7-3
+      name: datasource67
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-7-4
+      name: datasource68
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-7-5
+      name: datasource69
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-7-6
+      name: datasource70
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-7-7
+      name: datasource71
+    - base_script: datasource.py
+      children: master
+      k8s_host: node2-7-8
+      name: datasource72
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-0-0
+      name: datasource73
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-0-1
+      name: datasource74
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-0-2
+      name: datasource75
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-0-3
+      name: datasource76
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-0-4
+      name: datasource77
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-0-5
+      name: datasource78
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-0-6
+      name: datasource79
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-0-7
+      name: datasource80
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-0-8
+      name: datasource81
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-1-0
+      name: datasource82
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-1-1
+      name: datasource83
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-1-2
+      name: datasource84
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-1-3
+      name: datasource85
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-1-4
+      name: datasource86
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-1-5
+      name: datasource87
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-1-6
+      name: datasource88
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-1-7
+      name: datasource89
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-1-8
+      name: datasource90
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-2-0
+      name: datasource91
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-2-1
+      name: datasource92
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-2-2
+      name: datasource93
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-2-3
+      name: datasource94
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-2-4
+      name: datasource95
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-2-5
+      name: datasource96
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-2-6
+      name: datasource97
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-2-7
+      name: datasource98
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-2-8
+      name: datasource99
+    - base_script: datasource.py
+      children: master
+      k8s_host: node3-3-0
+      name: datasource100
+    - name: globalinfo
+      base_script: globalinfo.py
+      k8s_host: node0-0-0
+      children:
+    dag_tasks:
+    - name: master
+      base_script: master.py
+      children:  # child order determines round robin sequence
+        - resnet0
+        - resnet1
+        - resnet2
+        - resnet3
+        - resnet4
+        - resnet5
+        - resnet6
+        - resnet7
+        - resnet8
+        - collage
+    - name: resnet0
+      base_script: resnet.py
+      children:
+        - storeclass1
+        - storeclass2
+        - storeclass3
+        - storeclass4
+        - storeclass5
+        - storeclass6
+        - storeclass7
+        - storeclass8
+        - storeclass9
+        - storeclass10
+        - storeclass11
+    - name: resnet1
+      base_script: resnet.py
+      children:
+        - storeclass1
+        - storeclass2
+        - storeclass3
+        - storeclass4
+        - storeclass5
+        - storeclass6
+        - storeclass7
+        - storeclass8
+        - storeclass9
+        - storeclass10
+        - storeclass11
+    - name: resnet2
+      base_script: resnet.py
+      children:
+        - storeclass1
+        - storeclass2
+        - storeclass3
+        - storeclass4
+        - storeclass5
+        - storeclass6
+        - storeclass7
+        - storeclass8
+        - storeclass9
+        - storeclass10
+        - storeclass11
+    - name: resnet3
+      base_script: resnet.py
+      children:
+        - storeclass1
+        - storeclass2
+        - storeclass3
+        - storeclass4
+        - storeclass5
+        - storeclass6
+        - storeclass7
+        - storeclass8
+        - storeclass9
+        - storeclass10
+        - storeclass11
+    - name: resnet4
+      base_script: resnet.py
+      children:
+        - storeclass1
+        - storeclass2
+        - storeclass3
+        - storeclass4
+        - storeclass5
+        - storeclass6
+        - storeclass7
+        - storeclass8
+        - storeclass9
+        - storeclass10
+        - storeclass11
+    - name: resnet5
+      base_script: resnet.py
+      children:
+        - storeclass1
+        - storeclass2
+        - storeclass3
+        - storeclass4
+        - storeclass5
+        - storeclass6
+        - storeclass7
+        - storeclass8
+        - storeclass9
+        - storeclass10
+        - storeclass11
+    - name: resnet6
+      base_script: resnet.py
+      children:
+        - storeclass1
+        - storeclass2
+        - storeclass3
+        - storeclass4
+        - storeclass5
+        - storeclass6
+        - storeclass7
+        - storeclass8
+        - storeclass9
+        - storeclass10
+        - storeclass11
+    - name: resnet7
+      base_script: resnet.py
+      children:
+        - storeclass1
+        - storeclass2
+        - storeclass3
+        - storeclass4
+        - storeclass5
+        - storeclass6
+        - storeclass7
+        - storeclass8
+        - storeclass9
+        - storeclass10
+        - storeclass11
+    - name: resnet8
+      base_script: resnet.py
+      children:
+        - storeclass1
+        - storeclass2
+        - storeclass3
+        - storeclass4
+        - storeclass5
+        - storeclass6
+        - storeclass7
+        - storeclass8
+        - storeclass9
+        - storeclass10
+        - storeclass11
+    - name: collage
+      base_script: collage.py
+      children: 
+    - name: storeclass1
+      base_script: storeclass.py
+      children:
+        - lccenc1
+    - name: storeclass2
+      base_script: storeclass.py
+      children:
+        - lccenc2
+    - name: storeclass3
+      base_script: storeclass.py
+      children:
+        - lccenc3
+    - name: storeclass4
+      base_script: storeclass.py
+      children:
+        - lccenc4
+    - name: storeclass5
+      base_script: storeclass.py
+      children:
+        - lccenc5
+    - name: storeclass6
+      base_script: storeclass.py
+      children:
+        - lccenc6
+    - name: storeclass7
+      base_script: storeclass.py
+      children:
+        - lccenc7
+    - name: storeclass8
+      base_script: storeclass.py
+      children:
+        - lccenc8
+    - name: storeclass9
+      base_script: storeclass.py
+      children:
+        - lccenc9
+    - name: storeclass10
+      base_script: storeclass.py
+      children:
+        - lccenc10
+    - name: storeclass11
+      base_script: storeclass.py
+      children:
+        - lccenc11
+    - name: lccenc1
+      base_script: lccenc.py
+      children:
+        - score1a
+        - score1b
+        - score1c
+    - name: lccenc2
+      base_script: lccenc.py
+      children:
+        - score2a
+        - score2b
+        - score2c
+    - name: lccenc3
+      base_script: lccenc.py
+      children:
+        - score3a
+        - score3b
+        - score3c
+    - name: lccenc4
+      base_script: lccenc.py
+      children:
+        - score4a
+        - score4b
+        - score4c
+    - name: lccenc5
+      base_script: lccenc.py
+      children:
+        - score5a
+        - score5b
+        - score5c
+    - name: lccenc6
+      base_script: lccenc.py
+      children:
+        - score6a
+        - score6b
+        - score6c
+    - name: lccenc7
+      base_script: lccenc.py
+      children:
+        - score7a
+        - score7b
+        - score7c
+    - name: lccenc8
+      base_script: lccenc.py
+      children:
+        - score8a
+        - score8b
+        - score8c
+    - name: lccenc9
+      base_script: lccenc.py
+      children:
+        - score9a
+        - score9b
+        - score9c
+    - name: lccenc10
+      base_script: lccenc.py
+      children:
+        - score10a
+        - score10b
+        - score10c
+    - name: lccenc11
+      base_script: lccenc.py
+      children:
+        - score11a
+        - score11b
+        - score11c
+    - name: score1a
+      base_script: score.py
+      children:
+        - preagg1
+    - name: score1b
+      base_script: score.py
+      children:
+        - preagg1
+    - name: score1c
+      base_script: score.py
+      children:
+        - preagg1
+    - name: score2a
+      base_script: score.py
+      children:
+        - preagg2
+    - name: score2b
+      base_script: score.py
+      children:
+        - preagg2
+    - name: score2c
+      base_script: score.py
+      children:
+        - preagg2
+    - name: score3a
+      base_script: score.py
+      children:
+        - preagg3
+    - name: score3b
+      base_script: score.py
+      children:
+        - preagg3
+    - name: score3c
+      base_script: score.py
+      children:
+        - preagg3
+    - name: score4a
+      base_script: score.py
+      children:
+        - preagg4
+    - name: score4b
+      base_script: score.py
+      children:
+        - preagg4
+    - name: score4c
+      base_script: score.py
+      children:
+        - preagg4
+    - name: score5a
+      base_script: score.py
+      children:
+        - preagg5
+    - name: score5b
+      base_script: score.py
+      children:
+        - preagg5
+    - name: score5c
+      base_script: score.py
+      children:
+        - preagg5
+    - name: score6a
+      base_script: score.py
+      children:
+        - preagg6
+    - name: score6b
+      base_script: score.py
+      children:
+        - preagg6
+    - name: score6c
+      base_script: score.py
+      children:
+        - preagg6
+    - name: score7a
+      base_script: score.py
+      children:
+        - preagg7
+    - name: score7b
+      base_script: score.py
+      children:
+        - preagg7
+    - name: score7c
+      base_script: score.py
+      children:
+        - preagg7
+    - name: score8a
+      base_script: score.py
+      children:
+        - preagg8
+    - name: score8b
+      base_script: score.py
+      children:
+        - preagg8
+    - name: score8c
+      base_script: score.py
+      children:
+        - preagg8
+    - name: score9a
+      base_script: score.py
+      children:
+        - preagg9
+    - name: score9b
+      base_script: score.py
+      children:
+        - preagg9
+    - name: score9c
+      base_script: score.py
+      children:
+        - preagg9
+    - name: score10a
+      base_script: score.py
+      children:
+        - preagg10
+    - name: score10b
+      base_script: score.py
+      children:
+        - preagg10
+    - name: score10c
+      base_script: score.py
+      children:
+        - preagg10
+    - name: score11a
+      base_script: score.py
+      children:
+        - preagg11
+    - name: score11b
+      base_script: score.py
+      children:
+        - preagg11
+    - name: score11c
+      base_script: score.py
+      children:
+        - preagg11
+    - name: preagg1
+      base_script: preagg.py
+      children:
+        - lccdec1
+    - name: preagg2
+      base_script: preagg.py
+      children:
+        - lccdec2
+    - name: preagg3
+      base_script: preagg.py
+      children:
+        - lccdec3
+    - name: preagg4
+      base_script: preagg.py
+      children:
+        - lccdec4
+    - name: preagg5
+      base_script: preagg.py
+      children:
+        - lccdec5
+    - name: preagg6
+      base_script: preagg.py
+      children:
+        - lccdec6
+    - name: preagg7
+      base_script: preagg.py
+      children:
+        - lccdec7
+    - name: preagg8
+      base_script: preagg.py
+      children:
+        - lccdec8
+    - name: preagg9
+      base_script: preagg.py
+      children:
+        - lccdec9
+    - name: preagg10
+      base_script: preagg.py
+      children:
+        - lccdec10
+    - name: preagg11
+      base_script: preagg.py
+      children:
+        - lccdec11
+    - name: lccdec1
+      base_script: lccdec.py
+      children:
+        - home
+    - name: lccdec2
+      base_script: lccdec.py
+      children:
+        - home
+    - name: lccdec3
+      base_script: lccdec.py
+      children:
+        - home
+    - name: lccdec4
+      base_script: lccdec.py
+      children:
+        - home
+    - name: lccdec5
+      base_script: lccdec.py
+      children:
+        - home
+    - name: lccdec6
+      base_script: lccdec.py
+      children:
+        - home
+    - name: lccdec7
+      base_script: lccdec.py
+      children:
+        - home
+    - name: lccdec8
+      base_script: lccdec.py
+      children:
+        - home
+    - name: lccdec9
+      base_script: lccdec.py
+      children:
+        - home
+    - name: lccdec10
+      base_script: lccdec.py
+      children:
+        - home
+    - name: lccdec11
+      base_script: lccdec.py
+      children:
+        - home

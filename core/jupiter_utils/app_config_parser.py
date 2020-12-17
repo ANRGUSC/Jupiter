@@ -37,6 +37,14 @@ class AppConfig:
         # are coding.
         self.tag_extension = "testcdag"
 
+    def get_first_task(self):
+        print(self.cfg['application']['first_task'][:])
+        return self.cfg['application']['first_task'][:]
+
+    def get_wave_sample(self):
+        print(self.cfg['application']['sample_file'][:])
+        return self.cfg['application']['sample_file'][:]
+
     def get_dag_tasks(self):
         """
         Returns entire list of task information
@@ -65,7 +73,7 @@ class AppConfig:
         task_names = []
         for item in self.cfg['application']['tasks']['dag_tasks']:
             task_names.append(item['name'])
-        return len(task_names)
+        return str(len(task_names))
 
     def get_num_worker_nodes(self):
         worker_nodes = self.cfg['node_map']
@@ -169,7 +177,7 @@ class AppConfig:
 
 
     def task_mapper(self):
-        return self.cfg['jupiter_config']['task_mapper']['name']
+        return self.cfg['jupiter_config']['task_mapper'][:]
 
     def dag_task_map(self):
         """ Creates a task map of the entire DAG. Returns a dictionary of task

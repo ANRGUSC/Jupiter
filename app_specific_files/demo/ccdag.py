@@ -5,10 +5,10 @@ JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini' #docker
 CODING_PART1 = 1
 RESNETS_THRESHOLD = 3 #1 or 3
 
-CODING_PART2 = 0
+CODING_PART2 = 1
 
 EXP_NAME = 'sleep'
-EXP_ID = 'ne'
+EXP_ID = 'a'
 
 SLEEP_TIME = 5 #0 or 5
 MASTER_POLL_INTERVAL = 2 
@@ -18,5 +18,5 @@ STRAGGLER_THRESHOLD = 0
 STREAM_INTERVAL = 120
 
 NUM_IMAGES = 50
-NUM_CLASS =11
+NUM_CLASS =2
 classlist = ['fireengine', 'schoolbus', 'whitewolf',  'tiger', 'kitfox', 'persiancat', 'leopard',  'mongoose', 'americanblackbear','zebra',  'hippopotamus',  'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter','ox','lion','hog','hyena']

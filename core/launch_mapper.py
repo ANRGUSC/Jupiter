@@ -71,7 +71,6 @@ def drupe_worker_names_to_ips(app_config, core_v1_api):
             name_to_ip = f"{name_to_ip} {name}:{resp.spec.cluster_ip}"
         except ApiException:
             log.error("Could not find drupe service IP")
-
     return name_to_ip.lstrip(' ')
 
 
@@ -176,7 +175,7 @@ def launch_heft():
     log.info('Successfully deployed HEFT')
 
     # Setup k8s proxy and retrieve mapping from HEFT pod
-    proxy_proc = setup_proxy(jupiter_config.kubectl_proxy_heft())
+    proxy_proc = setup_proxy(jupiter_config.kubectl_proxy_mapper())
     svc_port, _ = jupiter_config.flask_port_mapping()
     url = f"http://localhost:{8081}/api/v1/" \
           + f"namespaces/{namespace}/services/{app_name}-home:{svc_port}/proxy"
@@ -184,6 +183,7 @@ def launch_heft():
     time.sleep(10)
     while 1:
         try:
+            log.debug('Trying to get the assignment from HEFT mapper')
             r = requests.get(url)
             mapping = json.dumps(r.json(), indent=4)
             log.info(f"mapping:\n{mapping}")
@@ -228,11 +228,11 @@ def launch_wave():
         name=home_svc_name,
         port_mappings=jupiter_config.k8s_service_port_mappings()
     )
-    resp = api.create_namespaced_service(namespace, home_svc_spec)
+    resp = core_v1_api.create_namespaced_service(namespace, home_svc_spec)
     log.debug("Home service created. status = '%s'" % str(resp.status))
 
     try:
-        resp = api.read_namespaced_service(home_svc_name, namespace)
+        resp = core_v1_api.read_namespaced_service(home_svc_name, namespace)
     except ApiException:
         log.error("Unable to read namespaced service")
         sys.exit(1)
@@ -254,9 +254,9 @@ def launch_wave():
         )
 
         try:
-            resp = api.create_namespaced_service(namespace, spec)
+            resp = core_v1_api.create_namespaced_service(namespace, spec)
             log.debug("Service created. status = '%s'" % str(resp.status))
-            resp = api.read_namespaced_service(pod_name, namespace)
+            resp = core_v1_api.read_namespaced_service(pod_name, namespace)
         except ApiException:
             log.error("Unable to create service for {}".format(pod_name))
             sys.exit(1)
@@ -264,8 +264,8 @@ def launch_wave():
         all_workers_ips.append(resp.spec.cluster_ip)
         all_workers_names.append(node)
 
-    all_workers_ips = ':'.join(all_profiler_ips)
-    all_workers_names = ':'.join(all_profiler_names)
+    all_workers_ips = ':'.join(all_workers_ips)
+    all_workers_names = ':'.join(all_workers_names)
 
     for node, host in app_config.node_map().items():
         if node.startswith('home'):
@@ -287,7 +287,8 @@ def launch_wave():
                 "WORKER_NODE_NAMES": all_workers_names,
                 "WORKER_NODE_IPS": all_workers_ips,
                 "EXEC_PROF_HOME_IP": exec_prof_home_ip,
-                "DRUPE_HOME_IP": drupe_home_ip            }
+                "DRUPE_HOME_IP": drupe_home_ip,
+                }
         )
         # # Call the Kubernetes API to create the deployment
         resp = k8s_apps_v1.create_namespaced_deployment(body=spec,
@@ -300,8 +301,8 @@ def launch_wave():
         time.sleep(30)
 
     home_depl_spec = k8s_spec.deployment.generate(
-        name=app_name + "-home",
-        label=app_name + "-home",
+        name=app_config.app_name + "-home",
+        label=app_config.app_name + "-home",
         image=app_config.get_wave_home_tag(),
         host=app_config.home_host(),
         port_mappings=jupiter_config.k8s_deployment_port_mappings(),
@@ -310,7 +311,8 @@ def launch_wave():
             "WORKER_NODE_NAMES": all_workers_names,
             "WORKER_NODE_IPS": all_workers_ips,
             "DRUPE_WORKER_IPS": drupe_worker_names_to_ips(app_config, core_v1_api),
-            "HOME_CHILD": jupiter_config.HOME_CHILD,
+            "EXEC_PROF_HOME_IP": exec_prof_home_ip,
+            "FIRST_TASK": app_config.get_first_task(),
             "DRUPE_HOME_IP": drupe_home_ip
         }
     )
@@ -321,19 +323,21 @@ def launch_wave():
     log.debug("WAVE home deployment created. status = '%s'" % str(resp.status))
     log.info('Successfully deployed WAVE')
 
-    # Setup k8s proxy and retrieve mapping from HEFT pod
-    proxy_proc = setup_proxy(jupiter_config.kubectl_proxy_heft())
+    # Setup k8s proxy and retrieve mapping from WAVE home pod
+    proxy_proc = setup_proxy(jupiter_config.kubectl_proxy_mapper())
     svc_port, _ = jupiter_config.flask_port_mapping()
     url = f"http://localhost:{8081}/api/v1/" \
-          + f"namespaces/{namespace}/services/{app_name}-home:{svc_port}/proxy"
+          + f"namespaces/{namespace}/services/{app_config.app_name}-home:{svc_port}/proxy"
     log.info("Waiting for WAVE pod to boot...")
+    log.info(f"namespaces/{namespace}/services/{app_config.app_name}-home:{svc_port}/proxy")
     time.sleep(10)
     while 1:
         try:
+            log.debug('Trying to get the assignment from WAVE mapper')
             r = requests.get(url)
             mapping = json.dumps(r.json(), indent=4)
             log.info(f"mapping:\n{mapping}")
-            if len(mapping) != 0:
+            if len(mapping) >2:
                 if "status" not in mapping:
                     break
         except:
@@ -350,10 +354,10 @@ def launch_wave():
 
 if __name__ == '__main__':
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
-    if (app_config.task_mapper() == "heft" or "heft_duplicate" or
-        "heft_balanced" or "heft_dup_no_comm_cost"):
+    mapper_type = app_config.task_mapper().strip()
+    if mapper_type == "heft" or mapper_type == "heft_duplicate" or mapper_type ==  "heft_balanced" or mapper_type == "heft_dup_no_comm_cost":
         launch_heft()
-    elif app_config.task_mapper() == "wave":
+    elif mapper_type == "wave":
         launch_wave()
     else:
         log.error("Unrecognized mapper in app_config.yaml")

@@ -4,13 +4,13 @@ RUN pip install flask
 ENV NOTVISIBLE "in users profile"
 RUN echo "export VISIBLE=now" >> /etc/profile
 
-ADD task_mapper/requirements.txt /requirements.txt
+ADD requirements.txt /requirements.txt
 RUN pip3 install -r requirements.txt
 
 # Prepare wave files
 RUN mkdir -p /jupiter
 ADD start_home.sh /jupiter/start.sh
-ADD master_greedy.py  /jupiter/
+ADD master.py  /jupiter/
 
 RUN mkdir -p /jupiter/output
 RUN chmod +x /jupiter/start.sh

@@ -62,7 +62,7 @@ def monitor_local_resources_EMA():
     Using Exponential moving average
     """
     num_periods = 10
-    logging.debug('Updating local resource stats (EMA)')
+    log.debug('Updating local resource stats (EMA)')
     cur_mem, cur_cpu, cur_time = retrieve_resource()
     if resource_profiling["count"] < (num_periods + 1):
         resource_profiling["memory"] = (cur_mem + resource_profiling['memory'] * resource_profiling['count']) / (resource_profiling['count'] + 1)
@@ -82,34 +82,8 @@ def monitor_local_resources_EMA():
                     }
         resource_id   = logdb.insert_one(new_log).inserted_id
     except Exception as e:
-        logging.debug('Error logging resource profiling information')
-        logging.debug(e)
-
-
-def demo_help(server, port, topic, msg):
-    try:
-        logging.debug('Sending demo')
-        username = 'anrgusc'
-        password = 'anrgusc'
-        client = mqtt.Client()
-        client.username_pw_set(username,password)
-        client.connect(server, port,300)
-        client.publish(topic, msg,qos=1)
-        client.disconnect()
-    except Exception as e:
-        logging.debug('Sending demo failed')
-        logging.debug(e)
-
-
-def schedule_bokeh_profiling(interval):
-    """
-    Schedulete the assignment update every interval
-    Args:
-        interval (int): chosen interval (minutes)
-    """
-    sched = BackgroundScheduler()
-    sched.add_job(announce_profiling,'interval',id='assign_id', seconds=interval, replace_existing=True)
-    sched.start()
+        log.debug('Error log resource profiling information')
+        log.debug(e)
 
 def announce_profiling():
     cur_cpu = psutil.cpu_percent() / psutil.cpu_count()
@@ -117,7 +91,6 @@ def announce_profiling():
     cur_time = time.time()
     topic = 'poweroverhead_%s'%(SELF_NAME)
     msg = 'poweroverhead %s cpu %f memory %f timestamp %f \n' %(SELF_NAME,cur_cpu,cur_mem,cur_time)
-    demo_help(BOKEH_SERVER,BOKEH_PORT,topic,msg)
 
 def send_schedule(ip):
     """
@@ -144,15 +117,15 @@ def send_schedule(ip):
                 scp = SCPClient(client.get_transport())
                 scp.put(scheduler_file, dir_remote)
                 scp.close()
-                logging.debug('File transfer complete to ' + ip + '\n')
+                log.debug('File transfer complete to ' + ip + '\n')
                 success_flag = True
                 break
             except (paramiko.ssh_exception.NoValidConnectionsError, gaierror):
-                logging.debug('SSH Connection refused, will retry in 2 seconds')
+                log.debug('SSH Connection refused, will retry in 2 seconds')
                 time.sleep(2)
                 retry += 1
     else:
-        logging.debug('No such file exists...')
+        log.debug('No such file exists...')
 
     return_obj = {}
     if success_flag:
@@ -169,7 +142,7 @@ def do_update_quadratic():
     This function updates the estimated quadratic parameters in the mongodb server, database ``central_network_profiler``, collection ``quadratic_parameters``. It checks for any received files
     from each of the worker droplets in the ``parameters/`` folder. If any a file exists, it updates the mongodb.
     """
-    logging.debug('Update quadratic parameters from other nodes')
+    log.debug('Update quadratic parameters from other nodes')
     db = client_mongo.central_network_profiler
     parameters_folder = os.path.join(os.getcwd(),'parameters')
     logdb = db['quadratic_parameters']
@@ -183,7 +156,7 @@ def do_update_quadratic():
                 data_json = json.loads(df.to_json(orient = 'records'))
                 logdb.insert(data_json)
     except Exception as e:
-        logging.debug(e)
+        log.debug(e)
 
 class droplet_measurement():
     """
@@ -202,7 +175,7 @@ class droplet_measurement():
         self.scheduling_file    = dir_scheduler
         self.measurement_script = os.path.join(os.getcwd(),'droplet_scp_time_transfer')
         self.db = client_mongo.droplet_network_profiler
-        self.logging = logging
+        self.log = log
 
     def do_add_host(self, file_hosts):
         """This function reads the ``scheduler.txt`` file to add other droplets info
@@ -220,13 +193,13 @@ class droplet_measurement():
                     self.hosts.append(row[0])
                     self.regions.append(row[1])
         else:
-            self.logging.debug("No detected droplets information... ")
+            self.log.debug("No detected droplets information... ")
 
     def do_log_measurement(self):
         """This function pick a random file size, send the file to all of the neighbors and log the transfer time in the local Mongo database.
         """
         for idx in range (0, len(self.hosts)):
-            self.logging.debug('Probing random messages')
+            self.log.debug('Probing random messages')
             random_size = random.choice(self.file_size)
             local_path  = '%s/%s_test_%dK'%(self.dir_local,self.my_host,random_size)
             remote_path = '%s'%(self.dir_remote)
@@ -243,7 +216,7 @@ class droplet_measurement():
             elapsed = mins * 60 + secs
             # Log the information in local mongodb
             cur_time = datetime.datetime.utcnow()
-            logging  = self.db[self.hosts[idx]]
+            log  = self.db[self.hosts[idx]]
             new_log  = {"Source[IP]"        : self.my_host,
                         "Source[Reg]"       : self.my_region,
                         "Destination[IP]"   : self.hosts[idx],
@@ -251,7 +224,7 @@ class droplet_measurement():
                         "Time_Stamp[UTC]"   : cur_time,
                         "File_Size[KB]"     : random_size,
                         "Transfer_Time[s]"  : elapsed}
-            log_id   = logging.insert_one(new_log).inserted_id
+            log_id   = log.insert_one(new_log).inserted_id
 
 
 class droplet_regression():
@@ -270,7 +243,7 @@ class droplet_regression():
         self.username = username
         self.password = password
         self.central_IP = HOME_NODE_IP
-        self.logging = logging
+        self.log = log
 
     def do_add_host(self, file_hosts):
         """This function reads the ``scheduler.txt`` file to add other droplets info
@@ -288,12 +261,12 @@ class droplet_regression():
                     self.hosts.append(row[0])
                     self.regions.append(row[1])
         else:
-            self.logging.debug("No detected droplets information... ")
+            self.log.debug("No detected droplets information... ")
 
     def do_regression(self):
         """This function performs the regression on the collected data, store the quaratic parameters in the local database, and write parameters into text file.
         """
-        self.logging.debug('Store regression parameters in MongoDB')
+        self.log.debug('Store regression parameters in MongoDB')
         regression = self.db[self.my_host]
         reg_cols   = ['Source[IP]',
                       'Source[Reg]',
@@ -306,8 +279,8 @@ class droplet_regression():
 
         for idx in range(0,len(self.hosts)):
             host    = self.hosts[idx]
-            logging = self.db[host]
-            cursor  = logging.find({})
+            log = self.db[host]
+            cursor  = log.find({})
             df      = pd.DataFrame(list(cursor))
 
             df['X'] = df['File_Size[KB]'] * 8 #Kbits
@@ -336,14 +309,14 @@ class droplet_regression():
 
         # Write parameters into text file
         with open(self.parameters_file, "w") as f:
-            self.logging.debug('Writing into file........')
+            self.log.debug('Writing into file........')
             writer = csv.writer(f)
             writer.writerows(reg_data)
 
     def do_send_parameters(self):
         """This function sends the local regression data to the central profiler
         """
-        self.logging.debug('Send to central nodes')
+        self.log.debug('Send to central nodes')
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(self.central_IP, username = self.username,
@@ -358,16 +331,16 @@ class droplet_regression():
 def regression_job():
     """Scheduling regression process every 10 minutes
     """
-    logging.debug('Log regression every 10 minutes ....')
+    log.debug('Log regression every 10 minutes ....')
     d = droplet_regression()
     d.do_add_host(d.scheduling_file)
     d.do_regression()
 
 
 def measurement_job():
-    """Scheduling logging measurement process every minute
+    """Scheduling log measurement process every minute
     """
-    logging.debug('Log measurement every minute ....')
+    log.debug('Log measurement every minute ....')
     d = droplet_measurement()
     d.do_add_host(d.scheduling_file)
     d.do_log_measurement()
@@ -405,7 +378,7 @@ def main():
         - Schedule updating the central database every minute
     """
 
-    logging.debug(JUPITER_CONFIG_INI_PATH)
+    log.debug(JUPITER_CONFIG_INI_PATH)
     config = configparser.ConfigParser()
     config.read(JUPITER_CONFIG_INI_PATH)
 
@@ -452,8 +425,8 @@ def main():
     df_nodes.index.name = 'Tag'
     df_nodes.columns = ['Node', 'Region']
 
-    # logging.debug(df_homes)
-    # logging.debug(df_nodes)
+    # log.debug(df_homes)
+    # log.debug(df_nodes)
 
     # load the list of links from the csv file
     links_info = 'central_input/link_list.txt'
@@ -471,13 +444,13 @@ def main():
     client_mongo = MongoClient('mongodb://localhost:' + str(MONGO_DOCKER) + '/')
 
 
-    logging.debug('Step 1: Create the central database ')
+    log.debug('Step 1: Create the central database ')
     db = client_mongo['central_network_profiler']
     buffer_size = len(df_links.index) * 100
     db.create_collection('quadratic_parameters', capped = True, size = 100000, max = buffer_size)
 
 
-    logging.debug('Step 2: Preparing the scheduling text files')
+    log.debug('Step 2: Preparing the scheduling text files')
     for cur_node, row in df_nodes.iterrows():
         # create separate scheduling folders for separate nodes
         cur_schedule = os.path.join(scheduling_folder, node_list.get(cur_node)[0])
@@ -505,7 +478,7 @@ def main():
 
     
 
-    logging.debug('Step 3: Scheduling updating the central database')
+    log.debug('Step 3: Scheduling updating the central database')
     # create the folder for each droplet/node to report the local data to
     parameters_folder = 'parameters'
     if not os.path.exists(parameters_folder):
@@ -518,32 +491,14 @@ def main():
 
 
     # no profiling info for home
-    # filename = "scheduling/%s/scheduling.txt"%(self_ip)
-    # logging.debug(filename)
-    # prepare_database(filename)
-    # logging.debug('Step 4: Scheduling measurement job')
-    # sched.add_job(measurement_job,'interval',id='measurement', minutes=1, replace_existing=True)
 
-    # logging.debug('Step 5: Scheduling regression job')
-    # sched.add_job(regression_job,'interval', id='regression', minutes=10, replace_existing=True)
-
-    logging.debug('Step 6: Start the schedulers')
+    log.debug('Step 6: Start the schedulers')
     sched.start()
 
 
-    global BOKEH_SERVER, BOKEH_PORT, BOKEH, BOKEH_INTERVAL, SELF_NAME
-    BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
-    BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
-    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
-    BOKEH_INTERVAL = int(config['BOKEH_LIST']['BOKEH_INTERVAL'])
+    global SELF_NAME
     SELF_NAME = os.environ['NODE_NAME']
-
-    logging.debug('Bokeh information')
-    logging.debug(BOKEH_SERVER)
-    logging.debug(BOKEH_PORT)
-    logging.debug(BOKEH)
-    logging.debug(BOKEH_INTERVAL)
-    logging.debug(SELF_NAME)
+    log.debug(SELF_NAME)
 
     ## Resource profiling
     global manager,resource_profiling
@@ -561,15 +516,7 @@ def main():
     resource_db = resource_client['central_resource_profiler']
     resource_db.create_collection(self_ip, capped=True, size = 100000,max=1000)
 
-    if BOKEH==3:
-        logging.debug('Step 7: Start sending profiling information (CPU,mem) to the bokeh server')
-        _thread.start_new_thread(schedule_bokeh_profiling,(BOKEH_INTERVAL,))
-
     _thread.start_new_thread(schedule_monitor_resource,(interval,))
-
-
-
-
 
     app.run(host='0.0.0.0', port=FLASK_DOCKER) #run this web application on 0.0.0.0 and default port is 5000
 

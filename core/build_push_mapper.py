@@ -6,6 +6,8 @@ import os
 import logging
 import shutil
 from jupiter_utils import app_config_parser
+import threading
+import signal
 
 import sys
 sys.path.append("../")
@@ -38,6 +40,35 @@ def build_push_heft(app_config, app_dir):
     )
     os.system("docker push {}".format(tag))
 
+def build_push_home(tag):
+    # speed up build using existing image
+    # os.system("docker pull {}".format(tag))
+
+    # build and push in execution_profiler/ directory
+    err = os.system(
+        "docker build -t {} -f task_mapper/wave/wave_home.Dockerfile "
+        .format(tag) + "./task_mapper/wave"
+    )
+    if err != 0:
+        log.fatal("home container build failed!")
+        os.kill(os.getpid(), signal.SIGKILL)
+    os.system("docker push {}".format(tag))
+
+
+def build_push_worker(tag):
+    # speed up build using existing image
+    # os.system("docker pull {}".format(tag))
+
+    # build and push in execution_profiler/ directory
+    err = os.system(
+        "docker build -t {} -f task_mapper/wave/wave_worker.Dockerfile "
+        .format(tag) + "./task_mapper/wave"
+    )
+    if err != 0:
+        log.fatal("worker container build failed!")
+        os.kill(os.getpid(), signal.SIGKILL)
+    os.system("docker push {}".format(tag))
+
 def build_push_wave(app_config, app_dir):
     # copy all files needed from Jupiter and from the application into a build
     # folder which will be shipped in the Docker container
@@ -49,16 +80,15 @@ def build_push_wave(app_config, app_dir):
     shutil.copytree("./jupiter_utils/",
                     "task_mapper/wave/build/jupiter_utils/")
 
-    tag = app_config.get_mapper_tag()
+    t1 = threading.Thread(target=build_push_home,
+                          args=(app_config.get_wave_home_tag(),))
+    t2 = threading.Thread(target=build_push_worker,
+                          args=(app_config.get_wave_worker_tag(),))
 
-    # speed up build using existing image
-    #os.system("docker pull {}".format(tag))
-
-    os.system(
-        "docker build -t {} -f task_mapper/wave/wave.Dockerfile "
-        .format(tag) + "./task_mapper/wave"
-    )
-    os.system("docker push {}".format(tag))
+    t1.start()
+    t2.start()
+    t1.join()
+    t2.join()
 
 
 if __name__ == '__main__':
@@ -77,12 +107,11 @@ if __name__ == '__main__':
         exit()
 
     app_config = app_config_parser.AppConfig(app_dir)
-    log.debug(app_config)
-
-    if app_config.task_mapper() == "heft" or "heft_balanced":
+    mapper_type = app_config.task_mapper().strip()
+    if mapper_type == "heft" or mapper_type =="heft_balanced":
         log.debug('heft')
         build_push_heft(app_config, app_dir)
-    elif app_config.task_mapper() == "wave":
+    elif mapper_type == "wave":
         log.debug('wave')
         build_push_wave(app_config, app_dir)
     else:

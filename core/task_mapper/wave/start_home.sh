@@ -6,4 +6,4 @@
 # 
 
 echo 'Starting home or master node'
-python -u /master_greedy.py
+python -u /jupiter/master.py

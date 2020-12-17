@@ -19,7 +19,7 @@ INI_PATH   = HERE + 'jupiter_config.ini'
 
 # this should be the same name as the app folder
 # APP_NAME must only contain alphanumerics or hyphens! Prefer only alphanumerics.
-# APP_NAME = "example"
+#APP_NAME = "example"
 APP_NAME = 'demo'
 APP_DIR = path.join("app_specific_files", APP_NAME)
 
@@ -307,6 +307,6 @@ def flask_port_mapping():
     svc, docker = config["PORT_MAPPINGS"]["FLASK"].split(":")
     return svc, docker
 
-def kubectl_proxy_heft():
+def kubectl_proxy_mapper():
     config = parse_config_ini()
-    return config["CONFIG"]["KUBECTL_PROXY_HEFT"]
+    return config["CONFIG"]["KUBECTL_PROXY"]
