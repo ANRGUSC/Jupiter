@@ -352,6 +352,32 @@ def launch_wave():
     # TODO: print message talking about killing proxy
     proxy_proc.kill()
 
+# infile is app_config.yaml, directly write to output file       
+def launch_random():
+    app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
+    app_name = app_config.app_name
+    infile = jupiter_config.get_abs_app_dir() + '/' + app_name + "/app_config.yaml" # is this correct?
+    outfile = "mapping.json" 
+    
+    with open(infile, 'r') as f:
+        app_conf = yaml.safe_load(f)
+    
+    dag_tasks = app_conf['application']['tasks']['dag_tasks']
+    tasks_names = []
+    for task in dag_tasks:
+        tasks_names.append(task['name'])
+        
+    nodes_names = list(app_conf['node_map'].keys())
+    nodes_names.remove('home')
+    output_mapping = {}
+    for task_name in tasks_names:
+        idx = random.randint(0, len(nodes_names) - 1)
+        output_mapping[task_name] = nodes_names[idx]
+
+    with open(outfile, "w") as f:
+        json.dump(output_mapping, f, indent=4)
+        log.info("Wrote mapping to file mapping.json. Ready to launch CIRCE.")
+
 if __name__ == '__main__':
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     mapper_type = app_config.task_mapper().strip()
@@ -359,5 +385,7 @@ if __name__ == '__main__':
         launch_heft()
     elif mapper_type == "wave":
         launch_wave()
+    elif app_config.task_mapper() == "random":
+        launch_random()
     else:
         log.error("Unrecognized mapper in app_config.yaml")
