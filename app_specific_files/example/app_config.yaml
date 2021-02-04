@@ -6,7 +6,7 @@ jupiter_config:
   # jason-circe
   # jason-profiler
   # jason-mapper
-  namespace_prefix: jason
+  namespace_prefix: zxc
   # Docker registry prefix for pulling and pushing images. Set to empty string for
   # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
   docker_registry: anrg
@@ -20,11 +20,12 @@ node_map:
   # specifically in the scheduling algorithm. "home" is required. All node names
   # should be in format node* where * is an integer. Non-"home" nodes are called
   # "worker" nodes. Worker nodes are where Jupiter can schedule tasks on.
-  home: k8sworkersb-ubuntu-s-4vcpu-8gb-0-blr1
-  node1: k8sworkersb-ubuntu-s-4vcpu-8gb-1-sgp1
-  node2: k8sworkersb-ubuntu-s-4vcpu-8gb-2-blr1
-  node3: k8sworkersb-ubuntu-s-4vcpu-8gb-3-lon1
-  node4: k8sworkersb-ubuntu-s-4vcpu-8gb-4-nyc3
+  home: master
+  node1: n0
+  node2: n1
+  node3: n2
+  node4: n3
+  node5: n4
 application:
   # List of port mappings in format. Used for creating additional k8s services
   # for your application. i.e., "9000:8000" will create a service with port 9000

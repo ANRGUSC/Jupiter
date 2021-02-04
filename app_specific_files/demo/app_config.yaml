@@ -6,7 +6,7 @@ jupiter_config:
   # jason-circe
   # jason-profiler
   # jason-mapper
-  namespace_prefix: test
+  namespace_prefix: zxc
   # Docker registry prefix for pulling and pushing images. Set to empty string for
   # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
   docker_registry: quay.io/anrgusc
@@ -17,9 +17,12 @@ jupiter_config:
 node_map:
   # "home" is required. All other names should be "node*" where * is some
   # integer.
-  home: anrg-ubuntu-18-04-x64-0-s-2vcpu-4gb-nyc3
-  node1: anrg-ubuntu-18-04-x64-1-s-2vcpu-4gb-nyc3
-  node2: anrg-ubuntu-18-04-x64-2-s-2vcpu-4gb-fra1
+  home: master
+  node1: n0
+  node2: n1
+  node3: n2
+  node4: n3
+  node5: n4
 application:
   # List of port mappings in format. Used for creating additional k8s services
   # for your application. i.e., "9000:8000" will create a service with port 9000
