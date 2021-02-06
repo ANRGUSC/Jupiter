@@ -5,7 +5,7 @@ from mergexp.machine import cores, memory
 from mergexp.unit import gb
 
 # set number of worker nodes
-NUM_WORKER_NODES = 5
+NUM_WORKER_NODES = 3
 
 # minimum memory for all nodes, current DCOMP nodes include either 2GB or 8GB
 MIN_MEMORY = 4
