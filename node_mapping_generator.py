@@ -1,6 +1,6 @@
 # paste the output to app_config.yaml
 i = 1
-r = open('nodes.txt', 'r')
+r = open('nodes_list.txt', 'r')
 line = ""
 while(1):
     line = r.readline()
