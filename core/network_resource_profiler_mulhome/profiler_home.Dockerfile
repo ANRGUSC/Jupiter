@@ -9,7 +9,7 @@ FROM ubuntu:16.04
 RUN apt-get update
 RUN apt-get -y install build-essential libssl-dev libffi-dev python-dev
 RUN apt-get -yqq install python3-pip python3-dev
-RUN pip3 install --upgrade pip
+RUN pip3 install --upgrade "pip < 21.0"
 RUN apt-get update
 RUN apt-get install -y openssh-server mongodb sshpass nano virtualenv supervisor
 
