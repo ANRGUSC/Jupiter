@@ -269,7 +269,7 @@ class droplet_regression():
         client = paramiko.SSHClient()
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
         client.connect(self.central_IP, username = self.username,
-                            password = self.password, port = ssh_port, look_for_keys=False)
+                            password = self.password, port = ssh_port, allow_agent=False, look_for_keys=False)
         local_path  = os.path.join(os.getcwd(),self.parameters_file)
         remote_path = '%s'%(self.dir_remote)
         scp = SCPClient(client.get_transport())
