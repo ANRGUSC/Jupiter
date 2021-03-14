@@ -3,7 +3,7 @@
 # **     Read license file in main directory for more details
 
 # Instructions copied from - https://hub.docker.com/_/python/
-FROM ubuntu:18.04
+FROM ubuntu:16.04
 
 # Install required libraries
 RUN apt-get update
