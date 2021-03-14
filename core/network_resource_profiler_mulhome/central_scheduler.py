@@ -113,7 +113,7 @@ def send_schedule(ip):
         while retry < num_retries:
             try:
                 client.connect(ip, username = username, password = password,
-                        port = ssh_port, loof_for_keys=False)
+                        port = ssh_port, look_for_keys=False)
                 scp = SCPClient(client.get_transport())
                 scp.put(scheduler_file, dir_remote)
                 scp.close()
