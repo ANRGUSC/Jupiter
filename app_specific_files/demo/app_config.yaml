@@ -109,16 +109,16 @@ application:
     nondag_tasks:
     - name: datasource1
       base_script: datasource.py
-      k8s_host: n0-0-0
+      k8s_host: node0-0-0
       children: master
         # Only home or dag_tasks allowed under children
     - name: datasource2
       base_script: datasource.py
-      k8s_host: n1-1-1
+      k8s_host: node1-1-1
       children: master
     - name: globalinfo
       base_script: globalinfo.py
-      k8s_host: n2-2-2
+      k8s_host: node2-2-2
       children:
     dag_tasks:
       - name: master
