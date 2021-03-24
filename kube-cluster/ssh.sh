@@ -2,4 +2,4 @@
 
 usr="ubuntu"
 
-ssh -i id_rsa $usr@143.198.64.115
+ssh -i id_rsa $usr@64.227.109.168
