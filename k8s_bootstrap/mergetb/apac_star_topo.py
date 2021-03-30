@@ -4,10 +4,10 @@ from mergexp.machine import memory,image,cores
 from mergexp.unit import gb,mbps, ms
 
 # set number of minnow worker nodes
-NUM_MINNOWS = 50
+NUM_MINNOWS = 0
 
 # set number of rohu worker nodes
-NUM_ROHUS = 25
+NUM_ROHUS = 75
 
 net = mx.Topology('lanoflan', routing == static, addressing == ipv4)
 depth = 3
@@ -41,7 +41,7 @@ for d in range(2,depth):
     root = net.device(f'hub-{d}', memory >= gb(8))
     net.connect([root, hub])
     for l in range(lannum):
-        nodes = [ubuntu(f"node{d}-{l}-{n}", '1804', 1) for n in range(nodenum)]
+        nodes = [ubuntu(f"node{d}-{l}-{n}", '1804', 4) for n in range(nodenum)]
         JUPITER_WORKER_NODES.extend("node%d-%d-%d"%(d,l,n) for n in range(nodenum))
         net.connect([root] + nodes) 
 
