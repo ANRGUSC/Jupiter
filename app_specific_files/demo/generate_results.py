@@ -102,6 +102,7 @@ def append_log(runtime_dict,task1,task2,fname):
     
 def process_logs():
     for (dirpath, dirnames, filenames) in os.walk(results_path):
+        #print(dirpath, dirnames, filenames)
         for filename in filenames:
             task_name = filename.split('-')[1]
             filepath=os.sep.join([dirpath, filename])
@@ -508,10 +509,10 @@ def plot_task_timings(task_info, file_prefix):
         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
 
 if __name__ == '__main__':
-    #retrieve_logs('circe')
-    # retrieve_logs('profiler')
-    # retrieve_logs('exec')
-    # retrieve_logs('mapper')
+    retrieve_logs('circe')
+    #retrieve_logs('profiler')
+    #retrieve_logs('exec')
+    #retrieve_logs('mapper')
     rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
     print('----------- Datasource----------------')
     print(rt_datasource)
