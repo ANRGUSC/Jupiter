@@ -5,18 +5,17 @@ instructions on how to bootstrap a MergeTB cluster. The provided ansible scripts
 can be adapted and used to bootstrap clusters in other cloud providers.
 
 Jupiter is an orchestrator for Dispersed Computing (distributed computing with
-networked computers) that  uses Docker containers and Kubernetes (K8s).
+networked computers). Jupiter enables complex computing applications that are
+specified as directed acyclic graph (DAG)-based task graphs to be distributed
+across an arbitrary network of computers in such a way as to optimize the
+execution of the distributed computation.
 
-Jupiter enables complex computing applications that are specified as directed
-acyclic graph (DAG)-based task graphs to be distributed across an arbitrary
-network of computers in such a way as to optimize the execution of the
-distributed computation. Depending on the task mapper (i.e. scheduling
+Depending on the task mapper (i.e. scheduling
 algorithm) used with the Jupiter framework, the optimizations may be for
 different objectives. For example, the goal may be to try and minimize the total
 end to end delay (makespan) of the computation for a single set of data inputs.
 Jupiter includes both centralized task mappers such as one that performs the
-classical HEFT (heterogeneous earliest finish time) scheduling algorithm, as
-well as an innovative new distributed task mapping framework called WAVE.  In
+classical HEFT (heterogeneous earliest finish time) scheduling algorithm. In
 order to enable optimization-oriented task mapping, Jupiter also provides tools
 for profiling the application run time on the compute nodes as well as profiling
 and monitoring the performance of network links between nodes. Jupiter is built
@@ -26,38 +25,41 @@ single-shot and pipelined (streaming) computations.
 
 The Jupiter system has three
 main components:
- * Execution Profiler
+ * Execution Profiler (EP)
  * DRUPE (Network Profiler)
  * Task Mappers
  * CIRCE (Dispatcher)
 
 
 ### Profilers
-Jupiter comes with two different profiler tools: DRUPE (Network and Resource Profiler) and an one time Execution Profiler.
+Jupiter comes with two different profiler tools: DRUPE (Network and Resource
+Profiler) and an one time Execution Profiler.
 
-[DRUPE](https://github.com/ANRGUSC/DRUPE)  is a tool to collect information about computational
-resources as well as network links between compute nodes in a dispersed
-computing system to a central node. DRUPE consists of a network profiler and a
-resource profiler.
+[DRUPE](https://github.com/ANRGUSC/DRUPE)  is a tool to collect information
+about computational resources as well as network links between compute nodes in
+a dispersed computing system to a central node. DRUPE consists of a network
+profiler and a resource profiler.
 
-The onetime Execution Profiler is a tool to collect information about the computation time of the pipelined computations
-described in the form of a directed acyclic graph (DAG) on each of the networked computation resources. This tool runs a sample
-execution of the entire DAG on every node to collect the statistics for each of the task in the DAG as well as the makespan of
-the entire DAG.
+The onetime Execution Profiler is a tool to collect information about the
+computation time of the pipelined computations described in the form of a
+directed acyclic graph (DAG) on each of the networked computation resources.
+This tool runs a sample execution of the entire DAG on every node to collect the
+statistics for each of the task in the DAG as well as the makespan of the entire
+DAG.
 
 
 ### Task Mappers
 
-Jupiter comes with three different task mappers: HEFT, WAVE Greedy, WAVE Random;
-to effciently map the tasks of a DAG to the processors such that the makespan of
-the pipelines processing is optimized.
+Jupiter comes with the following task mappers: HEFT and HEFT Balanced. These
+mappers effciently map the tasks of a DAG to the processors such that the
+makespan of the pipelines processing is optimized.
 
 [HEFT](https://github.com/oyld/heft.git) i.e., Heterogeneous Earliest Finish
 Time is a static centralized algorithm for a DAG based task graph that
 efficiently maps the tasks of the DAG into the processors by taking into account
 global information about communication delays and execution times.
 
-[WAVE](https://github.com/ANRGUSC/WAVE) is a distributed scheduler for DAG type
+[WAVE (supported in v4.0 and under, see releases)](https://github.com/ANRGUSC/WAVE) is a distributed scheduler for DAG type
 task graph that outputs a mapping of tasks to real compute nodes by only taking
 into acount local profiler statistics. Currently we have two types of WAVE
 algorithms: WAVE Random and WAVE Greedy.
@@ -71,14 +73,12 @@ data to map tasks to the compute nodes.
 
 ### CIRCE
 
-[CIRCE](https://github.com/ANRGUSC/CIRCE) is a dispatcher tool for dispersed computing,
-which can deploy pipelined computations described in the form of a directed
-acyclic graph (DAG) on multiple geographically dispersed computers (compute nodes).
-CIRCE deploys each task on the corresponding compute node (from the output of WAVE),
-uses input and output queues for pipelined execution,
-and takes care of the data transfer between different tasks.
-
-
+[CIRCE](https://github.com/ANRGUSC/CIRCE) is a dispatcher tool for dispersed
+computing, which can deploy pipelined computations described in the form of a
+directed acyclic graph (DAG) on multiple geographically dispersed computers
+(compute nodes). CIRCE deploys each task on the corresponding compute node (from
+the output of HEFT), uses input and output queues for pipelined execution, and
+takes care of the data transfer between different tasks.
 
 
 ## Instructions
@@ -87,7 +87,9 @@ Currently supports: **Python 3.6**
 
 First, setup your Kubernetes cluster and install
 [`kubectl`](https://kubernetes.io/docs/tasks/tools/install-kubectl/). Enable
-autocompletion for `kubectl`.
+autocompletion for `kubectl`. Under the `k8s_boostrap` folder, we have Ansible
+recipe books in which we use to bootstrap our clusters. These can be used as a
+blueprint for preparing your cluster.
 
 Clone and install requirements:
 
