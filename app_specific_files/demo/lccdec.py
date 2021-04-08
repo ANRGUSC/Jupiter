@@ -102,9 +102,9 @@ def task(q, pathin, pathout, task_name):
                 worker = base_fname.split('score')[1]
                 idx = worker.find(next(filter(str.isalpha, worker)))
                 worker_list.append(ord(worker[idx])-97)
-                
 
-            
+
+
 
             #LCCDEC CODE
             job_id = base_fname.split('jobth')[0]
@@ -145,7 +145,7 @@ def task(q, pathin, pathout, task_name):
             # based on that determine sleep and number of bytes in output file
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}",src_task)
-            
+
             for i in range(num_inputs):
                 q.task_done()
 
@@ -204,13 +204,13 @@ def task(q, pathin, pathout, task_name):
             job = str(job_id)+'jobth'
             dst_task = children[0] # only 1 children
             dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
-            
+
             f = open(dst, 'w')
             np.savetxt(dst, result, delimiter=',')
             f.close()
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}",src_task)
-            
+
             for i in range(num_inputs):
                 q.task_done()
 
