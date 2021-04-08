@@ -75,8 +75,8 @@ store_class_tasks_dict[291] = "storeclass18"
 store_class_tasks_dict[341] = "storeclass19"
 store_class_tasks_dict[276] = "storeclass20"
 
-classids = np.arange(0,len(ccdag.classlist),1)
-classmap = dict(zip(ccdag.classlist, classids))
+classids = np.arange(0,len(ccdag.CLASSLIST),1)
+classmap = dict(zip(ccdag.CLASSLIST, classids))
 
 store_list = ["storeclass%d"%(d) for d in range(1,ccdag.NUM_CLASS)]
 

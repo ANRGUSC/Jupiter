@@ -23,19 +23,24 @@ its children
 
 Parameters for CCDAG. See comments in the file for more info.
 
-#### resnet.py
-
-To change the number of image classes to detect, you need to uncomment the
-if-else statements in resnet.py.
-
 #### Datasource Files
 
 All datasource images (also serves as reference images) can be found in Drive.
 
 https://drive.google.com/drive/u/3/folders/1tZ5QtvT5uOVVB_xzd7kPS4_x2yaXGc72
 
+For each datasource task you indicate on `app_config.yaml`, you must create a
+custom folder under `data/`. For example, there needs to be a `data/datasource4`
+folder if you have a 4th datasource task. You also need to prepend the filename
+of each image under these directories with `home_master_` so that CIRCE will
+know to send these images to the master service task (`source_dest_`).
+
+There are parameters in `ccdag.py` to modify the behaviors of datasource tasks.
+
 #### Additional Info
 * Scripts to generate plots: generate_results.py
+	- There are a **lot** of hardcoded pieces in here. For each CCDAG setup,
+	manual modifications will be needed.
 * List of important folders:
 	- data: data images shipped to each datasource container
 	- reference: reference images for coding (PART2)

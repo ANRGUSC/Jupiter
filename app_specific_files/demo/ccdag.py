@@ -90,12 +90,43 @@ EXP_ID = 'a'
 # interval below
 STREAM_INTERVAL = 120   # Seconds
 
-# Total images each datasource will stream into CCDAG. (e.g. if there are two
-# datasources and NUM_IMAGES=50, there will be 100 total images)
-NUM_IMAGES = 50
+"""
+Setting Up Image Classes
 
-# Number of image classes (in the sequence of the `classlist` below)
-# datasources will send to the master service. e.g. setting it to "2" will tell
-# datasources to stream only 'fireengine' and 'schoolbus' images.
-NUM_CLASS = 2
-classlist = ['fireengine', 'schoolbus', 'whitewolf',  'tiger', 'kitfox', 'persiancat', 'leopard',  'mongoose', 'americanblackbear','zebra',  'hippopotamus',  'waterbuffalo', 'ram', 'impala', 'arabiancamel', 'otter','ox','lion','hog','hyena']
+Datasource tasks will run datasource.py. Currently, this will simply send files
+it sees in the `data/datasource*/` folder up to NUM_IMAGES, where * is the task
+number.
+
+You must set NUM_CLASSES to match up with what is in the `datasource*/` folders
+because this will tell the global info kvstore and master service the number of
+classes it expects to to see at runtime. The number corresponds to the
+`classlist` variable. For example, if you set NUM_CLASS=4, then the DAG will
+expect 'fireengine', 'schoolbus', 'whitewolf', and 'tiger' images.
+
+The total number of images sent through CCDAG will be NUM_IMAGES multiplied by
+the number of datasource tasks.
+"""
+NUM_IMAGES = 50
+NUM_CLASS = 11
+CLASSLIST = [
+    'fireengine',
+    'schoolbus',
+    'whitewolf',
+    'tiger',
+    'kitfox',
+    'persiancat',
+    'leopard',
+    'mongoose',
+    'americanblackbear',
+    'zebra',
+    'hippopotamus',
+    'waterbuffalo',
+    'ram',
+    'impala',
+    'arabiancamel',
+    'otter',
+    'ox',
+    'lion',
+    'hog',
+    'hyena'
+]

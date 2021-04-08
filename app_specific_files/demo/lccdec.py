@@ -43,8 +43,8 @@ config = configparser.ConfigParser()
 config.read(ccdag.JUPITER_CONFIG_INI_PATH)
 
 
-classids = np.arange(0,len(ccdag.classlist),1)
-classmap = dict(zip(ccdag.classlist, classids))
+classids = np.arange(0,len(ccdag.CLASSLIST),1)
+classmap = dict(zip(ccdag.CLASSLIST, classids))
 
 def gen_Lagrange_coeffs(alpha_s,beta_s):
     U = np.zeros((len(alpha_s), len(beta_s)))
