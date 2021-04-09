@@ -45,8 +45,8 @@ config.read(ccdag.JUPITER_CONFIG_INI_PATH)
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
-classids = np.arange(0,len(ccdag.classlist),1)
-classmap = dict(zip(ccdag.classlist, classids))
+classids = np.arange(0,len(ccdag.CLASSLIST),1)
+classmap = dict(zip(ccdag.CLASSLIST, classids))
 
 
 # Run by dispatcher (e.g. CIRCE). Use task_name to differentiate the tasks by
@@ -162,7 +162,7 @@ def task(q, pathin, pathout, task_name):
 
             # read the generate output
             # based on that determine sleep and number of bytes in output file
-            
+
             q.task_done()
         else:
             log.debug('Not enough files')

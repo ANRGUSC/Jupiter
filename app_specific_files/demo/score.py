@@ -55,7 +55,7 @@ def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
 
     class_num = re.findall(r'\d+',task_name)[0]
-    class_name = ccdag.classlist[int(class_num)-1]
+    class_name = ccdag.CLASSLIST[int(class_num)-1]
 
     while True:
         if q.qsize()>0:
@@ -64,7 +64,7 @@ def task(q, pathin, pathout, task_name):
             src_task, this_task, base_fname = input_file.split("_", maxsplit=3)
             #show_run_stats(task_name,'queue_start_process',input_file,src_task)
             log.debug(f"{task_name}: file rcvd from {src_task} : {base_fname}")
-            
+
 
             # Process the file (this example just passes along the file as-is)
             # Once a file is copied to the `pathout` folder, CIRCE will inspect the
@@ -90,7 +90,7 @@ def task(q, pathin, pathout, task_name):
             height = 400
             dim = (width, height)
 
-            
+
              # Read Reference Images
             input_file_ref = [class_name+str(i+1)+'.JPEG' for i in range(20,30)]  # to be defined in advance
             path_ref = os.path.join(os.path.dirname(__file__),'reference',class_name) # folder of referenced images
@@ -135,7 +135,7 @@ def task(q, pathin, pathout, task_name):
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             # read the generate output
             # based on that determine sleep and number of bytes in output file
-            
+
             q.task_done()
         else:
             log.debug('Not enough files')

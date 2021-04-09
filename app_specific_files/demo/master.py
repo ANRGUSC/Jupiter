@@ -75,8 +75,8 @@ store_class_tasks_dict[291] = "storeclass18"
 store_class_tasks_dict[341] = "storeclass19"
 store_class_tasks_dict[276] = "storeclass20"
 
-classids = np.arange(0,len(ccdag.classlist),1)
-classmap = dict(zip(ccdag.classlist, classids))
+classids = np.arange(0,len(ccdag.CLASSLIST),1)
+classmap = dict(zip(ccdag.CLASSLIST, classids))
 
 store_list = ["storeclass%d"%(d) for d in range(1,ccdag.NUM_CLASS)]
 
@@ -197,7 +197,7 @@ def get_and_send_missing_images(pathin):
     print('Receive missing from decoder task:')
     for image_file, _class in missing_images_dict.items():
         file_name= image_file.split('/')[-1].split('_')[-1]
-        log.debug('Transfer the file')        
+        log.debug('Transfer the file')
         try:
             next_store_class = store_class_tasks_dict[int(_class)]
             new_file = 'home_' + next_store_class+'_'+file_name
@@ -263,7 +263,7 @@ def task(q, pathin, pathout, task_name):
                 src_list.append(src)
                 base_list.append(base_fname.split('.')[0])
                 id_list.append(base_fname.split('img')[0])
-                
+
 
 
             # Process the file (this example just passes along the file as-is)
@@ -319,8 +319,8 @@ def task(q, pathin, pathout, task_name):
                 try:
                     global_info_ip = retrieve_globalinfo(os.environ['CIRCE_NONDAG_TASK_TO_IP'])
                     global_info_ip_port = global_info_ip + ":" + str(FLASK_SVC)
-                    if ccdag.RESNETS_THRESHOLD > 1: # Coding configuration
-                        while slept < ccdag.MASTER_TO_RESNET_TIME:
+                    if ccdag.RESNETS_THRESHOLD > 0: # Coding configuration
+                        while slept < ccdag.RESNET_DEADLINE:
                             ret_val = get_enough_resnet_preds(job_id, global_info_ip_port)
                             log.debug("get_enough_resnet_preds fn. return value is: ")
                             log.debug(ret_val)
@@ -334,7 +334,7 @@ def task(q, pathin, pathout, task_name):
 
             # read the generate output
             # based on that determine sleep and number of bytes in output file
-            
+
             for i in range(0,9):
                 q.task_done()
         else:

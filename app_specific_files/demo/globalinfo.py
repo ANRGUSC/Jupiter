@@ -68,7 +68,7 @@ class collageJobs(object):
     def get_id(self):
         self.job_resnet_preds_dict[self.current_job_id] = [-1] * self.num_tasks
         return self.current_job_id
-    def put_files(self, job_id, filelist): 
+    def put_files(self, job_id, filelist):
         self.job_files_dict[job_id] = filelist
         self.current_job_id += 1
         return self.current_job_id
@@ -85,12 +85,12 @@ class collageJobs(object):
         self.job_collage_preds_dict[job_id] = preds
         print(self.job_collage_preds_dict)
     def enough_resnet_preds(self, job_id):
-        if self.job_resnet_preds_dict[job_id].count(-1) >= ccdag.RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
+        if self.job_resnet_preds_dict[job_id].count(-1) > ccdag.RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
             print("current count {}, resnets_threshold {}".format(self.job_resnet_preds_dict[job_id].count(-1), ccdag.RESNETS_THRESHOLD))
             return False
         else:
             return True
-    
+
     def get_missing_dict(self):
     # There is collage prediction and some missing resnet predictions
         missing_files_preds_dict = {}
@@ -103,7 +103,7 @@ class collageJobs(object):
             if job_id in self.processed_jobids: # already processed
                 continue
             missing = []
-            if self.job_resnet_preds_dict[job_id].count(-1) >= ccdag.RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
+            if self.job_resnet_preds_dict[job_id].count(-1) > ccdag.RESNETS_THRESHOLD: # not enough resnet task predictions. too early for this jobid.
                 continue
                 #for i in range(self.num_tasks):
                 #    missing.append(i)
@@ -125,7 +125,7 @@ class collageJobs(object):
                     self.processed_jobids.append(job_id)
             else: # len(missing) == 0. all resnet predictions are available.
                 self.processed_jobids.append(job_id)
-                
+
         return missing_files_preds_dict
 
 class EventLog(object):
@@ -211,7 +211,7 @@ def request_post_get_images():
     #print(collagejobs.job_resnet_preds_dict)
     #print(collagejobs.job_collage_preds_dict)
     return json.dumps(response)
-    
+
 
 ### Krishna
 
@@ -228,7 +228,7 @@ def request_id():
     log[class_image-1].id_update()
     print(response)
     return json.dumps(response)
-    
+
 # function of dictionary response
 @app.route('/post-dict',methods=['POST'])
 def request_dict():
@@ -254,9 +254,9 @@ def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
     while True:
         time.sleep(1)
-    
 
 
-   
 
-    
+
+
+
