@@ -6,10 +6,10 @@ jupiter_config:
   # jason-circe
   # jason-profiler
   # jason-mapper
-  namespace_prefix: zxc
+  namespace_prefix: quynh
   # Docker registry prefix for pulling and pushing images. Set to empty string for
   # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
-  docker_registry: quay.io/anrgusc
+  docker_registry: anrg
   # Choose mapper: "heft", "heft_balance", or "wave" (not yet supported)
   task_mapper: heft
   # Choose CIRCE dispatcher type: "original" (currently the only supported)
@@ -17,91 +17,36 @@ jupiter_config:
 node_map:
   # "home" is required. All other names should be "node*" where * is some
   # integer.
-  home: master
-  node1: node0-0-0
-  node2: node0-0-1
-  node3: node0-0-2
-  node4: node0-0-3
-  node5: node0-0-4
-  node6: node0-1-0
-  node7: node0-1-1
-  node8: node0-1-2
-  node9: node0-1-3
-  node10: node0-1-4
-  node11: node0-2-0
-  node12: node0-2-1
-  node13: node0-2-2
-  node14: node0-2-3
-  node15: node0-2-4
-  node16: node0-3-0
-  node17: node0-3-1
-  node18: node0-3-2
-  node19: node0-3-3
-  node20: node0-3-4
-  node21: node0-4-0
-  node22: node0-4-1
-  node23: node0-4-2
-  node24: node0-4-3
-  node25: node0-4-4
-  node26: node1-0-0
-  node27: node1-0-1
-  node28: node1-0-2
-  node29: node1-0-3
-  node30: node1-0-4
-  node31: node1-1-0
-  node32: node1-1-1
-  node33: node1-1-2
-  node34: node1-1-3
-  node35: node1-1-4
-  node36: node1-2-0
-  node37: node1-2-1
-  node38: node1-2-2
-  node39: node1-2-3
-  node40: node1-2-4
-  node41: node1-3-0
-  node42: node1-3-1
-  node43: node1-3-2
-  node44: node1-3-3
-  node45: node1-3-4
-  node46: node1-4-0
-  node47: node1-4-1
-  node48: node1-4-2
-  node49: node1-4-3
-  node50: node1-4-4
-  node51: node2-0-0
-  node52: node2-0-1
-  node53: node2-0-2
-  node54: node2-0-3
-  node55: node2-0-4
-  node56: node2-1-0
-  node57: node2-1-1
-  node58: node2-1-2
-  node59: node2-1-3
-  node60: node2-1-4
-  node61: node2-2-0
-  node62: node2-2-1
-  node63: node2-2-2
-  node64: node2-2-3
-  node65: node2-2-4
-  node66: node2-3-0
-  node67: node2-3-1
-  node68: node2-3-2
-  node69: node2-3-3
-  node70: node2-3-4
-  node71: node2-4-0
-  node72: node2-4-1
-  node73: node2-4-2
-  node74: node2-4-3
-  node75: node2-4-4
+  home: n0
+  node1: n1
+  node2: n2
+  node3: n3
+  node4: n4
+  node5: n5
+  node6: n6
+  node7: n7
+  node8: n8
+  node9: n9
+  node10: n10
+  node11: n11
+  node12: n12
+  node13: n13
+  node14: n14
+  node15: n15
+  node16: n16
+  node17: n17
+  node18: n18
+  node19: n19
+  node20: n20
+  node21: n21
+  node22: n22
+  node23: n23
 application:
   # List of port mappings in format. Used for creating additional k8s services
   # for your application. i.e., "9000:8000" will create a service with port 9000
   # which targets port 8000 in all application containers.
   # Note: [PORT_MAPPINGS] section in jupiter_config.ini cannot be used.
   port_mappings:
-  first_task: master
-  # Sample file path used in wave mapper 
-  sample_file: sample_inputs/home_master_1imgfireengine.JPEG
   tasks:
     home:
       base_script: home.py
@@ -109,16 +54,28 @@ application:
     nondag_tasks:
     - name: datasource1
       base_script: datasource.py
-      k8s_host: node0-0-0
+      k8s_host: n25
       children: master
         # Only home or dag_tasks allowed under children
     - name: datasource2
       base_script: datasource.py
-      k8s_host: node1-1-1
+      k8s_host: n26
+      children: master
+    - name: datasource3
+      base_script: datasource.py
+      k8s_host: n27
+      children: master
+    - name: datasource4
+      base_script: datasource.py
+      k8s_host: n28
+      children: master
+    - name: datasource5
+      base_script: datasource.py
+      k8s_host: n29
       children: master
     - name: globalinfo
       base_script: globalinfo.py
-      k8s_host: node2-2-2
+      k8s_host: n0
       children:
     dag_tasks:
       - name: master
@@ -142,9 +99,6 @@ application:
           - storeclass3
           - storeclass4
           - storeclass5
-          - storeclass6
-          - storeclass7
-          - storeclass8
       - name: resnet1
         base_script: resnet.py
         children:
@@ -153,9 +107,6 @@ application:
           - storeclass3
           - storeclass4
           - storeclass5
-          - storeclass6
-          - storeclass7
-          - storeclass8
       - name: resnet2
         base_script: resnet.py
         children:
@@ -164,9 +115,6 @@ application:
           - storeclass3
           - storeclass4
           - storeclass5
-          - storeclass6
-          - storeclass7
-          - storeclass8
       - name: resnet3
         base_script: resnet.py
         children:
@@ -175,9 +123,6 @@ application:
           - storeclass3
           - storeclass4
           - storeclass5
-          - storeclass6
-          - storeclass7
-          - storeclass8
       - name: resnet4
         base_script: resnet.py
         children:
@@ -186,9 +131,6 @@ application:
           - storeclass3
           - storeclass4
           - storeclass5
-          - storeclass6
-          - storeclass7
-          - storeclass8
       - name: resnet5
         base_script: resnet.py
         children:
@@ -197,9 +139,6 @@ application:
           - storeclass3
           - storeclass4
           - storeclass5
-          - storeclass6
-          - storeclass7
-          - storeclass8
       - name: resnet6
         base_script: resnet.py
         children:
@@ -208,9 +147,6 @@ application:
           - storeclass3
           - storeclass4
           - storeclass5
-          - storeclass6
-          - storeclass7
-          - storeclass8
       - name: resnet7
         base_script: resnet.py
         children:
@@ -219,9 +155,6 @@ application:
           - storeclass3
           - storeclass4
           - storeclass5
-          - storeclass6
-          - storeclass7
-          - storeclass8
       - name: resnet8
         base_script: resnet.py
         children:
@@ -230,9 +163,6 @@ application:
           - storeclass3
           - storeclass4
           - storeclass5
-          - storeclass6
-          - storeclass7
-          - storeclass8
       - name: collage
         base_script: collage.py
         children: 
@@ -256,18 +186,6 @@ application:
         base_script: storeclass.py
         children:
           - lccenc5
-      - name: storeclass6
-        base_script: storeclass.py
-        children:
-          - lccenc6
-      - name: storeclass7
-        base_script: storeclass.py
-        children:
-          - lccenc7
-      - name: storeclass8
-        base_script: storeclass.py
-        children:
-          - lccenc8
       - name: lccenc1
         base_script: lccenc.py
         children:
@@ -298,24 +216,6 @@ application:
           - score5a
           - score5b
           - score5c
-      - name: lccenc6
-        base_script: lccenc.py
-        children:
-          - score6a
-          - score6b
-          - score6c
-      - name: lccenc7
-        base_script: lccenc.py
-        children:
-          - score7a
-          - score7b
-          - score7c
-      - name: lccenc8
-        base_script: lccenc.py
-        children:
-          - score8a
-          - score8b
-          - score8c
       - name: score1a
         base_script: score.py
         children:
@@ -376,42 +276,6 @@ application:
         base_script: score.py
         children:
           - preagg5
-      - name: score6a
-        base_script: score.py
-        children:
-          - preagg6
-      - name: score6b
-        base_script: score.py
-        children:
-          - preagg6
-      - name: score6c
-        base_script: score.py
-        children:
-          - preagg6
-      - name: score7a
-        base_script: score.py
-        children:
-          - preagg7
-      - name: score7b
-        base_script: score.py
-        children:
-          - preagg7
-      - name: score7c
-        base_script: score.py
-        children:
-          - preagg7
-      - name: score8a
-        base_script: score.py
-        children:
-          - preagg8
-      - name: score8b
-        base_script: score.py
-        children:
-          - preagg8
-      - name: score8c
-        base_script: score.py
-        children:
-          - preagg8
       - name: preagg1
         base_script: preagg.py
         children:
@@ -432,18 +296,6 @@ application:
         base_script: preagg.py
         children:
           - lccdec5
-      - name: preagg6
-        base_script: preagg.py
-        children:
-          - lccdec6
-      - name: preagg7
-        base_script: preagg.py
-        children:
-          - lccdec7
-      - name: preagg8
-        base_script: preagg.py
-        children:
-          - lccdec8
       - name: lccdec1
         base_script: lccdec.py
         children:
@@ -461,18 +313,6 @@ application:
         children:
           - home
       - name: lccdec5
-        base_script: lccdec.py
-        children:
-          - home
-      - name: lccdec6
-        base_script: lccdec.py
-        children:
-          - home
-      - name: lccdec7
-        base_script: lccdec.py
-        children:
-          - home
-      - name: lccdec8
         base_script: lccdec.py
         children:
           - home
