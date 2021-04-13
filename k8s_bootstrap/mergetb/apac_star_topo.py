@@ -23,7 +23,7 @@ def ubuntu(name, version, min_memory=2):
 
 total_worker_nodes = NUM_MINNOWS + NUM_ROHUS
 
-master = net.device("master", memory >= gb(40))
+master = net.device("master", memory >= gb(40), image == "ubuntu:1804")
 master.props["shape"] = "wye"
 master.props["color"] = "red"
 
