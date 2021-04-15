@@ -4,15 +4,15 @@ from mergexp.machine import memory,image,cores
 from mergexp.unit import gb,mbps, ms
 
 # set number of minnow worker nodes
-NUM_MINNOWS = 360
+NUM_MINNOWS = 760
 
 # set number of rohu worker nodes
-NUM_ROHUS = 144
+NUM_ROHUS = 230
 
-net = mx.Topology('lanoflan', routing == static, addressing == ipv4)
-depth = 7
-lannum = 8
-nodenum = 9
+net = mx.Topology('lanoflan')
+depth = 9
+lannum = 10
+nodenum = 11
 hub = net.device('hub', memory >= gb(8))
 
 def ubuntu(name, version, min_memory=2):
