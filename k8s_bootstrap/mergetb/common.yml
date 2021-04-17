@@ -44,6 +44,13 @@
         - gnupg2
         - software-properties-common
 
+    - name: change arp table limits
+      lineinfile:
+        dest: /etc/sysctl.conf
+        line: 'net.ipv4.neigh.default.gc_thresh1=8192\nnet.ipv4.neigh.default.gc_thresh2=12228\nnet.ipv4.neigh.default.gc_thresh3=24456'
+        state: present  
+        create: yes
+
     - name: Get iptables version
       shell: 'dpkg -s iptables | grep ''Version'' | sed -re s''/.*: ([0-9]+\.[0-9]).*/\1/'''
       register: iptables_version
