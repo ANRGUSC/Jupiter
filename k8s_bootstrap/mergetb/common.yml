@@ -44,26 +44,11 @@
         - gnupg2
         - software-properties-common
         
-    - name: replace arp table thresh1
+    - name: remove thresh value line if exists
       lineinfile: 
         path: /etc/sysctl.conf
-        regexp: 'net.ipv4.neigh.default.gc_thresh1=*' 
-        line: 'net.ipv4.neigh.default.gc_thresh1=512'
-        backrefs: yes
-          
-    - name: replace arp table thresh2
-      lineinfile: 
-        path: /etc/sysctl.conf
-        regexp: 'net.ipv4.neigh.default.gc_thresh2=*' 
-        line: 'net.ipv4.neigh.default.gc_thresh=1024'
-        backrefs: yes   
-          
-    - name: replace arp table thresh3
-      lineinfile: 
-        path: /etc/sysctl.conf
-        regexp: 'net.ipv4.neigh.default.gc_thresh3=*' 
-        line: 'net.ipv4.neigh.default.gc_thresh1=2048'
-        backrefs: yes
+        regexp: 'net.ipv4.neigh.default.gc_thresh*'
+        state: absent
           
     - name: change arp table limits thresh1
       lineinfile:
