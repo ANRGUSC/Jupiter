@@ -53,7 +53,7 @@
     - name: change arp table limits thresh1
       lineinfile:
         dest: /etc/sysctl.conf
-        line: 'net.ipv4.neigh.default.gc_thresh1=512'
+        line: 'net.ipv4.neigh.default.gc_thresh1=256'
         state: present  
         create: yes
         
