@@ -27,23 +27,6 @@
       set_fact:
         ansible_os_family: Ubuntu
 
-    - name: Run apt-get update
-      apt: update_cache=yes
-
-    - name: Install requirements/dependencies
-      apt:
-        name: "{{packages}}"
-        state: present
-        update_cache: yes
-      vars:
-        packages:
-        - apt-transport-https
-        - ca-certificates
-        - curl
-        - gnupg
-        - gnupg2
-        - software-properties-common
-        
     - name: remove thresh value line if exists
       lineinfile: 
         path: /etc/sysctl.conf
@@ -73,6 +56,23 @@
         
     - name: update arp changes
       shell: sysctl -p
+
+    - name: Run apt-get update
+      apt: update_cache=yes
+
+    - name: Install requirements/dependencies
+      apt:
+        name: "{{packages}}"
+        state: present
+        update_cache: yes
+      vars:
+        packages:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg
+        - gnupg2
+        - software-properties-common
         
     - name: Get iptables version
       shell: 'dpkg -s iptables | grep ''Version'' | sed -re s''/.*: ([0-9]+\.[0-9]).*/\1/'''
