@@ -106,7 +106,8 @@ expect 'fireengine', 'schoolbus', 'whitewolf', and 'tiger' images.
 The total number of images sent through CCDAG will be NUM_IMAGES multiplied by
 the number of datasource tasks.
 """
-NUM_IMAGES = 50
+#NUM_IMAGES = 50
+NUM_IMAGES = 2
 NUM_CLASS = 8
 CLASSLIST = [
     'fireengine',

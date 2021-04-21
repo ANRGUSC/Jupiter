@@ -35,7 +35,8 @@ class AppConfig:
         # developers: manually set a non-empty string to override docker tags.
         # this is useful for creating unique docker tags when multiple people
         # are coding.
-        self.tag_extension = "testcdag"
+        self.tag_extension = "zxc"
+        # self.tag_extension = "jason"
 
     def get_first_task(self):
         print(self.cfg['application']['first_task'][:])
