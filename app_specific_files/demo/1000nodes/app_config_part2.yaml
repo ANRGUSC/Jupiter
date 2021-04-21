@@ -1,0 +1,2428 @@
+jupiter_config:
+  # Jupiter subsystems will be deployed in separate k8s namespaces. Using
+  # different prefixes allows multiple users to use the same k8s cluster.
+  # e.g. prefix "jason" results in namespaces:
+  # jason-exec
+  # jason-circe
+  # jason-profiler
+  # jason-mapper
+  namespace_prefix: jason
+  # Docker registry prefix for pulling and pushing images. Set to empty string for
+  # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
+  docker_registry: quay.io/anrgusc
+  # Choose mapper: "heft", "heft_balance", or "wave" (not yet supported)
+  task_mapper: heft
+  # Choose CIRCE dispatcher type: "original" (currently the only supported)
+  circe: original
+node_map:
+  # "home" is required. All other names should be "node*" where * is some
+  # integer.
+  home: master
+  # rohus
+  node1: node1-0-0
+  node2: node1-0-1
+  node3: node1-0-10
+  node4: node1-0-2
+  node5: node1-0-3
+  node6: node1-0-4
+  node7: node1-0-5
+  node8: node1-0-6
+  node9: node1-0-7
+  node10: node1-0-8
+  node11: node1-0-9
+  node12: node1-1-0
+  node13: node1-1-1
+  node14: node1-1-10
+  node15: node1-1-2
+  node16: node1-1-3
+  node17: node1-1-4
+  node18: node1-1-5
+  node19: node1-1-6
+  node20: node1-1-7
+  node21: node1-1-8
+  node22: node1-1-9
+  node23: node1-2-0
+  node24: node1-2-1
+  node25: node1-2-10
+  node26: node1-2-2
+  node27: node1-2-3
+  node28: node1-2-4
+  node29: node1-2-5
+  node30: node1-2-6
+  node31: node1-2-7
+  node32: node1-2-8
+  node33: node1-2-9
+  node34: node1-3-0
+  node35: node1-3-1
+  node36: node1-3-10
+  node37: node1-3-2
+  node38: node1-3-3
+  node39: node1-3-4
+  node40: node1-3-5
+  node41: node1-3-6
+  node42: node1-3-7
+  node43: node1-3-8
+  node44: node1-3-9
+  node45: node1-4-0
+  node46: node1-4-1
+  node47: node1-4-10
+  node48: node1-4-2
+  node49: node1-4-3
+  node50: node1-4-4
+  node51: node1-4-5
+  node52: node1-4-6
+  node53: node1-4-7
+  node54: node1-4-8
+  node55: node1-4-9
+  node56: node1-5-0
+  node57: node1-5-1
+  node58: node1-5-10
+  node59: node1-5-2
+  node60: node1-5-3
+  node61: node1-5-4
+  node62: node1-5-5
+  node63: node1-5-6
+  node64: node1-5-7
+  node65: node1-5-8
+  node66: node1-5-9
+  node67: node1-6-0
+  node68: node1-6-1
+  node69: node1-6-10
+  node70: node1-6-2
+  node71: node1-6-3
+  node72: node1-6-4
+  node73: node1-6-5
+  node74: node1-6-6
+  node75: node1-6-7
+  node76: node1-6-8
+  node77: node1-6-9
+  node78: node1-7-0
+  node79: node1-7-1
+  node80: node1-7-10
+  node81: node1-7-2
+  node82: node1-7-3
+  node83: node1-7-4
+  node84: node1-7-5
+  node85: node1-7-6
+  node86: node1-7-7
+  node87: node1-7-8
+  node88: node1-7-9
+  node89: node1-8-0
+  node90: node1-8-1
+  node91: node1-8-10
+  node92: node1-8-2
+  node93: node1-8-3
+  node94: node1-8-4
+  node95: node1-8-5
+  node96: node1-8-6
+  node97: node1-8-7
+  node98: node1-8-8
+  node99: node1-8-9
+  node100: node1-9-0
+  node101: node1-9-1
+  node102: node1-9-10
+  node103: node1-9-2
+  node104: node1-9-3
+  node105: node1-9-4
+  node106: node1-9-5
+  node107: node1-9-6
+  node108: node1-9-7
+  node109: node1-9-8
+  node110: node1-9-9
+  # minnows
+  node111: node5-5-0
+  node112: node5-5-1
+  node113: node5-5-10
+  node114: node5-5-2
+  node115: node5-5-3
+  node116: node5-5-4
+  node117: node5-5-5
+  node118: node5-5-6
+  node119: node5-5-7
+  node120: node5-5-8
+  node121: node5-5-9
+  node122: node5-6-0
+  node123: node5-6-1
+  node124: node5-6-10
+  node125: node5-6-2
+  node126: node5-6-3
+  node127: node5-6-4
+  node128: node5-6-5
+  node129: node5-6-6
+  node130: node5-6-7
+  node131: node5-6-8
+  node132: node5-6-9
+  node133: node5-7-0
+  node134: node5-7-1
+  node135: node5-7-10
+  node136: node5-7-2
+  node137: node5-7-3
+  node138: node5-7-4
+  node139: node5-7-5
+  node140: node5-7-6
+  node141: node5-7-7
+  node142: node5-7-8
+  node143: node5-7-9
+  node144: node5-8-0
+  node145: node5-8-1
+  node146: node5-8-10
+  node147: node5-8-2
+  node148: node5-8-3
+  node149: node5-8-4
+  node150: node5-8-5
+  node151: node5-8-6
+  node152: node5-8-7
+  node153: node5-8-8
+  node154: node5-8-9
+  node155: node5-9-0
+  node156: node5-9-1
+  node157: node5-9-10
+  node158: node5-9-2
+  node159: node5-9-3
+  node160: node5-9-4
+  node161: node5-9-5
+  node162: node5-9-6
+  node163: node5-9-7
+  node164: node5-9-8
+  node165: node5-9-9
+  node166: node6-0-0
+  node167: node6-0-1
+  node168: node6-0-10
+  node169: node6-0-2
+  node170: node6-0-3
+  node171: node6-0-4
+  node172: node6-0-5
+  node173: node6-0-6
+  node174: node6-0-7
+  node175: node6-0-8
+  node176: node6-0-9
+  node177: node6-1-0
+  node178: node6-1-1
+  node179: node6-1-10
+  node180: node6-1-2
+  node181: node6-1-3
+  node182: node6-1-4
+  node183: node6-1-5
+  node184: node6-1-6
+  node185: node6-1-7
+  node186: node6-1-8
+  node187: node6-1-9
+  node188: node6-2-0
+  node189: node6-2-1
+  node190: node6-2-10
+  node191: node6-2-2
+  node192: node6-2-3
+  node193: node6-2-4
+  node194: node6-2-5
+  node195: node6-2-6
+  node196: node6-2-7
+  node197: node6-2-8
+  node198: node6-2-9
+  node199: node6-3-0
+  node200: node6-3-1
+  node201: node6-3-10
+  node202: node6-3-2
+  node203: node6-3-3
+  node204: node6-3-4
+  node205: node6-3-5
+  node206: node6-3-6
+  node207: node6-3-7
+  node208: node6-3-8
+  node209: node6-3-9
+  node210: node6-4-0
+  node211: node6-4-1
+  node212: node6-4-10
+  node213: node6-4-2
+  node214: node6-4-3
+  node215: node6-4-4
+  node216: node6-4-5
+  node217: node6-4-6
+  node218: node6-4-7
+  node219: node6-4-8
+  node220: node6-4-9
+  node221: node6-5-0
+  node222: node6-5-1
+  node223: node6-5-10
+  node224: node6-5-2
+  node225: node6-5-3
+  node226: node6-5-4
+  node227: node6-5-5
+  node228: node6-5-6
+  node229: node6-5-7
+  node230: node6-5-8
+  node231: node6-5-9
+  node232: node6-6-0
+  node233: node6-6-1
+  node234: node6-6-10
+  node235: node6-6-2
+  node236: node6-6-3
+  node237: node6-6-4
+  node238: node6-6-5
+  node239: node6-6-6
+  node240: node6-6-7
+  node241: node6-6-8
+  node242: node6-6-9
+  node243: node6-7-0
+  node244: node6-7-1
+  node245: node6-7-10
+  node246: node6-7-2
+  node247: node6-7-3
+  node248: node6-7-4
+  node249: node6-7-5
+  node250: node6-7-6
+  node251: node6-7-7
+  node252: node6-7-8
+  node253: node6-7-9
+  node254: node6-8-0
+  node255: node6-8-1
+  node256: node6-8-10
+  node257: node6-8-2
+  node258: node6-8-3
+  node259: node6-8-4
+  node260: node6-8-5
+  node261: node6-8-6
+  node262: node6-8-7
+  node263: node6-8-8
+  node264: node6-8-9
+  node265: node6-9-0
+  node266: node6-9-1
+  node267: node6-9-10
+  node268: node6-9-2
+  node269: node6-9-3
+  node270: node6-9-4
+  node271: node6-9-5
+  node272: node6-9-6
+  node273: node6-9-7
+  node274: node6-9-8
+  node275: node6-9-9
+  node276: node7-0-0
+  node277: node7-0-1
+  node278: node7-0-10
+  node279: node7-0-2
+  node280: node7-0-3
+  node281: node7-0-4
+  node282: node7-0-5
+  node283: node7-0-6
+  node284: node7-0-7
+  node285: node7-0-8
+  node286: node7-0-9
+  node287: node7-1-0
+  node288: node7-1-1
+  node289: node7-1-10
+  node290: node7-1-2
+  node291: node7-1-3
+  node292: node7-1-4
+  node293: node7-1-5
+  node294: node7-1-6
+  node295: node7-1-7
+  node296: node7-1-8
+  node297: node7-1-9
+  node298: node7-2-0
+  node299: node7-2-1
+  node300: node7-2-10
+  node301: node7-2-2
+  node302: node7-2-3
+  node303: node7-2-4
+  node304: node7-2-5
+  node305: node7-2-6
+  node306: node7-2-7
+  node307: node7-2-8
+  node308: node7-2-9
+  node309: node7-3-0
+  node310: node7-3-1
+  node311: node7-3-10
+  node312: node7-3-2
+  node313: node7-3-3
+  node314: node7-3-4
+  node315: node7-3-5
+  node316: node7-3-6
+  node317: node7-3-7
+  node318: node7-3-8
+  node319: node7-3-9
+  node320: node7-4-0
+  node321: node7-4-1
+  node322: node7-4-10
+  node323: node7-4-2
+  node324: node7-4-3
+  node325: node7-4-4
+  node326: node7-4-5
+  node327: node7-4-6
+  node328: node7-4-7
+  node329: node7-4-8
+  node330: node7-4-9
+  node331: node7-5-0
+  node332: node7-5-1
+  node333: node7-5-10
+  node334: node7-5-2
+  node335: node7-5-3
+  node336: node7-5-4
+  node337: node7-5-5
+  node338: node7-5-6
+  node339: node7-5-7
+  node340: node7-5-8
+  node341: node7-5-9
+  node342: node7-6-0
+  node343: node7-6-1
+  node344: node7-6-10
+  node345: node7-6-2
+  node346: node7-6-3
+  node347: node7-6-4
+  node348: node7-6-5
+  node349: node7-6-6
+  node350: node7-6-7
+  node351: node7-6-8
+  node352: node7-6-9
+  node353: node7-7-0
+  node354: node7-7-1
+  node355: node7-7-10
+  node356: node7-7-2
+  node357: node7-7-3
+  node358: node7-7-4
+  node359: node7-7-5
+  node360: node7-7-6
+  node361: node7-7-7
+  node362: node7-7-8
+  node363: node7-7-9
+  node364: node7-8-0
+  node365: node7-8-1
+  node366: node7-8-10
+  node367: node7-8-2
+  node368: node7-8-3
+  node369: node7-8-4
+  node370: node7-8-5
+  node371: node7-8-6
+  node372: node7-8-7
+  node373: node7-8-8
+  node374: node7-8-9
+  node375: node7-9-0
+  node376: node7-9-1
+  node377: node7-9-10
+  node378: node7-9-2
+  node379: node7-9-3
+  node380: node7-9-4
+  node381: node7-9-5
+  node382: node7-9-6
+  node383: node7-9-7
+  node384: node7-9-8
+  node385: node7-9-9
+  node386: node8-0-0
+  node387: node8-0-1
+  node388: node8-0-10
+  node389: node8-0-2
+  node390: node8-0-3
+  node391: node8-0-4
+  node392: node8-0-5
+  node393: node8-0-6
+  node394: node8-0-7
+  node395: node8-0-8
+  node396: node8-0-9
+  node397: node8-1-0
+  node398: node8-1-1
+  node399: node8-1-10
+  node400: node8-1-2
+  node401: node8-1-3
+  node402: node8-1-4
+  node403: node8-1-5
+  node404: node8-1-6
+  node405: node8-1-7
+  node406: node8-1-8
+  node407: node8-1-9
+  node408: node8-2-0
+  node409: node8-2-1
+  node410: node8-2-10
+  node411: node8-2-2
+  node412: node8-2-3
+  node413: node8-2-4
+  node414: node8-2-5
+  node415: node8-2-6
+  node416: node8-2-7
+  node417: node8-2-8
+  node418: node8-2-9
+  node419: node8-3-0
+  node420: node8-3-1
+  node421: node8-3-10
+  node422: node8-3-2
+  node423: node8-3-3
+  node424: node8-3-4
+  node425: node8-3-5
+  node426: node8-3-6
+  node427: node8-3-7
+  node428: node8-3-8
+  node429: node8-3-9
+  node430: node8-4-0
+  node431: node8-4-1
+  node432: node8-4-10
+  node433: node8-4-2
+  node434: node8-4-3
+  node435: node8-4-4
+  node436: node8-4-5
+  node437: node8-4-6
+  node438: node8-4-7
+  node439: node8-4-8
+  node440: node8-4-9
+  node441: node8-5-0
+  node442: node8-5-1
+  node443: node8-5-10
+  node444: node8-5-2
+  node445: node8-5-3
+  node446: node8-5-4
+  node447: node8-5-5
+  node448: node8-5-6
+  node449: node8-5-7
+  node450: node8-5-8
+  node451: node8-5-9
+  node452: node8-6-0
+  node453: node8-6-1
+  node454: node8-6-10
+  node455: node8-6-2
+  node456: node8-6-3
+  node457: node8-6-4
+  node458: node8-6-5
+  node459: node8-6-6
+  node460: node8-6-7
+  node461: node8-6-8
+  node462: node8-6-9
+  node463: node8-7-0
+  node464: node8-7-1
+  node465: node8-7-10
+  node466: node8-7-2
+  node467: node8-7-3
+  node468: node8-7-4
+  node469: node8-7-5
+  node470: node8-7-6
+  node471: node8-7-7
+  node472: node8-7-8
+  node473: node8-7-9
+  node474: node8-8-0
+  node475: node8-8-1
+  node476: node8-8-10
+  node477: node8-8-2
+  node478: node8-8-3
+  node479: node8-8-4
+  node480: node8-8-5
+  node481: node8-8-6
+  node482: node8-8-7
+  node483: node8-8-8
+  node484: node8-8-9
+  node485: node8-9-0
+  node486: node8-9-1
+  node487: node8-9-10
+  node488: node8-9-2
+  node489: node8-9-3
+  node490: node8-9-4
+  node491: node8-9-5
+  node492: node8-9-6
+  node493: node8-9-7
+  node494: node8-9-8
+  node495: node8-9-9
+application:
+  # List of port mappings in format. Used for creating additional k8s services
+  # for your application. i.e., "9000:8000" will create a service with port 9000
+  # which targets port 8000 in all application containers.
+  # Note: [PORT_MAPPINGS] section in jupiter_config.ini cannot be used.
+  port_mappings:
+  first_task: master
+  # Sample file path used in wave mapper 
+  sample_file: sample_inputs/home_master_1imgfireengine.JPEG
+  tasks:
+    home:
+      base_script: home.py
+      children:
+    nondag_tasks:
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-5-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-5-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-5-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-5-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-5-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-5-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-5-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-5-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-5-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-5-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-5-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-6-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-6-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-6-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-6-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-6-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-6-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-6-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-6-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-6-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-6-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-6-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-7-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-7-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-7-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-7-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-7-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-7-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-7-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-7-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-7-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-7-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-7-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-8-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-8-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-8-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-8-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-8-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-8-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-8-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-8-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-8-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-8-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-8-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-9-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-9-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-9-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-9-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-9-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-9-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-9-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-9-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-9-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-9-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node5-9-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-0-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-0-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-0-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-0-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-0-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-0-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-0-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-0-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-0-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-0-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-0-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-1-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-1-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-1-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-1-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-1-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-1-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-1-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-1-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-1-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-1-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-1-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-2-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-2-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-2-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-2-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-2-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-2-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-2-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-2-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-2-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-2-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-2-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-3-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-3-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-3-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-3-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-3-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-3-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-3-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-3-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-3-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-3-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-3-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-4-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-4-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-4-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-4-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-4-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-4-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-4-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-4-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-4-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-4-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-4-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-5-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-5-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-5-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-5-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-5-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-5-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-5-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-5-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-5-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-5-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-5-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-6-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-6-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-6-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-6-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-6-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-6-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-6-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-6-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-6-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-6-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-6-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-7-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-7-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-7-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-7-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-7-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-7-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-7-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-7-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-7-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-7-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-7-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-8-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-8-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-8-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-8-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-8-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-8-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-8-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-8-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-8-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-8-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-8-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-9-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-9-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-9-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-9-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-9-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-9-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-9-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-9-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-9-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-9-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node6-9-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-0-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-0-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-0-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-0-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-0-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-0-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-0-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-0-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-0-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-0-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-0-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-1-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-1-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-1-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-1-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-1-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-1-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-1-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-1-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-1-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-1-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-1-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-2-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-2-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-2-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-2-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-2-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-2-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-2-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-2-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-2-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-2-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-2-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-3-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-3-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-3-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-3-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-3-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-3-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-3-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-3-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-3-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-3-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-3-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-4-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-4-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-4-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-4-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-4-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-4-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-4-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-4-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-4-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-4-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-4-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-5-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-5-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-5-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-5-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-5-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-5-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-5-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-5-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-5-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-5-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-5-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-6-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-6-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-6-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-6-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-6-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-6-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-6-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-6-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-6-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-6-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-6-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-7-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-7-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-7-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-7-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-7-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-7-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-7-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-7-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-7-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-7-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-7-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-8-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-8-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-8-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-8-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-8-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-8-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-8-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-8-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-8-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-8-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-8-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-9-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-9-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-9-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-9-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-9-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-9-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-9-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-9-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-9-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-9-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node7-9-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-0-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-0-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-0-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-0-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-0-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-0-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-0-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-0-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-0-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-0-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-0-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-1-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-1-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-1-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-1-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-1-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-1-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-1-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-1-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-1-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-1-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-1-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-2-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-2-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-2-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-2-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-2-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-2-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-2-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-2-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-2-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-2-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-2-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-3-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-3-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-3-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-3-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-3-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-3-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-3-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-3-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-3-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-3-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-3-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-4-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-4-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-4-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-4-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-4-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-4-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-4-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-4-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-4-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-4-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-4-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-5-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-5-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-5-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-5-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-5-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-5-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-5-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-5-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-5-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-5-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-5-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-6-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-6-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-6-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-6-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-6-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-6-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-6-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-6-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-6-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-6-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-6-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-7-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-7-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-7-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-7-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-7-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-7-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-7-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-7-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-7-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-7-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-7-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-8-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-8-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-8-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-8-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-8-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-8-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-8-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-8-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-8-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-8-8
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-8-9
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-9-0
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-9-1
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-9-10
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-9-2
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-9-3
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-9-4
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-9-5
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-9-6
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-9-7
+      children: master
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node8-9-8
+      children: master
+
+    - name: globalinfo
+      base_script: globalinfo.py
+      k8s_host: node8-9-9
+      children:
+    dag_tasks:
+      - name: master
+        base_script: master.py
+        children:  # child order determines round robin sequence
+          - resnet0
+          - resnet1
+          - resnet2
+          - resnet3
+          - resnet4
+          - resnet5
+          - resnet6
+          - resnet7
+          - resnet8
+          - collage
+      - name: resnet0
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet1
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet2
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet3
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet4
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet5
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet6
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet7
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet8
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: collage
+        base_script: collage.py
+        children: 
+      - name: storeclass1
+        base_script: storeclass.py
+        children:
+          - lccenc1
+      - name: storeclass2
+        base_script: storeclass.py
+        children:
+          - lccenc2
+      - name: storeclass3
+        base_script: storeclass.py
+        children:
+          - lccenc3
+      - name: storeclass4
+        base_script: storeclass.py
+        children:
+          - lccenc4
+      - name: storeclass5
+        base_script: storeclass.py
+        children:
+          - lccenc5
+      - name: storeclass6
+        base_script: storeclass.py
+        children:
+          - lccenc6
+      - name: storeclass7
+        base_script: storeclass.py
+        children:
+          - lccenc7
+      - name: storeclass8
+        base_script: storeclass.py
+        children:
+          - lccenc8
+      - name: lccenc1
+        base_script: lccenc.py
+        children:
+          - score1a
+          - score1b
+          - score1c
+      - name: lccenc2
+        base_script: lccenc.py
+        children:
+          - score2a
+          - score2b
+          - score2c
+      - name: lccenc3
+        base_script: lccenc.py
+        children:
+          - score3a
+          - score3b
+          - score3c
+      - name: lccenc4
+        base_script: lccenc.py
+        children:
+          - score4a
+          - score4b
+          - score4c
+      - name: lccenc5
+        base_script: lccenc.py
+        children:
+          - score5a
+          - score5b
+          - score5c
+      - name: lccenc6
+        base_script: lccenc.py
+        children:
+          - score6a
+          - score6b
+          - score6c
+      - name: lccenc7
+        base_script: lccenc.py
+        children:
+          - score7a
+          - score7b
+          - score7c
+      - name: lccenc8
+        base_script: lccenc.py
+        children:
+          - score8a
+          - score8b
+          - score8c
+      - name: score1a
+        base_script: score.py
+        children:
+          - preagg1
+      - name: score1b
+        base_script: score.py
+        children:
+          - preagg1
+      - name: score1c
+        base_script: score.py
+        children:
+          - preagg1
+      - name: score2a
+        base_script: score.py
+        children:
+          - preagg2
+      - name: score2b
+        base_script: score.py
+        children:
+          - preagg2
+      - name: score2c
+        base_script: score.py
+        children:
+          - preagg2
+      - name: score3a
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score3b
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score3c
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score4a
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score4b
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score4c
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score5a
+        base_script: score.py
+        children:
+          - preagg5
+      - name: score5b
+        base_script: score.py
+        children:
+          - preagg5
+      - name: score5c
+        base_script: score.py
+        children:
+          - preagg5
+      - name: score6a
+        base_script: score.py
+        children:
+          - preagg6
+      - name: score6b
+        base_script: score.py
+        children:
+          - preagg6
+      - name: score6c
+        base_script: score.py
+        children:
+          - preagg6
+      - name: score7a
+        base_script: score.py
+        children:
+          - preagg7
+      - name: score7b
+        base_script: score.py
+        children:
+          - preagg7
+      - name: score7c
+        base_script: score.py
+        children:
+          - preagg7
+      - name: score8a
+        base_script: score.py
+        children:
+          - preagg8
+      - name: score8b
+        base_script: score.py
+        children:
+          - preagg8
+      - name: score8c
+        base_script: score.py
+        children:
+          - preagg8
+      - name: preagg1
+        base_script: preagg.py
+        children:
+          - lccdec1
+      - name: preagg2
+        base_script: preagg.py
+        children:
+          - lccdec2
+      - name: preagg3
+        base_script: preagg.py
+        children:
+          - lccdec3
+      - name: preagg4
+        base_script: preagg.py
+        children:
+          - lccdec4
+      - name: preagg5
+        base_script: preagg.py
+        children:
+          - lccdec5
+      - name: preagg6
+        base_script: preagg.py
+        children:
+          - lccdec6
+      - name: preagg7
+        base_script: preagg.py
+        children:
+          - lccdec7
+      - name: preagg8
+        base_script: preagg.py
+        children:
+          - lccdec8
+      - name: lccdec1
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec2
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec3
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec4
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec5
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec6
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec7
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec8
+        base_script: lccdec.py
+        children:
+          - home
