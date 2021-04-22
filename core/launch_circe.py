@@ -191,6 +191,13 @@ def launch_circe(task_mapping):
         try:
             node = task_mapping[task['name']]
             k8s_hostname = node_map[node]
+            log.fatal(node)
+            log.fatal("====================================")
+            log.fatal(node_map)
+            log.fatal("====================================")
+            log.fatal(task['name'])
+            log.fatal("====================================")
+            log.fatal(task_mapping)
         except KeyError:
             log.fatal("Task missing in mapping file or node not in " +
                       "app_config.yaml. Clean up with delete_all_circe.py.")
