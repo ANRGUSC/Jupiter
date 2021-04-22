@@ -19,7 +19,8 @@ while(1):
         break
     line = line.rstrip('\n')
     st = line.split(' ')[1]
-    print("    - name: datasource2")
+    print("    - name: datasource" + str(i))
     print("      base_script: datasource.py")
     print("      k8s_host: "+st)
     print("      children: master")
+    i += 1

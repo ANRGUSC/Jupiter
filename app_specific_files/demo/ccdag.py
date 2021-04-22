@@ -88,7 +88,7 @@ EXP_ID = 'a'
 
 # All datasource tasks will send images to the master service with the designated
 # interval below
-STREAM_INTERVAL = 120   # Seconds
+STREAM_INTERVAL = 20   # Seconds
 
 """
 Setting Up Image Classes

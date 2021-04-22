@@ -36,7 +36,7 @@ APP_DIR = os.path.dirname(os.path.abspath(__file__))
 # Parse app_config.yaml. Keep as a global to use in your app code.
 app_config = app_config_parser.AppConfig(APP_DIR)
 
-
+'''
 def gen_stream_fixed_set_data(task_name,interval,num_images,data_path,original_data_path):
     list_files = os.listdir(original_data_path)
     for i in range(0,num_images):
@@ -47,7 +47,21 @@ def gen_stream_fixed_set_data(task_name,interval,num_images,data_path,original_d
         shutil.copyfile(source, destination)
         ts = time.time()
         show_run_stats(task_name,'new_file_datasource',filename)
+'''
 
+def gen_stream_fixed_set_data(task_name,interval,num_images,data_path,original_data_path):
+    index = task_name.strip('datasource') # take the task_name index number by stripping out the 'datasource' prefix
+    list_files = os.listdir(original_data_path)
+    # in a while loop send images starting with list item (len(list_files) % int(index))
+    for i in range(0,num_images):
+        time.sleep(interval + int(index)) # add offset to this interval based on task name (eg task 200 starts at 60 seconds)
+        offset = int(index) % len(list_files)
+        filename = list_files[offset + i]
+        source = os.path.join(original_data_path,filename)
+        destination = os.path.join(data_path,filename)
+        shutil.copyfile(source, destination)
+        ts = time.time()
+        show_run_stats(task_name,'new_file_datasource',filename)
 
 
 # Run by dispatcher (e.g. CIRCE). Custom tasks are unable to receive files
