@@ -56,7 +56,7 @@ def gen_stream_fixed_set_data(task_name,interval,num_images,data_path,original_d
     for i in range(0,num_images):
         time.sleep(interval + int(index)) # add offset to this interval based on task name (eg task 200 starts at 60 seconds)
         offset = int(index) % len(list_files)
-        filename = list_files[offset + i]
+        filename = list_files[(offset + i) % len(list_files)]
         source = os.path.join(original_data_path,filename)
         destination = os.path.join(data_path,filename)
         shutil.copyfile(source, destination)
