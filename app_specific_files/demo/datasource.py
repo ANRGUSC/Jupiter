@@ -58,10 +58,11 @@ def gen_stream_fixed_set_data(task_name,interval,num_images,data_path,original_d
         offset = int(index) % len(list_files)
         filename = list_files[(offset + i) % len(list_files)]
         source = os.path.join(original_data_path,filename)
-        destination = os.path.join(data_path,filename)
+        new_filename = filename.split('_')[0] + "_" + filename.split('_')[1] + "_" + ''.join(random.choice(string.digits) for _ in range(8)) + "img" + filename.split('_')[2].split('img')[1]
+        destination = os.path.join(data_path,new_filename)
         shutil.copyfile(source, destination)
         ts = time.time()
-        show_run_stats(task_name,'new_file_datasource',filename)
+        show_run_stats(task_name,'new_file_datasource',new_filename)
 
 
 # Run by dispatcher (e.g. CIRCE). Custom tasks are unable to receive files
