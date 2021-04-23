@@ -49,7 +49,7 @@ container accordingly to notify the blocking resnet tasks.
 CODING_PART1 = 1            # 1 to enable, 0 to disable
 RESNETS_THRESHOLD = 1
 MASTER_POLL_INTERVAL = 2    # Seconds
-RESNET_DEADLINE = 10        # Seconds
+RESNET_DEADLINE = 6        # Seconds
 RESNET_POLL_INTERVAL = 1    # Seconds
 
 
@@ -67,7 +67,7 @@ When coding is enabled, the preagg task will move forward with just two scores
 and not bother waiting for the third. When coding is disabled, the preagg task
 will wait for the straggler to finish before moving forward.
 """
-CODING_PART2 = 1
+CODING_PART2 = 0
 
 """
 Injecting Delays at resnet8 and score#a for "Straggling"
@@ -79,7 +79,7 @@ seconds. SLEEP_TIME=0 disables any injected delays.
 All score#a tasks will also inject a delay using the same method and parameters
 as resnet8.
 """
-SLEEP_TIME = 5          #Seconds
+SLEEP_TIME = 8          #Seconds
 STRAGGLER_THRESHOLD = 0
 
 # This is used for naming the results and plots in generate_results.py
@@ -88,7 +88,7 @@ EXP_ID = 'a'
 
 # All datasource tasks will send images to the master service with the designated
 # interval below
-STREAM_INTERVAL = 20   # Seconds
+STREAM_INTERVAL = 25   # Seconds
 
 """
 Setting Up Image Classes
