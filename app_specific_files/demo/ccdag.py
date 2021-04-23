@@ -80,7 +80,7 @@ All score#a tasks will also inject a delay using the same method and parameters
 as resnet8.
 """
 SLEEP_TIME = 8          #Seconds
-STRAGGLER_THRESHOLD = 0
+STRAGGLER_THRESHOLD = 0.2
 
 # This is used for naming the results and plots in generate_results.py
 EXP_NAME = 'sleep'
