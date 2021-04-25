@@ -67,7 +67,7 @@ When coding is enabled, the preagg task will move forward with just two scores
 and not bother waiting for the third. When coding is disabled, the preagg task
 will wait for the straggler to finish before moving forward.
 """
-CODING_PART2 = 1
+CODING_PART2 = 0
 
 """
 Injecting Delays at resnet8 and score#a for "Straggling"
