@@ -46,8 +46,8 @@ finished trying to classify the image. If the master service ends up forwarding
 the image directly, I believe the master service will update the kvstore flask
 container accordingly to notify the blocking resnet tasks.
 """
-CODING_PART1 = 0            # 1 to enable, 0 to disable
-RESNETS_THRESHOLD = 0
+CODING_PART1 = 1            # 1 to enable, 0 to disable
+RESNETS_THRESHOLD = 1
 MASTER_POLL_INTERVAL = 2    # Seconds
 RESNET_DEADLINE = 6        # Seconds
 RESNET_POLL_INTERVAL = 1    # Seconds
@@ -67,7 +67,7 @@ When coding is enabled, the preagg task will move forward with just two scores
 and not bother waiting for the third. When coding is disabled, the preagg task
 will wait for the straggler to finish before moving forward.
 """
-CODING_PART2 = 0
+CODING_PART2 = 1
 
 """
 Injecting Delays at resnet8 and score#a for "Straggling"
