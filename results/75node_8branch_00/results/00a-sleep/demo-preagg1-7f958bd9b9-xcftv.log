@@ -1,0 +1,28 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+INFO:circe.py:Using base script preagg.py
+DEBUG:circe.py:starting the input monitoring process
+DEBUG:circe.py:starting the output monitoring process
+1
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1b_preagg1_1jobth1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184591.184878}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1c_preagg1_1jobth1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184591.2655692}
+INFO:ccdag_utils.py:runtime_stat:{"task_name": "preagg1", "event": "queue_start_process", "filename": "score1b_preagg1_1jobth1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184591.9032447}
+INFO:ccdag_utils.py:runtime_stat:{"task_name": "preagg1", "event": "queue_start_process", "filename": "score1c_preagg1_1jobth1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184591.9709077}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1a_preagg1_1jobth1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184594.0940208}
+INFO:ccdag_utils.py:runtime_stat:{"task_name": "preagg1", "event": "queue_start_process", "filename": "score1a_preagg1_1jobth1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184595.0316155}
+preagg1_lccdec1_1jobthscore1a1#883-0#381-0#1179-0#674-0#1033-0#154
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_output_file", "filename": "preagg1_lccdec1_1jobthscore1a1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184595.0995939}
+DEBUG:transfer.py:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no /jupiter/circe_output/preagg1_lccdec1_1jobthscore1a1#883-0#381-0#1179-0#674-0#1033-0#154 root@10.106.187.241:/jupiter/circe_input/
+INFO:ccdag_utils.py:runtime_stat:{"task_name": "preagg1", "event": "queue_end_process", "filename": "preagg1_lccdec1_1jobthscore1a1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184595.1045022}
+preagg1_lccdec1_1jobthscore1b1#883-0#381-0#1179-0#674-0#1033-0#154
+INFO:ccdag_utils.py:runtime_stat:{"task_name": "preagg1", "event": "queue_end_process", "filename": "preagg1_lccdec1_1jobthscore1b1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184595.1107998}
+preagg1_lccdec1_1jobthscore1c1#883-0#381-0#1179-0#674-0#1033-0#154
+INFO:ccdag_utils.py:runtime_stat:{"task_name": "preagg1", "event": "queue_end_process", "filename": "preagg1_lccdec1_1jobthscore1c1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184595.115432}
+Warning: Permanently added '[10.106.187.241]:5000' (ECDSA) to the list of known hosts.
+DEBUG:transfer.py:transfer successful!
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_output_file", "filename": "preagg1_lccdec1_1jobthscore1b1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184595.3150184}
+DEBUG:transfer.py:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no /jupiter/circe_output/preagg1_lccdec1_1jobthscore1b1#883-0#381-0#1179-0#674-0#1033-0#154 root@10.106.187.241:/jupiter/circe_input/
+DEBUG:transfer.py:transfer successful!
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_output_file", "filename": "preagg1_lccdec1_1jobthscore1c1#883-0#381-0#1179-0#674-0#1033-0#154", "unix_time": 1620184595.5292017}
+DEBUG:transfer.py:sshpass -p PASSWORD scp -P 5000 -o StrictHostKeyChecking=no /jupiter/circe_output/preagg1_lccdec1_1jobthscore1c1#883-0#381-0#1179-0#674-0#1033-0#154 root@10.106.187.241:/jupiter/circe_input/
+DEBUG:transfer.py:transfer successful!
