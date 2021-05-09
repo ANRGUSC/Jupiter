@@ -1,0 +1,94 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+INFO:circe.py:Using base script preagg.py
+DEBUG:circe.py:starting the input monitoring process
+DEBUG:circe.py:starting the output monitoring process
+8
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8b_preagg8_2jobth7#76554548-7#54484374-7#46926425-7#04226394", "unix_time": 1620589263.8592997}
+INFO:ccdag_utils.py:runtime_stat:{"task_name": "preagg8", "event": "queue_start_process", "filename": "score8b_preagg8_2jobth7#76554548-7#54484374-7#46926425-7#04226394", "unix_time": 1620589264.1794915}
+Exception in thread Thread-3:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 144, in _new_conn
+    (self.host, self.port), self.timeout, **extra_kw)
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 83, in create_connection
+    raise err
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 601, in urlopen
+    chunked=chunked)
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 357, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.6/http/client.py", line 1281, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1327, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1276, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1042, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.6/http/client.py", line 980, in send
+    self.connect()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 169, in connect
+    conn = self._new_conn()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 153, in _new_conn
+    self, "Failed to establish a new connection: %s" % e)
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x7f4c90df8630>: Failed to establish a new connection: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 440, in send
+    timeout=timeout
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 639, in urlopen
+    _stacktrace=sys.exc_info()[2])
+  File "/usr/lib/python3/dist-packages/urllib3/util/retry.py", line 398, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='10.100.92.70', port=6100): Max retries exceeded with url: /post-dict (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f4c90df8630>: Failed to establish a new connection: [Errno 111] Connection refused',))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/jupiter/build/app_specific_files/preagg.py", line 96, in task
+    response =  requests.post(url, headers = hdr,data = json.dumps(payload))
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 112, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 58, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 520, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 630, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 508, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.100.92.70', port=6100): Max retries exceeded with url: /post-dict (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7f4c90df8630>: Failed to establish a new connection: [Errno 111] Connection refused',))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/jupiter/build/app_specific_files/preagg.py", line 105, in task
+    job_dict = {'2':[sample1[0],sample2[0]]}
+IndexError: list index out of range
+
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8c_preagg8_2jobth7#76554548-7#54484374-7#46926425-7#04226394", "unix_time": 1620589266.5439951}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8a_preagg8_2jobth7#76554548-7#54484374-7#46926425-7#04226394", "unix_time": 1620589273.1242793}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8b_preagg8_1jobth7#26062583-7#66510832-7#58681436-7#99191515", "unix_time": 1620589522.6045198}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8c_preagg8_1jobth7#26062583-7#66510832-7#58681436-7#99191515", "unix_time": 1620589523.2815285}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8a_preagg8_1jobth7#26062583-7#66510832-7#58681436-7#99191515", "unix_time": 1620589531.9164388}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8b_preagg8_2jobth7#93853635-7#82124749-7#37436176-7#88926918", "unix_time": 1620589638.2225614}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8c_preagg8_2jobth7#93853635-7#82124749-7#37436176-7#88926918", "unix_time": 1620589638.9258103}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8a_preagg8_2jobth7#93853635-7#82124749-7#37436176-7#88926918", "unix_time": 1620589647.5221193}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8b_preagg8_3jobth7#18912147-7#08713564-7#43137319-7#54800846", "unix_time": 1620589977.0395355}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8c_preagg8_3jobth7#18912147-7#08713564-7#43137319-7#54800846", "unix_time": 1620589977.7693021}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8a_preagg8_3jobth7#18912147-7#08713564-7#43137319-7#54800846", "unix_time": 1620589985.411431}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8c_preagg8_4jobth7#92428495-7#72221116-7#26442015-7#16571191", "unix_time": 1620590158.4557984}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8b_preagg8_4jobth7#92428495-7#72221116-7#26442015-7#16571191", "unix_time": 1620590158.8229535}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score8a_preagg8_4jobth7#92428495-7#72221116-7#26442015-7#16571191", "unix_time": 1620590167.0643315}

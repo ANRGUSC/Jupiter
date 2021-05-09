@@ -1,0 +1,97 @@
+ * Starting OpenBSD Secure Shell server sshd
+   ...done.
+INFO:circe.py:Using base script preagg.py
+DEBUG:circe.py:starting the input monitoring process
+DEBUG:circe.py:starting the output monitoring process
+1
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1b_preagg1_2jobth1#45830056-1#04620081-0#73484279-0#20255267", "unix_time": 1620589434.2719772}
+INFO:ccdag_utils.py:runtime_stat:{"task_name": "preagg1", "event": "queue_start_process", "filename": "score1b_preagg1_2jobth1#45830056-1#04620081-0#73484279-0#20255267", "unix_time": 1620589434.4102201}
+Exception in thread Thread-3:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 144, in _new_conn
+    (self.host, self.port), self.timeout, **extra_kw)
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 83, in create_connection
+    raise err
+  File "/usr/lib/python3/dist-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 601, in urlopen
+    chunked=chunked)
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 357, in _make_request
+    conn.request(method, url, **httplib_request_kw)
+  File "/usr/lib/python3.6/http/client.py", line 1281, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1327, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1276, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/lib/python3.6/http/client.py", line 1042, in _send_output
+    self.send(msg)
+  File "/usr/lib/python3.6/http/client.py", line 980, in send
+    self.connect()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 169, in connect
+    conn = self._new_conn()
+  File "/usr/lib/python3/dist-packages/urllib3/connection.py", line 153, in _new_conn
+    self, "Failed to establish a new connection: %s" % e)
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0x7fcfd6616390>: Failed to establish a new connection: [Errno 111] Connection refused
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 440, in send
+    timeout=timeout
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 639, in urlopen
+    _stacktrace=sys.exc_info()[2])
+  File "/usr/lib/python3/dist-packages/urllib3/util/retry.py", line 398, in increment
+    raise MaxRetryError(_pool, url, error or ResponseError(cause))
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='10.100.92.70', port=6100): Max retries exceeded with url: /post-dict (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fcfd6616390>: Failed to establish a new connection: [Errno 111] Connection refused',))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/jupiter/build/app_specific_files/preagg.py", line 96, in task
+    response =  requests.post(url, headers = hdr,data = json.dumps(payload))
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 112, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 58, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 520, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 630, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 508, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPConnectionPool(host='10.100.92.70', port=6100): Max retries exceeded with url: /post-dict (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0x7fcfd6616390>: Failed to establish a new connection: [Errno 111] Connection refused',))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.6/threading.py", line 916, in _bootstrap_inner
+    self.run()
+  File "/usr/lib/python3.6/threading.py", line 864, in run
+    self._target(*self._args, **self._kwargs)
+  File "/jupiter/build/app_specific_files/preagg.py", line 105, in task
+    job_dict = {'2':[sample1[0],sample2[0]]}
+IndexError: list index out of range
+
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1c_preagg1_2jobth1#45830056-1#04620081-0#73484279-0#20255267", "unix_time": 1620589435.7322912}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1a_preagg1_2jobth1#45830056-1#04620081-0#73484279-0#20255267", "unix_time": 1620589443.4107296}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1b_preagg1_1jobth0#51527659-0#24456832-0#62751220-0#46633969", "unix_time": 1620589606.2482772}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1c_preagg1_1jobth0#51527659-0#24456832-0#62751220-0#46633969", "unix_time": 1620589607.7387526}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1a_preagg1_1jobth0#51527659-0#24456832-0#62751220-0#46633969", "unix_time": 1620589615.4799685}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1b_preagg1_2jobth0#22409267-0#04011892-0#98793047-0#76688541", "unix_time": 1620589691.3280942}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1c_preagg1_2jobth0#22409267-0#04011892-0#98793047-0#76688541", "unix_time": 1620589691.6483443}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1a_preagg1_2jobth0#22409267-0#04011892-0#98793047-0#76688541", "unix_time": 1620589699.3706489}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1b_preagg1_3jobth0#00847700-0#74770247-1#44487201-1#64804740", "unix_time": 1620589772.046529}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1c_preagg1_3jobth0#00847700-0#74770247-1#44487201-1#64804740", "unix_time": 1620589773.6652055}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1a_preagg1_3jobth0#00847700-0#74770247-1#44487201-1#64804740", "unix_time": 1620589781.1802757}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1b_preagg1_4jobth0#59969206-0#20686866-0#25833538-0#87512942", "unix_time": 1620589874.930642}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1c_preagg1_4jobth0#59969206-0#20686866-0#25833538-0#87512942", "unix_time": 1620589875.5998597}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1a_preagg1_4jobth0#59969206-0#20686866-0#25833538-0#87512942", "unix_time": 1620589882.9649415}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1b_preagg1_5jobth0#59638434-0#27992159-0#29425452-0#72125865", "unix_time": 1620590122.9577782}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1c_preagg1_5jobth0#59638434-0#27992159-0#29425452-0#72125865", "unix_time": 1620590123.672177}
+INFO:circe.py:runtime_stat:{"task_name": "circe", "event": "new_input_file", "filename": "score1a_preagg1_5jobth0#59638434-0#27992159-0#29425452-0#72125865", "unix_time": 1620590132.0227742}
