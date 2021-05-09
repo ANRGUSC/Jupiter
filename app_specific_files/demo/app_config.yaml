@@ -111,10 +111,18 @@ application:
       base_script: datasource.py
       k8s_host: node0-0-0
       children: master
-        # Only home or dag_tasks allowed under children
     - name: datasource2
       base_script: datasource.py
-      k8s_host: node1-1-1
+      k8s_host: node0-0-1
+      children: master
+    - name: datasource3
+      base_script: datasource.py
+      k8s_host: node0-0-2
+      children: master
+    # Only home or dag_tasks allowed under children
+    - name: datasource4
+      base_script: datasource.py
+      k8s_host: node0-0-3
       children: master
     - name: globalinfo
       base_script: globalinfo.py
