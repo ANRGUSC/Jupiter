@@ -4,12 +4,12 @@ from mergexp.machine import memory,image,cores
 from mergexp.unit import gb,mbps, ms
 
 # set number of minnow worker nodes
-NUM_MINNOWS = 50
+NUM_MINNOWS = 0
 
 # set number of rohu worker nodes
-NUM_ROHUS = 25
+NUM_ROHUS = 75
 
-net = mx.Topology('lanoflan', routing == static, addressing == ipv4)
+net = mx.Topology('lanoflan')
 depth = 3
 lannum = 5
 nodenum = 5
@@ -23,7 +23,7 @@ def ubuntu(name, version, min_memory=2):
 
 total_worker_nodes = NUM_MINNOWS + NUM_ROHUS
 
-master = net.device("master", memory >= gb(8))
+master = net.device("master", memory >= gb(40), image == "ubuntu:1804")
 master.props["shape"] = "wye"
 master.props["color"] = "red"
 

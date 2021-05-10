@@ -1,0 +1,1393 @@
+jupiter_config:
+  # Jupiter subsystems will be deployed in separate k8s namespaces. Using
+  # different prefixes allows multiple users to use the same k8s cluster.
+  # e.g. prefix "jason" results in namespaces:
+  # jason-exec
+  # jason-circe
+  # jason-profiler
+  # jason-mapper
+  namespace_prefix: zxc
+  # Docker registry prefix for pulling and pushing images. Set to empty string for
+  # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
+  docker_registry: quay.io/anrgusc
+  # Choose mapper: "heft", "heft_balance", or "wave" (not yet supported)
+  task_mapper: heft
+  # Choose CIRCE dispatcher type: "original" (currently the only supported)
+  circe: original
+node_map:
+  # "home" is required. All other names should be "node*" where * is some
+  # integer.
+  home: master
+  node1: node0-0-0
+  node2: node0-0-1
+  node3: node0-0-10
+  node4: node0-0-2
+  node5: node0-0-3
+  node6: node0-0-4
+  node7: node0-0-5
+  node8: node0-0-6
+  node9: node0-0-7
+  node10: node0-0-8
+  node11: node0-0-9
+  node12: node0-1-0
+  node13: node0-1-1
+  node14: node0-1-10
+  node15: node0-1-2
+  node16: node0-1-3
+  node17: node0-1-4
+  node18: node0-1-5
+  node19: node0-1-6
+  node20: node0-1-7
+  node21: node0-1-8
+  node22: node0-1-9
+  node23: node0-2-0
+  node24: node0-2-1
+  node25: node0-2-10
+  node26: node0-2-2
+  node27: node0-2-3
+  node28: node0-2-4
+  node29: node0-2-5
+  node30: node0-2-6
+  node31: node0-2-7
+  node32: node0-2-8
+  node33: node0-2-9
+  node34: node0-3-0
+  node35: node0-3-1
+  node36: node0-3-10
+  node37: node0-3-2
+  node38: node0-3-3
+  node39: node0-3-4
+  node40: node0-3-5
+  node41: node0-3-6
+  node42: node0-3-7
+  node43: node0-3-8
+  node44: node0-3-9
+  node45: node0-4-0
+  node46: node0-4-1
+  node47: node0-4-10
+  node48: node0-4-2
+  node49: node0-4-3
+  node50: node0-4-4
+  node51: node0-4-5
+  node52: node0-4-6
+  node53: node0-4-7
+  node54: node0-4-8
+  node55: node0-4-9
+  node56: node0-5-0
+  node57: node0-5-1
+  node58: node0-5-10
+  node59: node0-5-2
+  node60: node0-5-3
+  node61: node0-5-4
+  node62: node0-5-5
+  node63: node0-5-6
+  node64: node0-5-7
+  node65: node0-5-8
+  node66: node0-5-9
+  node67: node0-6-0
+  node68: node0-6-1
+  node69: node0-6-10
+  node70: node0-6-2
+  node71: node0-6-3
+  node72: node0-6-4
+  node73: node0-6-5
+  node74: node0-6-6
+  node75: node0-6-7
+  node76: node0-6-8
+  node77: node0-6-9
+  node78: node0-7-0
+  node79: node0-7-1
+  node80: node0-7-10
+  node81: node0-7-2
+  node82: node0-7-3
+  node83: node0-7-4
+  node84: node0-7-5
+  node85: node0-7-6
+  node86: node0-7-7
+  node87: node0-7-8
+  node88: node0-7-9
+  node89: node0-8-0
+  node90: node0-8-1
+  node91: node0-8-10
+  node92: node0-8-2
+  node93: node0-8-3
+  node94: node0-8-4
+  node95: node0-8-5
+  node96: node0-8-6
+  node97: node0-8-7
+  node98: node0-8-8
+  node99: node0-8-9
+  node100: node0-9-0
+  node101: node0-9-1
+  node102: node0-9-10
+  node103: node0-9-2
+  node104: node0-9-3
+  node105: node0-9-4
+  node106: node0-9-5
+  node107: node0-9-6
+  node108: node0-9-7
+  node109: node0-9-8
+  node110: node0-9-9
+  node111: node1-0-0
+  node112: node1-0-1
+  node113: node1-0-10
+  node114: node1-0-2
+  node115: node1-0-3
+  node116: node1-0-4
+  node117: node1-0-5
+  node118: node1-0-6
+  node119: node1-0-7
+  node120: node1-0-8
+  node121: node1-0-9
+  node122: node1-1-0
+  node123: node1-1-1
+  node124: node1-1-10
+  node125: node1-1-2
+  node126: node1-1-3
+  node127: node1-1-4
+  node128: node1-1-5
+  node129: node1-1-6
+  node130: node1-1-7
+  node131: node1-1-8
+  node132: node1-1-9
+  node133: node1-2-0
+  node134: node1-2-1
+  node135: node1-2-10
+  node136: node1-2-2
+  node137: node1-2-3
+  node138: node1-2-4
+  node139: node1-2-5
+  node140: node1-2-6
+  node141: node1-2-7
+  node142: node1-2-8
+  node143: node1-2-9
+  node144: node1-3-0
+  node145: node1-3-1
+  node146: node1-3-10
+  node147: node1-3-2
+  node148: node1-3-3
+  node149: node1-3-4
+  node150: node1-3-5
+  node151: node1-3-6
+  node152: node1-3-7
+  node153: node1-3-8
+  node154: node1-3-9
+  node155: node1-4-0
+  node156: node1-4-1
+  node157: node1-4-10
+  node158: node1-4-2
+  node159: node1-4-3
+  node160: node1-4-4
+  node161: node1-4-5
+  node162: node1-4-6
+  node163: node1-4-7
+  node164: node1-4-8
+  node165: node1-4-9
+  node166: node1-5-0
+  node167: node1-5-1
+  node168: node1-5-10
+  node169: node1-5-2
+  node170: node1-5-3
+  node171: node1-5-4
+  node172: node1-5-5
+  node173: node1-5-6
+  node174: node1-5-7
+  node175: node1-5-8
+  node176: node1-5-9
+  node177: node1-6-0
+  node178: node1-6-1
+  node179: node1-6-10
+  node180: node1-6-2
+  node181: node1-6-3
+  node182: node1-6-4
+  node183: node1-6-5
+  node184: node1-6-6
+  node185: node1-6-7
+  node186: node1-6-8
+  node187: node1-6-9
+  node188: node1-7-0
+  node189: node1-7-1
+  node190: node1-7-10
+  node191: node1-7-2
+  node192: node1-7-3
+  node193: node1-7-4
+  node194: node1-7-5
+  node195: node1-7-6
+  node196: node1-7-7
+  node197: node1-7-8
+  node198: node1-7-9
+  node199: node1-8-0
+  node200: node1-8-1
+  node201: node1-8-10
+  node202: node1-8-2
+  node203: node1-8-3
+  node204: node1-8-4
+  node205: node1-8-5
+  node206: node1-8-6
+  node207: node1-8-7
+  node208: node1-8-8
+  node209: node1-8-9
+  node210: node1-9-0
+  node211: node1-9-1
+  node212: node1-9-10
+  node213: node1-9-2
+  node214: node1-9-3
+  node215: node1-9-4
+  node216: node1-9-5
+  node217: node1-9-6
+  node218: node1-9-7
+  node219: node1-9-8
+  node220: node1-9-9
+  node221: node2-0-0
+  node222: node2-0-1
+  node223: node2-0-10
+  node224: node2-0-2
+  node225: node2-0-3
+  node226: node2-0-4
+  node227: node2-0-5
+  node228: node2-0-6
+  node229: node2-0-7
+  node230: node2-0-8
+  node231: node2-0-9
+  node232: node2-1-0
+  node233: node2-1-1
+  node234: node2-1-10
+  node235: node2-1-2
+  node236: node2-1-3
+  node237: node2-1-4
+  node238: node2-1-5
+  node239: node2-1-6
+  node240: node2-1-7
+  node241: node2-1-8
+  node242: node2-1-9
+  node243: node2-2-0
+  node244: node2-2-1
+  node245: node2-2-10
+  node246: node2-2-2
+  node247: node2-2-3
+  node248: node2-2-4
+  node249: node2-2-5
+  node250: node2-2-6
+  node251: node2-2-7
+  node252: node2-2-8
+  node253: node2-2-9
+  node254: node2-3-0
+  node255: node2-3-1
+  node256: node2-3-10
+  node257: node2-3-2
+  node258: node2-3-3
+  node259: node2-3-4
+  node260: node2-3-5
+  node261: node2-3-6
+  node262: node2-3-7
+  node263: node2-3-8
+  node264: node2-3-9
+  node265: node2-4-0
+  node266: node2-4-1
+  node267: node2-4-10
+  node268: node2-4-2
+  node269: node2-4-3
+  node270: node2-4-4
+  node271: node2-4-5
+  node272: node2-4-6
+  node273: node2-4-7
+  node274: node2-4-8
+  node275: node2-4-9
+  node276: node2-5-0
+  node277: node2-5-1
+  node278: node2-5-10
+  node279: node2-5-2
+  node280: node2-5-3
+  node281: node2-5-4
+  node282: node2-5-5
+  node283: node2-5-6
+  node284: node2-5-7
+  node285: node2-5-8
+  node286: node2-5-9
+  node287: node2-6-0
+  node288: node2-6-1
+  node289: node2-6-10
+  node290: node2-6-2
+  node291: node2-6-3
+  node292: node2-6-4
+  node293: node2-6-5
+  node294: node2-6-6
+  node295: node2-6-7
+  node296: node2-6-8
+  node297: node2-6-9
+  node298: node2-7-0
+  node299: node2-7-1
+  node300: node2-7-10
+  node301: node2-7-2
+  node302: node2-7-3
+  node303: node2-7-4
+  node304: node2-7-5
+  node305: node2-7-6
+  node306: node2-7-7
+  node307: node2-7-8
+  node308: node2-7-9
+  node309: node2-8-0
+  node310: node2-8-1
+  node311: node2-8-10
+  node312: node2-8-2
+  node313: node2-8-3
+  node314: node2-8-4
+  node315: node2-8-5
+  node316: node2-8-6
+  node317: node2-8-7
+  node318: node2-8-8
+  node319: node2-8-9
+  node320: node2-9-0
+  node321: node2-9-1
+  node322: node2-9-10
+  node323: node2-9-2
+  node324: node2-9-3
+  node325: node2-9-4
+  node326: node2-9-5
+  node327: node2-9-6
+  node328: node2-9-7
+  node329: node2-9-8
+  node330: node2-9-9
+  node331: node3-0-0
+  node332: node3-0-1
+  node333: node3-0-10
+  node334: node3-0-2
+  node335: node3-0-3
+  node336: node3-0-4
+  node337: node3-0-5
+  node338: node3-0-6
+  node339: node3-0-7
+  node340: node3-0-8
+  node341: node3-0-9
+  node342: node3-1-0
+  node343: node3-1-1
+  node344: node3-1-10
+  node345: node3-1-2
+  node346: node3-1-3
+  node347: node3-1-4
+  node348: node3-1-5
+  node349: node3-1-6
+  node350: node3-1-7
+  node351: node3-1-8
+  node352: node3-1-9
+  node353: node3-2-0
+  node354: node3-2-1
+  node355: node3-2-10
+  node356: node3-2-2
+  node357: node3-2-3
+  node358: node3-2-4
+  node359: node3-2-5
+  node360: node3-2-6
+  node361: node3-2-7
+  node362: node3-2-8
+  node363: node3-2-9
+  node364: node3-3-0
+  node365: node3-3-1
+  node366: node3-3-10
+  node367: node3-3-2
+  node368: node3-3-3
+  node369: node3-3-4
+  node370: node3-3-5
+  node371: node3-3-6
+  node372: node3-3-7
+  node373: node3-3-8
+  node374: node3-3-9
+  node375: node3-4-0
+  node376: node3-4-1
+  node377: node3-4-10
+  node378: node3-4-2
+  node379: node3-4-3
+  node380: node3-4-4
+  node381: node3-4-5
+  node382: node3-4-6
+  node383: node3-4-7
+  node384: node3-4-8
+  node385: node3-4-9
+  node386: node3-5-0
+  node387: node3-5-1
+  node388: node3-5-10
+  node389: node3-5-2
+  node390: node3-5-3
+  node391: node3-5-4
+  node392: node3-5-5
+  node393: node3-5-6
+  node394: node3-5-7
+  node395: node3-5-8
+  node396: node3-5-9
+  node397: node3-6-0
+  node398: node3-6-1
+  node399: node3-6-10
+  node400: node3-6-2
+  node401: node3-6-3
+  node402: node3-6-4
+  node403: node3-6-5
+  node404: node3-6-6
+  node405: node3-6-7
+  node406: node3-6-8
+  node407: node3-6-9
+  node408: node3-7-0
+  node409: node3-7-1
+  node410: node3-7-10
+  node411: node3-7-2
+  node412: node3-7-3
+  node413: node3-7-4
+  node414: node3-7-5
+  node415: node3-7-6
+  node416: node3-7-7
+  node417: node3-7-8
+  node418: node3-7-9
+  node419: node3-8-0
+  node420: node3-8-1
+  node421: node3-8-10
+  node422: node3-8-2
+  node423: node3-8-3
+  node424: node3-8-4
+  node425: node3-8-5
+  node426: node3-8-6
+  node427: node3-8-7
+  node428: node3-8-8
+  node429: node3-8-9
+  node430: node3-9-0
+  node431: node3-9-1
+  node432: node3-9-10
+  node433: node3-9-2
+  node434: node3-9-3
+  node435: node3-9-4
+  node436: node3-9-5
+  node437: node3-9-6
+  node438: node3-9-7
+  node439: node3-9-8
+  node440: node3-9-9
+  node441: node4-0-0
+  node442: node4-0-1
+  node443: node4-0-10
+  node444: node4-0-2
+  node445: node4-0-3
+  node446: node4-0-4
+  node447: node4-0-5
+  node448: node4-0-6
+  node449: node4-0-7
+  node450: node4-0-8
+  node451: node4-0-9
+  node452: node4-1-0
+  node453: node4-1-1
+  node454: node4-1-10
+  node455: node4-1-2
+  node456: node4-1-3
+  node457: node4-1-4
+  node458: node4-1-5
+  node459: node4-1-6
+  node460: node4-1-7
+  node461: node4-1-8
+  node462: node4-1-9
+  node463: node4-2-0
+  node464: node4-2-1
+  node465: node4-2-10
+  node466: node4-2-2
+  node467: node4-2-3
+  node468: node4-2-4
+  node469: node4-2-5
+  node470: node4-2-6
+  node471: node4-2-7
+  node472: node4-2-8
+  node473: node4-2-9
+  node474: node4-3-0
+  node475: node4-3-1
+  node476: node4-3-10
+  node477: node4-3-2
+  node478: node4-3-3
+  node479: node4-3-4
+  node480: node4-3-5
+  node481: node4-3-6
+  node482: node4-3-7
+  node483: node4-3-8
+  node484: node4-3-9
+  node485: node4-4-0
+  node486: node4-4-1
+  node487: node4-4-10
+  node488: node4-4-2
+  node489: node4-4-3
+  node490: node4-4-4
+  node491: node4-4-5
+  node492: node4-4-6
+  node493: node4-4-7
+  node494: node4-4-8
+  node495: node4-4-9
+  node496: node4-5-0
+  node497: node4-5-1
+  node498: node4-5-10
+  node499: node4-5-2
+  node500: node4-5-3
+  node501: node4-5-4
+  node502: node4-5-5
+  node503: node4-5-6
+  node504: node4-5-7
+  node505: node4-5-8
+  node506: node4-5-9
+  node507: node4-6-0
+  node508: node4-6-1
+  node509: node4-6-10
+  node510: node4-6-2
+  node511: node4-6-3
+  node512: node4-6-4
+  node513: node4-6-5
+  node514: node4-6-6
+  node515: node4-6-7
+  node516: node4-6-8
+  node517: node4-6-9
+  node518: node4-7-0
+  node519: node4-7-1
+  node520: node4-7-10
+  node521: node4-7-2
+  node522: node4-7-3
+  node523: node4-7-4
+  node524: node4-7-5
+  node525: node4-7-6
+  node526: node4-7-7
+  node527: node4-7-8
+  node528: node4-7-9
+  node529: node4-8-0
+  node530: node4-8-1
+  node531: node4-8-10
+  node532: node4-8-2
+  node533: node4-8-3
+  node534: node4-8-4
+  node535: node4-8-5
+  node536: node4-8-6
+  node537: node4-8-7
+  node538: node4-8-8
+  node539: node4-8-9
+  node540: node4-9-0
+  node541: node4-9-1
+  node542: node4-9-10
+  node543: node4-9-2
+  node544: node4-9-3
+  node545: node4-9-4
+  node546: node4-9-5
+  node547: node4-9-6
+  node548: node4-9-7
+  node549: node4-9-8
+  node550: node4-9-9
+  node551: node5-0-0
+  node552: node5-0-1
+  node553: node5-0-10
+  node554: node5-0-2
+  node555: node5-0-3
+  node556: node5-0-4
+  node557: node5-0-5
+  node558: node5-0-6
+  node559: node5-0-7
+  node560: node5-0-8
+  node561: node5-0-9
+  node562: node5-1-0
+  node563: node5-1-1
+  node564: node5-1-10
+  node565: node5-1-2
+  node566: node5-1-3
+  node567: node5-1-4
+  node568: node5-1-5
+  node569: node5-1-6
+  node570: node5-1-7
+  node571: node5-1-8
+  node572: node5-1-9
+  node573: node5-2-0
+  node574: node5-2-1
+  node575: node5-2-10
+  node576: node5-2-2
+  node577: node5-2-3
+  node578: node5-2-4
+  node579: node5-2-5
+  node580: node5-2-6
+  node581: node5-2-7
+  node582: node5-2-8
+  node583: node5-2-9
+  node584: node5-3-0
+  node585: node5-3-1
+  node586: node5-3-10
+  node587: node5-3-2
+  node588: node5-3-3
+  node589: node5-3-4
+  node590: node5-3-5
+  node591: node5-3-6
+  node592: node5-3-7
+  node593: node5-3-8
+  node594: node5-3-9
+  node595: node5-4-0
+  node596: node5-4-1
+  node597: node5-4-10
+  node598: node5-4-2
+  node599: node5-4-3
+  node600: node5-4-4
+  node601: node5-4-5
+  node602: node5-4-6
+  node603: node5-4-7
+  node604: node5-4-8
+  node605: node5-4-9
+  node606: node5-5-0
+  node607: node5-5-1
+  node608: node5-5-10
+  node609: node5-5-2
+  node610: node5-5-3
+  node611: node5-5-4
+  node612: node5-5-5
+  node613: node5-5-6
+  node614: node5-5-7
+  node615: node5-5-8
+  node616: node5-5-9
+  node617: node5-6-0
+  node618: node5-6-1
+  node619: node5-6-10
+  node620: node5-6-2
+  node621: node5-6-3
+  node622: node5-6-4
+  node623: node5-6-5
+  node624: node5-6-6
+  node625: node5-6-7
+  node626: node5-6-8
+  node627: node5-6-9
+  node628: node5-7-0
+  node629: node5-7-1
+  node630: node5-7-10
+  node631: node5-7-2
+  node632: node5-7-3
+  node633: node5-7-4
+  node634: node5-7-5
+  node635: node5-7-6
+  node636: node5-7-7
+  node637: node5-7-8
+  node638: node5-7-9
+  node639: node5-8-0
+  node640: node5-8-1
+  node641: node5-8-10
+  node642: node5-8-2
+  node643: node5-8-3
+  node644: node5-8-4
+  node645: node5-8-5
+  node646: node5-8-6
+  node647: node5-8-7
+  node648: node5-8-8
+  node649: node5-8-9
+  node650: node5-9-0
+  node651: node5-9-1
+  node652: node5-9-10
+  node653: node5-9-2
+  node654: node5-9-3
+  node655: node5-9-4
+  node656: node5-9-5
+  node657: node5-9-6
+  node658: node5-9-7
+  node659: node5-9-8
+  node660: node5-9-9
+  node661: node6-0-0
+  node662: node6-0-1
+  node663: node6-0-10
+  node664: node6-0-2
+  node665: node6-0-3
+  node666: node6-0-4
+  node667: node6-0-5
+  node668: node6-0-6
+  node669: node6-0-7
+  node670: node6-0-8
+  node671: node6-0-9
+  node672: node6-1-0
+  node673: node6-1-1
+  node674: node6-1-10
+  node675: node6-1-2
+  node676: node6-1-3
+  node677: node6-1-4
+  node678: node6-1-5
+  node679: node6-1-6
+  node680: node6-1-7
+  node681: node6-1-8
+  node682: node6-1-9
+  node683: node6-2-0
+  node684: node6-2-1
+  node685: node6-2-10
+  node686: node6-2-2
+  node687: node6-2-3
+  node688: node6-2-4
+  node689: node6-2-5
+  node690: node6-2-6
+  node691: node6-2-7
+  node692: node6-2-8
+  node693: node6-2-9
+  node694: node6-3-0
+  node695: node6-3-1
+  node696: node6-3-10
+  node697: node6-3-2
+  node698: node6-3-3
+  node699: node6-3-4
+  node700: node6-3-5
+  node701: node6-3-6
+  node702: node6-3-7
+  node703: node6-3-8
+  node704: node6-3-9
+  node705: node6-4-0
+  node706: node6-4-1
+  node707: node6-4-10
+  node708: node6-4-2
+  node709: node6-4-3
+  node710: node6-4-4
+  node711: node6-4-5
+  node712: node6-4-6
+  node713: node6-4-7
+  node714: node6-4-8
+  node715: node6-4-9
+  node716: node6-5-0
+  node717: node6-5-1
+  node718: node6-5-10
+  node719: node6-5-2
+  node720: node6-5-3
+  node721: node6-5-4
+  node722: node6-5-5
+  node723: node6-5-6
+  node724: node6-5-7
+  node725: node6-5-8
+  node726: node6-5-9
+  node727: node6-6-0
+  node728: node6-6-1
+  node729: node6-6-10
+  node730: node6-6-2
+  node731: node6-6-3
+  node732: node6-6-4
+  node733: node6-6-5
+  node734: node6-6-6
+  node735: node6-6-7
+  node736: node6-6-8
+  node737: node6-6-9
+  node738: node6-7-0
+  node739: node6-7-1
+  node740: node6-7-10
+  node741: node6-7-2
+  node742: node6-7-3
+  node743: node6-7-4
+  node744: node6-7-5
+  node745: node6-7-6
+  node746: node6-7-7
+  node747: node6-7-8
+  node748: node6-7-9
+  node749: node6-8-0
+  node750: node6-8-1
+  node751: node6-8-10
+  node752: node6-8-2
+  node753: node6-8-3
+  node754: node6-8-4
+  node755: node6-8-5
+  node756: node6-8-6
+  node757: node6-8-7
+  node758: node6-8-8
+  node759: node6-8-9
+  node760: node6-9-0
+  node761: node6-9-1
+  node762: node6-9-10
+  node763: node6-9-2
+  node764: node6-9-3
+  node765: node6-9-4
+  node766: node6-9-5
+  node767: node6-9-6
+  node768: node6-9-7
+  node769: node6-9-8
+  node770: node6-9-9
+  node771: node7-0-0
+  node772: node7-0-1
+  node773: node7-0-10
+  node774: node7-0-2
+  node775: node7-0-3
+  node776: node7-0-4
+  node777: node7-0-5
+  node778: node7-0-6
+  node779: node7-0-7
+  node780: node7-0-8
+  node781: node7-0-9
+  node782: node7-1-0
+  node783: node7-1-1
+  node784: node7-1-10
+  node785: node7-1-2
+  node786: node7-1-3
+  node787: node7-1-4
+  node788: node7-1-5
+  node789: node7-1-6
+  node790: node7-1-7
+  node791: node7-1-8
+  node792: node7-1-9
+  node793: node7-2-0
+  node794: node7-2-1
+  node795: node7-2-10
+  node796: node7-2-2
+  node797: node7-2-3
+  node798: node7-2-4
+  node799: node7-2-5
+  node800: node7-2-6
+  node801: node7-2-7
+  node802: node7-2-8
+  node803: node7-2-9
+  node804: node7-3-0
+  node805: node7-3-1
+  node806: node7-3-10
+  node807: node7-3-2
+  node808: node7-3-3
+  node809: node7-3-4
+  node810: node7-3-5
+  node811: node7-3-6
+  node812: node7-3-7
+  node813: node7-3-8
+  node814: node7-3-9
+  node815: node7-4-0
+  node816: node7-4-1
+  node817: node7-4-10
+  node818: node7-4-2
+  node819: node7-4-3
+  node820: node7-4-4
+  node821: node7-4-5
+  node822: node7-4-6
+  node823: node7-4-7
+  node824: node7-4-8
+  node825: node7-4-9
+  node826: node7-5-0
+  node827: node7-5-1
+  node828: node7-5-10
+  node829: node7-5-2
+  node830: node7-5-3
+  node831: node7-5-4
+  node832: node7-5-5
+  node833: node7-5-6
+  node834: node7-5-7
+  node835: node7-5-8
+  node836: node7-5-9
+  node837: node7-6-0
+  node838: node7-6-1
+  node839: node7-6-10
+  node840: node7-6-2
+  node841: node7-6-3
+  node842: node7-6-4
+  node843: node7-6-5
+  node844: node7-6-6
+  node845: node7-6-7
+  node846: node7-6-8
+  node847: node7-6-9
+  node848: node7-7-0
+  node849: node7-7-1
+  node850: node7-7-10
+  node851: node7-7-2
+  node852: node7-7-3
+  node853: node7-7-4
+  node854: node7-7-5
+  node855: node7-7-6
+  node856: node7-7-7
+  node857: node7-7-8
+  node858: node7-7-9
+  node859: node7-8-0
+  node860: node7-8-1
+  node861: node7-8-10
+  node862: node7-8-2
+  node863: node7-8-3
+  node864: node7-8-4
+  node865: node7-8-5
+  node866: node7-8-6
+  node867: node7-8-7
+  node868: node7-8-8
+  node869: node7-8-9
+  node870: node7-9-0
+  node871: node7-9-1
+  node872: node7-9-10
+  node873: node7-9-2
+  node874: node7-9-3
+  node875: node7-9-4
+  node876: node7-9-5
+  node877: node7-9-6
+  node878: node7-9-7
+  node879: node7-9-8
+  node880: node7-9-9
+  node881: node8-0-0
+  node882: node8-0-1
+  node883: node8-0-10
+  node884: node8-0-2
+  node885: node8-0-3
+  node886: node8-0-4
+  node887: node8-0-5
+  node888: node8-0-6
+  node889: node8-0-7
+  node890: node8-0-8
+  node891: node8-0-9
+  node892: node8-1-0
+  node893: node8-1-1
+  node894: node8-1-10
+  node895: node8-1-2
+  node896: node8-1-3
+  node897: node8-1-4
+  node898: node8-1-5
+  node899: node8-1-6
+  node900: node8-1-7
+  node901: node8-1-8
+  node902: node8-1-9
+  node903: node8-2-0
+  node904: node8-2-1
+  node905: node8-2-10
+  node906: node8-2-2
+  node907: node8-2-3
+  node908: node8-2-4
+  node909: node8-2-5
+  node910: node8-2-6
+  node911: node8-2-7
+  node912: node8-2-8
+  node913: node8-2-9
+  node914: node8-3-0
+  node915: node8-3-1
+  node916: node8-3-10
+  node917: node8-3-2
+  node918: node8-3-3
+  node919: node8-3-4
+  node920: node8-3-5
+  node921: node8-3-6
+  node922: node8-3-7
+  node923: node8-3-8
+  node924: node8-3-9
+  node925: node8-4-0
+  node926: node8-4-1
+  node927: node8-4-10
+  node928: node8-4-2
+  node929: node8-4-3
+  node930: node8-4-4
+  node931: node8-4-5
+  node932: node8-4-6
+  node933: node8-4-7
+  node934: node8-4-8
+  node935: node8-4-9
+  node936: node8-5-0
+  node937: node8-5-1
+  node938: node8-5-10
+  node939: node8-5-2
+  node940: node8-5-3
+  node941: node8-5-4
+  node942: node8-5-5
+  node943: node8-5-6
+  node944: node8-5-7
+  node945: node8-5-8
+  node946: node8-5-9
+  node947: node8-6-0
+  node948: node8-6-1
+  node949: node8-6-10
+  node950: node8-6-2
+  node951: node8-6-3
+  node952: node8-6-4
+  node953: node8-6-5
+  node954: node8-6-6
+  node955: node8-6-7
+  node956: node8-6-8
+  node957: node8-6-9
+  node958: node8-7-0
+  node959: node8-7-1
+  node960: node8-7-10
+  node961: node8-7-2
+  node962: node8-7-3
+  node963: node8-7-4
+  node964: node8-7-5
+  node965: node8-7-6
+  node966: node8-7-7
+  node967: node8-7-8
+  node968: node8-7-9
+  node969: node8-8-0
+  node970: node8-8-1
+  node971: node8-8-10
+  node972: node8-8-2
+  node973: node8-8-3
+  node974: node8-8-4
+  node975: node8-8-5
+  node976: node8-8-6
+  node977: node8-8-7
+  node978: node8-8-8
+  node979: node8-8-9
+  node980: node8-9-0
+  node981: node8-9-1
+  node982: node8-9-10
+  node983: node8-9-2
+  node984: node8-9-3
+  node985: node8-9-4
+  node986: node8-9-5
+  node987: node8-9-6
+  node988: node8-9-7
+  node989: node8-9-8
+  node990: node8-9-9
+application:
+  # List of port mappings in format. Used for creating additional k8s services
+  # for your application. i.e., "9000:8000" will create a service with port 9000
+  # which targets port 8000 in all application containers.
+  # Note: [PORT_MAPPINGS] section in jupiter_config.ini cannot be used.
+  port_mappings:
+  first_task: master
+  # Sample file path used in wave mapper 
+  sample_file: sample_inputs/home_master_1imgfireengine.JPEG
+  tasks:
+    home:
+      base_script: home.py
+      children:
+    nondag_tasks:
+    - name: datasource1
+      base_script: datasource.py
+      k8s_host: node0-0-0
+      children: master
+        # Only home or dag_tasks allowed under children
+    - name: datasource2
+      base_script: datasource.py
+      k8s_host: node1-1-1
+      children: master
+    - name: globalinfo
+      base_script: globalinfo.py
+      k8s_host: node2-2-2
+      children:
+    dag_tasks:
+      - name: master
+        base_script: master.py
+        children:  # child order determines round robin sequence
+          - resnet0
+          - resnet1
+          - resnet2
+          - resnet3
+          - resnet4
+          - resnet5
+          - resnet6
+          - resnet7
+          - resnet8
+          - collage
+      - name: resnet0
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet1
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet2
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet3
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet4
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet5
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet6
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet7
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: resnet8
+        base_script: resnet.py
+        children:
+          - storeclass1
+          - storeclass2
+          - storeclass3
+          - storeclass4
+          - storeclass5
+          - storeclass6
+          - storeclass7
+          - storeclass8
+      - name: collage
+        base_script: collage.py
+        children: 
+      - name: storeclass1
+        base_script: storeclass.py
+        children:
+          - lccenc1
+      - name: storeclass2
+        base_script: storeclass.py
+        children:
+          - lccenc2
+      - name: storeclass3
+        base_script: storeclass.py
+        children:
+          - lccenc3
+      - name: storeclass4
+        base_script: storeclass.py
+        children:
+          - lccenc4
+      - name: storeclass5
+        base_script: storeclass.py
+        children:
+          - lccenc5
+      - name: storeclass6
+        base_script: storeclass.py
+        children:
+          - lccenc6
+      - name: storeclass7
+        base_script: storeclass.py
+        children:
+          - lccenc7
+      - name: storeclass8
+        base_script: storeclass.py
+        children:
+          - lccenc8
+      - name: lccenc1
+        base_script: lccenc.py
+        children:
+          - score1a
+          - score1b
+          - score1c
+      - name: lccenc2
+        base_script: lccenc.py
+        children:
+          - score2a
+          - score2b
+          - score2c
+      - name: lccenc3
+        base_script: lccenc.py
+        children:
+          - score3a
+          - score3b
+          - score3c
+      - name: lccenc4
+        base_script: lccenc.py
+        children:
+          - score4a
+          - score4b
+          - score4c
+      - name: lccenc5
+        base_script: lccenc.py
+        children:
+          - score5a
+          - score5b
+          - score5c
+      - name: lccenc6
+        base_script: lccenc.py
+        children:
+          - score6a
+          - score6b
+          - score6c
+      - name: lccenc7
+        base_script: lccenc.py
+        children:
+          - score7a
+          - score7b
+          - score7c
+      - name: lccenc8
+        base_script: lccenc.py
+        children:
+          - score8a
+          - score8b
+          - score8c
+      - name: score1a
+        base_script: score.py
+        children:
+          - preagg1
+      - name: score1b
+        base_script: score.py
+        children:
+          - preagg1
+      - name: score1c
+        base_script: score.py
+        children:
+          - preagg1
+      - name: score2a
+        base_script: score.py
+        children:
+          - preagg2
+      - name: score2b
+        base_script: score.py
+        children:
+          - preagg2
+      - name: score2c
+        base_script: score.py
+        children:
+          - preagg2
+      - name: score3a
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score3b
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score3c
+        base_script: score.py
+        children:
+          - preagg3
+      - name: score4a
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score4b
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score4c
+        base_script: score.py
+        children:
+          - preagg4
+      - name: score5a
+        base_script: score.py
+        children:
+          - preagg5
+      - name: score5b
+        base_script: score.py
+        children:
+          - preagg5
+      - name: score5c
+        base_script: score.py
+        children:
+          - preagg5
+      - name: score6a
+        base_script: score.py
+        children:
+          - preagg6
+      - name: score6b
+        base_script: score.py
+        children:
+          - preagg6
+      - name: score6c
+        base_script: score.py
+        children:
+          - preagg6
+      - name: score7a
+        base_script: score.py
+        children:
+          - preagg7
+      - name: score7b
+        base_script: score.py
+        children:
+          - preagg7
+      - name: score7c
+        base_script: score.py
+        children:
+          - preagg7
+      - name: score8a
+        base_script: score.py
+        children:
+          - preagg8
+      - name: score8b
+        base_script: score.py
+        children:
+          - preagg8
+      - name: score8c
+        base_script: score.py
+        children:
+          - preagg8
+      - name: preagg1
+        base_script: preagg.py
+        children:
+          - lccdec1
+      - name: preagg2
+        base_script: preagg.py
+        children:
+          - lccdec2
+      - name: preagg3
+        base_script: preagg.py
+        children:
+          - lccdec3
+      - name: preagg4
+        base_script: preagg.py
+        children:
+          - lccdec4
+      - name: preagg5
+        base_script: preagg.py
+        children:
+          - lccdec5
+      - name: preagg6
+        base_script: preagg.py
+        children:
+          - lccdec6
+      - name: preagg7
+        base_script: preagg.py
+        children:
+          - lccdec7
+      - name: preagg8
+        base_script: preagg.py
+        children:
+          - lccdec8
+      - name: lccdec1
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec2
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec3
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec4
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec5
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec6
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec7
+        base_script: lccdec.py
+        children:
+          - home
+      - name: lccdec8
+        base_script: lccdec.py
+        children:
+          - home

@@ -46,9 +46,9 @@ results_path="results/%s"%(TEST_INDICATORS)
 os.makedirs(results_path, exist_ok=True)
 
 
-classid = np.arange(0,len(ccdag.classlist),1)
+classid = np.arange(0,len(ccdag.CLASSLIST),1)
 classid = [str(x) for x in classid]
-classmap = dict(zip(classid,ccdag.classlist))
+classmap = dict(zip(classid,ccdag.CLASSLIST))
 
 
 
@@ -74,7 +74,7 @@ def retrieve_logs(module):
 
 def part_list_files(list_str,text,idx,check=0):
     if check == 0:
-        list_files = list_str.split(text)[idx].split('-')   
+        list_files = list_str.split(text)[idx].split('-')
         list_of_files = []
         for fi in list_files:
             tmp = fi.split('#')[1]+'img'+ classmap[fi.split('#')[0]]
@@ -83,7 +83,7 @@ def part_list_files(list_str,text,idx,check=0):
     else:
         a = list_str.split(text)[idx]
         idx1 = a.find(next(filter(str.isalpha, a)))
-        list_files = a[idx1+1:].split('-')  
+        list_files = a[idx1+1:].split('-')
         list_of_files = []
         for fi in list_files:
             tmp = fi.split('#')[1]+'img'+ classmap[fi.split('#')[0]]
@@ -91,7 +91,7 @@ def part_list_files(list_str,text,idx,check=0):
         return list_of_files
 
 def append_log(runtime_dict,task1,task2,fname):
-    if runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_input_file':   
+    if runtime_dict['task_name']=='circe' and runtime_dict['event']=='new_input_file':
         rt_enter_node[(task1,task2,fname)] = runtime_dict['unix_time']
     elif runtime_dict['task_name']==task1 and runtime_dict['event']=='queue_start_process':
         rt_enter_queue[(task1,task2,fname)] = runtime_dict['unix_time']
@@ -99,7 +99,7 @@ def append_log(runtime_dict,task1,task2,fname):
         rt_exit_node[(task1,task2,fname)] = runtime_dict['unix_time']
     elif runtime_dict['task_name']==task1 and runtime_dict['event']=='queue_end_process':
         rt_exit_queue[(task1,task2,fname)] = runtime_dict['unix_time']
-    
+
 def process_logs():
     for (dirpath, dirnames, filenames) in os.walk(results_path):
         #print(dirpath, dirnames, filenames)
@@ -111,7 +111,7 @@ def process_logs():
                     line = line.strip()
                     if re.search('runtime',line):
                         json_expr = '{'+line.split('{')[1]
-                        runtime_dict =json.loads(json_expr)  
+                        runtime_dict =json.loads(json_expr)
                         try:
                             from_task,cur_task,fname = runtime_dict['filename'].split("_", maxsplit=3)
                             if task_name.startswith('datasource') and runtime_dict['event']=='new_output_file':
@@ -173,7 +173,7 @@ def process_logs():
                                         append_log(runtime_dict,task_name,from_task,img)
                                 else:
                                     list_of_imgs = part_list_files(fname,'score',1,1)
-                                    
+
                                     for img in list_of_imgs:
                                         append_log(runtime_dict,task_name,cur_task,img)
                             elif task_name.startswith('lccdec'):
@@ -188,12 +188,12 @@ def process_logs():
                             else:
                                 print('Task name not recognized or non-important log')
                                 #print(runtime_dict)
-        
+
 
                         except Exception as exc:
                             print('Something wrong in processing tasks')
                             print(task_name)
-                            
+
 
 
     return rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node
@@ -202,7 +202,7 @@ def process_logs():
 def find_runtime_task1(rt_dict,img_name, vtask1):
     res = []
     task2_list = []
-    for task1, task2,img in rt_dict: 
+    for task1, task2,img in rt_dict:
         if (task1 == vtask1) and (img == img_name) :
             res.append(rt_dict[(task1, task2,img_name)])
             task2_list.append(task1)
@@ -210,14 +210,14 @@ def find_runtime_task1(rt_dict,img_name, vtask1):
 def find_runtime_task2(rt_dict,img_name, vtask2):
     res = []
     task1_list = []
-    for task1, task2,img in rt_dict: 
+    for task1, task2,img in rt_dict:
         if task2 == vtask2 and img == img_name :
             res.append(rt_dict[(task1, task2,img_name)])
             task1_list.append(task1)
     return res,task1_list
 def find_runtime_task1n2(rt_dict,img_name, vtask1,vtask2):
     res = []
-    for task1, task2,img in rt_dict: 
+    for task1, task2,img in rt_dict:
         if task1==vtask1 and task2 == vtask2 and img == img_name :
             res.append(rt_dict[(task1, task2,img_name)])
     return res
@@ -240,7 +240,7 @@ def get_communication_info(rt_datasource,rt_enter_node,rt_home):
             tmp = rt_enter_node[(task_name,from_task,img)] - min(res)
             communication_info[('datasource','master',img)] = tmp
     for task_name,dest_task,img in rt_exit_node:
-        if task_name.startswith('lccdec'): 
+        if task_name.startswith('lccdec'):
             try:
                 r = find_runtime_task1n2(rt_home,img, 'home',task_name)
                 if len(r) == 0:
@@ -294,7 +294,7 @@ def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_n
     communication_info = dict()
     task_info = dict()
 
-    makespans_info = get_makespan_info(rt_home,rt_datasource)    
+    makespans_info = get_makespan_info(rt_home,rt_datasource)
     communication_info = get_communication_info(rt_datasource,rt_enter_node,rt_home)
     task_info = gen_task_info(rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
 
@@ -304,7 +304,7 @@ def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_n
     # print(communication_info)
     # print('******************* Task information ******************************')
     # print(task_info)
-    
+
     return makespans_info, communication_info,task_info
 
 def calculate_percentage(rt_datasource,rt_home,rt_exit_node):
@@ -347,7 +347,7 @@ def plot_info(makespans_info, communication_info,task_info):
     plot_task_timings(task_info, TEST_INDICATORS)
 
 
-def plot_makespan(makespan_info, file_prefix): 
+def plot_makespan(makespan_info, file_prefix):
     print('Plotting makespan')
     fig = plt.figure()
     plt.plot(makespan_info, '.')
@@ -367,7 +367,7 @@ def plot_comm_times(communication_info, file_prefix):
 
     datasource_to_master = []
     master_to_resnet = []
-    master_to_collage = []   
+    master_to_collage = []
     resnet_to_storeclass = []
     storeclass_to_lccenc = []
     lccenc_to_score = []
@@ -399,7 +399,7 @@ def plot_comm_times(communication_info, file_prefix):
 
 
     source_to_dest = ['datasource_to_master', 'master_to_resnet', 'master_to_collage',
-    'resnet_to_storeclass', 'storeclass_to_lccenc', 'lccenc_to_score', 
+    'resnet_to_storeclass', 'storeclass_to_lccenc', 'lccenc_to_score',
     'score_to_preagg', 'preagg_to_lccdec','lccdec_to_home']
 
     for src_dst in source_to_dest:
@@ -430,7 +430,7 @@ def plot_task_timings(task_info, file_prefix):
     store_exec_times = []
     store_wait_times = []
 
-    
+
     lccenc_exec_times = []
     lccenc_wait_times = []
     score_exec_times = []
@@ -439,9 +439,9 @@ def plot_task_timings(task_info, file_prefix):
     preagg_wait_times = []
     lccdec_exec_times = []
     lccdec_wait_times = []
-    
+
     task_and_statistic = [
-        ['master_exec_times', 'master_wait_times'], 
+        ['master_exec_times', 'master_wait_times'],
         ['resnet_exec_times', 'resnet_wait_times'],
         ['collage_exec_times', 'collage_wait_times'],
         ['store_exec_times', 'store_wait_times'],
@@ -449,7 +449,7 @@ def plot_task_timings(task_info, file_prefix):
         ['score_exec_times', 'score_wait_times'],
         ['preagg_exec_times', 'preagg_wait_times'],
         ['lccdec_exec_times', 'lccdec_wait_times'],
-    ]  
+    ]
 
     # keys are tuples:
     # ('task_name','local_input_file')
@@ -485,7 +485,7 @@ def plot_task_timings(task_info, file_prefix):
         if k[0].startswith('lccdec'):
             lccdec_exec_times.append(float(v[2]))
             lccdec_wait_times.append(float(v[1]))
-        
+
     for task in task_and_statistic:
 
         fig = plt.figure()
@@ -527,7 +527,7 @@ if __name__ == '__main__':
     print('----------- Exit Node ----------------')
     print(rt_exit_node)
 
-    makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node) 
+    makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
     percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
 
     print('******************** Percentage information ************************')
@@ -537,5 +537,5 @@ if __name__ == '__main__':
     print(percentage_part2)
     print('Percentage')
     print(percentage)
-    
+
     plot_info(makespans_info, communication_info,task_info)

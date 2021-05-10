@@ -30,8 +30,8 @@ except ModuleNotFoundError:
 
 import ccdag
 
-classids = np.arange(0,len(ccdag.classlist),1)
-classmap = dict(zip(ccdag.classlist, classids))
+classids = np.arange(0,len(ccdag.CLASSLIST),1)
+classmap = dict(zip(ccdag.CLASSLIST, classids))
 
 # Jupiter executes task scripts from many contexts. Instead of relative paths
 # in your code, reference your entire app directory using your base script's
@@ -81,7 +81,7 @@ def task(q, pathin, pathout, task_name):
     children = app_config.child_tasks(task_name)
     classnum = task_name.split('lccenc')[1]
     print(classnum)
-    classname = ccdag.classlist[int(classnum)-1]
+    classname = ccdag.CLASSLIST[int(classnum)-1]
     # Parameters
     # L = 10 # Number of images in a data-batch
     L = 2 # Number of images in a data-batch
@@ -110,10 +110,10 @@ def task(q, pathin, pathout, task_name):
                 base_list.append(base_fname.split('jobid')[0])
                 id_list.append(base_fname.split('img')[0])
 
-                
 
 
-            
+
+
 
             #LCCENC CODE
 
@@ -232,7 +232,7 @@ def task(q, pathin, pathout, task_name):
                     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv",src_task)
             # read the generate output
             # based on that determine sleep and number of bytes in output file
-            
+
             for i in range(num_inputs):
                 q.task_done()
         else:

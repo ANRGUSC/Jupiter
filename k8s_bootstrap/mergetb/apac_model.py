@@ -5,10 +5,10 @@ from mergexp.machine import cores, memory
 from mergexp.unit import gb
 
 # set number of minnow worker nodes
-NUM_MINNOWS = 50
+NUM_MINNOWS = 2
 
 # set number of rohu worker nodes
-NUM_ROHUS = 25
+NUM_ROHUS = 2
 
 
 def ubuntu(name, version, min_memory=2):
@@ -25,7 +25,7 @@ total_worker_nodes = NUM_MINNOWS + NUM_ROHUS
 JUPITER_MASTER_NODE = ["master"] 
 JUPITER_WORKER_NODES = ["n%d" % (x) for x in range(0, total_worker_nodes)]
 
-master = net.device(JUPITER_MASTER_NODE[0], memory >= gb(40))
+master = net.device(JUPITER_MASTER_NODE[0], memory >= gb(4))
 master.props["shape"] = "wye"
 master.props["color"] = "red"
 

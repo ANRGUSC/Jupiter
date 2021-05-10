@@ -27,6 +27,36 @@
       set_fact:
         ansible_os_family: Ubuntu
 
+    - name: remove thresh value line if exists
+      lineinfile: 
+        path: /etc/sysctl.conf
+        regexp: 'net.ipv4.neigh.default.gc_thresh*'
+        state: absent
+          
+    - name: change arp table limits thresh1
+      lineinfile:
+        dest: /etc/sysctl.conf
+        line: 'net.ipv4.neigh.default.gc_thresh1=256'
+        state: present  
+        create: yes
+        
+    - name: change arp table limits thresh2
+      lineinfile:
+        dest: /etc/sysctl.conf
+        line: 'net.ipv4.neigh.default.gc_thresh2=1024'
+        state: present  
+        create: yes
+        
+    - name: change arp table limits thresh3
+      lineinfile:
+        dest: /etc/sysctl.conf
+        line: 'net.ipv4.neigh.default.gc_thresh3=2048'
+        state: present  
+        create: yes
+        
+    - name: update arp changes
+      shell: sysctl -p
+
     - name: Run apt-get update
       apt: update_cache=yes
 
@@ -43,7 +73,7 @@
         - gnupg
         - gnupg2
         - software-properties-common
-
+        
     - name: Get iptables version
       shell: 'dpkg -s iptables | grep ''Version'' | sed -re s''/.*: ([0-9]+\.[0-9]).*/\1/'''
       register: iptables_version
