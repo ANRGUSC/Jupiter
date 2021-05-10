@@ -52,6 +52,8 @@ def gen_stream_fixed_set_data(task_name,interval,num_images,data_path,original_d
 def gen_stream_fixed_set_data(task_name,interval,num_images,data_path,original_data_path):
     index = task_name.strip('datasource') # take the task_name index number by stripping out the 'datasource' prefix
     list_files = os.listdir(original_data_path)
+    print("=================================================LIST FILES=================================================================")
+    print(list_files)
     # in a while loop send images starting with list item (len(list_files) % int(index))
     for i in range(0,num_images):
         time.sleep(interval + int(index)) # add offset to this interval based on task name (eg task 200 starts at 60 seconds)
