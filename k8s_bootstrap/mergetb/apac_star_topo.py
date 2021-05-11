@@ -7,10 +7,10 @@ from mergexp.unit import gb,mbps, ms
 NUM_MINNOWS = 0
 
 # set number of rohu worker nodes
-NUM_ROHUS = 75
+NUM_ROHUS = 100
 
 net = mx.Topology('lanoflan')
-depth = 3
+depth = 4
 lannum = 5
 nodenum = 5
 hub = net.device('hub', memory >= gb(8))
