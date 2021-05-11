@@ -24,6 +24,9 @@ except ModuleNotFoundError:
 
 import ccdag
 
+# To regraph processed logs, set this to the directory name
+PROCESSED_LOGS = f"{ccdag.EXP_NAME}_{ccdag.CODING_PART1}{ccdag.CODING_PART2}_modified"
+
 # SEE README.md for more information on naming conventions!
 
 # these are the filenames to process, all dictated by TEST_INDICATORS
@@ -42,8 +45,8 @@ app_config = app_config_parser.AppConfig(APP_DIR)
 config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
 core_v1_api = client.CoreV1Api()
 os.makedirs("results", exist_ok=True)
-results_path="results/%s"%(TEST_INDICATORS)
-os.makedirs(results_path, exist_ok=True)
+RESULTS_PATH = "../../results/%s"%(TEST_INDICATORS)
+os.makedirs(RESULTS_PATH, exist_ok=True)
 
 
 classid = np.arange(0,len(ccdag.CLASSLIST),1)
@@ -64,7 +67,7 @@ def export_log(namespace):
     if resp.items:
         for item in resp.items:
             name = item.metadata.name
-            file_name = '%s/%s.log'%(results_path,name)
+            file_name = '%s/%s.log'%(RESULTS_PATH, name)
             cmd = 'kubectl logs -n%s %s > %s'%(namespace,name,file_name)
             os.system(cmd)
 
@@ -101,7 +104,7 @@ def append_log(runtime_dict,task1,task2,fname):
         rt_exit_queue[(task1,task2,fname)] = runtime_dict['unix_time']
 
 def process_logs():
-    for (dirpath, dirnames, filenames) in os.walk(results_path):
+    for (dirpath, dirnames, filenames) in os.walk(RESULTS_PATH):
         #print(dirpath, dirnames, filenames)
         for filename in filenames:
             task_name = filename.split('-')[1]
@@ -185,10 +188,6 @@ def process_logs():
                                     list_of_imgs = part_list_files(fname,'jobth',1)
                                     for img in list_of_imgs:
                                         append_log(runtime_dict,task_name,cur_task,img)
-                            else:
-                                print('Task name not recognized or non-important log')
-                                #print(runtime_dict)
-
 
                         except Exception as exc:
                             print('Something wrong in processing tasks')
@@ -222,12 +221,22 @@ def find_runtime_task1n2(rt_dict,img_name, vtask1,vtask2):
             res.append(rt_dict[(task1, task2,img_name)])
     return res
 
-def get_makespan_info(rt_home,rt_datasource):
+def get_makespan_info(rt_home, rt_enter_queue):
     makespans_info = []
-    for task_name,from_task,img in rt_home:
-        res,_= find_runtime_task2(rt_datasource,img,'NA')
-        tmp = rt_home[(task_name,from_task,img)]-res[0]
-        makespans_info.append(tmp)
+    timestamp = 0
+    for task_name, from_task, img in rt_home:
+        # get timestamp of just one resnet task recv the image
+        for n in range(1, 9):
+            try:
+                timestamp = rt_enter_queue[(f'resnet{n}', 'master', img)]
+                break
+            except:
+                pass
+        if timestamp == 0:
+            print('error: image never made it to a resnet task?')
+            exit()
+        makespan = rt_home[(task_name,from_task,img)] - timestamp
+        makespans_info.append(makespan)
     return makespans_info
 
 def get_communication_info(rt_datasource,rt_enter_node,rt_home):
@@ -247,7 +256,6 @@ def get_communication_info(rt_datasource,rt_enter_node,rt_home):
                     print('File did not enter the home node!!!')
                     print(task_name)
                     print(img)
-                    # exit()
                 elif len(r) == 1:
                     communication_info[(task_name,'home',img)] = - rt_exit_node[(task_name,'home',img)] + r[0]
             except Exception as e:
@@ -256,7 +264,8 @@ def get_communication_info(rt_datasource,rt_enter_node,rt_home):
             try:
                 r = find_runtime_task1n2(rt_enter_node,img, dest_task,task_name)
                 if len(r) == 0:
-                    print('File did not enter the children node!!!')
+                    # print('File did not enter the children node!!!')
+                    pass
                 elif len(r) == 1:
                     communication_info[(task_name,dest_task,img)] = - rt_exit_node[(task_name,dest_task,img)] + r[0]
             except Exception as e:
@@ -285,8 +294,6 @@ def gen_task_info(rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node):
         except Exception as e:
             print('File does not enter the children node for task info!!!!')
             pass
-            #exit()
-    #print(task_info)
     return task_info
 
 def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node):
@@ -294,7 +301,7 @@ def calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_n
     communication_info = dict()
     task_info = dict()
 
-    makespans_info = get_makespan_info(rt_home,rt_datasource)
+    makespans_info = get_makespan_info(rt_home, rt_enter_node)
     communication_info = get_communication_info(rt_datasource,rt_enter_node,rt_home)
     task_info = gen_task_info(rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
 
@@ -508,24 +515,89 @@ def plot_task_timings(task_info, file_prefix):
         plt.tight_layout()
         fig.savefig('figures/{}_{}_exec_times.png'.format(file_prefix, task[0][0:6]))
 
+def read_processed_logs():
+    ds_line = False
+    home_line = False
+    enter_queue_line = False
+    exit_queue_line = False
+    enter_node_line = False
+    exit_node_line = False
+
+    p = os.path.join(os.path.dirname(RESULTS_PATH), PROCESSED_LOGS, f"{PROCESSED_LOGS}.txt")
+    print(f"reading processed logs from {p}")
+    with open(p, "r") as f:
+        for line in f:
+            if line.startswith('----------- Datasource----------------'):
+                ds_line = True
+                continue
+            if ds_line is True:
+                rt_datasource = eval(line)
+                ds_line = False
+
+            if line.startswith('----------- Home ----------------'):
+                home_line = True
+                continue
+            if home_line is True:
+                rt_home = eval(line)
+                home_line = False
+
+            if line.startswith('----------- Enter Queue ----------------'):
+                enter_queue_line = True
+                continue
+            if enter_queue_line is True:
+                rt_enter_queue = eval(line)
+                enter_queue_line = False
+
+            if line.startswith('----------- Exit Queue ----------------'):
+                exit_queue_line = True
+                continue
+            if exit_queue_line is True:
+                rt_exit_queue = eval(line)
+                exit_queue_line = False
+
+            if line.startswith('----------- Enter Node ----------------'):
+                enter_node_line = True
+                continue
+            if enter_node_line is True:
+                rt_enter_node = eval(line)
+                enter_node_line = False
+
+            if line.startswith('----------- Exit Node ----------------'):
+                exit_node_line = True
+                continue
+            if exit_node_line is True:
+                rt_exit_node = eval(line)
+                exit_node_line = False
+
+    return rt_datasource, rt_home, rt_enter_queue, rt_exit_queue, \
+    rt_enter_node, rt_exit_node
+
+
 if __name__ == '__main__':
-    retrieve_logs('circe')
-    #retrieve_logs('profiler')
-    #retrieve_logs('exec')
-    #retrieve_logs('mapper')
-    rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
-    print('----------- Datasource----------------')
-    print(rt_datasource)
-    print('----------- Home ----------------')
-    print(rt_home)
-    print('----------- Enter Queue ----------------')
-    print(rt_enter_queue)
-    print('----------- Exit Queue ----------------')
-    print(rt_exit_queue)
-    print('----------- Enter Node ----------------')
-    print(rt_enter_node)
-    print('----------- Exit Node ----------------')
-    print(rt_exit_node)
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "graph":
+            rt_datasource, rt_home, rt_enter_queue, rt_exit_queue, rt_enter_node, rt_exit_node = read_processed_logs()
+        else:
+            print("invalid option")
+            exit()
+    else:
+        retrieve_logs('circe')
+        #retrieve_logs('profiler')
+        #retrieve_logs('exec')
+        #retrieve_logs('mapper')
+        rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node = process_logs()
+        print('----------- Datasource----------------')
+        print(rt_datasource)
+        print('----------- Home ----------------')
+        print(rt_home)
+        print('----------- Enter Queue ----------------')
+        print(rt_enter_queue)
+        print('----------- Exit Queue ----------------')
+        print(rt_exit_queue)
+        print('----------- Enter Node ----------------')
+        print(rt_enter_node)
+        print('----------- Exit Node ----------------')
+        print(rt_exit_node)
 
     makespans_info, communication_info,task_info = calculate_info(rt_datasource,rt_home,rt_enter_queue,rt_exit_queue,rt_enter_node,rt_exit_node)
     percentage,percentage_part1,percentage_part2 = calculate_percentage(rt_datasource,rt_home,rt_exit_node)
