@@ -25,7 +25,7 @@ except ModuleNotFoundError:
 import ccdag
 
 # To regraph processed logs, set this to the directory name
-PROCESSED_LOGS = f"{ccdag.EXP_NAME}_{ccdag.CODING_PART1}{ccdag.CODING_PART2}_modified"
+PROCESSED_LOGS = f"{ccdag.EXP_NAME}_{ccdag.CODING_PART1}{ccdag.CODING_PART2}"
 
 # SEE README.md for more information on naming conventions!
 
@@ -364,7 +364,7 @@ def plot_makespan(makespan_info, file_prefix):
               "\n Average: {}".format(avg_makespan))
     plt.ylabel("seconds")
     print('************************ Plot makespan')
-    plt.ylim(0, 1800)
+    plt.ylim(0, 500)
     plt.tight_layout()
     fig.savefig('figures/{}makespans.png'.format(file_prefix))
 
@@ -508,7 +508,7 @@ def plot_task_timings(task_info, file_prefix):
             "\nwait time avg = {}".format(wait_time_avg)
         )
         if task[0].startswith('resnet'):
-            plt.ylim(0, 100)
+            plt.ylim(0, 15)
         elif task[0].startswith('preagg'):
             plt.ylim(0, 10)
         plt.ylabel("seconds")

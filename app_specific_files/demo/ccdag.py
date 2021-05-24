@@ -73,8 +73,8 @@ SLEEP_TIME = 10          #Seconds
 STRAGGLER_THRESHOLD = 0
 
 # This is used for naming the results and plots in generate_results.py
-EXP_NAME = 'sleep'
-EXP_ID = 'a'
+EXP_NAME = '1000node'
+EXP_ID = ''
 
 # All datasource tasks will send images to the master service with the designated
 # interval below
