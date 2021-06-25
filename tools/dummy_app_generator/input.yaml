@@ -1,0 +1,27 @@
+jupiter_config:
+  # Jupiter subsystems will be deployed in separate k8s namespaces. Using
+  # different prefixes allows multiple users to use the same k8s cluster.
+  # e.g. prefix "jason" results in namespaces:
+  # jason-exec
+  # jason-circe
+  # jason-profiler
+  # jason-mapper
+  namespace_prefix: quynh
+  # Docker registry prefix for pulling and pushing images. Set to empty string for
+  # Docker Hub. Examples: "anrg", "docker.io/anrg", "gcr.io/organization_name", ""
+  docker_registry: quay.io/anrgusc
+  # Choose mapper: "heft", "heft_duplicate", "heft_dup_no_comm_cost",
+  # "heft_balance", or "wave" (wave not yet supported)
+  task_mapper: heft
+  # Choose CIRCE dispatcher type: "original" (currently the only supported)
+  circe: original
+node_map:
+  # Mapping of Jupiter node name to k8s host. Nodes named here will be
+  # specifically in the scheduling algorithm. "home" is required. All node names
+  # should be in format node* where * is an integer. Non-"home" nodes are called
+  # "worker" nodes. Worker nodes are where Jupiter can schedule tasks on.
+  home: anrg-ubuntu-18-04-x64-0-s-2vcpu-4gb-nyc3
+  node1: anrg-ubuntu-18-04-x64-1-s-2vcpu-4gb-nyc3
+  node2: anrg-ubuntu-18-04-x64-2-s-2vcpu-4gb-fra1
+  node3: anrg-ubuntu-18-04-x64-3-s-2vcpu-4gb-blr1
+  node4: anrg-ubuntu-18-04-x64-4-s-2vcpu-4gb-lon1

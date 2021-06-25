@@ -1,6 +1,7 @@
 import logging
 import os
 import time
+import json
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -63,3 +64,6 @@ def transfer_data_scp(ip, port, user, pw, src, dst):
 
     if retry == NUM_RETRIES:
         log.error("transfer_data_scp: unable to send file")
+
+
+

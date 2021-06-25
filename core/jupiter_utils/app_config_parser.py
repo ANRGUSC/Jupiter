@@ -177,6 +177,10 @@ class AppConfig:
         #raise ChildTasksNotFoundError("No child tasks found")
 
 
+    def parent_tasks(self,task_name):
+        task_map = self.dag_task_map()
+        print(task_map)
+
     def task_mapper(self):
         return self.cfg['jupiter_config']['task_mapper'][:]
 

@@ -1,0 +1,79 @@
+application:
+  tasks:
+    dag_tasks:
+    - base_script: task.py
+      children:
+      - task1
+      - task7
+      - task2
+      - task5
+      - task10
+      - task3
+      - task6
+      - task8
+      - task4
+      - task9
+      name: task0
+    - base_script: task.py
+      children:
+      - task11
+      name: task1
+    - base_script: task.py
+      children:
+      - task11
+      name: task2
+    - base_script: task.py
+      children:
+      - task11
+      name: task3
+    - base_script: task.py
+      children:
+      - task11
+      name: task4
+    - base_script: task.py
+      children:
+      - task11
+      name: task5
+    - base_script: task.py
+      children:
+      - task11
+      name: task6
+    - base_script: task.py
+      children:
+      - task11
+      name: task7
+    - base_script: task.py
+      children:
+      - task11
+      name: task8
+    - base_script: task.py
+      children:
+      - task11
+      name: task9
+    - base_script: task.py
+      children:
+      - task11
+      name: task10
+    - base_script: task.py
+      children:
+      - home
+      name: task11
+    home:
+      base_script: home.py
+    nondag_tasks:
+    - base_script: datasource.py
+      children:
+      - task0
+      k8s_host: anrg-ubuntu-18-04-x64-0-s-2vcpu-4gb-nyc3
+      name: datasource
+jupiter_config:
+  circe: original
+  docker_registry: quay.io/anrgusc
+  namespace_prefix: quynh
+  task_mapper: heft
+node_map:
+  home: anrg-ubuntu-18-04-x64-0-s-2vcpu-4gb-nyc3
+  node1: anrg-ubuntu-18-04-x64-1-s-2vcpu-4gb-nyc3
+  node2: anrg-ubuntu-18-04-x64-2-s-2vcpu-4gb-fra1
+  node3: anrg-ubuntu-18-04-x64-3-s-2vcpu-4gb-blr1
+  node4: anrg-ubuntu-18-04-x64-4-s-2vcpu-4gb-lon1

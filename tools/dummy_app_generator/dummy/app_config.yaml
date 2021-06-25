@@ -1,0 +1,70 @@
+application:
+  tasks:
+    dag_tasks:
+    - base_script: task.py
+      children:
+      - task1
+      name: task0
+    - base_script: task.py
+      children:
+      - task2
+      name: task1
+    - base_script: task.py
+      children:
+      - task3
+      name: task2
+    - base_script: task.py
+      children:
+      - task4
+      name: task3
+    - base_script: task.py
+      children:
+      - task5
+      name: task4
+    - base_script: task.py
+      children:
+      - task6
+      name: task5
+    - base_script: task.py
+      children:
+      - task7
+      name: task6
+    - base_script: task.py
+      children:
+      - task8
+      name: task7
+    - base_script: task.py
+      children:
+      - task9
+      name: task8
+    - base_script: task.py
+      children:
+      - task10
+      name: task9
+    - base_script: task.py
+      children:
+      - task11
+      name: task10
+    - base_script: task.py
+      children:
+      - home
+      name: task11
+    home:
+      base_script: home.py
+    nondag_tasks:
+    - base_script: datasource.py
+      children:
+      - task0
+      k8s_host: anrg-ubuntu-18-04-x64-0-s-2vcpu-4gb-nyc3
+      name: datasource
+jupiter_config:
+  circe: original
+  docker_registry: quay.io/anrgusc
+  namespace_prefix: quynh
+  task_mapper: heft
+node_map:
+  home: anrg-ubuntu-18-04-x64-0-s-2vcpu-4gb-nyc3
+  node1: anrg-ubuntu-18-04-x64-1-s-2vcpu-4gb-nyc3
+  node2: anrg-ubuntu-18-04-x64-2-s-2vcpu-4gb-fra1
+  node3: anrg-ubuntu-18-04-x64-3-s-2vcpu-4gb-blr1
+  node4: anrg-ubuntu-18-04-x64-4-s-2vcpu-4gb-lon1

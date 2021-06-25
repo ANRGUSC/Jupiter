@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # encoding: utf-8
-JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini' #docker
-#JUPITER_CONFIG_INI_PATH = '../../jupiter_config.ini' # local
+#JUPITER_CONFIG_INI_PATH = '/jupiter/build/jupiter_config.ini' #docker
+JUPITER_CONFIG_INI_PATH = '../../jupiter_config.ini' # local
 
 """
 Classification Coding
