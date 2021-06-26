@@ -210,8 +210,8 @@ def assign_children_task(children_task):
             log.debug("Waiting for the profiler data")
             time.sleep(100)
     res = False
-    sample_file = SAMPLE_FILE_PATH
     sample_size = cal_file_size(sample_file)
+    print(sample_size)
     assign_to_node = get_most_suitable_node(sample_size)
     if not assign_to_node:
         log.debug("No suitable node found for assigning task: %s" %(children_task))
@@ -341,16 +341,19 @@ if __name__ == '__main__':
     config = configparser.ConfigParser()
     config.read(JUPITER_CONFIG_INI_PATH)
     flask_svc, flask_port = config['PORT_MAPPINGS']['FLASK'].split(':')
+
     global num_tasks
     task_names = app_config.get_dag_task_names()
     num_tasks = len(task_names)
-    global dag_task_map,control_relation, children, parents, init_tasks, SAMPLE_FILE_PATH
-    SAMPLE_FILE_PATH = os.path.join(APP_DIR,app_config.get_wave_sample())
+
+    global dag_task_map,control_relation, children, parents, init_tasks, sample_file
+    sample_file = os.path.join(APP_DIR,'sample_inputs',os.listdir(os.path.join(APP_DIR,'sample_inputs'))[0])
     dag_task_map = app_config.dag_task_map()
     control_relation = {}# control relations between tasks
     children = {}# task's children tasks
     parents = {} # task's parent tasks
     init_tasks = {}# running tasks in node in at the beginning
+
     global assigned_tasks, assignments, manager,local_mapping, local_children,local_responsibility
     manager = Manager()
     assignments = manager.dict()
@@ -360,14 +363,17 @@ if __name__ == '__main__':
     local_children = manager.dict()
     local_responsibility = "task_responsibility"
     os.mkdir(local_responsibility)
+
     global threshold, resource_data, is_resource_data_ready, network_profile_data, is_network_profile_data_ready
     threshold = 15
     resource_data = {}
     is_resource_data_ready = False
     network_profile_data = {}
     is_network_profile_data_ready = False
+
     global drupe_worker_ips, drupe_worker_names, profiler_ips, drupe_ip2name, drupe_name2ip, num_workers,master_host
     global home_profiler_ip,my_profiler_ip, mongo_svc_port,node_name,nodes
+
     # Get all information of profilers (drupe network prof, exec prof)
     drupe_worker_ips = os.environ['DRUPE_WORKER_IPS'].split(' ')
     drupe_worker_ips = [info.split(":") for info in drupe_worker_ips]

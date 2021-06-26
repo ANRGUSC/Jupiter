@@ -181,7 +181,7 @@ def init_task_topology():
     assign_to_node = -1
     while assign_to_node==-1:
         assign_to_node = get_most_suitable_node()
-        time.sleep(10)
+        time.sleep(1)
     init_tasks[assign_to_node] = [first_task]
     for task in dag_task_map:
         for child in dag_task_map[task]:
@@ -218,7 +218,7 @@ def return_task_mapping():
     if num_tasks < 0:
         log.error("invalid number of tasks")
 
-    log.info("Recieved request for task mapping. Current mappings done: %d" %len(assignments))
+    log.info("Received request for task mapping. Current mappings done: %d" %len(assignments))
     log.info("task mapping: " + json.dumps(assignments.copy(), indent=4))
     if len(assignments) == num_tasks:
         return json.dumps(assignments.copy())

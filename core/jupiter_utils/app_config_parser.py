@@ -35,16 +35,11 @@ class AppConfig:
         # developers: manually set a non-empty string to override docker tags.
         # this is useful for creating unique docker tags when multiple people
         # are coding.
-        #self.tag_extension = "zxc"
-        self.tag_extension = "jason"
+        self.tag_extension = "quynh"
+
 
     def get_first_task(self):
-        print(self.cfg['application']['first_task'][:])
-        return self.cfg['application']['first_task'][:]
-
-    def get_wave_sample(self):
-        print(self.cfg['application']['sample_file'][:])
-        return self.cfg['application']['sample_file'][:]
+        return self.get_dag_task_names()[0] #app_config must follow accurate order 
 
     def get_dag_tasks(self):
         """
@@ -222,9 +217,10 @@ class AppConfig:
 
 if __name__ == '__main__':
     # Test
-    # app_config = AppConfig("../../app_specific_files/example/")
-    app_config = AppConfig("../../app_specific_files/demo/")
+    app_config = AppConfig("../../app_specific_files/dummy/")
     for node in app_config.node_map():
         print(node)
 
     print("DAG task map: \n" + json.dumps(app_config.dag_task_map(), indent=4))
+
+    task = app_config.dag_task_map()
