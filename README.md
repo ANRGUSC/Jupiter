@@ -162,16 +162,18 @@ components.
 ## References
 [1] Ghosh, Pradipta, Quynh Nguyen, Pranav K. Sakulkar, Jason A. Tran, Aleksandra Knezevic, Jiatong Wang, Zhifeng Lin, Bhaskar Krishnamachari, Murali Annavaram, and Salman Avestimehr. ["Jupiter: a networked computing architecture"](https://anrg.usc.edu/www/papers/JUPITER.pdf). In Proceedings of the 14th IEEE/ACM International Conference on Utility and Cloud Computing Companion, pp. 1-8. 2021.
 
-[2] Pradipta Ghosh, Quynh Nguyen, and Bhaskar Krishnamachari, [“Container Orchestration for Dispersed Computing“](https://anrg.usc.edu/www/wp-content/uploads/2019/10/Jupiter__Camera_Ready.pdf), 5th International Workshop on Container Technologies and Container Clouds (WOC ’19), December 9–13, 2019, Davis, CA, USA.
+[2] Poylisher, Alexander, Andrzej Cichocki, K. Guo, J. Hunziker, L. Kant, Bhaskar Krishnamachari, Salman Avestimehr, and Murali Annavaram. "[Tactical Jupiter: Dynamic Scheduling of Dispersed Computations in Tactical MANETs"](https://anrg.usc.edu/www/papers/Tactical_Jupiter.pdf). In MILCOM 2021-2021 IEEE Military Communications Conference (MILCOM), pp. 102-107. IEEE, 2021.
 
-[3] Quynh Nguyen, Pradipta Ghosh, and Bhaskar Krishnamachari, [“End-to-End Network Performance Monitoring for Dispersed
+[3] Pradipta Ghosh, Quynh Nguyen, and Bhaskar Krishnamachari, [“Container Orchestration for Dispersed Computing“](https://anrg.usc.edu/www/wp-content/uploads/2019/10/Jupiter__Camera_Ready.pdf), 5th International Workshop on Container Technologies and Container Clouds (WOC ’19), December 9–13, 2019, Davis, CA, USA.
+
+[4] Quynh Nguyen, Pradipta Ghosh, and Bhaskar Krishnamachari, [“End-to-End Network Performance Monitoring for Dispersed
 Computing“](http://anrg.usc.edu/www/papers/DispersedNetworkProfiler_ICNC2018.pdf), International Conference on Computing, Networking and Communications, March 2018
 
-[4] Pranav Sakulkar, Pradipta Ghosh, Aleksandra Knezevic, Jiatong Wang, Quynh Nguyen, Jason Tran, H.V. Krishna Giri Narra,
+[5] Pranav Sakulkar, Pradipta Ghosh, Aleksandra Knezevic, Jiatong Wang, Quynh Nguyen, Jason Tran, H.V. Krishna Giri Narra,
 Zhifeng Lin, Songze Li, Ming Yu, Bhaskar Krishnamachari, Salman Avestimehr, and Murali Annavaram, [“WAVE: A Distributed Scheduling
 Framework for Dispersed Computing“](http://anrg.usc.edu/www/papers/wave_dispersed_computing_ANRGTechReport.pdf), USC ANRG Technical Report, ANRG-2018-01.
 
-[5] Aleksandra Knezevic, Quynh Nguyen, Jason A. Tran, Pradipta Ghosh, Pranav Sakulkar, Bhaskar Krishnamachari, and Murali
+[6] Aleksandra Knezevic, Quynh Nguyen, Jason A. Tran, Pradipta Ghosh, Pranav Sakulkar, Bhaskar Krishnamachari, and Murali
 Annavaram, [“DEMO: CIRCE – A runtime scheduler for DAG-based dispersed computing,”](http://anrg.usc.edu/www/papers/CIRCE__A_runtime_scheduler_for_DAG_based_dispersed_computing.pdf), The Second ACM/IEEE Symposium on Edge Computing
 (SEC) 2017. (poster)
 
