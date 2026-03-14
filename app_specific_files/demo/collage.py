@@ -7,7 +7,7 @@ import logging
 import glob
 import time
 import json
-from ccdag_utils import *
+from ccdag_utils import non_max_suppression, retrieve_globalinfo, show_run_stats
 import requests
 
 
@@ -34,7 +34,7 @@ import numpy as np
 import math
 from PIL import Image
 from darknet_models import Darknet
-from ccdag_utils import *
+from ccdag_utils import non_max_suppression, retrieve_globalinfo, show_run_stats
 import configparser
 global circe_home_ip, circe_home_ip_port
 
@@ -231,8 +231,6 @@ def task(q, pathin, pathout, task_name):
         else:
             log.debug('Not enough files')
             time.sleep(1)
-
-    log.error("ERROR: should never reach this")
 
 
 # Run by execution profiler

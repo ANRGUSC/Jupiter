@@ -55,8 +55,6 @@ def task(q, pathin, pathout, task_name):
     while True:
         time.sleep(999)
 
-    log.error("ERROR: should never reach this")
-
 
 if __name__ == '__main__':
     # Testing Only

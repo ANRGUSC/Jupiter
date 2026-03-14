@@ -35,14 +35,14 @@ class AppConfig:
         # developers: manually set a non-empty string to override docker tags.
         # this is useful for creating unique docker tags when multiple people
         # are coding.
-        self.tag_extension = "testcdag"
+        self.tag_extension = ""
 
     def get_first_task(self):
-        print(self.cfg['application']['first_task'][:])
+        log.debug(self.cfg['application']['first_task'][:])
         return self.cfg['application']['first_task'][:]
 
     def get_wave_sample(self):
-        print(self.cfg['application']['sample_file'][:])
+        log.debug(self.cfg['application']['sample_file'][:])
         return self.cfg['application']['sample_file'][:]
 
     def get_dag_tasks(self):
@@ -76,8 +76,8 @@ class AppConfig:
         return str(len(task_names))
 
     def get_num_worker_nodes(self):
-        worker_nodes = self.cfg['node_map']
-        del worker_nodes['home']
+        worker_nodes = dict(self.cfg['node_map'])
+        worker_nodes.pop('home', None)
         return len(worker_nodes)
 
     def get_exec_home_tag(self):
@@ -187,14 +187,13 @@ class AppConfig:
         task_map = {}
         for task in self.get_dag_tasks():
             task_name = task['name']
-            task_map[task_name] = self.child_tasks(task_name)
-            if self.child_tasks(task_name) == None:
-                task_map[task_name] = []
+            children = self.child_tasks(task_name)
+            task_map[task_name] = children if children is not None else []
             try:
                 if len(task_map[task_name]) > 0:
                     task_map[task_name].remove("home")
             except ValueError:
-                pass  # do nothing
+                pass
         return task_map
 
     def base_script(self, task_name):

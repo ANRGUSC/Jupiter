@@ -2,8 +2,8 @@ import os
 
 
 def demo_help(server, port, topic, msg):
-    username = 'anrgusc'
-    password = 'anrgusc'
+    username = os.environ.get('MQTT_USERNAME', 'anrgusc')
+    password = os.environ.get('MQTT_PASSWORD', 'anrgusc')
     # client = mqtt.Client()
     # client.username_pw_set(username, password)
     # client.connect(server, port, 300)

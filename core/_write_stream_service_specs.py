@@ -96,6 +96,6 @@ def write_stream_service_specs(**kwargs):
                                     flask_svc = jupiter_config.FLASK_SVC,
                                     flask_port = jupiter_config.FLASK_DOCKER,
                                     **kwargs)
-    dep = yaml.load(specific_yaml)
+    dep = yaml.safe_load(specific_yaml)
 
     return add_app_specific_ports(dep)

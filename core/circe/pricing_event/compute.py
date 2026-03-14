@@ -11,6 +11,7 @@ __version__ = "3.0"
 
 import sys
 sys.path.append("../")
+import subprocess
 import configparser
 import jupiter_config
 import os
@@ -42,8 +43,8 @@ import logging
 app = Flask(__name__)
 
 def demo_help(server,port,topic,msg):
-    username = 'anrgusc'
-    password = 'anrgusc'
+    username = os.environ.get('SSH_USERNAME', 'anrgusc')
+    password = os.environ.get('SSH_PASSWORD', 'anrgusc')
     client = mqtt.Client()
     client.username_pw_set(username,password)
     client.connect(server, port,300)
@@ -61,19 +62,19 @@ def k8s_read_dag(dag_info_file):
       dict: DAG information 
   """
   dag_info=[]
-  config_file = open(dag_info_file,'r')
-  dag_size = int(config_file.readline())
+  with open(dag_info_file,'r') as config_file:
+      dag_size = int(config_file.readline())
 
-  dag={}
-  for i, line in enumerate(config_file, 1):
-      dag_line = line.strip().split(" ")
-      if i == 1:
-          dag_info.append(dag_line[0])
-      dag.setdefault(dag_line[0], [])
-      for j in range(1,len(dag_line)):
-          dag[dag_line[0]].append(dag_line[j])
-      if i == dag_size:
-          break
+      dag={}
+      for i, line in enumerate(config_file, 1):
+          dag_line = line.strip().split(" ")
+          if i == 1:
+              dag_info.append(dag_line[0])
+          dag.setdefault(dag_line[0], [])
+          for j in range(1,len(dag_line)):
+              dag[dag_line[0]].append(dag_line[j])
+          if i == dag_size:
+              break
 
   dag_info.append(dag)
   return dag_info
@@ -249,20 +250,20 @@ def prepare_global_info():
     for task in dag:
         if taskmap[task][1] and execution_map[task]: #DAG
             task_module[task] = __import__(task)
-            cmd = "mkdir centralized_scheduler/output/"+task 
-            os.system(cmd)
+            cmd = "mkdir centralized_scheduler/output/"+task
+            subprocess.run(cmd.split(), check=False)
             for home_id in home_ids:
                 cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
-                os.system(cmd)
+                subprocess.run(cmd.split(), check=False)
 
     logging.debug('Generating task folders for INPUT\n')
     for task in dag:
         if taskmap[task][1]: #DAG
-            cmd = "mkdir centralized_scheduler/input/"+task 
-            os.system(cmd)
+            cmd = "mkdir centralized_scheduler/input/"+task
+            subprocess.run(cmd.split(), check=False)
             for home_id in home_ids:
                 cmd = "mkdir centralized_scheduler/input/"+task+"/" + home_id
-                os.system(cmd)
+                subprocess.run(cmd.split(), check=False)
 
 
 def update_controller_map():
@@ -293,7 +294,7 @@ def update_exec_profile_file():
             client_mongo = MongoClient('mongodb://'+exec_home_ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.execution_profiler
             conn = True
-        except:
+        except Exception as e:
             logging.debug('Error connection')
             time.sleep(5)
 
@@ -301,7 +302,7 @@ def update_exec_profile_file():
         try:
             logdb =db[self_name].find()
             available_data = True
-        except:
+        except Exception as e:
             logging.debug('Execution information for the current node is not ready!!!')
             time.sleep(5)
 
@@ -346,16 +347,16 @@ def get_updated_network_profile():
     try:
         client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
         db = client_mongo.droplet_network_profiler
-        collection = db.collection_names(include_system_collections=False)
+        collection = db.list_collection_names()
         num_nb = len(collection)-1
         if num_nb == -1:
             logging.debug('--- Network profiler mongoDB not yet prepared')
             return network_info
-        num_rows = db[self_profiler_ip].count() 
+        num_rows = db[self_profiler_ip].count_documents({}) 
         if num_rows < num_nb:
             logging.debug('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
-        logdb =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)  
+        logdb =db[self_profiler_ip].find().skip(db[self_profiler_ip].count_documents({})-num_nb)  
         c = 0
         for record in logdb:
             # Source ID, Source IP, Destination ID, Destination IP, Parameters
@@ -378,8 +379,8 @@ def get_updated_resource_profile():
         for ip in profiler_ip:
             client_mongo = MongoClient('mongodb://'+ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.central_resource_profiler
-            collection = db.collection_names(include_system_collections=False)
-            logging =db[ip].find().skip(db[ip].count()-1)
+            collection = db.list_collection_names()
+            logging =db[ip].find().skip(db[ip].count_documents({})-1)
             for record in logging:
                 resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
 
@@ -447,7 +448,7 @@ def price_aggregate(task_name):
         logging.debug(price)
         return price
              
-    except:
+    except Exception as e:
         logging.debug('Error reading input information to calculate the price')
         
     return price
@@ -537,14 +538,14 @@ def transfer_data_scp(ID,user,pword,source, destination):
         try:
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
-            os.system(cmd)
+            subprocess.run(cmd.split(), check=False)
             logging.debug('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
-        except:
+        except Exception as e:
             logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1

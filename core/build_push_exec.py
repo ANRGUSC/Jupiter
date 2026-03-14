@@ -2,11 +2,12 @@ __author__ = "Pradipta Ghosh, Pranav Sakulkar, Quynh Nguyen, Jason A Tran,  Bhas
 __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rights reserved."
 __license__ = "GPL"
 __version__ = "2.1"
-import os
 import logging
 import shutil
+import subprocess
 import threading
-import signal
+import argparse
+from pathlib import Path
 
 import sys
 sys.path.append("../")
@@ -17,35 +18,41 @@ logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
 
+build_failed = threading.Event()
+
 
 def build_push_home(tag):
-    # speed up build using existing image
-    #os.system("docker pull {}".format(tag))
-
-    # build and push in execution_profiler/ directory
-    err = os.system(
-        "docker build -t {} -f execution_profiler/home.Dockerfile "
-        .format(tag) + "./execution_profiler"
+    result = subprocess.run(
+        ["docker", "build", "-t", tag,
+         "-f", "execution_profiler/home.Dockerfile",
+         "./execution_profiler"],
+        check=False
     )
-    if err != 0:
+    if result.returncode != 0:
         log.fatal("home container build failed!")
-        os.kill(os.getpid(), signal.SIGKILL)
-    os.system("docker push {}".format(tag))
+        build_failed.set()
+        return
+    push = subprocess.run(["docker", "push", tag], check=False)
+    if push.returncode != 0:
+        log.fatal("home container push failed!")
+        build_failed.set()
 
 
 def build_push_worker(tag):
-    # speed up build using existing image
-    #os.system("docker pull {}".format(tag))
-
-    # build and push in execution_profiler/ directory
-    err = os.system(
-        "docker build -t {} -f execution_profiler/worker.Dockerfile "
-        .format(tag) + "./execution_profiler"
+    result = subprocess.run(
+        ["docker", "build", "-t", tag,
+         "-f", "execution_profiler/worker.Dockerfile",
+         "./execution_profiler"],
+        check=False
     )
-    if err != 0:
+    if result.returncode != 0:
         log.fatal("worker container build failed!")
-        os.kill(os.getpid(), signal.SIGKILL)
-    os.system("docker push {}".format(tag))
+        build_failed.set()
+        return
+    push = subprocess.run(["docker", "push", tag], check=False)
+    if push.returncode != 0:
+        log.fatal("worker container push failed!")
+        build_failed.set()
 
 
 def main(app_dir):
@@ -55,29 +62,25 @@ def main(app_dir):
     """
     app_config = app_config_parser.AppConfig(app_dir)
 
-    # copy all files needed from Jupiter and from the application into a build
-    # folder which will be shipped in the Docker container
-    shutil.rmtree("./execution_profiler/build/", ignore_errors=True)  # rm existing build folder
-    os.makedirs("./execution_profiler/build", exist_ok=True)
-    shutil.copytree("{}".format(app_dir),
-                    "execution_profiler/build/app_specific_files/")
-    shutil.copy("../jupiter_config.ini", "execution_profiler/build/")
-    shutil.copytree("./jupiter_utils/",
-                    "execution_profiler/build/jupiter_utils/")
+    build_dir = Path("./execution_profiler/build")
+    shutil.rmtree(build_dir, ignore_errors=True)
+    build_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copytree(app_dir, build_dir / "app_specific_files")
+    shutil.copy("../jupiter_config.ini", build_dir)
+    shutil.copytree("./jupiter_utils/", build_dir / "jupiter_utils")
 
-    # Copy app's requirements.txt only if modified to prevent unnecessary pip
-    # reinstalls
-    os.makedirs("./execution_profiler/build_requirements", exist_ok=True)
-    src = "{}/requirements.txt".format(app_dir)
-    dst = "./execution_profiler/build_requirements/requirements.txt"
+    # Copy app's requirements.txt only if modified to prevent unnecessary pip reinstalls
+    req_dir = Path("./execution_profiler/build_requirements")
+    req_dir.mkdir(parents=True, exist_ok=True)
+    src = Path(app_dir) / "requirements.txt"
+    dst = req_dir / "requirements.txt"
     try:
-        mtime = os.stat(dst).st_mtime
+        mtime = dst.stat().st_mtime
     except FileNotFoundError:
         mtime = 0
-    if os.stat(src).st_mtime - mtime > 1:  # modified more than 1s ago
+    if src.stat().st_mtime - mtime > 1:
         shutil.copy(src, dst)
 
-    # build in parallel
     t1 = threading.Thread(target=build_push_home,
                           args=(app_config.get_exec_home_tag(),))
     t2 = threading.Thread(target=build_push_worker,
@@ -88,21 +91,27 @@ def main(app_dir):
     t1.join()
     t2.join()
 
+    if build_failed.is_set():
+        log.error("One or more build/push steps failed.")
+        sys.exit(1)
+
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(
+        description="Build and push execution profiler Docker images."
+    )
+    parser.add_argument(
+        "app_name", nargs="?",
+        help="App name (directory under ${JUPITER_ROOT}/app_specific_files/)"
+    )
+    args = parser.parse_args()
 
-    if len(sys.argv) == 2:
-        app_dir = "../app_specific_files/{}".format(sys.argv[1])
-        log.info("Setting app directory to: {}"
-                 .format(app_dir))
-    if len(sys.argv) == 1:
+    if args.app_name:
+        app_dir = "../app_specific_files/{}".format(args.app_name)
+        log.info("Setting app directory to: {}".format(app_dir))
+    else:
         log.info("Defaulting to jupiter_config.py to set app directory.")
         app_dir = jupiter_config.get_abs_app_dir()
         log.info("Setting app directory to: {}".format(app_dir))
-    else:
-        log.error("Please insert application name (same name as the app " +
-                  "directory under ${JUPITER_ROOT}/app_specific_files/")
-        log.error("usage: python build_push_exec.py {APP_NAME}")
-        exit()
 
     main(app_dir)

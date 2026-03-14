@@ -36,14 +36,15 @@ import datetime
 from collections import defaultdict 
 import paho.mqtt.client as mqtt
 import pyinotify
+import subprocess
 import logging
 
 
 app = Flask(__name__)
 
 def demo_help(server,port,topic,msg):
-    username = 'anrgusc'
-    password = 'anrgusc'
+    username = os.environ.get('SSH_USERNAME', 'anrgusc')
+    password = os.environ.get('SSH_PASSWORD', 'anrgusc')
     client = mqtt.Client()
     client.username_pw_set(username,password)
     client.connect(server, port,300)
@@ -53,27 +54,27 @@ def demo_help(server,port,topic,msg):
 
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
-  
+
   Args:
       dag_info_file (str): path of DAG file
-  
+
   Returns:
-      dict: DAG information 
+      dict: DAG information
   """
   dag_info=[]
-  config_file = open(dag_info_file,'r')
-  dag_size = int(config_file.readline())
+  with open(dag_info_file,'r') as config_file:
+      dag_size = int(config_file.readline())
 
-  dag={}
-  for i, line in enumerate(config_file, 1):
-      dag_line = line.strip().split(" ")
-      if i == 1:
-          dag_info.append(dag_line[0])
-      dag.setdefault(dag_line[0], [])
-      for j in range(1,len(dag_line)):
-          dag[dag_line[0]].append(dag_line[j])
-      if i == dag_size:
-          break
+      dag={}
+      for i, line in enumerate(config_file, 1):
+          dag_line = line.strip().split(" ")
+          if i == 1:
+              dag_info.append(dag_line[0])
+          dag.setdefault(dag_line[0], [])
+          for j in range(1,len(dag_line)):
+              dag[dag_line[0]].append(dag_line[j])
+          if i == dag_size:
+              break
 
   dag_info.append(dag)
   return dag_info
@@ -105,46 +106,46 @@ class TimedValue:
 
 def get_taskmap():
     """Get the task map from ``config.json`` and ``dag.txt`` files.
-    
+
     Returns:
         - dict: tasks - DAG dictionary
         - list: task_order - (DAG) task list in the order of execution
-        - list: super_tasks 
+        - list: super_tasks
         - list: non_tasks - tasks not belong to DAG
     """
-    configs = json.load(open('centralized_scheduler/config.json'))
+    with open('centralized_scheduler/config.json') as _f:
+        configs = json.load(_f)
     task_map = configs['taskname_map']
     execution_map = configs['exec_profiler']
-    tasks_info = open('centralized_scheduler/dag.txt', "r")
-
     task_order = []#create the  (DAG) task list in the order of execution
     super_tasks = []
     tasks = {} #create DAG dictionary
     count = 0
     non_tasks = []
-    for line in tasks_info:
-        if count == 0:
-            count += 1
-            continue
+    with open('centralized_scheduler/dag.txt', "r") as tasks_info:
+        for line in tasks_info:
+            if count == 0:
+                count += 1
+                continue
 
-        data = line.strip().split(" ")
-        if task_map[data[0]][1] == True and execution_map[data[0]] == False:
-            if data[0] not in super_tasks:
-                super_tasks.append(data[0])
+            data = line.strip().split(" ")
+            if task_map[data[0]][1] == True and execution_map[data[0]] == False:
+                if data[0] not in super_tasks:
+                    super_tasks.append(data[0])
 
-        if task_map[data[0]][1] == False and execution_map[data[0]] == False:
-            if data[0] not in non_tasks:
-                non_tasks.append(data[0])
+            if task_map[data[0]][1] == False and execution_map[data[0]] == False:
+                if data[0] not in non_tasks:
+                    non_tasks.append(data[0])
 
-        if task_map[data[0]][1] == False:
-            continue
+            if task_map[data[0]][1] == False:
+                continue
 
-        tasks.setdefault(data[0], [])
-        if data[0] not in task_order:
-            task_order.append(data[0])
-        for i in range(3, len(data)):
-            if  data[i] != 'home' and task_map[data[i]][1] == True :
-                tasks[data[0]].extend([data[i]])
+            tasks.setdefault(data[0], [])
+            if data[0] not in task_order:
+                task_order.append(data[0])
+            for i in range(3, len(data)):
+                if  data[i] != 'home' and task_map[data[i]][1] == True :
+                    tasks[data[0]].extend([data[i]])
     logging.debug("tasks: %s", tasks)
     logging.debug("task order %s", task_order) #task_list
     logging.debug("super tasks %s", super_tasks)
@@ -280,7 +281,8 @@ def prepare_global_info():
     # CHECK NON_DAG tasks
     global configs, taskmap
 
-    configs = json.load(open('/centralized_scheduler/config.json'))
+    with open('/centralized_scheduler/config.json') as _f:
+        configs = json.load(_f)
     taskmap = configs["taskname_map"]
     execution_map = configs['exec_profiler']
 
@@ -292,19 +294,19 @@ def prepare_global_info():
         if taskmap[task][1] and execution_map[task]: #DAG
             task_module[task] = __import__(task)
             cmd = "mkdir centralized_scheduler/output/"+task 
-            os.system(cmd)
+            subprocess.run(cmd.split(), check=False)
             for home_id in home_ids:
                 cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
-                os.system(cmd)
+                subprocess.run(cmd.split(), check=False)
 
     logging.debug('Generating task folders for INPUT\n')
     for task in dag:
         if taskmap[task][1]: #DAG
             cmd = "mkdir centralized_scheduler/input/"+task 
-            os.system(cmd)
+            subprocess.run(cmd.split(), check=False)
             for home_id in home_ids:
                 cmd = "mkdir centralized_scheduler/input/"+task+"/" + home_id
-                os.system(cmd)
+                subprocess.run(cmd.split(), check=False)
 
 
     
@@ -463,14 +465,14 @@ def update_exec_profile_file():
             client_mongo = MongoClient('mongodb://'+exec_home_ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.execution_profiler
             conn = True
-        except:
+        except Exception as e:
             logging.debug('Error connection')
             time.sleep(5)
     while not available_data:
         try:
             logdb =db[self_name].find()
             available_data = True
-        except:
+        except Exception as e:
             logging.debug('Execution information for the current node is not ready!!!')
             time.sleep(5)
 
@@ -521,7 +523,7 @@ def get_updated_network_profile():
     try:
         client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
         db = client_mongo.droplet_network_profiler
-        collection = db.collection_names(include_system_collections=False)
+        collection = db.list_collection_names()
         num_nb = len(collection)-1
         if num_nb == -1:
             logging.debug('--- Network profiler mongoDB not yet prepared')
@@ -556,7 +558,7 @@ def get_updated_resource_profile():
             logging.debug('Check Resource Profiler IP: %s',ip)
             client_mongo = MongoClient('mongodb://'+ip+':'+str(MONGO_SVC)+'/')
             db = client_mongo.central_resource_profiler
-            collection = db.collection_names(include_system_collections=False)
+            collection = db.list_collection_names()
             logdb =db[ip].find().skip(db[ip].count()-1)
             for record in logdb:
                 resource_info[ip_profilers_map[ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
@@ -644,7 +646,7 @@ def price_aggregate():
         logging.debug(price)
         return price
              
-    except:
+    except Exception as e:
         logging.debug('Error reading input information to calculate the price')
         
 def receive_price_info():
@@ -835,14 +837,14 @@ def transfer_data_scp(ID,user,pword,source, destination):
         try:
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
-            os.system(cmd)
+            subprocess.run(cmd.split(), check=False)
             logging.debug('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
-        except:
+        except Exception as e:
             logging.debug('SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
@@ -1241,19 +1243,17 @@ def main():
     if TRANSFER == 0:
         transfer_type = 'scp'
 
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
-    s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
-    runtime_sender_log.write(s)
-    runtime_sender_log.close()
+    with open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w") as _f:
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
+        _f.write(s)
     runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
     #Node_name, Transfer_Type, Source_path , Time_stamp
 
     if RUNTIME == 1:
         global runtime_receiver_log
-        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
-        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
-        runtime_receiver_log.write(s)
-        runtime_receiver_log.close()
+        with open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w") as _f:
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
+            _f.write(s)
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
 

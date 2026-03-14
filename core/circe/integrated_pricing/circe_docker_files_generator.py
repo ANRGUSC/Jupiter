@@ -311,16 +311,16 @@ def write_circe_worker_nondag(**kwargs):
 
 if __name__ == '__main__':
     write_circe_home_docker(username = 'root',
-                      password = 'PASSWORD',
+                      password = os.environ.get('DOCKER_PASSWORD', 'PASSWORD'),
                       app_file='app_specific_files/network_monitoring',
                       ports = '22 8888')
 
     write_circe_computing_worker_docker(username = 'root',
-                      password = 'PASSWORD',
+                      password = os.environ.get('DOCKER_PASSWORD', 'PASSWORD'),
                       app_file='app_specific_files/network_monitoring',
                       ports = '22 57021')
 
     write_circe_controller_nondag(username = 'root',
-                      password = 'PASSWORD',
+                      password = os.environ.get('DOCKER_PASSWORD', 'PASSWORD'),
                       app_file='app_specific_files/network_monitoring',
                       ports = '22 8888')

@@ -5,11 +5,9 @@ __version__ = "2.1"
 
 import sys
 sys.path.append("../")
-import os
-import utilities
+import subprocess
 import jupiter_config
-from jupiter_config import app_config_parser
-import time
+from jupiter_utils import app_config_parser
 import logging
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
@@ -20,7 +18,7 @@ if __name__ == '__main__':
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     namespace = app_config.namespace_prefix() + "-exec"
 
-    os.system("kubectl delete --all services --namespace={}".format(namespace))
-    os.system("kubectl delete --all deployments --namespace={}".format(namespace))
+    subprocess.run(["kubectl", "delete", "--all", "services", f"--namespace={namespace}"], check=False)
+    subprocess.run(["kubectl", "delete", "--all", "deployments", f"--namespace={namespace}"], check=False)
     log.info("Deleting namespace (will complete when all pods terminate)...")
-    os.system(f"kubectl delete namespace {namespace}")
+    subprocess.run(["kubectl", "delete", "namespace", namespace], check=False)

@@ -10,7 +10,7 @@ import json
 import cv2
 import numpy as np
 import random
-from ccdag_utils import *
+from ccdag_utils import show_run_stats
 import re
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
@@ -128,9 +128,8 @@ def task(q, pathin, pathout, task_name):
             job = str(job_id)+'jobth'
             dst_task = children[0] # only 1 children
             dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
-            f = open(dst, 'w')
-            np.savetxt(dst, sc, delimiter=',')
-            f.close()
+            with open(dst, 'w') as f:
+                np.savetxt(f, sc, delimiter=',')
             #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}",src_task)
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             # read the generate output
@@ -140,8 +139,6 @@ def task(q, pathin, pathout, task_name):
         else:
             log.debug('Not enough files')
             time.sleep(1)
-
-    log.error("ERROR: should never reach this")
 
 
 # Run by execution profiler

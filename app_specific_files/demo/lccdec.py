@@ -7,7 +7,7 @@ import logging
 import glob
 import time
 import json
-from ccdag_utils import *
+from ccdag_utils import show_run_stats
 
 from os import listdir
 import numpy as np
@@ -137,15 +137,14 @@ def task(q, pathin, pathout, task_name):
             job = str(job_id)+'jobth'
             dst_task = children[0] # only 1 children
             dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
-            f = open(dst, 'w')
-            np.savetxt(dst, result, delimiter=',')
-            f.close()
+            with open(dst, 'w') as f:
+                np.savetxt(f, result, delimiter=',')
 
             # read the generate output
             # based on that determine sleep and number of bytes in output file
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}",src_task)
-            
+
             for i in range(num_inputs):
                 q.task_done()
 
@@ -204,19 +203,13 @@ def task(q, pathin, pathout, task_name):
             job = str(job_id)+'jobth'
             dst_task = children[0] # only 1 children
             dst = os.path.join(pathout, f"{task_name}_{dst_task}_{job}{file_id}")
-            
-            f = open(dst, 'w')
-            np.savetxt(dst, result, delimiter=',')
-            f.close()
+            with open(dst, 'w') as f:
+                np.savetxt(f, result, delimiter=',')
             show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}")
             #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{file_id}",src_task)
             
             for i in range(num_inputs):
                 q.task_done()
-
-
-
-    log.error("ERROR: should never reach this")
 
 
 # Run by execution profiler

@@ -156,5 +156,5 @@ if __name__ == '__main__':
             )
             break
         else:
-            logging.info('HEFT input not yet created, retrying in 10s...')
+            log.info('HEFT input not yet created, retrying in 10s...')
             time.sleep(10)

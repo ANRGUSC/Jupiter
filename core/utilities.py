@@ -9,7 +9,7 @@ import sys
 import time
 import os
 from os import path
-from pprint import *
+from pprint import pprint
 import logging
 from pathlib import Path
 import json
@@ -27,31 +27,30 @@ def k8s_read_config(configuration_file):
     Returns:
         dict: DAG information
     """
-    dag_info=[]
-    config_file = open(configuration_file,'r')
-    dag_size = int(config_file.readline())
+    dag_info = []
+    with open(configuration_file, 'r') as config_file:
+        dag_size = int(config_file.readline())
 
-    dag={}
-    for i, line in enumerate(config_file, 1):
-        dag_line = line.strip().split(" ")
-        if i == 1:
-            dag_info.append(dag_line[0])
-        dag.setdefault(dag_line[0], [])
-        for j in range(1,len(dag_line)):
-            dag[dag_line[0]].append(dag_line[j])
-        if i==dag_size:
-            break
+        dag = {}
+        for i, line in enumerate(config_file, 1):
+            dag_line = line.strip().split(" ")
+            if i == 1:
+                dag_info.append(dag_line[0])
+            dag.setdefault(dag_line[0], [])
+            for j in range(1, len(dag_line)):
+                dag[dag_line[0]].append(dag_line[j])
+            if i == dag_size:
+                break
 
-    dag_info.append(dag)
+        dag_info.append(dag)
 
-    hosts={}
-    for line in config_file:
-        #get task, node IP, username and password
-        myline = line.strip().split(" ")
-        hosts.setdefault(myline[0],[])
-        hosts[myline[0]].append(myline[1])
+        hosts = {}
+        for line in config_file:
+            myline = line.strip().split(" ")
+            hosts.setdefault(myline[0], [])
+            hosts[myline[0]].append(myline[1])
 
-    hosts.setdefault('home',[])
+    hosts.setdefault('home', [])
     hosts['home'].append('home')
 
     dag_info.append(hosts)
@@ -68,22 +67,22 @@ def k8s_read_dag(dag_info_file):
   Returns:
       dict: DAG information
   """
-  dag_info=[]
-  config_file = open(dag_info_file,'r')
-  dag_size = int(config_file.readline())
+  dag_info = []
+  with open(dag_info_file, 'r') as config_file:
+      dag_size = int(config_file.readline())
 
-  dag={}
-  for i, line in enumerate(config_file, 1):
-      dag_line = line.strip().split(" ")
-      if i == 1:
-          dag_info.append(dag_line[0])
-      dag.setdefault(dag_line[0], [])
-      for j in range(1,len(dag_line)):
-          dag[dag_line[0]].append(dag_line[j])
-      if i == dag_size:
-          break
+      dag = {}
+      for i, line in enumerate(config_file, 1):
+          dag_line = line.strip().split(" ")
+          if i == 1:
+              dag_info.append(dag_line[0])
+          dag.setdefault(dag_line[0], [])
+          for j in range(1, len(dag_line)):
+              dag[dag_line[0]].append(dag_line[j])
+          if i == dag_size:
+              break
 
-  dag_info.append(dag)
+      dag_info.append(dag)
   return dag_info
 
 
@@ -97,12 +96,12 @@ def k8s_get_nodes(node_info_file):
       dict: node information
   """
   nodes = {}
-  node_file = open(node_info_file, "r")
-  for line in node_file:
-      node_line = line.strip().split(" ")
-      nodes.setdefault(node_line[0], [])
-      for i in range(1, len(node_line)):
-          nodes[node_line[0]].append(node_line[i])
+  with open(node_info_file, "r") as node_file:
+      for line in node_file:
+          node_line = line.strip().split(" ")
+          nodes.setdefault(node_line[0], [])
+          for i in range(1, len(node_line)):
+              nodes[node_line[0]].append(node_line[i])
   return nodes
 
 def k8s_get_nodes_worker(node_info_file):
@@ -116,18 +115,17 @@ def k8s_get_nodes_worker(node_info_file):
   """
   nodes = {}
   homes = {}
-  node_file = open(node_info_file, "r")
-  for line in node_file:
-      node_line = line.strip().split(" ")
-      if node_line[0].startswith('home'):
-        homes.setdefault(node_line[0], [])
-        for i in range(1, len(node_line)):
-          homes[node_line[0]].append(node_line[i])
-        continue
-      nodes.setdefault(node_line[0], [])
-      for i in range(1, len(node_line)):
-          nodes[node_line[0]].append(node_line[i])
-  #log.debug(nodes)
+  with open(node_info_file, "r") as node_file:
+      for line in node_file:
+          node_line = line.strip().split(" ")
+          if node_line[0].startswith('home'):
+              homes.setdefault(node_line[0], [])
+              for i in range(1, len(node_line)):
+                  homes[node_line[0]].append(node_line[i])
+              continue
+          nodes.setdefault(node_line[0], [])
+          for i in range(1, len(node_line)):
+              nodes[node_line[0]].append(node_line[i])
   return nodes, homes
 
 def k8s_get_all_elements(node_info_file):
@@ -142,22 +140,22 @@ def k8s_get_all_elements(node_info_file):
   nodes = {}
   homes = {}
   datasources = {}
-  node_file = open(node_info_file, "r")
-  for line in node_file:
-      node_line = line.strip().split(" ")
-      if node_line[0].startswith('home'):
-        homes.setdefault(node_line[0], [])
-        for i in range(1, len(node_line)):
-          homes[node_line[0]].append(node_line[i])
-      elif node_line[0].startswith('datasource'):
-        datasources.setdefault(node_line[0], [])
-        for i in range(1, len(node_line)):
-          datasources[node_line[0]].append(node_line[i])
-      else:
-        nodes.setdefault(node_line[0], [])
-        for i in range(1, len(node_line)):
-            nodes[node_line[0]].append(node_line[i])
-  return nodes, homes,datasources
+  with open(node_info_file, "r") as node_file:
+      for line in node_file:
+          node_line = line.strip().split(" ")
+          if node_line[0].startswith('home'):
+              homes.setdefault(node_line[0], [])
+              for i in range(1, len(node_line)):
+                  homes[node_line[0]].append(node_line[i])
+          elif node_line[0].startswith('datasource'):
+              datasources.setdefault(node_line[0], [])
+              for i in range(1, len(node_line)):
+                  datasources[node_line[0]].append(node_line[i])
+          else:
+              nodes.setdefault(node_line[0], [])
+              for i in range(1, len(node_line)):
+                  nodes[node_line[0]].append(node_line[i])
+  return nodes, homes, datasources
 
 def k8s_get_hosts(dag_info_file, node_info_file, mapping):
   """read the hosts info from the input files
@@ -170,22 +168,20 @@ def k8s_get_hosts(dag_info_file, node_info_file, mapping):
   Returns:
       dict: DAG information and its corresponding mapping
   """
-
   dag_info = k8s_read_dag(dag_info_file)
   nodes = k8s_get_nodes(node_info_file)
   log.debug(nodes)
-  hosts={}
+  hosts = {}
 
   log.debug('Receive mapping')
   log.debug(mapping)
 
   for i in mapping:
-      #get task, node IP, username and password
-      hosts.setdefault(i,[])
-      hosts[i].append(i)                          # task
-      hosts[i].extend(nodes[mapping[i]])      # assigned node id
+      hosts.setdefault(i, [])
+      hosts[i].append(i)
+      hosts[i].extend(nodes[mapping[i]])
 
-  hosts.setdefault('home',[])
+  hosts.setdefault('home', [])
   hosts['home'].append('home')
   hosts['home'].extend(nodes.get('home'))
   dag_info.append(hosts)
@@ -202,12 +198,12 @@ def k8s_get_nodes_string(node_info_file):
       str: node information in string format
   """
   nodes = ""
-  node_file = open(node_info_file, "r")
-  for line in node_file:
-      node_line = line.strip().split(" ")
-      if node_line[0].startswith("home"):
-        continue
-      nodes = nodes + ":" + str(node_line[0])
+  with open(node_info_file, "r") as node_file:
+      for line in node_file:
+          node_line = line.strip().split(" ")
+          if node_line[0].startswith("home"):
+              continue
+          nodes = nodes + ":" + str(node_line[0])
   return nodes
 
 def k8s_get_nodes_homes_string(node_info_file):
@@ -221,20 +217,21 @@ def k8s_get_nodes_homes_string(node_info_file):
   """
   nodes = ""
   homes = ""
-  node_file = open(node_info_file, "r")
-  for line in node_file:
-      node_line = line.strip().split(" ")
-      if node_line[0].startwith("home"):
-        homes = homes + ":" + str(node_line[0])
-      nodes = nodes + ":" + str(node_line[0])
-  return nodes,homes
+  with open(node_info_file, "r") as node_file:
+      for line in node_file:
+          node_line = line.strip().split(" ")
+          if node_line[0].startswith("home"):
+              homes = homes + ":" + str(node_line[0])
+              continue
+          nodes = nodes + ":" + str(node_line[0])
+  return nodes, homes
 
-def prepare_stat_path(node_list,homes,dag):
+def prepare_stat_path(node_list, homes, dag):
     stat_path = 'stats/'
     Path(stat_path).mkdir(parents=True, exist_ok=True)
-    latency_path = os.path.join(stat_path,'summary_latency')
+    latency_path = os.path.join(stat_path, 'summary_latency')
     Path(latency_path).mkdir(parents=True, exist_ok=True)
-    latency_file = '%s/system_latency_N%d_M%d.log'%(latency_path,len(node_list)+len(homes),len(dag))
+    latency_file = '%s/system_latency_N%d_M%d.log' % (latency_path, len(node_list) + len(homes), len(dag))
     return latency_file
 
 # For testing only

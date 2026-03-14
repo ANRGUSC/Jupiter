@@ -140,8 +140,8 @@ def get_resource_data_drupe(mongo_svc_port):
         log.debug('Check Resource Profiler IP: %s',profiler_ip)
         client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(mongo_svc_port)+'/')
         db = client_mongo.central_resource_profiler
-        collection = db.collection_names(include_system_collections=False)
-        logdb =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
+        collection = db.list_collection_names()
+        logdb =db[profiler_ip].find().skip(db[profiler_ip].count_documents({})-1)
         for record in logdb:
             resource_data[drupe_ip2name[profiler_ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
     log.debug('Resource information has already been provided')

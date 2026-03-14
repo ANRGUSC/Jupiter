@@ -74,8 +74,6 @@ def task(q, pathin, pathout, task_name):
         log.info(f"Received file {input_file}")
         q.task_done()
 
-    log.error("ERROR: should never reach this")
-
 
 if __name__ == '__main__':
     # Testing Only

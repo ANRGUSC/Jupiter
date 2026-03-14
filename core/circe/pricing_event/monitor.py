@@ -10,6 +10,7 @@ __license__ = "GPL"
 __version__ = "3.0"
 
 import multiprocessing
+import subprocess
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import os
@@ -52,8 +53,8 @@ def toc(t):
     return texec
 
 def demo_help(server,port,topic,msg):
-    username = 'anrgusc'
-    password = 'anrgusc'
+    username = os.environ.get('SSH_USERNAME', 'anrgusc')
+    password = os.environ.get('SSH_PASSWORD', 'anrgusc')
     client = mqtt.Client()
     client.username_pw_set(username,password)
     client.connect(server, port,300)
@@ -63,27 +64,27 @@ def demo_help(server,port,topic,msg):
 
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
-  
+
   Args:
       dag_info_file (str): path of DAG file
-  
+
   Returns:
-      dict: DAG information 
+      dict: DAG information
   """
   dag_info=[]
-  config_file = open(dag_info_file,'r')
-  dag_size = int(config_file.readline())
+  with open(dag_info_file,'r') as config_file:
+      dag_size = int(config_file.readline())
 
-  dag={}
-  for i, line in enumerate(config_file, 1):
-      dag_line = line.strip().split(" ")
-      if i == 1:
-          dag_info.append(dag_line[0])
-      dag.setdefault(dag_line[0], [])
-      for j in range(1,len(dag_line)):
-          dag[dag_line[0]].append(dag_line[j])
-      if i == dag_size:
-          break
+      dag={}
+      for i, line in enumerate(config_file, 1):
+          dag_line = line.strip().split(" ")
+          if i == 1:
+              dag_info.append(dag_line[0])
+          dag.setdefault(dag_line[0], [])
+          for j in range(1,len(dag_line)):
+              dag[dag_line[0]].append(dag_line[j])
+          if i == dag_size:
+              break
 
   dag_info.append(dag)
   return dag_info
@@ -486,10 +487,10 @@ def main():
         args = ' '.join(str(x) for x in taskmap[2:])
 
         if os.path.isfile(path_src + ".py"):
-            cmd = "python3 -u " + path_src + ".py " + args          
+            cmd = "python3 -u " + path_src + ".py " + args
         else:
             cmd = "sh " + path_src + ".sh " + args
-        os.system(cmd)
+        subprocess.run(cmd.split(), check=False)
 
 if __name__ == '__main__':
     main()

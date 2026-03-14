@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 import matplotlib.pyplot as plt
 from statistics import mean
@@ -66,7 +67,7 @@ def export_log(namespace):
             name = item.metadata.name
             file_name = '%s/%s.log'%(results_path,name)
             cmd = 'kubectl logs -n%s %s > %s'%(namespace,name,file_name)
-            os.system(cmd)
+            subprocess.run(cmd, shell=True, check=False)
 
 def retrieve_logs(module):
     namespace = app_config.namespace_prefix() + "-"+module

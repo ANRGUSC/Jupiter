@@ -22,7 +22,7 @@ import requests
 import random
 from pathlib import Path
 global circe_home_ip, circe_home_ip_port
-from ccdag_utils import *
+from ccdag_utils import retrieve_globalinfo, show_run_stats
 
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
@@ -355,8 +355,6 @@ def task(q, pathin, pathout, task_name):
         else:
             log.debug('Not enough files')
             time.sleep(1)
-
-    log.error("ERROR: should never reach this")
 
 
 # Run by execution profiler

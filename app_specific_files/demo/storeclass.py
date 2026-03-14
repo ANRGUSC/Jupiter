@@ -7,7 +7,7 @@ import logging
 import glob
 import time
 import json
-from ccdag_utils import *
+from ccdag_utils import show_run_stats
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -62,8 +62,6 @@ def task(q, pathin, pathout, task_name):
         else:
             log.debug('Not enough files')
             time.sleep(1)
-
-    log.error("ERROR: should never reach this")
 
 
 # Run by execution profiler

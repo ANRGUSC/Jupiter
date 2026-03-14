@@ -1,4 +1,5 @@
 import os
+import subprocess
 import shutil
 import sys
 import queue
@@ -16,7 +17,7 @@ import urllib
 import collections
 import requests
 import numpy as np
-from ccdag_utils import *
+from ccdag_utils import retrieve_globalinfo, retrieve_storeclass_info, show_run_stats
 
 
 
@@ -102,7 +103,7 @@ def transfer_data_scp(ID,user,pword,source, destination):
         try:
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_svc_port, source, user, nodeIP, destination)
             print(cmd)
-            os.system(cmd)
+            subprocess.run(cmd, shell=True, check=False)
             log.debug('data transfer complete\n')
             break
         except Exception as e:
@@ -204,7 +205,7 @@ def get_and_send_missing_images(pathin):
             destination_path = os.path.join('/jupiter/circe_input',new_file)
             if next_store_class in store_list:
                 print('Transfer image directly from master node')
-                transfer_data_scp(next_store_class,'root','PASSWORD',image_file, destination_path)
+                transfer_data_scp(next_store_class,'root',os.environ.get('JUPITER_PASSWORD', 'PASSWORD'),image_file, destination_path)
             else:
                 print("Next store class is outside the list of current store classes")
         except Exception as e:
@@ -340,8 +341,6 @@ def task(q, pathin, pathout, task_name):
         else:
             log.debug('Not enough files')
             time.sleep(1)
-
-    log.error("ERROR: should never reach this")
 
 
 # Run by execution profiler

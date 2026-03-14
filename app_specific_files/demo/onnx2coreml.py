@@ -1,4 +1,5 @@
 import os
+import shutil
 import onnx
 from onnx import onnx_pb
 from onnx_coreml import convert
@@ -10,7 +11,8 @@ import glob
 # https://github.com/hollance/YOLO-CoreML-MPSNNGraph
 
 def main():
-    os.system('rm -rf saved_models && mkdir saved_models')
+    shutil.rmtree('saved_models', ignore_errors=True)
+    os.makedirs('saved_models', exist_ok=True)
     files = glob.glob('saved_models/*.onnx') + glob.glob('../yolov3/weights/*.onnx')
 
     for f in files:
@@ -26,9 +28,9 @@ def main():
         # Print a human readable representation of the graph
         print(onnx.helper.printable_graph(model.graph))
 
-        model_file = open(f, 'rb')
-        model_proto = onnx_pb.ModelProto()
-        model_proto.ParseFromString(model_file.read())
+        with open(f, 'rb') as model_file:
+            model_proto = onnx_pb.ModelProto()
+            model_proto.ParseFromString(model_file.read())
         yolov3_model = convert(model_proto, image_input_names=['0'], preprocessing_args={'image_scale': 1. / 255})
 
         # 2. Reduce model to FP16, change outputs to DOUBLE and save

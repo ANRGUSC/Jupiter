@@ -6,6 +6,7 @@ __version__ = "4.0"
 import sys
 sys.path.append("../")
 import os
+import subprocess
 import configparser
 import jupiter_config
 import logging
@@ -47,9 +48,9 @@ def build_push_stream():
                       ports = " ".join(port_list_home))
 
     #--no-cache
-    cmd = "sudo docker build -f %s ../.. -t %s"%(home_file,jupiter_config.STREAM_IMAGE)
-    os.system(cmd)
-    os.system("sudo docker push " + jupiter_config.STREAM_IMAGE )
+    subprocess.run(["sudo", "docker", "build", "-f", home_file, "../..", "-t",
+                    jupiter_config.STREAM_IMAGE], check=False)
+    subprocess.run(["sudo", "docker", "push", jupiter_config.STREAM_IMAGE], check=False)
 
     # os.system("rm *.Dockerfile")
 if __name__ == '__main__':

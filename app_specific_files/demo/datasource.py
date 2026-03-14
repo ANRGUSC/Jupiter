@@ -8,7 +8,7 @@ import string
 import random
 import _thread
 import shutil
-from ccdag_utils import *
+from ccdag_utils import show_run_stats
 import json
 
 
@@ -68,8 +68,6 @@ def task(q, pathin, pathout, task_name):
 
     while True:
         time.sleep(999)
-
-    log.error("ERROR: should never reach this")
 
 
 if __name__ == '__main__':

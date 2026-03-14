@@ -69,7 +69,8 @@ class mq():
         self.port = port
         self.timeout = timeout
         self.looptimeout = looptimeout
-        self.outf = open(OUTFNAME,'a')
+        with open(OUTFNAME,'a') as self.outf:
+            pass
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
@@ -140,15 +141,15 @@ class mq():
 
 
 def retrieve_tasks(dag_info_file):
-    config_file = open(dag_info_file,'r')
-    dag_size = int(config_file.readline())
+    with open(dag_info_file,'r') as config_file:
+        dag_size = int(config_file.readline())
 
-    tasks={}
-    for i, line in enumerate(config_file, 1):
-        dag_line = line.strip().split(" ")
-        tasks[dag_line[0]]=i 
-        if i == dag_size:
-            break
+        tasks={}
+        for i, line in enumerate(config_file, 1):
+            dag_line = line.strip().split(" ")
+            tasks[dag_line[0]]=i
+            if i == dag_size:
+                break
     return tasks
 
 def k8s_get_nodes(node_info_file):
@@ -162,10 +163,10 @@ def k8s_get_nodes(node_info_file):
     """
 
     nodes = {}
-    node_file = open(node_info_file, "r")
-    for i,line in enumerate(node_file):
-        node_line = line.strip().split(" ")
-        nodes[i] = [node_line[0],node_line[1]]    
+    with open(node_info_file, "r") as node_file:
+        for i,line in enumerate(node_file):
+            node_line = line.strip().split(" ")
+            nodes[i] = [node_line[0],node_line[1]]
     return nodes
 
 
@@ -423,8 +424,8 @@ new_source8_df=source8.to_df()
 data_table4.on_change('source', lambda attr, old, new: update8())
 
 
-file = open(DAG_PATH, 'r')
-lines = file.readlines()
+with open(DAG_PATH, 'r') as file:
+    lines = file.readlines()
 lines.pop(0)
 nodes = get_dag_nodes(lines)
 links = get_dag_links(lines)

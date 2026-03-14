@@ -2,6 +2,7 @@ import glob
 import math
 import os
 import random
+import subprocess
 from sys import platform
 
 import cv2
@@ -291,4 +292,4 @@ def convert_tif2bmp(p='../xview/val_images_bmp'):
     for i, f in enumerate(files):
         print('%g/%g' % (i + 1, len(files)))
         cv2.imwrite(f.replace('.tif', '.bmp'), cv2.imread(f))
-        os.system('rm -rf ' + f)
+        subprocess.run(['rm', '-rf', f], check=False)

@@ -7,8 +7,6 @@ import sys
 sys.path.append("../")
 import yaml
 from kubernetes import client, config
-from pprint import *
-from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
 import utilities
@@ -52,11 +50,7 @@ def get_all_profilers():
         # We have defined the namespace for deployments in jupiter_config
         namespace = jupiter_config.PROFILER_NAMESPACE
 
-        # Get proper handles or pointers to the k8-python tool to call different functions.
-        api = client.ExtensionsV1beta1Api()
-        body = client.V1DeleteOptions()
-        
-        # First check if there is a exisitng profiler deployment with
+        # First check if there is a existing profiler deployment with
         # the name = key in the respective namespace
         label = "app=" + key + "profiler"
         
@@ -72,8 +66,6 @@ def get_all_profilers():
             mapping[key] = resp.spec.cluster_ip
 
     return mapping
-
-        # At this point you should not have any of the profiler related service, pod, or deployment running
 
 
 def get_all_waves(app_name):
@@ -113,11 +105,7 @@ def get_all_waves(app_name):
         # We have defined the namespace for deployments in jupiter_config
         namespace = jupiter_config.MAPPER_NAMESPACE
 
-        # Get proper handles or pointers to the k8-python tool to call different functions.
-        api = client.ExtensionsV1beta1Api()
-        body = client.V1DeleteOptions()
-        
-        # First check if there is a exisitng profiler deployment with
+        # First check if there is a existing profiler deployment with
         # the name = key in the respective namespace
         #label = "app=wave_" + key
         pod_name = app_name+'-'+key
@@ -133,7 +121,6 @@ def get_all_waves(app_name):
             # logging.debug(resp.spec.cluster_ip)
             mapping[key] = resp.spec.cluster_ip
     return mapping
-        # At this point you should not have any of the profiler related service, pod, or deployment running
 
 def get_all_execs(app_name):
     """
@@ -170,11 +157,7 @@ def get_all_execs(app_name):
         # We have defined the namespace for deployments in jupiter_config
     namespace = jupiter_config.EXEC_NAMESPACE
 
-    # Get proper handles or pointers to the k8-python tool to call different functions.
-    api = client.ExtensionsV1beta1Api()
-    body = client.V1DeleteOptions()
-
-    # First check if there is a exisitng profiler deployment with
+    # First check if there is a existing profiler deployment with
     # the name = key in the respective namespace
     key = 'home'
     pod_name = app_name+ "-home"

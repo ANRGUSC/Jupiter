@@ -31,7 +31,7 @@ sys.path.append(APP_DIR)  # allow imports for app code
 
 # un/pw for all Jupiter subsystem containers
 USERNAME = "root"
-PASSWORD = "PASSWORD"
+PASSWORD = os.environ.get('CIRCE_PASSWORD', 'PASSWORD')
 input_set = set()
 output_set = set()
 
@@ -61,16 +61,16 @@ class OutputFolderHandler(pyinotify.ProcessEvent):
             
 
             try:
-                this_task, dst_task, base_fname = event.name.split("_", maxsplit=3)
-                logging.debug(dst_task)
+                this_task, dst_task, base_fname = event.name.split("_", maxsplit=2)
+                log.debug(dst_task)
                 ip = transfer.circe_lookup_ip(dst_task)
-                logging.debug(ip)
+                log.debug(ip)
 
                 # send output to destination task
                 transfer.transfer_data_scp(ip, self.ssh_port, USERNAME, PASSWORD,
                                            event.pathname, CIRCE_INPUT_DIR)
             except Exception as e:
-                logging.warning('No Destination IP is found!')
+                log.warning('No Destination IP is found! %s', e)
 
 
 

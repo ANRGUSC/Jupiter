@@ -48,8 +48,8 @@ def load_classes(path):
     """
     Loads class labels at 'path'
     """
-    fp = open(path, 'r')
-    names = fp.read().split('\n')
+    with open(path, 'r') as fp:
+        names = fp.read().split('\n')
     return list(filter(None, names))  # filter removes empty strings (such as last line)
 
 

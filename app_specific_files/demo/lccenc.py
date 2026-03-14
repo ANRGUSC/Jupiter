@@ -12,7 +12,7 @@ import requests
 import urllib
 import configparser
 import cv2
-from ccdag_utils import *
+from ccdag_utils import retrieve_globalinfo, show_run_stats
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
 log = logging.getLogger(__name__)
@@ -117,7 +117,7 @@ def task(q, pathin, pathout, task_name):
 
             #LCCENC CODE
 
-            logging.debug(id_list)
+            log.debug(id_list)
             classname = [x.split('.')[0].split('img')[1] for x in base_list]
             classid = [classmap[x] for x in classname]
             filesuffixlist = []
@@ -125,7 +125,7 @@ def task(q, pathin, pathout, task_name):
                 tmp = str(x)+'#'+y
                 filesuffixlist.append(tmp)
             filesuffix = '-'.join(filesuffixlist)
-            logging.debug(filesuffix)
+            log.debug(filesuffix)
 
             hdr = {
                     'Content-Type': 'application/json',
@@ -188,9 +188,8 @@ def task(q, pathin, pathout, task_name):
                 for idx,child in enumerate(children):
                     job = "jobid"+ str(job_id)
                     destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
-                    f = open(destination, 'w')
-                    np.savetxt(f, En_Image_Batch[idx], delimiter=',')
-                    f.close()
+                    with open(destination, 'w') as f:
+                        np.savetxt(f, En_Image_Batch[idx], delimiter=',')
                     show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv")
                     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv",src_task)
 
@@ -225,9 +224,8 @@ def task(q, pathin, pathout, task_name):
                 for idx,child in enumerate(children):
                     job = "jobid"+ str(job_id)
                     destination = os.path.join(pathout, f"{task_name}_{child}_{filesuffix}{job}.csv")
-                    f = open(destination, 'w')
-                    np.savetxt(f, En_Image_Batch[idx], delimiter=',')
-                    f.close()
+                    with open(destination, 'w') as f:
+                        np.savetxt(f, En_Image_Batch[idx], delimiter=',')
                     show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv")
                     #show_run_stats(task_name,'queue_end_process',f"{task_name}_{child}_{filesuffix}{job}.csv",src_task)
             # read the generate output
@@ -238,8 +236,6 @@ def task(q, pathin, pathout, task_name):
         else:
             log.debug('Not enough files')
             time.sleep(1)
-
-    log.error("ERROR: should never reach this")
 
 
 # Run by execution profiler

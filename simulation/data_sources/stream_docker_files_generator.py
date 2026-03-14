@@ -75,7 +75,8 @@ def write_stream_home_docker(app_option=None,**kwargs):
 
 
 if __name__ == '__main__':
-    write_stream_home_docker(username = 'root',
-                      password = 'PASSWORD',
+    import os
+    write_stream_home_docker(username=os.environ.get('DOCKER_USER', 'root'),
+                      password=os.environ.get('DOCKER_PASSWORD', 'PASSWORD'),
                       app_file='app_specific_files/network_monitoring',
-                      ports = '22 8888')
+                      ports='22 8888')

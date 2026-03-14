@@ -80,13 +80,14 @@ def main(doc=curdoc()):
             self.port = port
             self.timeout = timeout
             self.looptimeout = looptimeout
-            self.outf = open(OUTFNAME,'a')
+            with open(OUTFNAME,'a') as self.outf:
+                pass
             self.client = mqtt.Client()
             self.client.on_connect = self.on_connect
             self.client.on_message = self.on_message
             try:
                 self.client.connect(self.server, self.port, self.timeout)
-            except:
+            except Exception as e:
                 print("connection failed")
 
         # The callback for when the client receives a CONNACK response from the server.
@@ -152,15 +153,15 @@ def main(doc=curdoc()):
 
 
     def retrieve_tasks(dag_info_file):
-        config_file = open(dag_info_file,'r')
-        dag_size = int(config_file.readline())
+        with open(dag_info_file,'r') as config_file:
+            dag_size = int(config_file.readline())
 
-        tasks={}
-        for i, line in enumerate(config_file, 1):
-            dag_line = line.strip().split(" ")
-            tasks[dag_line[0]]=i 
-            if i == dag_size:
-                break
+            tasks={}
+            for i, line in enumerate(config_file, 1):
+                dag_line = line.strip().split(" ")
+                tasks[dag_line[0]]=i
+                if i == dag_size:
+                    break
         return tasks
 
     def k8s_get_nodes(node_info_file):
@@ -174,10 +175,10 @@ def main(doc=curdoc()):
         """
 
         nodes = {}
-        node_file = open(node_info_file, "r")
-        for i,line in enumerate(node_file):
-            node_line = line.strip().split(" ")
-            nodes[i] = [node_line[0],node_line[1]]    
+        with open(node_info_file, "r") as node_file:
+            for i,line in enumerate(node_file):
+                node_line = line.strip().split(" ")
+                nodes[i] = [node_line[0],node_line[1]]
         return nodes
 
 
@@ -449,8 +450,8 @@ def main(doc=curdoc()):
 
     ###################################################################################################################################
 
-    file = open('configuration.txt', 'r')
-    lines = file.readlines()
+    with open('configuration.txt', 'r') as file:
+        lines = file.readlines()
     lines.pop(0)
     nodes = get_dag_nodes(lines)
     links = get_dag_links(lines)

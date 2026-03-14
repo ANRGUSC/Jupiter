@@ -8,7 +8,7 @@ __version__ = "2.1"
 
 import time
 def main():
-	while 1:
+	while True:
 	    time.sleep(120)
 
 if __name__ == '__main__':

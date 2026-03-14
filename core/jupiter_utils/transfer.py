@@ -1,5 +1,6 @@
 import logging
 import os
+import subprocess
 import time
 
 logging.basicConfig(format="%(levelname)s:%(filename)s:%(message)s")
@@ -49,10 +50,12 @@ def transfer_data_scp(ip, port, user, pw, src, dst):
     # Keep retrying in case the containers are still building/booting up on
     # the child nodes.
     retry = 0
-    cmd = f"sshpass -p {pw} scp -P {port} -o StrictHostKeyChecking=no {src} {user}@{ip}:{dst}"
-    log.debug(cmd)
+    log.debug("scp transfer to %s@%s:%s", user, ip, dst)
+    scp_cmd = ["sshpass", "-p", pw, "scp", "-P", str(port),
+               "-o", "StrictHostKeyChecking=no", src, f"{user}@{ip}:{dst}"]
     while retry < NUM_RETRIES:
-        err = os.system(cmd)
+        result = subprocess.run(scp_cmd, check=False)
+        err = result.returncode
         if err == 0:
             log.debug("transfer successful!")
             break

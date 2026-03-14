@@ -45,14 +45,12 @@ class experience():
 
 def retrieve_nodes(node_file):
     print(node_file)
-    f = open(node_file,'r')
     nodes =  []
-    
-    lines = f.readlines()
+    with open(node_file,'r') as f:
+        lines = f.readlines()
     for l in lines:
         nid = l.split(' ')[0]
         nodes.append(nid)
-    f.close()
 
     return nodes
 

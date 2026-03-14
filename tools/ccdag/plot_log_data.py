@@ -1,3 +1,4 @@
+import ast
 import os
 import sys
 import matplotlib.pyplot as plt
@@ -199,21 +200,21 @@ if __name__ == '__main__':
 
     try:
         with open(TASK_TIMES, 'r') as f:
-            task_log = eval(f.read())
+            task_log = ast.literal_eval(f.read())
             plot_task_timings(task_log, TEST_INDICATORS)
     except FileNotFoundError:
         print("{} does not exist".format(TASK_TIMES))
 
     try:
         with open(COMM_TIMES, 'r') as f:
-            comm_log = eval(f.read())
+            comm_log = ast.literal_eval(f.read())
             plot_comm_times(comm_log, TEST_INDICATORS)
     except FileNotFoundError:
         print("{} does not exist".format(COMM_TIMES))
 
     try:
         with open(MAKESPAN, 'r') as f:
-            makespan_log = eval(f.read())
+            makespan_log = ast.literal_eval(f.read())
             plot_makespan(makespan_log, TEST_INDICATORS)
     except FileNotFoundError:
         print("{} does not exist".format(MAKESPAN))

@@ -30,25 +30,25 @@ def k8s_get_nodes(node_info_file):
     """
 
     nodes = {}
-    node_file = open(node_info_file, "r")
-    for i,line in enumerate(node_file):
-        node_line = line.strip().split(" ")
-        nodes[node_line[0]] = node_line[1]   
+    with open(node_info_file, "r") as node_file:
+        for i,line in enumerate(node_file):
+            node_line = line.strip().split(" ")
+            nodes[node_line[0]] = node_line[1]
     return nodes
 
 def retrieve_tasks(dag_info_file):
-    config_file = open(dag_info_file,'r')
-    dag_size = int(config_file.readline())
+    with open(dag_info_file,'r') as config_file:
+        dag_size = int(config_file.readline())
 
-    tasks={}
-    tasksid={}
-    for i, line in enumerate(config_file, 1):
-        dag_line = line.strip().split(" ")
-        tasks[dag_line[0]]=i 
-        tasksid[i]=dag_line[0]
-        if i == dag_size:
-            break
-    
+        tasks={}
+        tasksid={}
+        for i, line in enumerate(config_file, 1):
+            dag_line = line.strip().split(" ")
+            tasks[dag_line[0]]=i
+            tasksid[i]=dag_line[0]
+            if i == dag_size:
+                break
+
     return tasks,tasksid
 
 class collector(): # collect power overhead (CPU/memory)
@@ -61,7 +61,7 @@ class collector(): # collect power overhead (CPU/memory)
         self.looptimeout = looptimeout
         self.client = mqtt.Client()
         self.username = 'anrgusc'
-        self.password = 'anrgusc'
+        self.password = os.environ.get('SSH_PASSWORD', 'anrgusc')
         self.client.username_pw_set(self.username,self.password)
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
@@ -111,7 +111,7 @@ if __name__ == '__main__':
         for folder in folder_list:
             exp_folder= main_folder+'/'+folder
             os.mkdir(exp_folder)
-    except:
+    except Exception as e:
         print('Folder already existed')
 
     
@@ -120,7 +120,7 @@ if __name__ == '__main__':
             if folder!='summary_latency':
                 task_folder = main_folder+'/'+folder+'/N%dM%d'%(N,M)
                 os.mkdir(task_folder)
-    except:
+    except Exception as e:
         print('Subfolder already existed')
 
     if jupiter_config.PRICING == 0:

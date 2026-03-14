@@ -15,6 +15,7 @@ import multiprocessing
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 import os
+import subprocess
 import sys
 import time
 import json
@@ -111,14 +112,14 @@ def transfer_data_scp(IP,user,pword,source, destination):
     while retry < num_retries:
         try:
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
-            os.system(cmd)
+            subprocess.run(cmd.split(), check=False)
             logging.debug('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
-        except:
+        except Exception as e:
             logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
@@ -162,14 +163,14 @@ def multicast_data_scp(IP_list,user_list,pword_list,source, destination):
         while retry < num_retries:
             try:
                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword_list[idx], ssh_port, source, user_list[idx], IP_list[idx], destination)
-                os.system(cmd)
+                subprocess.run(cmd.split(), check=False)
                 logging.debug('data transfer complete\n')
                 ts = time.time()
                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
                 runtime_sender_log.write(s)
                 runtime_sender_log.flush()
                 break
-            except:
+            except Exception as e:
                 logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
                 time.sleep(2)
                 retry += 1
@@ -332,7 +333,7 @@ class Watcher1():
         try:
             while True:
                 time.sleep(5)
-        except:
+        except Exception as e:
             self.observer.stop()
             logging.debug("Error")
 
@@ -450,7 +451,7 @@ class Watcher(multiprocessing.Process):
         try:
             while True:
                 time.sleep(5)
-        except:
+        except Exception as e:
             self.observer.stop()
             logging.debug("Error")
 
@@ -638,17 +639,17 @@ def main():
     my_task = os.environ["TASK"]
 
     cmd = "mkdir centralized_scheduler/output/"+my_task
-    os.system(cmd)
+    subprocess.run(cmd.split(), check=False)
     for home_id in home_ids:
         cmd = "mkdir centralized_scheduler/output/"+my_task+"/" + home_id
-        os.system(cmd)
+        subprocess.run(cmd.split(), check=False)
 
     
     cmd = "mkdir centralized_scheduler/input/"+my_task 
-    os.system(cmd)
+    subprocess.run(cmd.split(), check=False)
     for home_id in home_ids:
         cmd = "mkdir centralized_scheduler/input/"+my_task+"/" + home_id
-        os.system(cmd)
+        subprocess.run(cmd.split(), check=False)
 
 
     all_nodes = os.environ["ALL_NODES"].split(":")
@@ -724,7 +725,7 @@ def main():
             cmd = "python3 -u " + path_src + ".py " + args          
         else:
             cmd = "sh " + path_src + ".sh " + args
-        os.system(cmd)
+        subprocess.run(cmd.split(), check=False)
 
 if __name__ == '__main__':
     main()

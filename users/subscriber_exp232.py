@@ -70,7 +70,7 @@ class subscriber():
         self.looptimeout = looptimeout
         self.client = mqtt.Client()
         self.username = 'anrgusc'
-        self.password = 'anrgusc'
+        self.password = os.environ.get('SSH_PASSWORD', 'anrgusc')
         self.client.username_pw_set(self.username,self.password)
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message

@@ -48,7 +48,7 @@ def generate(name, label, image, host, port_mappings, env_vars):
     a template.
     """
     depl_spec = deployment_template.format(name=name, label=label, host=host, image=image)
-    depl_spec = yaml.load(depl_spec, Loader=yaml.FullLoader)
+    depl_spec = yaml.safe_load(depl_spec)
     depl_spec["spec"]["template"]["spec"]["containers"][0]["ports"] = port_mappings
     env_var_list = []
     for key, value in env_vars.items():

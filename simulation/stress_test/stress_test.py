@@ -10,6 +10,7 @@ from multiprocessing import cpu_count
 import psutil
 import time
 import os
+import subprocess
 import logging
 
 logging.basicConfig(level = logging.DEBUG)
@@ -22,7 +23,7 @@ def stress_test(t1,t2):
         logging.debug('Utilizing %d cores' % count)
         logging.debug('-' * 20)
         cmd = 'stress --cpu %d --timeout %ds &' %(count,t1)
-        os.system(cmd)
+        subprocess.run(cmd, shell=True, check=False)
         for i in range(0,t1+t2):
             logging.debug('------- Current CPU usage '+ str(psutil.cpu_percent()))
             time.sleep(1)

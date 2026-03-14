@@ -19,6 +19,6 @@ def generate(name, port_mappings):
     a template.
     """
     service_spec = service_template.format(name=name)
-    service_spec = yaml.load(service_spec, Loader=yaml.FullLoader)
+    service_spec = yaml.safe_load(service_spec)
     service_spec["spec"]["ports"] = port_mappings
     return service_spec

@@ -41,7 +41,6 @@ def task(q, pathin, pathout, task_name):
         time.sleep(1)
         log.debug("Staying idle...")
 
-    log.error("ERROR: should never reach this")
 
 
 if __name__ == '__main__':

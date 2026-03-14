@@ -37,6 +37,7 @@ from multiprocessing import Process, Manager
 import multiprocessing
 from flask import Flask, request
 from readconfig import read_config
+import subprocess
 import logging
 
 
@@ -45,27 +46,26 @@ app = Flask(__name__)
 
 def k8s_read_dag(dag_info_file):
   """read the dag from the file input
-  
+
   Args:
       dag_info_file (str): path of DAG file
-  
+
   Returns:
-      dict: DAG information 
+      dict: DAG information
   """
   dag_info=[]
-  config_file = open(dag_info_file,'r')
-  dag_size = int(config_file.readline())
-
   dag={}
-  for i, line in enumerate(config_file, 1):
-      dag_line = line.strip().split(" ")
-      if i == 1:
-          dag_info.append(dag_line[0])
-      dag.setdefault(dag_line[0], [])
-      for j in range(1,len(dag_line)):
-          dag[dag_line[0]].append(dag_line[j])
-      if i == dag_size:
-          break
+  with open(dag_info_file,'r') as config_file:
+      dag_size = int(config_file.readline())
+      for i, line in enumerate(config_file, 1):
+          dag_line = line.strip().split(" ")
+          if i == 1:
+              dag_info.append(dag_line[0])
+          dag.setdefault(dag_line[0], [])
+          for j in range(1,len(dag_line)):
+              dag[dag_line[0]].append(dag_line[j])
+          if i == dag_size:
+              break
 
   dag_info.append(dag)
   return dag_info
@@ -114,14 +114,14 @@ def transfer_data_scp(IP,user,pword,source, destination):
     while retry < num_retries:
         try:
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, IP, destination)
-            os.system(cmd)
+            subprocess.run(cmd.split(), check=False)
             logging.debug('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
-        except:
+        except Exception as e:
             logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
@@ -166,14 +166,14 @@ def multicast_data_scp(IP_list,user_list,pword_list,source, destination):
         while retry < num_retries:
             try:
                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword_list[idx], ssh_port, source, user_list[idx], IP_list[idx], destination)
-                os.system(cmd)
+                subprocess.run(cmd.split(), check=False)
                 logging.debug('data transfer complete\n')
                 ts = time.time()
                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(node_name, transfer_type,source,ts)
                 runtime_sender_log.write(s)
                 runtime_sender_log.flush()
                 break
-            except:
+            except Exception as e:
                 logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
                 time.sleep(2)
                 retry += 1
@@ -207,39 +207,40 @@ def get_taskmap():
         - list: super_tasks 
         - list: non_tasks - tasks not belong to DAG
     """
-    configs = json.load(open('centralized_scheduler/config.json'))
+    with open('centralized_scheduler/config.json') as _f:
+        configs = json.load(_f)
     task_map = configs['taskname_map']
     execution_map = configs['exec_profiler']
-    tasks_info = open('centralized_scheduler/dag.txt', "r")
 
     task_order = []#create the  (DAG) task list in the order of execution
     super_tasks = []
     tasks = {} #create DAG dictionary
     count = 0
     non_tasks = []
-    for line in tasks_info:
-        if count == 0:
-            count += 1
-            continue
+    with open('centralized_scheduler/dag.txt', "r") as tasks_info:
+        for line in tasks_info:
+            if count == 0:
+                count += 1
+                continue
 
-        data = line.strip().split(" ")
-        if task_map[data[0]][1] == True and execution_map[data[0]] == False:
-            if data[0] not in super_tasks:
-                super_tasks.append(data[0])
+            data = line.strip().split(" ")
+            if task_map[data[0]][1] == True and execution_map[data[0]] == False:
+                if data[0] not in super_tasks:
+                    super_tasks.append(data[0])
 
-        if task_map[data[0]][1] == False and execution_map[data[0]] == False:
-            if data[0] not in non_tasks:
-                non_tasks.append(data[0])
+            if task_map[data[0]][1] == False and execution_map[data[0]] == False:
+                if data[0] not in non_tasks:
+                    non_tasks.append(data[0])
 
-        if task_map[data[0]][1] == False:
-            continue
+            if task_map[data[0]][1] == False:
+                continue
 
-        tasks.setdefault(data[0], [])
-        if data[0] not in task_order:
-            task_order.append(data[0])
-        for i in range(3, len(data)):
-            if  data[i] != 'home' and task_map[data[i]][1] == True :
-                tasks[data[0]].extend([data[i]])
+            tasks.setdefault(data[0], [])
+            if data[0] not in task_order:
+                task_order.append(data[0])
+            for i in range(3, len(data)):
+                if  data[i] != 'home' and task_map[data[i]][1] == True :
+                    tasks[data[0]].extend([data[i]])
     logging.debug("tasks: %s ", tasks)
     logging.debug("task order %s", task_order) #task_list
     logging.debug("super tasks %s", super_tasks)
@@ -307,7 +308,7 @@ class Watcher1():
         try:
             while True:
                 time.sleep(5)
-        except:
+        except Exception as e:
             self.observer.stop()
             logging.debug("Error")
 
@@ -424,7 +425,7 @@ class Watcher(multiprocessing.Process):
         try:
             while True:
                 time.sleep(5)
-        except:
+        except Exception as e:
             self.observer.stop()
             logging.debug("Error")
 
@@ -554,19 +555,17 @@ def main():
     if TRANSFER == 0:
         transfer_type = 'scp'
 
-    runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w")
-    s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
-    runtime_sender_log.write(s)
-    runtime_sender_log.close()
+    with open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "w") as _f:
+        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_Path', 'Time_stamp')
+        _f.write(s)
     runtime_sender_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_sender.txt'), "a")
     #Node_name, Transfer_Type, Source_path , Time_stamp
 
     if RUNTIME == 1:
         global runtime_receiver_log
-        runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w")
-        s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
-        runtime_receiver_log.write(s)
-        runtime_receiver_log.close()
+        with open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "w") as _f:
+            s = "{:<10} {:<10} {:<10} {:<10} \n".format('Node_name', 'Transfer_Type', 'File_path', 'Time_stamp')
+            _f.write(s)
         runtime_receiver_log = open(os.path.join(os.path.dirname(__file__), 'runtime_transfer_receiver.txt'), "a")
         #Node_name, Transfer_Type, Source_path , Time_stamp
 
@@ -580,7 +579,8 @@ def main():
 
     global taskmap, taskname, taskmodule, filenames,files_out, node_name,node_id,all_nodes, all_nodes_ips
 
-    configs = json.load(open('/centralized_scheduler/config.json'))
+    with open('/centralized_scheduler/config.json') as _f:
+        configs = json.load(_f)
     taskmap = configs["taskname_map"][sys.argv[len(sys.argv)-1]]
     taskname = taskmap[0]
     if taskmap[1] == True:
@@ -604,17 +604,17 @@ def main():
     my_task = os.environ["TASK"]
 
     cmd = "mkdir centralized_scheduler/output/"+my_task
-    os.system(cmd)
+    subprocess.run(cmd.split(), check=False)
     for home_id in home_ids:
         cmd = "mkdir centralized_scheduler/output/"+my_task+"/" + home_id
-        os.system(cmd)
+        subprocess.run(cmd.split(), check=False)
 
     
     cmd = "mkdir centralized_scheduler/input/"+my_task 
-    os.system(cmd)
+    subprocess.run(cmd.split(), check=False)
     for home_id in home_ids:
         cmd = "mkdir centralized_scheduler/input/"+my_task+"/" + home_id
-        os.system(cmd)
+        subprocess.run(cmd.split(), check=False)
 
 
     all_nodes = os.environ["ALL_NODES"].split(":")
@@ -689,7 +689,7 @@ def main():
             cmd = "python3 -u " + path_src + ".py " + args          
         else:
             cmd = "sh " + path_src + ".sh " + args
-        os.system(cmd)
+        subprocess.run(cmd.split(), check=False)
 
 if __name__ == '__main__':
     main()

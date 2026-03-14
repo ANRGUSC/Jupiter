@@ -76,7 +76,7 @@ def evaluate_sequential():
         logging.debug('---- Generate random input files')
         shutil.copyfile(src,dest)
         count = 0
-        while 1:
+        while True:
             time.sleep(5)
             file_count_out = len(os.listdir("output/"))
             if file_count_out ==  i:
@@ -99,7 +99,7 @@ def evaluate_stress(num_nodes):
         dest = "input/%dbotnet.ipsum"%i
         shutil.copyfile(src,dest)
         count = 0
-        while 1:
+        while True:
             time.sleep(5)
             file_count_out = len(os.listdir("output/"))
             if file_count_out == num_stress and requested==False:

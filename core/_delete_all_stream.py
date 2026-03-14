@@ -8,8 +8,6 @@ sys.path.append("../")
 import utilities
 import yaml
 from kubernetes import client, config
-from pprint import *
-from kubernetes.client.apis import core_v1_api
 from kubernetes.client.rest import ApiException
 import jupiter_config
 import time

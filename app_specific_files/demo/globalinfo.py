@@ -43,8 +43,8 @@ config.read(ccdag.JUPITER_CONFIG_INI_PATH)
 FLASK_DOCKER = int(config['PORT']['FLASK_DOCKER'])
 FLASK_SVC   = int(config['PORT']['FLASK_SVC'])
 
-global collagejobs, log
-log = []
+global collagejobs, job_logs
+job_logs = []
 
 app = Flask('Global_Server')
 
@@ -223,9 +223,9 @@ def request_id():
     class_image = recv['class_image']
     print('********************')
     print(class_image)
-    print(log[class_image-1])
-    response = str(log[class_image-1].get_id())
-    log[class_image-1].id_update()
+    print(job_logs[class_image-1])
+    response = str(job_logs[class_image-1].get_id())
+    job_logs[class_image-1].id_update()
     print(response)
     return json.dumps(response)
     
@@ -237,16 +237,16 @@ def request_dict():
     class_image = recv['class_image']
     print('********************')
     print(class_image)
-    print(log[class_image-1])
-    log[class_image-1].dict_update(recv['job_id'],recv['filename'])
-    response = log[class_image-1].get_dict()
+    print(job_logs[class_image-1])
+    job_logs[class_image-1].dict_update(recv['job_id'],recv['filename'])
+    response = job_logs[class_image-1].get_dict()
     print(response)
     return json.dumps(response)
 
 collagejobs = collageJobs()
 for i in range(ccdag.NUM_CLASS):
     event = EventLog()
-    log.append(event)
+    job_logs.append(event)
 app.run(threaded = True, host = '0.0.0.0',port = FLASK_DOCKER) #address
 
 def task(q, pathin, pathout, task_name):

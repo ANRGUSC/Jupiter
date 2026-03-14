@@ -29,10 +29,10 @@ if __name__ == '__main__':
             rotate(sys.argv[2], sys.argv[3])
         elif sys.argv[1] == "random":
             log.error("option random to be implemented")
-            exit()
+            sys.exit(1)
 
         log.info(f"Created output file {sys.argv[3]}")
     else:
         log.error("OPTION: rotate or random")
         log.error("usage: python alter_mapping.py {OPTION} {infile} {outfile}")
-        exit()
+        sys.exit(1)

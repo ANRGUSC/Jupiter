@@ -27,7 +27,7 @@ sys.path.append(APP_DIR)  # allow imports for app code
 
 # un/pw for all execution profiler containers
 USERNAME = "root"
-PASSWORD = "PASSWORD"
+PASSWORD = os.environ.get('EXEC_PROFILER_PASSWORD', 'PASSWORD')
 
 
 def main():
@@ -45,41 +45,38 @@ def main():
     config = configparser.ConfigParser()
     config.read(JUPITER_CONFIG_INI_PATH)
 
-    myfile = open('/jupiter/profiler_' + nodename + '.txt', "w")
-    myfile.write('task,time(sec),output_data (Kbit)\n')
-
     app_config = app_config_parser.AppConfig(APP_DIR)
     tasks = app_config.get_dag_tasks()
 
-    #execute each task and get the timing and data size
-    for task in tasks:
-        module_name = task['base_script'].replace(".py", "")
-        # import task base script from the app_specific_files dir
-        task_module = importlib.import_module(
-            "build.app_specific_files.{}".format(module_name)
-        )
-
-        start_time = datetime.datetime.utcnow()
-        output_dir, output_files = task_module.profile_execution(task['name'])
-        log.debug('------------------------------------------------')
-        log.debug(output_files)
-        stop_time = datetime.datetime.utcnow()
-        mytime = stop_time - start_time
-        mytime = int(mytime.total_seconds())  # convert to seconds (rounds)
-
-        output_sizes = []
-        for file in output_files:
-            output_sizes.append(
-                utils.file_size(os.path.join(output_dir, file))
+    # execute each task and get the timing and data size
+    with open('/jupiter/profiler_' + nodename + '.txt', "w") as myfile:
+        myfile.write('task,time(sec),output_data (Kbit)\n')
+        for task in tasks:
+            module_name = task['base_script'].replace(".py", "")
+            # import task base script from the app_specific_files dir
+            task_module = importlib.import_module(
+                "build.app_specific_files.{}".format(module_name)
             )
-        log.debug(output_sizes)
-        log.debug('------------------------------------------------')
-        sum_output_data = sum(output_sizes)  # current: sum of all output files
-        line = task['name'] + ',' + str(mytime) + ',' + str(sum_output_data) + '\n'
-        myfile.write(line)
-        myfile.flush()
 
-    myfile.close()
+            start_time = datetime.datetime.utcnow()
+            output_dir, output_files = task_module.profile_execution(task['name'])
+            log.debug('------------------------------------------------')
+            log.debug(output_files)
+            stop_time = datetime.datetime.utcnow()
+            mytime = stop_time - start_time
+            mytime = int(mytime.total_seconds())  # convert to seconds (rounds)
+
+            output_sizes = []
+            for file in output_files:
+                output_sizes.append(
+                    utils.file_size(os.path.join(output_dir, file))
+                )
+            log.debug(output_sizes)
+            log.debug('------------------------------------------------')
+            sum_output_data = sum(output_sizes)  # current: sum of all output files
+            line = task['name'] + ',' + str(mytime) + ',' + str(sum_output_data) + '\n'
+            myfile.write(line)
+            myfile.flush()
 
     log.debug('Finish logging.debuging out the execution information')
     log.debug('Starting to send the output file back to the home node')

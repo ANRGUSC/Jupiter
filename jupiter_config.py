@@ -58,12 +58,12 @@ def get_home_node(file_name):
 # used for nodes.txt only
 def get_datasources(file_name):
     datasources = {}
-    node_file = open(file_name, "r")
-    for line in node_file:
-        node_line = line.strip().split(" ")
-        datasources.setdefault(node_line[0], [])
-        for i in range(1, len(node_line)):
-          datasources[node_line[0]].append(node_line[i])
+    with open(file_name, "r") as node_file:
+        for line in node_file:
+            node_line = line.strip().split(" ")
+            datasources.setdefault(node_line[0], [])
+            for i in range(1, len(node_line)):
+                datasources[node_line[0]].append(node_line[i])
     return datasources
 
 # TODO: remove all usage of this function
@@ -111,11 +111,10 @@ def set_globals():
     FLASK_CIRCE             = config['PORT']['FLASK_CIRCE']
     FLASK_DEPLOY            = config['PORT']['FLASK_DEPLOY']
 
-    global BOKEH,BOKEH_SERVER, BOKEH_PORT, BOKEH
+    global BOKEH, BOKEH_SERVER, BOKEH_PORT
     BOKEH = int(config['BOKEH_LIST']['BOKEH'])
     BOKEH_SERVER = config['BOKEH_LIST']['BOKEH_SERVER']
     BOKEH_PORT = int(config['BOKEH_LIST']['BOKEH_PORT'])
-    BOKEH = int(config['BOKEH_LIST']['BOKEH'])
 
 
     """Modules path of Jupiter"""

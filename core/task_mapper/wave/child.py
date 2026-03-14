@@ -278,8 +278,8 @@ def get_resource_data_drupe(mongo_svc_port):
         log.debug('Check Resource Profiler IP: %s',profiler_ip)
         client_mongo = MongoClient('mongodb://'+profiler_ip+':'+str(mongo_svc_port)+'/')
         db = client_mongo.central_resource_profiler
-        collection = db.collection_names(include_system_collections=False)
-        logdb =db[profiler_ip].find().skip(db[profiler_ip].count()-1)
+        collection = db.list_collection_names()
+        logdb =db[profiler_ip].find().skip(db[profiler_ip].count_documents({})-1)
         for record in logdb:
             resource_data[drupe_ip2name[profiler_ip]]={'memory':record['memory'],'cpu':record['cpu'],'last_update':record['last_update']}
     log.debug('Resource information has already been provided')
@@ -292,19 +292,19 @@ def get_network_data_drupe(my_profiler_ip, mongo_svc_port, drupe_ip2name):
     log.debug('Check My Network Profiler IP: %s'%(my_profiler_ip))
     client_mongo = MongoClient('mongodb://'+my_profiler_ip+':'+mongo_svc_port+'/')
     db = client_mongo.droplet_network_profiler
-    collection = db.collection_names(include_system_collections=False)
+    collection = db.list_collection_names()
     num_nb = len(collection)-1
     while num_nb==-1:
         log.debug('--- Network profiler mongoDB not yet prepared')
         time.sleep(60)
-        collection = db.collection_names(include_system_collections=False)
+        collection = db.list_collection_names()
         num_nb = len(collection)-1
-    num_rows = db[my_profiler_ip].count()
+    num_rows = db[my_profiler_ip].count_documents({})
     while num_rows < num_nb:
         log.debug('--- Network profiler regression info not yet loaded into MongoDB!')
         time.sleep(60)
-        num_rows = db[my_profiler_ip].count()
-    logdb =db[my_profiler_ip].find().skip(db[my_profiler_ip].count()-num_nb)
+        num_rows = db[my_profiler_ip].count_documents({})
+    logdb =db[my_profiler_ip].find().skip(db[my_profiler_ip].count_documents({})-num_nb)
     for record in logdb:
         # Destination ID -> Parameters(a,b,c) , Destination IP
         if record['Destination[IP]'] in home_profiler_ip: continue

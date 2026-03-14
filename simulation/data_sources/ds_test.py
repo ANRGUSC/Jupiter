@@ -54,8 +54,7 @@ def transfer_data_scp(ID,user,pword,source, destination):
     while retry < num_retries:
         try:
             nodeIP = combined_ip_map[ID]
-            cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
-            os.system(cmd)
+            subprocess.run(["sshpass", "-p", pword, "scp", "-P", str(ssh_port), "-o", "StrictHostKeyChecking=no", "-r", source, "%s@%s:%s" % (user, nodeIP, destination)], check=False)
             logging.debug('data transfer complete\n')
             break
         except Exception as e:

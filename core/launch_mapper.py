@@ -12,6 +12,8 @@ import sys
 import time
 import requests
 import json
+import yaml
+import random
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
 import k8s_spec.service
@@ -33,8 +35,7 @@ def setup_proxy(port):
     Args:
         port (int): port number
     """
-    cmd = f"kubectl proxy -p {str(port)}"
-    return subprocess.Popen(cmd, shell=True)
+    return subprocess.Popen(["kubectl", "proxy", "-p", str(port)])
 
 
 def concat_worker_names(app_config):
@@ -122,7 +123,7 @@ def launch_heft():
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     namespace = app_config.namespace_prefix() + "-mapper"
     app_name = app_config.app_name
-    os.system(f"kubectl create namespace {namespace}")
+    subprocess.run(["kubectl", "create", "namespace", namespace], check=False)
 
     # Load kube config before executing k8s client API calls.
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
@@ -177,11 +178,11 @@ def launch_heft():
     # Setup k8s proxy and retrieve mapping from HEFT pod
     proxy_proc = setup_proxy(jupiter_config.kubectl_proxy_mapper())
     svc_port, _ = jupiter_config.flask_port_mapping()
-    url = f"http://localhost:{8081}/api/v1/" \
+    url = f"http://localhost:{jupiter_config.kubectl_proxy_mapper()}/api/v1/" \
           + f"namespaces/{namespace}/services/{app_name}-home:{svc_port}/proxy"
     log.info("Waiting for HEFT pod to boot...")
     time.sleep(10)
-    while 1:
+    while True:
         try:
             log.debug('Trying to get the assignment from HEFT mapper')
             r = requests.get(url)
@@ -190,7 +191,7 @@ def launch_heft():
             if len(mapping) != 0:
                 if "status" not in mapping:
                     break
-        except:
+        except Exception:
             log.debug("HEFT not finished, retry in 30 sec...")
             time.sleep(30)
 
@@ -207,7 +208,7 @@ def launch_wave():
     # Parse app's app_config.yaml
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     namespace = app_config.namespace_prefix() + "-mapper"
-    os.system(f"kubectl create namespace {namespace}")
+    subprocess.run(["kubectl", "create", "namespace", namespace], check=False)
 
     # Load kube config before executing k8s client API calls.
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
@@ -326,12 +327,12 @@ def launch_wave():
     # Setup k8s proxy and retrieve mapping from WAVE home pod
     proxy_proc = setup_proxy(jupiter_config.kubectl_proxy_mapper())
     svc_port, _ = jupiter_config.flask_port_mapping()
-    url = f"http://localhost:{8081}/api/v1/" \
+    url = f"http://localhost:{jupiter_config.kubectl_proxy_mapper()}/api/v1/" \
           + f"namespaces/{namespace}/services/{app_config.app_name}-home:{svc_port}/proxy"
     log.info("Waiting for WAVE pod to boot...")
     log.info(f"namespaces/{namespace}/services/{app_config.app_name}-home:{svc_port}/proxy")
     time.sleep(10)
-    while 1:
+    while True:
         try:
             log.debug('Trying to get the assignment from WAVE mapper')
             r = requests.get(url)
@@ -340,7 +341,7 @@ def launch_wave():
             if len(mapping) >2:
                 if "status" not in mapping:
                     break
-        except:
+        except Exception:
             log.debug("WAVE not finished, retry in 30 sec...")
             time.sleep(30)
 

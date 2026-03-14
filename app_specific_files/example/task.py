@@ -66,8 +66,6 @@ def task(q, pathin, pathout, task_name):
         cnt += 1
         q.task_done()
 
-    log.error("ERROR: should never reach this")
-
 
 # Run by execution profiler
 def profile_execution(task_name):

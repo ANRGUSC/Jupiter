@@ -4,12 +4,13 @@ import sys
 
 def usage():
     print("usage: python3 host_generator.py <mergetb_model>")
-    exit(1)
+    sys.exit(1)
 
 
 try:
     sys.argv[1]
-except:
+except Exception as e:
+    print(e)
     print("Please provide the target mergetb python model file")
     usage()
 

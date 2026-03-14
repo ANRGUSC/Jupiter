@@ -12,6 +12,7 @@ __version__ = "2.0"
 
 import sys
 sys.path.append("../")
+import subprocess
 import paramiko
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
@@ -64,8 +65,8 @@ def demo_help(server,port,topic,msg):
     logging.debug('Sending demo')
     logging.debug(topic)
     logging.debug(msg)
-    username = 'anrgusc'
-    password = 'anrgusc'
+    username = os.environ.get('SSH_USERNAME', 'anrgusc')
+    password = os.environ.get('SSH_PASSWORD', 'anrgusc')
     client = mqtt.Client()
     client.username_pw_set(username,password)
     client.connect(server, port,300)
@@ -227,22 +228,20 @@ def recv_runtime_profile_computingnode():
                     - Duration time: total execution time of the task
                     - Waiting time: total time since the input file is created till it is processed
                 """
-                log_file = open(os.path.join(os.path.dirname(__file__), 'runtime_tasks_computingnode.txt'), "w")
-                s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Worker_node','Task_name','input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
-                logging.debug(s)
-                log_file.write(s)
-                for k, v in rt_enter_time_computingnode.items():
-                    worker, task, file = k
-                    if k in rt_finish_time_computingnode:
-                        elapse = rt_finish_time_computingnode[k]-v
-                        duration = rt_finish_time_computingnode[k]-rt_exec_time_computingnode[k]
-                        waiting = rt_exec_time_computingnode[k]-v
-                        s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, task, file, v, rt_exec_time_computingnode[k],rt_finish_time_computingnode[k],str(elapse),str(duration),str(waiting))
-                        logging.debug(s)
-                        log_file.write(s)
-                        log_file.flush()
-
-                log_file.close()
+                with open(os.path.join(os.path.dirname(__file__), 'runtime_tasks_computingnode.txt'), "w") as log_file:
+                    s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} \n".format('Worker_node','Task_name','input_file','Enter_time','Execute_time','Finish_time','Elapse_time','Duration_time','Waiting_time')
+                    logging.debug(s)
+                    log_file.write(s)
+                    for k, v in rt_enter_time_computingnode.items():
+                        worker, task, file = k
+                        if k in rt_finish_time_computingnode:
+                            elapse = rt_finish_time_computingnode[k]-v
+                            duration = rt_finish_time_computingnode[k]-rt_exec_time_computingnode[k]
+                            waiting = rt_exec_time_computingnode[k]-v
+                            s = "{:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10} {:<10}\n".format(worker, task, file, v, rt_exec_time_computingnode[k],rt_finish_time_computingnode[k],str(elapse),str(duration),str(waiting))
+                            logging.debug(s)
+                            log_file.write(s)
+                            log_file.flush()
                 logging.debug('********************************************')
 
                 
@@ -270,14 +269,14 @@ def transfer_data_scp(ID,user,pword,source, destination):
         try:
             nodeIP = combined_ip_map[ID]
             cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
-            os.system(cmd)
+            subprocess.run(cmd.split(), check=False)
             logging.debug('data transfer complete\n')
             ts = time.time()
             s = "{:<10} {:<10} {:<10} {:<10} \n".format('CIRCE_home', transfer_type,source,ts)
             runtime_sender_log.write(s)
             runtime_sender_log.flush()
             break
-        except:
+        except Exception as e:
             logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
             time.sleep(2)
             retry += 1
@@ -319,16 +318,16 @@ def get_updated_network_profile():
     try:
         client_mongo = MongoClient('mongodb://'+self_profiler_ip+':'+str(MONGO_SVC)+'/')
         db = client_mongo.droplet_network_profiler
-        collection = db.collection_names(include_system_collections=False)
+        collection = db.list_collection_names()
         num_nb = len(collection)-1
         if num_nb == -1:
             logging.debug('--- Network profiler mongoDB not yet prepared')
             return network_info
-        num_rows = db[self_profiler_ip].count() 
+        num_rows = db[self_profiler_ip].count_documents({}) 
         if num_rows < num_nb:
             logging.debug('--- Network profiler regression info not yet loaded into MongoDB!')
             return network_info
-        logdb =db[self_profiler_ip].find().skip(db[self_profiler_ip].count()-num_nb)  
+        logdb =db[self_profiler_ip].find().skip(db[self_profiler_ip].count_documents({})-num_nb)  
         c = 0
         for record in logdb:
             c = c+1
@@ -395,7 +394,7 @@ def price_estimate():
         logging.debug(price)
         return price
              
-    except:
+    except Exception as e:
         logging.debug('Error reading input information to calculate the price')
         
     return price

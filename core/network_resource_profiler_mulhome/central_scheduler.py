@@ -154,7 +154,7 @@ def do_update_quadratic():
                 measurement_file = os.path.join(subdir, file)
                 df = pd.read_csv(measurement_file, delimiter = ',', header = 0)
                 data_json = json.loads(df.to_json(orient = 'records'))
-                logdb.insert(data_json)
+                logdb.insert_many(data_json)
     except Exception as e:
         log.debug(e)
 
@@ -216,7 +216,7 @@ class droplet_measurement():
             elapsed = mins * 60 + secs
             # Log the information in local mongodb
             cur_time = datetime.datetime.utcnow()
-            log  = self.db[self.hosts[idx]]
+            collection = self.db[self.hosts[idx]]
             new_log  = {"Source[IP]"        : self.my_host,
                         "Source[Reg]"       : self.my_region,
                         "Destination[IP]"   : self.hosts[idx],
@@ -224,7 +224,7 @@ class droplet_measurement():
                         "Time_Stamp[UTC]"   : cur_time,
                         "File_Size[KB]"     : random_size,
                         "Transfer_Time[s]"  : elapsed}
-            log_id   = log.insert_one(new_log).inserted_id
+            log_id   = collection.insert_one(new_log).inserted_id
 
 
 class droplet_regression():
@@ -279,8 +279,8 @@ class droplet_regression():
 
         for idx in range(0,len(self.hosts)):
             host    = self.hosts[idx]
-            log = self.db[host]
-            cursor  = log.find({})
+            collection = self.db[host]
+            cursor  = collection.find({})
             df      = pd.DataFrame(list(cursor))
 
             df['X'] = df['File_Size[KB]'] * 8 #Kbits

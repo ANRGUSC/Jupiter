@@ -66,7 +66,6 @@ def modify_app_path_file(file_path, app_path):
     with open(file_path, 'w+') as f:
         for line in lines:
             f.write(line)
-        f.close()
 
 
 def modify_nodes_file(file_path, nodes_info):
@@ -77,11 +76,11 @@ def modify_nodes_file(file_path, nodes_info):
     with open(file_path, 'r+') as f:
         lines = f.readlines()
         for index, line in enumerate(lines):
-            lines[index] = line.replace("\n", "") + ' root PASSWORD' + '\n'
+            node_password = os.environ.get('NODE_PASSWORD', 'PASSWORD')
+        lines[index] = line.replace("\n", "") + f' root {node_password}' + '\n'
     with open(file_path, 'w+') as f:
         for line in lines:
             f.write(line)
-        f.close()
 
 
 def modify_task_mapper_option(file_path, task_mapper_option):
@@ -95,7 +94,6 @@ def modify_task_mapper_option(file_path, task_mapper_option):
     with open(file_path, 'w+') as f:
         for line in lines:
             f.write(line)
-        f.close()
 
 
 @app.route('/execution_profile', methods=['POST'])
@@ -113,9 +111,9 @@ def get_exec_profile_info():
             exist = os.path.isfile('profiler_%s.txt'%(node))
             if not exist:
                 run_command_get_file(node)
-            f = open('profiler_%s.txt'%(node))
-            print("The profiler %s txt file exists."%(node))
-            lines = f.readlines()
+            with open('profiler_%s.txt' % (node)) as f:
+                print("The profiler %s txt file exists." % (node))
+                lines = f.readlines()
             lines[0] = node
             json_string = json.dumps(lines)
             res.append(json_string)
@@ -145,7 +143,7 @@ def run_command_get_file(node):
     cmd = "kubectl cp " + file_path + " "+ log_file
 
     print("RUN: " + cmd)
-    os.system(cmd)
+    subprocess.run(cmd.split(), check=False)
 
 
 def get_command_output(command):
@@ -159,10 +157,10 @@ def get_command_output(command):
 
 def read_node_list(path2):
     nodes = []
-    node_file = open(path2, "r")
-    for line in node_file:
-        node_line = line.strip().split(" ")
-        nodes.append(node_line[0])
+    with open(path2, "r") as node_file:
+        for line in node_file:
+            node_line = line.strip().split(" ")
+            nodes.append(node_line[0])
     return nodes
 
 # def get_plot():
@@ -206,9 +204,9 @@ def get_network_statistics():
         exist = os.path.isfile('network_log.txt')
         if not exist:
             run_command_get_file_net()
-        f = open('network_log.txt')
-        print("The network_log txt file exists.")
-        lines = f.readlines()
+        with open('network_log.txt') as f:
+            print("The network_log txt file exists.")
+            lines = f.readlines()
         json_string = json.dumps(lines)
         print(json_string)
     except FileNotFoundError:
@@ -234,13 +232,5 @@ def run_command_get_file_net():
     file_path = '%s/%s:/heft/network_log.txt' % (mapper_namespace, mapper_home_pod_name)
     cmd = "kubectl cp " + file_path + " "+ log_file
     print("RUN: " + cmd)
-    os.system(cmd)
-
-
-def get_command_output(command):
-    command = command.split(" ")
-    p = subprocess.Popen(command, stdout=subprocess.PIPE)
-    (output, err) = p.communicate()
-    output = str(output)
-    return output
+    subprocess.run(cmd.split(), check=False)
 

@@ -3,7 +3,7 @@ __copyright__ = "Copyright (c) 2019, Autonomous Networks Research Group. All rig
 __license__ = "GPL"
 __version__ = "2.1"
 import time
-import os
+import subprocess
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
 import k8s_spec.service
@@ -40,7 +40,7 @@ def check_workers_running(app_config, namespace):
             # ignore checking on home status
             continue
 
-        label = app_config.app_name + '-' + node + "exec_profiler"
+        label = "app=" + app_config.app_name + '-' + node
 
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector=label)
         # if a pod is running just delete it
@@ -60,7 +60,7 @@ def main():
     # Parse app's app_config.yaml
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     namespace = app_config.namespace_prefix() + "-exec"
-    os.system(f"kubectl create namespace {namespace}")
+    subprocess.run(["kubectl", "create", "namespace", namespace], check=False)
 
     # Load kube config before executing k8s client API calls.
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())

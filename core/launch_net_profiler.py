@@ -4,9 +4,8 @@ __license__ = "GPL"
 __version__ = "2.1"
 from kubernetes import client, config
 import os
-from pprint import *
+import subprocess
 from kubernetes.client.rest import ApiException
-from kubernetes.client.apis import core_v1_api
 import sys
 sys.path.append("../")
 import jupiter_config
@@ -33,7 +32,6 @@ def check_workers_running(app_config, namespace):
     """
     # Load kube config before executing k8s client API calls.
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
-    k8s_apps_v1 = client.AppsV1Api()
     core_v1_api = client.CoreV1Api()
 
     result = True
@@ -71,7 +69,7 @@ def main():
     # Parse app's app_config.yaml
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     namespace = app_config.namespace_prefix() + "-profiler"
-    os.system(f"kubectl create namespace {namespace}")
+    subprocess.run(["kubectl", "create", "namespace", namespace], check=False)
 
     # Load kube config before executing k8s client API calls.
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
@@ -104,7 +102,7 @@ def main():
     home_node_ip = resp.spec.cluster_ip
     all_profiler_map['home'] = resp.spec.cluster_ip
 
-    logging.debug('Home Profilers were created successfully!')
+    log.debug('Home Profilers were created successfully!')
 
     all_profiler_ips = []
     all_profiler_names = []
@@ -137,7 +135,7 @@ def main():
     all_profiler_ips = ':'.join(all_profiler_ips)
     all_profiler_names = ':'.join(all_profiler_names)
 
-    logging.debug('Worker Profilers were created successfully!')
+    log.debug('Worker Profilers were created successfully!')
 
 
     for node, host in app_config.node_map().items():
@@ -194,8 +192,8 @@ def main():
 
 
 
-    pprint(all_profiler_map)
-    logging.debug('Successfully deploy DRUPE ')
+    log.info("all_profiler_map: %s", all_profiler_map)
+    log.debug('Successfully deploy DRUPE ')
     return(all_profiler_map)
 
 if __name__ == '__main__':

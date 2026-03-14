@@ -110,5 +110,5 @@ def write_stream_home_specs(**kwargs):
                                     flask_port = jupiter_config.FLASK_DOCKER,
                                     **kwargs)
 
-    dep = yaml.load(specific_yaml)
+    dep = yaml.safe_load(specific_yaml)
     return dep

@@ -11,6 +11,7 @@ __version__ = "3.0"
 
 import sys
 sys.path.append("../")
+import subprocess
 import configparser
 import jupiter_config
 import os
@@ -50,19 +51,19 @@ def k8s_read_dag(dag_info_file):
       dict: DAG information 
   """
   dag_info=[]
-  config_file = open(dag_info_file,'r')
-  dag_size = int(config_file.readline())
+  with open(dag_info_file,'r') as config_file:
+      dag_size = int(config_file.readline())
 
-  dag={}
-  for i, line in enumerate(config_file, 1):
-      dag_line = line.strip().split(" ")
-      if i == 1:
-          dag_info.append(dag_line[0])
-      dag.setdefault(dag_line[0], [])
-      for j in range(1,len(dag_line)):
-          dag[dag_line[0]].append(dag_line[j])
-      if i == dag_size:
-          break
+      dag={}
+      for i, line in enumerate(config_file, 1):
+          dag_line = line.strip().split(" ")
+          if i == 1:
+              dag_info.append(dag_line[0])
+          dag.setdefault(dag_line[0], [])
+          for j in range(1,len(dag_line)):
+              dag[dag_line[0]].append(dag_line[j])
+          if i == dag_size:
+              break
 
   dag_info.append(dag)
   return dag_info
@@ -77,39 +78,40 @@ def get_taskmap():
         - list: super_tasks 
         - list: non_tasks - tasks not belong to DAG
     """
-    configs = json.load(open('centralized_scheduler/config.json'))
+    with open('centralized_scheduler/config.json') as _cfg_f:
+        configs = json.load(_cfg_f)
     task_map = configs['taskname_map']
     execution_map = configs['exec_profiler']
-    tasks_info = open('centralized_scheduler/dag.txt', "r")
 
     task_order = []#create the  (DAG) task list in the order of execution
     super_tasks = []
     tasks = {} #create DAG dictionary
     count = 0
     non_tasks = []
-    for line in tasks_info:
-        if count == 0:
-            count += 1
-            continue
+    with open('centralized_scheduler/dag.txt', "r") as tasks_info:
+        for line in tasks_info:
+            if count == 0:
+                count += 1
+                continue
 
-        data = line.strip().split(" ")
-        if task_map[data[0]][1] == True and execution_map[data[0]] == False:
-            if data[0] not in super_tasks:
-                super_tasks.append(data[0])
+            data = line.strip().split(" ")
+            if task_map[data[0]][1] == True and execution_map[data[0]] == False:
+                if data[0] not in super_tasks:
+                    super_tasks.append(data[0])
 
-        if task_map[data[0]][1] == False and execution_map[data[0]] == False:
-            if data[0] not in non_tasks:
-                non_tasks.append(data[0])
+            if task_map[data[0]][1] == False and execution_map[data[0]] == False:
+                if data[0] not in non_tasks:
+                    non_tasks.append(data[0])
 
-        if task_map[data[0]][1] == False:
-            continue
+            if task_map[data[0]][1] == False:
+                continue
 
-        tasks.setdefault(data[0], [])
-        if data[0] not in task_order:
-            task_order.append(data[0])
-        for i in range(3, len(data)):
-            if  data[i] != 'home' and task_map[data[i]][1] == True :
-                tasks[data[0]].extend([data[i]])
+            tasks.setdefault(data[0], [])
+            if data[0] not in task_order:
+                task_order.append(data[0])
+            for i in range(3, len(data)):
+                if  data[i] != 'home' and task_map[data[i]][1] == True :
+                    tasks[data[0]].extend([data[i]])
     logging.debug("tasks: %s", tasks)
     logging.debug("task order %s", task_order) #task_list
     logging.debug("super tasks %s", super_tasks)
@@ -230,7 +232,8 @@ def prepare_global_info():
     # CHECK NON_DAG tasks
     global configs, taskmap
 
-    configs = json.load(open('/centralized_scheduler/config.json'))
+    with open('/centralized_scheduler/config.json') as _cfg_f2:
+        configs = json.load(_cfg_f2)
     taskmap = configs["taskname_map"]
     execution_map = configs['exec_profiler']
 
@@ -242,19 +245,19 @@ def prepare_global_info():
         if taskmap[task][1] and execution_map[task]: #DAG
             task_module[task] = __import__(task)
             cmd = "mkdir centralized_scheduler/output/"+task 
-            os.system(cmd)
+            subprocess.run(cmd.split(), check=False)
             for home_id in home_ids:
                 cmd = "mkdir centralized_scheduler/output/"+task+"/" + home_id
-                os.system(cmd)
+                subprocess.run(cmd.split(), check=False)
 
     logging.debug('Generating task folders for INPUT\n')
     for task in dag:
         if taskmap[task][1]: #DAG
             cmd = "mkdir centralized_scheduler/input/"+task 
-            os.system(cmd)
+            subprocess.run(cmd.split(), check=False)
             for home_id in home_ids:
                 cmd = "mkdir centralized_scheduler/input/"+task+"/" + home_id
-                os.system(cmd)
+                subprocess.run(cmd.split(), check=False)
 
   
   
@@ -341,14 +344,14 @@ def transfer_data_scp(ID,user,pword,source, destination):
             try:
                 nodeIP = combined_ip_map[ID]
                 cmd = "sshpass -p %s scp -P %s -o StrictHostKeyChecking=no -r %s %s@%s:%s" % (pword, ssh_port, source, user, nodeIP, destination)
-                os.system(cmd)
+                subprocess.run(cmd.split(), check=False)
                 logging.debug('data transfer complete\n')
                 ts = time.time()
                 s = "{:<10} {:<10} {:<10} {:<10} \n".format(self_name, transfer_type,source,ts)
                 runtime_sender_log.write(s)
                 runtime_sender_log.flush()
                 break
-            except:
+            except Exception as e:
                 logging.debug('profiler_worker.txt: SSH Connection refused or File transfer failed, will retry in 2 seconds')
                 time.sleep(1)
                 retry += 1

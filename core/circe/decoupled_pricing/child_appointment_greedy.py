@@ -37,8 +37,8 @@ app = Flask(__name__)
 
 
 def demo_help(server, port, topic, msg):
-    username = 'anrgusc'
-    password = 'anrgusc'
+    username = os.environ.get('SSH_USERNAME', 'anrgusc')
+    password = os.environ.get('SSH_PASSWORD', 'anrgusc')
     client = mqtt.Client()
     client.username_pw_set(username, password)
     client.connect(server, port, 300)
@@ -399,12 +399,11 @@ def read_file(file_name):
         str: file_contents - all lines in a file
     """
     file_contents = []
-    file = open(file_name)
-    line = file.readline()
-    while line:
-        file_contents.append(line)
+    with open(file_name) as file:
         line = file.readline()
-    file.close()
+        while line:
+            file_contents.append(line)
+            line = file.readline()
     return file_contents
 
 
@@ -427,8 +426,8 @@ def get_resource_data_drupe(MONGO_SVC_PORT):
         client_mongo = MongoClient('mongodb://' + profiler_ip + ':' +
                                    str(MONGO_SVC_PORT) + '/')
         db = client_mongo.central_resource_profiler
-        collection = db.collection_names(include_system_collections=False)
-        logdb = db[profiler_ip].find().skip(db[profiler_ip].count() - 1)
+        collection = db.list_collection_names()
+        logdb = db[profiler_ip].find().skip(db[profiler_ip].count_documents({}) - 1)
         for record in logdb:
             resource_data[network_map[profiler_ip]]={'memory':record['memory'],
             'cpu': record['cpu'], 'last_update': record['last_update']}
@@ -450,20 +449,20 @@ def get_network_data_drupe(my_profiler_ip, MONGO_SVC_PORT, network_map):
     client_mongo = MongoClient('mongodb://' + my_profiler_ip + ':' +
                                MONGO_SVC_PORT + '/')
     db = client_mongo.droplet_network_profiler
-    collection = db.collection_names(include_system_collections=False)
+    collection = db.list_collection_names()
     num_nb = len(collection) - 1
     while num_nb == -1:
         logging.debug('--- Network profiler mongoDB not yet prepared')
         time.sleep(60)
-        collection = db.collection_names(include_system_collections=False)
+        collection = db.list_collection_names()
         num_nb = len(collection) - 1
     logging.debug('--- Number of neighbors: ' + str(num_nb))
-    num_rows = db[my_profiler_ip].count()
+    num_rows = db[my_profiler_ip].count_documents({})
     while num_rows < num_nb:
         logging.debug('--- Network profiler regression info not yet loaded into MongoDB!')
         time.sleep(60)
-        num_rows = db[my_profiler_ip].count()
-    logdb = db[my_profiler_ip].find().skip(db[my_profiler_ip].count() - num_nb)
+        num_rows = db[my_profiler_ip].count_documents({})
+    logdb = db[my_profiler_ip].find().skip(db[my_profiler_ip].count_documents({}) - num_nb)
 
 
     c = 0

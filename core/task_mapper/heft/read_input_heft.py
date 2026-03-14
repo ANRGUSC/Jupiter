@@ -41,13 +41,13 @@ def get_exec_profile_data(exec_home_ip, mongo_svc_port, num_workers):
             )
             db = client_mongo.execution_profiler
             conn = True
-        except:
+        except Exception as e:
             log.debug('Cannot connect to exec prof home pod, retrying in 60s...')
             time.sleep(60)
 
     while num_profilers < num_workers:
         try:
-            collection = db.collection_names(include_system_collections=False)
+            collection = db.list_collection_names()
             num_profilers = len(collection)
             log.debug('Current number of updated execution profilers: ' +
                       f'{num_profilers}')
@@ -97,22 +97,22 @@ def get_network_data_drupe(
         log.debug('Check Network Profiler IP: %s - %s', ip[0], ip[1])
         client_mongo = MongoClient(f'mongodb://{ip[1]}:{mongo_svc_port}/')
         db = client_mongo.droplet_network_profiler
-        collection = db.collection_names(include_system_collections=False)
+        collection = db.list_collection_names()
         num_nb = len(collection) - 1
         while num_nb == -1:
             log.debug('--- Network profiler mongoDB not yet prepared')
             time.sleep(60)
-            collection = db.collection_names(include_system_collections=False)
+            collection = db.list_collection_names()
             num_nb = len(collection) - 1
         log.debug(f'--- Number of neighbors: {str(num_nb)}')
-        num_rows = db[ip[1]].count()
+        num_rows = db[ip[1]].count_documents({})
         while num_rows < num_nb:
             log.debug('--- Network profiler regression info not yet loaded ' +
                       'into MongoDB!')
             time.sleep(60)
-            num_rows = db[ip[1]].count()
+            num_rows = db[ip[1]].count_documents({})
 
-        logdb = db[ip[1]].find().skip(db[ip[1]].count() - num_nb)
+        logdb = db[ip[1]].find().skip(db[ip[1]].count_documents({}) - num_nb)
 
         for record in logdb:
             # Source ID, Source IP, Destination ID, Destination IP, Parameters

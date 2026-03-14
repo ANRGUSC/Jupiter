@@ -3,6 +3,7 @@ __copyright__ = "Copyright (c) 2020, Autonomous Networks Research Group. All rig
 __license__ = "GPL"
 __version__ = "2.1"
 import os
+import subprocess
 from kubernetes import client, config
 from kubernetes.client.rest import ApiException
 import k8s_spec.service
@@ -57,13 +58,12 @@ def check_dag_workers_running(app_config, namespace):
     """
     # Load kube config before executing k8s client API calls.
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
-    k8s_apps_v1 = client.AppsV1Api()
     core_v1_api = client.CoreV1Api()
 
     result = True
 
     for task in app_config.get_dag_task_names():
-        label = "app="+app_config.app_name + '-' + task 
+        label = "app="+app_config.app_name + '-' + task
         resp = core_v1_api.list_namespaced_pod(namespace, label_selector=label)
         # if a pod is running just delete it
         if resp.items:
@@ -89,7 +89,6 @@ def check_nondag_workers_running(app_config, namespace):
     """
     # Load kube config before executing k8s client API calls.
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
-    k8s_apps_v1 = client.AppsV1Api()
     core_v1_api = client.CoreV1Api()
 
     result = True
@@ -114,7 +113,7 @@ def launch_circe(task_mapping):
     # Parse app's app_config.yaml
     app_config = app_config_parser.AppConfig(jupiter_config.get_abs_app_dir())
     namespace = app_config.namespace_prefix() + "-circe"
-    os.system(f"kubectl create namespace {namespace}")
+    subprocess.run(["kubectl", "create", "namespace", namespace], check=False)
 
     # Load kube config before executing k8s client API calls.
     config.load_kube_config(config_file=jupiter_config.get_kubeconfig())
@@ -133,7 +132,7 @@ def launch_circe(task_mapping):
                 "targetPort": int(docker)
             })
     except Exception as e:
-        logging.debug('No application port mappings')
+        log.debug('No application port mappings')
     # Compile port mappings for k8s deployments for Jupiter and the application
     depl_port_mappings = jupiter_config.k8s_deployment_port_mappings()
 
@@ -145,7 +144,7 @@ def launch_circe(task_mapping):
                 "containerPort": int(docker)
             })
     except Exception as e:
-        logging.debug('No application port mappings')
+        log.debug('No application port mappings')
 
     # *** Create Home Task Service ***
     home_svc_name = app_config.app_name + "-home"
@@ -268,12 +267,12 @@ def launch_circe(task_mapping):
 if __name__ == '__main__':
     if len(sys.argv) == 2:
         mapping_file = sys.argv[1]
-    if len(sys.argv) == 1:
+    elif len(sys.argv) == 1:
         log.info("No task mapping file arg, defaulting to \"mapping.json\"")
         mapping_file = "mapping.json"
     else:
         log.error("usage: python build_push_exec.py {task_mapping_file}")
-        exit()
+        sys.exit(1)
 
     # task_mapping should be a dictionary of task names to node names. Node
     # names are the keys under "node_map" in the app_config.yaml

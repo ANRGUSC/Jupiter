@@ -10,7 +10,7 @@ import json
 import configparser
 import numpy as np
 from os import listdir
-from ccdag_utils import *
+from ccdag_utils import retrieve_globalinfo, show_run_stats
 import requests
 
 
@@ -130,9 +130,8 @@ def task(q, pathin, pathout, task_name):
                         print(dst_name)
                         dst = os.path.join(pathout,dst_name)
                         log.debug(dst)
-                        f = open(dst, 'w')
-                        np.savetxt(dst, En_Image_Batch, delimiter=',')
-                        f.close()
+                        with open(dst, 'w') as f:
+                            np.savetxt(f, En_Image_Batch, delimiter=',')
                         show_run_stats(task_name,'queue_end_process',dst_name)
                         #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}",src_task)
                 else:
@@ -152,9 +151,8 @@ def task(q, pathin, pathout, task_name):
                         dst = os.path.join(pathout, dst_name)
                         log.debug(dst)
                         # destination = os.path.join(pathout,'preagg'+classnum+'_lccdec'+classnum+'_'+(job_dict[job_id])[i].partition('_')[0]+'_job'+job_id+'_'+filesuffixs+'.log')
-                        f = open(dst, 'w')
-                        np.savetxt(dst, En_Image_Batch, delimiter=',')
-                        f.close()
+                        with open(dst, 'w') as f:
+                            np.savetxt(f, En_Image_Batch, delimiter=',')
                         show_run_stats(task_name,'queue_end_process',dst_name)
                         #show_run_stats(task_name,'queue_end_process',f"{task_name}_{dst_task}_{job}{src_task}{file_id}",src_task)
                 else:
@@ -167,8 +165,6 @@ def task(q, pathin, pathout, task_name):
         else:
             log.debug('Not enough files')
             time.sleep(1)
-
-    log.error("ERROR: should never reach this")
 
 
 # Run by execution profiler

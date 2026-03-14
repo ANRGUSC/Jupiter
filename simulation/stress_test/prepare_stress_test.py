@@ -6,7 +6,7 @@ import random
 import paramiko
 import _thread
 from flask import Flask
-import multiprocessing.Process
+from multiprocessing import Process
 
 sys.path.append("../../")
 logging.basicConfig(level=logging.INFO)

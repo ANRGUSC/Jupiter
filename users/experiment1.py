@@ -35,18 +35,18 @@ import os
 
 
 def retrieve_tasks(dag_info_file):
-    config_file = open(dag_info_file,'r')
-    dag_size = int(config_file.readline())
+    with open(dag_info_file,'r') as config_file:
+        dag_size = int(config_file.readline())
 
-    tasks={}
-    tasksid={}
-    for i, line in enumerate(config_file, 1):
-        dag_line = line.strip().split(" ")
-        tasks[dag_line[0]]=i 
-        tasksid[i]=dag_line[0]
-        if i == dag_size:
-            break
-    
+        tasks={}
+        tasksid={}
+        for i, line in enumerate(config_file, 1):
+            dag_line = line.strip().split(" ")
+            tasks[dag_line[0]]=i
+            tasksid[i]=dag_line[0]
+            if i == dag_size:
+                break
+
     return tasks,tasksid
 
 

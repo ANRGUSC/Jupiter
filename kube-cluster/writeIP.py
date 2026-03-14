@@ -7,15 +7,13 @@ def is_ip_char(c):
 
     return (c >= '0' and c <= '9') or c == '.'
 
-r = open('node_ips', 'r')
-line = ""
-while(1):
-    line = r.readline()
-    if line == "":
-        break
-    line = line.rstrip('\n')
-    ips.append(line)
-r.close()
+with open('node_ips', 'r') as r:
+    while True:
+        line = r.readline()
+        if line == "":
+            break
+        line = line.rstrip('\n')
+        ips.append(line)
 
 
 with open('ssh.sh', 'r') as file:

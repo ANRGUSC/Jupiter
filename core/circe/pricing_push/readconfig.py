@@ -22,42 +22,42 @@ def read_config(path1,path2):
     """
     
     nodes = {}
-    node_file = open(path2, "r")
-    for line in node_file:
-        node_line = line.strip().split(" ")
-        nodes.setdefault(node_line[0], [])
-        for i in range(1, len(node_line)):
-            nodes[node_line[0]].append(node_line[i])
+    with open(path2, "r") as node_file:
+        for line in node_file:
+            node_line = line.strip().split(" ")
+            nodes.setdefault(node_line[0], [])
+            for i in range(1, len(node_line)):
+                nodes[node_line[0]].append(node_line[i])
 
     dag_info=[]
-    config_file = open(path1,'r')
-    dag_size = int(config_file.readline())
+    with open(path1,'r') as config_file:
+        dag_size = int(config_file.readline())
 
-    dag={}
+        dag={}
 
-    for i, line in enumerate(config_file, 1):
-        dag_line = line.strip().split(" ")
-        if i == 1:
-            dag_info.append(dag_line[0])
-        dag.setdefault(dag_line[0], [])
-        for j in range(1,len(dag_line)):
-            dag[dag_line[0]].append(dag_line[j])
-        if i==dag_size:
-            break
+        for i, line in enumerate(config_file, 1):
+            dag_line = line.strip().split(" ")
+            if i == 1:
+                dag_info.append(dag_line[0])
+            dag.setdefault(dag_line[0], [])
+            for j in range(1,len(dag_line)):
+                dag[dag_line[0]].append(dag_line[j])
+            if i==dag_size:
+                break
 
-    dag_info.append(dag)
+        dag_info.append(dag)
 
-    hosts={}
-    for line in config_file:
-        #get task, node IP, username and password
-        myline = line.strip().split(" ")
-        logging.debug(myline)
-        hosts.setdefault(myline[0],[])
-        for j in range(0,2):
-            if j==0:
-                hosts[myline[0]].append(myline[j])
-            if j==1:
-                hosts[myline[0]].append(nodes.get(myline[1])[0])
+        hosts={}
+        for line in config_file:
+            #get task, node IP, username and password
+            myline = line.strip().split(" ")
+            logging.debug(myline)
+            hosts.setdefault(myline[0],[])
+            for j in range(0,2):
+                if j==0:
+                    hosts[myline[0]].append(myline[j])
+                if j==1:
+                    hosts[myline[0]].append(nodes.get(myline[1])[0])
 
     hosts.setdefault('home',[])
     hosts['home'].append('home')
@@ -79,12 +79,12 @@ def read_node_list(path2):
 
     """
     nodes = {}
-    node_file = open(path2, "r")
-    for line in node_file:
-        node_line = line.strip().split(" ")
-        nodes.setdefault(node_line[0], [])
-        for i in range(1, len(node_line)):
-            nodes[node_line[0]].append(node_line[i])
+    with open(path2, "r") as node_file:
+        for line in node_file:
+            node_line = line.strip().split(" ")
+            nodes.setdefault(node_line[0], [])
+            for i in range(1, len(node_line)):
+                nodes[node_line[0]].append(node_line[i])
     return nodes
     
 
